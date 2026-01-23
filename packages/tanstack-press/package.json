@@ -1,0 +1,107 @@
+{
+  "name": "react-press",
+  "version": "0.1.0",
+  "description": "React-first Static Documentation Framework",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config/index.js",
+      "types": "./dist/config/index.d.ts"
+    },
+    "./vite": {
+      "import": "./dist/vite/index.js",
+      "types": "./dist/vite/index.d.ts"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
+    "./theme": {
+      "import": "./dist/theme/index.js",
+      "types": "./dist/theme/index.d.ts"
+    },
+    "./theme/styles.css": "./dist/theme/styles.css",
+    "./typedoc": {
+      "import": "./dist/typedoc/index.js",
+      "types": "./dist/typedoc/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@shikijs/rehype": "^3.21.0",
+    "gray-matter": "^4.0.3",
+    "hast-util-to-jsx-runtime": "^2.3.6",
+    "mdast-util-directive": "^3.1.0",
+    "minisearch": "^7.2.0",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^3.21.0",
+    "typedoc": "^0.28.16",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@tanstack/react-router": "^1.100.0",
+    "@tanstack/react-start": "^1.100.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^8.0.0-beta.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-router": "^1.154.8",
+    "@tanstack/react-start": "^1.154.8",
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0-beta.9"
+  },
+  "keywords": [
+    "documentation",
+    "static-site",
+    "react",
+    "vitepress",
+    "markdown",
+    "docs"
+  ],
+  "author": "Sebastian Software GmbH",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sebastian-software/react-press.git",
+    "directory": "packages/react-press"
+  },
+  "homepage": "https://sebastian-software.github.io/react-press/",
+  "bugs": {
+    "url": "https://github.com/sebastian-software/react-press/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/sebastian-software"
+  }
+}
