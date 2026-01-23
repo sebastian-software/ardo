@@ -16,5 +16,5 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "references": [{ "path": "./packages/tanstack-press" }]
+  "references": [{ "path": "./packages/react-press" }]
 }
