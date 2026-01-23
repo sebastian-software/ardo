@@ -198,25 +198,54 @@ function ${componentName}() {
 
   let isDevMode = false
   let hasCleanedRoutes = false
+  let hasGeneratedRoutes = false
 
   return {
     name: 'ardo:routes',
     enforce: 'pre',
 
+    async config(userConfig, env) {
+      // Generate routes early, before TanStack Router scans the files
+      // We need to resolve paths manually here since viteConfig isn't available yet
+      const root = userConfig.root || process.cwd()
+      routesDir = options.routesDir || path.join(root, 'src', 'routes')
+      srcDir = path.join(root, 'src')
+      isDevMode = env.command === 'serve'
+
+      // Try to load the press config to get contentDir
+      const configPath = path.resolve(root, 'press.config.ts')
+      try {
+        const configModule = await import(configPath)
+        const pressConfig = configModule.default
+        contentDir = path.resolve(root, pressConfig.srcDir || 'content')
+
+        // Generate routes now, before other plugins run
+        await generateAllRoutes()
+        hasGeneratedRoutes = true
+      } catch (e) {
+        // Config not found or error loading, will try again in buildStart
+        console.warn(
+          '[ardo] Could not load config in early phase, routes will be generated in buildStart'
+        )
+      }
+    },
+
     configResolved(viteConfig) {
-      // Routes dir should be relative to the vite root
-      routesDir = options.routesDir || path.join(viteConfig.root, 'src', 'routes')
-      srcDir = path.join(viteConfig.root, 'src')
-      isDevMode = viteConfig.command === 'serve'
+      // Update paths if they weren't set in config hook
+      if (!routesDir) {
+        routesDir = options.routesDir || path.join(viteConfig.root, 'src', 'routes')
+        srcDir = path.join(viteConfig.root, 'src')
+        isDevMode = viteConfig.command === 'serve'
+      }
     },
 
     async buildStart() {
-      // Get resolved config here, after the main plugin has resolved it
-      const config = getConfig()
-      contentDir = config.contentDir
-
-      // Generate routes (only writes files if content changed)
-      await generateAllRoutes()
+      // Only generate routes here if we couldn't do it in the config hook
+      if (!hasGeneratedRoutes) {
+        const config = getConfig()
+        contentDir = config.contentDir
+        await generateAllRoutes()
+      }
     },
 
     async handleHotUpdate({ file, server }) {

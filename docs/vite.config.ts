@@ -6,6 +6,7 @@ import { ardoPlugin } from 'ardo/vite'
 export default defineConfig({
   base: '/ardo/',
   plugins: [
+    ardoPlugin(),
     tanstackStart({
       prerender: {
         enabled: true,
@@ -13,7 +14,6 @@ export default defineConfig({
       },
     }),
     react(),
-    ardoPlugin(),
   ],
   optimizeDeps: {
     exclude: ['ardo/theme/styles.css'],
