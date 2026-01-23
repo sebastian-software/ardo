@@ -1,0 +1,304 @@
+---
+title: TypeDoc Integration
+description: Generate API documentation from TypeScript source code.
+---
+
+# TypeDoc Integration
+
+React Press includes built-in TypeDoc integration that allows you to automatically generate API documentation from your TypeScript source code.
+
+## Quick Start
+
+### 1. Configure TypeDoc
+
+Add the `typedoc` configuration to your `press.config.ts`:
+
+```ts
+import { defineConfig } from 'react-press/config'
+
+export default defineConfig({
+  title: 'My Library',
+
+  typedoc: {
+    enabled: true,
+    entryPoints: ['../src/index.ts'],
+    tsconfig: '../tsconfig.json',
+    out: 'api',
+  },
+})
+```
+
+### 2. Add the Vite Plugin
+
+Update your `vite.config.ts` to include the TypeDoc plugin:
+
+```ts
+import { defineConfig } from 'vite'
+import { tanstackPressPlugin } from 'react-press/vite'
+import { typedocPlugin } from 'react-press/typedoc'
+import pressConfig from './press.config'
+
+export default defineConfig({
+  plugins: [
+    tanstackPressPlugin(),
+    typedocPlugin({
+      config: pressConfig.typedoc!,
+      contentDir: './content',
+    }),
+  ],
+})
+```
+
+### 3. Run the Build
+
+The API documentation will be automatically generated when you build your site:
+
+```bash
+pnpm build
+```
+
+## Configuration Options
+
+### entryPoints
+
+- Type: `string[]`
+- Required: Yes
+
+The entry points for TypeDoc to process. These are typically your library's main export files.
+
+```ts
+typedoc: {
+  entryPoints: ['./src/index.ts', './src/utils/index.ts'],
+}
+```
+
+### tsconfig
+
+- Type: `string`
+
+Path to your `tsconfig.json` file.
+
+```ts
+typedoc: {
+  tsconfig: './tsconfig.json',
+}
+```
+
+### out
+
+- Type: `string`
+- Default: `'api'`
+
+Output directory for generated markdown files (relative to `srcDir`).
+
+```ts
+typedoc: {
+  out: 'reference/api',
+}
+```
+
+### Filtering Options
+
+Control what gets documented:
+
+```ts
+typedoc: {
+  excludeExternals: true,    // Exclude external modules
+  excludePrivate: true,      // Exclude private members
+  excludeProtected: false,   // Include protected members
+  excludeInternal: true,     // Exclude @internal members
+  exclude: ['**/*.test.ts'], // Exclude patterns
+}
+```
+
+### Sorting
+
+Control the order of documented members:
+
+```ts
+typedoc: {
+  sort: ['source-order'],
+  // Or: ['alphabetical', 'required-first', 'visibility']
+}
+```
+
+### Sidebar Configuration
+
+Customize how the API docs appear in the sidebar:
+
+```ts
+typedoc: {
+  sidebar: {
+    title: 'API Reference',
+    position: 100,
+    collapsed: false,
+  },
+}
+```
+
+### Markdown Options
+
+Control the generated markdown:
+
+```ts
+typedoc: {
+  markdown: {
+    breadcrumbs: true,
+    hierarchy: true,
+    sourceLinks: true,
+    sourceBaseUrl: 'https://github.com/user/repo/blob/main',
+    codeBlocks: true,
+  },
+}
+```
+
+## Source Links
+
+To enable links to your source code on GitHub, configure the `sourceBaseUrl`:
+
+```ts
+typedoc: {
+  markdown: {
+    sourceLinks: true,
+    sourceBaseUrl: 'https://github.com/your-username/your-repo/blob/main',
+  },
+}
+```
+
+## Watch Mode
+
+Enable watch mode for development to regenerate docs when source files change:
+
+```ts
+typedoc: {
+  watch: true,
+}
+```
+
+## Generated Output
+
+TypeDoc generates markdown files that include:
+
+- **Module/Namespace pages** - Overview of exports
+- **Class pages** - Properties, methods, constructors
+- **Interface pages** - Properties with types
+- **Type alias pages** - Type definitions
+- **Function pages** - Signatures, parameters, return types
+- **Enum pages** - Member values
+
+### Example Output
+
+For a function like:
+
+````ts
+/**
+ * Greets a user by name.
+ *
+ * @param name - The name of the user
+ * @returns A greeting message
+ *
+ * @example
+ * ```ts
+ * greet('World') // 'Hello, World!'
+ * ```
+ */
+export function greet(name: string): string {
+  return `Hello, ${name}!`
+}
+````
+
+TypeDoc generates:
+
+```markdown
+# Function: greet
+
+Greets a user by name.
+
+## Signature
+
+function greet(name: string): string
+
+### Parameters
+
+| Name | Type     | Description          |
+| ---- | -------- | -------------------- |
+| name | `string` | The name of the user |
+
+### Returns
+
+`string`
+
+A greeting message
+
+## Examples
+
+greet('World') // 'Hello, World!'
+```
+
+## Full Example
+
+Here's a complete configuration example:
+
+```ts
+import { defineConfig } from 'react-press/config'
+
+export default defineConfig({
+  title: 'My Library Docs',
+  description: 'Documentation for my awesome library',
+
+  typedoc: {
+    enabled: true,
+    entryPoints: ['../packages/my-lib/src/index.ts'],
+    tsconfig: '../packages/my-lib/tsconfig.json',
+    out: 'api',
+
+    excludePrivate: true,
+    excludeInternal: true,
+    sort: ['source-order'],
+
+    sidebar: {
+      title: 'API Reference',
+      position: 50,
+    },
+
+    markdown: {
+      breadcrumbs: true,
+      hierarchy: true,
+      sourceLinks: true,
+      sourceBaseUrl: 'https://github.com/my-org/my-lib/blob/main/packages/my-lib',
+    },
+  },
+
+  themeConfig: {
+    sidebar: [
+      {
+        text: 'Guide',
+        items: [{ text: 'Introduction', link: '/guide/intro' }],
+      },
+      {
+        text: 'API Reference',
+        link: '/api',
+      },
+    ],
+  },
+})
+```
+
+## Programmatic Usage
+
+You can also use the TypeDoc generator programmatically:
+
+```ts
+import { generateApiDocs } from 'react-press/typedoc'
+
+const docs = await generateApiDocs(
+  {
+    enabled: true,
+    entryPoints: ['./src/index.ts'],
+    tsconfig: './tsconfig.json',
+  },
+  './docs/content'
+)
+
+console.log(`Generated ${docs.length} documentation pages`)
+```

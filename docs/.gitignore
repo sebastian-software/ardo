@@ -1,0 +1,5 @@
+# Generated routes by react-press
+src/routes/(press)/
+
+# TanStack Router build cache
+.tanstack/
