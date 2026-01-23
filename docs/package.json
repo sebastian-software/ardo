@@ -8,8 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.154.12",
-    "@tanstack/react-start": "^1.154.12",
+    "@tanstack/react-router": "^1.154.14",
+    "@tanstack/react-start": "^1.154.14",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "ardo": "workspace:*"

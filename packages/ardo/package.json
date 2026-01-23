@@ -58,7 +58,7 @@
     "shiki": "^3.21.0",
     "typedoc": "^0.28.16",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.1.0"
   },
   "peerDependencies": {
     "@tanstack/react-router": "^1.100.0",
@@ -69,8 +69,8 @@
     "vite": "^8.0.0-beta.0"
   },
   "devDependencies": {
-    "@tanstack/react-router": "^1.154.8",
-    "@tanstack/react-start": "^1.154.8",
+    "@tanstack/react-router": "^1.154.14",
+    "@tanstack/react-start": "^1.154.14",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/react": "^19.2.9",
