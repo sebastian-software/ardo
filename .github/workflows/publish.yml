@@ -1,0 +1,41 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Dry run (skip actual publish)'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write # Required for OIDC
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24' # npm v11+ required for OIDC
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Publish react-press
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run)
+        run: pnpm --filter react-press publish --access public --no-git-checks --provenance
+
+      - name: Dry run react-press
+        if: github.event_name == 'workflow_dispatch' && inputs.dry-run
+        run: pnpm --filter react-press publish --dry-run
