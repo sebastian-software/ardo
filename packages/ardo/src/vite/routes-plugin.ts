@@ -8,6 +8,8 @@ export interface PressRoutesPluginOptions {
   routesDir?: string
   /** Route group name (default: 'press') */
   routeGroup?: string
+  /** Source directory for content (default: 'content') */
+  srcDir?: string
 }
 
 interface RouteInfo {
@@ -210,21 +212,16 @@ function ${componentName}() {
       routesDir = options.routesDir || path.join(root, 'src', 'routes')
       isDevMode = env.command === 'serve'
 
-      // Try to load the press config to get contentDir
-      const configPath = path.resolve(root, 'press.config.ts')
-      try {
-        const configModule = await import(configPath)
-        const pressConfig = configModule.default
-        contentDir = path.resolve(root, pressConfig.srcDir || 'content')
+      // Use srcDir from options to resolve contentDir early
+      contentDir = path.resolve(root, options.srcDir || 'content')
 
-        // Generate routes now, before other plugins run
+      // Generate routes now, before other plugins run
+      try {
         await generateAllRoutes()
         hasGeneratedRoutes = true
-      } catch {
-        // Config not found or error loading, will try again in buildStart
-        console.warn(
-          '[ardo] Could not load config in early phase, routes will be generated in buildStart'
-        )
+      } catch (err) {
+        // Content dir may not exist yet, will try again in buildStart
+        console.warn('[ardo] Could not generate routes in config phase:', err)
       }
     },
 

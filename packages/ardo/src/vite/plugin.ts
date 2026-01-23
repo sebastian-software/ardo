@@ -145,7 +145,12 @@ export default function MarkdownContent() {
 
   // Add routes plugin unless explicitly disabled
   if (routes !== false) {
-    plugins.unshift(pressRoutesPlugin(() => resolvedConfig, routes || {}))
+    plugins.unshift(
+      pressRoutesPlugin(() => resolvedConfig, {
+        srcDir: pressConfig.srcDir,
+        ...routes,
+      })
+    )
   }
 
   // Add TanStack Start plugin
