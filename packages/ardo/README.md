@@ -103,7 +103,7 @@ function App() {
 
 ## Documentation
 
-Full documentation available at [sebastian-software.github.io/react-press](https://sebastian-software.github.io/react-press/)
+Full documentation available at [sebastian-software.github.io/ardo](https://sebastian-software.github.io/ardo/)
 
 ## License
 

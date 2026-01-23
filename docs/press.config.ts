@@ -1,25 +1,25 @@
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
-  title: 'React Press',
+  title: 'Ardo',
   description: 'React-first Static Documentation Framework',
-  base: '/react-press/',
+  base: '/ardo/',
   srcDir: 'content',
 
   themeConfig: {
-    siteTitle: 'React Press',
+    siteTitle: 'Ardo',
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'API', link: '/api/config' },
-      { text: 'GitHub', link: 'https://github.com/sebastian-software/react-press' },
+      { text: 'GitHub', link: 'https://github.com/sebastian-software/ardo' },
     ],
 
     sidebar: [
       {
         text: 'Introduction',
         items: [
-          { text: 'What is React Press?', link: '/guide/what-is-react-press' },
+          { text: 'What is Ardo?', link: '/guide/what-is-ardo' },
           { text: 'Getting Started', link: '/guide/getting-started' },
           { text: 'Framework Comparison', link: '/guide/comparison' },
         ],
@@ -53,7 +53,7 @@ export default defineConfig({
       },
     ],
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/sebastian-software/react-press' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/sebastian-software/ardo' }],
 
     footer: {
       message: 'Released under the MIT License.',
@@ -66,7 +66,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/sebastian-software/react-press/edit/main/docs/content/:path',
+      pattern: 'https://github.com/sebastian-software/ardo/edit/main/docs/content/:path',
       text: 'Edit this page on GitHub',
     },
 

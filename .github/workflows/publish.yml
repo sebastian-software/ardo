@@ -32,10 +32,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
-      - name: Publish react-press
+      - name: Publish ardo
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run)
-        run: pnpm --filter react-press publish --access public --no-git-checks --provenance
+        run: pnpm --filter ardo publish --access public --no-git-checks --provenance
 
-      - name: Dry run react-press
+      - name: Dry run ardo
         if: github.event_name == 'workflow_dispatch' && inputs.dry-run
-        run: pnpm --filter react-press publish --dry-run
+        run: pnpm --filter ardo publish --dry-run

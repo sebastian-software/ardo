@@ -1,16 +1,16 @@
 ---
 title: Vite Plugin
-description: Configure the React Press Vite plugin for your project.
+description: Configure the Ardo Vite plugin for your project.
 ---
 
 # Vite Plugin
 
-The React Press Vite plugin handles markdown transformation, configuration loading, and virtual modules.
+The Ardo Vite plugin handles markdown transformation, configuration loading, and virtual modules.
 
 ## Installation
 
 ```bash
-pnpm add react-press vite
+pnpm add ardo vite
 ```
 
 ## Basic Usage
@@ -18,10 +18,10 @@ pnpm add react-press vite
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite'
-import { reactPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
 export default defineConfig({
-  plugins: [reactPressPlugin()],
+  plugins: [ardoPlugin()],
 })
 ```
 
@@ -32,9 +32,9 @@ export default defineConfig({
 Pass configuration directly instead of loading from file.
 
 ```ts
-import { reactPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
-reactPressPlugin({
+ardoPlugin({
   config: {
     title: 'My Docs',
     description: 'Documentation for my project',
@@ -50,7 +50,7 @@ reactPressPlugin({
 Specify a custom path to the configuration file.
 
 ```ts
-reactPressPlugin({
+ardoPlugin({
   configPath: './config/docs.config.ts',
 })
 ```
@@ -61,12 +61,12 @@ Default: `press.config.ts` in project root.
 
 The plugin provides virtual modules for accessing configuration at runtime.
 
-### virtual:react-press/config
+### virtual:ardo/config
 
 Access the resolved configuration in your code:
 
 ```ts
-import config from 'virtual:react-press/config'
+import config from 'virtual:ardo/config'
 
 console.log(config.title) // Site title
 console.log(config.themeConfig) // Theme configuration
@@ -77,19 +77,19 @@ console.log(config.themeConfig) // Theme configuration
 Create a `env.d.ts` or add to your existing declarations:
 
 ```ts
-declare module 'virtual:react-press/config' {
-  import type { PressConfig } from 'react-press'
+declare module 'virtual:ardo/config' {
+  import type { PressConfig } from 'ardo'
   const config: PressConfig
   export default config
 }
 ```
 
-### virtual:react-press/sidebar
+### virtual:ardo/sidebar
 
 Access the resolved sidebar structure:
 
 ```ts
-import sidebar from 'virtual:react-press/sidebar'
+import sidebar from 'virtual:ardo/sidebar'
 
 console.log(sidebar) // Array of SidebarItem
 ```
@@ -97,8 +97,8 @@ console.log(sidebar) // Array of SidebarItem
 **TypeScript Support:**
 
 ```ts
-declare module 'virtual:react-press/sidebar' {
-  import type { SidebarItem } from 'react-press'
+declare module 'virtual:ardo/sidebar' {
+  import type { SidebarItem } from 'ardo'
   const sidebar: SidebarItem[]
   export default sidebar
 }
@@ -264,10 +264,10 @@ Full setup with TanStack Start:
 import { defineConfig } from 'vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
-import { reactPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
 export default defineConfig({
-  plugins: [tanstackStart(), react(), reactPressPlugin()],
+  plugins: [tanstackStart(), react(), ardoPlugin()],
 })
 ```
 
@@ -280,10 +280,10 @@ Add to your Vite config:
 ```ts
 export default defineConfig({
   optimizeDeps: {
-    exclude: ['react-press/theme/styles.css'],
+    exclude: ['ardo/theme/styles.css'],
   },
   ssr: {
-    noExternal: ['react-press'],
+    noExternal: ['ardo'],
   },
 })
 ```

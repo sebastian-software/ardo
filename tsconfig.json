@@ -16,5 +16,5 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "references": [{ "path": "./packages/react-press" }]
+  "references": [{ "path": "./packages/ardo" }]
 }

@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from 'react-press/theme'
-import { PressProvider } from 'react-press/runtime'
-import config from 'virtual:react-press/config'
-import sidebar from 'virtual:react-press/sidebar'
+import { HomePage } from 'ardo/theme'
+import { PressProvider } from 'ardo/runtime'
+import config from 'virtual:ardo/config'
+import sidebar from 'virtual:ardo/sidebar'
 import { frontmatter, toc } from '../../content/index.md'
 
 export const Route = createFileRoute('/')({

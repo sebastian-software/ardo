@@ -1,11 +1,11 @@
 ---
 title: Theme Configuration
-description: Configure the default theme in React Press.
+description: Configure the default theme in Ardo.
 ---
 
 # Theme Configuration
 
-React Press comes with a beautiful default theme that can be fully customized through the `themeConfig` option.
+Ardo comes with a beautiful default theme that can be fully customized through the `themeConfig` option.
 
 ## Site Title & Logo
 

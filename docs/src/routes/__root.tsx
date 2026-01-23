@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
-import config from 'virtual:react-press/config'
-import 'react-press/theme/styles.css'
+import config from 'virtual:ardo/config'
+import 'ardo/theme/styles.css'
 
 export const Route = createRootRoute({
   head: () => ({

@@ -1,5 +1,5 @@
 {
-  "name": "react-press-docs",
+  "name": "ardo-docs",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
     "@tanstack/react-start": "^1.154.12",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "react-press": "workspace:*"
+    "ardo": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.2.9",

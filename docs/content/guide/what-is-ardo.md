@@ -1,17 +1,17 @@
 ---
-title: What is React Press?
-description: Learn about React Press and why you should use it for your documentation.
+title: What is Ardo?
+description: Learn about Ardo and why you should use it for your documentation.
 ---
 
-# What is React Press?
+# What is Ardo?
 
-React Press is a **React-first Static Documentation Framework** built on [TanStack Start](https://tanstack.com/start) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
+Ardo is a **React-first Static Documentation Framework** built on [TanStack Start](https://tanstack.com/start) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
 
-## Why React Press?
+## Why Ardo?
 
 ### React-First Approach
 
-Unlike other documentation frameworks that use their own component systems, React Press is built entirely with React. This means:
+Unlike other documentation frameworks that use their own component systems, Ardo is built entirely with React. This means:
 
 - Use your existing React knowledge
 - Import and use any React component in your docs
@@ -20,7 +20,7 @@ Unlike other documentation frameworks that use their own component systems, Reac
 
 ### Powered by TanStack Start
 
-React Press leverages the power of [TanStack Start](https://tanstack.com/start) for:
+Ardo leverages the power of [TanStack Start](https://tanstack.com/start) for:
 
 - **File-based routing** - Automatic route generation
 - **Server functions** - Efficient data loading
@@ -29,7 +29,7 @@ React Press leverages the power of [TanStack Start](https://tanstack.com/start) 
 
 ### Vite-Powered
 
-Built on Vite, React Press offers:
+Built on Vite, Ardo offers:
 
 - ⚡ Instant dev server startup
 - 🔥 Lightning-fast HMR
@@ -54,7 +54,7 @@ More markdown content...
 
 ### Beautiful Default Theme
 
-React Press comes with a polished default theme featuring:
+Ardo comes with a polished default theme featuring:
 
 - Responsive design
 - Dark/light mode
@@ -65,7 +65,7 @@ React Press comes with a polished default theme featuring:
 
 ### Customizable
 
-Every aspect of React Press can be customized:
+Every aspect of Ardo can be customized:
 
 - Theme colors and styles
 - Layout components

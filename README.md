@@ -1,24 +1,24 @@
-# React Press
+# Ardo
 
 <div align="center">
 
 **React-first Static Documentation Framework**
 
-[![CI](https://github.com/sebastian-software/react-press/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-software/react-press/actions/workflows/ci.yml)
-[![License](https://img.shields.io/npm/l/react-press.svg)](https://github.com/sebastian-software/react-press/blob/main/LICENSE)
-[![npm](https://img.shields.io/npm/v/react-press.svg)](https://www.npmjs.com/package/react-press)
+[![CI](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml)
+[![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)
 
-[Documentation](https://sebastian-software.github.io/react-press/) ·
-[Getting Started](https://sebastian-software.github.io/react-press/guide/getting-started) ·
-[API Reference](https://sebastian-software.github.io/react-press/api/config)
+[Documentation](https://sebastian-software.github.io/ardo/) ·
+[Getting Started](https://sebastian-software.github.io/ardo/guide/getting-started) ·
+[API Reference](https://sebastian-software.github.io/ardo/api/config)
 
 </div>
 
 ---
 
-## What is React Press?
+## What is Ardo?
 
-React Press is a modern documentation framework built on React 19 and TanStack Start. It combines the developer experience of VitePress with the power of the React ecosystem.
+Ardo is a modern documentation framework built on React 19 and TanStack Start. It combines the developer experience of VitePress with the power of the React ecosystem.
 
 **Key Features:**
 
@@ -39,7 +39,7 @@ mkdir my-docs && cd my-docs
 pnpm init
 
 # Install dependencies
-pnpm add react-press @tanstack/react-start @tanstack/react-router react react-dom
+pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
 pnpm add -D typescript vite tailwindcss
 
 # Create your first doc
@@ -52,9 +52,9 @@ pnpm dev
 
 ## Package
 
-| Package                                   | Description                                                          | Version                                                                                           |
-| ----------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [**react-press**](./packages/react-press) | Core framework with Vite plugin, runtime hooks, and theme components | [![npm](https://img.shields.io/npm/v/react-press.svg)](https://www.npmjs.com/package/react-press) |
+| Package                     | Description                                                          | Version                                                                             |
+| --------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [**ardo**](./packages/ardo) | Core framework with Vite plugin, runtime hooks, and theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo) |
 
 ## Documentation Structure
 
@@ -75,11 +75,11 @@ my-docs/
 
 ```typescript
 // press.config.ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Documentation',
-  description: 'Built with React Press',
+  description: 'Built with Ardo',
 
   themeConfig: {
     nav: [
@@ -98,21 +98,21 @@ export default defineConfig({
 
 ## Comparison
 
-|                      |   React Press   |   VitePress   |  Docusaurus  |   Starlight   |
+|                      |      Ardo       |   VitePress   |  Docusaurus  |   Starlight   |
 | -------------------- | :-------------: | :-----------: | :----------: | :-----------: |
 | **UI Framework**     |    React 19     |     Vue 3     |   React 18   |     Astro     |
 | **Build Tool**       | Vite + Rolldown | Vite + Rollup |   Webpack    | Vite + Rollup |
 | **Router**           | TanStack Router |  Vue Router   | React Router | Astro Router  |
 | **Type-safe Routes** |       ✅        |      ❌       |      ❌      |      ❌       |
 
-See the [full comparison](https://sebastian-software.github.io/react-press/guide/comparison) in our documentation.
+See the [full comparison](https://sebastian-software.github.io/ardo/guide/comparison) in our documentation.
 
 ## Development
 
 ```bash
 # Clone the repository
-git clone https://github.com/sebastian-software/react-press.git
-cd react-press
+git clone https://github.com/sebastian-software/ardo.git
+cd ardo
 
 # Install dependencies
 pnpm install

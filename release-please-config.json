@@ -11,9 +11,9 @@
     { "type": "chore", "section": "Miscellaneous", "hidden": true }
   ],
   "packages": {
-    "packages/react-press": {
+    "packages/ardo": {
       "release-type": "node",
-      "package-name": "react-press",
+      "package-name": "ardo",
       "changelog-path": "CHANGELOG.md"
     }
   },

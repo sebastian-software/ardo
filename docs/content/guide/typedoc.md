@@ -5,7 +5,7 @@ description: Generate API documentation from TypeScript source code.
 
 # TypeDoc Integration
 
-React Press includes built-in TypeDoc integration that allows you to automatically generate API documentation from your TypeScript source code.
+Ardo includes built-in TypeDoc integration that allows you to automatically generate API documentation from your TypeScript source code.
 
 ## Quick Start
 
@@ -14,7 +14,7 @@ React Press includes built-in TypeDoc integration that allows you to automatical
 Add the `typedoc` configuration to your `press.config.ts`:
 
 ```ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Library',
@@ -34,13 +34,13 @@ Update your `vite.config.ts` to include the TypeDoc plugin:
 
 ```ts
 import { defineConfig } from 'vite'
-import { tanstackPressPlugin } from 'react-press/vite'
-import { typedocPlugin } from 'react-press/typedoc'
+import { ardoPlugin } from 'ardo/vite'
+import { typedocPlugin } from 'ardo/typedoc'
 import pressConfig from './press.config'
 
 export default defineConfig({
   plugins: [
-    tanstackPressPlugin(),
+    ardoPlugin(),
     typedocPlugin({
       config: pressConfig.typedoc!,
       contentDir: './content',
@@ -240,7 +240,7 @@ greet('World') // 'Hello, World!'
 Here's a complete configuration example:
 
 ```ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Library Docs',
@@ -289,7 +289,7 @@ export default defineConfig({
 You can also use the TypeDoc generator programmatically:
 
 ```ts
-import { generateApiDocs } from 'react-press/typedoc'
+import { generateApiDocs } from 'ardo/typedoc'
 
 const docs = await generateApiDocs(
   {

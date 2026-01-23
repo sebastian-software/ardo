@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
-import { reactPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
 export default defineConfig({
-  base: '/react-press/',
+  base: '/ardo/',
   plugins: [
     tanstackStart({
       prerender: {
@@ -13,12 +13,12 @@ export default defineConfig({
       },
     }),
     react(),
-    reactPressPlugin(),
+    ardoPlugin(),
   ],
   optimizeDeps: {
-    exclude: ['react-press/theme/styles.css'],
+    exclude: ['ardo/theme/styles.css'],
   },
   ssr: {
-    noExternal: ['react-press'],
+    noExternal: ['ardo'],
   },
 })

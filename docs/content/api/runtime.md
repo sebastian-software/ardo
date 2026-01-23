@@ -1,18 +1,18 @@
 ---
 title: Runtime API
-description: React hooks and providers for accessing React Press data.
+description: React hooks and providers for accessing Ardo data.
 ---
 
 # Runtime API
 
-React Press provides React hooks to access configuration, sidebar, and page data within your components.
+Ardo provides React hooks to access configuration, sidebar, and page data within your components.
 
 ## PressProvider
 
-The root provider component that makes React Press context available to child components.
+The root provider component that makes Ardo context available to child components.
 
 ```tsx
-import { PressProvider } from 'react-press/runtime'
+import { PressProvider } from 'ardo/runtime'
 
 function App() {
   return (
@@ -37,7 +37,7 @@ function App() {
 Returns the full site configuration.
 
 ```tsx
-import { useConfig } from 'react-press/runtime'
+import { useConfig } from 'ardo/runtime'
 
 function MyComponent() {
   const config = useConfig()
@@ -61,7 +61,7 @@ function MyComponent() {
 Returns only the theme configuration portion.
 
 ```tsx
-import { useThemeConfig } from 'react-press/runtime'
+import { useThemeConfig } from 'ardo/runtime'
 
 function Navigation() {
   const theme = useThemeConfig()
@@ -96,7 +96,7 @@ function Navigation() {
 Returns the sidebar navigation items.
 
 ```tsx
-import { useSidebar } from 'react-press/runtime'
+import { useSidebar } from 'ardo/runtime'
 
 function CustomSidebar() {
   const sidebar = useSidebar()
@@ -136,7 +136,7 @@ Array of `SidebarItem`:
 Returns the current page's data including frontmatter and table of contents.
 
 ```tsx
-import { usePageData } from 'react-press/runtime'
+import { usePageData } from 'ardo/runtime'
 
 function PageHeader() {
   const page = usePageData()
@@ -168,7 +168,7 @@ function PageHeader() {
 Returns the table of contents for the current page.
 
 ```tsx
-import { useTOC } from 'react-press/runtime'
+import { useTOC } from 'ardo/runtime'
 
 function TableOfContents() {
   const toc = useTOC()
@@ -205,7 +205,7 @@ Array of `TOCItem`:
 Low-level hook that returns the full context value. Use the specific hooks above for better ergonomics.
 
 ```tsx
-import { usePressContext } from 'react-press/runtime'
+import { usePressContext } from 'ardo/runtime'
 
 function DebugPanel() {
   const ctx = usePressContext()
@@ -227,7 +227,7 @@ function DebugPanel() {
 Here's a complete example combining multiple hooks:
 
 ```tsx
-import { useConfig, useThemeConfig, useSidebar, usePageData, useTOC } from 'react-press/runtime'
+import { useConfig, useThemeConfig, useSidebar, usePageData, useTOC } from 'ardo/runtime'
 
 function CustomDocLayout({ children }) {
   const config = useConfig()

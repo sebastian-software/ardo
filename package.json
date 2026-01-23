@@ -1,16 +1,16 @@
 {
-  "name": "react-press-monorepo",
+  "name": "ardo-monorepo",
   "version": "0.1.0",
   "private": true,
   "description": "React-first Static Documentation Framework",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sebastian-software/react-press.git"
+    "url": "https://github.com/sebastian-software/ardo.git"
   },
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm --filter react-press dev",
+    "dev": "pnpm --filter ardo dev",
     "test": "vitest --run",
     "test:watch": "vitest",
     "lint": "eslint packages/*/src",

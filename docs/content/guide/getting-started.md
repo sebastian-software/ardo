@@ -1,11 +1,11 @@
 ---
 title: Getting Started
-description: Get up and running with React Press in minutes.
+description: Get up and running with Ardo in minutes.
 ---
 
 # Getting Started
 
-This guide will help you set up a new React Press documentation site from scratch.
+This guide will help you set up a new Ardo documentation site from scratch.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ pnpm init
 ### 2. Install dependencies
 
 ```bash
-pnpm add react-press @tanstack/react-start @tanstack/react-router react react-dom
+pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
 pnpm add -D typescript vite tailwindcss
 ```
 
@@ -36,7 +36,7 @@ pnpm add -D typescript vite tailwindcss
 Create a `press.config.ts` file in your project root:
 
 ```ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Documentation',
@@ -65,7 +65,7 @@ title: Welcome
 
 # Welcome to My Documentation
 
-This is my documentation site built with React Press.
+This is my documentation site built with Ardo.
 ```
 
 ### 5. Set up Vite
@@ -74,10 +74,10 @@ Create a `vite.config.ts` file:
 
 ```ts
 import { defineConfig } from 'vite'
-import { tanstackPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
 export default defineConfig({
-  plugins: [tanstackPressPlugin()],
+  plugins: [ardoPlugin()],
 })
 ```
 
@@ -107,7 +107,7 @@ pnpm preview
 
 ## Project Structure
 
-A typical React Press project looks like this:
+A typical Ardo project looks like this:
 
 ```
 my-docs/
@@ -115,7 +115,7 @@ my-docs/
 │   ├── index.md       # Home page
 │   └── guide/
 │       └── intro.md
-├── press.config.ts    # React Press config
+├── press.config.ts    # Ardo config
 ├── vite.config.ts     # Vite config
 └── package.json
 ```

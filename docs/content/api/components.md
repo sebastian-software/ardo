@@ -5,7 +5,7 @@ description: Ready-to-use React components for building documentation sites.
 
 # Theme Components
 
-React Press includes a complete set of React components for building documentation sites. All components are fully styled and support dark mode.
+Ardo includes a complete set of React components for building documentation sites. All components are fully styled and support dark mode.
 
 ## Layout Components
 
@@ -14,7 +14,7 @@ React Press includes a complete set of React components for building documentati
 The main layout wrapper that provides the page structure.
 
 ```tsx
-import { Layout } from 'react-press/theme'
+import { Layout } from 'ardo/theme'
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
 The top navigation bar with logo, nav links, search, and theme toggle.
 
 ```tsx
-import { Header } from 'react-press/theme'
+import { Header } from 'ardo/theme'
 
 <Header />
 ```
@@ -47,7 +47,7 @@ Automatically reads configuration from `useThemeConfig()` for:
 The left sidebar navigation component.
 
 ```tsx
-import { Sidebar } from 'react-press/theme'
+import { Sidebar } from 'ardo/theme'
 
 <Sidebar />
 ```
@@ -64,7 +64,7 @@ Features:
 Table of contents component for the right sidebar.
 
 ```tsx
-import { TOC } from 'react-press/theme'
+import { TOC } from 'ardo/theme'
 
 <TOC />
 ```
@@ -80,7 +80,7 @@ Features:
 Wrapper for the main content area with proper styling.
 
 ```tsx
-import { Content } from 'react-press/theme'
+import { Content } from 'ardo/theme'
 
 <Content>
   <MarkdownContent />
@@ -92,7 +92,7 @@ import { Content } from 'react-press/theme'
 Page footer with customizable message and copyright.
 
 ```tsx
-import { Footer } from 'react-press/theme'
+import { Footer } from 'ardo/theme'
 
 <Footer />
 ```
@@ -104,7 +104,7 @@ import { Footer } from 'react-press/theme'
 Complete documentation page layout combining all components.
 
 ```tsx
-import { DocPage } from 'react-press/theme'
+import { DocPage } from 'ardo/theme'
 
 function DocsRoute() {
   return (
@@ -129,7 +129,7 @@ Includes:
 Alias for `DocPage` for consistency with other frameworks.
 
 ```tsx
-import { DocLayout } from 'react-press/theme'
+import { DocLayout } from 'ardo/theme'
 
 <DocLayout>{children}</DocLayout>
 ```
@@ -139,7 +139,7 @@ import { DocLayout } from 'react-press/theme'
 Home page layout with hero section and features grid.
 
 ```tsx
-import { HomePage } from 'react-press/theme'
+import { HomePage } from 'ardo/theme'
 
 function Home() {
   return <HomePage />
@@ -179,7 +179,7 @@ features:
 Dark/light mode toggle button.
 
 ```tsx
-import { ThemeToggle } from 'react-press/theme'
+import { ThemeToggle } from 'ardo/theme'
 
 <ThemeToggle />
 ```
@@ -189,7 +189,7 @@ import { ThemeToggle } from 'react-press/theme'
 Search dialog component with keyboard shortcuts.
 
 ```tsx
-import { Search } from 'react-press/theme'
+import { Search } from 'ardo/theme'
 
 <Search />
 ```
@@ -205,7 +205,7 @@ Features:
 Syntax-highlighted code block with copy button.
 
 ```tsx
-import { CodeBlock } from 'react-press/theme'
+import { CodeBlock } from 'ardo/theme'
 
 <CodeBlock
   code="const x = 1"
@@ -231,13 +231,13 @@ import { CodeBlock } from 'react-press/theme'
 Tabbed code blocks for showing multiple languages/variants.
 
 ```tsx
-import { CodeGroup } from 'react-press/theme'
+import { CodeGroup } from 'ardo/theme'
 
 <CodeGroup
   items={[
-    { title: 'npm', code: 'npm install react-press', language: 'bash' },
-    { title: 'pnpm', code: 'pnpm add react-press', language: 'bash' },
-    { title: 'yarn', code: 'yarn add react-press', language: 'bash' },
+    { title: 'npm', code: 'npm install ardo', language: 'bash' },
+    { title: 'pnpm', code: 'pnpm add ardo', language: 'bash' },
+    { title: 'yarn', code: 'yarn add ardo', language: 'bash' },
   ]}
 />
 ```
@@ -247,7 +247,7 @@ import { CodeGroup } from 'react-press/theme'
 Callout/admonition boxes for tips, warnings, etc.
 
 ```tsx
-import { Container, Tip, Warning, Danger, Info, Note } from 'react-press/theme'
+import { Container, Tip, Warning, Danger, Info, Note } from 'ardo/theme'
 
 // Generic container
 <Container type="tip" title="Pro Tip">
@@ -277,7 +277,7 @@ import { Container, Tip, Warning, Danger, Info, Note } from 'react-press/theme'
 Tabbed content panels.
 
 ```tsx
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'react-press/theme'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'ardo/theme'
 
 <Tabs>
   <TabList>
@@ -298,9 +298,9 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'react-press/theme'
 Button to copy text to clipboard.
 
 ```tsx
-import { CopyButton } from 'react-press/theme'
+import { CopyButton } from 'ardo/theme'
 
-<CopyButton text="npm install react-press" />
+<CopyButton text="npm install ardo" />
 ```
 
 ## Customizing Components

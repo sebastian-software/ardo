@@ -1,18 +1,18 @@
 ---
 title: Config Reference
-description: Complete API reference for React Press configuration.
+description: Complete API reference for Ardo configuration.
 ---
 
 # Config Reference
 
-This page documents all configuration options available in React Press.
+This page documents all configuration options available in Ardo.
 
 ## defineConfig
 
 The `defineConfig` helper provides type hints for your configuration:
 
 ```ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   // your config
@@ -221,5 +221,5 @@ export default defineConfig({
 ## TypeScript Types
 
 ```ts
-import type { PressConfig, ThemeConfig, MarkdownConfig, SidebarItem, NavItem } from 'react-press'
+import type { PressConfig, ThemeConfig, MarkdownConfig, SidebarItem, NavItem } from 'ardo'
 ```

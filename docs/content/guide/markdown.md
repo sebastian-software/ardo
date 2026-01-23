@@ -1,11 +1,11 @@
 ---
 title: Markdown Features
-description: Learn about the markdown features available in React Press.
+description: Learn about the markdown features available in Ardo.
 ---
 
 # Markdown Features
 
-React Press supports all standard Markdown syntax plus some powerful extensions.
+Ardo supports all standard Markdown syntax plus some powerful extensions.
 
 ## Basic Syntax
 
@@ -50,7 +50,7 @@ _italic_ or _italic_
 
 ## GitHub Flavored Markdown
 
-React Press supports GitHub Flavored Markdown (GFM) out of the box.
+Ardo supports GitHub Flavored Markdown (GFM) out of the box.
 
 ### Tables
 

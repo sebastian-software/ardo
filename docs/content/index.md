@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: React Press
+  name: Ardo
   text: React-first Documentation
   tagline: Build beautiful documentation sites with React, TanStack Start, and Markdown
   actions:
@@ -9,7 +9,7 @@ hero:
       link: /guide/getting-started
       theme: brand
     - text: View on GitHub
-      link: https://github.com/your-username/react-press
+      link: https://github.com/sebastian-software/ardo
       theme: alt
 features:
   - title: React-First

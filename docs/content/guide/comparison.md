@@ -1,15 +1,15 @@
 ---
 title: Framework Comparison
-description: How React Press compares to other documentation frameworks.
+description: How Ardo compares to other documentation frameworks.
 ---
 
 # Framework Comparison
 
-A technical comparison of React Press with other popular documentation frameworks.
+A technical comparison of Ardo with other popular documentation frameworks.
 
 ## Overview
 
-|                  | React Press        | VitePress     | Docusaurus   | Starlight     |
+|                  | Ardo        | VitePress     | Docusaurus   | Starlight     |
 | ---------------- | ------------------ | ------------- | ------------ | ------------- |
 | **UI Framework** | React 19           | Vue 3         | React 18     | Astro         |
 | **Build Tool**   | Vite + Rolldown    | Vite + Rollup | Webpack      | Vite + Rollup |
@@ -21,7 +21,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Build System
 
-|                |   React Press    | VitePress |  Docusaurus   | Starlight |
+|                |   Ardo    | VitePress |  Docusaurus   | Starlight |
 | -------------- | :--------------: | :-------: | :-----------: | :-------: |
 | Vite           | ✅ v8 (Rolldown) |   ✅ v5   |  ❌ Webpack   |   ✅ v5   |
 | ES Modules     |    ✅ Native     | ✅ Native | ⚠️ Transpiled | ✅ Native |
@@ -30,7 +30,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Markdown Processing
 
-|                     |    React Press     |     VitePress      |   Docusaurus    |     Starlight      |
+|                     |    Ardo     |     VitePress      |   Docusaurus    |     Starlight      |
 | ------------------- | :----------------: | :----------------: | :-------------: | :----------------: |
 | Parser              |   unified/remark   |    markdown-it     |       MDX       |   unified/remark   |
 | Syntax Highlighting | Shiki (build-time) | Shiki (build-time) | Prism (runtime) | Shiki (build-time) |
@@ -40,7 +40,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Routing
 
-|                    | React Press |     VitePress     | Docusaurus |      Starlight       |
+|                    | Ardo |     VitePress     | Docusaurus |      Starlight       |
 | ------------------ | :---------: | :---------------: | :--------: | :------------------: |
 | Type-safe Routes   |   ✅ Full   |        ❌         |     ❌     |          ❌          |
 | File-based Routing |     ✅      |        ✅         |     ✅     |          ✅          |
@@ -52,7 +52,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Search Implementation
 
-|                      | React Press   | VitePress            | Docusaurus        | Starlight    |
+|                      | Ardo   | VitePress            | Docusaurus        | Starlight    |
 | -------------------- | ------------- | -------------------- | ----------------- | ------------ |
 | **Engine**           | MiniSearch    | MiniSearch / Algolia | Algolia / Local   | Pagefind     |
 | **Index Generation** | Build-time    | Build-time           | Build-time        | Build-time   |
@@ -61,7 +61,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Theming & Customization
 
-|                    | React Press           | VitePress             | Docusaurus         | Starlight             |
+|                    | Ardo           | VitePress             | Docusaurus         | Starlight             |
 | ------------------ | --------------------- | --------------------- | ------------------ | --------------------- |
 | **CSS System**     | CSS Variables         | CSS Variables         | Infima (CSS-in-JS) | CSS Variables         |
 | **Dark Mode**      | CSS Variables + Class | CSS Variables + Class | Data attribute     | CSS Variables + Class |
@@ -70,7 +70,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Component Architecture
 
-|                | React Press   | VitePress        | Docusaurus         | Starlight           |
+|                | Ardo   | VitePress        | Docusaurus         | Starlight           |
 | -------------- | ------------- | ---------------- | ------------------ | ------------------- |
 | **Layout**     | `<Layout>`    | `<Layout>`       | `@theme/Layout`    | `<StarlightPage>`   |
 | **Sidebar**    | `<Sidebar>`   | `<VPSidebar>`    | `@theme/Sidebar`   | `<Sidebar>`         |
@@ -79,7 +79,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### API Documentation
 
-|                     |  React Press   | VitePress | Docusaurus | Starlight |
+|                     |  Ardo   | VitePress | Docusaurus | Starlight |
 | ------------------- | :------------: | :-------: | :--------: | :-------: |
 | TypeDoc Integration |  ✅ Built-in   | ❌ Manual | ✅ Plugin  | ❌ Manual |
 | Auto-generation     | ✅ From source |    ❌     |     ✅     |    ❌     |
@@ -87,7 +87,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Internationalization
 
-|                | React Press | VitePress | Docusaurus | Starlight |
+|                | Ardo | VitePress | Docusaurus | Starlight |
 | -------------- | :---------: | :-------: | :--------: | :-------: |
 | i18n Support   | ⚠️ Planned  |    ✅     |     ✅     |    ✅     |
 | RTL Support    | ⚠️ Planned  |    ✅     |     ✅     |    ✅     |
@@ -95,7 +95,7 @@ A technical comparison of React Press with other popular documentation framework
 
 ### Versioning
 
-|                   | React Press | VitePress | Docusaurus  | Starlight |
+|                   | Ardo | VitePress | Docusaurus  | Starlight |
 | ----------------- | :---------: | :-------: | :---------: | :-------: |
 | Doc Versioning    |     ❌      |    ❌     | ✅ Built-in | ⚠️ Manual |
 | Version Dropdown  |     ❌      |    ❌     |     ✅      |    ❌     |
@@ -103,11 +103,11 @@ A technical comparison of React Press with other popular documentation framework
 
 ## Configuration Comparison
 
-### React Press
+### Ardo
 
 ```ts
 // press.config.ts
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Docs',
@@ -172,7 +172,7 @@ export default defineConfig({
 
 ## Runtime Characteristics
 
-|                   | React Press     | VitePress  | Docusaurus   | Starlight         |
+|                   | Ardo     | VitePress  | Docusaurus   | Starlight         |
 | ----------------- | --------------- | ---------- | ------------ | ----------------- |
 | **Hydration**     | Full React      | Full Vue   | Full React   | Partial (Islands) |
 | **JS Required**   | Yes             | Yes        | Yes          | Minimal           |
@@ -181,8 +181,8 @@ export default defineConfig({
 
 ## Ecosystem
 
-|                 | React Press        | VitePress       | Docusaurus          | Starlight            |
+|                 | Ardo        | VitePress       | Docusaurus          | Starlight            |
 | --------------- | ------------------ | --------------- | ------------------- | -------------------- |
-| **npm Package** | `react-press`      | `vitepress`     | `@docusaurus/core`  | `@astrojs/starlight` |
+| **npm Package** | `ardo`      | `vitepress`     | `@docusaurus/core`  | `@astrojs/starlight` |
 | **GitHub**      | Sebastian-Software | vuejs/vitepress | facebook/docusaurus | withastro/starlight  |
 | **License**     | MIT                | MIT             | MIT                 | MIT                  |

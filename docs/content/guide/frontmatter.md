@@ -41,7 +41,7 @@ The description of the page. Used for SEO meta tags.
 
 ```yaml
 ---
-description: Learn how to get started with React Press
+description: Learn how to get started with Ardo
 ---
 ```
 
@@ -139,7 +139,7 @@ Configure the hero section on home pages:
 ---
 layout: home
 hero:
-  name: React Press
+  name: Ardo
   text: React-first Documentation
   tagline: Build beautiful documentation sites
   image: /logo.png
