@@ -472,6 +472,7 @@ body {
   width: 100%;
   margin: 16px 0;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .press-content th,
