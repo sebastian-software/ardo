@@ -12,3 +12,4 @@ docs/content/
 # Generated files
 *.gen.ts
 pnpm-lock.yaml
+CHANGELOG.md
