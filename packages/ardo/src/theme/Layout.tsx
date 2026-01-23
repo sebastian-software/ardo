@@ -9,8 +9,9 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+  // Config hooks available for future theme customization
+  useConfig()
+  useThemeConfig()
 
   return (
     <div className="press-layout">

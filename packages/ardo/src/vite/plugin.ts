@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig as ViteResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import type { PressConfig, ResolvedConfig } from '../config/types'
 import { resolveConfig } from '../config/index'
 import { transformMarkdown } from '../markdown/pipeline'
@@ -43,14 +43,12 @@ function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> 
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
-  let viteConfig: ViteResolvedConfig
 
   const mainPlugin: Plugin = {
     name: 'ardo',
     enforce: 'pre',
 
     async configResolved(config) {
-      viteConfig = config
       const root = config.root
 
       if (options.config) {
@@ -238,7 +236,7 @@ async function scanDirectory(
     return a.text.localeCompare(b.text)
   })
 
-  return items.map(({ order, ...item }) => item)
+  return items.map(({ order: _order, ...item }) => item)
 }
 
 function formatTitle(name: string): string {

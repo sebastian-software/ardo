@@ -119,7 +119,7 @@ async function scanDirectoryForSidebar(
     return a.text.localeCompare(b.text)
   })
 
-  return items.map(({ order, ...item }) => item)
+  return items.map(({ order: _order, ...item }) => item)
 }
 
 function formatTitle(name: string): string {

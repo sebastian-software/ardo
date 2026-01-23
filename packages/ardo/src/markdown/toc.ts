@@ -1,4 +1,4 @@
-import type { Root, Heading, Text } from 'mdast'
+import type { Root, Heading } from 'mdast'
 import { visit } from 'unist-util-visit'
 import type { TOCItem } from '../config/types'
 
@@ -74,7 +74,7 @@ function slugify(text: string): string {
 
 function buildTocTree(
   headings: Array<{ text: string; level: number; id: string }>,
-  minLevel: number
+  _minLevel: number
 ): TOCItem[] {
   const result: TOCItem[] = []
   const stack: Array<{ item: TOCItem; level: number }> = []

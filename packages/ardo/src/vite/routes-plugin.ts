@@ -32,7 +32,6 @@ export function pressRoutesPlugin(
 
   let routesDir: string
   let contentDir: string
-  let srcDir: string
 
   async function scanContentDir(dir: string, rootDir: string): Promise<RouteInfo[]> {
     const routes: RouteInfo[] = []
@@ -209,7 +208,6 @@ function ${componentName}() {
       // We need to resolve paths manually here since viteConfig isn't available yet
       const root = userConfig.root || process.cwd()
       routesDir = options.routesDir || path.join(root, 'src', 'routes')
-      srcDir = path.join(root, 'src')
       isDevMode = env.command === 'serve'
 
       // Try to load the press config to get contentDir
@@ -222,7 +220,7 @@ function ${componentName}() {
         // Generate routes now, before other plugins run
         await generateAllRoutes()
         hasGeneratedRoutes = true
-      } catch (e) {
+      } catch {
         // Config not found or error loading, will try again in buildStart
         console.warn(
           '[ardo] Could not load config in early phase, routes will be generated in buildStart'
@@ -234,7 +232,6 @@ function ${componentName}() {
       // Update paths if they weren't set in config hook
       if (!routesDir) {
         routesDir = options.routesDir || path.join(viteConfig.root, 'src', 'routes')
-        srcDir = path.join(viteConfig.root, 'src')
         isDevMode = viteConfig.command === 'serve'
       }
     },

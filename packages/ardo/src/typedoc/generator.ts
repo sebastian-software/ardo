@@ -6,13 +6,11 @@ import {
   ReflectionKind,
   type DeclarationReflection,
   type SignatureReflection,
-  type ParameterReflection,
   type TypeParameterReflection,
-  type CommentTag,
 } from 'typedoc'
 import path from 'path'
 import fs from 'fs/promises'
-import type { TypeDocConfig, ApiDocItem, ApiDocKind, GeneratedApiDoc } from './types'
+import type { TypeDocConfig, GeneratedApiDoc } from './types'
 
 export class TypeDocGenerator {
   private config: TypeDocConfig

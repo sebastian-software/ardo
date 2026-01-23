@@ -90,7 +90,7 @@ export function remarkContainers() {
                 value: `<div class="press-code-group-panel${i === 0 ? ' active' : ''}" data-index="${i}">`,
               }) as unknown as (typeof node.children)[number]
           ),
-          ...node.children.flatMap((child: (typeof node.children)[number], i: number) => [
+          ...node.children.flatMap((child: (typeof node.children)[number], _i: number) => [
             child,
             {
               type: 'html',

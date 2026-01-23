@@ -1,5 +1,3 @@
-import type { TypeDocOptions } from 'typedoc'
-
 export interface TypeDocConfig {
   /**
    * Enable TypeDoc API documentation generation

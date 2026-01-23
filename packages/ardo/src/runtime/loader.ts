@@ -1,6 +1,5 @@
 import fs from 'fs/promises'
 import path from 'path'
-import matter from 'gray-matter'
 import type { PageData, PageFrontmatter, TOCItem, ResolvedConfig } from '../config/types'
 import { transformMarkdown } from '../markdown/pipeline'
 
