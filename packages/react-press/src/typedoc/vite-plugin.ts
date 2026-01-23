@@ -38,22 +38,22 @@ export function typedocPlugin(options: TypeDocPluginOptions): Plugin {
   async function generate() {
     if (!config.enabled) return
 
-    console.log('[react-press] Generating API documentation with TypeDoc...')
+    console.log('[ardo] Generating API documentation with TypeDoc...')
     const startTime = Date.now()
 
     try {
       const docs = await generateApiDocs(config, contentDir)
       const duration = Date.now() - startTime
-      console.log(`[react-press] Generated ${docs.length} API documentation pages in ${duration}ms`)
+      console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
       hasGenerated = true
     } catch (error) {
-      console.error('[react-press] TypeDoc generation failed:', error)
+      console.error('[ardo] TypeDoc generation failed:', error)
       throw error
     }
   }
 
   return {
-    name: 'react-press:typedoc',
+    name: 'ardo:typedoc',
 
     async buildStart() {
       if (runOnStart && !hasGenerated) {
@@ -97,13 +97,13 @@ export function createTypedocWatcher(
       try {
         watcher = fsSync.watch(entryDir, { recursive: true }, async (event, filename) => {
           if (filename?.endsWith('.ts') || filename?.endsWith('.tsx')) {
-            console.log(`[react-press] Source file changed: ${filename}`)
+            console.log(`[ardo] Source file changed: ${filename}`)
             await generateApiDocs(config, contentDir)
             onChange?.()
           }
         })
       } catch {
-        console.warn('[react-press] Could not start TypeDoc watcher')
+        console.warn('[ardo] Could not start TypeDoc watcher')
       }
     },
 

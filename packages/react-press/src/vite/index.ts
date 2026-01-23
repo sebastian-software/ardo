@@ -1,6 +1,6 @@
 // Vite Plugin
-export { reactPressPlugin, type ReactPressPluginOptions } from './plugin'
-export { reactPressPlugin as default } from './plugin'
+export { ardoPlugin, type ArdoPluginOptions } from './plugin'
+export { ardoPlugin as default } from './plugin'
 export { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugin'
 
 // Build-time utilities (Node.js only)

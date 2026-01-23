@@ -1,6 +1,6 @@
 {
-  "name": "react-press",
-  "version": "0.1.0",
+  "name": "ardo",
+  "version": "1.0.1",
   "description": "React-first Static Documentation Framework",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,7 +31,8 @@
     "./typedoc": {
       "import": "./dist/typedoc/index.js",
       "types": "./dist/typedoc/index.d.ts"
-    }
+    },
+    "./press.css": "./dist/theme/styles.css"
   },
   "files": [
     "dist"

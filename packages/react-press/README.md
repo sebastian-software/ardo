@@ -1,11 +1,11 @@
-# react-press
+# ardo
 
 React-first Static Documentation Framework built on TanStack Start.
 
 ## Installation
 
 ```bash
-pnpm add react-press @tanstack/react-start @tanstack/react-router react react-dom
+pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
 pnpm add -D typescript vite tailwindcss
 ```
 
@@ -16,11 +16,11 @@ pnpm add -D typescript vite tailwindcss
 Create a `press.config.ts` in your project root:
 
 ```typescript
-import { defineConfig } from 'react-press/config'
+import { defineConfig } from 'ardo/config'
 
 export default defineConfig({
   title: 'My Documentation',
-  description: 'Built with React Press',
+  description: 'Built with Ardo',
 
   themeConfig: {
     nav: [{ text: 'Guide', link: '/guide/getting-started' }],
@@ -42,7 +42,7 @@ Add the plugin to your `vite.config.ts`:
 import { defineConfig } from 'vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
-import { reactPressPlugin } from 'react-press/vite'
+import { ardoPlugin } from 'ardo/vite'
 
 export default defineConfig({
   plugins: [
@@ -53,7 +53,7 @@ export default defineConfig({
       },
     }),
     react(),
-    reactPressPlugin(),
+    ardoPlugin(),
   ],
 })
 ```
@@ -63,7 +63,7 @@ export default defineConfig({
 Access configuration and page data in your components:
 
 ```tsx
-import { useConfig, useSidebar, usePageData, useTOC } from 'react-press/runtime'
+import { useConfig, useSidebar, usePageData, useTOC } from 'ardo/runtime'
 
 function MyComponent() {
   const config = useConfig()
@@ -80,7 +80,7 @@ function MyComponent() {
 Use pre-built components for your documentation:
 
 ```tsx
-import { DocPage, Layout, Header, Sidebar, TOC } from 'react-press/theme'
+import { DocPage, Layout, Header, Sidebar, TOC } from 'ardo/theme'
 
 function App() {
   return (
@@ -93,13 +93,13 @@ function App() {
 
 ## Exports
 
-| Export                         | Description                              |
-| ------------------------------ | ---------------------------------------- |
-| `react-press/config`           | Configuration utilities (`defineConfig`) |
-| `react-press/vite`             | Vite plugin (`reactPressPlugin`)         |
-| `react-press/runtime`          | React hooks and providers                |
-| `react-press/theme`            | Pre-built UI components                  |
-| `react-press/theme/styles.css` | Default theme styles                     |
+| Export                  | Description                              |
+| ----------------------- | ---------------------------------------- |
+| `ardo/config`           | Configuration utilities (`defineConfig`) |
+| `ardo/vite`             | Vite plugin (`ardoPlugin`)               |
+| `ardo/runtime`          | React hooks and providers                |
+| `ardo/theme`            | Pre-built UI components                  |
+| `ardo/theme/styles.css` | Default theme styles                     |
 
 ## Documentation
 

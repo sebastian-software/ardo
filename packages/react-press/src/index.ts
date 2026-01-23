@@ -16,8 +16,8 @@ export type {
 } from './config'
 
 // Vite Plugin
-export { reactPressPlugin } from './vite'
-export type { ReactPressPluginOptions } from './vite'
+export { ardoPlugin } from './vite'
+export type { ArdoPluginOptions } from './vite'
 
 // Runtime (React hooks and context - client-safe)
 export {

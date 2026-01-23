@@ -7,13 +7,13 @@ import { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugi
 import fs from 'fs/promises'
 import path from 'path'
 
-const VIRTUAL_MODULE_ID = 'virtual:react-press/config'
+const VIRTUAL_MODULE_ID = 'virtual:ardo/config'
 const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID
 
-const VIRTUAL_SIDEBAR_ID = 'virtual:react-press/sidebar'
+const VIRTUAL_SIDEBAR_ID = 'virtual:ardo/sidebar'
 const RESOLVED_VIRTUAL_SIDEBAR_ID = '\0' + VIRTUAL_SIDEBAR_ID
 
-export interface ReactPressPluginOptions {
+export interface ArdoPluginOptions {
   config?: PressConfig
   configPath?: string
   /** Options for the routes generator plugin */
@@ -21,7 +21,7 @@ export interface ReactPressPluginOptions {
 }
 
 // Use globalThis to cache the Shiki highlighter as a true singleton across all plugin instances
-const SHIKI_CACHE_KEY = '__react_press_shiki_highlighter__'
+const SHIKI_CACHE_KEY = '__ardo_shiki_highlighter__'
 let shikiHighlighterPromise: Promise<ShikiHighlighter> | null = null
 
 function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> {
@@ -41,12 +41,12 @@ function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> 
   return shikiHighlighterPromise
 }
 
-export function reactPressPlugin(options: ReactPressPluginOptions = {}): Plugin[] {
+export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
   let viteConfig: ViteResolvedConfig
 
   const mainPlugin: Plugin = {
-    name: 'react-press',
+    name: 'ardo',
     enforce: 'pre',
 
     async configResolved(config) {
@@ -63,8 +63,8 @@ export function reactPressPlugin(options: ReactPressPluginOptions = {}): Plugin[
         } catch {
           resolvedConfig = resolveConfig(
             {
-              title: 'React Press',
-              description: 'Documentation powered by React Press',
+              title: 'Ardo',
+              description: 'Documentation powered by Ardo',
             },
             root
           )
@@ -101,7 +101,7 @@ export function reactPressPlugin(options: ReactPressPluginOptions = {}): Plugin[
   }
 
   const markdownPlugin: Plugin = {
-    name: 'react-press:markdown',
+    name: 'ardo:markdown',
     enforce: 'pre',
 
     async transform(code, id) {
@@ -245,4 +245,4 @@ function formatTitle(name: string): string {
   return name.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-export default reactPressPlugin
+export default ardoPlugin
