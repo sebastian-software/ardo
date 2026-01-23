@@ -1,9 +1,11 @@
-import type { Plugin } from 'vite'
+import type { Plugin, UserConfig } from 'vite'
 import type { PressConfig, ResolvedConfig } from '../config/types'
 import { resolveConfig } from '../config/index'
 import { transformMarkdown } from '../markdown/pipeline'
 import { createShikiHighlighter, type ShikiHighlighter } from '../markdown/shiki'
 import { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugin'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import react from '@vitejs/plugin-react'
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -13,11 +15,14 @@ const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID
 const VIRTUAL_SIDEBAR_ID = 'virtual:ardo/sidebar'
 const RESOLVED_VIRTUAL_SIDEBAR_ID = '\0' + VIRTUAL_SIDEBAR_ID
 
-export interface ArdoPluginOptions {
-  config?: PressConfig
-  configPath?: string
+export interface ArdoPluginOptions extends Partial<PressConfig> {
   /** Options for the routes generator plugin */
   routes?: PressRoutesPluginOptions | false
+  /** Options for TanStack Start prerendering */
+  prerender?: {
+    enabled?: boolean
+    crawlLinks?: boolean
+  }
 }
 
 // Use globalThis to cache the Shiki highlighter as a true singleton across all plugin instances
@@ -44,30 +49,31 @@ function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
 
+  // Extract ardo-specific options from the rest (which is PressConfig)
+  const { routes, prerender, ...pressConfig } = options
+
   const mainPlugin: Plugin = {
     name: 'ardo',
     enforce: 'pre',
 
+    config(): UserConfig {
+      return {
+        optimizeDeps: {
+          exclude: ['ardo/theme/styles.css'],
+        },
+        ssr: {
+          noExternal: ['ardo'],
+        },
+      }
+    },
+
     async configResolved(config) {
       const root = config.root
-
-      if (options.config) {
-        resolvedConfig = resolveConfig(options.config, root)
-      } else {
-        const configPath = options.configPath || path.resolve(root, 'press.config.ts')
-        try {
-          const configModule = await import(configPath)
-          resolvedConfig = resolveConfig(configModule.default, root)
-        } catch {
-          resolvedConfig = resolveConfig(
-            {
-              title: 'Ardo',
-              description: 'Documentation powered by Ardo',
-            },
-            root
-          )
-        }
+      const defaultConfig: PressConfig = {
+        title: pressConfig.title ?? 'Ardo',
+        description: pressConfig.description ?? 'Documentation powered by Ardo',
       }
+      resolvedConfig = resolveConfig({ ...defaultConfig, ...pressConfig }, root)
     },
 
     resolveId(id) {
@@ -138,9 +144,28 @@ export default function MarkdownContent() {
   const plugins: Plugin[] = [mainPlugin, markdownPlugin]
 
   // Add routes plugin unless explicitly disabled
-  if (options.routes !== false) {
-    plugins.unshift(pressRoutesPlugin(() => resolvedConfig, options.routes || {}))
+  if (routes !== false) {
+    plugins.unshift(pressRoutesPlugin(() => resolvedConfig, routes || {}))
   }
+
+  // Add TanStack Start plugin
+  const tanstackPlugin = tanstackStart({
+    prerender: {
+      enabled: prerender?.enabled ?? true,
+      crawlLinks: prerender?.crawlLinks ?? true,
+    },
+  })
+  const tanstackPlugins = (
+    Array.isArray(tanstackPlugin) ? tanstackPlugin : [tanstackPlugin]
+  ).filter((p): p is Plugin => p != null)
+  plugins.push(...tanstackPlugins)
+
+  // Add React plugin
+  const reactPlugin = react()
+  const reactPlugins = (Array.isArray(reactPlugin) ? reactPlugin : [reactPlugin]).filter(
+    (p): p is Plugin => p != null
+  )
+  plugins.push(...reactPlugins)
 
   return plugins
 }

@@ -1,5 +1,5 @@
 // Vite Plugin
-export { ardoPlugin, type ArdoPluginOptions } from './plugin'
+export { ardoPlugin, ardoPlugin as ardo, type ArdoPluginOptions } from './plugin'
 export { ardoPlugin as default } from './plugin'
 export { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugin'
 
