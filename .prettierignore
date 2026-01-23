@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.output/
+.tanstack/
+
+# Documentation content (markdown with code examples)
+docs/content/
+
+# Generated files
+*.gen.ts
+pnpm-lock.yaml
