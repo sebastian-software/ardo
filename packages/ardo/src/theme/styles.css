@@ -379,6 +379,13 @@ body {
   flex: 1;
   max-width: var(--press-content-max-width);
   padding: 0 24px;
+  padding-right: calc(var(--press-toc-width) + 24px);
+}
+
+@media (max-width: 1280px) {
+  .press-content-container {
+    padding-right: 24px;
+  }
 }
 
 .press-content-header {
