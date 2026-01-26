@@ -31,7 +31,7 @@ export default defineConfig({
 
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
-          { text: 'API', link: '/api/config' },
+          { text: 'API', link: '/api-reference' },
           {
             text: 'Changelog',
             link: 'https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md',
@@ -72,15 +72,6 @@ export default defineConfig({
           },
           {
             text: 'API Reference',
-            items: [
-              { text: 'Configuration', link: '/api/config' },
-              { text: 'Vite Plugin', link: '/api/vite-plugin' },
-              { text: 'Runtime Hooks', link: '/api/runtime' },
-              { text: 'Theme Components', link: '/api/components' },
-            ],
-          },
-          {
-            text: 'TypeDoc API',
             link: '/api-reference',
           },
         ],

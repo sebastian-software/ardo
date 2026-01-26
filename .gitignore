@@ -10,7 +10,7 @@ dist
 **/routeTree.gen.ts
 **/.tanstack/
 docs/content/api-reference/
-**/src/routes/(press)/
+**/src/routes/(docs)/
 
 # IDE
 .idea

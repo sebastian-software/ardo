@@ -6,7 +6,7 @@ import path from 'path'
 export interface PressRoutesPluginOptions {
   /** Directory where routes should be generated */
   routesDir?: string
-  /** Route group name (default: 'press') */
+  /** Route group name (default: 'docs') */
   routeGroup?: string
   /** Source directory for content (default: 'content') */
   srcDir?: string
@@ -30,7 +30,7 @@ export function pressRoutesPlugin(
   getConfig: () => ResolvedConfig,
   options: PressRoutesPluginOptions = {}
 ): Plugin {
-  const { routeGroup = 'press' } = options
+  const { routeGroup = 'docs' } = options
 
   let routesDir: string
   let contentDir: string

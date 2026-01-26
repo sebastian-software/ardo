@@ -16,6 +16,7 @@ export class TypeDocGenerator {
   private config: TypeDocConfig
   private app: Application | undefined
   private project: ProjectReflection | undefined
+  private basePath: string
 
   constructor(config: TypeDocConfig) {
     this.config = {
@@ -38,6 +39,8 @@ export class TypeDocGenerator {
       },
       ...config,
     }
+    // Use the output directory as the base path for links
+    this.basePath = '/' + this.config.out!
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
@@ -129,7 +132,9 @@ export class TypeDocGenerator {
       const description = child.comment?.summary
         ? this.renderCommentShort(child.comment.summary)
         : ''
-      content.push(`- [${child.name}](./${this.getSlug(child.name)}) - ${description}`)
+      content.push(
+        `- [${child.name}](${this.basePath}/${this.getSlug(child.name)}) - ${description}`
+      )
     }
 
     return {
@@ -510,12 +515,12 @@ export class TypeDocGenerator {
 
   private generateBreadcrumbs(pagePath: string): string {
     const parts = pagePath.split('/')
-    const breadcrumbs: string[] = ['[API](./index)']
+    const breadcrumbs: string[] = [`[API](${this.basePath})`]
 
     let currentPath = ''
     for (let i = 0; i < parts.length - 1; i++) {
       currentPath += (currentPath ? '/' : '') + parts[i]
-      breadcrumbs.push(`[${parts[i]}](./${currentPath})`)
+      breadcrumbs.push(`[${parts[i]}](${this.basePath}/${currentPath})`)
     }
 
     breadcrumbs.push(parts[parts.length - 1])

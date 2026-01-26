@@ -34,7 +34,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/introduction' },
-      { text: 'API', link: '/api/config' },
+      { text: 'API', link: '/api-reference' },
       {
         text: 'Dropdown',
         items: [
@@ -84,7 +84,7 @@ export default defineConfig({
       '/api/': [
         {
           text: 'API Reference',
-          items: [{ text: 'Config', link: '/api/config' }],
+          items: [{ text: 'Config', link: '/api-reference' }],
         },
       ],
     },

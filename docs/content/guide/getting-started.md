@@ -126,4 +126,4 @@ Now that you have a working documentation site:
 
 - Learn about [Markdown Features](/guide/markdown)
 - Configure your [Theme](/guide/theme-config)
-- Explore the [API Reference](/api/config)
+- Explore the [API Reference](/api-reference)
