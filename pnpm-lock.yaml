@@ -73,8 +73,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^8.0.0-beta.9
-        version: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^8.0.0-beta.10
+        version: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
 
   examples/minimal:
     dependencies:
@@ -98,8 +98,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.3.1
-        version: 7.3.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^8.0.0-beta.10
+        version: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/ardo:
     dependencies:
@@ -111,10 +111,10 @@ importers:
         version: 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/react-start':
         specifier: ^1.157.15
-        version: 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
       '@vitejs/plugin-react':
         specifier: ^5.1.2
-        version: 5.1.2(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
+        version: 5.1.2(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -189,8 +189,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^8.0.0-beta.9
-        version: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^8.0.0-beta.10
+        version: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/create-ardo:
     dependencies:
@@ -2989,8 +2989,8 @@ packages:
       yaml:
         optional: true
 
-  vite@8.0.0-beta.9:
-    resolution: {integrity: sha512-VZrfV8XE9MyfnN1xaefJuHqw9lA6kYOeWUOfGBe3PdFsHX5MaiwQkIhv6Ji1xHhfNUak+ApWsfYQ65aJTYqiaQ==}
+  vite@8.0.0-beta.10:
+    resolution: {integrity: sha512-YXbwlvG+57+LRRJBJYCHki0Z1LWRkPEy3khQ0ZphzW5aJaz17fFBCeefOtHC5VgRuLbG155+lq98I+BjeizQ5Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3685,19 +3685,19 @@ snapshots:
     transitivePeerDependencies:
       - crossws
 
-  '@tanstack/react-start@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
+  '@tanstack/react-start@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@tanstack/react-router': 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/react-start-client': 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/react-start-server': 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/router-utils': 1.154.7
       '@tanstack/start-client-core': 1.157.15
-      '@tanstack/start-plugin-core': 1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
+      '@tanstack/start-plugin-core': 1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
       '@tanstack/start-server-core': 1.157.15
       pathe: 2.0.3
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vite: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@rsbuild/core'
       - crossws
@@ -3735,7 +3735,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/router-plugin@1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
+  '@tanstack/router-plugin@1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-syntax-jsx': 7.28.6(@babel/core@7.28.6)
@@ -3753,7 +3753,7 @@ snapshots:
       zod: 3.25.76
     optionalDependencies:
       '@tanstack/react-router': 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      vite: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -3780,7 +3780,7 @@ snapshots:
 
   '@tanstack/start-fn-stubs@1.154.7': {}
 
-  '@tanstack/start-plugin-core@1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
+  '@tanstack/start-plugin-core@1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/core': 7.28.6
@@ -3788,7 +3788,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.40
       '@tanstack/router-core': 1.157.15
       '@tanstack/router-generator': 1.157.15
-      '@tanstack/router-plugin': 1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
+      '@tanstack/router-plugin': 1.157.15(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
       '@tanstack/router-utils': 1.154.7
       '@tanstack/start-client-core': 1.157.15
       '@tanstack/start-server-core': 1.157.15
@@ -3799,8 +3799,8 @@ snapshots:
       srvx: 0.10.1
       tinyglobby: 0.2.15
       ufo: 1.6.3
-      vite: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
-      vitefu: 1.1.1(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
+      vite: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+      vitefu: 1.1.1(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
       xmlbuilder2: 4.0.3
       zod: 3.25.76
     transitivePeerDependencies:
@@ -4000,7 +4000,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitejs/plugin-react@5.1.2(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitejs/plugin-react@5.1.2(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.6)
@@ -4008,7 +4008,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -6516,7 +6516,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2):
+  vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       '@oxc-project/runtime': 0.110.0
       fdir: 6.5.0(picomatch@4.0.3)
@@ -6532,9 +6532,9 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vitefu@1.1.1(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)):
+  vitefu@1.1.1(vite@8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)):
     optionalDependencies:
-      vite: 8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0-beta.10(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2)
 
   vitest@4.0.18(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
