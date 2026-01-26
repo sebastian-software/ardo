@@ -9,6 +9,8 @@ dist
 # Generated files
 **/routeTree.gen.ts
 **/.tanstack/
+docs/content/api-reference/
+**/src/routes/(press)/
 
 # IDE
 .idea

@@ -1,9 +1,26 @@
 import { defineConfig } from 'vite'
 import { ardo } from 'ardo/vite'
+import { typedocPlugin } from 'ardo/typedoc'
 
 export default defineConfig({
   base: '/ardo/',
   plugins: [
+    typedocPlugin({
+      contentDir: './content',
+      config: {
+        enabled: true,
+        entryPoints: ['../packages/ardo/src/index.ts'],
+        tsconfig: '../packages/ardo/tsconfig.json',
+        out: 'api-reference',
+        excludePrivate: true,
+        excludeInternal: true,
+        sort: ['source-order'],
+        markdown: {
+          sourceLinks: true,
+          sourceBaseUrl: 'https://github.com/sebastian-software/ardo/blob/main/packages/ardo',
+        },
+      },
+    }),
     ardo({
       title: 'Ardo',
       description: 'React-first Static Documentation Framework',
@@ -61,6 +78,10 @@ export default defineConfig({
               { text: 'Runtime Hooks', link: '/api/runtime' },
               { text: 'Theme Components', link: '/api/components' },
             ],
+          },
+          {
+            text: 'TypeDoc API',
+            link: '/api-reference',
           },
         ],
 
