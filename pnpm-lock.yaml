@@ -80,7 +80,7 @@ importers:
     dependencies:
       ardo:
         specifier: ^1.0.0
-        version: 1.0.2(@tanstack/react-router@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/react-start@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.0.2(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/react-start@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -107,8 +107,8 @@ importers:
         specifier: ^3.21.0
         version: 3.21.0
       '@tanstack/react-router':
-        specifier: ^1.154.14
-        version: 1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: ^1.157.15
+        version: 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/react-start':
         specifier: ^1.154.14
         version: 1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@8.0.0-beta.9(@types/node@22.19.7)(esbuild@0.27.2)(tsx@4.21.0)(yaml@2.8.2))
@@ -984,6 +984,13 @@ packages:
       react: '>=18.0.0 || >=19.0.0'
       react-dom: '>=18.0.0 || >=19.0.0'
 
+  '@tanstack/react-router@1.157.15':
+    resolution: {integrity: sha512-dVHX3Ann1rxLkXCrB9ctNKveGOrkmlKMo5fDIaaPCqqkDN/aC1gZ9O93i0OQVPUNekpkdXijmpHkxw12WqMTRQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=18.0.0 || >=19.0.0'
+      react-dom: '>=18.0.0 || >=19.0.0'
+
   '@tanstack/react-start-client@1.154.14':
     resolution: {integrity: sha512-GmOSABppsCeh6hAXrcKLSH0Zf4foFEfZsC3+LXpTuLZqTgawaMQdix+QTazX3jhr3h7Waem5a+s6oT7vPAvADg==}
     engines: {node: '>=22.12.0'}
@@ -1014,6 +1021,10 @@ packages:
 
   '@tanstack/router-core@1.154.14':
     resolution: {integrity: sha512-vScPNEf2psk7dR8Gt2DK7Pdjh/3VFvyn6bjPbdEm0D0U7Pf/6eSAElKTdQYY3lcqzv47lXSSNW0ggfUR54ESAg==}
+    engines: {node: '>=12'}
+
+  '@tanstack/router-core@1.157.15':
+    resolution: {integrity: sha512-KaYz6s+wYcg92kRQ7HXlTJLhBaBXOYiiqRBv5tsRbKRIqqhWNyeGz5+NfDwaYFHg5XLSDs3DvN0elMtxcj4dTg==}
     engines: {node: '>=12'}
 
   '@tanstack/router-generator@1.154.14':
@@ -3912,6 +3923,17 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
+  '@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      '@tanstack/history': 1.154.14
+      '@tanstack/react-store': 0.8.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@tanstack/router-core': 1.157.15
+      isbot: 5.1.33
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+      tiny-invariant: 1.3.3
+      tiny-warning: 1.0.3
+
   '@tanstack/react-start-client@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@tanstack/react-router': 1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -3982,6 +4004,16 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.2.3)
 
   '@tanstack/router-core@1.154.14':
+    dependencies:
+      '@tanstack/history': 1.154.14
+      '@tanstack/store': 0.8.0
+      cookie-es: 2.0.0
+      seroval: 1.5.0
+      seroval-plugins: 1.5.0(seroval@1.5.0)
+      tiny-invariant: 1.3.3
+      tiny-warning: 1.0.3
+
+  '@tanstack/router-core@1.157.15':
     dependencies:
       '@tanstack/history': 1.154.14
       '@tanstack/store': 0.8.0
@@ -4407,10 +4439,10 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  ardo@1.0.2(@tanstack/react-router@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/react-start@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)):
+  ardo@1.0.2(@tanstack/react-router@1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@tanstack/react-start@1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)(typescript@5.9.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)):
     dependencies:
       '@shikijs/rehype': 3.21.0
-      '@tanstack/react-router': 1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@tanstack/react-router': 1.157.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@tanstack/react-start': 1.154.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vite@6.4.1(@types/node@22.19.7)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2))
       gray-matter: 4.0.3
       hast-util-to-jsx-runtime: 2.3.6
