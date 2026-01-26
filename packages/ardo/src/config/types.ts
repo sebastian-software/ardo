@@ -1,11 +1,19 @@
 import type { BundledTheme } from 'shiki'
 
+// =============================================================================
+// Sidebar Types (for data-driven sidebar)
+// =============================================================================
+
 export interface SidebarItem {
   text: string
   link?: string
   collapsed?: boolean
   items?: SidebarItem[]
 }
+
+// =============================================================================
+// Navigation Types (for data-driven nav)
+// =============================================================================
 
 export interface NavItem {
   text: string
@@ -14,57 +22,98 @@ export interface NavItem {
   activeMatch?: string
 }
 
+// =============================================================================
+// Social Link Types
+// =============================================================================
+
 export interface SocialLink {
   icon: 'github' | 'twitter' | 'discord' | 'linkedin' | 'youtube' | 'npm'
   link: string
   ariaLabel?: string
 }
 
+// =============================================================================
+// Theme Config (Runtime UI configuration)
+// =============================================================================
+
+/**
+ * Theme configuration for backwards compatibility with config-driven approach.
+ * In JSX-first architecture, most of these settings are passed directly
+ * as props to the components instead.
+ */
 export interface ThemeConfig {
+  /** Logo image URL or light/dark variants */
   logo?: string | { light: string; dark: string }
+  /** Site title (set to false to hide) */
   siteTitle?: string | false
+  /** Navigation items (deprecated: use <Nav> component instead) */
   nav?: NavItem[]
+  /** Sidebar configuration (deprecated: use <Sidebar> component instead) */
   sidebar?: SidebarItem[] | Record<string, SidebarItem[]>
+  /** Social links (deprecated: use <SocialLink> component instead) */
   socialLinks?: SocialLink[]
+  /** Footer configuration (deprecated: use <Footer> component instead) */
   footer?: {
     message?: string
     copyright?: string
   }
+  /** Search configuration */
   search?: {
     enabled?: boolean
     placeholder?: string
   }
+  /** Edit link configuration */
   editLink?: {
     pattern: string
     text?: string
   }
+  /** Last updated configuration */
   lastUpdated?: {
     enabled?: boolean
     text?: string
     formatOptions?: Intl.DateTimeFormatOptions
   }
+  /** Table of contents configuration */
   outline?: {
     level?: number | [number, number]
     label?: string
   }
 }
 
+// =============================================================================
+// Markdown Config
+// =============================================================================
+
 export interface MarkdownConfig {
+  /** Syntax highlighting theme */
   theme?: BundledTheme | { light: BundledTheme; dark: BundledTheme }
+  /** Show line numbers in code blocks */
   lineNumbers?: boolean
+  /** Enable anchor links for headings */
   anchor?: boolean
+  /** Table of contents configuration */
   toc?: {
     level?: [number, number]
   }
+  /** Remark plugins */
   remarkPlugins?: unknown[]
+  /** Rehype plugins */
   rehypePlugins?: unknown[]
 }
+
+// =============================================================================
+// Head Config
+// =============================================================================
 
 export interface HeadConfig {
   tag: string
   attrs?: Record<string, string | boolean>
   children?: string
 }
+
+// =============================================================================
+// TypeDoc Config
+// =============================================================================
 
 export interface TypeDocConfig {
   enabled?: boolean
@@ -103,19 +152,47 @@ export interface TypeDocConfig {
   }
 }
 
+// =============================================================================
+// Press Config (Main Configuration)
+// =============================================================================
+
+/**
+ * Main Ardo configuration.
+ *
+ * In JSX-first architecture, only build-time options are needed here.
+ * Runtime UI configuration (header, sidebar, footer) is done in JSX.
+ */
 export interface PressConfig {
+  /** Site title (used for default meta tags) */
   title: string
+  /** Site description (used for default meta tags) */
   description?: string
+  /** Base URL path */
   base?: string
+  /** Content source directory (default: 'content') */
   srcDir?: string
+  /** Build output directory (default: 'dist') */
   outDir?: string
+  /** Site language (default: 'en') */
   lang?: string
+  /** Additional head tags (deprecated: use TanStack head() instead) */
   head?: HeadConfig[]
+  /**
+   * Theme configuration for backwards compatibility.
+   * Prefer using JSX components with props instead.
+   */
   themeConfig?: ThemeConfig
+  /** Markdown processing options */
   markdown?: MarkdownConfig
+  /** TypeDoc API documentation generation */
   typedoc?: TypeDocConfig
+  /** Custom Vite configuration */
   vite?: Record<string, unknown>
 }
+
+// =============================================================================
+// Page Types
+// =============================================================================
 
 export interface PageFrontmatter {
   title?: string
@@ -164,6 +241,10 @@ export interface PageData {
   filePath: string
   relativePath: string
 }
+
+// =============================================================================
+// Resolved Config (Internal)
+// =============================================================================
 
 export interface ResolvedConfig extends Required<Omit<PressConfig, 'vite' | 'typedoc'>> {
   vite?: Record<string, unknown>

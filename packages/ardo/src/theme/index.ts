@@ -1,11 +1,22 @@
 // Layout components
 export { Layout } from './Layout'
-export { Header } from './Header'
-export { Sidebar } from './Sidebar'
+export type { LayoutProps } from './Layout'
+
+export { Header, SocialLink } from './Header'
+export type { HeaderProps, SocialLinkProps } from './Header'
+
+export { Sidebar, SidebarGroup, SidebarLink } from './Sidebar'
+export type { SidebarProps, SidebarGroupProps, SidebarLinkProps } from './Sidebar'
+
+export { Footer } from './Footer'
+export type { FooterProps, FooterMessageProps, FooterCopyrightProps } from './Footer'
+
+export { Nav, NavLink, NavDropdown } from './Nav'
+export type { NavProps, NavLinkProps, NavDropdownProps } from './Nav'
+
 export { TOC } from './TOC'
 export { Content } from './Content'
-export { Footer } from './Footer'
-export { DocPage, DocLayout } from './DocPage'
+export { DocPage, DocContent, DocLayout } from './DocPage'
 export { HomePage } from './HomePage'
 
 // UI components

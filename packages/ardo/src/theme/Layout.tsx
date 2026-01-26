@@ -1,26 +1,45 @@
 import { type ReactNode } from 'react'
-import { useConfig, useThemeConfig } from '../runtime/hooks'
-import { Header } from './Header'
-import { Sidebar } from './Sidebar'
-import { Footer } from './Footer'
 
-interface LayoutProps {
+// =============================================================================
+// Layout Component
+// =============================================================================
+
+export interface LayoutProps {
+  /** Header content */
+  header?: ReactNode
+  /** Sidebar content */
+  sidebar?: ReactNode
+  /** Footer content */
+  footer?: ReactNode
+  /** Main content */
   children: ReactNode
+  /** Additional CSS classes */
+  className?: string
 }
 
-export function Layout({ children }: LayoutProps) {
-  // Config hooks available for future theme customization
-  useConfig()
-  useThemeConfig()
-
+/**
+ * Layout component with explicit slot props.
+ *
+ * @example
+ * ```tsx
+ * <Layout
+ *   header={<Header logo="/logo.svg" title="Ardo" nav={...} />}
+ *   sidebar={<Sidebar>...</Sidebar>}
+ *   footer={<Footer message="MIT License" />}
+ * >
+ *   <Outlet />
+ * </Layout>
+ * ```
+ */
+export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
   return (
-    <div className="press-layout">
-      <Header />
+    <div className={className ?? 'press-layout'}>
+      {header}
       <div className="press-layout-container">
-        <Sidebar />
+        {sidebar}
         <main className="press-main">{children}</main>
       </div>
-      <Footer />
+      {footer}
     </div>
   )
 }

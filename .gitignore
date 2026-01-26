@@ -11,6 +11,7 @@ dist
 **/.tanstack/
 docs/content/api-reference/
 **/src/routes/(docs)/
+!**/src/routes/(docs)/_layout.tsx
 
 # IDE
 .idea

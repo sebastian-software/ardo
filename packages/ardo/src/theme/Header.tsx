@@ -1,25 +1,70 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
-import { useConfig, useThemeConfig } from '../runtime/hooks'
 import { ThemeToggle } from './components/ThemeToggle'
 import { Search } from './components/Search'
 
-export function Header() {
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+// =============================================================================
+// Header Component
+// =============================================================================
+
+export interface HeaderProps {
+  /** Logo image URL or light/dark variants */
+  logo?: string | { light: string; dark: string }
+  /** Site title displayed next to logo */
+  title?: string
+  /** Navigation content (Nav component or custom) */
+  nav?: ReactNode
+  /** Actions/right side content (social links, custom buttons) */
+  actions?: ReactNode
+  /** Show search (default: true) */
+  search?: boolean
+  /** Show theme toggle (default: true) */
+  themeToggle?: boolean
+  /** Additional CSS classes */
+  className?: string
+}
+
+/**
+ * Header component with explicit slot props.
+ *
+ * @example
+ * ```tsx
+ * <Header
+ *   logo="/logo.svg"
+ *   title="Ardo"
+ *   nav={
+ *     <Nav>
+ *       <NavLink to="/guide">Guide</NavLink>
+ *       <NavLink to="/api">API</NavLink>
+ *     </Nav>
+ *   }
+ *   actions={
+ *     <SocialLink href="https://github.com/..." icon="github" />
+ *   }
+ * />
+ * ```
+ */
+export function Header({
+  logo,
+  title,
+  nav,
+  actions,
+  search = true,
+  themeToggle = true,
+  className,
+}: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const logo = themeConfig.logo
-  const siteTitle = themeConfig.siteTitle !== false ? themeConfig.siteTitle || config.title : null
-
   return (
-    <header className="press-header">
+    <header className={className ?? 'press-header'}>
       <div className="press-header-container">
+        {/* Left: Mobile menu button + Logo/Title */}
         <div className="press-header-left">
           <button
             className="press-mobile-menu-button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             <span className="press-hamburger">
               <span></span>
@@ -32,72 +77,30 @@ export function Header() {
             {logo && (
               <img
                 src={typeof logo === 'string' ? logo : logo.light}
-                alt={config.title}
+                alt={title ?? 'Logo'}
                 className="press-logo"
               />
             )}
-            {siteTitle && <span className="press-site-title">{siteTitle}</span>}
+            {title && <span className="press-site-title">{title}</span>}
           </Link>
         </div>
 
-        <nav className="press-nav">
-          {themeConfig.nav?.map((item, index) => (
-            <div key={index} className="press-nav-item">
-              {item.link ? (
-                <Link
-                  to={item.link}
-                  className="press-nav-link"
-                  activeProps={{ className: 'active' }}
-                  activeOptions={{ exact: false }}
-                >
-                  {item.text}
-                </Link>
-              ) : item.items ? (
-                <NavDropdown item={item} />
-              ) : (
-                <span className="press-nav-text">{item.text}</span>
-              )}
-            </div>
-          ))}
-        </nav>
+        {/* Center: Navigation */}
+        {nav && <div className="press-nav">{nav}</div>}
 
+        {/* Right: Search, Theme Toggle, Actions */}
         <div className="press-header-right">
-          {themeConfig.search?.enabled !== false && <Search />}
-          <ThemeToggle />
-
-          {themeConfig.socialLinks?.map((social, index) => (
-            <a
-              key={index}
-              href={social.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="press-social-link"
-              aria-label={social.ariaLabel || social.icon}
-            >
-              <SocialIcon icon={social.icon} />
-            </a>
-          ))}
+          {search && <Search />}
+          {themeToggle && <ThemeToggle />}
+          {actions}
         </div>
       </div>
 
+      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="press-mobile-menu">
-          <nav className="press-mobile-nav">
-            {themeConfig.nav?.map((item, index) => (
-              <div key={index} className="press-mobile-nav-item">
-                {item.link ? (
-                  <Link
-                    to={item.link}
-                    className="press-mobile-nav-link"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.text}
-                  </Link>
-                ) : (
-                  <span className="press-mobile-nav-text">{item.text}</span>
-                )}
-              </div>
-            ))}
+          <nav className="press-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
+            {nav}
           </nav>
         </div>
       )}
@@ -105,41 +108,48 @@ export function Header() {
   )
 }
 
-interface NavDropdownProps {
-  item: { text: string; items?: Array<{ text: string; link?: string }> }
+// =============================================================================
+// SocialLink Component
+// =============================================================================
+
+export interface SocialLinkProps {
+  /** URL to link to */
+  href: string
+  /** Social icon type */
+  icon: 'github' | 'twitter' | 'discord' | 'linkedin' | 'youtube' | 'npm'
+  /** Accessible label */
+  ariaLabel?: string
+  /** Additional CSS classes */
+  className?: string
 }
 
-function NavDropdown({ item }: NavDropdownProps) {
-  const [open, setOpen] = useState(false)
-
+/**
+ * Social media link with icon.
+ *
+ * @example
+ * ```tsx
+ * <SocialLink href="https://github.com/..." icon="github" />
+ * ```
+ */
+export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps) {
   return (
-    <div
-      className="press-nav-dropdown"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className ?? 'press-social-link'}
+      aria-label={ariaLabel ?? icon}
     >
-      <button className="press-nav-dropdown-button">
-        {item.text}
-        <span className="press-nav-dropdown-icon">▼</span>
-      </button>
-      {open && (
-        <div className="press-nav-dropdown-menu">
-          {item.items?.map((subItem, index) => (
-            <Link key={index} to={subItem.link || '#'} className="press-nav-dropdown-item">
-              {subItem.text}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+      <SocialIcon icon={icon} />
+    </a>
   )
 }
 
-interface SocialIconProps {
-  icon: string
-}
+// =============================================================================
+// Social Icon Component (internal)
+// =============================================================================
 
-function SocialIcon({ icon }: SocialIconProps) {
+function SocialIcon({ icon }: { icon: string }) {
   const icons: Record<string, string> = {
     github:
       'M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z',
