@@ -2,11 +2,16 @@
 
 <div align="center">
 
+<img src="./logo.svg" alt="Ardo Logo" width="120" height="120">
+
 **React-first Static Documentation Framework**
 
 [![CI](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml)
-[![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
 [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)
+[![npm downloads](https://img.shields.io/npm/dm/ardo.svg)](https://www.npmjs.com/package/ardo)
+[![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![Node](https://img.shields.io/badge/Node-%3E%3D22-green.svg)](https://nodejs.org/)
 
 [Documentation](https://sebastian-software.github.io/ardo/) ·
 [Getting Started](https://sebastian-software.github.io/ardo/guide/getting-started) ·
@@ -34,20 +39,24 @@ Ardo is a modern documentation framework built on React 19 and TanStack Start. I
 ## Quick Start
 
 ```bash
-# Create a new project
-mkdir my-docs && cd my-docs
-pnpm init
+# Create a new project with the CLI
+pnpm create ardo@latest my-docs
+
+# Navigate to project
+cd my-docs
 
 # Install dependencies
-pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
-pnpm add -D typescript vite tailwindcss
-
-# Create your first doc
-mkdir -p content
-echo "# Hello World" > content/index.md
+pnpm install
 
 # Start developing
 pnpm dev
+```
+
+Or manually:
+
+```bash
+pnpm add ardo react react-dom
+pnpm add -D typescript vite
 ```
 
 ## Package
@@ -123,6 +132,12 @@ pnpm build
 # Start the docs dev server
 pnpm docs:dev
 ```
+
+## Used By
+
+<!-- Add your project here! Submit a PR to be featured. -->
+
+_Your project could be here! [Submit a PR](https://github.com/sebastian-software/ardo/edit/main/README.md) to add your documentation site._
 
 ## License
 

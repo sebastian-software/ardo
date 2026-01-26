@@ -10,10 +10,15 @@ export default defineConfig({
 
       themeConfig: {
         siteTitle: 'Ardo',
+        logo: '/logo.svg',
 
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
           { text: 'API', link: '/api/config' },
+          {
+            text: 'Changelog',
+            link: 'https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md',
+          },
           { text: 'GitHub', link: 'https://github.com/sebastian-software/ardo' },
         ],
 
@@ -24,6 +29,7 @@ export default defineConfig({
               { text: 'What is Ardo?', link: '/guide/what-is-ardo' },
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Framework Comparison', link: '/guide/comparison' },
+              { text: 'Roadmap', link: '/guide/roadmap' },
             ],
           },
           {
@@ -42,7 +48,10 @@ export default defineConfig({
           },
           {
             text: 'Advanced',
-            items: [{ text: 'TypeDoc Integration', link: '/guide/typedoc' }],
+            items: [
+              { text: 'TypeDoc Integration', link: '/guide/typedoc' },
+              { text: 'Troubleshooting', link: '/guide/troubleshooting' },
+            ],
           },
           {
             text: 'API Reference',
