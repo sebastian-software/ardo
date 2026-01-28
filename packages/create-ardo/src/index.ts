@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import prompts from 'prompts'
 import { blue, cyan, green, red, reset, yellow } from 'kolorist'
 
