@@ -105,6 +105,8 @@ function App() {
 
 Full documentation available at [sebastian-software.github.io/ardo](https://sebastian-software.github.io/ardo/)
 
+LLM-optimized documentation: [llms-full.txt](https://sebastian-software.github.io/ardo/llms-full.txt)
+
 ## License
 
 [MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de)

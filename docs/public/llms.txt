@@ -1,0 +1,46 @@
+# Ardo
+
+> React-first Static Documentation Framework built on React 19, TanStack Start, and Vite 8.
+
+Ardo combines the developer experience of VitePress with the power of the React ecosystem. Write documentation in Markdown, use React components, and deploy as a static site.
+
+## Docs
+
+- [What is Ardo?](https://sebastian-software.github.io/ardo/guide/what-is-ardo): Overview, philosophy, and core features
+- [Getting Started](https://sebastian-software.github.io/ardo/guide/getting-started): Installation, setup, and project structure
+- [Markdown Features](https://sebastian-software.github.io/ardo/guide/markdown): Syntax highlighting, containers, code groups, and custom components
+- [Frontmatter](https://sebastian-software.github.io/ardo/guide/frontmatter): Page-level configuration via YAML frontmatter
+- [Theme Configuration](https://sebastian-software.github.io/ardo/guide/theme-config): Navigation, sidebar, footer, search, and social links
+- [Custom Theme](https://sebastian-software.github.io/ardo/guide/custom-theme): CSS variables, component overrides, runtime hooks, and full custom themes
+- [TypeDoc Integration](https://sebastian-software.github.io/ardo/guide/typedoc): Auto-generate API documentation from TypeScript source
+- [Framework Comparison](https://sebastian-software.github.io/ardo/guide/comparison): How Ardo compares to VitePress, Docusaurus, and Starlight
+- [Troubleshooting](https://sebastian-software.github.io/ardo/guide/troubleshooting): Common issues and solutions
+- [Roadmap](https://sebastian-software.github.io/ardo/guide/roadmap): Planned features and future direction
+- [Full documentation as single file](https://sebastian-software.github.io/ardo/llms-full.txt): Complete documentation optimized for LLM consumption
+
+## Package Exports
+
+- `ardo/config` — Configuration utilities (`defineConfig`, `resolveConfig`, `loadConfig`)
+- `ardo/vite` — Vite plugin (`ardoPlugin`)
+- `ardo/runtime` — React hooks (`useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`)
+- `ardo/theme` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, CodeBlock, etc.)
+- `ardo/theme/styles.css` — Default theme stylesheet
+- `ardo/typedoc` — TypeDoc generation utilities (`typedocPlugin`, `generateApiDocs`)
+
+## Quick Start
+
+```bash
+pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
+pnpm add -D typescript vite tailwindcss
+```
+
+## Key Concepts
+
+- Configuration via `press.config.ts` using `defineConfig()` from `ardo/config`
+- Vite plugin via `ardoPlugin()` from `ardo/vite`
+- Markdown content lives in a `content/` directory
+- JSX-first architecture: theme components accept explicit props
+- Supports both config-driven sidebar/nav and JSX composition
+- Built-in full-text search via MiniSearch
+- Dark mode via CSS custom properties
+- TypeDoc integration for API reference generation
