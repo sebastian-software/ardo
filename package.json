@@ -9,7 +9,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm -r --filter './packages/*' build",
     "dev": "pnpm --filter ardo dev",
     "test": "vitest --run",
     "test:watch": "vitest",
@@ -18,7 +18,7 @@
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r typecheck",
     "docs:dev": "pnpm -r --filter ./docs dev",
-    "docs:build": "pnpm -r build",
+    "docs:build": "pnpm -r --filter './docs' build",
     "prepare": "husky"
   },
   "keywords": [
