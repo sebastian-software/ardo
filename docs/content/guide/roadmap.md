@@ -26,7 +26,6 @@ This page outlines the planned features and future direction of Ardo. Items are 
 
 ### Developer Experience
 
-- [ ] **`create-ardo` CLI** — Scaffolding tool for quick project setup
 - [ ] **VS Code Extension** — Syntax highlighting and snippets for Ardo config
 - [ ] **Better Error Messages** — More helpful build and runtime errors
 
@@ -54,6 +53,7 @@ Have a feature request? [Open an issue](https://github.com/sebastian-software/ar
 
 ## Completed
 
+- [x] `create-ardo` CLI — Scaffolding tool for quick project setup
 - [x] React 19 support
 - [x] TanStack Router integration
 - [x] Dark mode

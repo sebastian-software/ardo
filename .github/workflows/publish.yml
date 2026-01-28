@@ -39,3 +39,11 @@ jobs:
       - name: Dry run ardo
         if: github.event_name == 'workflow_dispatch' && inputs.dry-run
         run: pnpm --filter ardo publish --dry-run
+
+      - name: Publish create-ardo
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run)
+        run: pnpm --filter create-ardo publish --access public --no-git-checks --provenance
+
+      - name: Dry run create-ardo
+        if: github.event_name == 'workflow_dispatch' && inputs.dry-run
+        run: pnpm --filter create-ardo publish --dry-run

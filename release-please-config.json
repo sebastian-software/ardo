@@ -15,6 +15,11 @@
       "release-type": "node",
       "package-name": "ardo",
       "changelog-path": "CHANGELOG.md"
+    },
+    "packages/create-ardo": {
+      "release-type": "node",
+      "package-name": "create-ardo",
+      "changelog-path": "CHANGELOG.md"
     }
   },
   "separate-pull-requests": false,

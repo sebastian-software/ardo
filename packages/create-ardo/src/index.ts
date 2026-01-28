@@ -166,6 +166,9 @@ function createProjectStructure(
 import { ardo } from 'ardo/vite'
 
 export default defineConfig({
+  // For GitHub Pages subdirectory deployments, uncomment and adjust:
+  // base: '/${projectName}/',
+
   plugins: [
     ardo({
       title: '${siteTitle}',
@@ -210,6 +213,70 @@ dist
 `
 
   fs.writeFileSync(path.join(root, '.gitignore'), gitignore)
+
+  // .github/workflows/deploy.yml — GitHub Pages deployment
+  const workflowsDir = path.join(root, '.github', 'workflows')
+  fs.mkdirSync(workflowsDir, { recursive: true })
+
+  const deployWorkflow = `name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+
+  deploy:
+    environment:
+      name: github-pages
+      url: \\\${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+`
+
+  fs.writeFileSync(path.join(workflowsDir, 'deploy.yml'), deployWorkflow)
 
   // Create content directory
   const contentDir = path.join(root, 'content')

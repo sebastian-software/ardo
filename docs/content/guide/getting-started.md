@@ -14,7 +14,22 @@ Before you begin, make sure you have:
 - [Node.js](https://nodejs.org/) version 18 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
-## Installation
+## Quick Start
+
+The fastest way to get started is with the `create-ardo` CLI:
+
+```bash
+pnpm create ardo@latest my-docs
+cd my-docs
+pnpm install
+pnpm dev
+```
+
+This scaffolds a complete project with configuration, example content, and a GitHub Pages deployment workflow.
+
+## Manual Installation
+
+If you prefer to set up manually:
 
 ### 1. Create a new project
 
@@ -126,4 +141,5 @@ Now that you have a working documentation site:
 
 - Learn about [Markdown Features](/guide/markdown)
 - Configure your [Theme](/guide/theme-config)
+- [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel
 - Explore the [API Reference](/api-reference)

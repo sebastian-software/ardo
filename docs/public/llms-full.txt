@@ -15,9 +15,10 @@ Ardo combines the developer experience of VitePress with the power of the React 
 5. [Theme Configuration](#theme-configuration)
 6. [Custom Theme](#custom-theme)
 7. [TypeDoc Integration](#typedoc-integration)
-8. [Framework Comparison](#framework-comparison)
-9. [Troubleshooting](#troubleshooting)
-10. [Package Exports Reference](#package-exports-reference)
+8. [Deployment](#deployment)
+9. [Framework Comparison](#framework-comparison)
+10. [Troubleshooting](#troubleshooting)
+11. [Package Exports Reference](#package-exports-reference)
 
 ---
 
@@ -63,7 +64,18 @@ Ardo is a **React-first Static Documentation Framework** built on [TanStack Star
 - [Node.js](https://nodejs.org/) version 22 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
-### Installation
+### Quick Start
+
+The fastest way to get started:
+
+```bash
+pnpm create ardo@latest my-docs
+cd my-docs
+pnpm install
+pnpm dev
+```
+
+### Manual Installation
 
 #### 1. Create a new project
 
@@ -1031,6 +1043,73 @@ export default defineConfig({
   },
 })
 ```
+
+---
+
+## Deployment
+
+Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `crawlLinks: true`), so no server is needed at runtime. The build output is in `dist/client/`.
+
+### GitHub Pages
+
+1. Set `base` in `vite.config.ts` if deploying to a subdirectory:
+
+```ts
+export default defineConfig({
+  base: '/my-docs/',
+  plugins: [ardo({ /* ... */ })],
+})
+```
+
+2. Create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - uses: actions/configure-pages@v5
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+3. Enable GitHub Pages in repository settings with source set to "GitHub Actions".
+
+Projects scaffolded with `pnpm create ardo@latest` include this workflow out of the box.
+
+### Netlify / Vercel
+
+No workflow file needed. Connect your repository and configure:
+
+- **Build command:** `pnpm build`
+- **Output directory:** `dist/client`
 
 ---
 

@@ -27,7 +27,7 @@ function DocsLayout() {
       <Layout
         header={
           <Header
-            logo="/logo.svg"
+            logo={`${import.meta.env.BASE_URL}logo.svg`}
             title="Ardo"
             nav={
               <Nav>

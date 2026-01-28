@@ -44,23 +44,28 @@ export class TypeDocGenerator {
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
-    this.app = await Application.bootstrapWithPlugins(
-      {
-        entryPoints: this.config.entryPoints,
-        tsconfig: this.config.tsconfig,
-        exclude: this.config.exclude,
-        excludeExternals: this.config.excludeExternals,
-        excludePrivate: this.config.excludePrivate,
-        excludeProtected: this.config.excludeProtected,
-        excludeInternal: this.config.excludeInternal,
-        sort: this.config.sort,
-        categoryOrder: this.config.categoryOrder,
-        groupOrder: this.config.groupOrder,
-        readme: this.config.readme,
-        plugin: this.config.plugin,
-      },
-      [new TSConfigReader(), new TypeDocReader()]
-    )
+    const typedocOptions: Record<string, unknown> = {
+      entryPoints: this.config.entryPoints,
+      tsconfig: this.config.tsconfig,
+      excludeExternals: this.config.excludeExternals,
+      excludePrivate: this.config.excludePrivate,
+      excludeProtected: this.config.excludeProtected,
+      excludeInternal: this.config.excludeInternal,
+      sort: this.config.sort,
+    }
+
+    // Only pass array/string options when explicitly set to avoid
+    // TypeDoc errors like "option must be set to an array of strings"
+    if (this.config.exclude) typedocOptions.exclude = this.config.exclude
+    if (this.config.categoryOrder) typedocOptions.categoryOrder = this.config.categoryOrder
+    if (this.config.groupOrder) typedocOptions.groupOrder = this.config.groupOrder
+    if (this.config.plugin) typedocOptions.plugin = this.config.plugin
+    if (this.config.readme) typedocOptions.readme = this.config.readme
+
+    this.app = await Application.bootstrapWithPlugins(typedocOptions, [
+      new TSConfigReader(),
+      new TypeDocReader(),
+    ])
 
     this.project = await this.app.convert()
 

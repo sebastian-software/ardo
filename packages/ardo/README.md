@@ -2,7 +2,18 @@
 
 React-first Static Documentation Framework built on TanStack Start.
 
-## Installation
+## Quick Start
+
+Scaffold a new project with the CLI:
+
+```bash
+pnpm create ardo@latest my-docs
+cd my-docs
+pnpm install
+pnpm dev
+```
+
+## Manual Installation
 
 ```bash
 pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom

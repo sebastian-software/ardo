@@ -59,11 +59,16 @@ pnpm add ardo react react-dom
 pnpm add -D typescript vite
 ```
 
-## Package
+## Packages
 
-| Package                     | Description                                                          | Version                                                                             |
-| --------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [**ardo**](./packages/ardo) | Core framework with Vite plugin, runtime hooks, and theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo) |
+| Package                                   | Description                                                          | Version                                                                                           |
+| ----------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [**ardo**](./packages/ardo)               | Core framework with Vite plugin, runtime hooks, and theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)               |
+| [**create-ardo**](./packages/create-ardo) | Scaffolding CLI for new Ardo projects                                | [![npm](https://img.shields.io/npm/v/create-ardo.svg)](https://www.npmjs.com/package/create-ardo) |
+
+## Deployment
+
+Ardo builds to fully static HTML — deploy anywhere. Projects scaffolded with `create-ardo` include a GitHub Pages workflow out of the box. See the [Deployment Guide](https://sebastian-software.github.io/ardo/guide/deployment) for details on GitHub Pages, Netlify, and Vercel.
 
 ## Documentation Structure
 
