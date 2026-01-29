@@ -46,6 +46,7 @@ describe('createProjectStructure', () => {
     expect(pkg.private).toBe(true)
     expect(pkg.dependencies.ardo).toBe('^1.0.0')
     expect(pkg.dependencies['@tanstack/react-router']).toBeDefined()
+    expect(pkg.dependencies['@tanstack/react-start']).toBeDefined()
     expect(pkg.dependencies.react).toBeDefined()
     expect(pkg.dependencies['react-dom']).toBeDefined()
     expect(pkg.scripts.dev).toBe('vite')
