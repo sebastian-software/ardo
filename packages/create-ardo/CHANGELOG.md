@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.0...create-ardo-v1.1.1) (2026-01-29)
+
+
+### Code Refactoring
+
+* simplify integration test to use wildcard deps ([f2f8caa](https://github.com/sebastian-software/ardo/commit/f2f8caa983bcebd8f57663cb023b92e00e78e2be))
+
 ## [1.1.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.0.0...create-ardo-v1.1.0) (2026-01-29)
 
 
