@@ -24,6 +24,13 @@
       "changelog-path": "CHANGELOG.md"
     }
   },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "ardo",
+      "components": ["ardo", "create-ardo"]
+    }
+  ],
   "separate-pull-requests": false,
   "include-component-in-tag": true
 }
