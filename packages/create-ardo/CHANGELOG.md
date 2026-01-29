@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.1...create-ardo-v1.1.2) (2026-01-29)
+
+
+### Bug Fixes
+
+* add component with Outlet to root route ([ec9088b](https://github.com/sebastian-software/ardo/commit/ec9088b22e3b50100a367e10c2f74799bc995b55))
+
 ## [1.1.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.0...create-ardo-v1.1.1) (2026-01-29)
 
 
