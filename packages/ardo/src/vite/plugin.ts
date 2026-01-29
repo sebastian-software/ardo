@@ -9,8 +9,32 @@ import { generateApiDocs } from "../typedoc/generator"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
 import fs from "fs/promises"
+import fsSync from "fs"
 import path from "path"
 import { execSync } from "child_process"
+
+/**
+ * Finds the package root by looking for package.json in parent directories.
+ * Returns the path relative to cwd, or undefined if not found.
+ */
+function findPackageRoot(cwd: string): string | undefined {
+  let dir = path.resolve(cwd)
+  const root = path.parse(dir).root
+
+  while (dir !== root) {
+    const parentDir = path.dirname(dir)
+    const packageJsonPath = path.join(parentDir, "package.json")
+
+    if (fsSync.existsSync(packageJsonPath)) {
+      // Return relative path from cwd to parent
+      return path.relative(cwd, parentDir) || "."
+    }
+
+    dir = parentDir
+  }
+
+  return undefined
+}
 
 /**
  * Detects the GitHub repository name from git remote URL.
@@ -202,10 +226,13 @@ export default function MarkdownContent() {
   // Note: unshift adds to front, so typedoc will be before routes in the array
   // This ensures typedoc buildStart runs before routes buildStart
   if (typedoc) {
+    // Find package root to use as default entry point base
+    const packageRoot = findPackageRoot(process.cwd())
+    const defaultEntryPoint = packageRoot ? `${packageRoot}/src/index.ts` : "./src/index.ts"
+
     const defaultTypedocConfig: TypeDocConfig = {
       enabled: true,
-      // Default to parent directory since docs is typically a subdirectory
-      entryPoints: ["../src/index.ts"],
+      entryPoints: [defaultEntryPoint],
       out: "api-reference",
       excludePrivate: true,
       excludeInternal: true,
