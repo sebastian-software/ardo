@@ -44,6 +44,7 @@ export function pressRoutesPlugin(
   let contentDir: string
   let isDevMode = false
   let hasCleanedRoutes = false
+  let isInitialGeneration = true
 
   function scanContentDirSync(dir: string, rootDir: string): RouteInfo[] {
     const routes: RouteInfo[] = []
@@ -322,9 +323,11 @@ function ${componentName}() {
       }
     }
 
-    if (writtenCount > 0) {
+    // Only log on initial generation, not on HMR updates
+    if (writtenCount > 0 && isInitialGeneration) {
       console.log(`[ardo] Generated ${writtenCount} content route files`)
     }
+    isInitialGeneration = false
   }
 
   return {
