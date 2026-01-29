@@ -84,7 +84,7 @@ Create the TanStack Router boilerplate files:
 ```tsx
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router"
 import config from "virtual:ardo/config"
-import "ardo/theme/styles.css"
+import "ardo/ui/styles.css"
 
 export const Route = createRootRoute({
   head: () => ({
@@ -117,7 +117,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 ```tsx
 import { createFileRoute } from "@tanstack/react-router"
-import { HomePage } from "ardo/theme"
+import { HomePage } from "ardo/ui"
 import { PressProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
@@ -148,7 +148,7 @@ function HomeComponent() {
 
 ```tsx
 import { createFileRoute, Outlet } from "@tanstack/react-router"
-import { DocLayout } from "ardo/theme"
+import { DocLayout } from "ardo/ui"
 import { PressProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"

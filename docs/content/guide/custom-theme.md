@@ -17,9 +17,9 @@ Create a custom CSS file:
 ```css
 /* styles/custom.css */
 :root {
-  --press-c-brand: #8b5cf6;
-  --press-c-brand-light: #a78bfa;
-  --press-c-brand-dark: #7c3aed;
+  --ardo-c-brand: #8b5cf6;
+  --ardo-c-brand-light: #a78bfa;
+  --ardo-c-brand-dark: #7c3aed;
 }
 ```
 
@@ -27,7 +27,7 @@ Import it in your app:
 
 ```ts
 import "./styles/custom.css"
-import "ardo/theme/styles.css"
+import "ardo/ui/styles.css"
 ```
 
 ### Available Variables
@@ -35,33 +35,33 @@ import "ardo/theme/styles.css"
 ```css
 :root {
   /* Brand colors */
-  --press-c-brand: #3b82f6;
-  --press-c-brand-light: #60a5fa;
-  --press-c-brand-dark: #2563eb;
+  --ardo-c-brand: #3b82f6;
+  --ardo-c-brand-light: #60a5fa;
+  --ardo-c-brand-dark: #2563eb;
 
   /* Background colors */
-  --press-c-bg: #ffffff;
-  --press-c-bg-soft: #f8fafc;
-  --press-c-bg-mute: #f1f5f9;
+  --ardo-c-bg: #ffffff;
+  --ardo-c-bg-soft: #f8fafc;
+  --ardo-c-bg-mute: #f1f5f9;
 
   /* Text colors */
-  --press-c-text: #1e293b;
-  --press-c-text-light: #475569;
-  --press-c-text-lighter: #64748b;
+  --ardo-c-text: #1e293b;
+  --ardo-c-text-light: #475569;
+  --ardo-c-text-lighter: #64748b;
 
   /* Layout */
-  --press-sidebar-width: 280px;
-  --press-toc-width: 240px;
-  --press-content-max-width: 800px;
-  --press-header-height: 64px;
+  --ardo-sidebar-width: 280px;
+  --ardo-toc-width: 240px;
+  --ardo-content-max-width: 800px;
+  --ardo-header-height: 64px;
 
   /* Typography */
-  --press-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
-  --press-font-mono: ui-monospace, SFMono-Regular, ...;
+  --ardo-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
 
   /* Border radius */
-  --press-radius: 8px;
-  --press-radius-sm: 4px;
+  --ardo-radius: 8px;
+  --ardo-radius-sm: 4px;
 }
 ```
 
@@ -91,7 +91,7 @@ Then use it in your layout:
 ```tsx
 // routes/__root.tsx
 import { MyHeader } from "../components/MyHeader"
-import { Sidebar, Footer } from "ardo/theme"
+import { Sidebar, Footer } from "ardo/ui"
 
 export function Layout({ children }) {
   return (

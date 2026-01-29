@@ -24,8 +24,8 @@ Ardo combines the developer experience of VitePress with the power of the React 
 - `ardo/config` — Configuration utilities (`defineConfig`, `resolveConfig`, `loadConfig`)
 - `ardo/vite` — Vite plugin (`ardo()` function that returns all required plugins)
 - `ardo/runtime` — React hooks (`useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`)
-- `ardo/theme` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, HomePage, CodeBlock, etc.)
-- `ardo/theme/styles.css` — Default theme stylesheet
+- `ardo/ui` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, HomePage, CodeBlock, Hero, Features, etc.)
+- `ardo/ui/styles.css` — Default theme stylesheet
 - `ardo/typedoc` — TypeDoc generation utilities (`typedocPlugin`, `generateApiDocs`)
 
 ## Quick Start
