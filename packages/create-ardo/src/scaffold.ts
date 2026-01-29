@@ -13,16 +13,24 @@ export const templates = [
   },
 ]
 
-export function createProjectStructure(
-  root: string,
-  template: string,
-  siteTitle: string,
+export interface ScaffoldOptions {
+  siteTitle: string
   projectName: string
-) {
+  typedoc: boolean
+  githubPages: boolean
+}
+
+export function createProjectStructure(root: string, template: string, options: ScaffoldOptions) {
   const templateDir = path.join(templatesRoot, template)
   const vars: Record<string, string> = {
-    SITE_TITLE: siteTitle,
-    PROJECT_NAME: projectName,
+    SITE_TITLE: options.siteTitle,
+    PROJECT_NAME: options.projectName,
+    TYPEDOC_CONFIG: options.typedoc
+      ? 'typedoc: true,'
+      : '// typedoc: true, // Uncomment to enable API docs',
+    GITHUB_PAGES_CONFIG: options.githubPages
+      ? '// GitHub Pages: base path auto-detected from git remote'
+      : 'githubPages: false, // Disabled for non-GitHub Pages deployment',
   }
 
   copyDir(templateDir, root, vars)

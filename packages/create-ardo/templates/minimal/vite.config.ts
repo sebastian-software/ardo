@@ -7,12 +7,9 @@ export default defineConfig({
       title: '{{SITE_TITLE}}',
       description: 'Built with Ardo',
 
-      // TypeDoc API documentation (uncomment to enable)
-      // Generates docs from ./src/index.ts into content/api-reference/
-      // typedoc: true,
+      {{TYPEDOC_CONFIG}}
 
-      // GitHub Pages base path is auto-detected from git remote.
-      // Set githubPages: false to disable, or set base manually in defineConfig.
+      {{GITHUB_PAGES_CONFIG}}
 
       themeConfig: {
         siteTitle: '{{SITE_TITLE}}',

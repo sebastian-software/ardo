@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import prompts from 'prompts'
-import { blue, cyan, green, red, reset, yellow } from 'kolorist'
+import { blue, cyan, green, red, reset, yellow, dim } from 'kolorist'
 import {
   templates,
   createProjectStructure,
@@ -70,6 +70,36 @@ async function main() {
         message: reset('Site title:'),
         initial: 'My Documentation',
       },
+      {
+        type: 'select',
+        name: 'docType',
+        message: reset('What are you documenting?'),
+        choices: [
+          {
+            title: `Code library ${dim('- includes TypeDoc API generation')}`,
+            value: 'library',
+          },
+          {
+            title: `General documentation ${dim('- guides, manuals, etc.')}`,
+            value: 'general',
+          },
+        ],
+      },
+      {
+        type: 'select',
+        name: 'githubPages',
+        message: reset('Deploy to GitHub Pages?'),
+        choices: [
+          {
+            title: `Yes ${dim('- auto-detects base path from git remote')}`,
+            value: true,
+          },
+          {
+            title: `No ${dim('- deploy to other platforms (Netlify, Vercel, etc.)')}`,
+            value: false,
+          },
+        ],
+      },
     ],
     {
       onCancel: () => {
@@ -78,7 +108,7 @@ async function main() {
     }
   )
 
-  const { overwrite, template: templateChoice, siteTitle } = response
+  const { overwrite, template: templateChoice, siteTitle, docType, githubPages } = response
 
   template = templateChoice || template || 'minimal'
   const root = path.join(process.cwd(), targetDir)
@@ -94,7 +124,12 @@ async function main() {
   console.log()
 
   // Create project structure
-  createProjectStructure(root, template, siteTitle, targetDir)
+  createProjectStructure(root, template, {
+    siteTitle,
+    projectName: targetDir,
+    typedoc: docType === 'library',
+    githubPages: githubPages ?? true,
+  })
 
   console.log(`  ${green('Done!')} Now run:`)
   console.log()

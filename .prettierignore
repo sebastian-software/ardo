@@ -1,15 +1,9 @@
-# Dependencies
-node_modules/
+# Template files contain placeholders that aren't valid syntax
+packages/create-ardo/templates/
 
 # Build outputs
 dist/
-.output/
 .tanstack/
 
-# Documentation content (markdown with code examples)
-docs/content/
-
-# Generated files
-*.gen.ts
-pnpm-lock.yaml
-CHANGELOG.md
+# Dependencies
+node_modules/

@@ -31,7 +31,12 @@ describe('scaffold integration build', () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ardo-integration-'))
 
     // 2. Scaffold project
-    createProjectStructure(tmpDir, 'minimal', 'Integration Test Docs', 'test-project')
+    createProjectStructure(tmpDir, 'minimal', {
+      siteTitle: 'Integration Test Docs',
+      projectName: 'test-project',
+      typedoc: true,
+      githubPages: false,
+    })
 
     // 3. Add pseudo API source for TypeDoc testing
     const srcDir = path.join(tmpDir, 'src')
