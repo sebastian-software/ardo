@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.2...ardo-v1.2.3) (2026-01-29)
+
+
+### Bug Fixes
+
+* also auto-detect tsconfig.json in package root ([d44bc67](https://github.com/sebastian-software/ardo/commit/d44bc6748134fc92d09d04f2a4f443ae9f4a9670))
+
 ## [1.2.2](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.1...ardo-v1.2.2) (2026-01-29)
 
 
