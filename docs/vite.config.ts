@@ -8,7 +8,6 @@ export default defineConfig({
       description: "React-first Static Documentation Framework",
 
       themeConfig: {
-        logo: "/logo.svg",
         nav: [
           { text: "Guide", link: "/guide/getting-started" },
           { text: "API", link: "/api-reference" },
