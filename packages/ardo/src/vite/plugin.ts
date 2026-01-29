@@ -229,8 +229,16 @@ export default function MarkdownContent() {
             console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
             hasGenerated = true
           } catch (error) {
-            console.error("[ardo] TypeDoc generation failed:", error)
-            throw error
+            // Don't crash the dev server if TypeDoc fails - just warn and continue
+            // This allows users to run the dev server even if their TypeDoc config is incorrect
+            console.warn(
+              "[ardo] TypeDoc generation failed. API documentation will not be available."
+            )
+            console.warn("[ardo] Check your typedoc.entryPoints configuration.")
+            if (error instanceof Error) {
+              console.warn(`[ardo] Error: ${error.message}`)
+            }
+            hasGenerated = true // Prevent retry
           }
         }
       },
