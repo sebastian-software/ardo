@@ -21,7 +21,11 @@ import { ardo } from 'ardo/vite'
 
 export default defineConfig({
   base: '/my-docs/',
-  plugins: [ardo({ /* ... */ })],
+  plugins: [
+    ardo({
+      /* ... */
+    }),
+  ],
 })
 ```
 

@@ -79,6 +79,7 @@ export default defineConfig({
 Create the TanStack Router boilerplate files:
 
 **`src/routes/__root.tsx`**:
+
 ```tsx
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import config from 'virtual:ardo/config'
@@ -112,6 +113,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 ```
 
 **`src/routes/index.tsx`**:
+
 ```tsx
 import { createFileRoute } from '@tanstack/react-router'
 import { HomePage } from 'ardo/theme'
@@ -142,6 +144,7 @@ function HomeComponent() {
 ```
 
 **`src/routes/(docs)/_layout.tsx`**:
+
 ```tsx
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { DocLayout } from 'ardo/theme'
@@ -165,6 +168,7 @@ function DocsLayoutComponent() {
 ```
 
 **`src/router.tsx`**:
+
 ```tsx
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
@@ -179,6 +183,7 @@ export function getRouter() {
 ```
 
 **`src/vite-env.d.ts`**:
+
 ```ts
 /// <reference types="vite/client" />
 

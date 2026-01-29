@@ -38,7 +38,11 @@ import { defineConfig } from 'vite'
 import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  plugins: [ardo({ /* config */ })],
+  plugins: [
+    ardo({
+      /* config */
+    }),
+  ],
 })
 ```
 
@@ -128,7 +132,11 @@ If deploying to a subdirectory, set the `base` option in `vite.config.ts`:
 ```typescript
 export default defineConfig({
   base: '/my-docs/',
-  plugins: [ardo({ /* config */ })],
+  plugins: [
+    ardo({
+      /* config */
+    }),
+  ],
 })
 ```
 

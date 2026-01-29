@@ -9,7 +9,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ## Overview
 
-|                  | Ardo        | VitePress     | Docusaurus   | Starlight     |
+|                  | Ardo               | VitePress     | Docusaurus   | Starlight     |
 | ---------------- | ------------------ | ------------- | ------------ | ------------- |
 | **UI Framework** | React 19           | Vue 3         | React 18     | Astro         |
 | **Build Tool**   | Vite + Rolldown    | Vite + Rollup | Webpack      | Vite + Rollup |
@@ -21,7 +21,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Build System
 
-|                |   Ardo    | VitePress |  Docusaurus   | Starlight |
+|                |       Ardo       | VitePress |  Docusaurus   | Starlight |
 | -------------- | :--------------: | :-------: | :-----------: | :-------: |
 | Vite           | ✅ v8 (Rolldown) |   ✅ v5   |  ❌ Webpack   |   ✅ v5   |
 | ES Modules     |    ✅ Native     | ✅ Native | ⚠️ Transpiled | ✅ Native |
@@ -30,7 +30,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Markdown Processing
 
-|                     |    Ardo     |     VitePress      |   Docusaurus    |     Starlight      |
+|                     |        Ardo        |     VitePress      |   Docusaurus    |     Starlight      |
 | ------------------- | :----------------: | :----------------: | :-------------: | :----------------: |
 | Parser              |   unified/remark   |    markdown-it     |       MDX       |   unified/remark   |
 | Syntax Highlighting | Shiki (build-time) | Shiki (build-time) | Prism (runtime) | Shiki (build-time) |
@@ -40,19 +40,19 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Routing
 
-|                    | Ardo |     VitePress     | Docusaurus |      Starlight       |
-| ------------------ | :---------: | :---------------: | :--------: | :------------------: |
-| Type-safe Routes   |   ✅ Full   |        ❌         |     ❌     |          ❌          |
-| File-based Routing |     ✅      |        ✅         |     ✅     |          ✅          |
-| Catch-all Routes   | ✅ `$.tsx`  | ✅ `[...path].md` |     ✅     | ✅ `[...slug].astro` |
-| Route Preloading   |     ✅      |        ✅         |     ✅     |          ❌          |
-| SPA Navigation     |     ✅      |        ✅         |     ✅     |      ⚠️ Partial      |
+|                    |    Ardo    |     VitePress     | Docusaurus |      Starlight       |
+| ------------------ | :--------: | :---------------: | :--------: | :------------------: |
+| Type-safe Routes   |  ✅ Full   |        ❌         |     ❌     |          ❌          |
+| File-based Routing |     ✅     |        ✅         |     ✅     |          ✅          |
+| Catch-all Routes   | ✅ `$.tsx` | ✅ `[...path].md` |     ✅     | ✅ `[...slug].astro` |
+| Route Preloading   |     ✅     |        ✅         |     ✅     |          ❌          |
+| SPA Navigation     |     ✅     |        ✅         |     ✅     |      ⚠️ Partial      |
 
 ## Feature Details
 
 ### Search Implementation
 
-|                      | Ardo   | VitePress            | Docusaurus        | Starlight    |
+|                      | Ardo          | VitePress            | Docusaurus        | Starlight    |
 | -------------------- | ------------- | -------------------- | ----------------- | ------------ |
 | **Engine**           | MiniSearch    | MiniSearch / Algolia | Algolia / Local   | Pagefind     |
 | **Index Generation** | Build-time    | Build-time           | Build-time        | Build-time   |
@@ -61,7 +61,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Theming & Customization
 
-|                    | Ardo           | VitePress             | Docusaurus         | Starlight             |
+|                    | Ardo                  | VitePress             | Docusaurus         | Starlight             |
 | ------------------ | --------------------- | --------------------- | ------------------ | --------------------- |
 | **CSS System**     | CSS Variables         | CSS Variables         | Infima (CSS-in-JS) | CSS Variables         |
 | **Dark Mode**      | CSS Variables + Class | CSS Variables + Class | Data attribute     | CSS Variables + Class |
@@ -70,7 +70,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Component Architecture
 
-|                | Ardo   | VitePress        | Docusaurus         | Starlight           |
+|                | Ardo          | VitePress        | Docusaurus         | Starlight           |
 | -------------- | ------------- | ---------------- | ------------------ | ------------------- |
 | **Layout**     | `<Layout>`    | `<Layout>`       | `@theme/Layout`    | `<StarlightPage>`   |
 | **Sidebar**    | `<Sidebar>`   | `<VPSidebar>`    | `@theme/Sidebar`   | `<Sidebar>`         |
@@ -79,7 +79,7 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### API Documentation
 
-|                     |  Ardo   | VitePress | Docusaurus | Starlight |
+|                     |      Ardo      | VitePress | Docusaurus | Starlight |
 | ------------------- | :------------: | :-------: | :--------: | :-------: |
 | TypeDoc Integration |  ✅ Built-in   | ❌ Manual | ✅ Plugin  | ❌ Manual |
 | Auto-generation     | ✅ From source |    ❌     |     ✅     |    ❌     |
@@ -87,19 +87,19 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ### Internationalization
 
-|                | Ardo | VitePress | Docusaurus | Starlight |
-| -------------- | :---------: | :-------: | :--------: | :-------: |
-| i18n Support   | ⚠️ Planned  |    ✅     |     ✅     |    ✅     |
-| RTL Support    | ⚠️ Planned  |    ✅     |     ✅     |    ✅     |
-| Locale Routing | ⚠️ Planned  | ✅ `/de/` | ✅ `/de/`  | ✅ `/de/` |
+|                |    Ardo    | VitePress | Docusaurus | Starlight |
+| -------------- | :--------: | :-------: | :--------: | :-------: |
+| i18n Support   | ⚠️ Planned |    ✅     |     ✅     |    ✅     |
+| RTL Support    | ⚠️ Planned |    ✅     |     ✅     |    ✅     |
+| Locale Routing | ⚠️ Planned | ✅ `/de/` | ✅ `/de/`  | ✅ `/de/` |
 
 ### Versioning
 
 |                   | Ardo | VitePress | Docusaurus  | Starlight |
-| ----------------- | :---------: | :-------: | :---------: | :-------: |
-| Doc Versioning    |     ❌      |    ❌     | ✅ Built-in | ⚠️ Manual |
-| Version Dropdown  |     ❌      |    ❌     |     ✅      |    ❌     |
-| Version Archiving |     ❌      |    ❌     |     ✅      |    ❌     |
+| ----------------- | :--: | :-------: | :---------: | :-------: |
+| Doc Versioning    |  ❌  |    ❌     | ✅ Built-in | ⚠️ Manual |
+| Version Dropdown  |  ❌  |    ❌     |     ✅      |    ❌     |
+| Version Archiving |  ❌  |    ❌     |     ✅      |    ❌     |
 
 ## Configuration Comparison
 
@@ -177,7 +177,7 @@ export default defineConfig({
 
 ## Runtime Characteristics
 
-|                   | Ardo     | VitePress  | Docusaurus   | Starlight         |
+|                   | Ardo            | VitePress  | Docusaurus   | Starlight         |
 | ----------------- | --------------- | ---------- | ------------ | ----------------- |
 | **Hydration**     | Full React      | Full Vue   | Full React   | Partial (Islands) |
 | **JS Required**   | Yes             | Yes        | Yes          | Minimal           |
@@ -186,8 +186,8 @@ export default defineConfig({
 
 ## Ecosystem
 
-|                 | Ardo        | VitePress       | Docusaurus          | Starlight            |
+|                 | Ardo               | VitePress       | Docusaurus          | Starlight            |
 | --------------- | ------------------ | --------------- | ------------------- | -------------------- |
-| **npm Package** | `ardo`      | `vitepress`     | `@docusaurus/core`  | `@astrojs/starlight` |
+| **npm Package** | `ardo`             | `vitepress`     | `@docusaurus/core`  | `@astrojs/starlight` |
 | **GitHub**      | Sebastian-Software | vuejs/vitepress | facebook/docusaurus | withastro/starlight  |
 | **License**     | MIT                | MIT             | MIT                 | MIT                  |
