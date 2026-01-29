@@ -11,3 +11,15 @@ declare module "virtual:ardo/sidebar" {
   const sidebar: SidebarItem[]
   export default sidebar
 }
+
+declare module "virtual:ardo/search-index" {
+  interface SearchDoc {
+    id: string
+    title: string
+    content: string
+    path: string
+    section?: string
+  }
+  const searchDocs: SearchDoc[]
+  export default searchDocs
+}

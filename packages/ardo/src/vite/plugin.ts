@@ -65,6 +65,9 @@ const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
 const RESOLVED_VIRTUAL_SIDEBAR_ID = "\0" + VIRTUAL_SIDEBAR_ID
 
+const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
+const RESOLVED_VIRTUAL_SEARCH_ID = "\0" + VIRTUAL_SEARCH_ID
+
 export interface ArdoPluginOptions extends Partial<PressConfig> {
   /** Options for the routes generator plugin */
   routes?: PressRoutesPluginOptions | false
@@ -150,6 +153,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       if (id === VIRTUAL_SIDEBAR_ID) {
         return RESOLVED_VIRTUAL_SIDEBAR_ID
       }
+      if (id === VIRTUAL_SEARCH_ID) {
+        return RESOLVED_VIRTUAL_SEARCH_ID
+      }
     },
 
     async load(id) {
@@ -167,6 +173,11 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
         const sidebar = await generateSidebar(resolvedConfig)
         return `export default ${JSON.stringify(sidebar)}`
+      }
+
+      if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
+        const searchIndex = await generateSearchIndex(resolvedConfig)
+        return `export default ${JSON.stringify(searchIndex)}`
       }
     },
   }
@@ -395,6 +406,88 @@ async function scanDirectory(
 
 function formatTitle(name: string): string {
   return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+interface SearchDoc {
+  id: string
+  title: string
+  content: string
+  path: string
+  section?: string
+}
+
+async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]> {
+  const { contentDir } = config
+  const docs: SearchDoc[] = []
+
+  async function scanForSearch(dir: string, section?: string): Promise<void> {
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true })
+
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name)
+
+        if (entry.isDirectory()) {
+          // Use directory name as section for nested content
+          const newSection = section
+            ? `${section} > ${formatTitle(entry.name)}`
+            : formatTitle(entry.name)
+          await scanForSearch(fullPath, newSection)
+        } else if (entry.name.endsWith(".md")) {
+          const relativePath = path.relative(contentDir, fullPath)
+          const fileContent = await fs.readFile(fullPath, "utf-8")
+
+          // Extract frontmatter
+          const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
+          let title = formatTitle(entry.name.replace(/\.md$/, ""))
+          let content = fileContent
+
+          if (frontmatterMatch) {
+            const frontmatterText = frontmatterMatch[1]
+            const titleMatch = frontmatterText.match(/title:\s*["']?([^"'\n]+)["']?/)
+            if (titleMatch) {
+              title = titleMatch[1].trim()
+            }
+            // Remove frontmatter from content
+            content = fileContent.slice(frontmatterMatch[0].length)
+          }
+
+          // Clean up content: remove markdown syntax, keep text
+          content = content
+            .replace(/```[\s\S]*?```/g, "") // Remove code blocks
+            .replace(/`[^`]+`/g, "") // Remove inline code
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links to text
+            .replace(/[#*_~>]/g, "") // Remove markdown symbols
+            .replace(/\n+/g, " ") // Newlines to spaces
+            .replace(/\s+/g, " ") // Multiple spaces to single
+            .trim()
+            .slice(0, 2000) // Limit content size
+
+          // Generate path for the route
+          const routePath =
+            entry.name === "index.md"
+              ? "/" + path.dirname(relativePath).replace(/\\/g, "/")
+              : "/" + relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
+
+          // Skip root index.md (use "/" as path)
+          const finalPath = routePath === "/." ? "/" : routePath
+
+          docs.push({
+            id: relativePath,
+            title,
+            content,
+            path: finalPath,
+            section,
+          })
+        }
+      }
+    } catch {
+      // Directory may not exist
+    }
+  }
+
+  await scanForSearch(contentDir)
+  return docs
 }
 
 export default ardoPlugin

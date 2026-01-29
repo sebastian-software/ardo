@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { Link } from "@tanstack/react-router"
 import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
+import searchDocs from "virtual:ardo/search-index"
 
 interface SearchDoc {
   id: string
@@ -10,8 +11,6 @@ interface SearchDoc {
   path: string
   section?: string
 }
-
-let searchIndex: MiniSearch<SearchDoc> | null = null
 
 export function Search() {
   const [isOpen, setIsOpen] = useState(false)
@@ -53,53 +52,33 @@ export function Search() {
     }
   }, [isOpen])
 
-  const loadSearchIndex = useCallback(async () => {
-    if (searchIndex) return searchIndex
-
-    try {
-      const response = await fetch("/_press/search-index.json")
-      if (!response.ok) return null
-
-      const docs: SearchDoc[] = await response.json()
-
-      searchIndex = new MiniSearch<SearchDoc>({
-        fields: ["title", "content", "section"],
-        storeFields: ["title", "path", "section"],
-        searchOptions: {
-          boost: { title: 2 },
-          fuzzy: 0.2,
-          prefix: true,
-        },
-      })
-
-      searchIndex.addAll(docs)
-      return searchIndex
-    } catch {
-      return null
-    }
+  // Build search index from virtual module data
+  const searchIndex = useMemo(() => {
+    const index = new MiniSearch<SearchDoc>({
+      fields: ["title", "content", "section"],
+      storeFields: ["title", "path", "section"],
+      searchOptions: {
+        boost: { title: 2 },
+        fuzzy: 0.2,
+        prefix: true,
+      },
+    })
+    index.addAll(searchDocs as SearchDoc[])
+    return index
   }, [])
 
-  const handleSearch = useCallback(
-    async (searchQuery: string) => {
-      setQuery(searchQuery)
+  const handleSearch = (searchQuery: string) => {
+    setQuery(searchQuery)
 
-      if (!searchQuery.trim()) {
-        setResults([])
-        return
-      }
+    if (!searchQuery.trim()) {
+      setResults([])
+      return
+    }
 
-      const index = await loadSearchIndex()
-      if (!index) {
-        setResults([])
-        return
-      }
-
-      const searchResults = index.search(searchQuery).slice(0, 10)
-      setResults(searchResults)
-      setSelectedIndex(0)
-    },
-    [loadSearchIndex]
-  )
+    const searchResults = searchIndex.search(searchQuery).slice(0, 10)
+    setResults(searchResults)
+    setSelectedIndex(0)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {

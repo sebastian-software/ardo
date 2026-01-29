@@ -23,6 +23,7 @@ export default defineConfig({
     "@tanstack/react-start",
     "vite",
     "tailwindcss",
+    /^virtual:ardo\//,
   ],
   esbuildOptions(options) {
     options.jsx = "automatic"
