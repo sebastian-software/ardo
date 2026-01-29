@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.0...ardo-v1.2.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* add logo, navigation and improve docs sidebar ([f8d574d](https://github.com/sebastian-software/ardo/commit/f8d574d604217ae4d0f8b2e023455651b8416539))
+
 ## [1.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v1.1.1...ardo-v1.2.0) (2026-01-29)
 
 
