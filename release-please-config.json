@@ -14,11 +14,13 @@
     "packages/ardo": {
       "release-type": "node",
       "package-name": "ardo",
+      "component": "ardo",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/create-ardo": {
       "release-type": "node",
       "package-name": "create-ardo",
+      "component": "create-ardo",
       "changelog-path": "CHANGELOG.md"
     }
   },
