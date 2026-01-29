@@ -11,45 +11,31 @@ Ardo includes built-in TypeDoc integration that allows you to automatically gene
 
 ### 1. Configure TypeDoc
 
-Add the `typedoc` configuration to your `press.config.ts`:
-
-```ts
-import { defineConfig } from 'ardo/config'
-
-export default defineConfig({
-  title: 'My Library',
-
-  typedoc: {
-    enabled: true,
-    entryPoints: ['../src/index.ts'],
-    tsconfig: '../tsconfig.json',
-    out: 'api',
-  },
-})
-```
-
-### 2. Add the Vite Plugin
-
-Update your `vite.config.ts` to include the TypeDoc plugin:
+Add the `typedoc` configuration to your `vite.config.ts`:
 
 ```ts
 import { defineConfig } from 'vite'
-import { ardoPlugin } from 'ardo/vite'
-import { typedocPlugin } from 'ardo/typedoc'
-import pressConfig from './press.config'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
   plugins: [
-    ardoPlugin(),
-    typedocPlugin({
-      config: pressConfig.typedoc!,
-      contentDir: './content',
+    ardo({
+      title: 'My Library',
+
+      typedoc: {
+        enabled: true,
+        entryPoints: ['../src/index.ts'],
+        tsconfig: '../tsconfig.json',
+        out: 'api',
+      },
     }),
   ],
 })
 ```
 
-### 3. Run the Build
+The TypeDoc plugin is automatically included when `typedoc` config is provided.
+
+### 2. Run the Build
 
 The API documentation will be automatically generated when you build your site:
 
@@ -240,47 +226,52 @@ greet('World') // 'Hello, World!'
 Here's a complete configuration example:
 
 ```ts
-import { defineConfig } from 'ardo/config'
+import { defineConfig } from 'vite'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  title: 'My Library Docs',
-  description: 'Documentation for my awesome library',
+  plugins: [
+    ardo({
+      title: 'My Library Docs',
+      description: 'Documentation for my awesome library',
 
-  typedoc: {
-    enabled: true,
-    entryPoints: ['../packages/my-lib/src/index.ts'],
-    tsconfig: '../packages/my-lib/tsconfig.json',
-    out: 'api',
+      typedoc: {
+        enabled: true,
+        entryPoints: ['../packages/my-lib/src/index.ts'],
+        tsconfig: '../packages/my-lib/tsconfig.json',
+        out: 'api',
 
-    excludePrivate: true,
-    excludeInternal: true,
-    sort: ['source-order'],
+        excludePrivate: true,
+        excludeInternal: true,
+        sort: ['source-order'],
 
-    sidebar: {
-      title: 'API Reference',
-      position: 50,
-    },
+        sidebar: {
+          title: 'API Reference',
+          position: 50,
+        },
 
-    markdown: {
-      breadcrumbs: true,
-      hierarchy: true,
-      sourceLinks: true,
-      sourceBaseUrl: 'https://github.com/my-org/my-lib/blob/main/packages/my-lib',
-    },
-  },
-
-  themeConfig: {
-    sidebar: [
-      {
-        text: 'Guide',
-        items: [{ text: 'Introduction', link: '/guide/intro' }],
+        markdown: {
+          breadcrumbs: true,
+          hierarchy: true,
+          sourceLinks: true,
+          sourceBaseUrl: 'https://github.com/my-org/my-lib/blob/main/packages/my-lib',
+        },
       },
-      {
-        text: 'API Reference',
-        link: '/api',
+
+      themeConfig: {
+        sidebar: [
+          {
+            text: 'Guide',
+            items: [{ text: 'Introduction', link: '/guide/intro' }],
+          },
+          {
+            text: 'API Reference',
+            link: '/api',
+          },
+        ],
       },
-    ],
-  },
+    }),
+  ],
 })
 ```
 

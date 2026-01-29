@@ -22,9 +22,9 @@ Ardo combines the developer experience of VitePress with the power of the React 
 ## Package Exports
 
 - `ardo/config` — Configuration utilities (`defineConfig`, `resolveConfig`, `loadConfig`)
-- `ardo/vite` — Vite plugin (`ardoPlugin`)
+- `ardo/vite` — Vite plugin (`ardo()` function that returns all required plugins)
 - `ardo/runtime` — React hooks (`useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`)
-- `ardo/theme` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, CodeBlock, etc.)
+- `ardo/theme` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, HomePage, CodeBlock, etc.)
 - `ardo/theme/styles.css` — Default theme stylesheet
 - `ardo/typedoc` — TypeDoc generation utilities (`typedocPlugin`, `generateApiDocs`)
 
@@ -35,17 +35,38 @@ Ardo combines the developer experience of VitePress with the power of the React 
 pnpm create ardo@latest my-docs
 
 # Or install manually
-pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
-pnpm add -D typescript vite tailwindcss
+pnpm add ardo @tanstack/react-router @tanstack/react-start react react-dom
+pnpm add -D typescript vite @types/react @types/react-dom
 ```
 
 ## Key Concepts
 
-- Configuration via `press.config.ts` using `defineConfig()` from `ardo/config`
-- Vite plugin via `ardoPlugin()` from `ardo/vite`
+- Configuration via `vite.config.ts` using the `ardo()` plugin from `ardo/vite`
+- All config (title, description, themeConfig) is passed directly to `ardo()`
 - Markdown content lives in a `content/` directory
+- Route files live in `src/routes/` (boilerplate created by scaffold, content routes auto-generated)
 - JSX-first architecture: theme components accept explicit props
 - Supports both config-driven sidebar/nav and JSX composition
 - Built-in full-text search via MiniSearch
 - Dark mode via CSS custom properties
 - TypeDoc integration for API reference generation
+
+## Project Structure
+
+```
+my-docs/
+├── content/                  # Markdown files
+│   ├── index.md              # Home page (with hero/features frontmatter)
+│   └── guide/*.md            # Documentation pages
+├── src/
+│   ├── routes/
+│   │   ├── __root.tsx        # HTML shell
+│   │   ├── index.tsx         # Home page route
+│   │   └── (docs)/
+│   │       ├── _layout.tsx   # Documentation layout
+│   │       └── *.tsx         # Auto-generated from content/
+│   ├── router.tsx            # Router configuration
+│   └── vite-env.d.ts         # TypeScript declarations
+├── vite.config.ts            # Vite + Ardo configuration
+└── package.json
+```

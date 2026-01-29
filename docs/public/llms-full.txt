@@ -88,58 +88,67 @@ pnpm init
 #### 2. Install dependencies
 
 ```bash
-pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
-pnpm add -D typescript vite tailwindcss
+pnpm add ardo @tanstack/react-router @tanstack/react-start react react-dom
+pnpm add -D typescript vite @types/react @types/react-dom
 ```
 
-#### 3. Create configuration
+#### 3. Create Vite configuration
 
-Create a `press.config.ts` file in your project root:
+Create a `vite.config.ts` file with your Ardo configuration:
 
 ```ts
-import { defineConfig } from 'ardo/config'
+import { defineConfig } from 'vite'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  title: 'My Documentation',
-  description: 'My awesome documentation site',
+  plugins: [
+    ardo({
+      title: 'My Documentation',
+      description: 'My awesome documentation site',
 
-  themeConfig: {
-    nav: [{ text: 'Guide', link: '/guide/introduction' }],
-    sidebar: [
-      {
-        text: 'Guide',
-        items: [{ text: 'Introduction', link: '/guide/introduction' }],
+      themeConfig: {
+        nav: [{ text: 'Guide', link: '/guide/getting-started' }],
+        sidebar: [
+          {
+            text: 'Guide',
+            items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
+          },
+        ],
       },
-    ],
-  },
+    }),
+  ],
 })
 ```
 
-#### 4. Create your first document
+#### 4. Create route boilerplate
+
+Create the TanStack Router files in `src/`:
+
+- `src/routes/__root.tsx` — HTML shell with HeadContent and Scripts
+- `src/routes/index.tsx` — Home page route with HomePage component
+- `src/routes/(docs)/_layout.tsx` — Documentation layout with DocLayout
+- `src/router.tsx` — Router configuration with routeTree
+- `src/vite-env.d.ts` — TypeScript declarations for virtual modules
+
+:::tip
+Use `pnpm create ardo@latest` to scaffold all these files automatically!
+:::
+
+#### 5. Create your first document
 
 Create a `content` directory and add an `index.md` file:
 
 ```markdown
 ---
 title: Welcome
+hero:
+  name: My Docs
+  text: Documentation Made Simple
+  actions:
+    - text: Get Started
+      link: /guide/getting-started
+      theme: brand
 ---
-
-# Welcome to My Documentation
-
-This is my documentation site built with Ardo.
-```
-
-#### 5. Set up Vite
-
-Create a `vite.config.ts` file:
-
-```ts
-import { defineConfig } from 'vite'
-import { ardoPlugin } from 'ardo/vite'
-
-export default defineConfig({
-  plugins: [ardoPlugin()],
-})
 ```
 
 ### Development
@@ -170,14 +179,25 @@ A typical Ardo project looks like this:
 
 ```
 my-docs/
-├── content/           # Your markdown files
-│   ├── index.md       # Home page
+├── content/                     # Your markdown files
+│   ├── index.md                 # Home page
 │   └── guide/
-│       └── intro.md
-├── press.config.ts    # Ardo config
-├── vite.config.ts     # Vite config
+│       └── getting-started.md
+├── src/
+│   ├── routes/
+│   │   ├── __root.tsx           # HTML shell
+│   │   ├── index.tsx            # Home page route
+│   │   └── (docs)/
+│   │       ├── _layout.tsx      # Documentation layout
+│   │       └── *.tsx            # Auto-generated from content/
+│   ├── router.tsx               # Router configuration
+│   ├── routeTree.gen.ts         # Auto-generated route tree
+│   └── vite-env.d.ts            # TypeScript declarations
+├── vite.config.ts               # Vite + Ardo configuration
 └── package.json
 ```
+
+Files in `src/routes/(docs)/` (except `_layout.tsx`) are auto-generated from your markdown content.
 
 ---
 
@@ -440,7 +460,7 @@ features:
 
 ## Theme Configuration
 
-Ardo comes with a default theme that can be fully customized through the `themeConfig` option in `press.config.ts`.
+Ardo comes with a default theme that can be fully customized through the `themeConfig` option passed to the `ardo()` plugin in `vite.config.ts`.
 
 ### Site Title & Logo
 
@@ -840,43 +860,29 @@ Ardo includes built-in TypeDoc integration that allows you to automatically gene
 
 #### 1. Configure TypeDoc
 
-Add the `typedoc` configuration to your `press.config.ts`:
-
-```ts
-import { defineConfig } from 'ardo/config'
-
-export default defineConfig({
-  title: 'My Library',
-
-  typedoc: {
-    enabled: true,
-    entryPoints: ['../src/index.ts'],
-    tsconfig: '../tsconfig.json',
-    out: 'api',
-  },
-})
-```
-
-#### 2. Add the Vite Plugin
-
-Update your `vite.config.ts` to include the TypeDoc plugin:
+Add the `typedoc` configuration to your `vite.config.ts`:
 
 ```ts
 import { defineConfig } from 'vite'
-import { ardoPlugin } from 'ardo/vite'
-import { typedocPlugin } from 'ardo/typedoc'
-import pressConfig from './press.config'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
   plugins: [
-    ardoPlugin(),
-    typedocPlugin({
-      config: pressConfig.typedoc!,
-      contentDir: './content',
+    ardo({
+      title: 'My Library',
+
+      typedoc: {
+        enabled: true,
+        entryPoints: ['../src/index.ts'],
+        tsconfig: '../tsconfig.json',
+        out: 'api',
+      },
     }),
   ],
 })
 ```
+
+The TypeDoc plugin is automatically included when `typedoc` config is provided.
 
 #### 3. Run the Build
 
@@ -1134,12 +1140,18 @@ No workflow file needed. Connect your repository and configure:
 
 ### Configuration Comparison
 
-**Ardo** uses `press.config.ts`:
+**Ardo** uses `vite.config.ts` with inline config:
 ```ts
-import { defineConfig } from 'ardo/config'
+import { defineConfig } from 'vite'
+import { ardo } from 'ardo/vite'
+
 export default defineConfig({
-  title: 'My Docs',
-  description: 'Documentation',
+  plugins: [
+    ardo({
+      title: 'My Docs',
+      description: 'Documentation',
+    }),
+  ],
 })
 ```
 
@@ -1182,10 +1194,10 @@ pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
 
 ```ts
 import { defineConfig } from 'vite'
-import { ardoPlugin } from 'ardo/vite'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  plugins: [ardoPlugin()],
+  plugins: [ardo({ title: 'My Docs' })],
 })
 ```
 
@@ -1226,7 +1238,7 @@ NODE_OPTIONS=--max-old-space-size=4096 pnpm build
 ```ts
 export default defineConfig({
   base: '/my-docs/',
-  plugins: [ardoPlugin()],
+  plugins: [ardo({ title: 'My Docs' })],
 })
 ```
 
@@ -1244,7 +1256,7 @@ export default defineConfig({
 | ----------------------- | ---------------------------------------------- |
 | `ardo`                  | Main entry — all config types, components, hooks, and utilities |
 | `ardo/config`           | Configuration utilities: `defineConfig`, `resolveConfig`, `loadConfig` |
-| `ardo/vite`             | Vite plugin: `ardoPlugin`, `ArdoPluginOptions` |
+| `ardo/vite`             | Vite plugin: `ardo()` function that returns all required plugins |
 | `ardo/runtime`          | React hooks: `useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`, `PressProvider` |
 | `ardo/theme`            | UI components: `Layout`, `Header`, `Sidebar`, `TOC`, `Footer`, `DocPage`, `CodeBlock`, `Tabs`, `Search`, and more |
 | `ardo/theme/styles.css` | Default theme stylesheet                       |

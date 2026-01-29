@@ -106,16 +106,21 @@ A technical comparison of Ardo with other popular documentation frameworks.
 ### Ardo
 
 ```ts
-// press.config.ts
-import { defineConfig } from 'ardo/config'
+// vite.config.ts
+import { defineConfig } from 'vite'
+import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  title: 'My Docs',
-  description: 'Documentation',
+  plugins: [
+    ardo({
+      title: 'My Docs',
+      description: 'Documentation',
+    }),
+  ],
 })
 ```
 
-**Philosophy:** Minimal configuration, sensible defaults. Most features work out of the box.
+**Philosophy:** Minimal configuration, sensible defaults. Config passed directly to Vite plugin.
 
 ### VitePress
 
