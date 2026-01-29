@@ -128,18 +128,56 @@ export class TypeDocGenerator {
         ? this.renderComment(this.project.comment.summary)
         : "Auto-generated API documentation.",
       "",
-      "## Modules",
-      "",
     ]
 
     const children = this.project?.children || []
+
+    // Group children by kind (with special handling for hooks and components)
+    const groups: Record<string, DeclarationReflection[]> = {}
+
     for (const child of children) {
-      const description = child.comment?.summary
-        ? this.renderCommentShort(child.comment.summary)
-        : ""
-      content.push(
-        `- [${child.name}](${this.basePath}/${this.getSlug(child.name)}) - ${description}`
-      )
+      const kindName = this.getKindGroupName(child.kind, child.name)
+      if (!groups[kindName]) {
+        groups[kindName] = []
+      }
+      groups[kindName].push(child)
+    }
+
+    // Sort each group alphabetically
+    for (const group of Object.values(groups)) {
+      group.sort((a, b) => a.name.localeCompare(b.name))
+    }
+
+    // Define the order of groups
+    const groupOrder = [
+      "Functions",
+      "React Hooks",
+      "React Components",
+      "Interfaces",
+      "Types",
+      "Classes",
+      "Variables",
+      "Enums",
+      "Other",
+    ]
+
+    // Render each group
+    for (const groupName of groupOrder) {
+      const group = groups[groupName]
+      if (!group || group.length === 0) continue
+
+      content.push(`## ${groupName}`)
+      content.push("")
+
+      for (const child of group) {
+        const description = child.comment?.summary
+          ? this.renderCommentShort(child.comment.summary)
+          : ""
+        const descSuffix = description ? ` - ${description}` : ""
+        content.push(`- [${child.name}](${this.basePath}/${this.getSlug(child.name)})${descSuffix}`)
+      }
+
+      content.push("")
     }
 
     return {
@@ -150,6 +188,36 @@ export class TypeDocGenerator {
         description: "Auto-generated API documentation",
         sidebar_position: 0,
       },
+    }
+  }
+
+  private getKindGroupName(kind: ReflectionKind, name: string): string {
+    // Group hooks and components separately from regular functions
+    if (kind === ReflectionKind.Function) {
+      // React hooks start with "use"
+      if (name.startsWith("use")) {
+        return "React Hooks"
+      }
+      // React components are PascalCase and typically don't start with lowercase
+      if (name[0] === name[0].toUpperCase() && !name.includes("_")) {
+        return "React Components"
+      }
+      return "Functions"
+    }
+
+    switch (kind) {
+      case ReflectionKind.Interface:
+        return "Interfaces"
+      case ReflectionKind.TypeAlias:
+        return "Types"
+      case ReflectionKind.Class:
+        return "Classes"
+      case ReflectionKind.Variable:
+        return "Variables"
+      case ReflectionKind.Enum:
+        return "Enums"
+      default:
+        return "Other"
     }
   }
 
