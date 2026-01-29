@@ -10,6 +10,12 @@ dist
 **/routeTree.gen.ts
 **/.tanstack/
 docs/content/api-reference/
+
+# Auto-generated route files from markdown content
+# These are created by ardo's routes-plugin based on content directories
+**/src/routes/guide/
+**/src/routes/api-reference/
+# Legacy route group pattern
 **/src/routes/(docs)/
 !**/src/routes/(docs)/_layout.tsx
 # Allow template files to be tracked
