@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { HomePage } from "ardo/theme"
+import { HomePage } from "ardo/ui"
 import { PressProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"

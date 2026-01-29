@@ -1,28 +1,53 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from 'ardo/theme'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import { frontmatter, toc } from '../../content/index.md'
+import { createFileRoute } from "@tanstack/react-router"
+import { Hero, Features } from "ardo/ui"
+import logo from "../assets/logo.svg"
 
-export const Route = createFileRoute('/')({
-  component: HomeComponent,
+export const Route = createFileRoute("/")({
+  component: HomePage,
 })
 
-function HomeComponent() {
-  const pageData = {
-    title: frontmatter.title || 'Home',
-    description: frontmatter.description,
-    frontmatter,
-    content: '',
-    toc,
-    filePath: 'index.md',
-    relativePath: 'index.md',
-  }
-
+function HomePage() {
   return (
-    <PressProvider config={config} sidebar={sidebar} currentPage={pageData}>
-      <HomePage />
-    </PressProvider>
+    <>
+      <Hero
+        name="Ardo"
+        text="React-first Documentation"
+        tagline="Build beautiful documentation sites with React, TanStack Start, and Markdown. Automatically generate API references from TypeScript with built-in TypeDoc integration."
+        image={logo}
+        actions={[
+          { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
+          { text: "View on GitHub", link: "https://github.com/sebastian-software/ardo", theme: "alt" },
+        ]}
+      />
+
+      <Features
+        items={[
+          {
+            title: "React-First",
+            icon: "⚛️",
+            details:
+              "Built on TanStack Start and React. Use React components directly in your markdown.",
+          },
+          {
+            title: "Lightning Fast",
+            icon: "⚡",
+            details:
+              "Powered by Vite. Instant server start, lightning-fast HMR, and optimized builds.",
+          },
+          {
+            title: "TypeDoc Integration",
+            icon: "📚",
+            details:
+              "Auto-generate API documentation from your TypeScript source code with zero configuration.",
+          },
+          {
+            title: "Type-Safe",
+            icon: "📝",
+            details:
+              "Written in TypeScript with full type definitions. Get great DX with autocomplete.",
+          },
+        ]}
+      />
+    </>
   )
 }

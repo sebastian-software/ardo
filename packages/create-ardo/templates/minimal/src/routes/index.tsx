@@ -1,40 +1,38 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from 'ardo/theme'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import { frontmatter, toc } from '../../content/index.md'
+import { Hero, Features } from 'ardo/ui'
 
 export const Route = createFileRoute('/')({
-  head: () => ({
-    meta: [
-      {
-        title: (frontmatter.title as string)
-          ? `${frontmatter.title} | ${config.title}`
-          : config.title,
-      },
-      ...(frontmatter.description
-        ? [{ name: 'description', content: frontmatter.description as string }]
-        : []),
-    ],
-  }),
-  component: HomeComponent,
+  component: HomePage,
 })
 
-function HomeComponent() {
-  const pageData = {
-    title: (frontmatter.title as string) || 'Home',
-    description: frontmatter.description as string | undefined,
-    frontmatter,
-    content: '',
-    toc,
-    filePath: 'index.md',
-    relativePath: 'index.md',
-  }
-
+function HomePage() {
   return (
-    <PressProvider config={config} sidebar={sidebar} currentPage={pageData}>
-      <HomePage />
-    </PressProvider>
+    <>
+      <Hero
+        name="{{SITE_TITLE}}"
+        text="Documentation Made Simple"
+        tagline="Focus on your content, not configuration"
+        actions={[
+          { text: 'Get Started', link: '/guide/getting-started', theme: 'brand' },
+        ]}
+      />
+
+      <Features
+        items={[
+          {
+            title: 'Zero Config',
+            details: 'Just write markdown. No framework knowledge required.',
+          },
+          {
+            title: 'Fast',
+            details: 'Powered by Vite and React 19.',
+          },
+          {
+            title: 'Beautiful',
+            details: 'Clean design out of the box.',
+          },
+        ]}
+      />
+    </>
   )
 }

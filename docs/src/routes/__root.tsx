@@ -15,11 +15,12 @@ import {
   SidebarLink,
   Footer,
   SocialLink,
-} from 'ardo/theme'
+} from 'ardo/ui'
 import { PressProvider } from 'ardo/runtime'
 import config from 'virtual:ardo/config'
 import sidebar from 'virtual:ardo/sidebar'
-import 'ardo/theme/styles.css'
+import logo from '../assets/logo.svg'
+import 'ardo/ui/styles.css'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -38,22 +39,13 @@ function RootComponent() {
   const routerState = useRouterState()
   const isHomePage = routerState.location.pathname === '/'
 
-  // Homepage renders its own layout without sidebar
-  if (isHomePage) {
-    return (
-      <PressProvider config={config} sidebar={sidebar}>
-        <Outlet />
-      </PressProvider>
-    )
-  }
-
-  // Doc pages use the full layout with sidebar
   return (
     <PressProvider config={config} sidebar={sidebar}>
       <Layout
+        className={isHomePage ? 'ardo-layout ardo-home' : 'ardo-layout'}
         header={
           <Header
-            logo={`${import.meta.env.BASE_URL}logo.svg`}
+            logo={logo}
             title="Ardo"
             nav={
               <Nav>
@@ -69,32 +61,34 @@ function RootComponent() {
           />
         }
         sidebar={
-          <Sidebar>
-            <SidebarGroup title="Introduction">
-              <SidebarLink to="/guide/what-is-ardo">What is Ardo?</SidebarLink>
-              <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
-              <SidebarLink to="/guide/comparison">Framework Comparison</SidebarLink>
-              <SidebarLink to="/guide/roadmap">Roadmap</SidebarLink>
-            </SidebarGroup>
+          isHomePage ? undefined : (
+            <Sidebar>
+              <SidebarGroup title="Introduction">
+                <SidebarLink to="/guide/what-is-ardo">What is Ardo?</SidebarLink>
+                <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
+                <SidebarLink to="/guide/comparison">Framework Comparison</SidebarLink>
+                <SidebarLink to="/guide/roadmap">Roadmap</SidebarLink>
+              </SidebarGroup>
 
-            <SidebarGroup title="Writing">
-              <SidebarLink to="/guide/markdown">Markdown Features</SidebarLink>
-              <SidebarLink to="/guide/frontmatter">Frontmatter</SidebarLink>
-              <SidebarLink to="/guide/typedoc">TypeDoc Integration</SidebarLink>
-            </SidebarGroup>
+              <SidebarGroup title="Writing">
+                <SidebarLink to="/guide/markdown">Markdown Features</SidebarLink>
+                <SidebarLink to="/guide/frontmatter">Frontmatter</SidebarLink>
+                <SidebarLink to="/guide/typedoc">TypeDoc Integration</SidebarLink>
+              </SidebarGroup>
 
-            <SidebarGroup title="Customization">
-              <SidebarLink to="/guide/theme-config">Theme Config</SidebarLink>
-              <SidebarLink to="/guide/custom-theme">Custom Theme</SidebarLink>
-            </SidebarGroup>
+              <SidebarGroup title="Customization">
+                <SidebarLink to="/guide/theme-config">Theme Config</SidebarLink>
+                <SidebarLink to="/guide/custom-theme">Custom Theme</SidebarLink>
+              </SidebarGroup>
 
-            <SidebarGroup title="Deploy & Troubleshoot">
-              <SidebarLink to="/guide/deployment">Deployment</SidebarLink>
-              <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
-            </SidebarGroup>
+              <SidebarGroup title="Deploy & Troubleshoot">
+                <SidebarLink to="/guide/deployment">Deployment</SidebarLink>
+                <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
+              </SidebarGroup>
 
-            <SidebarLink to="/api-reference">API Reference</SidebarLink>
-          </Sidebar>
+              <SidebarLink to="/api-reference">API Reference</SidebarLink>
+            </Sidebar>
+          )
         }
         footer={
           <Footer
