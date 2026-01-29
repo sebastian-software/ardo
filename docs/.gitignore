@@ -1,5 +1,7 @@
 # Generated routes by ardo
-src/routes/(press)/
+src/routes/guide/
+src/routes/api-reference/
+src/routes/api-reference.tsx
 
 # TanStack Router build cache
 .tanstack/

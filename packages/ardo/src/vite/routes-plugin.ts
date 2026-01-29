@@ -7,8 +7,6 @@ import path from 'path'
 export interface PressRoutesPluginOptions {
   /** Directory where routes should be generated */
   routesDir?: string
-  /** Route group name (default: 'docs') */
-  routeGroup?: string
   /** Source directory for content (default: 'content') */
   srcDir?: string
   /**
@@ -38,7 +36,7 @@ export function pressRoutesPlugin(
   getConfig: () => ResolvedConfig,
   options: PressRoutesPluginOptions = {}
 ): Plugin {
-  const { routeGroup = 'docs', layoutMode = 'layoutRoute' } = options
+  const { layoutMode = 'layoutRoute' } = options
 
   let routesDir: string
   let contentDir: string
@@ -93,7 +91,8 @@ export function pressRoutesPlugin(
     const { slug, relativePath } = route
 
     // Calculate relative path from route file to content file
-    const depthToProjectRoot = slug.split('/').length + 2
+    // Route at routes/${slug}.tsx needs to reach content/${relativePath}
+    const depthToProjectRoot = slug.split('/').length + 1
     const toProjectRoot = '../'.repeat(depthToProjectRoot)
     const contentImportPath = `${toProjectRoot}content/${relativePath}`
 
@@ -105,8 +104,8 @@ export function pressRoutesPlugin(
         .join('')
         .replace(/\s/g, '') + 'Page'
 
-    // Generate route path for TanStack Router
-    const routePath = `/(${routeGroup})/${slug}`
+    // Generate route path for TanStack Router (no route group, direct path)
+    const routePath = `/${slug}`
 
     // Generate default title from slug
     const defaultTitle = slug
@@ -166,7 +165,7 @@ function ${componentName}() {
   }
 
   function writeRouteFileSync(route: RouteInfo): boolean {
-    const routeFilePath = path.join(routesDir, `(${routeGroup})`, `${route.slug}.tsx`)
+    const routeFilePath = path.join(routesDir, `${route.slug}.tsx`)
     const code = generateRouteCode(route)
 
     // Only write if content changed
@@ -208,7 +207,7 @@ function ${componentName}() {
   }
 
   async function writeRouteFile(route: RouteInfo): Promise<boolean> {
-    const routeFilePath = path.join(routesDir, `(${routeGroup})`, `${route.slug}.tsx`)
+    const routeFilePath = path.join(routesDir, `${route.slug}.tsx`)
     const routeFileDir = path.dirname(routeFilePath)
 
     await ensureDirectoryExists(routeFileDir)
@@ -230,7 +229,7 @@ function ${componentName}() {
   }
 
   async function cleanGeneratedRoutes(): Promise<void> {
-    const pressRoutesDir = path.join(routesDir, `(${routeGroup})`)
+    const pressRoutesDir = routesDir
 
     try {
       const entries = await fs.readdir(pressRoutesDir, { withFileTypes: true, recursive: true })

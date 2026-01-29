@@ -4,11 +4,11 @@ import { PressProvider } from 'ardo/runtime'
 import config from 'virtual:ardo/config'
 import sidebar from 'virtual:ardo/sidebar'
 
-export const Route = createFileRoute('/(docs)/_layout')({
-  component: DocsLayoutComponent,
+export const Route = createFileRoute('/guide/_layout')({
+  component: GuideLayoutComponent,
 })
 
-function DocsLayoutComponent() {
+function GuideLayoutComponent() {
   return (
     <PressProvider config={config} sidebar={sidebar}>
       <DocLayout>
