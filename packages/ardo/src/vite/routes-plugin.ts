@@ -25,6 +25,8 @@ interface RouteInfo {
   mdPath: string
   /** Path relative to content dir with extension (e.g., 'guide/getting-started.md') */
   relativePath: string
+  /** True if this route comes from an index.md file */
+  isIndex?: boolean
 }
 
 /**
@@ -76,6 +78,7 @@ export function pressRoutesPlugin(
               slug,
               mdPath: fullPath,
               relativePath: relativePath.replace(/\\/g, "/"),
+              isIndex: true, // Mark as index route
             })
           }
         }
@@ -88,11 +91,13 @@ export function pressRoutesPlugin(
   }
 
   function generateRouteCode(route: RouteInfo): string {
-    const { slug, relativePath } = route
+    const { slug, relativePath, isIndex } = route
 
     // Calculate relative path from route file to content file
     // Route at routes/${slug}.tsx needs to reach content/${relativePath}
-    const depthToProjectRoot = slug.split("/").length + 1
+    // Index routes are at routes/${slug}/index.tsx, so they need one more level up
+    const baseDepth = slug.split("/").length + 1
+    const depthToProjectRoot = isIndex ? baseDepth + 1 : baseDepth
     const toProjectRoot = "../".repeat(depthToProjectRoot)
     const contentImportPath = `${toProjectRoot}content/${relativePath}`
 
@@ -166,7 +171,10 @@ function ${componentName}() {
   }
 
   function writeRouteFileSync(route: RouteInfo): boolean {
-    const routeFilePath = path.join(routesDir, `${route.slug}.tsx`)
+    // Index routes go to {slug}/index.tsx to avoid TanStack Router treating them as layout routes
+    const routeFilePath = route.isIndex
+      ? path.join(routesDir, route.slug, "index.tsx")
+      : path.join(routesDir, `${route.slug}.tsx`)
     const code = generateRouteCode(route)
 
     // Only write if content changed
@@ -208,7 +216,10 @@ function ${componentName}() {
   }
 
   async function writeRouteFile(route: RouteInfo): Promise<boolean> {
-    const routeFilePath = path.join(routesDir, `${route.slug}.tsx`)
+    // Index routes go to {slug}/index.tsx to avoid TanStack Router treating them as layout routes
+    const routeFilePath = route.isIndex
+      ? path.join(routesDir, route.slug, "index.tsx")
+      : path.join(routesDir, `${route.slug}.tsx`)
     const routeFileDir = path.dirname(routeFilePath)
 
     await ensureDirectoryExists(routeFileDir)
@@ -286,6 +297,7 @@ function ${componentName}() {
             slug,
             mdPath: fullPath,
             relativePath: relativePath.replace(/\\/g, "/"),
+            isIndex: true, // Mark as index route
           })
         }
       }
