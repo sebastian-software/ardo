@@ -2,9 +2,6 @@ import { defineConfig } from 'vite'
 import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  // For GitHub Pages subdirectory deployments, uncomment and adjust:
-  // base: '/{{PROJECT_NAME}}/',
-
   plugins: [
     ardo({
       title: '{{SITE_TITLE}}',
@@ -13,6 +10,9 @@ export default defineConfig({
       // TypeDoc API documentation (uncomment to enable)
       // Generates docs from ./src/index.ts into content/api-reference/
       // typedoc: true,
+
+      // GitHub Pages base path is auto-detected from git remote.
+      // Set githubPages: false to disable, or set base manually in defineConfig.
 
       themeConfig: {
         siteTitle: '{{SITE_TITLE}}',

@@ -9,7 +9,37 @@ import { generateApiDocs } from '../typedoc/generator'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs/promises'
+import fsSync from 'fs'
 import path from 'path'
+import { execSync } from 'child_process'
+
+/**
+ * Detects the GitHub repository name from git remote URL.
+ * Returns the repo name (e.g., 'ardo' from 'github.com/sebastian-software/ardo')
+ * or undefined if not a GitHub repo.
+ */
+function detectGitHubRepoName(cwd: string): string | undefined {
+  try {
+    // Check if .git exists
+    if (!fsSync.existsSync(path.join(cwd, '.git'))) {
+      return undefined
+    }
+
+    const remoteUrl = execSync('git remote get-url origin', {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim()
+
+    // Parse GitHub URL (supports both HTTPS and SSH)
+    // https://github.com/user/repo.git
+    // git@github.com:user/repo.git
+    const match = remoteUrl.match(/github\.com[/:][\w-]+\/([\w.-]+?)(?:\.git)?$/)
+    return match?.[1]
+  } catch {
+    return undefined
+  }
+}
 
 const VIRTUAL_MODULE_ID = 'virtual:ardo/config'
 const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID
@@ -25,6 +55,12 @@ export interface ArdoPluginOptions extends Partial<PressConfig> {
     enabled?: boolean
     crawlLinks?: boolean
   }
+  /**
+   * Auto-detect GitHub repository and set base path for GitHub Pages.
+   * When true, automatically sets `base: '/repo-name/'` if deploying to GitHub Pages.
+   * @default true
+   */
+  githubPages?: boolean
 }
 
 // Use globalThis to cache the Shiki highlighter as a true singleton across all plugin instances
@@ -52,14 +88,14 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
 
   // Extract ardo-specific options from the rest (which is PressConfig)
-  const { routes, prerender, typedoc, ...pressConfig } = options
+  const { routes, prerender, typedoc, githubPages = true, ...pressConfig } = options
 
   const mainPlugin: Plugin = {
     name: 'ardo',
     enforce: 'pre',
 
-    config(): UserConfig {
-      return {
+    config(userConfig, env): UserConfig {
+      const result: UserConfig = {
         optimizeDeps: {
           exclude: ['ardo/theme/styles.css'],
         },
@@ -67,6 +103,17 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           noExternal: ['ardo'],
         },
       }
+
+      // Auto-detect GitHub Pages base path for production builds
+      if (githubPages && env.command === 'build' && !userConfig.base) {
+        const repoName = detectGitHubRepoName(userConfig.root || process.cwd())
+        if (repoName) {
+          result.base = `/${repoName}/`
+          console.log(`[ardo] GitHub Pages detected, using base: ${result.base}`)
+        }
+      }
+
+      return result
     },
 
     async configResolved(config) {
