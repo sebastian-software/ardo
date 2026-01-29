@@ -204,7 +204,8 @@ export default function MarkdownContent() {
   if (typedoc) {
     const defaultTypedocConfig: TypeDocConfig = {
       enabled: true,
-      entryPoints: ["./src/index.ts"],
+      // Default to parent directory since docs is typically a subdirectory
+      entryPoints: ["../src/index.ts"],
       out: "api-reference",
       excludePrivate: true,
       excludeInternal: true,
