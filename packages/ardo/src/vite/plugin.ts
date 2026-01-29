@@ -226,13 +226,15 @@ export default function MarkdownContent() {
   // Note: unshift adds to front, so typedoc will be before routes in the array
   // This ensures typedoc buildStart runs before routes buildStart
   if (typedoc) {
-    // Find package root to use as default entry point base
+    // Find package root to use as default entry point and tsconfig base
     const packageRoot = findPackageRoot(process.cwd())
     const defaultEntryPoint = packageRoot ? `${packageRoot}/src/index.ts` : "./src/index.ts"
+    const defaultTsconfig = packageRoot ? `${packageRoot}/tsconfig.json` : "./tsconfig.json"
 
     const defaultTypedocConfig: TypeDocConfig = {
       enabled: true,
       entryPoints: [defaultEntryPoint],
+      tsconfig: defaultTsconfig,
       out: "api-reference",
       excludePrivate: true,
       excludeInternal: true,
