@@ -1054,7 +1054,7 @@ export default defineConfig({
 
 ## Deployment
 
-Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `crawlLinks: true`), so no server is needed at runtime. The build output is in `dist/client/`.
+Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `prerender: enabled`), so no server is needed at runtime. The build output is in `dist/client/`.
 
 ### GitHub Pages
 

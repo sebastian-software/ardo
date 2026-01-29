@@ -5,7 +5,7 @@ description: Deploy your Ardo documentation site to GitHub Pages, Netlify, Verce
 
 # Deployment
 
-Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `crawlLinks: true`), so no server is needed at runtime.
+Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `prerender: enabled`), so no server is needed at runtime.
 
 The build output is located in `dist/client/` and can be deployed to any static hosting provider.
 

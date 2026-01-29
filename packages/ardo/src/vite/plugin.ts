@@ -157,7 +157,7 @@ export default function MarkdownContent() {
   const tanstackPlugin = tanstackStart({
     prerender: {
       enabled: prerender?.enabled ?? true,
-      crawlLinks: prerender?.crawlLinks ?? true,
+      crawlLinks: prerender?.crawlLinks ?? false,
     },
   })
   const tanstackPlugins = (
