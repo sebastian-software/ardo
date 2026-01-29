@@ -1,6 +1,7 @@
 ---
 title: Troubleshooting
 description: Common issues and solutions when using Ardo
+order: 9
 ---
 
 # Troubleshooting

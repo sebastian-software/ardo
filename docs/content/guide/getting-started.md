@@ -1,6 +1,7 @@
 ---
 title: Getting Started
 description: Get up and running with Ardo in minutes.
+order: 2
 ---
 
 # Getting Started

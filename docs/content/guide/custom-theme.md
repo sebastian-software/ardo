@@ -1,6 +1,7 @@
 ---
 title: Custom Theme
 description: Learn how to customize or create your own theme.
+order: 7
 ---
 
 # Custom Theme

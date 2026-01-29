@@ -1,18 +1,37 @@
 import { Link } from "@tanstack/react-router"
-import { usePageData, useConfig } from "../runtime/hooks"
-import { Header } from "./Header"
+import { usePageData, useConfig, useThemeConfig } from "../runtime/hooks"
+import { Header, SocialLink } from "./Header"
 import { Footer } from "./Footer"
+import { Nav, NavLink } from "./Nav"
 
 export function HomePage() {
   const pageData = usePageData()
   const config = useConfig()
+  const themeConfig = useThemeConfig()
 
   const hero = pageData?.frontmatter.hero
   const features = pageData?.frontmatter.features
 
   return (
     <div className="press-home">
-      <Header />
+      <Header
+        logo={themeConfig.logo}
+        title={themeConfig.siteTitle !== false ? config.title : undefined}
+        nav={
+          themeConfig.nav && themeConfig.nav.length > 0 ? (
+            <Nav>
+              {themeConfig.nav.map((item, index) => (
+                <NavLink key={index} to={item.link}>
+                  {item.text}
+                </NavLink>
+              ))}
+            </Nav>
+          ) : undefined
+        }
+        actions={themeConfig.socialLinks?.map((link, index) => (
+          <SocialLink key={index} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
+        ))}
+      />
 
       <main className="press-home-main">
         {hero && (

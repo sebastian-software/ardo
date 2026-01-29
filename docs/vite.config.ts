@@ -7,17 +7,13 @@ export default defineConfig({
       title: "Ardo",
       description: "React-first Static Documentation Framework",
 
-      // TypeDoc API documentation
-      typedoc: {
-        entryPoints: ["../packages/ardo/src/index.ts"],
-        tsconfig: "../packages/ardo/tsconfig.json",
-        markdown: {
-          sourceLinks: true,
-          sourceBaseUrl: "https://github.com/sebastian-software/ardo/blob/main/packages/ardo",
-        },
-      },
-
       themeConfig: {
+        logo: "/logo.svg",
+        nav: [
+          { text: "Guide", link: "/guide/getting-started" },
+          { text: "API", link: "/api-reference" },
+        ],
+        socialLinks: [{ icon: "github", link: "https://github.com/sebastian-software/ardo" }],
         search: {
           enabled: true,
           placeholder: "Search documentation...",
@@ -29,6 +25,16 @@ export default defineConfig({
         lastUpdated: {
           enabled: true,
           text: "Last updated",
+        },
+      },
+
+      // TypeDoc API documentation
+      typedoc: {
+        entryPoints: ["../packages/ardo/src/index.ts"],
+        tsconfig: "../packages/ardo/tsconfig.json",
+        markdown: {
+          sourceLinks: true,
+          sourceBaseUrl: "https://github.com/sebastian-software/ardo/blob/main/packages/ardo",
         },
       },
 

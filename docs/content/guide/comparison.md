@@ -1,6 +1,7 @@
 ---
 title: Framework Comparison
 description: How Ardo compares to other documentation frameworks.
+order: 10
 ---
 
 # Framework Comparison

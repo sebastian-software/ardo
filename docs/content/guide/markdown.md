@@ -1,6 +1,7 @@
 ---
 title: Markdown Features
 description: Learn about the markdown features available in Ardo.
+order: 3
 ---
 
 # Markdown Features

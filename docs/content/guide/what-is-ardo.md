@@ -1,6 +1,7 @@
 ---
 title: What is Ardo?
 description: Learn about Ardo and why you should use it for your documentation.
+order: 1
 ---
 
 # What is Ardo?

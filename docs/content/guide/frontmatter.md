@@ -1,6 +1,7 @@
 ---
 title: Frontmatter
 description: Configure page-specific options using frontmatter.
+order: 4
 ---
 
 # Frontmatter

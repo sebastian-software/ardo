@@ -1,6 +1,7 @@
 ---
 title: TypeDoc Integration
 description: Generate API documentation from TypeScript source code.
+order: 5
 ---
 
 # TypeDoc Integration

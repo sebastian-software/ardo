@@ -1,6 +1,7 @@
 ---
 title: Deployment
 description: Deploy your Ardo documentation site to GitHub Pages, Netlify, Vercel, and more.
+order: 8
 ---
 
 # Deployment

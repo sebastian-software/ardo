@@ -61,6 +61,7 @@ function RootComponent() {
             <SidebarGroup title="Writing">
               <SidebarLink to="/guide/markdown">Markdown Features</SidebarLink>
               <SidebarLink to="/guide/frontmatter">Frontmatter</SidebarLink>
+              <SidebarLink to="/guide/typedoc">TypeDoc Integration</SidebarLink>
             </SidebarGroup>
 
             <SidebarGroup title="Customization">
@@ -68,8 +69,8 @@ function RootComponent() {
               <SidebarLink to="/guide/custom-theme">Custom Theme</SidebarLink>
             </SidebarGroup>
 
-            <SidebarGroup title="Advanced">
-              <SidebarLink to="/guide/typedoc">TypeDoc Integration</SidebarLink>
+            <SidebarGroup title="Deploy & Troubleshoot">
+              <SidebarLink to="/guide/deployment">Deployment</SidebarLink>
               <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
             </SidebarGroup>
 

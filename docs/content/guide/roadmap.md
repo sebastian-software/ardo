@@ -1,6 +1,7 @@
 ---
 title: Roadmap
 description: Planned features and future direction of Ardo
+order: 11
 ---
 
 # Roadmap

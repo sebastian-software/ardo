@@ -1,6 +1,7 @@
 ---
 title: Theme Configuration
 description: Configure the default theme in Ardo.
+order: 6
 ---
 
 # Theme Configuration
