@@ -10,6 +10,15 @@ on:
         required: false
         default: true
         type: boolean
+      package:
+        description: 'Package to publish'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - ardo
+          - create-ardo
 
 permissions:
   contents: read
@@ -32,18 +41,24 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
+      # For release events: only publish the package matching the tag
       - name: Publish ardo
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run)
+        if: |
+          (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'ardo-v')) ||
+          (github.event_name == 'workflow_dispatch' && !inputs.dry-run && (inputs.package == 'all' || inputs.package == 'ardo'))
         run: pnpm --filter ardo publish --access public --no-git-checks --provenance
 
-      - name: Dry run ardo
-        if: github.event_name == 'workflow_dispatch' && inputs.dry-run
-        run: pnpm --filter ardo publish --dry-run
-
       - name: Publish create-ardo
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run)
+        if: |
+          (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'create-ardo-v')) ||
+          (github.event_name == 'workflow_dispatch' && !inputs.dry-run && (inputs.package == 'all' || inputs.package == 'create-ardo'))
         run: pnpm --filter create-ardo publish --access public --no-git-checks --provenance
 
+      # Dry run (workflow_dispatch only)
+      - name: Dry run ardo
+        if: github.event_name == 'workflow_dispatch' && inputs.dry-run && (inputs.package == 'all' || inputs.package == 'ardo')
+        run: pnpm --filter ardo publish --dry-run
+
       - name: Dry run create-ardo
-        if: github.event_name == 'workflow_dispatch' && inputs.dry-run
+        if: github.event_name == 'workflow_dispatch' && inputs.dry-run && (inputs.package == 'all' || inputs.package == 'create-ardo')
         run: pnpm --filter create-ardo publish --dry-run
