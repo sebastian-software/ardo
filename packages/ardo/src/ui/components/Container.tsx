@@ -94,12 +94,12 @@ export function Container({ type, title, children }: ContainerProps) {
   const displayTitle = title || defaultTitles[type]
 
   return (
-    <div className={`press-container press-container-${type}`}>
-      <p className="press-container-title">
-        <span className="press-container-icon">{icons[type]}</span>
+    <div className={`ardo-container ardo-container-${type}`}>
+      <p className="ardo-container-title">
+        <span className="ardo-container-icon">{icons[type]}</span>
         {displayTitle}
       </p>
-      <div className="press-container-content">{children}</div>
+      <div className="ardo-container-content">{children}</div>
     </div>
   )
 }

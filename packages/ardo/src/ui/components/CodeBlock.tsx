@@ -21,22 +21,22 @@ export function CodeBlock({
   const lines = code.split("\n")
 
   return (
-    <div className="press-code-block" data-lang={language}>
-      {title && <div className="press-code-title">{title}</div>}
-      <div className="press-code-wrapper">
+    <div className="ardo-code-block" data-lang={language}>
+      {title && <div className="ardo-code-title">{title}</div>}
+      <div className="ardo-code-wrapper">
         {children || (
           <pre className={`language-${language}`}>
             <code>
               {lines.map((line, index) => {
                 const lineNum = index + 1
                 const isHighlighted = highlightLines.includes(lineNum)
-                const classes = ["press-code-line"]
+                const classes = ["ardo-code-line"]
                 if (isHighlighted) classes.push("highlighted")
 
                 return (
                   <span key={index} className={classes.join(" ")}>
-                    {lineNumbers && <span className="press-line-number">{lineNum}</span>}
-                    <span className="press-line-content">{line}</span>
+                    {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
+                    <span className="ardo-line-content">{line}</span>
                     {index < lines.length - 1 && "\n"}
                   </span>
                 )
@@ -64,12 +64,12 @@ export function CodeGroup({ children }: CodeGroupProps) {
   })
 
   return (
-    <div className="press-code-group">
-      <div className="press-code-group-tabs">
+    <div className="ardo-code-group">
+      <div className="ardo-code-group-tabs">
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={["press-code-group-tab", index === activeTab && "active"]
+            className={["ardo-code-group-tab", index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
             onClick={() => setActiveTab(index)}
@@ -78,11 +78,11 @@ export function CodeGroup({ children }: CodeGroupProps) {
           </button>
         ))}
       </div>
-      <div className="press-code-group-panels">
+      <div className="ardo-code-group-panels">
         {childArray.map((child, index) => (
           <div
             key={index}
-            className={["press-code-group-panel", index === activeTab && "active"]
+            className={["ardo-code-group-panel", index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
             style={{ display: index === activeTab ? "block" : "none" }}

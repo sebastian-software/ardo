@@ -52,7 +52,7 @@ export function remarkContainers() {
       if (type === "code-group") {
         data.hName = "div"
         data.hProperties = {
-          className: ["press-code-group"],
+          className: ["ardo-code-group"],
         }
 
         const tabs: Array<{ label: string; content: unknown }> = []
@@ -70,24 +70,24 @@ export function remarkContainers() {
         const tabsHtml = tabs
           .map(
             (tab, i) =>
-              `<button class="press-code-group-tab${i === 0 ? " active" : ""}" data-index="${i}">${escapeHtml(tab.label)}</button>`
+              `<button class="ardo-code-group-tab${i === 0 ? " active" : ""}" data-index="${i}">${escapeHtml(tab.label)}</button>`
           )
           .join("")
 
         node.children = [
           {
             type: "html",
-            value: `<div class="press-code-group-tabs">${tabsHtml}</div>`,
+            value: `<div class="ardo-code-group-tabs">${tabsHtml}</div>`,
           } as unknown as (typeof node.children)[number],
           {
             type: "html",
-            value: '<div class="press-code-group-panels">',
+            value: '<div class="ardo-code-group-panels">',
           } as unknown as (typeof node.children)[number],
           ...tabs.map(
             (tab, i) =>
               ({
                 type: "html",
-                value: `<div class="press-code-group-panel${i === 0 ? " active" : ""}" data-index="${i}">`,
+                value: `<div class="ardo-code-group-panel${i === 0 ? " active" : ""}" data-index="${i}">`,
               }) as unknown as (typeof node.children)[number]
           ),
           ...node.children.flatMap((child: (typeof node.children)[number], _i: number) => [
@@ -109,12 +109,12 @@ export function remarkContainers() {
       if (type === "details") {
         data.hName = "details"
         data.hProperties = {
-          className: ["press-details"],
+          className: ["ardo-details"],
         }
 
         node.children.unshift({
           type: "html",
-          value: `<summary class="press-details-summary">${escapeHtml(title)}</summary>`,
+          value: `<summary class="ardo-details-summary">${escapeHtml(title)}</summary>`,
         } as unknown as (typeof node.children)[number])
 
         return
@@ -122,12 +122,12 @@ export function remarkContainers() {
 
       data.hName = "div"
       data.hProperties = {
-        className: ["press-container", `press-container-${type}`],
+        className: ["ardo-container", `ardo-container-${type}`],
       }
 
       node.children.unshift({
         type: "html",
-        value: `<p class="press-container-title">${escapeHtml(title)}</p>`,
+        value: `<p class="ardo-container-title">${escapeHtml(title)}</p>`,
       } as unknown as (typeof node.children)[number])
     })
   }

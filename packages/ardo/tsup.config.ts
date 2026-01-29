@@ -8,7 +8,7 @@ export default defineConfig({
     "config/index": "src/config/index.ts",
     "vite/index": "src/vite/index.ts",
     "runtime/index": "src/runtime/index.ts",
-    "theme/index": "src/theme/index.ts",
+    "ui/index": "src/ui/index.ts",
     "typedoc/index": "src/typedoc/index.ts",
   },
   format: ["esm"],
@@ -30,9 +30,9 @@ export default defineConfig({
   },
   onSuccess: async () => {
     // Copy static assets
-    const destPath = join("dist", "theme", "styles.css")
+    const destPath = join("dist", "ui", "styles.css")
     mkdirSync(dirname(destPath), { recursive: true })
-    copyFileSync(join("src", "theme", "styles.css"), destPath)
-    console.log("Copied styles.css to dist/theme/")
+    copyFileSync(join("src", "ui", "styles.css"), destPath)
+    console.log("Copied styles.css to dist/ui/")
   },
 })

@@ -11,16 +11,16 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
   const HeadingTag = `h${Math.min(level, 6)}` as keyof JSX.IntrinsicElements
 
   return (
-    <div className={`press-api-item press-api-item-${item.kind}`} id={item.id}>
-      <HeadingTag className="press-api-item-title">
+    <div className={`ardo-api-item ardo-api-item-${item.kind}`} id={item.id}>
+      <HeadingTag className="ardo-api-item-title">
         <ApiKindBadge kind={item.kind} />
-        <span className="press-api-item-name">{item.name}</span>
-        <a href={`#${item.id}`} className="press-api-anchor">
+        <span className="ardo-api-item-name">{item.name}</span>
+        <a href={`#${item.id}`} className="ardo-api-anchor">
           #
         </a>
       </HeadingTag>
 
-      {item.description && <p className="press-api-item-description">{item.description}</p>}
+      {item.description && <p className="ardo-api-item-description">{item.description}</p>}
 
       {item.signature && (
         <ApiSignature
@@ -38,10 +38,10 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       {item.returns && <ApiReturns returns={item.returns} />}
 
       {item.examples && item.examples.length > 0 && (
-        <div className="press-api-examples">
-          <h4 className="press-api-section-title">Examples</h4>
+        <div className="ardo-api-examples">
+          <h4 className="ardo-api-section-title">Examples</h4>
           {item.examples.map((example, i) => (
-            <pre key={i} className="press-api-example">
+            <pre key={i} className="ardo-api-example">
               <code>{example}</code>
             </pre>
           ))}
@@ -49,7 +49,7 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       )}
 
       {item.source && (
-        <div className="press-api-source">
+        <div className="ardo-api-source">
           {item.source.url ? (
             <a href={item.source.url} target="_blank" rel="noopener noreferrer">
               {item.source.file}:{item.source.line}
@@ -63,7 +63,7 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       )}
 
       {item.children && item.children.length > 0 && (
-        <div className="press-api-children">
+        <div className="ardo-api-children">
           {item.children.map((child) => (
             <ApiItem key={child.id} item={child} level={level + 1} />
           ))}
@@ -97,16 +97,16 @@ export function ApiKindBadge({ kind }: ApiKindBadgeProps) {
   }
 
   const kindColors: Record<string, string> = {
-    class: "press-api-badge-class",
-    interface: "press-api-badge-interface",
-    type: "press-api-badge-type",
-    enum: "press-api-badge-enum",
-    function: "press-api-badge-function",
-    method: "press-api-badge-method",
-    property: "press-api-badge-property",
+    class: "ardo-api-badge-class",
+    interface: "ardo-api-badge-interface",
+    type: "ardo-api-badge-type",
+    enum: "ardo-api-badge-enum",
+    function: "ardo-api-badge-function",
+    method: "ardo-api-badge-method",
+    property: "ardo-api-badge-property",
   }
 
-  return <span className={`press-api-badge ${kindColors[kind] || ""}`}>{kindLabels[kind]}</span>
+  return <span className={`ardo-api-badge ${kindColors[kind] || ""}`}>{kindLabels[kind]}</span>
 }
 
 interface ApiHierarchyProps {
@@ -133,30 +133,30 @@ export function ApiHierarchy({ hierarchy }: ApiHierarchyProps) {
   }
 
   return (
-    <div className="press-api-hierarchy">
-      <h4 className="press-api-section-title">Hierarchy</h4>
-      <ul className="press-api-hierarchy-list">
+    <div className="ardo-api-hierarchy">
+      <h4 className="ardo-api-section-title">Hierarchy</h4>
+      <ul className="ardo-api-hierarchy-list">
         {extendsTypes?.map((type) => (
           <li key={type}>
-            <span className="press-api-hierarchy-label">extends</span>
+            <span className="ardo-api-hierarchy-label">extends</span>
             <code>{type}</code>
           </li>
         ))}
         {implementsTypes?.map((type) => (
           <li key={type}>
-            <span className="press-api-hierarchy-label">implements</span>
+            <span className="ardo-api-hierarchy-label">implements</span>
             <code>{type}</code>
           </li>
         ))}
         {extendedBy?.map((type) => (
           <li key={type}>
-            <span className="press-api-hierarchy-label">extended by</span>
+            <span className="ardo-api-hierarchy-label">extended by</span>
             <code>{type}</code>
           </li>
         ))}
         {implementedBy?.map((type) => (
           <li key={type}>
-            <span className="press-api-hierarchy-label">implemented by</span>
+            <span className="ardo-api-hierarchy-label">implemented by</span>
             <code>{type}</code>
           </li>
         ))}

@@ -29,14 +29,14 @@ export function ApiSignature({
   const returnStr = returns?.type ? `: ${returns.type}` : ""
 
   return (
-    <div className={`press-api-signature ${className}`}>
-      <pre className="press-api-signature-code">
+    <div className={`ardo-api-signature ${className}`}>
+      <pre className="ardo-api-signature-code">
         <code>
-          <span className="press-api-keyword">function</span>{" "}
-          <span className="press-api-function-name">{name}</span>
-          {typeParamsStr && <span className="press-api-type-params">{typeParamsStr}</span>}
-          <span className="press-api-params">({paramsStr})</span>
-          {returnStr && <span className="press-api-return-type">{returnStr}</span>}
+          <span className="ardo-api-keyword">function</span>{" "}
+          <span className="ardo-api-function-name">{name}</span>
+          {typeParamsStr && <span className="ardo-api-type-params">{typeParamsStr}</span>}
+          <span className="ardo-api-params">({paramsStr})</span>
+          {returnStr && <span className="ardo-api-return-type">{returnStr}</span>}
         </code>
       </pre>
     </div>
@@ -51,9 +51,9 @@ export function ApiParametersTable({ parameters }: ApiParametersTableProps) {
   if (!parameters.length) return null
 
   return (
-    <div className="press-api-parameters">
-      <h4 className="press-api-section-title">Parameters</h4>
-      <table className="press-api-table">
+    <div className="ardo-api-parameters">
+      <h4 className="ardo-api-section-title">Parameters</h4>
+      <table className="ardo-api-table">
         <thead>
           <tr>
             <th>Name</th>
@@ -66,7 +66,7 @@ export function ApiParametersTable({ parameters }: ApiParametersTableProps) {
             <tr key={param.name}>
               <td>
                 <code>{param.name}</code>
-                {param.optional && <span className="press-api-optional">(optional)</span>}
+                {param.optional && <span className="ardo-api-optional">(optional)</span>}
               </td>
               <td>
                 <code>{param.type}</code>
@@ -74,7 +74,7 @@ export function ApiParametersTable({ parameters }: ApiParametersTableProps) {
               <td>
                 {param.description}
                 {param.defaultValue && (
-                  <span className="press-api-default">
+                  <span className="ardo-api-default">
                     Default: <code>{param.defaultValue}</code>
                   </span>
                 )}
@@ -93,8 +93,8 @@ interface ApiReturnsProps {
 
 export function ApiReturns({ returns }: ApiReturnsProps) {
   return (
-    <div className="press-api-returns">
-      <h4 className="press-api-section-title">Returns</h4>
+    <div className="ardo-api-returns">
+      <h4 className="ardo-api-section-title">Returns</h4>
       <p>
         <code>{returns.type}</code>
         {returns.description && <span> - {returns.description}</span>}

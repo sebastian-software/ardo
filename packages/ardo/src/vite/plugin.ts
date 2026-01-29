@@ -118,7 +118,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     config(userConfig, env): UserConfig {
       const result: UserConfig = {
         optimizeDeps: {
-          exclude: ["ardo/theme/styles.css"],
+          exclude: ["ardo/ui/styles.css"],
         },
         ssr: {
           noExternal: ["ardo"],
@@ -206,7 +206,7 @@ export const toc = ${JSON.stringify(result.toc)}
 
 export default function MarkdownContent() {
   return createElement('div', {
-    className: 'press-content',
+    className: 'ardo-content',
     dangerouslySetInnerHTML: { __html: ${JSON.stringify(result.html)} }
   })
 }

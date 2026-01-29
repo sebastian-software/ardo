@@ -13,7 +13,7 @@ export function HomePage() {
   const features = pageData?.frontmatter.features
 
   return (
-    <div className="press-home">
+    <div className="ardo-home">
       <Header
         logo={themeConfig.logo}
         title={themeConfig.siteTitle !== false ? config.title : undefined}
@@ -33,12 +33,12 @@ export function HomePage() {
         ))}
       />
 
-      <main className="press-home-main">
+      <main className="ardo-home-main">
         {hero && (
-          <section className="press-hero">
-            <div className="press-hero-container">
+          <section className="ardo-hero">
+            <div className="ardo-hero-container">
               {hero.image && (
-                <div className="press-hero-image">
+                <div className="ardo-hero-image">
                   <img
                     src={typeof hero.image === "string" ? hero.image : hero.image.light}
                     alt={hero.name || config.title}
@@ -46,18 +46,18 @@ export function HomePage() {
                 </div>
               )}
 
-              <div className="press-hero-content">
-                {hero.name && <h1 className="press-hero-name">{hero.name}</h1>}
-                {hero.text && <p className="press-hero-text">{hero.text}</p>}
-                {hero.tagline && <p className="press-hero-tagline">{hero.tagline}</p>}
+              <div className="ardo-hero-content">
+                {hero.name && <h1 className="ardo-hero-name">{hero.name}</h1>}
+                {hero.text && <p className="ardo-hero-text">{hero.text}</p>}
+                {hero.tagline && <p className="ardo-hero-tagline">{hero.tagline}</p>}
 
                 {hero.actions && hero.actions.length > 0 && (
-                  <div className="press-hero-actions">
+                  <div className="ardo-hero-actions">
                     {hero.actions.map((action, index) => (
                       <Link
                         key={index}
                         to={action.link}
-                        className={`press-hero-action press-hero-action-${action.theme || "brand"}`}
+                        className={`ardo-hero-action ardo-hero-action-${action.theme || "brand"}`}
                       >
                         {action.text}
                       </Link>
@@ -70,15 +70,15 @@ export function HomePage() {
         )}
 
         {features && features.length > 0 && (
-          <section className="press-features">
-            <div className="press-features-container">
+          <section className="ardo-features">
+            <div className="ardo-features-container">
               {features.map((feature, index) => (
-                <div key={index} className="press-feature">
-                  {feature.icon && <div className="press-feature-icon">{feature.icon}</div>}
-                  <h3 className="press-feature-title">{feature.title}</h3>
-                  <p className="press-feature-details">{feature.details}</p>
+                <div key={index} className="ardo-feature">
+                  {feature.icon && <div className="ardo-feature-icon">{feature.icon}</div>}
+                  <h3 className="ardo-feature-title">{feature.title}</h3>
+                  <p className="ardo-feature-details">{feature.details}</p>
                   {feature.link && (
-                    <Link to={feature.link} className="press-feature-link">
+                    <Link to={feature.link} className="ardo-feature-link">
                       {feature.linkText || "Learn more"}
                     </Link>
                   )}

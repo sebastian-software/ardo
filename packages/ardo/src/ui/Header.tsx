@@ -56,40 +56,40 @@ export function Header({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className={className ?? "press-header"}>
-      <div className="press-header-container">
+    <header className={className ?? "ardo-header"}>
+      <div className="ardo-header-container">
         {/* Left: Mobile menu button + Logo/Title */}
-        <div className="press-header-left">
+        <div className="ardo-header-left">
           <button
-            className="press-mobile-menu-button"
+            className="ardo-mobile-menu-button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
-            <span className="press-hamburger">
+            <span className="ardo-hamburger">
               <span></span>
               <span></span>
               <span></span>
             </span>
           </button>
 
-          <Link to="/" className="press-logo-link">
+          <Link to="/" className="ardo-logo-link">
             {logo && (
               <img
                 src={typeof logo === "string" ? logo : logo.light}
                 alt={title ?? "Logo"}
-                className="press-logo"
+                className="ardo-logo"
               />
             )}
-            {title && <span className="press-site-title">{title}</span>}
+            {title && <span className="ardo-site-title">{title}</span>}
           </Link>
         </div>
 
         {/* Center: Navigation */}
-        {nav && <div className="press-nav">{nav}</div>}
+        {nav && <div className="ardo-nav">{nav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
-        <div className="press-header-right">
+        <div className="ardo-header-right">
           {search && <Search />}
           {themeToggle && <ThemeToggle />}
           {actions}
@@ -98,8 +98,8 @@ export function Header({
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="press-mobile-menu">
-          <nav className="press-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
+        <div className="ardo-mobile-menu">
+          <nav className="ardo-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
             {nav}
           </nav>
         </div>
@@ -137,7 +137,7 @@ export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ?? "press-social-link"}
+      className={className ?? "ardo-social-link"}
       aria-label={ariaLabel ?? icon}
     >
       <SocialIcon icon={icon} />

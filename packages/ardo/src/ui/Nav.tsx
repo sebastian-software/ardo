@@ -35,7 +35,7 @@ export interface NavProps {
  * ```
  */
 export function Nav({ children, className }: NavProps) {
-  return <nav className={className ?? "press-nav"}>{children}</nav>
+  return <nav className={className ?? "ardo-nav"}>{children}</nav>
 }
 
 // =============================================================================
@@ -69,7 +69,7 @@ export interface NavLinkProps {
  */
 export function NavLink({ to, href, children, className, activeMatch }: NavLinkProps) {
   const navContext = useNavContext()
-  const baseClassName = className ?? "press-nav-link"
+  const baseClassName = className ?? "ardo-nav-link"
 
   // Handle click for mobile menu
   const handleClick = () => {
@@ -139,15 +139,15 @@ export function NavDropdown({ text, children, className }: NavDropdownProps) {
 
   return (
     <div
-      className={className ?? "press-nav-dropdown"}
+      className={className ?? "ardo-nav-dropdown"}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="press-nav-dropdown-button">
+      <button className="ardo-nav-dropdown-button">
         {text}
-        <span className="press-nav-dropdown-icon">▼</span>
+        <span className="ardo-nav-dropdown-icon">▼</span>
       </button>
-      {open && <div className="press-nav-dropdown-menu">{children}</div>}
+      {open && <div className="ardo-nav-dropdown-menu">{children}</div>}
     </div>
   )
 }

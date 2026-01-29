@@ -97,24 +97,24 @@ export function Search() {
 
   return (
     <>
-      <button className="press-search-button" onClick={() => setIsOpen(true)} aria-label="Search">
+      <button className="ardo-search-button" onClick={() => setIsOpen(true)} aria-label="Search">
         <SearchIcon />
-        <span className="press-search-button-text">{placeholder}</span>
-        <span className="press-search-kbd">
+        <span className="ardo-search-button-text">{placeholder}</span>
+        <span className="ardo-search-kbd">
           <kbd>⌘</kbd>
           <kbd>K</kbd>
         </span>
       </button>
 
       {isOpen && (
-        <div className="press-search-modal" onClick={() => setIsOpen(false)}>
-          <div className="press-search-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="press-search-input-wrapper">
+        <div className="ardo-search-modal" onClick={() => setIsOpen(false)}>
+          <div className="ardo-search-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="ardo-search-input-wrapper">
               <SearchIcon />
               <input
                 ref={inputRef}
                 type="text"
-                className="press-search-input"
+                className="ardo-search-input"
                 placeholder={placeholder}
                 value={query}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -122,7 +122,7 @@ export function Search() {
               />
               {query && (
                 <button
-                  className="press-search-clear"
+                  className="ardo-search-clear"
                   onClick={() => handleSearch("")}
                   aria-label="Clear search"
                 >
@@ -132,19 +132,19 @@ export function Search() {
             </div>
 
             {results.length > 0 && (
-              <ul className="press-search-results">
+              <ul className="ardo-search-results">
                 {results.map((result, index) => (
                   <li key={result.id}>
                     <Link
                       to={result.path as string}
-                      className={["press-search-result", index === selectedIndex && "selected"]
+                      className={["ardo-search-result", index === selectedIndex && "selected"]
                         .filter(Boolean)
                         .join(" ")}
                       onClick={() => setIsOpen(false)}
                     >
-                      <span className="press-search-result-title">{result.title as string}</span>
+                      <span className="ardo-search-result-title">{result.title as string}</span>
                       {result.section && (
-                        <span className="press-search-result-section">
+                        <span className="ardo-search-result-section">
                           {result.section as string}
                         </span>
                       )}
@@ -155,10 +155,10 @@ export function Search() {
             )}
 
             {query && results.length === 0 && (
-              <div className="press-search-no-results">No results found for "{query}"</div>
+              <div className="ardo-search-no-results">No results found for "{query}"</div>
             )}
 
-            <div className="press-search-footer">
+            <div className="ardo-search-footer">
               <span>
                 <kbd>↑</kbd> <kbd>↓</kbd> to navigate
               </span>

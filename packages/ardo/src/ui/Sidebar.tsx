@@ -68,12 +68,12 @@ export function Sidebar({ items, children, className }: SidebarProps) {
 
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
-      <aside className={className ?? "press-sidebar"}>
-        <nav className="press-sidebar-nav">
+      <aside className={className ?? "ardo-sidebar"}>
+        <nav className="ardo-sidebar-nav">
           {items ? (
             <SidebarItems items={items} depth={0} />
           ) : (
-            <ul className="press-sidebar-list press-sidebar-list-0">{children}</ul>
+            <ul className="ardo-sidebar-list ardo-sidebar-list-0">{children}</ul>
           )}
         </nav>
       </aside>
@@ -132,19 +132,19 @@ export function SidebarGroup({
   // Check if any child is active
   const isChildActive = checkChildrenActive(children, currentPath)
 
-  const textClassName = ["press-sidebar-text", isChildActive && "child-active"]
+  const textClassName = ["ardo-sidebar-text", isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
-  const linkClassName = ["press-sidebar-link", isChildActive && "child-active"]
+  const linkClassName = ["ardo-sidebar-link", isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
   const hasChildren = Children.count(children) > 0
 
   return (
-    <li className={className ?? "press-sidebar-item"}>
-      <div className="press-sidebar-item-header">
+    <li className={className ?? "ardo-sidebar-item"}>
+      <div className="ardo-sidebar-item-header">
         {to ? (
           <Link to={to} className={linkClassName} activeProps={{ className: "active" }}>
             {title}
@@ -161,7 +161,7 @@ export function SidebarGroup({
 
         {collapsible && hasChildren && (
           <button
-            className={["press-sidebar-collapse", collapsed && "collapsed"]
+            className={["ardo-sidebar-collapse", collapsed && "collapsed"]
               .filter(Boolean)
               .join(" ")}
             onClick={() => setCollapsed(!collapsed)}
@@ -182,7 +182,7 @@ export function SidebarGroup({
       </div>
 
       {hasChildren && !collapsed && (
-        <ul className="press-sidebar-list press-sidebar-list-1">{children}</ul>
+        <ul className="ardo-sidebar-list ardo-sidebar-list-1">{children}</ul>
       )}
     </li>
   )
@@ -211,10 +211,10 @@ export interface SidebarLinkProps {
  */
 export function SidebarLink({ to, children, className }: SidebarLinkProps) {
   return (
-    <li className="press-sidebar-item">
+    <li className="ardo-sidebar-item">
       <Link
         to={to}
-        className={className ?? "press-sidebar-link"}
+        className={className ?? "ardo-sidebar-link"}
         activeProps={{ className: "active" }}
       >
         {children}
@@ -234,7 +234,7 @@ interface SidebarItemsProps {
 
 function SidebarItems({ items, depth }: SidebarItemsProps) {
   return (
-    <ul className={`press-sidebar-list press-sidebar-list-${depth}`}>
+    <ul className={`ardo-sidebar-list ardo-sidebar-list-${depth}`}>
       {items.map((item, index) => (
         <SidebarItemComponent key={index} item={item} depth={depth} />
       ))}
@@ -261,17 +261,17 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         (child.items && child.items.some((grandchild) => grandchild.link === currentPath))
     )
 
-  const linkClassName = ["press-sidebar-link", isChildActive && "child-active"]
+  const linkClassName = ["ardo-sidebar-link", isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
-  const textClassName = ["press-sidebar-text", isChildActive && "child-active"]
+  const textClassName = ["ardo-sidebar-text", isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
   return (
-    <li className="press-sidebar-item">
-      <div className="press-sidebar-item-header">
+    <li className="ardo-sidebar-item">
+      <div className="ardo-sidebar-item-header">
         {item.link ? (
           <Link to={item.link} className={linkClassName} activeProps={{ className: "active" }}>
             {item.text}
@@ -284,7 +284,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 
         {hasChildren && (
           <button
-            className={["press-sidebar-collapse", collapsed && "collapsed"]
+            className={["ardo-sidebar-collapse", collapsed && "collapsed"]
               .filter(Boolean)
               .join(" ")}
             onClick={() => setCollapsed(!collapsed)}

@@ -19,12 +19,12 @@ export function CopyButton({ code }: CopyButtonProps) {
 
   return (
     <button
-      className="press-copy-button"
+      className="ardo-copy-button"
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
-      <span className="press-copy-text">{copied ? "Copied!" : "Copy"}</span>
+      <span className="ardo-copy-text">{copied ? "Copied!" : "Copy"}</span>
     </button>
   )
 }

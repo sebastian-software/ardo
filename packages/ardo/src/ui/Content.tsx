@@ -38,33 +38,33 @@ export function Content({ children }: ContentProps) {
     : null
 
   return (
-    <article className="press-content-container">
+    <article className="ardo-content-container">
       {pageData?.frontmatter.title && (
-        <header className="press-content-header">
-          <h1 className="press-content-title">{pageData.frontmatter.title}</h1>
+        <header className="ardo-content-header">
+          <h1 className="ardo-content-title">{pageData.frontmatter.title}</h1>
           {pageData.frontmatter.description && (
-            <p className="press-content-description">{pageData.frontmatter.description}</p>
+            <p className="ardo-content-description">{pageData.frontmatter.description}</p>
           )}
         </header>
       )}
 
-      <div className="press-content-body">{children}</div>
+      <div className="ardo-content-body">{children}</div>
 
-      <footer className="press-content-footer">
+      <footer className="ardo-content-footer">
         {(showEditLink || showLastUpdated) && (
-          <div className="press-content-meta">
+          <div className="ardo-content-meta">
             {showEditLink && (
               <a
                 href={editLink!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="press-edit-link"
+                className="ardo-edit-link"
               >
                 {themeConfig.editLink?.text ?? "Edit this page"}
               </a>
             )}
             {showLastUpdated && (
-              <span className="press-last-updated">
+              <span className="ardo-last-updated">
                 {themeConfig.lastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
               </span>
             )}
@@ -72,19 +72,19 @@ export function Content({ children }: ContentProps) {
         )}
 
         {(prev || next) && (
-          <nav className="press-prev-next">
+          <nav className="ardo-prev-next">
             {prev ? (
-              <Link to={prev.link!} className="press-prev-link">
-                <span className="press-prev-next-label">Previous</span>
-                <span className="press-prev-next-title">{prev.text}</span>
+              <Link to={prev.link!} className="ardo-prev-link">
+                <span className="ardo-prev-next-label">Previous</span>
+                <span className="ardo-prev-next-title">{prev.text}</span>
               </Link>
             ) : (
               <div />
             )}
             {next ? (
-              <Link to={next.link!} className="press-next-link">
-                <span className="press-prev-next-label">Next</span>
-                <span className="press-prev-next-title">{next.text}</span>
+              <Link to={next.link!} className="ardo-next-link">
+                <span className="ardo-prev-next-label">Next</span>
+                <span className="ardo-prev-next-title">{next.text}</span>
               </Link>
             ) : (
               <div />

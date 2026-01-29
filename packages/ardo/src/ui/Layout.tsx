@@ -33,11 +33,11 @@ export interface LayoutProps {
  */
 export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
   return (
-    <div className={className ?? "press-layout"}>
+    <div className={className ?? "ardo-layout"}>
       {header}
-      <div className="press-layout-container">
+      <div className="ardo-layout-container">
         {sidebar}
-        <main className="press-main">{children}</main>
+        <main className="ardo-main">{children}</main>
       </div>
       {footer}
     </div>

@@ -25,7 +25,7 @@ export function Tabs({ defaultValue, children }: TabsProps) {
 
   return (
     <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      <div className="press-tabs">{children}</div>
+      <div className="ardo-tabs">{children}</div>
     </TabsContext.Provider>
   )
 }
@@ -36,7 +36,7 @@ interface TabListProps {
 
 export function TabList({ children }: TabListProps) {
   return (
-    <div className="press-tab-list" role="tablist">
+    <div className="ardo-tab-list" role="tablist">
       {children}
     </div>
   )
@@ -55,7 +55,7 @@ export function Tab({ value, children }: TabProps) {
     <button
       role="tab"
       aria-selected={isActive}
-      className={["press-tab", isActive && "active"].filter(Boolean).join(" ")}
+      className={["ardo-tab", isActive && "active"].filter(Boolean).join(" ")}
       onClick={() => setActiveTab(value)}
     >
       {children}
@@ -77,7 +77,7 @@ export function TabPanel({ value, children }: TabPanelProps) {
   }
 
   return (
-    <div role="tabpanel" className="press-tab-panel">
+    <div role="tabpanel" className="ardo-tab-panel">
       {children}
     </div>
   )
@@ -88,5 +88,5 @@ interface TabPanelsProps {
 }
 
 export function TabPanels({ children }: TabPanelsProps) {
-  return <div className="press-tab-panels">{children}</div>
+  return <div className="ardo-tab-panels">{children}</div>
 }

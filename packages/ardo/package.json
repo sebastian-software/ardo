@@ -23,16 +23,16 @@
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.js"
     },
-    "./theme": {
-      "import": "./dist/theme/index.js",
-      "types": "./dist/theme/index.d.ts"
+    "./ui": {
+      "import": "./dist/ui/index.js",
+      "types": "./dist/ui/index.d.ts"
     },
-    "./theme/styles.css": "./dist/theme/styles.css",
+    "./ui/styles.css": "./dist/ui/styles.css",
     "./typedoc": {
       "import": "./dist/typedoc/index.js",
       "types": "./dist/typedoc/index.d.ts"
     },
-    "./press.css": "./dist/theme/styles.css"
+    "./press.css": "./dist/ui/styles.css"
   },
   "files": [
     "dist"

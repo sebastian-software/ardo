@@ -37,4 +37,9 @@ export {
   TabPanel,
   TabPanels,
   CopyButton,
+  Hero,
+  Features,
+  FeatureCard,
 } from "./components"
+export type { HeroProps, HeroAction, HeroImage } from "./components"
+export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./components"

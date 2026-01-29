@@ -46,16 +46,16 @@ export function Footer({ message, copyright, children, className }: FooterProps)
   }
 
   return (
-    <footer className={className ?? "press-footer"}>
-      <div className="press-footer-container">
+    <footer className={className ?? "ardo-footer"}>
+      <div className="ardo-footer-container">
         {children ?? (
           <>
             {message && (
-              <p className="press-footer-message" dangerouslySetInnerHTML={{ __html: message }} />
+              <p className="ardo-footer-message" dangerouslySetInnerHTML={{ __html: message }} />
             )}
             {copyright && (
               <p
-                className="press-footer-copyright"
+                className="ardo-footer-copyright"
                 dangerouslySetInnerHTML={{ __html: copyright }}
               />
             )}

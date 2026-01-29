@@ -30,7 +30,7 @@ export function DocPage({ children }: DocPageProps) {
 
   return (
     <Layout>
-      <div className="press-doc-page">
+      <div className="ardo-doc-page">
         <Content>{children}</Content>
         {showToc && <TOC />}
       </div>
@@ -72,7 +72,7 @@ export function DocContent({ children }: DocContentProps) {
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
 
   return (
-    <div className="press-doc-page">
+    <div className="ardo-doc-page">
       <Content>{children}</Content>
       {showToc && <TOC />}
     </div>

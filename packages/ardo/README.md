@@ -91,7 +91,7 @@ function MyComponent() {
 Use pre-built components for your documentation:
 
 ```tsx
-import { DocPage, Layout, Header, Sidebar, TOC } from "ardo/theme"
+import { DocPage, Layout, Header, Sidebar, TOC } from "ardo/ui"
 
 function App() {
   return (
@@ -104,13 +104,13 @@ function App() {
 
 ## Exports
 
-| Export                  | Description                              |
-| ----------------------- | ---------------------------------------- |
-| `ardo/config`           | Configuration utilities (`defineConfig`) |
-| `ardo/vite`             | Vite plugin (`ardoPlugin`)               |
-| `ardo/runtime`          | React hooks and providers                |
-| `ardo/theme`            | Pre-built UI components                  |
-| `ardo/theme/styles.css` | Default theme styles                     |
+| Export               | Description                              |
+| -------------------- | ---------------------------------------- |
+| `ardo/config`        | Configuration utilities (`defineConfig`) |
+| `ardo/vite`          | Vite plugin (`ardoPlugin`)               |
+| `ardo/runtime`       | React hooks and providers                |
+| `ardo/ui`            | Pre-built UI components                  |
+| `ardo/ui/styles.css` | Default theme styles                     |
 
 ## Documentation
 

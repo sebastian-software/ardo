@@ -26,7 +26,7 @@ This is a tip
 
     const result = await processMarkdown(markdown)
 
-    expect(result).toContain("press-container-tip")
+    expect(result).toContain("ardo-container-tip")
     expect(result).toContain("TIP")
     expect(result).toContain("This is a tip")
   })
@@ -38,7 +38,7 @@ Be careful!
 
     const result = await processMarkdown(markdown)
 
-    expect(result).toContain("press-container-warning")
+    expect(result).toContain("ardo-container-warning")
     expect(result).toContain("WARNING")
     expect(result).toContain("Be careful!")
   })
@@ -50,7 +50,7 @@ This is dangerous!
 
     const result = await processMarkdown(markdown)
 
-    expect(result).toContain("press-container-danger")
+    expect(result).toContain("ardo-container-danger")
     expect(result).toContain("DANGER")
     expect(result).toContain("This is dangerous!")
   })
@@ -62,7 +62,7 @@ Some information
 
     const result = await processMarkdown(markdown)
 
-    expect(result).toContain("press-container-info")
+    expect(result).toContain("ardo-container-info")
     expect(result).toContain("INFO")
     expect(result).toContain("Some information")
   })
@@ -74,7 +74,7 @@ A note
 
     const result = await processMarkdown(markdown)
 
-    expect(result).toContain("press-container-note")
+    expect(result).toContain("ardo-container-note")
     expect(result).toContain("NOTE")
     expect(result).toContain("A note")
   })

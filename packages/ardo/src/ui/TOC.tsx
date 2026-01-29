@@ -43,10 +43,10 @@ export function TOC() {
   }
 
   return (
-    <aside className="press-toc">
-      <div className="press-toc-container">
-        <h3 className="press-toc-title">{label}</h3>
-        <nav className="press-toc-nav">
+    <aside className="ardo-toc">
+      <div className="ardo-toc-container">
+        <h3 className="ardo-toc-title">{label}</h3>
+        <nav className="ardo-toc-nav">
           <TOCItems items={toc} activeId={activeId} />
         </nav>
       </div>
@@ -61,7 +61,7 @@ interface TOCItemsProps {
 
 function TOCItems({ items, activeId }: TOCItemsProps) {
   return (
-    <ul className="press-toc-list">
+    <ul className="ardo-toc-list">
       {items.map((item) => (
         <TOCItemComponent key={item.id} item={item} activeId={activeId} />
       ))}
@@ -79,11 +79,11 @@ function TOCItemComponent({ item, activeId }: TOCItemComponentProps) {
   const hasActiveChild = hasActiveDescendant(item, activeId)
 
   return (
-    <li className="press-toc-item">
+    <li className="ardo-toc-item">
       <a
         href={`#${item.id}`}
         className={[
-          `press-toc-link press-toc-link-${item.level}`,
+          `ardo-toc-link ardo-toc-link-${item.level}`,
           isActive && "active",
           hasActiveChild && "child-active",
         ]

@@ -9,7 +9,7 @@ export function ThemeToggle() {
   useEffect(() => {
     setMounted(true)
 
-    const stored = localStorage.getItem("press-theme") as Theme | null
+    const stored = localStorage.getItem("ardo-theme") as Theme | null
     if (stored) {
       setTheme(stored)
       applyTheme(stored)
@@ -21,14 +21,14 @@ export function ThemeToggle() {
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"
     setTheme(nextTheme)
-    localStorage.setItem("press-theme", nextTheme)
+    localStorage.setItem("ardo-theme", nextTheme)
     applyTheme(nextTheme)
   }
 
   if (!mounted) {
     return (
-      <button className="press-theme-toggle" aria-label="Toggle theme">
-        <span className="press-theme-icon">
+      <button className="ardo-theme-toggle" aria-label="Toggle theme">
+        <span className="ardo-theme-icon">
           <SunIcon />
         </span>
       </button>
@@ -37,11 +37,11 @@ export function ThemeToggle() {
 
   return (
     <button
-      className="press-theme-toggle"
+      className="ardo-theme-toggle"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}
     >
-      <span className="press-theme-icon">
+      <span className="ardo-theme-icon">
         {theme === "light" && <SunIcon />}
         {theme === "dark" && <MoonIcon />}
         {theme === "system" && <SystemIcon />}

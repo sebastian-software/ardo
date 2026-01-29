@@ -109,7 +109,7 @@ export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
             type: "element",
             tagName: "div",
             properties: {
-              className: ["press-code-block"],
+              className: ["ardo-code-block"],
               "data-lang": lang,
             },
             children: [
@@ -177,10 +177,10 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
   let html = ""
 
   if (title) {
-    html += `<div class="press-code-title">${escapeHtml(title)}</div>`
+    html += `<div class="ardo-code-title">${escapeHtml(title)}</div>`
   }
 
-  html += `<div class="press-code-wrapper" data-lang="${lang}">`
+  html += `<div class="ardo-code-wrapper" data-lang="${lang}">`
 
   if (lineNumbers || highlightLines.length > 0) {
     const lines = shikiHtml.split("\n")
@@ -188,12 +188,12 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
       .map((line, i) => {
         const lineNum = i + 1
         const isHighlighted = highlightLines.includes(lineNum)
-        const classes = ["press-code-line"]
+        const classes = ["ardo-code-line"]
         if (isHighlighted) classes.push("highlighted")
 
         let prefix = ""
         if (lineNumbers) {
-          prefix = `<span class="press-line-number">${lineNum}</span>`
+          prefix = `<span class="ardo-line-number">${lineNum}</span>`
         }
 
         return `<span class="${classes.join(" ")}">${prefix}${line}</span>`
@@ -205,9 +205,9 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
     html += shikiHtml
   }
 
-  html += `<button class="press-copy-button" data-code="${encodeURIComponent(extractCodeFromHtml(shikiHtml))}">
-    <span class="press-copy-icon">Copy</span>
-    <span class="press-copied-icon" style="display:none">Copied!</span>
+  html += `<button class="ardo-copy-button" data-code="${encodeURIComponent(extractCodeFromHtml(shikiHtml))}">
+    <span class="ardo-copy-icon">Copy</span>
+    <span class="ardo-copied-icon" style="display:none">Copied!</span>
   </button>`
 
   html += "</div>"

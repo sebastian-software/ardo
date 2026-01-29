@@ -43,7 +43,7 @@ export {
   transformMarkdownToReact,
 } from "./vite"
 
-// Theme
+// UI Components
 export {
   Layout,
   Header,
@@ -70,7 +70,12 @@ export {
   TabPanel,
   TabPanels,
   CopyButton,
-} from "./theme"
+  Hero,
+  Features,
+  FeatureCard,
+} from "./ui"
+export type { HeroProps, HeroAction, HeroImage } from "./ui"
+export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./ui"
 
 // TypeDoc
 export {
