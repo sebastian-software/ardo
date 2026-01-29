@@ -184,8 +184,12 @@ export interface PressConfig {
   themeConfig?: ThemeConfig
   /** Markdown processing options */
   markdown?: MarkdownConfig
-  /** TypeDoc API documentation generation */
-  typedoc?: TypeDocConfig
+  /**
+   * TypeDoc API documentation generation.
+   * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
+   * - `{ ... }`: Enable with custom config
+   */
+  typedoc?: true | TypeDocConfig
   /** Custom Vite configuration */
   vite?: Record<string, unknown>
 }

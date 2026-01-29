@@ -5,16 +5,12 @@ import path from 'path'
 import fsSync from 'fs'
 import type { FSWatcher } from 'fs'
 
-export interface TypeDocPluginOptions {
-  /**
-   * TypeDoc configuration
-   */
-  config: TypeDocConfig
-
+export interface TypeDocPluginOptions extends Partial<TypeDocConfig> {
   /**
    * Content directory where markdown files are stored
+   * @default './content'
    */
-  contentDir: string
+  contentDir?: string
 
   /**
    * Run TypeDoc on every build
@@ -29,8 +25,47 @@ export interface TypeDocPluginOptions {
   runOnStart?: boolean
 }
 
-export function typedocPlugin(options: TypeDocPluginOptions): Plugin {
-  const { config, contentDir, runOnBuild, runOnStart = true } = options
+/**
+ * Vite plugin for generating API documentation with TypeDoc.
+ *
+ * @example
+ * ```ts
+ * // Minimal config (uses ./src/index.ts as entry point)
+ * typedocPlugin()
+ *
+ * // Custom entry point
+ * typedocPlugin({ entryPoints: ['./lib/index.ts'] })
+ *
+ * // Full config
+ * typedocPlugin({
+ *   entryPoints: ['./src/index.ts'],
+ *   out: 'api-reference',
+ *   excludePrivate: true,
+ * })
+ * ```
+ */
+export function typedocPlugin(options: TypeDocPluginOptions = {}): Plugin {
+  const {
+    contentDir = './content',
+    runOnBuild,
+    runOnStart = true,
+    // TypeDoc config with defaults
+    enabled = true,
+    entryPoints = ['./src/index.ts'],
+    out = 'api-reference',
+    excludePrivate = true,
+    excludeInternal = true,
+    ...restConfig
+  } = options
+
+  const config: TypeDocConfig = {
+    enabled,
+    entryPoints,
+    out,
+    excludePrivate,
+    excludeInternal,
+    ...restConfig,
+  }
 
   let isBuilding = false
   let hasGenerated = false

@@ -1,9 +1,11 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { PressConfig, ResolvedConfig } from '../config/types'
+import type { TypeDocConfig } from '../typedoc/types'
 import { resolveConfig } from '../config/index'
 import { transformMarkdown } from '../markdown/pipeline'
 import { createShikiHighlighter, type ShikiHighlighter } from '../markdown/shiki'
 import { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugin'
+import { generateApiDocs } from '../typedoc/generator'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs/promises'
@@ -50,7 +52,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
 
   // Extract ardo-specific options from the rest (which is PressConfig)
-  const { routes, prerender, ...pressConfig } = options
+  const { routes, prerender, typedoc, ...pressConfig } = options
 
   const mainPlugin: Plugin = {
     name: 'ardo',
@@ -142,6 +144,45 @@ export default function MarkdownContent() {
   }
 
   const plugins: Plugin[] = [mainPlugin, markdownPlugin]
+
+  // Add TypeDoc plugin if enabled
+  if (typedoc) {
+    const defaultTypedocConfig: TypeDocConfig = {
+      enabled: true,
+      entryPoints: ['./src/index.ts'],
+      out: 'api-reference',
+      excludePrivate: true,
+      excludeInternal: true,
+    }
+
+    const typedocConfig: TypeDocConfig =
+      typedoc === true ? defaultTypedocConfig : { ...defaultTypedocConfig, ...typedoc }
+
+    let hasGenerated = false
+
+    const typedocPlugin: Plugin = {
+      name: 'ardo:typedoc',
+
+      async buildStart() {
+        if (!hasGenerated && typedocConfig.enabled) {
+          console.log('[ardo] Generating API documentation with TypeDoc...')
+          const startTime = Date.now()
+          try {
+            const contentDir = pressConfig.srcDir ?? './content'
+            const docs = await generateApiDocs(typedocConfig, contentDir)
+            const duration = Date.now() - startTime
+            console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
+            hasGenerated = true
+          } catch (error) {
+            console.error('[ardo] TypeDoc generation failed:', error)
+            throw error
+          }
+        }
+      },
+    }
+
+    plugins.unshift(typedocPlugin)
+  }
 
   // Add routes plugin unless explicitly disabled
   if (routes !== false) {

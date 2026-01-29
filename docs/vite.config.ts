@@ -1,32 +1,23 @@
 import { defineConfig } from 'vite'
 import { ardo } from 'ardo/vite'
-import { typedocPlugin } from 'ardo/typedoc'
 
 export default defineConfig({
   base: '/ardo/',
   plugins: [
-    typedocPlugin({
-      contentDir: './content',
-      config: {
-        enabled: true,
+    ardo({
+      title: 'Ardo',
+      description: 'React-first Static Documentation Framework',
+
+      // TypeDoc API documentation
+      typedoc: {
         entryPoints: ['../packages/ardo/src/index.ts'],
         tsconfig: '../packages/ardo/tsconfig.json',
-        out: 'api-reference',
-        excludePrivate: true,
-        excludeInternal: true,
-        sort: ['source-order'],
         markdown: {
           sourceLinks: true,
           sourceBaseUrl: 'https://github.com/sebastian-software/ardo/blob/main/packages/ardo',
         },
       },
-    }),
-    ardo({
-      // Site metadata (used for SEO defaults)
-      title: 'Ardo',
-      description: 'React-first Static Documentation Framework',
 
-      // Theme config for features still used by components
       themeConfig: {
         search: {
           enabled: true,
@@ -42,7 +33,6 @@ export default defineConfig({
         },
       },
 
-      // Markdown processing options
       markdown: {
         theme: {
           light: 'github-light',
