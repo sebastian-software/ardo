@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sebastian-software/ardo/compare/ardo-v1.1.0...ardo-v1.1.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* remove route group wrapper to fix root path matching ([fffb3bf](https://github.com/sebastian-software/ardo/commit/fffb3bf0fd27aad7ec2a7b9b3f2e02c6eb067fdb))
+
 ## [1.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v1.0.2...ardo-v1.1.0) (2026-01-29)
 
 

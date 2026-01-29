@@ -1,6 +1,6 @@
 {
   "name": "create-ardo",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Scaffolding tool for Ardo documentation projects",
   "type": "module",
   "bin": {
