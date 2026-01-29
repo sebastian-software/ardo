@@ -11,14 +11,14 @@
   "dependencies": {
     "@tanstack/react-router": "*",
     "@tanstack/react-start": "*",
-    "ardo": "^1.0.0",
+    "ardo": "^1.1.1",
     "react": "*",
     "react-dom": "*"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.7.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
     "vite": "^8.0.0-beta.0"
   }
 }
