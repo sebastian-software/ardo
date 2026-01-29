@@ -12,6 +12,8 @@ dist
 docs/content/api-reference/
 **/src/routes/(docs)/
 !**/src/routes/(docs)/_layout.tsx
+# Allow template files to be tracked
+!packages/create-ardo/templates/**/src/routes/(docs)/
 
 # IDE
 .idea
