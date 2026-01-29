@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.3...create-ardo-v1.2.0) (2026-01-29)
+
+
+### Features
+
+* add scaffold prompts for doc type and GitHub Pages ([a447c18](https://github.com/sebastian-software/ardo/commit/a447c18c6bfc9eb98e298ed1a5e71ebe347a1215))
+* auto-detect GitHub Pages base path from git remote ([995613b](https://github.com/sebastian-software/ardo/commit/995613bc1bd4635c351ebf05b36dd0888f0f5be9))
+* **scaffold:** add commented TypeDoc configuration template ([b2fe0ee](https://github.com/sebastian-software/ardo/commit/b2fe0eea4286170925d49846e9d9a4ae28ff1dec))
+
+
+### Bug Fixes
+
+* update templates and docs for GitHub Pages auto-detection ([aa372a9](https://github.com/sebastian-software/ardo/commit/aa372a970859f1fbd6b1503e297b569e60e71be4))
+
 ## [1.1.3](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.2...create-ardo-v1.1.3) (2026-01-29)
 
 
