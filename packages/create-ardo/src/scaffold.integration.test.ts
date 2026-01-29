@@ -30,20 +30,20 @@ describe('scaffold integration build', () => {
     // 1. Create temp directory
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ardo-integration-'))
 
-    // 2. Scaffold project
+    // 2. Scaffold project (typedoc: false because we run it separately before build)
     createProjectStructure(tmpDir, 'minimal', {
       siteTitle: 'Integration Test Docs',
       projectName: 'test-project',
-      typedoc: true,
+      typedoc: false,
       githubPages: false,
     })
 
-    // 3. Add pseudo API source for TypeDoc testing
+    // 3. Add pseudo API source for TypeDoc testing (src/index.ts is the default entry point)
     const srcDir = path.join(tmpDir, 'src')
     fs.mkdirSync(srcDir, { recursive: true })
 
     fs.writeFileSync(
-      path.join(srcDir, 'api.ts'),
+      path.join(srcDir, 'index.ts'),
       `/**
  * Adds two numbers together.
  * @param a - First number
@@ -78,7 +78,7 @@ export function greet(name: string, config?: GreeterConfig): string {
 `
     )
 
-    // 4. Add tsconfig for the API source
+    // 4. Add tsconfig for the API source (separate from main tsconfig to avoid route compilation errors)
     fs.writeFileSync(
       path.join(tmpDir, 'tsconfig.api.json'),
       JSON.stringify(
@@ -92,7 +92,7 @@ export function greet(name: string, config?: GreeterConfig): string {
             esModuleInterop: true,
             skipLibCheck: true,
           },
-          include: ['src/api.ts'],
+          include: ['src/index.ts'],
         },
         null,
         2
@@ -106,15 +106,16 @@ export function greet(name: string, config?: GreeterConfig): string {
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
     // 6. Write prebuild script — generates TypeDoc API docs before vite build
+    // Note: TypeDoc must run BEFORE vite build so TanStack Router can discover the routes
     fs.writeFileSync(
       path.join(tmpDir, 'prebuild.mjs'),
       `import { generateApiDocs } from 'ardo/typedoc'
 
 await generateApiDocs({
   enabled: true,
-  entryPoints: ['./src/api.ts'],
+  entryPoints: ['./src/index.ts'],
   tsconfig: './tsconfig.api.json',
-  out: 'api',
+  out: 'api-reference',
 }, './content')
 `
     )
@@ -173,14 +174,14 @@ await generateApiDocs({
   })
 
   it('generates TypeDoc API markdown in content directory', () => {
-    const apiContentDir = path.join(tmpDir, 'content', 'api')
+    const apiContentDir = path.join(tmpDir, 'content', 'api-reference')
     expect(fs.existsSync(apiContentDir)).toBe(true)
     const mdFiles = collectFiles(apiContentDir, '.md')
     expect(mdFiles.length).toBeGreaterThan(0)
   })
 
   it('generates TypeDoc API HTML pages in dist', () => {
-    const apiDistDir = path.join(tmpDir, 'dist', 'client', 'api')
+    const apiDistDir = path.join(tmpDir, 'dist', 'client', 'api-reference')
     expect(fs.existsSync(apiDistDir)).toBe(true)
     const htmlFiles = collectFiles(apiDistDir, '.html')
     expect(htmlFiles.length).toBeGreaterThan(0)

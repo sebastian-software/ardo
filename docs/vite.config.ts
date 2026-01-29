@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import { ardo } from 'ardo/vite'
 
 export default defineConfig({
-  base: '/ardo/',
   plugins: [
     ardo({
       title: 'Ardo',

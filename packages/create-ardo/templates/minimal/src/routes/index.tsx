@@ -26,6 +26,7 @@ function HomeComponent() {
     title: (frontmatter.title as string) || 'Home',
     description: frontmatter.description as string | undefined,
     frontmatter,
+    content: '',
     toc,
     filePath: 'index.md',
     relativePath: 'index.md',

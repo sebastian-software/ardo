@@ -148,6 +148,7 @@ function ${componentName}() {
     title: (frontmatter.title as string) || '${defaultTitle}',
     description: frontmatter.description as string | undefined,
     frontmatter,
+    content: '',
     toc,
     filePath: '${relativePath}',
     relativePath: '${relativePath}',

@@ -9,7 +9,6 @@ import { generateApiDocs } from '../typedoc/generator'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs/promises'
-import fsSync from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
 
@@ -20,11 +19,6 @@ import { execSync } from 'child_process'
  */
 function detectGitHubRepoName(cwd: string): string | undefined {
   try {
-    // Check if .git exists
-    if (!fsSync.existsSync(path.join(cwd, '.git'))) {
-      return undefined
-    }
-
     const remoteUrl = execSync('git remote get-url origin', {
       cwd,
       encoding: 'utf-8',
@@ -192,7 +186,21 @@ export default function MarkdownContent() {
 
   const plugins: Plugin[] = [mainPlugin, markdownPlugin]
 
+  // Add routes plugin unless explicitly disabled
+  // Note: Routes plugin must come AFTER typedoc in the array so that
+  // typedoc runs first in buildStart and generates markdown files
+  if (routes !== false) {
+    plugins.unshift(
+      pressRoutesPlugin(() => resolvedConfig, {
+        srcDir: pressConfig.srcDir,
+        ...routes,
+      })
+    )
+  }
+
   // Add TypeDoc plugin if enabled
+  // Note: unshift adds to front, so typedoc will be before routes in the array
+  // This ensures typedoc buildStart runs before routes buildStart
   if (typedoc) {
     const defaultTypedocConfig: TypeDocConfig = {
       enabled: true,
@@ -229,16 +237,6 @@ export default function MarkdownContent() {
     }
 
     plugins.unshift(typedocPlugin)
-  }
-
-  // Add routes plugin unless explicitly disabled
-  if (routes !== false) {
-    plugins.unshift(
-      pressRoutesPlugin(() => resolvedConfig, {
-        srcDir: pressConfig.srcDir,
-        ...routes,
-      })
-    )
   }
 
   // Add TanStack Start plugin
