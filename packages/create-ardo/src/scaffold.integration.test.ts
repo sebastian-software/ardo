@@ -94,17 +94,10 @@ export function greet(name: string, config?: GreeterConfig): string {
       )
     )
 
-    // 5. Patch package.json — use local ardo + aligned versions
+    // 5. Patch package.json — use local ardo (wildcard deps resolve via ardo)
     const pkgPath = path.join(tmpDir, 'package.json')
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
     pkg.dependencies.ardo = `file:${ardoPackageDir}`
-    // Align versions with workspace to avoid mismatches
-    pkg.dependencies.react = '^19.2.4'
-    pkg.dependencies['react-dom'] = '^19.2.4'
-    pkg.devDependencies['@types/react'] = '^19.2.9'
-    pkg.devDependencies['@types/react-dom'] = '^19.2.3'
-    pkg.devDependencies.vite = '^8.0.0-beta.9'
-    pkg.devDependencies.typescript = '^5.9.3'
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
     // 6. Write prebuild script — generates TypeDoc API docs before vite build
