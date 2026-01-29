@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v1.1.1...ardo-v1.2.0) (2026-01-29)
+
+
+### Features
+
+* auto-detect GitHub Pages base path from git remote ([995613b](https://github.com/sebastian-software/ardo/commit/995613bc1bd4635c351ebf05b36dd0888f0f5be9))
+
+
+### Bug Fixes
+
+* update templates and docs for GitHub Pages auto-detection ([aa372a9](https://github.com/sebastian-software/ardo/commit/aa372a970859f1fbd6b1503e297b569e60e71be4))
+
 ## [1.1.1](https://github.com/sebastian-software/ardo/compare/ardo-v1.1.0...ardo-v1.1.1) (2026-01-29)
 
 
