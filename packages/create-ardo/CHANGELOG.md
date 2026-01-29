@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.3...create-ardo-v1.2.0) (2026-01-29)
+
+
+### Features
+
+* **scaffold:** add commented TypeDoc configuration template ([b2fe0ee](https://github.com/sebastian-software/ardo/commit/b2fe0eea4286170925d49846e9d9a4ae28ff1dec))
+
 ## [1.1.3](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.1.2...create-ardo-v1.1.3) (2026-01-29)
 
 
