@@ -3,7 +3,8 @@ layout: home
 hero:
   name: Ardo
   text: React-first Documentation
-  tagline: Build beautiful documentation sites with React, TanStack Start, and Markdown
+  tagline: Build beautiful documentation sites with React, TanStack Start, and Markdown. Automatically generate API references from TypeScript with built-in TypeDoc integration.
+  image: /logo.svg
   actions:
     - text: Get Started
       link: /guide/getting-started
@@ -18,9 +19,9 @@ features:
   - title: Lightning Fast
     icon: "⚡"
     details: Powered by Vite. Instant server start, lightning-fast HMR, and optimized builds.
-  - title: Full-Featured
-    icon: "🎨"
-    details: Syntax highlighting, search, dark mode, and a beautiful default theme out of the box.
+  - title: TypeDoc Integration
+    icon: "📚"
+    details: Auto-generate API documentation from your TypeScript source code with zero configuration.
   - title: Type-Safe
     icon: "📝"
     details: Written in TypeScript with full type definitions. Get great DX with autocomplete.

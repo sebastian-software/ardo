@@ -1,4 +1,10 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouterState,
+} from '@tanstack/react-router'
 import {
   Layout,
   Header,
@@ -29,6 +35,19 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  const routerState = useRouterState()
+  const isHomePage = routerState.location.pathname === '/'
+
+  // Homepage renders its own layout without sidebar
+  if (isHomePage) {
+    return (
+      <PressProvider config={config} sidebar={sidebar}>
+        <Outlet />
+      </PressProvider>
+    )
+  }
+
+  // Doc pages use the full layout with sidebar
   return (
     <PressProvider config={config} sidebar={sidebar}>
       <Layout
