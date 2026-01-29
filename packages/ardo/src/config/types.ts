@@ -1,4 +1,4 @@
-import type { BundledTheme } from 'shiki'
+import type { BundledTheme } from "shiki"
 
 // =============================================================================
 // Sidebar Types (for data-driven sidebar)
@@ -27,7 +27,7 @@ export interface NavItem {
 // =============================================================================
 
 export interface SocialLink {
-  icon: 'github' | 'twitter' | 'discord' | 'linkedin' | 'youtube' | 'npm'
+  icon: "github" | "twitter" | "discord" | "linkedin" | "youtube" | "npm"
   link: string
   ariaLabel?: string
 }
@@ -120,7 +120,7 @@ export interface TypeDocConfig {
   entryPoints: string[]
   tsconfig?: string
   out?: string
-  readme?: string | 'none'
+  readme?: string | "none"
   plugin?: string[]
   exclude?: string[]
   excludeExternals?: boolean
@@ -128,12 +128,12 @@ export interface TypeDocConfig {
   excludeProtected?: boolean
   excludeInternal?: boolean
   sort?: Array<
-    | 'source-order'
-    | 'alphabetical'
-    | 'enum-value-ascending'
-    | 'enum-value-descending'
-    | 'required-first'
-    | 'visibility'
+    | "source-order"
+    | "alphabetical"
+    | "enum-value-ascending"
+    | "enum-value-descending"
+    | "required-first"
+    | "visibility"
   >
   categoryOrder?: string[]
   groupOrder?: string[]
@@ -201,7 +201,7 @@ export interface PressConfig {
 export interface PageFrontmatter {
   title?: string
   description?: string
-  layout?: 'doc' | 'home' | 'page'
+  layout?: "doc" | "home" | "page"
   sidebar?: boolean
   outline?: boolean | number | [number, number]
   editLink?: boolean
@@ -216,7 +216,7 @@ export interface PageFrontmatter {
     actions?: Array<{
       text: string
       link: string
-      theme?: 'brand' | 'alt'
+      theme?: "brand" | "alt"
     }>
   }
   features?: Array<{
@@ -250,7 +250,7 @@ export interface PageData {
 // Resolved Config (Internal)
 // =============================================================================
 
-export interface ResolvedConfig extends Required<Omit<PressConfig, 'vite' | 'typedoc'>> {
+export interface ResolvedConfig extends Required<Omit<PressConfig, "vite" | "typedoc">> {
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig
   root: string

@@ -1,5 +1,5 @@
-import { visit } from 'unist-util-visit'
-import type { Root, Element } from 'hast'
+import { visit } from "unist-util-visit"
+import type { Root, Element } from "hast"
 
 export interface RehypeLinkOptions {
   basePath: string
@@ -13,7 +13,7 @@ export function rehypeLinks(options: RehypeLinkOptions) {
   const { basePath } = options
 
   // Normalize basePath: ensure it starts with / and doesn't end with /
-  const normalizedBase = basePath === '/' ? '' : basePath.replace(/\/$/, '')
+  const normalizedBase = basePath === "/" ? "" : basePath.replace(/\/$/, "")
 
   return (tree: Root) => {
     if (!normalizedBase) {
@@ -21,14 +21,14 @@ export function rehypeLinks(options: RehypeLinkOptions) {
       return
     }
 
-    visit(tree, 'element', (node: Element) => {
-      if (node.tagName === 'a') {
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName === "a") {
         const href = node.properties?.href
 
-        if (typeof href === 'string') {
+        if (typeof href === "string") {
           // Only rewrite internal links that start with /
           // Don't rewrite: external URLs, anchors, relative paths, or already prefixed paths
-          if (href.startsWith('/') && !href.startsWith('//') && !href.startsWith(normalizedBase)) {
+          if (href.startsWith("/") && !href.startsWith("//") && !href.startsWith(normalizedBase)) {
             node.properties = node.properties || {}
             node.properties.href = normalizedBase + href
           }

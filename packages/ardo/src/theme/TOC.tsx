@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
-import { useTOC, useThemeConfig } from '../runtime/hooks'
-import type { TOCItem } from '../config/types'
+import { useState, useEffect } from "react"
+import { useTOC, useThemeConfig } from "../runtime/hooks"
+import type { TOCItem } from "../config/types"
 
 export function TOC() {
   const toc = useTOC()
   const themeConfig = useThemeConfig()
-  const [activeId, setActiveId] = useState<string>('')
+  const [activeId, setActiveId] = useState<string>("")
 
-  const label = themeConfig.outline?.label ?? 'On this page'
+  const label = themeConfig.outline?.label ?? "On this page"
 
   useEffect(() => {
     if (toc.length === 0) return
@@ -26,7 +26,7 @@ export function TOC() {
         }
       },
       {
-        rootMargin: '-80px 0px -80% 0px',
+        rootMargin: "-80px 0px -80% 0px",
         threshold: 0,
       }
     )
@@ -84,17 +84,17 @@ function TOCItemComponent({ item, activeId }: TOCItemComponentProps) {
         href={`#${item.id}`}
         className={[
           `press-toc-link press-toc-link-${item.level}`,
-          isActive && 'active',
-          hasActiveChild && 'child-active',
+          isActive && "active",
+          hasActiveChild && "child-active",
         ]
           .filter(Boolean)
-          .join(' ')}
+          .join(" ")}
         onClick={(e) => {
           e.preventDefault()
           const element = document.getElementById(item.id)
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth' })
-            window.history.pushState(null, '', `#${item.id}`)
+            element.scrollIntoView({ behavior: "smooth" })
+            window.history.pushState(null, "", `#${item.id}`)
           }
         }}
       >

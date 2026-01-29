@@ -14,19 +14,19 @@ Ardo includes built-in TypeDoc integration that allows you to automatically gene
 Add the `typedoc` configuration to your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
     ardo({
-      title: 'My Library',
+      title: "My Library",
 
       typedoc: {
         enabled: true,
-        entryPoints: ['../src/index.ts'],
-        tsconfig: '../tsconfig.json',
-        out: 'api',
+        entryPoints: ["../src/index.ts"],
+        tsconfig: "../tsconfig.json",
+        out: "api",
       },
     }),
   ],
@@ -226,27 +226,27 @@ greet('World') // 'Hello, World!'
 Here's a complete configuration example:
 
 ```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
     ardo({
-      title: 'My Library Docs',
-      description: 'Documentation for my awesome library',
+      title: "My Library Docs",
+      description: "Documentation for my awesome library",
 
       typedoc: {
         enabled: true,
-        entryPoints: ['../packages/my-lib/src/index.ts'],
-        tsconfig: '../packages/my-lib/tsconfig.json',
-        out: 'api',
+        entryPoints: ["../packages/my-lib/src/index.ts"],
+        tsconfig: "../packages/my-lib/tsconfig.json",
+        out: "api",
 
         excludePrivate: true,
         excludeInternal: true,
-        sort: ['source-order'],
+        sort: ["source-order"],
 
         sidebar: {
-          title: 'API Reference',
+          title: "API Reference",
           position: 50,
         },
 
@@ -254,19 +254,19 @@ export default defineConfig({
           breadcrumbs: true,
           hierarchy: true,
           sourceLinks: true,
-          sourceBaseUrl: 'https://github.com/my-org/my-lib/blob/main/packages/my-lib',
+          sourceBaseUrl: "https://github.com/my-org/my-lib/blob/main/packages/my-lib",
         },
       },
 
       themeConfig: {
         sidebar: [
           {
-            text: 'Guide',
-            items: [{ text: 'Introduction', link: '/guide/intro' }],
+            text: "Guide",
+            items: [{ text: "Introduction", link: "/guide/intro" }],
           },
           {
-            text: 'API Reference',
-            link: '/api',
+            text: "API Reference",
+            link: "/api",
           },
         ],
       },
@@ -280,15 +280,15 @@ export default defineConfig({
 You can also use the TypeDoc generator programmatically:
 
 ```ts
-import { generateApiDocs } from 'ardo/typedoc'
+import { generateApiDocs } from "ardo/typedoc"
 
 const docs = await generateApiDocs(
   {
     enabled: true,
-    entryPoints: ['./src/index.ts'],
-    tsconfig: './tsconfig.json',
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.json",
   },
-  './docs/content'
+  "./docs/content"
 )
 
 console.log(`Generated ${docs.length} documentation pages`)

@@ -1,10 +1,10 @@
-import { createRouter } from '@tanstack/react-router'
-import { routeTree } from './routeTree.gen'
+import { createRouter } from "@tanstack/react-router"
+import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
   return createRouter({
     routeTree,
-    basepath: '/ardo',
+    basepath: "/ardo",
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
   })
@@ -12,7 +12,7 @@ export function getRouter() {
 
 export type AppRouter = ReturnType<typeof getRouter>
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: AppRouter
   }

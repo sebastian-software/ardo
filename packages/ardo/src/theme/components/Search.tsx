@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link } from '@tanstack/react-router'
-import { useThemeConfig } from '../../runtime/hooks'
-import MiniSearch, { type SearchResult } from 'minisearch'
+import { useState, useEffect, useRef, useCallback } from "react"
+import { Link } from "@tanstack/react-router"
+import { useThemeConfig } from "../../runtime/hooks"
+import MiniSearch, { type SearchResult } from "minisearch"
 
 interface SearchDoc {
   id: string
@@ -15,28 +15,28 @@ let searchIndex: MiniSearch<SearchDoc> | null = null
 
 export function Search() {
   const [isOpen, setIsOpen] = useState(false)
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const themeConfig = useThemeConfig()
 
-  const placeholder = themeConfig.search?.placeholder ?? 'Search...'
+  const placeholder = themeConfig.search?.placeholder ?? "Search..."
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault()
         setIsOpen(true)
       }
 
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setIsOpen(false)
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function Search() {
 
   useEffect(() => {
     if (!isOpen) {
-      setQuery('')
+      setQuery("")
       setResults([])
       setSelectedIndex(0)
     }
@@ -57,14 +57,14 @@ export function Search() {
     if (searchIndex) return searchIndex
 
     try {
-      const response = await fetch('/_press/search-index.json')
+      const response = await fetch("/_press/search-index.json")
       if (!response.ok) return null
 
       const docs: SearchDoc[] = await response.json()
 
       searchIndex = new MiniSearch<SearchDoc>({
-        fields: ['title', 'content', 'section'],
-        storeFields: ['title', 'path', 'section'],
+        fields: ["title", "content", "section"],
+        storeFields: ["title", "path", "section"],
         searchOptions: {
           boost: { title: 2 },
           fuzzy: 0.2,
@@ -102,13 +102,13 @@ export function Search() {
   )
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
+    if (e.key === "ArrowDown") {
       e.preventDefault()
       setSelectedIndex((prev) => Math.min(prev + 1, results.length - 1))
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       e.preventDefault()
       setSelectedIndex((prev) => Math.max(prev - 1, 0))
-    } else if (e.key === 'Enter' && results[selectedIndex]) {
+    } else if (e.key === "Enter" && results[selectedIndex]) {
       e.preventDefault()
       const result = results[selectedIndex]
       window.location.href = result.path as string
@@ -144,7 +144,7 @@ export function Search() {
               {query && (
                 <button
                   className="press-search-clear"
-                  onClick={() => handleSearch('')}
+                  onClick={() => handleSearch("")}
                   aria-label="Clear search"
                 >
                   ×
@@ -158,9 +158,9 @@ export function Search() {
                   <li key={result.id}>
                     <Link
                       to={result.path as string}
-                      className={['press-search-result', index === selectedIndex && 'selected']
+                      className={["press-search-result", index === selectedIndex && "selected"]
                         .filter(Boolean)
-                        .join(' ')}
+                        .join(" ")}
                       onClick={() => setIsOpen(false)}
                     >
                       <span className="press-search-result-title">{result.title as string}</span>

@@ -1,5 +1,5 @@
-import { createContext, useContext, type ReactNode } from 'react'
-import type { PressConfig, ThemeConfig, SidebarItem, TOCItem, PageData } from '../config/types'
+import { createContext, useContext, type ReactNode } from "react"
+import type { PressConfig, ThemeConfig, SidebarItem, TOCItem, PageData } from "../config/types"
 
 interface PressContextValue {
   config: PressConfig
@@ -12,7 +12,7 @@ const PressContext = createContext<PressContextValue | null>(null)
 export function usePressContext(): PressContextValue {
   const context = useContext(PressContext)
   if (!context) {
-    throw new Error('usePressContext must be used within a PressProvider')
+    throw new Error("usePressContext must be used within a PressProvider")
   }
   return context
 }

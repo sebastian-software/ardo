@@ -1,27 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 
-type Theme = 'light' | 'dark' | 'system'
+type Theme = "light" | "dark" | "system"
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('system')
+  const [theme, setTheme] = useState<Theme>("system")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
 
-    const stored = localStorage.getItem('press-theme') as Theme | null
+    const stored = localStorage.getItem("press-theme") as Theme | null
     if (stored) {
       setTheme(stored)
       applyTheme(stored)
     } else {
-      applyTheme('system')
+      applyTheme("system")
     }
   }, [])
 
   const toggleTheme = () => {
-    const nextTheme: Theme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
+    const nextTheme: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"
     setTheme(nextTheme)
-    localStorage.setItem('press-theme', nextTheme)
+    localStorage.setItem("press-theme", nextTheme)
     applyTheme(nextTheme)
   }
 
@@ -39,12 +39,12 @@ export function ThemeToggle() {
     <button
       className="press-theme-toggle"
       onClick={toggleTheme}
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'} theme`}
+      aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}
     >
       <span className="press-theme-icon">
-        {theme === 'light' && <SunIcon />}
-        {theme === 'dark' && <MoonIcon />}
-        {theme === 'system' && <SystemIcon />}
+        {theme === "light" && <SunIcon />}
+        {theme === "dark" && <MoonIcon />}
+        {theme === "system" && <SystemIcon />}
       </span>
     </button>
   )
@@ -53,13 +53,13 @@ export function ThemeToggle() {
 function applyTheme(theme: Theme) {
   const root = document.documentElement
 
-  if (theme === 'system') {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    root.classList.toggle('dark', isDark)
-    root.classList.toggle('light', !isDark)
+  if (theme === "system") {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    root.classList.toggle("dark", isDark)
+    root.classList.toggle("light", !isDark)
   } else {
-    root.classList.toggle('dark', theme === 'dark')
-    root.classList.toggle('light', theme === 'light')
+    root.classList.toggle("dark", theme === "dark")
+    root.classList.toggle("light", theme === "light")
   }
 }
 

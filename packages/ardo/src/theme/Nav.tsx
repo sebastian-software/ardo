@@ -1,5 +1,5 @@
-import { type ReactNode, useState, createContext, useContext } from 'react'
-import { Link } from '@tanstack/react-router'
+import { type ReactNode, useState, createContext, useContext } from "react"
+import { Link } from "@tanstack/react-router"
 
 // Nav context for shared state
 interface NavContextValue {
@@ -35,7 +35,7 @@ export interface NavProps {
  * ```
  */
 export function Nav({ children, className }: NavProps) {
-  return <nav className={className ?? 'press-nav'}>{children}</nav>
+  return <nav className={className ?? "press-nav"}>{children}</nav>
 }
 
 // =============================================================================
@@ -69,7 +69,7 @@ export interface NavLinkProps {
  */
 export function NavLink({ to, href, children, className, activeMatch }: NavLinkProps) {
   const navContext = useNavContext()
-  const baseClassName = className ?? 'press-nav-link'
+  const baseClassName = className ?? "press-nav-link"
 
   // Handle click for mobile menu
   const handleClick = () => {
@@ -97,7 +97,7 @@ export function NavLink({ to, href, children, className, activeMatch }: NavLinkP
       <Link
         to={to}
         className={baseClassName}
-        activeProps={{ className: 'active' }}
+        activeProps={{ className: "active" }}
         activeOptions={activeMatch ? { exact: false } : { exact: false }}
         onClick={handleClick}
       >
@@ -139,7 +139,7 @@ export function NavDropdown({ text, children, className }: NavDropdownProps) {
 
   return (
     <div
-      className={className ?? 'press-nav-dropdown'}
+      className={className ?? "press-nav-dropdown"}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >

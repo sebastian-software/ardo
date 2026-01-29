@@ -1,6 +1,6 @@
-import { type ReactNode } from 'react'
+import { type ReactNode } from "react"
 
-type ContainerType = 'tip' | 'warning' | 'danger' | 'info' | 'note'
+type ContainerType = "tip" | "warning" | "danger" | "info" | "note"
 
 interface ContainerProps {
   type: ContainerType
@@ -9,11 +9,11 @@ interface ContainerProps {
 }
 
 const defaultTitles: Record<ContainerType, string> = {
-  tip: 'TIP',
-  warning: 'WARNING',
-  danger: 'DANGER',
-  info: 'INFO',
-  note: 'NOTE',
+  tip: "TIP",
+  warning: "WARNING",
+  danger: "DANGER",
+  info: "INFO",
+  note: "NOTE",
 }
 
 const icons: Record<ContainerType, ReactNode> = {
@@ -104,7 +104,7 @@ export function Container({ type, title, children }: ContainerProps) {
   )
 }
 
-export function Tip({ title, children }: Omit<ContainerProps, 'type'>) {
+export function Tip({ title, children }: Omit<ContainerProps, "type">) {
   return (
     <Container type="tip" title={title}>
       {children}
@@ -112,7 +112,7 @@ export function Tip({ title, children }: Omit<ContainerProps, 'type'>) {
   )
 }
 
-export function Warning({ title, children }: Omit<ContainerProps, 'type'>) {
+export function Warning({ title, children }: Omit<ContainerProps, "type">) {
   return (
     <Container type="warning" title={title}>
       {children}
@@ -120,7 +120,7 @@ export function Warning({ title, children }: Omit<ContainerProps, 'type'>) {
   )
 }
 
-export function Danger({ title, children }: Omit<ContainerProps, 'type'>) {
+export function Danger({ title, children }: Omit<ContainerProps, "type">) {
   return (
     <Container type="danger" title={title}>
       {children}
@@ -128,7 +128,7 @@ export function Danger({ title, children }: Omit<ContainerProps, 'type'>) {
   )
 }
 
-export function Info({ title, children }: Omit<ContainerProps, 'type'>) {
+export function Info({ title, children }: Omit<ContainerProps, "type">) {
   return (
     <Container type="info" title={title}>
       {children}
@@ -136,7 +136,7 @@ export function Info({ title, children }: Omit<ContainerProps, 'type'>) {
   )
 }
 
-export function Note({ title, children }: Omit<ContainerProps, 'type'>) {
+export function Note({ title, children }: Omit<ContainerProps, "type">) {
   return (
     <Container type="note" title={title}>
       {children}

@@ -1,8 +1,8 @@
-import { type ReactNode } from 'react'
-import { usePageData } from '../runtime/hooks'
-import { Layout } from './Layout'
-import { Content } from './Content'
-import { TOC } from './TOC'
+import { type ReactNode } from "react"
+import { usePageData } from "../runtime/hooks"
+import { Layout } from "./Layout"
+import { Content } from "./Content"
+import { TOC } from "./TOC"
 
 // =============================================================================
 // DocPage Component (includes Layout - for backwards compatibility)

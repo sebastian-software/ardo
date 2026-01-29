@@ -1,6 +1,6 @@
-import type { ApiDocItem, ApiDocKind } from '../types'
-import { ApiSignature, ApiParametersTable, ApiReturns } from './ApiSignature'
-import type { JSX } from 'react'
+import type { ApiDocItem, ApiDocKind } from "../types"
+import { ApiSignature, ApiParametersTable, ApiReturns } from "./ApiSignature"
+import type { JSX } from "react"
 
 interface ApiItemProps {
   item: ApiDocItem
@@ -79,38 +79,38 @@ interface ApiKindBadgeProps {
 
 export function ApiKindBadge({ kind }: ApiKindBadgeProps) {
   const kindLabels: Record<ApiDocKind, string> = {
-    module: 'Module',
-    namespace: 'Namespace',
-    class: 'Class',
-    interface: 'Interface',
-    type: 'Type',
-    enum: 'Enum',
-    function: 'Function',
-    variable: 'Variable',
-    property: 'Property',
-    method: 'Method',
-    accessor: 'Accessor',
-    constructor: 'Constructor',
-    parameter: 'Parameter',
-    typeParameter: 'Type Parameter',
-    enumMember: 'Enum Member',
+    module: "Module",
+    namespace: "Namespace",
+    class: "Class",
+    interface: "Interface",
+    type: "Type",
+    enum: "Enum",
+    function: "Function",
+    variable: "Variable",
+    property: "Property",
+    method: "Method",
+    accessor: "Accessor",
+    constructor: "Constructor",
+    parameter: "Parameter",
+    typeParameter: "Type Parameter",
+    enumMember: "Enum Member",
   }
 
   const kindColors: Record<string, string> = {
-    class: 'press-api-badge-class',
-    interface: 'press-api-badge-interface',
-    type: 'press-api-badge-type',
-    enum: 'press-api-badge-enum',
-    function: 'press-api-badge-function',
-    method: 'press-api-badge-method',
-    property: 'press-api-badge-property',
+    class: "press-api-badge-class",
+    interface: "press-api-badge-interface",
+    type: "press-api-badge-type",
+    enum: "press-api-badge-enum",
+    function: "press-api-badge-function",
+    method: "press-api-badge-method",
+    property: "press-api-badge-property",
   }
 
-  return <span className={`press-api-badge ${kindColors[kind] || ''}`}>{kindLabels[kind]}</span>
+  return <span className={`press-api-badge ${kindColors[kind] || ""}`}>{kindLabels[kind]}</span>
 }
 
 interface ApiHierarchyProps {
-  hierarchy: ApiDocItem['hierarchy']
+  hierarchy: ApiDocItem["hierarchy"]
 }
 
 export function ApiHierarchy({ hierarchy }: ApiHierarchyProps) {

@@ -89,21 +89,21 @@ my-docs/
 
 ```typescript
 // press.config.ts
-import { defineConfig } from 'ardo/config'
+import { defineConfig } from "ardo/config"
 
 export default defineConfig({
-  title: 'My Documentation',
-  description: 'Built with Ardo',
+  title: "My Documentation",
+  description: "Built with Ardo",
 
   themeConfig: {
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/api/reference' },
+      { text: "Guide", link: "/guide/getting-started" },
+      { text: "API", link: "/api/reference" },
     ],
     sidebar: [
       {
-        text: 'Guide',
-        items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
+        text: "Guide",
+        items: [{ text: "Getting Started", link: "/guide/getting-started" }],
       },
     ],
   },

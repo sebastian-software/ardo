@@ -1,4 +1,4 @@
-import type { ApiDocParameter, ApiDocReturn, ApiDocTypeParameter } from '../types'
+import type { ApiDocParameter, ApiDocReturn, ApiDocTypeParameter } from "../types"
 
 interface ApiSignatureProps {
   name: string
@@ -13,26 +13,26 @@ export function ApiSignature({
   typeParameters,
   parameters,
   returns,
-  className = '',
+  className = "",
 }: ApiSignatureProps) {
   const typeParamsStr = typeParameters?.length
-    ? `<${typeParameters.map((tp) => tp.name).join(', ')}>`
-    : ''
+    ? `<${typeParameters.map((tp) => tp.name).join(", ")}>`
+    : ""
 
   const paramsStr = parameters
     ?.map((p) => {
-      const optional = p.optional ? '?' : ''
+      const optional = p.optional ? "?" : ""
       return `${p.name}${optional}: ${p.type}`
     })
-    .join(', ')
+    .join(", ")
 
-  const returnStr = returns?.type ? `: ${returns.type}` : ''
+  const returnStr = returns?.type ? `: ${returns.type}` : ""
 
   return (
     <div className={`press-api-signature ${className}`}>
       <pre className="press-api-signature-code">
         <code>
-          <span className="press-api-keyword">function</span>{' '}
+          <span className="press-api-keyword">function</span>{" "}
           <span className="press-api-function-name">{name}</span>
           {typeParamsStr && <span className="press-api-type-params">{typeParamsStr}</span>}
           <span className="press-api-params">({paramsStr})</span>

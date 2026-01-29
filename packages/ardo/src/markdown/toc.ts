@@ -1,6 +1,6 @@
-import type { Root, Heading } from 'mdast'
-import { visit } from 'unist-util-visit'
-import type { TOCItem } from '../config/types'
+import type { Root, Heading } from "mdast"
+import { visit } from "unist-util-visit"
+import type { TOCItem } from "../config/types"
 
 export interface TocExtraction {
   toc: TOCItem[]
@@ -18,7 +18,7 @@ export function remarkExtractToc(options: TocOptions) {
   return function (tree: Root) {
     const headings: Array<{ text: string; level: number; id: string }> = []
 
-    visit(tree, 'heading', (node: Heading) => {
+    visit(tree, "heading", (node: Heading) => {
       if (node.depth < minLevel || node.depth > maxLevel) {
         return
       }
@@ -46,30 +46,30 @@ function getHeadingText(node: Heading): string {
   const textParts: string[] = []
 
   function extractText(child: unknown) {
-    if (!child || typeof child !== 'object') return
+    if (!child || typeof child !== "object") return
 
     const typedChild = child as { type?: string; value?: string; children?: unknown[] }
 
-    if (typedChild.type === 'text') {
-      textParts.push(typedChild.value || '')
-    } else if (typedChild.type === 'inlineCode') {
-      textParts.push(typedChild.value || '')
+    if (typedChild.type === "text") {
+      textParts.push(typedChild.value || "")
+    } else if (typedChild.type === "inlineCode") {
+      textParts.push(typedChild.value || "")
     } else if (Array.isArray(typedChild.children)) {
       typedChild.children.forEach(extractText)
     }
   }
 
   node.children.forEach(extractText)
-  return textParts.join('')
+  return textParts.join("")
 }
 
 function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
 }
 
 function buildTocTree(

@@ -13,7 +13,7 @@ export {
   useTOC,
   PressProvider,
   PressContext,
-} from './hooks'
+} from "./hooks"
 
 // Client-safe sidebar utilities
-export { findCurrentSidebarItem, getPrevNextLinks } from './sidebar-utils'
+export { findCurrentSidebarItem, getPrevNextLinks } from "./sidebar-utils"

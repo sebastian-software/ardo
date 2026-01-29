@@ -1,8 +1,8 @@
-import fs from 'fs/promises'
-import type { Dirent } from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import type { SidebarItem, ResolvedConfig } from '../config/types'
+import fs from "fs/promises"
+import type { Dirent } from "fs"
+import path from "path"
+import matter from "gray-matter"
+import type { SidebarItem, ResolvedConfig } from "../config/types"
 
 export interface SidebarGenerationOptions {
   contentDir: string
@@ -50,7 +50,7 @@ async function scanDirectoryForSidebar(
     const fullPath = path.join(dir, entry.name)
     const relativePath = path.relative(rootDir, fullPath)
 
-    if (entry.name.startsWith('.') || entry.name.startsWith('_')) {
+    if (entry.name.startsWith(".") || entry.name.startsWith("_")) {
       continue
     }
 
@@ -58,19 +58,19 @@ async function scanDirectoryForSidebar(
       const children = await scanDirectoryForSidebar(fullPath, rootDir, _basePath)
 
       if (children.length > 0) {
-        const indexPath = path.join(fullPath, 'index.md')
+        const indexPath = path.join(fullPath, "index.md")
         let link: string | undefined
         let title = formatTitle(entry.name)
         let order: number | undefined
 
         try {
-          const indexContent = await fs.readFile(indexPath, 'utf-8')
+          const indexContent = await fs.readFile(indexPath, "utf-8")
           const { data: frontmatter } = matter(indexContent)
 
           if (frontmatter.title) {
             title = frontmatter.title
           }
-          if (typeof frontmatter.order === 'number') {
+          if (typeof frontmatter.order === "number") {
             order = frontmatter.order
           }
 
@@ -88,19 +88,19 @@ async function scanDirectoryForSidebar(
           order,
         })
       }
-    } else if (entry.name.endsWith('.md') && entry.name !== 'index.md') {
-      const fileContent = await fs.readFile(fullPath, 'utf-8')
+    } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
+      const fileContent = await fs.readFile(fullPath, "utf-8")
       const { data: frontmatter } = matter(fileContent)
 
       if (frontmatter.sidebar === false) {
         continue
       }
 
-      const title = frontmatter.title || formatTitle(entry.name.replace(/\.md$/, ''))
-      const order = typeof frontmatter.order === 'number' ? frontmatter.order : undefined
+      const title = frontmatter.title || formatTitle(entry.name.replace(/\.md$/, ""))
+      const order = typeof frontmatter.order === "number" ? frontmatter.order : undefined
 
       // Don't include basePath - TanStack Router handles it automatically
-      const link = normalizePath(relativePath.replace(/\.md$/, ''))
+      const link = normalizePath(relativePath.replace(/\.md$/, ""))
 
       items.push({
         text: title,
@@ -124,11 +124,11 @@ async function scanDirectoryForSidebar(
 
 function formatTitle(name: string): string {
   return name
-    .replace(/^\d+-/, '')
-    .replace(/[-_]/g, ' ')
+    .replace(/^\d+-/, "")
+    .replace(/[-_]/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function normalizePath(p: string): string {
-  return '/' + p.replace(/\\/g, '/').replace(/^\/+/, '')
+  return "/" + p.replace(/\\/g, "/").replace(/^\/+/, "")
 }

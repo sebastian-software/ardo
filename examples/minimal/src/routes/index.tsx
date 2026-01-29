@@ -1,23 +1,23 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from 'ardo/theme'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import { frontmatter, toc } from '../../content/index.md'
+import { createFileRoute } from "@tanstack/react-router"
+import { HomePage } from "ardo/theme"
+import { PressProvider } from "ardo/runtime"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+import { frontmatter, toc } from "../../content/index.md"
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomeComponent,
 })
 
 function HomeComponent() {
   const pageData = {
-    title: frontmatter.title || 'Home',
+    title: frontmatter.title || "Home",
     description: frontmatter.description,
     frontmatter,
-    content: '',
+    content: "",
     toc,
-    filePath: 'index.md',
-    relativePath: 'index.md',
+    filePath: "index.md",
+    relativePath: "index.md",
   }
 
   return (

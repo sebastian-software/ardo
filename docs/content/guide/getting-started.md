@@ -51,21 +51,21 @@ pnpm add -D typescript vite @types/react @types/react-dom
 Create a `vite.config.ts` file with your Ardo configuration:
 
 ```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
     ardo({
-      title: 'My Documentation',
-      description: 'My awesome documentation site',
+      title: "My Documentation",
+      description: "My awesome documentation site",
 
       themeConfig: {
-        nav: [{ text: 'Guide', link: '/guide/getting-started' }],
+        nav: [{ text: "Guide", link: "/guide/getting-started" }],
         sidebar: [
           {
-            text: 'Guide',
-            items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
+            text: "Guide",
+            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
           },
         ],
       },
@@ -81,17 +81,17 @@ Create the TanStack Router boilerplate files:
 **`src/routes/__root.tsx`**:
 
 ```tsx
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
-import config from 'virtual:ardo/config'
-import 'ardo/theme/styles.css'
+import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router"
+import config from "virtual:ardo/config"
+import "ardo/theme/styles.css"
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: config.title },
-      { name: 'description', content: config.description },
+      { name: "description", content: config.description },
     ],
   }),
   shellComponent: RootDocument,
@@ -115,24 +115,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 **`src/routes/index.tsx`**:
 
 ```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from 'ardo/theme'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import { frontmatter, toc } from '../../content/index.md'
+import { createFileRoute } from "@tanstack/react-router"
+import { HomePage } from "ardo/theme"
+import { PressProvider } from "ardo/runtime"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+import { frontmatter, toc } from "../../content/index.md"
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomeComponent,
 })
 
 function HomeComponent() {
   const pageData = {
-    title: (frontmatter.title as string) || 'Home',
+    title: (frontmatter.title as string) || "Home",
     frontmatter,
     toc,
-    filePath: 'index.md',
-    relativePath: 'index.md',
+    filePath: "index.md",
+    relativePath: "index.md",
   }
 
   return (
@@ -146,13 +146,13 @@ function HomeComponent() {
 **`src/routes/(docs)/_layout.tsx`**:
 
 ```tsx
-import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { DocLayout } from 'ardo/theme'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
+import { createFileRoute, Outlet } from "@tanstack/react-router"
+import { DocLayout } from "ardo/theme"
+import { PressProvider } from "ardo/runtime"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
 
-export const Route = createFileRoute('/(docs)/_layout')({
+export const Route = createFileRoute("/(docs)/_layout")({
   component: DocsLayoutComponent,
 })
 
@@ -170,8 +170,8 @@ function DocsLayoutComponent() {
 **`src/router.tsx`**:
 
 ```tsx
-import { createRouter } from '@tanstack/react-router'
-import { routeTree } from './routeTree.gen'
+import { createRouter } from "@tanstack/react-router"
+import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
   return createRouter({
@@ -187,21 +187,21 @@ export function getRouter() {
 ```ts
 /// <reference types="vite/client" />
 
-declare module 'virtual:ardo/config' {
-  import type { PressConfig } from 'ardo'
+declare module "virtual:ardo/config" {
+  import type { PressConfig } from "ardo"
   const config: PressConfig
   export default config
 }
 
-declare module 'virtual:ardo/sidebar' {
-  import type { SidebarItem } from 'ardo'
+declare module "virtual:ardo/sidebar" {
+  import type { SidebarItem } from "ardo"
   const sidebar: SidebarItem[]
   export default sidebar
 }
 
-declare module '*.md' {
-  import type { ComponentType } from 'react'
-  import type { PageFrontmatter, TOCItem } from 'ardo'
+declare module "*.md" {
+  import type { ComponentType } from "react"
+  import type { PageFrontmatter, TOCItem } from "ardo"
   export const frontmatter: PageFrontmatter
   export const toc: TOCItem[]
   const component: ComponentType

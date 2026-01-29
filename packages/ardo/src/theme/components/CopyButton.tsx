@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react"
 
 interface CopyButtonProps {
   code: string
@@ -13,7 +13,7 @@ export function CopyButton({ code }: CopyButtonProps) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      console.error("Failed to copy:", err)
     }
   }
 
@@ -21,10 +21,10 @@ export function CopyButton({ code }: CopyButtonProps) {
     <button
       className="press-copy-button"
       onClick={handleCopy}
-      aria-label={copied ? 'Copied!' : 'Copy code'}
+      aria-label={copied ? "Copied!" : "Copy code"}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
-      <span className="press-copy-text">{copied ? 'Copied!' : 'Copy'}</span>
+      <span className="press-copy-text">{copied ? "Copied!" : "Copy"}</span>
     </button>
   )
 }

@@ -162,12 +162,12 @@ Add feature cards to home pages:
 layout: home
 features:
   - title: Fast
-    icon: '⚡'
+    icon: "⚡"
     details: Lightning fast builds with Vite
     link: /guide/performance
     linkText: Learn more
   - title: Simple
-    icon: '✨'
+    icon: "✨"
     details: Easy to set up and use
 ---
 ```

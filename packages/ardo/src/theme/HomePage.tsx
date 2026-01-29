@@ -1,7 +1,7 @@
-import { Link } from '@tanstack/react-router'
-import { usePageData, useConfig } from '../runtime/hooks'
-import { Header } from './Header'
-import { Footer } from './Footer'
+import { Link } from "@tanstack/react-router"
+import { usePageData, useConfig } from "../runtime/hooks"
+import { Header } from "./Header"
+import { Footer } from "./Footer"
 
 export function HomePage() {
   const pageData = usePageData()
@@ -21,7 +21,7 @@ export function HomePage() {
               {hero.image && (
                 <div className="press-hero-image">
                   <img
-                    src={typeof hero.image === 'string' ? hero.image : hero.image.light}
+                    src={typeof hero.image === "string" ? hero.image : hero.image.light}
                     alt={hero.name || config.title}
                   />
                 </div>
@@ -38,7 +38,7 @@ export function HomePage() {
                       <Link
                         key={index}
                         to={action.link}
-                        className={`press-hero-action press-hero-action-${action.theme || 'brand'}`}
+                        className={`press-hero-action press-hero-action-${action.theme || "brand"}`}
                       >
                         {action.text}
                       </Link>
@@ -60,7 +60,7 @@ export function HomePage() {
                   <p className="press-feature-details">{feature.details}</p>
                   {feature.link && (
                     <Link to={feature.link} className="press-feature-link">
-                      {feature.linkText || 'Learn more'}
+                      {feature.linkText || "Learn more"}
                     </Link>
                   )}
                 </div>

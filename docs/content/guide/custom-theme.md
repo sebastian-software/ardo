@@ -25,8 +25,8 @@ Create a custom CSS file:
 Import it in your app:
 
 ```ts
-import './styles/custom.css'
-import 'ardo/theme/styles.css'
+import "./styles/custom.css"
+import "ardo/theme/styles.css"
 ```
 
 ### Available Variables
@@ -55,7 +55,7 @@ import 'ardo/theme/styles.css'
   --press-header-height: 64px;
 
   /* Typography */
-  --press-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', ...;
+  --press-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
   --press-font-mono: ui-monospace, SFMono-Regular, ...;
 
   /* Border radius */
@@ -70,7 +70,7 @@ You can override individual theme components by creating your own:
 
 ```tsx
 // components/MyHeader.tsx
-import { useConfig, useThemeConfig } from 'ardo/runtime'
+import { useConfig, useThemeConfig } from "ardo/runtime"
 
 export function MyHeader() {
   const config = useConfig()
@@ -89,8 +89,8 @@ Then use it in your layout:
 
 ```tsx
 // routes/__root.tsx
-import { MyHeader } from '../components/MyHeader'
-import { Sidebar, Footer } from 'ardo/theme'
+import { MyHeader } from "../components/MyHeader"
+import { Sidebar, Footer } from "ardo/theme"
 
 export function Layout({ children }) {
   return (
@@ -111,7 +111,7 @@ Ardo provides several hooks for accessing configuration and page data:
 ### useConfig
 
 ```tsx
-import { useConfig } from 'ardo/runtime'
+import { useConfig } from "ardo/runtime"
 
 function MyComponent() {
   const config = useConfig()
@@ -122,7 +122,7 @@ function MyComponent() {
 ### useThemeConfig
 
 ```tsx
-import { useThemeConfig } from 'ardo/runtime'
+import { useThemeConfig } from "ardo/runtime"
 
 function MyNav() {
   const themeConfig = useThemeConfig()
@@ -139,7 +139,7 @@ function MyNav() {
 ### useSidebar
 
 ```tsx
-import { useSidebar } from 'ardo/runtime'
+import { useSidebar } from "ardo/runtime"
 
 function MySidebar() {
   const sidebar = useSidebar()
@@ -150,7 +150,7 @@ function MySidebar() {
 ### usePageData
 
 ```tsx
-import { usePageData } from 'ardo/runtime'
+import { usePageData } from "ardo/runtime"
 
 function MyContent() {
   const pageData = usePageData()
@@ -166,7 +166,7 @@ function MyContent() {
 ### useTOC
 
 ```tsx
-import { useTOC } from 'ardo/runtime'
+import { useTOC } from "ardo/runtime"
 
 function MyTOC() {
   const toc = useTOC()
@@ -186,12 +186,12 @@ For complete control, create your own theme from scratch:
 
 ```tsx
 // theme/index.tsx
-export { MyLayout as Layout } from './Layout'
-export { MyHeader as Header } from './Header'
-export { MySidebar as Sidebar } from './Sidebar'
-export { MyTOC as TOC } from './TOC'
-export { MyContent as Content } from './Content'
-export { MyFooter as Footer } from './Footer'
+export { MyLayout as Layout } from "./Layout"
+export { MyHeader as Header } from "./Header"
+export { MySidebar as Sidebar } from "./Sidebar"
+export { MyTOC as TOC } from "./TOC"
+export { MyContent as Content } from "./Content"
+export { MyFooter as Footer } from "./Footer"
 ```
 
 Then use your custom theme components throughout your app.

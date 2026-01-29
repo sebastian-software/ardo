@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode } from "react"
 
 // =============================================================================
 // Footer Component
@@ -46,7 +46,7 @@ export function Footer({ message, copyright, children, className }: FooterProps)
   }
 
   return (
-    <footer className={className ?? 'press-footer'}>
+    <footer className={className ?? "press-footer"}>
       <div className="press-footer-container">
         {children ?? (
           <>

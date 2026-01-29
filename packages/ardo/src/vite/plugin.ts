@@ -1,16 +1,16 @@
-import type { Plugin, UserConfig } from 'vite'
-import type { PressConfig, ResolvedConfig } from '../config/types'
-import type { TypeDocConfig } from '../typedoc/types'
-import { resolveConfig } from '../config/index'
-import { transformMarkdown } from '../markdown/pipeline'
-import { createShikiHighlighter, type ShikiHighlighter } from '../markdown/shiki'
-import { pressRoutesPlugin, type PressRoutesPluginOptions } from './routes-plugin'
-import { generateApiDocs } from '../typedoc/generator'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import react from '@vitejs/plugin-react'
-import fs from 'fs/promises'
-import path from 'path'
-import { execSync } from 'child_process'
+import type { Plugin, UserConfig } from "vite"
+import type { PressConfig, ResolvedConfig } from "../config/types"
+import type { TypeDocConfig } from "../typedoc/types"
+import { resolveConfig } from "../config/index"
+import { transformMarkdown } from "../markdown/pipeline"
+import { createShikiHighlighter, type ShikiHighlighter } from "../markdown/shiki"
+import { pressRoutesPlugin, type PressRoutesPluginOptions } from "./routes-plugin"
+import { generateApiDocs } from "../typedoc/generator"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import react from "@vitejs/plugin-react"
+import fs from "fs/promises"
+import path from "path"
+import { execSync } from "child_process"
 
 /**
  * Detects the GitHub repository name from git remote URL.
@@ -19,10 +19,10 @@ import { execSync } from 'child_process'
  */
 function detectGitHubRepoName(cwd: string): string | undefined {
   try {
-    const remoteUrl = execSync('git remote get-url origin', {
+    const remoteUrl = execSync("git remote get-url origin", {
       cwd,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     }).trim()
 
     // Parse GitHub URL (supports both HTTPS and SSH)
@@ -35,11 +35,11 @@ function detectGitHubRepoName(cwd: string): string | undefined {
   }
 }
 
-const VIRTUAL_MODULE_ID = 'virtual:ardo/config'
-const RESOLVED_VIRTUAL_MODULE_ID = '\0' + VIRTUAL_MODULE_ID
+const VIRTUAL_MODULE_ID = "virtual:ardo/config"
+const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID
 
-const VIRTUAL_SIDEBAR_ID = 'virtual:ardo/sidebar'
-const RESOLVED_VIRTUAL_SIDEBAR_ID = '\0' + VIRTUAL_SIDEBAR_ID
+const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
+const RESOLVED_VIRTUAL_SIDEBAR_ID = "\0" + VIRTUAL_SIDEBAR_ID
 
 export interface ArdoPluginOptions extends Partial<PressConfig> {
   /** Options for the routes generator plugin */
@@ -58,7 +58,7 @@ export interface ArdoPluginOptions extends Partial<PressConfig> {
 }
 
 // Use globalThis to cache the Shiki highlighter as a true singleton across all plugin instances
-const SHIKI_CACHE_KEY = '__ardo_shiki_highlighter__'
+const SHIKI_CACHE_KEY = "__ardo_shiki_highlighter__"
 let shikiHighlighterPromise: Promise<ShikiHighlighter> | null = null
 
 function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> {
@@ -85,21 +85,21 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const { routes, prerender, typedoc, githubPages = true, ...pressConfig } = options
 
   const mainPlugin: Plugin = {
-    name: 'ardo',
-    enforce: 'pre',
+    name: "ardo",
+    enforce: "pre",
 
     config(userConfig, env): UserConfig {
       const result: UserConfig = {
         optimizeDeps: {
-          exclude: ['ardo/theme/styles.css'],
+          exclude: ["ardo/theme/styles.css"],
         },
         ssr: {
-          noExternal: ['ardo'],
+          noExternal: ["ardo"],
         },
       }
 
       // Auto-detect GitHub Pages base path for production builds
-      if (githubPages && env.command === 'build' && !userConfig.base) {
+      if (githubPages && env.command === "build" && !userConfig.base) {
         const repoName = detectGitHubRepoName(userConfig.root || process.cwd())
         if (repoName) {
           result.base = `/${repoName}/`
@@ -113,8 +113,8 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     async configResolved(config) {
       const root = config.root
       const defaultConfig: PressConfig = {
-        title: pressConfig.title ?? 'Ardo',
-        description: pressConfig.description ?? 'Documentation powered by Ardo',
+        title: pressConfig.title ?? "Ardo",
+        description: pressConfig.description ?? "Documentation powered by Ardo",
       }
       resolvedConfig = resolveConfig({ ...defaultConfig, ...pressConfig }, root)
     },
@@ -148,11 +148,11 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   }
 
   const markdownPlugin: Plugin = {
-    name: 'ardo:markdown',
-    enforce: 'pre',
+    name: "ardo:markdown",
+    enforce: "pre",
 
     async transform(code, id) {
-      if (!id.endsWith('.md')) {
+      if (!id.endsWith(".md")) {
         return
       }
 
@@ -204,8 +204,8 @@ export default function MarkdownContent() {
   if (typedoc) {
     const defaultTypedocConfig: TypeDocConfig = {
       enabled: true,
-      entryPoints: ['./src/index.ts'],
-      out: 'api-reference',
+      entryPoints: ["./src/index.ts"],
+      out: "api-reference",
       excludePrivate: true,
       excludeInternal: true,
     }
@@ -216,20 +216,20 @@ export default function MarkdownContent() {
     let hasGenerated = false
 
     const typedocPlugin: Plugin = {
-      name: 'ardo:typedoc',
+      name: "ardo:typedoc",
 
       async buildStart() {
         if (!hasGenerated && typedocConfig.enabled) {
-          console.log('[ardo] Generating API documentation with TypeDoc...')
+          console.log("[ardo] Generating API documentation with TypeDoc...")
           const startTime = Date.now()
           try {
-            const contentDir = pressConfig.srcDir ?? './content'
+            const contentDir = pressConfig.srcDir ?? "./content"
             const docs = await generateApiDocs(typedocConfig, contentDir)
             const duration = Date.now() - startTime
             console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
             hasGenerated = true
           } catch (error) {
-            console.error('[ardo] TypeDoc generation failed:', error)
+            console.error("[ardo] TypeDoc generation failed:", error)
             throw error
           }
         }
@@ -295,13 +295,13 @@ async function scanDirectory(
     if (entry.isDirectory()) {
       const children = await scanDirectory(fullPath, rootDir, _basePath)
       if (children.length > 0) {
-        const indexPath = path.join(fullPath, 'index.md')
+        const indexPath = path.join(fullPath, "index.md")
         let link: string | undefined
 
         try {
           await fs.access(indexPath)
           // Don't include basePath - TanStack Router handles it automatically
-          link = '/' + relativePath.replace(/\\/g, '/')
+          link = "/" + relativePath.replace(/\\/g, "/")
         } catch {
           // No index.md
         }
@@ -312,11 +312,11 @@ async function scanDirectory(
           items: children,
         })
       }
-    } else if (entry.name.endsWith('.md') && entry.name !== 'index.md') {
-      const fileContent = await fs.readFile(fullPath, 'utf-8')
+    } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
+      const fileContent = await fs.readFile(fullPath, "utf-8")
       const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
 
-      let title = formatTitle(entry.name.replace(/\.md$/, ''))
+      let title = formatTitle(entry.name.replace(/\.md$/, ""))
       let order: number | undefined
 
       if (frontmatterMatch) {
@@ -333,7 +333,7 @@ async function scanDirectory(
       }
 
       // Don't include basePath - TanStack Router handles it automatically
-      const link = '/' + relativePath.replace(/\.md$/, '').replace(/\\/g, '/')
+      const link = "/" + relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
 
       items.push({
         text: title,
@@ -356,7 +356,7 @@ async function scanDirectory(
 }
 
 function formatTitle(name: string): string {
-  return name.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export default ardoPlugin

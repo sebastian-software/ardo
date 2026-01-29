@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { CopyButton } from './CopyButton'
+import { useState } from "react"
+import { CopyButton } from "./CopyButton"
 
 interface CodeBlockProps {
   code: string
@@ -12,13 +12,13 @@ interface CodeBlockProps {
 
 export function CodeBlock({
   code,
-  language = 'text',
+  language = "text",
   title,
   lineNumbers = false,
   highlightLines = [],
   children,
 }: CodeBlockProps) {
-  const lines = code.split('\n')
+  const lines = code.split("\n")
 
   return (
     <div className="press-code-block" data-lang={language}>
@@ -30,14 +30,14 @@ export function CodeBlock({
               {lines.map((line, index) => {
                 const lineNum = index + 1
                 const isHighlighted = highlightLines.includes(lineNum)
-                const classes = ['press-code-line']
-                if (isHighlighted) classes.push('highlighted')
+                const classes = ["press-code-line"]
+                if (isHighlighted) classes.push("highlighted")
 
                 return (
-                  <span key={index} className={classes.join(' ')}>
+                  <span key={index} className={classes.join(" ")}>
                     {lineNumbers && <span className="press-line-number">{lineNum}</span>}
                     <span className="press-line-content">{line}</span>
-                    {index < lines.length - 1 && '\n'}
+                    {index < lines.length - 1 && "\n"}
                   </span>
                 )
               })}
@@ -69,9 +69,9 @@ export function CodeGroup({ children }: CodeGroupProps) {
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={['press-code-group-tab', index === activeTab && 'active']
+            className={["press-code-group-tab", index === activeTab && "active"]
               .filter(Boolean)
-              .join(' ')}
+              .join(" ")}
             onClick={() => setActiveTab(index)}
           >
             {tab}
@@ -82,10 +82,10 @@ export function CodeGroup({ children }: CodeGroupProps) {
         {childArray.map((child, index) => (
           <div
             key={index}
-            className={['press-code-group-panel', index === activeTab && 'active']
+            className={["press-code-group-panel", index === activeTab && "active"]
               .filter(Boolean)
-              .join(' ')}
-            style={{ display: index === activeTab ? 'block' : 'none' }}
+              .join(" ")}
+            style={{ display: index === activeTab ? "block" : "none" }}
           >
             {child}
           </div>

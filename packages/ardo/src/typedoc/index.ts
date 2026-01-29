@@ -10,13 +10,13 @@ export type {
   ApiDocTypeParameter,
   ApiDocHierarchy,
   GeneratedApiDoc,
-} from './types'
+} from "./types"
 
 // Generator
-export { TypeDocGenerator, generateApiDocs } from './generator'
+export { TypeDocGenerator, generateApiDocs } from "./generator"
 
 // Vite Plugin
-export { typedocPlugin, createTypedocWatcher, type TypeDocPluginOptions } from './vite-plugin'
+export { typedocPlugin, createTypedocWatcher, type TypeDocPluginOptions } from "./vite-plugin"
 
 // Components
 export {
@@ -26,4 +26,4 @@ export {
   ApiItem,
   ApiKindBadge,
   ApiHierarchy,
-} from './components'
+} from "./components"

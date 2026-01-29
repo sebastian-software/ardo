@@ -5,9 +5,9 @@ import {
   isValidElement,
   createContext,
   useContext,
-} from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
-import type { SidebarItem as SidebarItemType } from '../config/types'
+} from "react"
+import { Link, useRouterState } from "@tanstack/react-router"
+import type { SidebarItem as SidebarItemType } from "../config/types"
 
 // =============================================================================
 // Sidebar Context
@@ -17,7 +17,7 @@ interface SidebarContextValue {
   currentPath: string
 }
 
-const SidebarContext = createContext<SidebarContextValue>({ currentPath: '' })
+const SidebarContext = createContext<SidebarContextValue>({ currentPath: "" })
 
 function useSidebarContext() {
   return useContext(SidebarContext)
@@ -68,7 +68,7 @@ export function Sidebar({ items, children, className }: SidebarProps) {
 
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
-      <aside className={className ?? 'press-sidebar'}>
+      <aside className={className ?? "press-sidebar"}>
         <nav className="press-sidebar-nav">
           {items ? (
             <SidebarItems items={items} depth={0} />
@@ -132,28 +132,28 @@ export function SidebarGroup({
   // Check if any child is active
   const isChildActive = checkChildrenActive(children, currentPath)
 
-  const textClassName = ['press-sidebar-text', isChildActive && 'child-active']
+  const textClassName = ["press-sidebar-text", isChildActive && "child-active"]
     .filter(Boolean)
-    .join(' ')
+    .join(" ")
 
-  const linkClassName = ['press-sidebar-link', isChildActive && 'child-active']
+  const linkClassName = ["press-sidebar-link", isChildActive && "child-active"]
     .filter(Boolean)
-    .join(' ')
+    .join(" ")
 
   const hasChildren = Children.count(children) > 0
 
   return (
-    <li className={className ?? 'press-sidebar-item'}>
+    <li className={className ?? "press-sidebar-item"}>
       <div className="press-sidebar-item-header">
         {to ? (
-          <Link to={to} className={linkClassName} activeProps={{ className: 'active' }}>
+          <Link to={to} className={linkClassName} activeProps={{ className: "active" }}>
             {title}
           </Link>
         ) : (
           <span
             className={textClassName}
             onClick={() => collapsible && hasChildren && setCollapsed(!collapsed)}
-            style={collapsible && hasChildren ? { cursor: 'pointer' } : undefined}
+            style={collapsible && hasChildren ? { cursor: "pointer" } : undefined}
           >
             {title}
           </span>
@@ -161,11 +161,11 @@ export function SidebarGroup({
 
         {collapsible && hasChildren && (
           <button
-            className={['press-sidebar-collapse', collapsed && 'collapsed']
+            className={["press-sidebar-collapse", collapsed && "collapsed"]
               .filter(Boolean)
-              .join(' ')}
+              .join(" ")}
             onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? 'Expand' : 'Collapse'}
+            aria-label={collapsed ? "Expand" : "Collapse"}
           >
             <svg
               viewBox="0 0 24 24"
@@ -214,8 +214,8 @@ export function SidebarLink({ to, children, className }: SidebarLinkProps) {
     <li className="press-sidebar-item">
       <Link
         to={to}
-        className={className ?? 'press-sidebar-link'}
-        activeProps={{ className: 'active' }}
+        className={className ?? "press-sidebar-link"}
+        activeProps={{ className: "active" }}
       >
         {children}
       </Link>
@@ -261,19 +261,19 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         (child.items && child.items.some((grandchild) => grandchild.link === currentPath))
     )
 
-  const linkClassName = ['press-sidebar-link', isChildActive && 'child-active']
+  const linkClassName = ["press-sidebar-link", isChildActive && "child-active"]
     .filter(Boolean)
-    .join(' ')
+    .join(" ")
 
-  const textClassName = ['press-sidebar-text', isChildActive && 'child-active']
+  const textClassName = ["press-sidebar-text", isChildActive && "child-active"]
     .filter(Boolean)
-    .join(' ')
+    .join(" ")
 
   return (
     <li className="press-sidebar-item">
       <div className="press-sidebar-item-header">
         {item.link ? (
-          <Link to={item.link} className={linkClassName} activeProps={{ className: 'active' }}>
+          <Link to={item.link} className={linkClassName} activeProps={{ className: "active" }}>
             {item.text}
           </Link>
         ) : (
@@ -284,11 +284,11 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 
         {hasChildren && (
           <button
-            className={['press-sidebar-collapse', collapsed && 'collapsed']
+            className={["press-sidebar-collapse", collapsed && "collapsed"]
               .filter(Boolean)
-              .join(' ')}
+              .join(" ")}
             onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? 'Expand' : 'Collapse'}
+            aria-label={collapsed ? "Expand" : "Collapse"}
           >
             <svg
               viewBox="0 0 24 24"

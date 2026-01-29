@@ -27,18 +27,18 @@ pnpm add -D typescript vite tailwindcss
 Create a `press.config.ts` in your project root:
 
 ```typescript
-import { defineConfig } from 'ardo/config'
+import { defineConfig } from "ardo/config"
 
 export default defineConfig({
-  title: 'My Documentation',
-  description: 'Built with Ardo',
+  title: "My Documentation",
+  description: "Built with Ardo",
 
   themeConfig: {
-    nav: [{ text: 'Guide', link: '/guide/getting-started' }],
+    nav: [{ text: "Guide", link: "/guide/getting-started" }],
     sidebar: [
       {
-        text: 'Guide',
-        items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
+        text: "Guide",
+        items: [{ text: "Getting Started", link: "/guide/getting-started" }],
       },
     ],
   },
@@ -50,10 +50,10 @@ export default defineConfig({
 Add the plugin to your `vite.config.ts`:
 
 ```typescript
-import { defineConfig } from 'vite'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import react from '@vitejs/plugin-react'
-import { ardoPlugin } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import react from "@vitejs/plugin-react"
+import { ardoPlugin } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
@@ -74,7 +74,7 @@ export default defineConfig({
 Access configuration and page data in your components:
 
 ```tsx
-import { useConfig, useSidebar, usePageData, useTOC } from 'ardo/runtime'
+import { useConfig, useSidebar, usePageData, useTOC } from "ardo/runtime"
 
 function MyComponent() {
   const config = useConfig()
@@ -91,7 +91,7 @@ function MyComponent() {
 Use pre-built components for your documentation:
 
 ```tsx
-import { DocPage, Layout, Header, Sidebar, TOC } from 'ardo/theme'
+import { DocPage, Layout, Header, Sidebar, TOC } from "ardo/theme"
 
 function App() {
   return (

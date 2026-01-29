@@ -1,6 +1,6 @@
-export { ThemeToggle } from './ThemeToggle'
-export { Search } from './Search'
-export { CodeBlock, CodeGroup } from './CodeBlock'
-export { Container, Tip, Warning, Danger, Info, Note } from './Container'
-export { Tabs, TabList, Tab, TabPanel, TabPanels } from './Tabs'
-export { CopyButton } from './CopyButton'
+export { ThemeToggle } from "./ThemeToggle"
+export { Search } from "./Search"
+export { CodeBlock, CodeGroup } from "./CodeBlock"
+export { Container, Tip, Warning, Danger, Info, Note } from "./Container"
+export { Tabs, TabList, Tab, TabPanel, TabPanels } from "./Tabs"
+export { CopyButton } from "./CopyButton"

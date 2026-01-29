@@ -6,14 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       dry-run:
-        description: 'Dry run (skip actual publish)'
+        description: "Dry run (skip actual publish)"
         required: false
         default: true
         type: boolean
       package:
-        description: 'Package to publish'
+        description: "Package to publish"
         required: true
-        default: 'all'
+        default: "all"
         type: choice
         options:
           - all
@@ -34,9 +34,9 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24' # npm v11+ required for OIDC
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "24" # npm v11+ required for OIDC
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build

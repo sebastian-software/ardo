@@ -13,15 +13,15 @@ hero:
       theme: alt
 features:
   - title: React-First
-    icon: '⚛️'
+    icon: "⚛️"
     details: Built on TanStack Start and React. Use React components directly in your markdown.
   - title: Lightning Fast
-    icon: '⚡'
+    icon: "⚡"
     details: Powered by Vite. Instant server start, lightning-fast HMR, and optimized builds.
   - title: Full-Featured
-    icon: '🎨'
+    icon: "🎨"
     details: Syntax highlighting, search, dark mode, and a beautiful default theme out of the box.
   - title: Type-Safe
-    icon: '📝'
+    icon: "📝"
     details: Written in TypeScript with full type definitions. Get great DX with autocomplete.
 ---

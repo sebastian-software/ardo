@@ -34,8 +34,8 @@ If you need to upgrade, consider using [nvm](https://github.com/nvm-sh/nvm) or [
 Ensure your `vite.config.ts` has the Ardo plugin configured:
 
 ```typescript
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
@@ -99,7 +99,7 @@ Syntax highlighting uses Shiki. Ensure you specify the language:
 
 ````markdown
 ```javascript
-const foo = 'bar'
+const foo = "bar"
 ```
 ````
 
@@ -131,7 +131,7 @@ If deploying to a subdirectory, set the `base` option in `vite.config.ts`:
 
 ```typescript
 export default defineConfig({
-  base: '/my-docs/',
+  base: "/my-docs/",
   plugins: [
     ardo({
       /* config */

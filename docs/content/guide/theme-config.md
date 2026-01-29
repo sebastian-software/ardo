@@ -12,13 +12,13 @@ Ardo comes with a beautiful default theme that can be fully customized through t
 ```ts
 export default defineConfig({
   themeConfig: {
-    logo: '/logo.svg',
+    logo: "/logo.svg",
     // or with dark mode variant
     logo: {
-      light: '/logo-light.svg',
-      dark: '/logo-dark.svg',
+      light: "/logo-light.svg",
+      dark: "/logo-dark.svg",
     },
-    siteTitle: 'My Docs',
+    siteTitle: "My Docs",
     // set to false to hide title
     siteTitle: false,
   },
@@ -33,13 +33,13 @@ Configure the top navigation bar:
 export default defineConfig({
   themeConfig: {
     nav: [
-      { text: 'Guide', link: '/guide/introduction' },
-      { text: 'API', link: '/api-reference' },
+      { text: "Guide", link: "/guide/introduction" },
+      { text: "API", link: "/api-reference" },
       {
-        text: 'Dropdown',
+        text: "Dropdown",
         items: [
-          { text: 'Option A', link: '/option-a' },
-          { text: 'Option B', link: '/option-b' },
+          { text: "Option A", link: "/option-a" },
+          { text: "Option B", link: "/option-b" },
         ],
       },
     ],
@@ -56,10 +56,10 @@ export default defineConfig({
   themeConfig: {
     sidebar: [
       {
-        text: 'Guide',
+        text: "Guide",
         items: [
-          { text: 'Introduction', link: '/guide/introduction' },
-          { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: "Introduction", link: "/guide/introduction" },
+          { text: "Getting Started", link: "/guide/getting-started" },
         ],
       },
     ],
@@ -75,16 +75,16 @@ Different sidebars for different sections:
 export default defineConfig({
   themeConfig: {
     sidebar: {
-      '/guide/': [
+      "/guide/": [
         {
-          text: 'Guide',
-          items: [{ text: 'Introduction', link: '/guide/introduction' }],
+          text: "Guide",
+          items: [{ text: "Introduction", link: "/guide/introduction" }],
         },
       ],
-      '/api/': [
+      "/api/": [
         {
-          text: 'API Reference',
-          items: [{ text: 'Config', link: '/api-reference' }],
+          text: "API Reference",
+          items: [{ text: "Config", link: "/api-reference" }],
         },
       ],
     },
@@ -110,9 +110,9 @@ export default defineConfig({
 export default defineConfig({
   themeConfig: {
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/...' },
-      { icon: 'twitter', link: 'https://twitter.com/...' },
-      { icon: 'discord', link: 'https://discord.gg/...' },
+      { icon: "github", link: "https://github.com/..." },
+      { icon: "twitter", link: "https://twitter.com/..." },
+      { icon: "discord", link: "https://discord.gg/..." },
     ],
   },
 })
@@ -126,8 +126,8 @@ Supported icons: `github`, `twitter`, `discord`, `linkedin`, `youtube`, `npm`
 export default defineConfig({
   themeConfig: {
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Your Name',
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2024 Your Name",
     },
   },
 })
@@ -140,7 +140,7 @@ export default defineConfig({
   themeConfig: {
     search: {
       enabled: true,
-      placeholder: 'Search docs...',
+      placeholder: "Search docs...",
     },
   },
 })
@@ -152,8 +152,8 @@ export default defineConfig({
 export default defineConfig({
   themeConfig: {
     editLink: {
-      pattern: 'https://github.com/user/repo/edit/main/docs/:path',
-      text: 'Edit this page on GitHub',
+      pattern: "https://github.com/user/repo/edit/main/docs/:path",
+      text: "Edit this page on GitHub",
     },
   },
 })
@@ -166,11 +166,11 @@ export default defineConfig({
   themeConfig: {
     lastUpdated: {
       enabled: true,
-      text: 'Last updated',
+      text: "Last updated",
       formatOptions: {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       },
     },
   },
@@ -184,7 +184,7 @@ export default defineConfig({
   themeConfig: {
     outline: {
       level: [2, 3], // Show h2 and h3
-      label: 'On this page',
+      label: "On this page",
     },
   },
 })

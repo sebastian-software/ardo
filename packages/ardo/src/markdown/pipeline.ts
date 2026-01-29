@@ -1,16 +1,16 @@
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkDirective from 'remark-directive'
-import remarkRehype from 'remark-rehype'
-import rehypeStringify from 'rehype-stringify'
-import matter from 'gray-matter'
-import type { MarkdownConfig, TOCItem, PageFrontmatter } from '../config/types'
-import { remarkContainers } from './containers'
-import { remarkExtractToc, type TocExtraction } from './toc'
-import { createShikiHighlighter, rehypeShikiFromHighlighter, type ShikiHighlighter } from './shiki'
-import { rehypeLinks } from './links'
+import { unified } from "unified"
+import remarkParse from "remark-parse"
+import remarkGfm from "remark-gfm"
+import remarkFrontmatter from "remark-frontmatter"
+import remarkDirective from "remark-directive"
+import remarkRehype from "remark-rehype"
+import rehypeStringify from "rehype-stringify"
+import matter from "gray-matter"
+import type { MarkdownConfig, TOCItem, PageFrontmatter } from "../config/types"
+import { remarkContainers } from "./containers"
+import { remarkExtractToc, type TocExtraction } from "./toc"
+import { createShikiHighlighter, rehypeShikiFromHighlighter, type ShikiHighlighter } from "./shiki"
+import { rehypeLinks } from "./links"
 
 export interface TransformResult {
   html: string
@@ -29,14 +29,14 @@ export async function transformMarkdown(
   options: TransformOptions = {}
 ): Promise<TransformResult> {
   const { data: frontmatter, content: markdownContent } = matter(content)
-  const { basePath = '/', highlighter: providedHighlighter } = options
+  const { basePath = "/", highlighter: providedHighlighter } = options
 
   const tocExtraction: TocExtraction = { toc: [] }
   const highlighter = providedHighlighter ?? (await createShikiHighlighter(config))
 
   const processor = unified()
     .use(remarkParse)
-    .use(remarkFrontmatter, ['yaml'])
+    .use(remarkFrontmatter, ["yaml"])
     .use(remarkGfm)
     .use(remarkDirective)
     .use(remarkContainers)

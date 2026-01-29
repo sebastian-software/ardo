@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode } from "react"
 
 // =============================================================================
 // Layout Component
@@ -33,7 +33,7 @@ export interface LayoutProps {
  */
 export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
   return (
-    <div className={className ?? 'press-layout'}>
+    <div className={className ?? "press-layout"}>
       {header}
       <div className="press-layout-container">
         {sidebar}

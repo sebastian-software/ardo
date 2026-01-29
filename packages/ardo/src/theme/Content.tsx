@@ -1,7 +1,7 @@
-import { type ReactNode } from 'react'
-import { usePageData, useThemeConfig, useSidebar } from '../runtime/hooks'
-import { getPrevNextLinks } from '../runtime/sidebar-utils'
-import { Link, useLocation } from '@tanstack/react-router'
+import { type ReactNode } from "react"
+import { usePageData, useThemeConfig, useSidebar } from "../runtime/hooks"
+import { getPrevNextLinks } from "../runtime/sidebar-utils"
+import { Link, useLocation } from "@tanstack/react-router"
 
 interface ContentProps {
   children: ReactNode
@@ -23,16 +23,16 @@ export function Content({ children }: ContentProps) {
     pageData?.lastUpdated
 
   const editLink = showEditLink
-    ? themeConfig.editLink!.pattern.replace(':path', pageData?.relativePath || '')
+    ? themeConfig.editLink!.pattern.replace(":path", pageData?.relativePath || "")
     : null
 
   const lastUpdatedText = showLastUpdated
     ? new Date(pageData!.lastUpdated!).toLocaleDateString(
         undefined,
         themeConfig.lastUpdated?.formatOptions ?? {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         }
       )
     : null
@@ -60,12 +60,12 @@ export function Content({ children }: ContentProps) {
                 rel="noopener noreferrer"
                 className="press-edit-link"
               >
-                {themeConfig.editLink?.text ?? 'Edit this page'}
+                {themeConfig.editLink?.text ?? "Edit this page"}
               </a>
             )}
             {showLastUpdated && (
               <span className="press-last-updated">
-                {themeConfig.lastUpdated?.text ?? 'Last updated'}: {lastUpdatedText}
+                {themeConfig.lastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
               </span>
             )}
           </div>

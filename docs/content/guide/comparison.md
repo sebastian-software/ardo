@@ -107,14 +107,14 @@ A technical comparison of Ardo with other popular documentation frameworks.
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
     ardo({
-      title: 'My Docs',
-      description: 'Documentation',
+      title: "My Docs",
+      description: "Documentation",
     }),
   ],
 })

@@ -16,11 +16,11 @@ The build output is located in `dist/client/` and can be deployed to any static 
 If your site is deployed to a subdirectory (e.g. `https://username.github.io/my-docs/`), set the `base` option in `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
-  base: '/my-docs/',
+  base: "/my-docs/",
   plugins: [
     ardo({
       /* ... */
@@ -49,7 +49,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
@@ -65,8 +65,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -1,4 +1,4 @@
-import type { SidebarItem } from '../config/types'
+import type { SidebarItem } from "../config/types"
 
 /**
  * Find the current sidebar item based on the current path.

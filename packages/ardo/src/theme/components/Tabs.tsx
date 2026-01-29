@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, type ReactNode } from 'react'
+import { useState, createContext, useContext, type ReactNode } from "react"
 
 interface TabsContextValue {
   activeTab: string
@@ -10,7 +10,7 @@ const TabsContext = createContext<TabsContextValue | null>(null)
 function useTabsContext() {
   const context = useContext(TabsContext)
   if (!context) {
-    throw new Error('Tab components must be used within a Tabs component')
+    throw new Error("Tab components must be used within a Tabs component")
   }
   return context
 }
@@ -21,7 +21,7 @@ interface TabsProps {
 }
 
 export function Tabs({ defaultValue, children }: TabsProps) {
-  const [activeTab, setActiveTab] = useState(defaultValue || '')
+  const [activeTab, setActiveTab] = useState(defaultValue || "")
 
   return (
     <TabsContext.Provider value={{ activeTab, setActiveTab }}>
@@ -55,7 +55,7 @@ export function Tab({ value, children }: TabProps) {
     <button
       role="tab"
       aria-selected={isActive}
-      className={['press-tab', isActive && 'active'].filter(Boolean).join(' ')}
+      className={["press-tab", isActive && "active"].filter(Boolean).join(" ")}
       onClick={() => setActiveTab(value)}
     >
       {children}
