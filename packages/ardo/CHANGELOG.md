@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.2](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.1...ardo-v1.2.2) (2026-01-29)
+
+
+### Bug Fixes
+
+* auto-detect package root for TypeDoc entry points ([dd46e3a](https://github.com/sebastian-software/ardo/commit/dd46e3acb3064fbfbd317a006627341a770fd5cc))
+* don't crash dev server when TypeDoc fails ([93edd20](https://github.com/sebastian-software/ardo/commit/93edd20b2058cdf74f23acd23f163273b8133f46))
+* use ../src/index.ts as default TypeDoc entry point ([c52b42f](https://github.com/sebastian-software/ardo/commit/c52b42fb8618717790d26276fb04acf5d123f4cc))
+
 ## [1.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.0...ardo-v1.2.1) (2026-01-29)
 
 
