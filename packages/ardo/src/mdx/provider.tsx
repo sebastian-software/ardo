@@ -8,12 +8,56 @@ import type {
   TdHTMLAttributes,
   ThHTMLAttributes,
 } from "react"
+import { Link } from "react-router"
 import { Content } from "../ui/Content"
 import { CopyButton } from "../ui/components/CopyButton"
 import { Icon } from "../ui/components/Icon"
 import { Tip, Warning, Danger, Info, Note } from "../ui/components/Container"
 import { Tabs, TabList, Tab, TabPanel, TabPanels } from "../ui/components/Tabs"
 import { CodeBlock, CodeGroup } from "../ui/components/CodeBlock"
+
+/**
+ * Smart link component that uses React Router for internal links
+ * and regular anchor tags for external links.
+ */
+function SmartLink({
+  href,
+  children,
+  className,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const isExternal = href?.startsWith("http") || href?.startsWith("//")
+  const isAnchor = href?.startsWith("#")
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        className={className ?? "ardo-link"}
+        target="_blank"
+        rel="noopener noreferrer"
+        {...props}
+      >
+        {children}
+      </a>
+    )
+  }
+
+  if (isAnchor || !href) {
+    return (
+      <a href={href} className={className ?? "ardo-link"} {...props}>
+        {children}
+      </a>
+    )
+  }
+
+  // Internal link - use React Router Link for proper basename handling
+  return (
+    <Link to={href} className={className ?? "ardo-link"} {...props}>
+      {children}
+    </Link>
+  )
+}
 
 /**
  * Extracts text content from React children (for copy button)
@@ -64,7 +108,7 @@ export function useMDXComponents(): MDXComponents {
     h5: (props: HTMLAttributes<HTMLHeadingElement>) => <h5 className="ardo-heading-5" {...props} />,
     h6: (props: HTMLAttributes<HTMLHeadingElement>) => <h6 className="ardo-heading-6" {...props} />,
     p: (props: HTMLAttributes<HTMLParagraphElement>) => <p className="ardo-paragraph" {...props} />,
-    a: (props: AnchorHTMLAttributes<HTMLAnchorElement>) => <a className="ardo-link" {...props} />,
+    a: SmartLink,
     ul: (props: HTMLAttributes<HTMLUListElement>) => (
       <ul className="ardo-list ardo-list-unordered" {...props} />
     ),
