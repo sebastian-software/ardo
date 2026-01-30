@@ -1,10 +1,4 @@
-import {
-  createRootRoute,
-  HeadContent,
-  Outlet,
-  Scripts,
-  useRouterState,
-} from '@tanstack/react-router'
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from "react-router"
 import {
   Layout,
   Header,
@@ -15,34 +9,39 @@ import {
   SidebarLink,
   Footer,
   SocialLink,
-} from 'ardo/ui'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import logo from '../assets/logo.svg'
-import 'ardo/ui/styles.css'
+} from "ardo/ui"
+import { PressProvider } from "ardo/runtime"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+import logo from "./assets/logo.svg"
+import "ardo/ui/styles.css"
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: config.title },
-      { name: 'description', content: config.description },
-    ],
-  }),
-  component: RootComponent,
-  shellComponent: RootDocument,
-})
+export function HtmlDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body suppressHydrationWarning>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
 
-function RootComponent() {
-  const routerState = useRouterState()
-  const isHomePage = routerState.location.pathname === '/'
+export default function Root() {
+  const location = useLocation()
+  const isHomePage = location.pathname === "/"
 
   return (
     <PressProvider config={config} sidebar={sidebar}>
       <Layout
-        className={isHomePage ? 'ardo-layout ardo-home' : 'ardo-layout'}
+        className={isHomePage ? "ardo-layout ardo-home" : "ardo-layout"}
         header={
           <Header
             logo={logo}
@@ -100,19 +99,5 @@ function RootComponent() {
         <Outlet />
       </Layout>
     </PressProvider>
-  )
-}
-
-function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <HeadContent />
-      </head>
-      <body suppressHydrationWarning>
-        {children}
-        <Scripts />
-      </body>
-    </html>
   )
 }

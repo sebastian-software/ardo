@@ -1,5 +1,5 @@
 import { type ReactNode, useState, createContext, useContext } from "react"
-import { Link } from "@tanstack/react-router"
+import { NavLink as RouterNavLink } from "react-router"
 
 // Nav context for shared state
 interface NavContextValue {
@@ -67,7 +67,13 @@ export interface NavLinkProps {
  * <NavLink href="https://github.com/...">GitHub</NavLink>
  * ```
  */
-export function NavLink({ to, href, children, className, activeMatch }: NavLinkProps) {
+export function NavLink({
+  to,
+  href,
+  children,
+  className,
+  activeMatch: _activeMatch,
+}: NavLinkProps) {
   const navContext = useNavContext()
   const baseClassName = className ?? "ardo-nav-link"
 
@@ -94,15 +100,15 @@ export function NavLink({ to, href, children, className, activeMatch }: NavLinkP
   // Internal link
   if (to) {
     return (
-      <Link
+      <RouterNavLink
         to={to}
-        className={baseClassName}
-        activeProps={{ className: "active" }}
-        activeOptions={activeMatch ? { exact: false } : { exact: false }}
+        className={({ isActive }: { isActive: boolean }) =>
+          [baseClassName, isActive && "active"].filter(Boolean).join(" ")
+        }
         onClick={handleClick}
       >
         {children}
-      </Link>
+      </RouterNavLink>
     )
   }
 

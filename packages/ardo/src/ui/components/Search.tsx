@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router"
 import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"

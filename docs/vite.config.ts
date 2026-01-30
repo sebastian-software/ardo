@@ -18,7 +18,7 @@ export default defineConfig({
           placeholder: "Search documentation...",
         },
         editLink: {
-          pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/content/:path",
+          pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
           text: "Edit this page on GitHub",
         },
         lastUpdated: {

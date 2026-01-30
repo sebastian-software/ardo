@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { Search } from "./components/Search"
 

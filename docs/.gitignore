@@ -1,7 +1,9 @@
-# Generated routes by ardo
-src/routes/guide/
-src/routes/api-reference/
-src/routes/api-reference.tsx
+# Generated routes file by ardo
+app/routes.ts
 
-# TanStack Router build cache
-.tanstack/
+# Generated API reference by TypeDoc
+app/routes/api-reference/
+
+# React Router build output
+.react-router/
+build/

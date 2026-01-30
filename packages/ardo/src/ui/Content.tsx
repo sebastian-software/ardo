@@ -1,7 +1,7 @@
 import { type ReactNode } from "react"
 import { usePageData, useThemeConfig, useSidebar } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
-import { Link, useLocation } from "@tanstack/react-router"
+import { Link, useLocation } from "react-router"
 
 interface ContentProps {
   children: ReactNode

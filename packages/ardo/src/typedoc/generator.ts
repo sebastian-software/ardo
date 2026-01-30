@@ -110,14 +110,191 @@ export class TypeDocGenerator {
     // Generate index page
     docs.push(this.generateIndexPage())
 
-    // Generate pages for each module/namespace
     const children = this.project.children || []
 
+    // Group functions and type aliases by source file
+    const functionsByFile = new Map<string, DeclarationReflection[]>()
+    const typesByFile = new Map<string, DeclarationReflection[]>()
+    const standaloneItems: DeclarationReflection[] = []
+
     for (const child of children) {
+      const sourceFile = child.sources?.[0]?.fileName
+
+      if (child.kind === ReflectionKind.Function && sourceFile) {
+        const existing = functionsByFile.get(sourceFile) || []
+        existing.push(child)
+        functionsByFile.set(sourceFile, existing)
+      } else if (child.kind === ReflectionKind.TypeAlias && sourceFile) {
+        const existing = typesByFile.get(sourceFile) || []
+        existing.push(child)
+        typesByFile.set(sourceFile, existing)
+      } else {
+        standaloneItems.push(child)
+      }
+    }
+
+    // Generate grouped pages for functions (by source file)
+    for (const [sourceFile, functions] of functionsByFile) {
+      docs.push(this.generateGroupedFunctionsPage(sourceFile, functions))
+    }
+
+    // Generate grouped pages for types (by source file)
+    for (const [sourceFile, types] of typesByFile) {
+      docs.push(this.generateGroupedTypesPage(sourceFile, types))
+    }
+
+    // Generate individual pages for classes, interfaces, enums, etc.
+    for (const child of standaloneItems) {
       docs.push(...this.generateReflectionDocs(child, ""))
     }
 
     return docs
+  }
+
+  private generateGroupedFunctionsPage(
+    sourceFile: string,
+    functions: DeclarationReflection[]
+  ): GeneratedApiDoc {
+    // Extract module name from source file path (e.g., "src/utils/string.ts" -> "string")
+    const moduleName = this.getModuleNameFromPath(sourceFile)
+    const slug = this.getSlug(moduleName)
+    const content: string[] = []
+
+    content.push(`# ${moduleName} Functions`)
+    content.push("")
+    content.push(`Functions exported from \`${sourceFile}\``)
+    content.push("")
+
+    // Sort functions alphabetically
+    const sortedFunctions = [...functions].sort((a, b) => a.name.localeCompare(b.name))
+
+    for (const func of sortedFunctions) {
+      content.push(`## ${func.name}`)
+      content.push("")
+
+      // Description
+      if (func.comment?.summary) {
+        content.push(this.renderComment(func.comment.summary))
+        content.push("")
+      }
+
+      // Signature
+      if (func.signatures) {
+        for (const sig of func.signatures) {
+          content.push(this.renderSignature(sig))
+          content.push("")
+        }
+      }
+
+      // Examples
+      if (func.comment?.blockTags) {
+        const examples = func.comment.blockTags.filter((t) => t.tag === "@example")
+        if (examples.length > 0) {
+          content.push("### Example")
+          content.push("")
+          for (const example of examples) {
+            content.push(this.renderComment(example.content))
+            content.push("")
+          }
+        }
+      }
+
+      // Source link
+      if (this.config.markdown?.sourceLinks && func.sources?.[0]) {
+        const source = func.sources[0]
+        const sourceUrl = this.getSourceUrl(source.fileName, source.line)
+        if (sourceUrl) {
+          content.push(`[Source](${sourceUrl})`)
+          content.push("")
+        }
+      }
+
+      content.push("---")
+      content.push("")
+    }
+
+    return {
+      path: `${slug}-functions.md`,
+      content: content.join("\n"),
+      frontmatter: {
+        title: `${moduleName} Functions`,
+        description: `Functions from ${sourceFile}`,
+      },
+    }
+  }
+
+  private generateGroupedTypesPage(
+    sourceFile: string,
+    types: DeclarationReflection[]
+  ): GeneratedApiDoc {
+    const moduleName = this.getModuleNameFromPath(sourceFile)
+    const slug = this.getSlug(moduleName)
+    const content: string[] = []
+
+    content.push(`# ${moduleName} Types`)
+    content.push("")
+    content.push(`Type definitions from \`${sourceFile}\``)
+    content.push("")
+
+    // Sort types alphabetically
+    const sortedTypes = [...types].sort((a, b) => a.name.localeCompare(b.name))
+
+    for (const typeAlias of sortedTypes) {
+      content.push(`## ${typeAlias.name}`)
+      content.push("")
+
+      // Description
+      if (typeAlias.comment?.summary) {
+        content.push(this.renderComment(typeAlias.comment.summary))
+        content.push("")
+      }
+
+      // Type definition
+      if (typeAlias.type) {
+        content.push("```typescript")
+        content.push(`type ${typeAlias.name} = ${typeAlias.type.toString()}`)
+        content.push("```")
+        content.push("")
+      }
+
+      // Source link
+      if (this.config.markdown?.sourceLinks && typeAlias.sources?.[0]) {
+        const source = typeAlias.sources[0]
+        const sourceUrl = this.getSourceUrl(source.fileName, source.line)
+        if (sourceUrl) {
+          content.push(`[Source](${sourceUrl})`)
+          content.push("")
+        }
+      }
+
+      content.push("---")
+      content.push("")
+    }
+
+    return {
+      path: `${slug}-types.md`,
+      content: content.join("\n"),
+      frontmatter: {
+        title: `${moduleName} Types`,
+        description: `Type definitions from ${sourceFile}`,
+      },
+    }
+  }
+
+  private getModuleNameFromPath(filePath: string): string {
+    // Include parent directory to avoid naming conflicts
+    // "src/utils/string.ts" -> "utils/string"
+    // "src/ui/Sidebar.tsx" -> "ui/Sidebar"
+    // "runtime/sidebar.ts" -> "runtime/sidebar"
+    const parts = filePath.split("/")
+    const basename = (parts.pop() || filePath).replace(/\.(ts|tsx|js|jsx)$/, "")
+
+    // Get parent directory if available
+    const parent = parts.pop()
+    if (parent && parent !== "src") {
+      return `${parent}/${basename}`
+    }
+    return basename
   }
 
   private generateIndexPage(): GeneratedApiDoc {
@@ -132,10 +309,76 @@ export class TypeDocGenerator {
 
     const children = this.project?.children || []
 
-    // Group children by kind (with special handling for hooks and components)
-    const groups: Record<string, DeclarationReflection[]> = {}
+    // Group functions and types by source file for linking
+    const functionsByFile = new Map<string, DeclarationReflection[]>()
+    const typesByFile = new Map<string, DeclarationReflection[]>()
+    const standaloneItems: DeclarationReflection[] = []
 
     for (const child of children) {
+      const sourceFile = child.sources?.[0]?.fileName
+
+      if (child.kind === ReflectionKind.Function && sourceFile) {
+        const existing = functionsByFile.get(sourceFile) || []
+        existing.push(child)
+        functionsByFile.set(sourceFile, existing)
+      } else if (child.kind === ReflectionKind.TypeAlias && sourceFile) {
+        const existing = typesByFile.get(sourceFile) || []
+        existing.push(child)
+        typesByFile.set(sourceFile, existing)
+      } else {
+        standaloneItems.push(child)
+      }
+    }
+
+    // Render grouped function modules
+    if (functionsByFile.size > 0) {
+      content.push("## Functions")
+      content.push("")
+
+      // Sort modules alphabetically
+      const sortedModules = [...functionsByFile.entries()].sort((a, b) =>
+        this.getModuleNameFromPath(a[0]).localeCompare(this.getModuleNameFromPath(b[0]))
+      )
+
+      for (const [sourceFile, functions] of sortedModules) {
+        const moduleName = this.getModuleNameFromPath(sourceFile)
+        const slug = this.getSlug(moduleName)
+        const funcNames = functions
+          .map((f) => f.name)
+          .sort()
+          .join(", ")
+        content.push(`- [${moduleName}](${this.basePath}/${slug}-functions) - ${funcNames}`)
+      }
+
+      content.push("")
+    }
+
+    // Render grouped type modules
+    if (typesByFile.size > 0) {
+      content.push("## Type Aliases")
+      content.push("")
+
+      const sortedModules = [...typesByFile.entries()].sort((a, b) =>
+        this.getModuleNameFromPath(a[0]).localeCompare(this.getModuleNameFromPath(b[0]))
+      )
+
+      for (const [sourceFile, types] of sortedModules) {
+        const moduleName = this.getModuleNameFromPath(sourceFile)
+        const slug = this.getSlug(moduleName)
+        const typeNames = types
+          .map((t) => t.name)
+          .sort()
+          .join(", ")
+        content.push(`- [${moduleName}](${this.basePath}/${slug}-types) - ${typeNames}`)
+      }
+
+      content.push("")
+    }
+
+    // Group remaining items by kind
+    const groups: Record<string, DeclarationReflection[]> = {}
+
+    for (const child of standaloneItems) {
       const kindName = this.getKindGroupName(child.kind, child.name)
       if (!groups[kindName]) {
         groups[kindName] = []
@@ -148,18 +391,8 @@ export class TypeDocGenerator {
       group.sort((a, b) => a.name.localeCompare(b.name))
     }
 
-    // Define the order of groups
-    const groupOrder = [
-      "Functions",
-      "React Hooks",
-      "React Components",
-      "Interfaces",
-      "Types",
-      "Classes",
-      "Variables",
-      "Enums",
-      "Other",
-    ]
+    // Define the order of groups (excluding Functions and Types which are handled above)
+    const groupOrder = ["Interfaces", "Classes", "Variables", "Enums", "Other"]
 
     // Render each group
     for (const groupName of groupOrder) {
@@ -233,13 +466,12 @@ export class TypeDocGenerator {
     docs.push(this.generateReflectionPage(reflection, currentPath))
 
     // Generate pages for child classes, interfaces, etc.
+    // Functions are grouped by source file, not individual pages
     const children = reflection.children || []
     const hasOwnPage = [
       ReflectionKind.Class,
       ReflectionKind.Interface,
       ReflectionKind.Enum,
-      ReflectionKind.TypeAlias,
-      ReflectionKind.Function,
       ReflectionKind.Namespace,
       ReflectionKind.Module,
     ]

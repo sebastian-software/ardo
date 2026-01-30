@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "react-router"
 import { usePageData, useConfig, useThemeConfig } from "../runtime/hooks"
 import { Header, SocialLink } from "./Header"
 import { Footer } from "./Footer"

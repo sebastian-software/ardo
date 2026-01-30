@@ -1,52 +1,32 @@
 import type { Plugin } from "vite"
-import type { ResolvedConfig } from "../config/types"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
 
-export interface PressRoutesPluginOptions {
-  /** Directory where routes should be generated */
+export interface ArdoRoutesPluginOptions {
+  /** Directory where routes are located (default: "./app/routes") */
   routesDir?: string
-  /** Source directory for content (default: 'content') */
-  srcDir?: string
-  /**
-   * Layout mode for generated routes.
-   * - 'docPage': Routes use DocPage which includes Layout (backward compatible)
-   * - 'layoutRoute': Routes use DocContent without Layout (for use with _layout.tsx)
-   * Default: 'layoutRoute'
-   */
-  layoutMode?: "docPage" | "layoutRoute"
 }
 
 interface RouteInfo {
-  /** Path relative to content dir without extension (e.g., 'guide/getting-started') */
-  slug: string
-  /** Full path to the markdown file */
-  mdPath: string
-  /** Path relative to content dir with extension (e.g., 'guide/getting-started.md') */
-  relativePath: string
-  /** True if this route comes from an index.md file */
+  /** URL path (e.g., "/guide/getting-started") */
+  path: string
+  /** File path relative to app directory (e.g., "routes/guide/getting-started.mdx") */
+  file: string
+  /** True if this is an index route */
   isIndex?: boolean
 }
 
 /**
- * Vite plugin that generates individual route files for each markdown file
- * in the content directory. Routes include SEO head() configuration
- * using frontmatter data.
+ * Vite plugin that generates routes.ts for React Router Framework Mode.
+ * Scans app/routes for .mdx and .tsx files and generates the route configuration.
  */
-export function pressRoutesPlugin(
-  getConfig: () => ResolvedConfig,
-  options: PressRoutesPluginOptions = {}
-): Plugin {
-  const { layoutMode = "layoutRoute" } = options
-
+export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin {
   let routesDir: string
-  let contentDir: string
-  let isDevMode = false
-  let hasCleanedRoutes = false
-  let isInitialGeneration = true
+  let appDir: string
+  let routesFilePath: string
 
-  function scanContentDirSync(dir: string, rootDir: string): RouteInfo[] {
+  function scanRoutesSync(dir: string, rootDir: string): RouteInfo[] {
     const routes: RouteInfo[] = []
 
     try {
@@ -56,341 +36,175 @@ export function pressRoutesPlugin(
         const fullPath = path.join(dir, entry.name)
 
         if (entry.isDirectory()) {
-          const children = scanContentDirSync(fullPath, rootDir)
+          // Recursively scan subdirectories
+          const children = scanRoutesSync(fullPath, rootDir)
           routes.push(...children)
-        } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
+        } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".tsx")) {
+          // Skip special files
+          if (entry.name === "root.tsx" || entry.name.startsWith("_")) {
+            continue
+          }
+
           const relativePath = path.relative(rootDir, fullPath)
-          const slug = relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
+          const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".tsx"
+          const baseName = entry.name.replace(ext, "")
+
+          // Calculate URL path
+          let urlPath: string
+          if (baseName === "index" || baseName === "home") {
+            // Index route - use parent directory path
+            const parentDir = path.dirname(relativePath)
+            urlPath = parentDir === "." ? "/" : "/" + parentDir.replace(/\\/g, "/")
+          } else {
+            // Regular route
+            urlPath = "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
+          }
+
+          // Handle dynamic segments ($param -> :param)
+          urlPath = urlPath.replace(/\$(\w+)/g, ":$1")
 
           routes.push({
-            slug,
-            mdPath: fullPath,
-            relativePath: relativePath.replace(/\\/g, "/"),
+            path: urlPath,
+            file: "routes/" + relativePath.replace(/\\/g, "/"),
+            isIndex: baseName === "index" || baseName === "home",
           })
-        } else if (entry.name === "index.md") {
-          const parentDir = path.dirname(fullPath)
-          const relativePath = path.relative(rootDir, fullPath)
-
-          // Skip root index.md (handled by manual index.tsx)
-          if (parentDir !== rootDir) {
-            const slug = path.relative(rootDir, parentDir).replace(/\\/g, "/")
-
-            routes.push({
-              slug,
-              mdPath: fullPath,
-              relativePath: relativePath.replace(/\\/g, "/"),
-              isIndex: true, // Mark as index route
-            })
-          }
         }
       }
     } catch {
-      // Content dir may not exist
+      // Directory may not exist yet
     }
 
     return routes
   }
 
-  function generateRouteCode(route: RouteInfo): string {
-    const { slug, relativePath, isIndex } = route
+  function generateRoutesFile(routes: RouteInfo[]): string {
+    // Sort routes: index routes first, then alphabetically
+    const sortedRoutes = [...routes].sort((a, b) => {
+      if (a.path === "/" && b.path !== "/") return -1
+      if (b.path === "/" && a.path !== "/") return 1
+      if (a.isIndex && !b.isIndex) return -1
+      if (b.isIndex && !a.isIndex) return 1
+      return a.path.localeCompare(b.path)
+    })
 
-    // Calculate relative path from route file to content file
-    // Route at routes/${slug}.tsx needs to reach content/${relativePath}
-    // Index routes are at routes/${slug}/index.tsx, so they need one more level up
-    const baseDepth = slug.split("/").length + 1
-    const depthToProjectRoot = isIndex ? baseDepth + 1 : baseDepth
-    const toProjectRoot = "../".repeat(depthToProjectRoot)
-    const contentImportPath = `${toProjectRoot}content/${relativePath}`
+    const entries = sortedRoutes.map((r) => {
+      if (r.path === "/") {
+        return `  index("${r.file}"),`
+      }
+      // Remove leading slash for route path
+      const routePath = r.path.substring(1)
+      return `  route("${routePath}", "${r.file}"),`
+    })
 
-    // Generate component name from slug
-    const componentName =
-      slug
-        .split("/")
-        .map((part) => part.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-        .join("")
-        .replace(/\s/g, "") + "Page"
+    return `// AUTO-GENERATED by Ardo - Do not edit manually
 
-    // Generate route path for TanStack Router (no route group, direct path)
-    const routePath = `/${slug}`
+import { type RouteConfig, route, index } from "@react-router/dev/routes"
 
-    // Generate default title from slug
-    const defaultTitle = slug
-      .split("/")
-      .pop()!
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-
-    // Choose component based on layout mode
-    const contentComponent = layoutMode === "docPage" ? "DocPage" : "DocContent"
-
-    return `// This file is auto-generated by ardo. Do not edit manually.
-import { createFileRoute } from '@tanstack/react-router'
-import { ${contentComponent} } from 'ardo/ui'
-import { PressProvider } from 'ardo/runtime'
-import config from 'virtual:ardo/config'
-import sidebar from 'virtual:ardo/sidebar'
-import Content, { frontmatter, toc } from '${contentImportPath}'
-
-export const Route = createFileRoute('${routePath}')({
-  head: () => ({
-    meta: [
-      { title: (frontmatter.title as string) ? \`\${frontmatter.title} | \${config.title}\` : config.title },
-      ...(frontmatter.description ? [{ name: 'description', content: frontmatter.description as string }] : []),
-      // OpenGraph
-      { property: 'og:title', content: (frontmatter.title as string) || '${defaultTitle}' },
-      ...(frontmatter.description ? [{ property: 'og:description', content: frontmatter.description as string }] : []),
-      { property: 'og:type', content: 'article' },
-      // Twitter
-      { name: 'twitter:card', content: 'summary' },
-      { name: 'twitter:title', content: (frontmatter.title as string) || '${defaultTitle}' },
-      ...(frontmatter.description ? [{ name: 'twitter:description', content: frontmatter.description as string }] : []),
-    ],
-  }),
-  component: ${componentName},
-})
-
-function ${componentName}() {
-  const pageData = {
-    title: (frontmatter.title as string) || '${defaultTitle}',
-    description: frontmatter.description as string | undefined,
-    frontmatter,
-    content: '',
-    toc,
-    filePath: '${relativePath}',
-    relativePath: '${relativePath}',
-  }
-
-  return (
-    <PressProvider config={config} sidebar={sidebar} currentPage={pageData}>
-      <${contentComponent}>
-        <Content />
-      </${contentComponent}>
-    </PressProvider>
-  )
-}
+export default [
+${entries.join("\n")}
+] satisfies RouteConfig
 `
   }
 
-  function writeRouteFileSync(route: RouteInfo): boolean {
-    // Index routes go to {slug}/index.tsx to avoid TanStack Router treating them as layout routes
-    const routeFilePath = route.isIndex
-      ? path.join(routesDir, route.slug, "index.tsx")
-      : path.join(routesDir, `${route.slug}.tsx`)
-    const code = generateRouteCode(route)
+  function writeRoutesFileSync(): void {
+    const routes = scanRoutesSync(routesDir, routesDir)
+
+    // Skip if no routes found (directory might not exist yet)
+    if (routes.length === 0) {
+      return
+    }
+
+    const content = generateRoutesFile(routes)
 
     // Only write if content changed
     try {
-      const existingContent = fsSync.readFileSync(routeFilePath, "utf-8")
-      if (existingContent === code) {
-        return false
+      const existing = fsSync.readFileSync(routesFilePath, "utf-8")
+      if (existing === content) {
+        return
       }
     } catch {
-      // File doesn't exist, will be created
+      // File doesn't exist yet
     }
 
-    fsSync.mkdirSync(path.dirname(routeFilePath), { recursive: true })
-    fsSync.writeFileSync(routeFilePath, code, "utf-8")
-    return true
+    // Ensure app directory exists
+    fsSync.mkdirSync(appDir, { recursive: true })
+    fsSync.writeFileSync(routesFilePath, content, "utf-8")
+    console.log(`[ardo] Generated routes.ts with ${routes.length} routes`)
   }
 
-  function generateAllRoutesSync(): void {
-    const routes = scanContentDirSync(contentDir, contentDir)
+  async function writeRoutesFile(): Promise<void> {
+    const routes = scanRoutesSync(routesDir, routesDir)
 
-    let writtenCount = 0
-    for (const route of routes) {
-      if (writeRouteFileSync(route)) {
-        writtenCount++
-      }
+    // Skip if no routes found (directory might not exist yet)
+    if (routes.length === 0) {
+      return
     }
 
-    if (writtenCount > 0) {
-      console.log(`[ardo] Generated ${writtenCount} content route files`)
-    }
-  }
+    const content = generateRoutesFile(routes)
 
-  async function ensureDirectoryExists(dir: string): Promise<void> {
+    // Only write if content changed
     try {
-      await fs.mkdir(dir, { recursive: true })
-    } catch {
-      // Directory may already exist
-    }
-  }
-
-  async function writeRouteFile(route: RouteInfo): Promise<boolean> {
-    // Index routes go to {slug}/index.tsx to avoid TanStack Router treating them as layout routes
-    const routeFilePath = route.isIndex
-      ? path.join(routesDir, route.slug, "index.tsx")
-      : path.join(routesDir, `${route.slug}.tsx`)
-    const routeFileDir = path.dirname(routeFilePath)
-
-    await ensureDirectoryExists(routeFileDir)
-
-    const code = generateRouteCode(route)
-
-    // Only write if content changed to avoid triggering unnecessary rebuilds
-    try {
-      const existingContent = await fs.readFile(routeFilePath, "utf-8")
-      if (existingContent === code) {
-        return false // No change
+      const existing = await fs.readFile(routesFilePath, "utf-8")
+      if (existing === content) {
+        return
       }
     } catch {
-      // File doesn't exist, will be created
+      // File doesn't exist yet
     }
 
-    await fs.writeFile(routeFilePath, code, "utf-8")
-    return true // File was written
-  }
-
-  async function cleanGeneratedRoutes(): Promise<void> {
-    const pressRoutesDir = routesDir
-
-    try {
-      const entries = await fs.readdir(pressRoutesDir, { withFileTypes: true, recursive: true })
-
-      for (const entry of entries) {
-        if (entry.isFile() && entry.name.endsWith(".tsx") && entry.name !== "_layout.tsx") {
-          const fullPath = path.join(entry.parentPath ?? pressRoutesDir, entry.name)
-
-          // Read the file to check if it's auto-generated
-          try {
-            const content = await fs.readFile(fullPath, "utf-8")
-            if (content.startsWith("// This file is auto-generated by ardo")) {
-              await fs.unlink(fullPath)
-            }
-          } catch {
-            // File might have been deleted already
-          }
-        }
-      }
-    } catch {
-      // Directory doesn't exist yet, nothing to clean
-    }
-  }
-
-  async function scanContentDir(dir: string, rootDir: string): Promise<RouteInfo[]> {
-    const routes: RouteInfo[] = []
-    const entries = await fs.readdir(dir, { withFileTypes: true })
-
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name)
-
-      if (entry.isDirectory()) {
-        const children = await scanContentDir(fullPath, rootDir)
-        routes.push(...children)
-      } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
-        const relativePath = path.relative(rootDir, fullPath)
-        const slug = relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
-
-        routes.push({
-          slug,
-          mdPath: fullPath,
-          relativePath: relativePath.replace(/\\/g, "/"),
-        })
-      } else if (entry.name === "index.md") {
-        const parentDir = path.dirname(fullPath)
-        const relativePath = path.relative(rootDir, fullPath)
-
-        // Skip root index.md (handled by manual index.tsx)
-        if (parentDir !== rootDir) {
-          const slug = path.relative(rootDir, parentDir).replace(/\\/g, "/")
-
-          routes.push({
-            slug,
-            mdPath: fullPath,
-            relativePath: relativePath.replace(/\\/g, "/"),
-            isIndex: true, // Mark as index route
-          })
-        }
-      }
-    }
-
-    return routes
-  }
-
-  async function generateAllRoutes(): Promise<void> {
-    // Clean old generated routes first (only in dev mode, and only once)
-    if (isDevMode && !hasCleanedRoutes) {
-      await cleanGeneratedRoutes()
-      hasCleanedRoutes = true
-    }
-
-    const routes = await scanContentDir(contentDir, contentDir)
-
-    let writtenCount = 0
-    for (const route of routes) {
-      if (await writeRouteFile(route)) {
-        writtenCount++
-      }
-    }
-
-    // Only log on initial generation, not on HMR updates
-    if (writtenCount > 0 && isInitialGeneration) {
-      console.log(`[ardo] Generated ${writtenCount} content route files`)
-    }
-    isInitialGeneration = false
+    // Ensure app directory exists
+    await fs.mkdir(appDir, { recursive: true })
+    await fs.writeFile(routesFilePath, content, "utf-8")
   }
 
   return {
     name: "ardo:routes",
     enforce: "pre",
 
-    config(userConfig, env) {
-      // Generate routes early, before TanStack Router scans the files
+    config(userConfig) {
       const root = userConfig.root || process.cwd()
-      const srcDir = path.join(root, "src")
-      routesDir = options.routesDir || path.join(srcDir, "routes")
-      isDevMode = env.command === "serve"
+      appDir = path.join(root, "app")
+      routesDir = options.routesDir || path.join(appDir, "routes")
+      routesFilePath = path.join(appDir, "routes.ts")
 
-      // Use srcDir from options to resolve contentDir early
-      contentDir = path.resolve(root, options.srcDir || "content")
-
-      // Generate content routes SYNCHRONOUSLY
-      // TanStack Router scans routes during config phase, so routes must exist by then
+      // Generate routes synchronously during config phase
+      // React Router needs routes.ts to exist before it starts
       try {
-        generateAllRoutesSync()
+        writeRoutesFileSync()
       } catch (err) {
-        console.warn("[ardo] Could not generate routes in config phase:", err)
+        console.warn("[ardo] Could not generate routes.ts in config phase:", err)
       }
     },
 
-    configResolved(viteConfig) {
-      // Update paths if they weren't set in config hook
-      if (!routesDir) {
-        routesDir = options.routesDir || path.join(viteConfig.root, "src", "routes")
-        isDevMode = viteConfig.command === "serve"
+    configResolved(config) {
+      // Update paths if not set in config
+      if (!appDir) {
+        appDir = path.join(config.root, "app")
+        routesDir = options.routesDir || path.join(appDir, "routes")
+        routesFilePath = path.join(appDir, "routes.ts")
       }
     },
 
     async buildStart() {
-      // Re-generate content routes in buildStart for full async support
-      const config = getConfig()
-      contentDir = config.contentDir
-      await generateAllRoutes()
+      // Re-generate routes in buildStart for async support
+      await writeRoutesFile()
     },
 
     configureServer(server) {
-      // Watch for changes in content directory
-      server.watcher.add(contentDir)
+      // Watch for changes in routes directory
+      server.watcher.add(routesDir)
 
-      server.watcher.on("change", async (changedPath) => {
-        if (changedPath.startsWith(contentDir) && changedPath.endsWith(".md")) {
-          await generateAllRoutes()
+      const handleChange = async (changedPath: string) => {
+        if (
+          changedPath.startsWith(routesDir) &&
+          (changedPath.endsWith(".mdx") || changedPath.endsWith(".tsx"))
+        ) {
+          await writeRoutesFile()
         }
-      })
+      }
 
-      server.watcher.on("add", async (addedPath) => {
-        if (addedPath.startsWith(contentDir) && addedPath.endsWith(".md")) {
-          await generateAllRoutes()
-        }
-      })
-
-      server.watcher.on("unlink", async (removedPath) => {
-        if (removedPath.startsWith(contentDir) && removedPath.endsWith(".md")) {
-          // Re-generate routes (will clean up orphaned route files)
-          hasCleanedRoutes = false // Allow cleaning again
-          await generateAllRoutes()
-        }
-      })
+      server.watcher.on("add", handleChange)
+      server.watcher.on("unlink", handleChange)
     },
   }
 }

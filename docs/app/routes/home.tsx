@@ -1,22 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router"
 import { Hero, Features } from "ardo/ui"
 import logo from "../assets/logo.svg"
 
-export const Route = createFileRoute("/")({
-  component: HomePage,
-})
-
-function HomePage() {
+export default function HomePage() {
   return (
     <>
       <Hero
         name="Ardo"
         text="React-first Documentation"
-        tagline="Build beautiful documentation sites with React, TanStack Start, and Markdown. Automatically generate API references from TypeScript with built-in TypeDoc integration."
+        tagline="Build beautiful documentation sites with React, React Router, and Markdown. Automatically generate API references from TypeScript with built-in TypeDoc integration."
         image={logo}
         actions={[
           { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
-          { text: "View on GitHub", link: "https://github.com/sebastian-software/ardo", theme: "alt" },
+          {
+            text: "View on GitHub",
+            link: "https://github.com/sebastian-software/ardo",
+            theme: "alt",
+          },
         ]}
       />
 
@@ -26,7 +25,7 @@ function HomePage() {
             title: "React-First",
             icon: "⚛️",
             details:
-              "Built on TanStack Start and React. Use React components directly in your markdown.",
+              "Built on React Router and React. Use React components directly in your markdown.",
           },
           {
             title: "Lightning Fast",

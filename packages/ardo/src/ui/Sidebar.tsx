@@ -6,7 +6,7 @@ import {
   createContext,
   useContext,
 } from "react"
-import { Link, useRouterState } from "@tanstack/react-router"
+import { NavLink, useLocation } from "react-router"
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
 // =============================================================================
@@ -64,7 +64,7 @@ export interface SidebarProps {
  * ```
  */
 export function Sidebar({ items, children, className }: SidebarProps) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const { pathname } = useLocation()
 
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
@@ -146,9 +146,14 @@ export function SidebarGroup({
     <li className={className ?? "ardo-sidebar-item"}>
       <div className="ardo-sidebar-item-header">
         {to ? (
-          <Link to={to} className={linkClassName} activeProps={{ className: "active" }}>
+          <NavLink
+            to={to}
+            className={({ isActive }) =>
+              [linkClassName, isActive && "active"].filter(Boolean).join(" ")
+            }
+          >
             {title}
-          </Link>
+          </NavLink>
         ) : (
           <span
             className={textClassName}
@@ -210,15 +215,17 @@ export interface SidebarLinkProps {
  * ```
  */
 export function SidebarLink({ to, children, className }: SidebarLinkProps) {
+  const baseClassName = className ?? "ardo-sidebar-link"
   return (
     <li className="ardo-sidebar-item">
-      <Link
+      <NavLink
         to={to}
-        className={className ?? "ardo-sidebar-link"}
-        activeProps={{ className: "active" }}
+        className={({ isActive }) =>
+          [baseClassName, isActive && "active"].filter(Boolean).join(" ")
+        }
       >
         {children}
-      </Link>
+      </NavLink>
     </li>
   )
 }
@@ -273,9 +280,14 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
     <li className="ardo-sidebar-item">
       <div className="ardo-sidebar-item-header">
         {item.link ? (
-          <Link to={item.link} className={linkClassName} activeProps={{ className: "active" }}>
+          <NavLink
+            to={item.link}
+            className={({ isActive }) =>
+              [linkClassName, isActive && "active"].filter(Boolean).join(" ")
+            }
+          >
             {item.text}
-          </Link>
+          </NavLink>
         ) : (
           <span className={textClassName} onClick={() => hasChildren && setCollapsed(!collapsed)}>
             {item.text}

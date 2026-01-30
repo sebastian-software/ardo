@@ -1,7 +1,7 @@
 // Vite Plugin
 export { ardoPlugin, ardoPlugin as ardo, type ArdoPluginOptions } from "./plugin"
 export { ardoPlugin as default } from "./plugin"
-export { pressRoutesPlugin, type PressRoutesPluginOptions } from "./routes-plugin"
+export { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 // Build-time utilities (Node.js only)
 export {

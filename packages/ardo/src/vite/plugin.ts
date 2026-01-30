@@ -2,16 +2,20 @@ import type { Plugin, UserConfig } from "vite"
 import type { PressConfig, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
 import { resolveConfig } from "../config/index"
-import { transformMarkdown } from "../markdown/pipeline"
-import { createShikiHighlighter, type ShikiHighlighter } from "../markdown/shiki"
-import { pressRoutesPlugin, type PressRoutesPluginOptions } from "./routes-plugin"
 import { generateApiDocs } from "../typedoc/generator"
-import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import { reactRouter } from "@react-router/dev/vite"
+import mdx from "@mdx-js/rollup"
+import remarkFrontmatter from "remark-frontmatter"
+import remarkMdxFrontmatter from "remark-mdx-frontmatter"
+import remarkGfm from "remark-gfm"
+import remarkDirective from "remark-directive"
+import rehypeShiki from "@shikijs/rehype"
 import react from "@vitejs/plugin-react"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
 import { execSync } from "child_process"
+import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 /**
  * Finds the package root by looking for package.json in parent directories.
@@ -68,54 +72,47 @@ const RESOLVED_VIRTUAL_SIDEBAR_ID = "\0" + VIRTUAL_SIDEBAR_ID
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 const RESOLVED_VIRTUAL_SEARCH_ID = "\0" + VIRTUAL_SEARCH_ID
 
+// Module-level flag to prevent duplicate TypeDoc generation across plugin instances
+// This is necessary because React Router creates multiple Vite instances
+let typedocGenerated = false
+
 export interface ArdoPluginOptions extends Partial<PressConfig> {
   /** Options for the routes generator plugin */
-  routes?: PressRoutesPluginOptions | false
-  /** Options for TanStack Start prerendering */
-  prerender?: {
-    enabled?: boolean
-    crawlLinks?: boolean
-  }
+  routes?: ArdoRoutesPluginOptions | false
   /**
    * Auto-detect GitHub repository and set base path for GitHub Pages.
    * When true, automatically sets `base: '/repo-name/'` if deploying to GitHub Pages.
    * @default true
    */
   githubPages?: boolean
-}
-
-// Use globalThis to cache the Shiki highlighter as a true singleton across all plugin instances
-const SHIKI_CACHE_KEY = "__ardo_shiki_highlighter__"
-let shikiHighlighterPromise: Promise<ShikiHighlighter> | null = null
-
-function getShikiHighlighter(config: ResolvedConfig): Promise<ShikiHighlighter> {
-  // Check if already cached on globalThis
-  if ((globalThis as Record<string, unknown>)[SHIKI_CACHE_KEY]) {
-    return Promise.resolve(
-      (globalThis as Record<string, unknown>)[SHIKI_CACHE_KEY] as ShikiHighlighter
-    )
-  }
-  // Use promise caching to prevent multiple concurrent creations
-  if (!shikiHighlighterPromise) {
-    shikiHighlighterPromise = createShikiHighlighter(config.markdown).then((highlighter) => {
-      ;(globalThis as Record<string, unknown>)[SHIKI_CACHE_KEY] = highlighter
-      return highlighter
-    })
-  }
-  return shikiHighlighterPromise
+  /**
+   * Directory where routes are located.
+   * @default "./app/routes"
+   */
+  routesDir?: string
 }
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
+  let routesDir: string
 
   // Extract ardo-specific options from the rest (which is PressConfig)
-  const { routes, prerender, typedoc, githubPages = true, ...pressConfig } = options
+  const {
+    routes,
+    typedoc,
+    githubPages = true,
+    routesDir: routesDirOption,
+    ...pressConfig
+  } = options
 
   const mainPlugin: Plugin = {
     name: "ardo",
     enforce: "pre",
 
     config(userConfig, env): UserConfig {
+      const root = userConfig.root || process.cwd()
+      routesDir = routesDirOption || path.join(root, "app", "routes")
+
       const result: UserConfig = {
         optimizeDeps: {
           exclude: ["ardo/ui/styles.css"],
@@ -127,7 +124,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
       // Auto-detect GitHub Pages base path for production builds
       if (githubPages && env.command === "build" && !userConfig.base) {
-        const repoName = detectGitHubRepoName(userConfig.root || process.cwd())
+        const repoName = detectGitHubRepoName(root)
         if (repoName) {
           result.base = `/${repoName}/`
           console.log(`[ardo] GitHub Pages detected, using base: ${result.base}`)
@@ -139,11 +136,21 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
     async configResolved(config) {
       const root = config.root
+      routesDir = routesDirOption || path.join(root, "app", "routes")
+
       const defaultConfig: PressConfig = {
         title: pressConfig.title ?? "Ardo",
         description: pressConfig.description ?? "Documentation powered by Ardo",
       }
-      resolvedConfig = resolveConfig({ ...defaultConfig, ...pressConfig }, root)
+
+      // For React Router, contentDir is the routes directory
+      const configWithRoutes = {
+        ...defaultConfig,
+        ...pressConfig,
+        srcDir: routesDir,
+      }
+
+      resolvedConfig = resolveConfig(configWithRoutes, root)
     },
 
     resolveId(id) {
@@ -171,71 +178,30 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       }
 
       if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
-        const sidebar = await generateSidebar(resolvedConfig)
+        const sidebar = await generateSidebar(resolvedConfig, routesDir)
         return `export default ${JSON.stringify(sidebar)}`
       }
 
       if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
-        const searchIndex = await generateSearchIndex(resolvedConfig)
+        const searchIndex = await generateSearchIndex(routesDir)
         return `export default ${JSON.stringify(searchIndex)}`
       }
     },
   }
 
-  const markdownPlugin: Plugin = {
-    name: "ardo:markdown",
-    enforce: "pre",
-
-    async transform(code, id) {
-      if (!id.endsWith(".md")) {
-        return
-      }
-
-      const highlighter = await getShikiHighlighter(resolvedConfig)
-
-      const result = await transformMarkdown(code, resolvedConfig.markdown, {
-        basePath: resolvedConfig.base,
-        highlighter,
-      })
-
-      const componentCode = `
-import { createElement } from 'react'
-
-export const frontmatter = ${JSON.stringify(result.frontmatter)}
-export const toc = ${JSON.stringify(result.toc)}
-
-export default function MarkdownContent() {
-  return createElement('div', {
-    className: 'ardo-content',
-    dangerouslySetInnerHTML: { __html: ${JSON.stringify(result.html)} }
-  })
-}
-`
-
-      return {
-        code: componentCode,
-        map: null,
-      }
-    },
-  }
-
-  const plugins: Plugin[] = [mainPlugin, markdownPlugin]
+  const plugins: Plugin[] = [mainPlugin]
 
   // Add routes plugin unless explicitly disabled
-  // Note: Routes plugin must come AFTER typedoc in the array so that
-  // typedoc runs first in buildStart and generates markdown files
   if (routes !== false) {
-    plugins.unshift(
-      pressRoutesPlugin(() => resolvedConfig, {
-        srcDir: pressConfig.srcDir,
+    plugins.push(
+      ardoRoutesPlugin({
+        routesDir: routesDirOption,
         ...routes,
       })
     )
   }
 
   // Add TypeDoc plugin if enabled
-  // Note: unshift adds to front, so typedoc will be before routes in the array
-  // This ensures typedoc buildStart runs before routes buildStart
   if (typedoc) {
     // Find package root to use as default entry point and tsconfig base
     const packageRoot = findPackageRoot(process.cwd())
@@ -254,51 +220,71 @@ export default function MarkdownContent() {
     const typedocConfig: TypeDocConfig =
       typedoc === true ? defaultTypedocConfig : { ...defaultTypedocConfig, ...typedoc }
 
-    let hasGenerated = false
-
     const typedocPlugin: Plugin = {
       name: "ardo:typedoc",
 
       async buildStart() {
-        if (!hasGenerated && typedocConfig.enabled) {
-          console.log("[ardo] Generating API documentation with TypeDoc...")
-          const startTime = Date.now()
-          try {
-            const contentDir = pressConfig.srcDir ?? "./content"
-            const docs = await generateApiDocs(typedocConfig, contentDir)
-            const duration = Date.now() - startTime
-            console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
-            hasGenerated = true
-          } catch (error) {
-            // Don't crash the dev server if TypeDoc fails - just warn and continue
-            // This allows users to run the dev server even if their TypeDoc config is incorrect
-            console.warn(
-              "[ardo] TypeDoc generation failed. API documentation will not be available."
-            )
-            console.warn("[ardo] Check your typedoc.entryPoints configuration.")
-            if (error instanceof Error) {
-              console.warn(`[ardo] Error: ${error.message}`)
-            }
-            hasGenerated = true // Prevent retry
+        // Use module-level flag to prevent duplicate generation across plugin instances
+        if (typedocGenerated || !typedocConfig.enabled) {
+          return
+        }
+
+        console.log("[ardo] Generating API documentation with TypeDoc...")
+        const startTime = Date.now()
+        try {
+          const outputDir = routesDirOption || "./app/routes"
+          const docs = await generateApiDocs(typedocConfig, outputDir)
+          const duration = Date.now() - startTime
+          console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
+        } catch (error) {
+          console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
+          console.warn("[ardo] Check your typedoc.entryPoints configuration.")
+          if (error instanceof Error) {
+            console.warn(`[ardo] Error: ${error.message}`)
           }
         }
+        typedocGenerated = true
       },
     }
 
     plugins.unshift(typedocPlugin)
   }
 
-  // Add TanStack Start plugin
-  const tanstackPlugin = tanstackStart({
-    prerender: {
-      enabled: prerender?.enabled ?? true,
-      crawlLinks: prerender?.crawlLinks ?? false,
-    },
+  // Add MDX plugin with Ardo's markdown pipeline
+  const themeConfig = pressConfig.markdown?.theme
+  const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
+
+  const mdxPlugin = mdx({
+    remarkPlugins: [
+      remarkFrontmatter,
+      [remarkMdxFrontmatter, { name: "frontmatter" }],
+      remarkGfm,
+      remarkDirective,
+    ],
+    rehypePlugins: [
+      [
+        rehypeShiki,
+        {
+          theme: hasThemeObject ? themeConfig.dark : themeConfig || "github-dark",
+          themes: hasThemeObject
+            ? {
+                light: themeConfig.light || "github-light",
+                dark: themeConfig.dark || "github-dark",
+              }
+            : undefined,
+        },
+      ],
+    ],
+    providerImportSource: "ardo/mdx-provider",
   })
-  const tanstackPlugins = (
-    Array.isArray(tanstackPlugin) ? tanstackPlugin : [tanstackPlugin]
+  plugins.push(mdxPlugin as Plugin)
+
+  // Add React Router Framework plugin
+  const reactRouterPlugin = reactRouter()
+  const reactRouterPlugins = (
+    Array.isArray(reactRouterPlugin) ? reactRouterPlugin : [reactRouterPlugin]
   ).filter((p): p is Plugin => p != null)
-  plugins.push(...tanstackPlugins)
+  plugins.push(...reactRouterPlugins)
 
   // Add React plugin
   const reactPlugin = react()
@@ -310,8 +296,8 @@ export default function MarkdownContent() {
   return plugins
 }
 
-async function generateSidebar(config: ResolvedConfig) {
-  const { contentDir, themeConfig } = config
+async function generateSidebar(config: ResolvedConfig, routesDir: string) {
+  const { themeConfig } = config
 
   if (themeConfig.sidebar && !Array.isArray(themeConfig.sidebar)) {
     return themeConfig.sidebar
@@ -322,7 +308,7 @@ async function generateSidebar(config: ResolvedConfig) {
   }
 
   try {
-    const sidebar = await scanDirectory(contentDir, contentDir, config.base)
+    const sidebar = await scanDirectory(routesDir, routesDir, config.base)
     return sidebar
   } catch {
     return []
@@ -344,15 +330,15 @@ async function scanDirectory(
     if (entry.isDirectory()) {
       const children = await scanDirectory(fullPath, rootDir, _basePath)
       if (children.length > 0) {
-        const indexPath = path.join(fullPath, "index.md")
+        // Check for index.mdx in the directory
+        const indexPath = path.join(fullPath, "index.mdx")
         let link: string | undefined
 
         try {
           await fs.access(indexPath)
-          // Don't include basePath - TanStack Router handles it automatically
           link = "/" + relativePath.replace(/\\/g, "/")
         } catch {
-          // No index.md
+          // No index.mdx
         }
 
         items.push({
@@ -361,11 +347,16 @@ async function scanDirectory(
           items: children,
         })
       }
-    } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
+    } else if (
+      (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) &&
+      entry.name !== "index.mdx" &&
+      entry.name !== "index.md"
+    ) {
       const fileContent = await fs.readFile(fullPath, "utf-8")
       const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
 
-      let title = formatTitle(entry.name.replace(/\.md$/, ""))
+      const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
+      let title = formatTitle(entry.name.replace(ext, ""))
       let order: number | undefined
 
       if (frontmatterMatch) {
@@ -381,8 +372,7 @@ async function scanDirectory(
         }
       }
 
-      // Don't include basePath - TanStack Router handles it automatically
-      const link = "/" + relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
+      const link = "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
 
       items.push({
         text: title,
@@ -416,8 +406,7 @@ interface SearchDoc {
   section?: string
 }
 
-async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]> {
-  const { contentDir } = config
+async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
   const docs: SearchDoc[] = []
 
   async function scanForSearch(dir: string, section?: string): Promise<void> {
@@ -433,13 +422,14 @@ async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]>
             ? `${section} > ${formatTitle(entry.name)}`
             : formatTitle(entry.name)
           await scanForSearch(fullPath, newSection)
-        } else if (entry.name.endsWith(".md")) {
-          const relativePath = path.relative(contentDir, fullPath)
+        } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
+          const relativePath = path.relative(routesDir, fullPath)
           const fileContent = await fs.readFile(fullPath, "utf-8")
 
           // Extract frontmatter
           const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
-          let title = formatTitle(entry.name.replace(/\.md$/, ""))
+          const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
+          let title = formatTitle(entry.name.replace(ext, ""))
           let content = fileContent
 
           if (frontmatterMatch) {
@@ -452,10 +442,12 @@ async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]>
             content = fileContent.slice(frontmatterMatch[0].length)
           }
 
-          // Clean up content: remove markdown syntax, keep text
+          // Clean up content: remove markdown/MDX syntax, keep text
           content = content
             .replace(/```[\s\S]*?```/g, "") // Remove code blocks
             .replace(/`[^`]+`/g, "") // Remove inline code
+            .replace(/import\s+.*?from\s+['"].*?['"]/g, "") // Remove imports
+            .replace(/<[^>]+>/g, "") // Remove JSX tags
             .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links to text
             .replace(/[#*_~>]/g, "") // Remove markdown symbols
             .replace(/\n+/g, " ") // Newlines to spaces
@@ -465,11 +457,11 @@ async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]>
 
           // Generate path for the route
           const routePath =
-            entry.name === "index.md"
+            entry.name === "index.mdx" || entry.name === "index.md"
               ? "/" + path.dirname(relativePath).replace(/\\/g, "/")
-              : "/" + relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
+              : "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
 
-          // Skip root index.md (use "/" as path)
+          // Skip root index (use "/" as path)
           const finalPath = routePath === "/." ? "/" : routePath
 
           docs.push({
@@ -486,7 +478,7 @@ async function generateSearchIndex(config: ResolvedConfig): Promise<SearchDoc[]>
     }
   }
 
-  await scanForSearch(contentDir)
+  await scanForSearch(routesDir)
   return docs
 }
 
