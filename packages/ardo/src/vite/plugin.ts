@@ -253,6 +253,19 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const themeConfig = pressConfig.markdown?.theme
   const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
 
+  // Build shiki options - only include themes when using dual theme mode
+  const shikiOptions = hasThemeObject
+    ? {
+        themes: {
+          light: themeConfig.light || "github-light",
+          dark: themeConfig.dark || "github-dark",
+        },
+        defaultColor: false as const,
+      }
+    : {
+        theme: (themeConfig as string) || "github-dark",
+      }
+
   const mdxPlugin = mdx({
     include: /\.(md|mdx)$/,
     remarkPlugins: [
@@ -261,20 +274,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       remarkGfm,
       remarkDirective,
     ],
-    rehypePlugins: [
-      [
-        rehypeShiki,
-        {
-          theme: hasThemeObject ? themeConfig.dark : themeConfig || "github-dark",
-          themes: hasThemeObject
-            ? {
-                light: themeConfig.light || "github-light",
-                dark: themeConfig.dark || "github-dark",
-              }
-            : undefined,
-        },
-      ],
-    ],
+    rehypePlugins: [[rehypeShiki, shikiOptions]],
     providerImportSource: "ardo/mdx-provider",
   })
   plugins.push(mdxPlugin as Plugin)
