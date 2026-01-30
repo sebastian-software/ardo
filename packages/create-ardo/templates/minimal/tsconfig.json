@@ -13,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "*.ts", "*.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["app/**/*", "*.ts", "*.config.ts"],
+  "exclude": ["node_modules", "build"]
 }

@@ -106,7 +106,7 @@ export function greet(name: string, config?: GreeterConfig): string {
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
     // 6. Write prebuild script — generates TypeDoc API docs before vite build
-    // Note: TypeDoc must run BEFORE vite build so TanStack Router can discover the routes
+    // Note: TypeDoc must run BEFORE vite build so React Router can discover the routes
     fs.writeFileSync(
       path.join(tmpDir, "prebuild.mjs"),
       `import { generateApiDocs } from 'ardo/typedoc'
@@ -116,7 +116,7 @@ await generateApiDocs({
   entryPoints: ['./src/index.ts'],
   tsconfig: './tsconfig.api.json',
   out: 'api-reference',
-}, './content')
+}, './app/routes')
 `
     )
 
@@ -154,7 +154,7 @@ await generateApiDocs({
     expect(buildSucceeded).toBe(true)
   })
 
-  it("produces dist/client directory", () => {
+  it("produces build/client directory", () => {
     expect(fs.existsSync(path.join(tmpDir, "dist", "client"))).toBe(true)
   })
 
@@ -173,8 +173,8 @@ await generateApiDocs({
     expect(content).toContain("<!DOCTYPE html>")
   })
 
-  it("generates TypeDoc API markdown in content directory", () => {
-    const apiContentDir = path.join(tmpDir, "content", "api-reference")
+  it("generates TypeDoc API markdown in app/routes directory", () => {
+    const apiContentDir = path.join(tmpDir, "app", "routes", "api-reference")
     expect(fs.existsSync(apiContentDir)).toBe(true)
     const mdFiles = collectFiles(apiContentDir, ".md")
     expect(mdFiles.length).toBeGreaterThan(0)

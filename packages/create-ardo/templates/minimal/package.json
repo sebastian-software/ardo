@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-router": "*",
-    "@tanstack/react-start": "*",
-    "ardo": "^1.1.1",
+    "ardo": "^1.2.0",
+    "isbot": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "react-router": "*"
   },
   "devDependencies": {
     "@types/react": "^19.2.10",
