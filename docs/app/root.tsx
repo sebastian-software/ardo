@@ -1,6 +1,6 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from "react-router"
 import {
-  Layout,
+  Layout as ArdoLayout,
   Header,
   Nav,
   NavLink,
@@ -16,12 +16,13 @@ import sidebar from "virtual:ardo/sidebar"
 import logo from "./assets/logo.svg"
 import "ardo/ui/styles.css"
 
-export function HtmlDocument({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/svg+xml" href={logo} />
         <Meta />
         <Links />
       </head>
@@ -40,7 +41,7 @@ export default function Root() {
 
   return (
     <PressProvider config={config} sidebar={sidebar}>
-      <Layout
+      <ArdoLayout
         className={isHomePage ? "ardo-layout ardo-home" : "ardo-layout"}
         header={
           <Header
@@ -97,7 +98,7 @@ export default function Root() {
         }
       >
         <Outlet />
-      </Layout>
+      </ArdoLayout>
     </PressProvider>
   )
 }

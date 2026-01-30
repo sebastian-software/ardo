@@ -9,6 +9,39 @@ import type {
   ThHTMLAttributes,
 } from "react"
 import { Content } from "../ui/Content"
+import { CopyButton } from "../ui/components/CopyButton"
+
+/**
+ * Extracts text content from React children (for copy button)
+ */
+function extractTextContent(children: ReactNode): string {
+  if (typeof children === "string") {
+    return children
+  }
+  if (Array.isArray(children)) {
+    return children.map(extractTextContent).join("")
+  }
+  if (children && typeof children === "object" && "props" in children) {
+    return extractTextContent((children as { props: { children?: ReactNode } }).props.children)
+  }
+  return ""
+}
+
+/**
+ * Code block wrapper with copy button
+ */
+function PreBlock({ children, ...props }: HTMLAttributes<HTMLPreElement>) {
+  const code = extractTextContent(children)
+
+  return (
+    <div className="ardo-code-block">
+      <div className="ardo-code-wrapper">
+        <pre {...props}>{children}</pre>
+        <CopyButton code={code} />
+      </div>
+    </div>
+  )
+}
 
 /**
  * Provides MDX components for rendering documentation content.
@@ -38,7 +71,7 @@ export function useMDXComponents(): MDXComponents {
     blockquote: (props: HTMLAttributes<HTMLQuoteElement>) => (
       <blockquote className="ardo-blockquote" {...props} />
     ),
-    pre: (props: HTMLAttributes<HTMLPreElement>) => <pre className="ardo-code-block" {...props} />,
+    pre: PreBlock,
     code: (props: HTMLAttributes<HTMLElement>) => <code className="ardo-code" {...props} />,
     table: (props: TableHTMLAttributes<HTMLTableElement>) => (
       <table className="ardo-table" {...props} />

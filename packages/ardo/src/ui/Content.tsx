@@ -48,7 +48,7 @@ export function Content({ children }: ContentProps) {
         </header>
       )}
 
-      <div className="ardo-content-body">{children}</div>
+      <div className="ardo-content-body ardo-content">{children}</div>
 
       <footer className="ardo-content-footer">
         {(showEditLink || showLastUpdated) && (

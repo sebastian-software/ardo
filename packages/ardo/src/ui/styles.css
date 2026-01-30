@@ -114,6 +114,12 @@ body {
   flex: 1;
   min-width: 0;
   padding: 32px;
+  margin-left: var(--ardo-sidebar-width);
+}
+
+/* No sidebar margin on home page */
+.ardo-home .ardo-main {
+  margin-left: 0;
 }
 
 /* Header */
@@ -521,6 +527,7 @@ body {
   margin: 16px 0;
   border-radius: var(--ardo-radius);
   overflow: hidden;
+  border: 1px solid var(--ardo-c-border);
 }
 
 /* Shiki syntax highlighting - dual theme support */

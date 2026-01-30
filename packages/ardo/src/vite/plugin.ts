@@ -255,6 +255,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
 
   const mdxPlugin = mdx({
+    include: /\.(md|mdx)$/,
     remarkPlugins: [
       remarkFrontmatter,
       [remarkMdxFrontmatter, { name: "frontmatter" }],

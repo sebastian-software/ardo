@@ -39,14 +39,22 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
           // Recursively scan subdirectories
           const children = scanRoutesSync(fullPath, rootDir)
           routes.push(...children)
-        } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".tsx")) {
+        } else if (
+          entry.name.endsWith(".mdx") ||
+          entry.name.endsWith(".md") ||
+          entry.name.endsWith(".tsx")
+        ) {
           // Skip special files
           if (entry.name === "root.tsx" || entry.name.startsWith("_")) {
             continue
           }
 
           const relativePath = path.relative(rootDir, fullPath)
-          const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".tsx"
+          const ext = entry.name.endsWith(".mdx")
+            ? ".mdx"
+            : entry.name.endsWith(".md")
+              ? ".md"
+              : ".tsx"
           const baseName = entry.name.replace(ext, "")
 
           // Calculate URL path
@@ -197,7 +205,9 @@ ${entries.join("\n")}
       const handleChange = async (changedPath: string) => {
         if (
           changedPath.startsWith(routesDir) &&
-          (changedPath.endsWith(".mdx") || changedPath.endsWith(".tsx"))
+          (changedPath.endsWith(".mdx") ||
+            changedPath.endsWith(".md") ||
+            changedPath.endsWith(".tsx"))
         ) {
           await writeRoutesFile()
         }
