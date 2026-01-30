@@ -1,6 +1,7 @@
 import {
   useState,
   type ReactNode,
+  type ComponentProps,
   Children,
   isValidElement,
   createContext,
@@ -8,6 +9,9 @@ import {
 } from "react"
 import { NavLink, useLocation } from "react-router"
 import type { SidebarItem as SidebarItemType } from "../config/types"
+
+/** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
+type RoutePath = ComponentProps<typeof NavLink>["to"]
 
 // =============================================================================
 // Sidebar Context
@@ -198,8 +202,8 @@ export function SidebarGroup({
 // =============================================================================
 
 export interface SidebarLinkProps {
-  /** Internal route path */
-  to: string
+  /** Internal route path (type-safe with React Router's registered routes) */
+  to: RoutePath
   /** Link text */
   children: ReactNode
   /** Additional CSS classes */

@@ -1,5 +1,8 @@
-import { type ReactNode, useState, createContext, useContext } from "react"
+import { type ReactNode, type ComponentProps, useState, createContext, useContext } from "react"
 import { NavLink as RouterNavLink } from "react-router"
+
+/** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
+type RoutePath = ComponentProps<typeof RouterNavLink>["to"]
 
 // Nav context for shared state
 interface NavContextValue {
@@ -43,8 +46,8 @@ export function Nav({ children, className }: NavProps) {
 // =============================================================================
 
 export interface NavLinkProps {
-  /** Internal route path (uses React Router Link) */
-  to?: string
+  /** Internal route path (type-safe with React Router's registered routes) */
+  to?: RoutePath
   /** External URL (uses anchor tag) */
   href?: string
   /** Link text or children */
