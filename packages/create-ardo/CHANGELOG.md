@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.2.3...create-ardo-v2.0.0) (2026-01-30)
+
+
+### Bug Fixes
+
+* add @react-router/dev dependency to template ([43f50f5](https://github.com/sebastian-software/ardo/commit/43f50f5062cb41185ffdf8c41b75814c002da5a7))
+* use react-router build for prerendering ([15f0027](https://github.com/sebastian-software/ardo/commit/15f0027c3784827f8f7b16f466b5912d543b087b))
+
+
+### Code Refactoring
+
+* convert homepage from frontmatter to React components ([c1dea6d](https://github.com/sebastian-software/ardo/commit/c1dea6d9bb8ec886139f8a2a693d330739e618b8))
+* migrate create-ardo template to React Router 7 ([772a9e3](https://github.com/sebastian-software/ardo/commit/772a9e3a73fa08aa9f11b04523b6fb0c80496f19))
+
 ## [1.2.3](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.2.2...create-ardo-v1.2.3) (2026-01-29)
 
 
