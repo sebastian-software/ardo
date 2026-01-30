@@ -1,10 +1,17 @@
+import { type ComponentProps } from "react"
 import { Link } from "react-router"
+
+/** Internal route path from React Router */
+type RoutePath = ComponentProps<typeof Link>["to"]
+
+/** External URL starting with http:// or https:// */
+type ExternalUrl = `http://${string}` | `https://${string}`
 
 export interface HeroAction {
   /** Button text */
   text: string
-  /** Link destination */
-  link: string
+  /** Link destination - internal route path or external URL */
+  link: RoutePath | ExternalUrl
   /** Visual theme: "brand" for primary, "alt" for secondary */
   theme?: "brand" | "alt"
 }
@@ -71,14 +78,17 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
           {actions && actions.length > 0 && (
             <div className="ardo-hero-actions">
               {actions.map((action, index) => {
-                const isExternal = action.link.startsWith("http")
+                const link = action.link
+                const isExternal =
+                  typeof link === "string" &&
+                  (link.startsWith("http://") || link.startsWith("https://"))
                 const className = `ardo-hero-action ardo-hero-action-${action.theme || "brand"}`
 
                 if (isExternal) {
                   return (
                     <a
                       key={index}
-                      href={action.link}
+                      href={link}
                       className={className}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -89,7 +99,7 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
                 }
 
                 return (
-                  <Link key={index} to={action.link} className={className}>
+                  <Link key={index} to={link} className={className}>
                     {action.text}
                   </Link>
                 )
