@@ -43,7 +43,7 @@ export function Nav({ children, className }: NavProps) {
 // =============================================================================
 
 export interface NavLinkProps {
-  /** Internal route path (uses TanStack Router Link) */
+  /** Internal route path (uses React Router Link) */
   to?: string
   /** External URL (uses anchor tag) */
   href?: string

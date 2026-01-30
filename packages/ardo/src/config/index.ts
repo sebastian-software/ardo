@@ -95,8 +95,8 @@ export async function loadConfig(root: string): Promise<ResolvedConfig> {
   } catch {
     return resolveConfig(
       {
-        title: "TanStack Press",
-        description: "Documentation powered by TanStack Press",
+        title: "Ardo",
+        description: "Documentation powered by Ardo",
       },
       root
     )

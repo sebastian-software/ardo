@@ -74,7 +74,7 @@ async function scanDirectoryForSidebar(
             order = frontmatter.order
           }
 
-          // Don't include basePath - TanStack Router handles it automatically
+          // Don't include basePath - React Router handles it automatically
           link = normalizePath(relativePath)
         } catch {
           // No index.md file
@@ -99,7 +99,7 @@ async function scanDirectoryForSidebar(
       const title = frontmatter.title || formatTitle(entry.name.replace(/\.md$/, ""))
       const order = typeof frontmatter.order === "number" ? frontmatter.order : undefined
 
-      // Don't include basePath - TanStack Router handles it automatically
+      // Don't include basePath - React Router handles it automatically
       const link = normalizePath(relativePath.replace(/\.md$/, ""))
 
       items.push({

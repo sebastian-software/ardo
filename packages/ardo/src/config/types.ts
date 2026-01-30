@@ -175,7 +175,7 @@ export interface PressConfig {
   outDir?: string
   /** Site language (default: 'en') */
   lang?: string
-  /** Additional head tags (deprecated: use TanStack head() instead) */
+  /** Additional head tags (deprecated: use React Router Meta instead) */
   head?: HeadConfig[]
   /**
    * Theme configuration for backwards compatibility.
