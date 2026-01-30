@@ -6,9 +6,9 @@ order: 8
 
 # Deployment
 
-Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `prerender: enabled`), so no server is needed at runtime.
+Ardo produces a fully static site out of the box. When you run `pnpm build`, React Router prerenders every page to static HTML (via `prerender: true` in your `react-router.config.ts`), so no server is needed at runtime.
 
-The build output is located in `dist/client/` and can be deployed to any static hosting provider.
+The build output is located in `build/client/` and can be deployed to any static hosting provider.
 
 ## GitHub Pages
 
@@ -81,7 +81,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: dist/client
+          path: build/client
 
   deploy:
     environment:
@@ -110,7 +110,7 @@ Projects scaffolded with `pnpm create ardo@latest` include this workflow out of 
 Netlify requires no workflow file. Connect your Git repository in the Netlify dashboard and configure:
 
 - **Build command:** `pnpm build`
-- **Publish directory:** `dist/client`
+- **Publish directory:** `build/client`
 
 Netlify automatically detects the Node.js version from your `package.json` engines field or an `.nvmrc` file.
 
@@ -121,11 +121,11 @@ For subdirectory deployments, set `base` in `vite.config.ts` as described above.
 Connect your Git repository in the Vercel dashboard and configure:
 
 - **Build command:** `pnpm build`
-- **Output directory:** `dist/client`
+- **Output directory:** `build/client`
 - **Framework preset:** Other
 
 Vercel handles routing and CDN configuration automatically.
 
 ## Other Providers
 
-Since Ardo outputs plain static files to `dist/client/`, it works with any static hosting provider (Cloudflare Pages, AWS S3 + CloudFront, Firebase Hosting, etc.). Use `pnpm build` as the build command and `dist/client` as the output directory.
+Since Ardo outputs plain static files to `build/client/`, it works with any static hosting provider (Cloudflare Pages, AWS S3 + CloudFront, Firebase Hosting, etc.). Use `pnpm build` as the build command and `build/client` as the output directory.

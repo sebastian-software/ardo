@@ -1,8 +1,8 @@
 # Ardo — React-first Static Documentation Framework
 
-> Build beautiful documentation sites with React 19, TanStack Start, and Vite 8.
+> Build beautiful documentation sites with React 19, React Router 7, and Vite.
 
-Ardo combines the developer experience of VitePress with the power of the React ecosystem. It uses TanStack Router for type-safe file-based routing, Vite 8 with Rolldown for fast builds, and supports Markdown/MDX with React components.
+Ardo combines the developer experience of VitePress with the power of the React ecosystem. It uses React Router 7 for file-based routing with pre-rendering, Vite for fast builds, and supports Markdown/MDX with React components.
 
 ---
 
@@ -24,7 +24,7 @@ Ardo combines the developer experience of VitePress with the power of the React 
 
 ## What is Ardo?
 
-Ardo is a **React-first Static Documentation Framework** built on [TanStack Start](https://tanstack.com/start) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
+Ardo is a **React-first Static Documentation Framework** built on [React Router 7](https://reactrouter.com/) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
 
 ### Why Ardo?
 
@@ -35,14 +35,14 @@ Ardo is a **React-first Static Documentation Framework** built on [TanStack Star
 - Full TypeScript support out of the box
 - Seamless integration with the React ecosystem
 
-**Powered by TanStack Start** — Ardo leverages TanStack Start for:
+**Powered by React Router 7** — Ardo leverages React Router 7 for:
 
 - File-based routing with automatic route generation
-- Server functions for efficient data loading
-- Static site generation with pre-rendered pages
-- Full-stack capabilities when needed
+- Static pre-rendering for fast page loads
+- Type-safe navigation
+- Modern React 19 patterns
 
-**Vite-Powered** — Built on Vite 8 with Rolldown for:
+**Vite-Powered** — Built on Vite for:
 
 - Instant dev server startup
 - Lightning-fast HMR
@@ -88,7 +88,7 @@ pnpm init
 #### 2. Install dependencies
 
 ```bash
-pnpm add ardo @tanstack/react-router @tanstack/react-start react react-dom
+pnpm add ardo react react-dom react-router isbot
 pnpm add -D typescript vite @types/react @types/react-dom
 ```
 
@@ -120,35 +120,43 @@ export default defineConfig({
 })
 ```
 
-#### 4. Create route boilerplate
+#### 4. Create React Router configuration
 
-Create the TanStack Router files in `src/`:
+Create a `react-router.config.ts` file:
 
-- `src/routes/__root.tsx` — HTML shell with HeadContent and Scripts
-- `src/routes/index.tsx` — Home page route with HomePage component
-- `src/routes/(docs)/_layout.tsx` — Documentation layout with DocLayout
-- `src/router.tsx` — Router configuration with routeTree
-- `src/vite-env.d.ts` — TypeScript declarations for virtual modules
+```ts
+import type { Config } from "@react-router/dev/config"
+
+export default {
+  ssr: false,
+  prerender: true,
+} satisfies Config
+```
+
+#### 5. Create app files
+
+Create the following files in `app/`:
+
+- `app/root.tsx` — Root layout with Header, Sidebar, Footer
+- `app/entry.client.tsx` — Client hydration entry
+- `app/entry.server.tsx` — Server rendering entry using renderToReadableStream
 
 :::tip
 Use `pnpm create ardo@latest` to scaffold all these files automatically!
 :::
 
-#### 5. Create your first document
+#### 6. Create your first document
 
-Create a `content` directory and add an `index.md` file:
+Create `app/routes/guide/getting-started.mdx`:
 
 ```markdown
 ---
-title: Welcome
-hero:
-  name: My Docs
-  text: Documentation Made Simple
-  actions:
-    - text: Get Started
-      link: /guide/getting-started
-      theme: brand
+title: Getting Started
 ---
+
+# Getting Started
+
+Welcome to your documentation site!
 ```
 
 ### Development
@@ -159,7 +167,7 @@ Start the development server:
 pnpm dev
 ```
 
-Your documentation site will be available at `http://localhost:3000`.
+Your documentation site will be available at `http://localhost:5173`.
 
 ### Production Build
 
@@ -167,11 +175,7 @@ Your documentation site will be available at `http://localhost:3000`.
 pnpm build
 ```
 
-Preview the production build:
-
-```bash
-pnpm preview
-```
+The output will be in `build/client/` ready for static hosting.
 
 ### Project Structure
 
@@ -179,25 +183,17 @@ A typical Ardo project looks like this:
 
 ```
 my-docs/
-├── content/                     # Your markdown files
-│   ├── index.md                 # Home page
-│   └── guide/
-│       └── getting-started.md
-├── src/
-│   ├── routes/
-│   │   ├── __root.tsx           # HTML shell
-│   │   ├── index.tsx            # Home page route
-│   │   └── (docs)/
-│   │       ├── _layout.tsx      # Documentation layout
-│   │       └── *.tsx            # Auto-generated from content/
-│   ├── router.tsx               # Router configuration
-│   ├── routeTree.gen.ts         # Auto-generated route tree
-│   └── vite-env.d.ts            # TypeScript declarations
-├── vite.config.ts               # Vite + Ardo configuration
+├── app/
+│   ├── routes/               # MDX/MD content files
+│   │   ├── guide/*.mdx       # Documentation pages
+│   │   └── home.tsx          # Home page
+│   ├── root.tsx              # Root layout
+│   ├── entry.client.tsx      # Client entry
+│   └── entry.server.tsx      # Server entry
+├── vite.config.ts            # Vite + Ardo configuration
+├── react-router.config.ts    # React Router configuration
 └── package.json
 ```
-
-Files in `src/routes/(docs)/` (except `_layout.tsx`) are auto-generated from your markdown content.
 
 ---
 
@@ -230,12 +226,6 @@ _italic_ or *italic*
 
 Tables, task lists, and autolinks are supported out of the box.
 
-| Feature    | Supported |
-| ---------- | --------- |
-| Tables     | Yes       |
-| Task Lists | Yes       |
-| Autolinks  | Yes       |
-
 ### Syntax Highlighting
 
 Code blocks are automatically highlighted using [Shiki](https://shiki.style/). Specify the language after the opening backticks.
@@ -247,314 +237,89 @@ function example() {
   const highlighted = true
   const normal = false
   const alsoHighlighted = true
-  const highlighted = true
 }
 ```
 
-**Line numbers** — Use `showLineNumbers`:
+**Line numbers** — Use `showLineNumbers`
 
-```typescript showLineNumbers
-const first = 1
-const second = 2
-```
-
-**Code block title** — Use `title="filename"`:
-
-```typescript title="utils/greeting.ts"
-export function greet(name: string) {
-  return `Hello, ${name}!`
-}
-```
+**Code block title** — Use `title="filename"`
 
 ### Container Directives
 
-Highlight important information with container directives:
+Highlight important information:
 
 ```markdown
 :::tip
-This is a helpful tip for readers.
+This is a helpful tip.
 :::
 
 :::warning
-Be careful when using this feature.
+Be careful!
 :::
 
 :::danger
 This action cannot be undone!
 :::
-
-:::info
-Here's some additional information.
-:::
-
-:::note
-This is a note for reference.
-:::
-
-:::tip Pro Tip
-Container with a custom title.
-:::
 ```
 
 ### Code Groups
 
-Display multiple code variants in tabs:
-
-```markdown
-::: code-group
-
-\`\`\`js [JavaScript]
-function greet(name) {
-  return `Hello, ${name}!`
-}
-\`\`\`
-
-\`\`\`ts [TypeScript]
-function greet(name: string): string {
-  return `Hello, ${name}!`
-}
-\`\`\`
-
-:::
-```
+Display multiple code variants in tabs using `::: code-group`.
 
 ### Custom Components in Markdown
 
-Use React components directly in your markdown files:
-
-```markdown
-import { MyComponent } from './components/MyComponent'
-
-# My Page
-
-<MyComponent prop="value" />
-```
+Use React components directly in your markdown files by importing them.
 
 ---
 
 ## Frontmatter
 
-Frontmatter is YAML metadata at the top of your markdown files that controls page-specific settings.
-
-### Basic Usage
-
-```yaml
----
-title: My Page Title
-description: A description for SEO
----
-```
+Frontmatter is YAML metadata at the top of your markdown files.
 
 ### Available Options
 
-#### title
-
-- Type: `string`
-
-The title of the page. Used in the browser tab and as the `<h1>` if not provided in content.
-
-#### description
-
-- Type: `string`
-
-The description of the page. Used for SEO meta tags.
-
-#### layout
-
-- Type: `'doc' | 'home' | 'page'`
-- Default: `'doc'`
-
-The layout to use for the page:
-
-- `doc` — Documentation layout with sidebar and TOC
-- `home` — Home page layout with hero and features
-- `page` — Simple page without sidebar
-
-#### sidebar
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to show the sidebar on this page.
-
-#### outline
-
-- Type: `boolean | number | [number, number]`
-- Default: `true`
-
-Configure the table of contents. Example: `[2, 3]` shows h2 and h3 headings.
-
-#### editLink
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to show the "Edit this page" link.
-
-#### lastUpdated
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to show the last updated time.
-
-#### prev / next
-
-- Type: `string | { text: string; link: string } | false`
-
-Override the previous/next page links.
-
-```yaml
----
-prev: /guide/introduction
-next:
-  text: Advanced Topics
-  link: /guide/advanced
----
-```
+- `title` — Page title
+- `description` — Page description for SEO
+- `layout` — `'doc' | 'home' | 'page'`
+- `sidebar` — Whether to show sidebar
+- `outline` — TOC configuration
+- `editLink` — Show edit link
+- `lastUpdated` — Show last updated time
+- `prev / next` — Override navigation links
 
 ### Home Page Options
 
-#### hero
-
-Configure the hero section on home pages:
-
-```yaml
----
-layout: home
-hero:
-  name: Ardo
-  text: React-first Documentation
-  tagline: Build beautiful documentation sites
-  image: /logo.png
-  actions:
-    - text: Get Started
-      link: /guide/getting-started
-      theme: brand
-    - text: GitHub
-      link: https://github.com
-      theme: alt
----
-```
-
-#### features
-
-Add feature cards to home pages:
-
-```yaml
----
-layout: home
-features:
-  - title: Fast
-    icon: '⚡'
-    details: Lightning fast builds with Vite
-    link: /guide/performance
-    linkText: Learn more
-  - title: Simple
-    icon: '✨'
-    details: Easy to set up and use
----
-```
+- `hero` — Hero section with name, text, tagline, image, actions
+- `features` — Feature cards with title, icon, details, link
 
 ---
 
 ## Theme Configuration
 
-Ardo comes with a default theme that can be fully customized through the `themeConfig` option passed to the `ardo()` plugin in `vite.config.ts`.
-
-### Site Title & Logo
-
-```ts
-export default defineConfig({
-  themeConfig: {
-    logo: '/logo.svg',
-    // or with dark mode variant
-    logo: {
-      light: '/logo-light.svg',
-      dark: '/logo-dark.svg',
-    },
-    siteTitle: 'My Docs',
-    // set to false to hide title
-    siteTitle: false,
-  },
-})
-```
+Configure the theme via `themeConfig` in your `vite.config.ts`:
 
 ### Navigation
 
-Configure the top navigation bar:
-
 ```ts
-export default defineConfig({
-  themeConfig: {
-    nav: [
-      { text: 'Guide', link: '/guide/introduction' },
-      { text: 'API', link: '/api-reference' },
-      {
-        text: 'Dropdown',
-        items: [
-          { text: 'Option A', link: '/option-a' },
-          { text: 'Option B', link: '/option-b' },
-        ],
-      },
-    ],
-  },
-})
+themeConfig: {
+  nav: [
+    { text: 'Guide', link: '/guide/introduction' },
+    { text: 'API', link: '/api-reference' },
+  ],
+}
 ```
 
 ### Sidebar
 
-#### Simple Array
-
 ```ts
-export default defineConfig({
-  themeConfig: {
-    sidebar: [
-      {
-        text: 'Guide',
-        items: [
-          { text: 'Introduction', link: '/guide/introduction' },
-          { text: 'Getting Started', link: '/guide/getting-started' },
-        ],
-      },
-    ],
-  },
-})
-```
-
-#### Multi-Sidebar
-
-Different sidebars for different sections:
-
-```ts
-export default defineConfig({
-  themeConfig: {
-    sidebar: {
-      '/guide/': [
-        {
-          text: 'Guide',
-          items: [{ text: 'Introduction', link: '/guide/introduction' }],
-        },
-      ],
-      '/api/': [
-        {
-          text: 'API Reference',
-          items: [{ text: 'Config', link: '/api-reference' }],
-        },
+themeConfig: {
+  sidebar: [
+    {
+      text: 'Guide',
+      items: [
+        { text: 'Introduction', link: '/guide/introduction' },
       ],
     },
-  },
-})
-```
-
-#### Collapsible Groups
-
-```ts
-{
-  text: 'Advanced',
-  collapsed: true,
-  items: [
-    { text: 'Plugins', link: '/guide/plugins' },
   ],
 }
 ```
@@ -562,15 +327,11 @@ export default defineConfig({
 ### Social Links
 
 ```ts
-export default defineConfig({
-  themeConfig: {
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/...' },
-      { icon: 'twitter', link: 'https://twitter.com/...' },
-      { icon: 'discord', link: 'https://discord.gg/...' },
-    ],
-  },
-})
+themeConfig: {
+  socialLinks: [
+    { icon: 'github', link: 'https://github.com/...' },
+  ],
+}
 ```
 
 Supported icons: `github`, `twitter`, `discord`, `linkedin`, `youtube`, `npm`
@@ -578,87 +339,45 @@ Supported icons: `github`, `twitter`, `discord`, `linkedin`, `youtube`, `npm`
 ### Footer
 
 ```ts
-export default defineConfig({
-  themeConfig: {
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Your Name',
-    },
+themeConfig: {
+  footer: {
+    message: 'Released under the MIT License.',
+    copyright: 'Copyright © 2024 Your Name',
   },
-})
+}
 ```
 
 ### Search
 
 ```ts
-export default defineConfig({
-  themeConfig: {
-    search: {
-      enabled: true,
-      placeholder: 'Search docs...',
-    },
+themeConfig: {
+  search: {
+    enabled: true,
+    placeholder: 'Search docs...',
   },
-})
+}
 ```
 
 ### Edit Link
 
 ```ts
-export default defineConfig({
-  themeConfig: {
-    editLink: {
-      pattern: 'https://github.com/user/repo/edit/main/docs/:path',
-      text: 'Edit this page on GitHub',
-    },
+themeConfig: {
+  editLink: {
+    pattern: 'https://github.com/user/repo/edit/main/docs/:path',
+    text: 'Edit this page on GitHub',
   },
-})
-```
-
-### Last Updated
-
-```ts
-export default defineConfig({
-  themeConfig: {
-    lastUpdated: {
-      enabled: true,
-      text: 'Last updated',
-      formatOptions: {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      },
-    },
-  },
-})
-```
-
-### Outline (TOC)
-
-```ts
-export default defineConfig({
-  themeConfig: {
-    outline: {
-      level: [2, 3], // Show h2 and h3
-      label: 'On this page',
-    },
-  },
-})
+}
 ```
 
 ---
 
 ## Custom Theme
 
-Ardo allows you to fully customize the look and feel of your documentation site.
-
 ### CSS Variables
 
-The easiest way to customize the theme is by overriding CSS variables.
-
-Create a custom CSS file:
+Override CSS variables to customize colors:
 
 ```css
-/* styles/custom.css */
 :root {
   --ardo-c-brand: #8b5cf6;
   --ardo-c-brand-light: #a78bfa;
@@ -666,513 +385,81 @@ Create a custom CSS file:
 }
 ```
 
-Import it in your app:
+### Runtime Hooks
 
-```ts
-import './styles/custom.css'
-import 'ardo/ui/styles.css'
-```
-
-#### Available CSS Variables
-
-```css
-:root {
-  /* Brand colors */
-  --ardo-c-brand: #3b82f6;
-  --ardo-c-brand-light: #60a5fa;
-  --ardo-c-brand-dark: #2563eb;
-
-  /* Background colors */
-  --ardo-c-bg: #ffffff;
-  --ardo-c-bg-soft: #f8fafc;
-  --ardo-c-bg-mute: #f1f5f9;
-
-  /* Text colors */
-  --ardo-c-text: #1e293b;
-  --ardo-c-text-light: #475569;
-  --ardo-c-text-lighter: #64748b;
-
-  /* Layout */
-  --ardo-sidebar-width: 280px;
-  --ardo-toc-width: 240px;
-  --ardo-content-max-width: 800px;
-  --ardo-header-height: 64px;
-
-  /* Typography */
-  --ardo-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', ...;
-  --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
-
-  /* Border radius */
-  --ardo-radius: 8px;
-  --ardo-radius-sm: 4px;
-}
-```
+- `useConfig()` — Returns full site configuration
+- `useThemeConfig()` — Returns theme-specific configuration
+- `useSidebar()` — Returns resolved sidebar items
+- `usePageData()` — Returns current page metadata
+- `useTOC()` — Returns table of contents items
 
 ### Component Overrides
 
-Override individual theme components by creating your own:
-
-```tsx
-// components/MyHeader.tsx
-import { useConfig, useThemeConfig } from 'ardo/runtime'
-
-export function MyHeader() {
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
-
-  return (
-    <header className="my-custom-header">
-      <h1>{config.title}</h1>
-      {/* Your custom header content */}
-    </header>
-  )
-}
-```
-
-Then use it in your layout:
-
-```tsx
-// routes/__root.tsx
-import { MyHeader } from '../components/MyHeader'
-import { Sidebar, Footer } from 'ardo/ui'
-
-export function Layout({ children }) {
-  return (
-    <div>
-      <MyHeader />
-      <Sidebar />
-      <main>{children}</main>
-      <Footer />
-    </div>
-  )
-}
-```
-
-### Runtime Hooks
-
-Ardo provides several hooks for accessing configuration and page data:
-
-#### useConfig
-
-Returns the full site configuration (`PressConfig`).
-
-```tsx
-import { useConfig } from 'ardo/runtime'
-
-function MyComponent() {
-  const config = useConfig()
-  return <h1>{config.title}</h1>
-}
-```
-
-#### useThemeConfig
-
-Returns the theme-specific configuration (`ThemeConfig`).
-
-```tsx
-import { useThemeConfig } from 'ardo/runtime'
-
-function MyNav() {
-  const themeConfig = useThemeConfig()
-  return (
-    <nav>
-      {themeConfig.nav?.map((item) => (
-        <a href={item.link}>{item.text}</a>
-      ))}
-    </nav>
-  )
-}
-```
-
-#### useSidebar
-
-Returns the resolved sidebar items for the current route.
-
-```tsx
-import { useSidebar } from 'ardo/runtime'
-
-function MySidebar() {
-  const sidebar = useSidebar()
-  // Render sidebar items
-}
-```
-
-#### usePageData
-
-Returns the current page's metadata (title, description, frontmatter, etc.).
-
-```tsx
-import { usePageData } from 'ardo/runtime'
-
-function MyContent() {
-  const pageData = usePageData()
-  return (
-    <article>
-      <h1>{pageData?.title}</h1>
-      {/* content */}
-    </article>
-  )
-}
-```
-
-#### useTOC
-
-Returns the table of contents items (headings) for the current page.
-
-```tsx
-import { useTOC } from 'ardo/runtime'
-
-function MyTOC() {
-  const toc = useTOC()
-  return (
-    <nav>
-      {toc.map((item) => (
-        <a href={`#${item.id}`}>{item.text}</a>
-      ))}
-    </nav>
-  )
-}
-```
-
-### Full Custom Theme
-
-For complete control, create your own theme from scratch:
-
-```tsx
-// theme/index.tsx
-export { MyLayout as Layout } from './Layout'
-export { MyHeader as Header } from './Header'
-export { MySidebar as Sidebar } from './Sidebar'
-export { MyTOC as TOC } from './TOC'
-export { MyContent as Content } from './Content'
-export { MyFooter as Footer } from './Footer'
-```
-
-Then use your custom theme components throughout your app.
+Create custom components and use them in your layout instead of the defaults.
 
 ---
 
 ## TypeDoc Integration
 
-Ardo includes built-in TypeDoc integration that allows you to automatically generate API documentation from your TypeScript source code.
+Ardo includes built-in TypeDoc integration for auto-generating API documentation.
 
-### Quick Start
-
-#### 1. Configure TypeDoc
-
-Add the `typedoc` configuration to your `vite.config.ts`:
+### Configuration
 
 ```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
-
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: 'My Library',
-
-      typedoc: {
-        enabled: true,
-        entryPoints: ['../src/index.ts'],
-        tsconfig: '../tsconfig.json',
-        out: 'api',
-      },
-    }),
-  ],
-})
-```
-
-The TypeDoc plugin is automatically included when `typedoc` config is provided.
-
-#### 3. Run the Build
-
-The API documentation will be automatically generated:
-
-```bash
-pnpm build
-```
-
-### Configuration Options
-
-#### entryPoints
-
-- Type: `string[]`
-- Required: Yes
-
-The entry points for TypeDoc to process:
-
-```ts
-typedoc: {
-  entryPoints: ['./src/index.ts', './src/utils/index.ts'],
-}
-```
-
-#### tsconfig
-
-- Type: `string`
-
-Path to your `tsconfig.json` file.
-
-#### out
-
-- Type: `string`
-- Default: `'api'`
-
-Output directory for generated markdown files (relative to content directory).
-
-#### Filtering Options
-
-```ts
-typedoc: {
-  excludeExternals: true,    // Exclude external modules
-  excludePrivate: true,      // Exclude private members
-  excludeProtected: false,   // Include protected members
-  excludeInternal: true,     // Exclude @internal members
-  exclude: ['**/*.test.ts'], // Exclude patterns
-}
-```
-
-#### Sorting
-
-```ts
-typedoc: {
-  sort: ['source-order'],
-  // Or: ['alphabetical', 'required-first', 'visibility']
-}
-```
-
-#### Sidebar Configuration
-
-```ts
-typedoc: {
-  sidebar: {
-    title: 'API Reference',
-    position: 100,
-    collapsed: false,
-  },
-}
-```
-
-#### Markdown Options
-
-```ts
-typedoc: {
-  markdown: {
-    breadcrumbs: true,
-    hierarchy: true,
-    sourceLinks: true,
-    sourceBaseUrl: 'https://github.com/user/repo/blob/main',
-    codeBlocks: true,
-  },
-}
-```
-
-#### Watch Mode
-
-```ts
-typedoc: {
-  watch: true,
-}
-```
-
-### Generated Output
-
-TypeDoc generates markdown files including:
-
-- Module/Namespace pages — Overview of exports
-- Class pages — Properties, methods, constructors
-- Interface pages — Properties with types
-- Type alias pages — Type definitions
-- Function pages — Signatures, parameters, return types
-- Enum pages — Member values
-
-### Programmatic Usage
-
-```ts
-import { generateApiDocs } from 'ardo/typedoc'
-
-const docs = await generateApiDocs(
-  {
-    enabled: true,
-    entryPoints: ['./src/index.ts'],
-    tsconfig: './tsconfig.json',
-  },
-  './docs/content'
-)
-
-console.log(`Generated ${docs.length} documentation pages`)
-```
-
-### Full Example
-
-```ts
-import { defineConfig } from 'ardo/config'
-
-export default defineConfig({
-  title: 'My Library Docs',
-  description: 'Documentation for my awesome library',
-
+ardo({
   typedoc: {
     enabled: true,
-    entryPoints: ['../packages/my-lib/src/index.ts'],
-    tsconfig: '../packages/my-lib/tsconfig.json',
+    entryPoints: ['../src/index.ts'],
+    tsconfig: '../tsconfig.json',
     out: 'api',
-
-    excludePrivate: true,
-    excludeInternal: true,
-    sort: ['source-order'],
-
-    sidebar: {
-      title: 'API Reference',
-      position: 50,
-    },
-
-    markdown: {
-      breadcrumbs: true,
-      hierarchy: true,
-      sourceLinks: true,
-      sourceBaseUrl: 'https://github.com/my-org/my-lib/blob/main/packages/my-lib',
-    },
-  },
-
-  themeConfig: {
-    sidebar: [
-      {
-        text: 'Guide',
-        items: [{ text: 'Introduction', link: '/guide/intro' }],
-      },
-      {
-        text: 'API Reference',
-        link: '/api',
-      },
-    ],
   },
 })
 ```
+
+### Options
+
+- `entryPoints` — TypeScript entry files
+- `tsconfig` — Path to tsconfig.json
+- `out` — Output directory
+- `excludePrivate` — Exclude private members
+- `excludeInternal` — Exclude @internal members
+- `markdown.sourceLinks` — Include source links
+- `markdown.sourceBaseUrl` — Base URL for source links
 
 ---
 
 ## Deployment
 
-Ardo produces a fully static site out of the box. When you run `pnpm build`, TanStack Start prerenders every page to static HTML (via `prerender: enabled`), so no server is needed at runtime. The build output is in `dist/client/`.
+Ardo produces a fully static site. When you run `pnpm build`, React Router prerenders every page to static HTML. The build output is in `build/client/`.
 
 ### GitHub Pages
 
-1. Set `base` in `vite.config.ts` if deploying to a subdirectory:
-
-```ts
-export default defineConfig({
-  base: '/my-docs/',
-  plugins: [ardo({ /* ... */ })],
-})
-```
-
-2. Create `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to GitHub Pages
-on:
-  push:
-    branches: [main]
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-      - uses: actions/configure-pages@v5
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: dist/client
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-3. Enable GitHub Pages in repository settings with source set to "GitHub Actions".
-
-Projects scaffolded with `pnpm create ardo@latest` include this workflow out of the box.
+1. Set `base` in `vite.config.ts` if deploying to a subdirectory
+2. Create `.github/workflows/deploy.yml` with build and deploy steps
+3. Enable GitHub Pages with source set to "GitHub Actions"
 
 ### Netlify / Vercel
 
-No workflow file needed. Connect your repository and configure:
-
 - **Build command:** `pnpm build`
-- **Output directory:** `dist/client`
+- **Output directory:** `build/client`
 
 ---
 
 ## Framework Comparison
 
-### Overview
-
-|                  | Ardo               | VitePress     | Docusaurus   | Starlight     |
-| ---------------- | ------------------- | ------------- | ------------ | ------------- |
-| **UI Framework** | React 19            | Vue 3         | React 18     | Astro         |
-| **Build Tool**   | Vite + Rolldown     | Vite + Rollup | Webpack      | Vite + Rollup |
-| **Router**       | TanStack Router     | Vue Router    | React Router | Astro Router  |
-| **Rendering**    | SSR + Hydration     | SSG + SPA     | SSG + SPA    | Islands       |
+|                  | Ardo            | VitePress     | Docusaurus   | Starlight     |
+| ---------------- | --------------- | ------------- | ------------ | ------------- |
+| **UI Framework** | React 19        | Vue 3         | React 18     | Astro         |
+| **Build Tool**   | Vite            | Vite + Rollup | Webpack      | Vite + Rollup |
+| **Router**       | React Router 7  | Vue Router    | React Router | Astro Router  |
+| **Rendering**    | SSG + Hydration | SSG + SPA     | SSG + SPA    | Islands       |
 
 ### Key Differentiators
 
 - **React ecosystem** — Use any React component, hook, or library
-- **TanStack Router** — Type-safe routing with full TypeScript inference
-- **Vite 8 + Rolldown** — Next-generation build tooling
-- **TypeDoc built-in** — Auto-generate API docs from TypeScript source (not available in VitePress or Starlight)
-- **JSX-first architecture** — Theme components accept explicit props for full composition control
-
-### Configuration Comparison
-
-**Ardo** uses `vite.config.ts` with inline config:
-```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
-
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: 'My Docs',
-      description: 'Documentation',
-    }),
-  ],
-})
-```
-
-**VitePress** uses `.vitepress/config.ts`:
-```ts
-import { defineConfig } from 'vitepress'
-export default defineConfig({
-  title: 'My Docs',
-  description: 'Documentation',
-})
-```
-
-**Docusaurus** uses `docusaurus.config.js`:
-```js
-module.exports = {
-  title: 'My Docs',
-  tagline: 'Documentation',
-  url: 'https://example.com',
-  baseUrl: '/',
-}
-```
+- **React Router 7** — Modern routing with type-safe navigation
+- **TypeDoc built-in** — Auto-generate API docs from TypeScript source
+- **JSX-first architecture** — Theme components accept explicit props
 
 ---
 
@@ -1180,109 +467,58 @@ module.exports = {
 
 ### Installation Issues
 
-**`Cannot find module 'ardo'`** — Install all required dependencies:
+**`Cannot find module 'ardo'`** — Install dependencies:
 
 ```bash
-pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
+pnpm add ardo react react-dom react-router isbot
 ```
 
-**Node.js Version Error** — Ardo requires Node.js 22 or higher.
+**Node.js Version Error** — Ardo requires Node.js 22+.
 
 ### Build Issues
 
-**`Failed to resolve import`** — Ensure your `vite.config.ts` has the Ardo plugin:
+**`Failed to resolve import`** — Ensure `vite.config.ts` has the Ardo plugin configured.
 
-```ts
-import { defineConfig } from 'vite'
-import { ardo } from 'ardo/vite'
-
-export default defineConfig({
-  plugins: [ardo({ title: 'My Docs' })],
-})
-```
-
-**TypeScript Errors in Routes** — Try:
-
-1. Run `pnpm build` to regenerate route types
-2. Restart your TypeScript server
-3. Check that `tsconfig.json` includes the `src` directory
-
-**Build Fails with Memory Error** — Increase Node.js memory:
-
-```bash
-NODE_OPTIONS=--max-old-space-size=4096 pnpm build
-```
+**TypeScript Errors** — Run `pnpm build` to regenerate types, restart TS server.
 
 ### Development Issues
 
-**Hot Reload Not Working** — Check that you're editing files in the `content/` directory and the Vite dev server is running.
+**Hot Reload Not Working** — Check that you're editing files in `app/routes/`.
 
-**Styles Not Applied** — Make sure you're importing `ardo/ui/styles.css`.
-
-**Search Not Working** — Run `pnpm build` once to generate the search index, then restart the dev server.
-
-### Content Issues
-
-**Markdown Not Rendering** — Check that your file has a `.md` or `.mdx` extension, is in the `content/` directory, and has valid frontmatter.
-
-**Code Blocks Not Highlighted** — Specify the language after the opening backticks.
-
-**Images Not Loading** — Use relative paths from your markdown file or absolute paths from the public directory.
+**Search Not Working** — Run `pnpm build` once to generate the search index.
 
 ### Deployment Issues
 
-**404 on Page Refresh** — Configure your hosting for SPA routing, or use Ardo's static prerendering.
-
-**Base Path Issues** — Set the `base` option in `vite.config.ts`:
-
-```ts
-export default defineConfig({
-  base: '/my-docs/',
-  plugins: [ardo({ title: 'My Docs' })],
-})
-```
-
-### Getting Help
-
-1. Check [GitHub Issues](https://github.com/sebastian-software/ardo/issues)
-2. Open a [GitHub Discussion](https://github.com/sebastian-software/ardo/discussions)
-3. Create a new issue with a minimal reproduction
+**Base Path Issues** — Set the `base` option in `vite.config.ts`.
 
 ---
 
 ## Package Exports Reference
 
-| Export                  | Description                                    |
-| ----------------------- | ---------------------------------------------- |
-| `ardo`                  | Main entry — all config types, components, hooks, and utilities |
-| `ardo/config`           | Configuration utilities: `defineConfig`, `resolveConfig`, `loadConfig` |
-| `ardo/vite`             | Vite plugin: `ardo()` function that returns all required plugins |
-| `ardo/runtime`          | React hooks: `useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`, `PressProvider` |
-| `ardo/ui`            | UI components: `Layout`, `Header`, `Sidebar`, `TOC`, `Footer`, `DocPage`, `CodeBlock`, `Tabs`, `Search`, and more |
-| `ardo/ui/styles.css` | Default theme stylesheet                       |
-| `ardo/typedoc`          | TypeDoc utilities: `typedocPlugin`, `generateApiDocs` |
+| Export               | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| `ardo/vite`          | Vite plugin with React Router, MDX, and all config       |
+| `ardo/runtime`       | React hooks: useConfig, useThemeConfig, useSidebar, etc. |
+| `ardo/ui`            | UI components: Layout, Header, Sidebar, TOC, Footer      |
+| `ardo/ui/styles.css` | Default theme stylesheet                                 |
+| `ardo/typedoc`       | TypeDoc utilities: generateApiDocs                       |
 
 ### Key Types
 
 - `PressConfig` — Main site configuration
-- `ThemeConfig` — Theme-specific settings (nav, sidebar, footer, search, etc.)
-- `MarkdownConfig` — Markdown processing options
-- `TypeDocConfig` — TypeDoc generation settings
+- `ThemeConfig` — Theme settings (nav, sidebar, footer, search)
 - `SidebarItem` — Sidebar navigation item
 - `NavItem` — Top navigation item
-- `PageFrontmatter` — Frontmatter fields for markdown pages
-- `PageData` — Resolved page data at runtime
+- `PageFrontmatter` — Frontmatter fields
+- `PageData` — Runtime page data
 - `TOCItem` — Table of contents entry
-- `HeadConfig` — Custom `<head>` tag configuration
 
 ### Key Components
 
 - `Layout` — Main page layout wrapper
-- `Header` — Top navigation bar with logo, nav items, and search
-- `Sidebar` — Left sidebar with navigation tree
-- `TOC` — Right sidebar with table of contents
-- `Footer` — Page footer with links and copyright
-- `DocPage` — Complete documentation page (combines sidebar, content, TOC)
-- `CodeBlock` — Syntax-highlighted code block
-- `Tabs` — Tabbed content container
+- `Header` — Top navigation bar
+- `Sidebar` — Left sidebar navigation
+- `TOC` — Right sidebar table of contents
+- `Footer` — Page footer
+- `CodeBlock` — Syntax-highlighted code
 - `Search` — Full-text search dialog

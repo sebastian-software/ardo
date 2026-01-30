@@ -1,6 +1,6 @@
 # Ardo
 
-> React-first Static Documentation Framework built on React 19, TanStack Start, and Vite 8.
+> React-first Static Documentation Framework built on React 19, React Router 7, and Vite.
 
 Ardo combines the developer experience of VitePress with the power of the React ecosystem. Write documentation in Markdown, use React components, and deploy as a static site.
 
@@ -21,12 +21,11 @@ Ardo combines the developer experience of VitePress with the power of the React 
 
 ## Package Exports
 
-- `ardo/config` — Configuration utilities (`defineConfig`, `resolveConfig`, `loadConfig`)
-- `ardo/vite` — Vite plugin (`ardo()` function that returns all required plugins)
+- `ardo/vite` — Vite plugin (`ardo()` function that returns all required plugins including React Router)
 - `ardo/runtime` — React hooks (`useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`)
 - `ardo/ui` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, HomePage, CodeBlock, Hero, Features, etc.)
 - `ardo/ui/styles.css` — Default theme stylesheet
-- `ardo/typedoc` — TypeDoc generation utilities (`typedocPlugin`, `generateApiDocs`)
+- `ardo/typedoc` — TypeDoc generation utilities (`generateApiDocs`)
 
 ## Quick Start
 
@@ -35,7 +34,7 @@ Ardo combines the developer experience of VitePress with the power of the React 
 pnpm create ardo@latest my-docs
 
 # Or install manually
-pnpm add ardo @tanstack/react-router @tanstack/react-start react react-dom
+pnpm add ardo react react-dom react-router isbot
 pnpm add -D typescript vite @types/react @types/react-dom
 ```
 
@@ -43,8 +42,8 @@ pnpm add -D typescript vite @types/react @types/react-dom
 
 - Configuration via `vite.config.ts` using the `ardo()` plugin from `ardo/vite`
 - All config (title, description, themeConfig) is passed directly to `ardo()`
-- Markdown content lives in a `content/` directory
-- Route files live in `src/routes/` (boilerplate created by scaffold, content routes auto-generated)
+- Content lives in `app/routes/` as MDX/MD files
+- Uses React Router 7 for file-based routing and pre-rendering
 - JSX-first architecture: theme components accept explicit props
 - Supports both config-driven sidebar/nav and JSX composition
 - Built-in full-text search via MiniSearch
@@ -55,18 +54,14 @@ pnpm add -D typescript vite @types/react @types/react-dom
 
 ```
 my-docs/
-├── content/                  # Markdown files
-│   ├── index.md              # Home page (with hero/features frontmatter)
-│   └── guide/*.md            # Documentation pages
-├── src/
-│   ├── routes/
-│   │   ├── __root.tsx        # HTML shell
-│   │   ├── index.tsx         # Home page route
-│   │   └── (docs)/
-│   │       ├── _layout.tsx   # Documentation layout
-│   │       └── *.tsx         # Auto-generated from content/
-│   ├── router.tsx            # Router configuration
-│   └── vite-env.d.ts         # TypeScript declarations
+├── app/
+│   ├── routes/               # MDX/MD content and route files
+│   │   ├── guide/*.mdx       # Documentation pages
+│   │   └── home.tsx          # Home page
+│   ├── root.tsx              # Root layout
+│   ├── entry.client.tsx      # Client entry
+│   └── entry.server.tsx      # Server entry
 ├── vite.config.ts            # Vite + Ardo configuration
+├── react-router.config.ts    # React Router configuration
 └── package.json
 ```

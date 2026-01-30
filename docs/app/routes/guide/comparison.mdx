@@ -14,8 +14,8 @@ A technical comparison of Ardo with other popular documentation frameworks.
 | ---------------- | ------------------ | ------------- | ------------ | ------------- |
 | **UI Framework** | React 19           | Vue 3         | React 18     | Astro         |
 | **Build Tool**   | Vite + Rolldown    | Vite + Rollup | Webpack      | Vite + Rollup |
-| **Router**       | TanStack Router    | Vue Router    | React Router | Astro Router  |
-| **Rendering**    | SSR + Hydration    | SSG + SPA     | SSG + SPA    | Islands       |
+| **Router**       | React Router 7     | Vue Router    | React Router | Astro Router  |
+| **Rendering**    | SSG + Hydration    | SSG + SPA     | SSG + SPA    | Islands       |
 | **Backed By**    | Sebastian Software | Vue Team      | Meta         | Astro         |
 
 ## Technology Stack
@@ -182,7 +182,7 @@ export default defineConfig({
 | ----------------- | --------------- | ---------- | ------------ | ----------------- |
 | **Hydration**     | Full React      | Full Vue   | Full React   | Partial (Islands) |
 | **JS Required**   | Yes             | Yes        | Yes          | Minimal           |
-| **Client State**  | TanStack Router | Vue Router | React Router | Minimal           |
+| **Client State**  | React Router    | Vue Router | React Router | Minimal           |
 | **Bundle Impact** | ~50-80KB        | ~50-70KB   | ~150-200KB   | ~10-30KB          |
 
 ## Ecosystem
