@@ -76,6 +76,17 @@ export {
 } from "./ui"
 export type { HeroProps, HeroAction, HeroImage } from "./ui"
 export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./ui"
+export type { CodeBlockProps, CodeGroupProps } from "./ui"
+export type {
+  ContainerProps,
+  ContainerType,
+  TipProps,
+  WarningProps,
+  DangerProps,
+  InfoProps,
+  NoteProps,
+} from "./ui"
+export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabPanelsProps } from "./ui"
 
 // TypeDoc
 export {

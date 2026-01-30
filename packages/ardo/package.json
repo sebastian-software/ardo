@@ -28,6 +28,10 @@
       "types": "./dist/ui/index.d.ts"
     },
     "./ui/styles.css": "./dist/ui/styles.css",
+    "./icons": {
+      "import": "./dist/icons/index.js",
+      "types": "./dist/icons/index.d.ts"
+    },
     "./typedoc": {
       "import": "./dist/typedoc/index.js",
       "types": "./dist/typedoc/index.d.ts"
@@ -51,26 +55,27 @@
     "@react-router/dev": "^7.1.0",
     "@shikijs/rehype": "^3.21.0",
     "@vitejs/plugin-react": "^5.1.2",
-    "react-router": "^7.1.0",
-    "remark-mdx-frontmatter": "^4.0.0",
     "gray-matter": "^4.0.3",
     "hast-util-to-jsx-runtime": "^2.3.6",
+    "lucide-react": "^0.563.0",
     "mdast-util-directive": "^3.1.0",
     "minisearch": "^7.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router": "^7.1.0",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
     "remark-directive": "^4.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-mdx-frontmatter": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "shiki": "^3.21.0",
     "tailwindcss": "^4.1.18",
     "typedoc": "^0.28.16",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "unist-util-visit": "^5.1.0"
   },
   "peerDependencies": {
     "vite": "^6.0.0 || ^7.0.0 || ^8.0.0-beta.0"

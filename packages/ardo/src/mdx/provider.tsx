@@ -10,6 +10,10 @@ import type {
 } from "react"
 import { Content } from "../ui/Content"
 import { CopyButton } from "../ui/components/CopyButton"
+import { Icon } from "../ui/components/Icon"
+import { Tip, Warning, Danger, Info, Note } from "../ui/components/Container"
+import { Tabs, TabList, Tab, TabPanel, TabPanels } from "../ui/components/Tabs"
+import { CodeBlock, CodeGroup } from "../ui/components/CodeBlock"
 
 /**
  * Extracts text content from React children (for copy button)
@@ -93,5 +97,20 @@ export function useMDXComponents(): MDXComponents {
     ),
     hr: (props: HTMLAttributes<HTMLHRElement>) => <hr className="ardo-divider" {...props} />,
     img: (props: ImgHTMLAttributes<HTMLImageElement>) => <img className="ardo-image" {...props} />,
+
+    // Custom Ardo components available in MDX
+    Icon,
+    Tip,
+    Warning,
+    Danger,
+    Info,
+    Note,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanel,
+    TabPanels,
+    CodeBlock,
+    CodeGroup,
   }
 }
