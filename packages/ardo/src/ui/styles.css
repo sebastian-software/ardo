@@ -1478,6 +1478,330 @@ body {
   content: "\2192";
 }
 
+/* Features title and subtitle */
+.ardo-features-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.ardo-features-title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.ardo-features-subtitle {
+  font-size: 18px;
+  color: var(--ardo-c-text-light);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ========================================
+   Home Page Sections
+   ======================================== */
+.ardo-home-section {
+  padding: 80px 24px;
+}
+
+.ardo-home-section-alt {
+  background: var(--ardo-c-bg-soft);
+}
+
+.ardo-home-section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ardo-home-section-title {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.ardo-home-section-subtitle {
+  font-size: 18px;
+  color: var(--ardo-c-text-light);
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 48px;
+}
+
+/* ========================================
+   Terminal Section
+   ======================================== */
+.ardo-home-terminal {
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: var(--ardo-radius-lg);
+  overflow: hidden;
+  background: #1e1e1e;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.dark .ardo-home-terminal {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.ardo-home-terminal-header {
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #323232;
+}
+
+.ardo-home-terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f56;
+}
+
+.ardo-home-terminal-dot:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.ardo-home-terminal-dot:nth-child(3) {
+  background: #27ca40;
+}
+
+.ardo-home-terminal-body {
+  padding: 20px 24px;
+  font-family: var(--ardo-font-mono);
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e0e0e0;
+}
+
+.ardo-home-terminal-prompt {
+  color: #27ca40;
+  margin-right: 8px;
+}
+
+.ardo-home-terminal-success {
+  color: #27ca40;
+}
+
+.ardo-home-terminal-link {
+  color: #61afef;
+}
+
+/* ========================================
+   Code Example Section
+   ======================================== */
+.ardo-home-code-example {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ardo-home-code-block {
+  border-radius: var(--ardo-radius-lg);
+  overflow: hidden;
+  background: var(--ardo-code-bg);
+  border: 1px solid var(--ardo-code-border);
+  box-shadow: var(--ardo-code-shadow);
+}
+
+.ardo-home-code-header {
+  padding: 12px 16px;
+  background: var(--ardo-code-border);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--ardo-font-mono);
+  color: var(--ardo-c-text-light);
+  border-bottom: 1px solid var(--ardo-code-border);
+}
+
+.ardo-home-code-content {
+  padding: 20px 24px;
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--ardo-font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ardo-c-text);
+}
+
+.dark .ardo-home-code-content {
+  color: #e2e8f0;
+}
+
+/* ========================================
+   Comparison Table Section
+   ======================================== */
+.ardo-home-comparison {
+  overflow-x: auto;
+}
+
+.ardo-home-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 600px;
+}
+
+.ardo-home-comparison-table th,
+.ardo-home-comparison-table td {
+  padding: 14px 18px;
+  text-align: center;
+  border: 1px solid var(--ardo-c-border);
+}
+
+.ardo-home-comparison-table th {
+  background: var(--ardo-c-bg-soft);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.ardo-home-comparison-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+  background: var(--ardo-c-bg-soft);
+}
+
+.ardo-home-comparison-highlight {
+  background: var(--ardo-c-brand-subtle) !important;
+}
+
+.ardo-home-comparison-table th.ardo-home-comparison-highlight {
+  color: var(--ardo-c-brand);
+}
+
+.ardo-home-check {
+  color: var(--ardo-c-tip);
+}
+
+.ardo-home-x {
+  color: var(--ardo-c-text-lighter);
+}
+
+.ardo-home-comparison-cta {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.ardo-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ardo-c-brand);
+  font-weight: 500;
+  text-decoration: none;
+  transition: gap var(--ardo-transition-fast);
+}
+
+.ardo-home-link:hover {
+  gap: 10px;
+}
+
+/* ========================================
+   Tech Stack Grid
+   ======================================== */
+.ardo-home-tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ardo-home-tech-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  background: var(--ardo-c-bg);
+  border-radius: var(--ardo-radius-lg);
+  border: 1px solid var(--ardo-c-border);
+  transition: all var(--ardo-transition);
+}
+
+.ardo-home-tech-item:hover {
+  border-color: var(--ardo-c-brand);
+  transform: translateY(-2px);
+}
+
+.ardo-home-tech-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--ardo-c-brand-subtle);
+  border-radius: var(--ardo-radius);
+  color: var(--ardo-c-brand);
+}
+
+.ardo-home-tech-item span {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ========================================
+   CTA Section
+   ======================================== */
+.ardo-home-cta-section {
+  background: linear-gradient(
+    180deg,
+    var(--ardo-c-bg) 0%,
+    var(--ardo-c-brand-subtle) 100%
+  );
+}
+
+.dark .ardo-home-cta-section {
+  background: linear-gradient(
+    180deg,
+    var(--ardo-c-bg) 0%,
+    oklch(0.18 0.04 var(--ardo-brand-h)) 100%
+  );
+}
+
+.ardo-home-cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ardo-home-cta-primary,
+.ardo-home-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--ardo-radius);
+  transition: all var(--ardo-transition);
+}
+
+.ardo-home-cta-primary {
+  background: var(--ardo-c-brand);
+  color: white;
+}
+
+.ardo-home-cta-primary:hover {
+  background: var(--ardo-c-brand-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.3);
+}
+
+.ardo-home-cta-secondary {
+  background: var(--ardo-c-bg);
+  color: var(--ardo-c-text);
+  border: 1px solid var(--ardo-c-border);
+}
+
+.ardo-home-cta-secondary:hover {
+  border-color: var(--ardo-c-brand);
+  color: var(--ardo-c-brand);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .ardo-doc-page {
@@ -1504,6 +1828,42 @@ body {
 
   .ardo-features {
     padding: 48px 16px;
+  }
+
+  .ardo-home-section {
+    padding: 48px 16px;
+  }
+
+  .ardo-home-section-title {
+    font-size: 28px;
+  }
+
+  .ardo-home-section-subtitle {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+
+  .ardo-features-title {
+    font-size: 28px;
+  }
+
+  .ardo-features-subtitle {
+    font-size: 16px;
+  }
+
+  .ardo-home-terminal-body {
+    font-size: 12px;
+    padding: 16px;
+  }
+
+  .ardo-home-tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ardo-home-cta-primary,
+  .ardo-home-cta-secondary {
+    width: 100%;
+    justify-content: center;
   }
 }
 

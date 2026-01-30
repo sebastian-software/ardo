@@ -17,6 +17,10 @@ export interface FeatureItem {
 export interface FeaturesProps {
   /** Array of feature items to display */
   items: FeatureItem[]
+  /** Section title */
+  title?: string
+  /** Section subtitle */
+  subtitle?: string
   /** Additional CSS class */
   className?: string
 }
@@ -60,20 +64,30 @@ export function FeatureCard({ title, icon, details, link, linkText, className }:
  *
  * @example
  * ```tsx
- * <Features items={[
- *   { title: "React-First", icon: "⚛️", details: "Built on React." },
- *   { title: "Fast", icon: "⚡", details: "Powered by Vite." },
- *   { title: "Type-Safe", icon: "📝", details: "Full TypeScript support." },
- * ]} />
+ * <Features
+ *   title="Key Features"
+ *   subtitle="Everything you need to build great docs"
+ *   items={[
+ *     { title: "React-First", icon: "⚛️", details: "Built on React." },
+ *     { title: "Fast", icon: "⚡", details: "Powered by Vite." },
+ *     { title: "Type-Safe", icon: "📝", details: "Full TypeScript support." },
+ *   ]}
+ * />
  * ```
  */
-export function Features({ items, className }: FeaturesProps) {
+export function Features({ items, title, subtitle, className }: FeaturesProps) {
   if (!items || items.length === 0) {
     return null
   }
 
   return (
     <section className={className ?? "ardo-features"}>
+      {(title || subtitle) && (
+        <div className="ardo-features-header">
+          {title && <h2 className="ardo-features-title">{title}</h2>}
+          {subtitle && <p className="ardo-features-subtitle">{subtitle}</p>}
+        </div>
+      )}
       <div className="ardo-features-container">
         {items.map((feature, index) => (
           <FeatureCard key={index} {...feature} />
