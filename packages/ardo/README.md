@@ -1,6 +1,6 @@
 # ardo
 
-React-first Static Documentation Framework built on TanStack Start.
+React-first Static Documentation Framework built on React Router 7.
 
 ## Quick Start
 
@@ -16,58 +16,41 @@ pnpm dev
 ## Manual Installation
 
 ```bash
-pnpm add ardo @tanstack/react-start @tanstack/react-router react react-dom
-pnpm add -D typescript vite tailwindcss
+pnpm add ardo react react-dom react-router
+pnpm add -D typescript vite
 ```
 
 ## Usage
 
-### Configuration
+### Vite Configuration
 
-Create a `press.config.ts` in your project root:
-
-```typescript
-import { defineConfig } from "ardo/config"
-
-export default defineConfig({
-  title: "My Documentation",
-  description: "Built with Ardo",
-
-  themeConfig: {
-    nav: [{ text: "Guide", link: "/guide/getting-started" }],
-    sidebar: [
-      {
-        text: "Guide",
-        items: [{ text: "Getting Started", link: "/guide/getting-started" }],
-      },
-    ],
-  },
-})
-```
-
-### Vite Plugin
-
-Add the plugin to your `vite.config.ts`:
+Create a `vite.config.ts` with your Ardo configuration:
 
 ```typescript
 import { defineConfig } from "vite"
-import { tanstackStart } from "@tanstack/react-start/plugin/vite"
-import react from "@vitejs/plugin-react"
-import { ardoPlugin } from "ardo/vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
-    tanstackStart({
-      prerender: {
-        enabled: true,
-        crawlLinks: true,
+    ardo({
+      title: "My Documentation",
+      description: "Built with Ardo",
+
+      themeConfig: {
+        nav: [{ text: "Guide", link: "/guide/getting-started" }],
+        sidebar: [
+          {
+            text: "Guide",
+            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
+          },
+        ],
       },
     }),
-    react(),
-    ardoPlugin(),
   ],
 })
 ```
+
+The `ardo()` plugin includes React Router, MDX processing, and all necessary configuration.
 
 ### Runtime Hooks
 
@@ -91,26 +74,25 @@ function MyComponent() {
 Use pre-built components for your documentation:
 
 ```tsx
-import { DocPage, Layout, Header, Sidebar, TOC } from "ardo/ui"
+import { Layout, Header, Sidebar, Footer } from "ardo/ui"
 
 function App() {
   return (
-    <DocPage>
+    <Layout header={<Header />} sidebar={<Sidebar />} footer={<Footer />}>
       <YourContent />
-    </DocPage>
+    </Layout>
   )
 }
 ```
 
 ## Exports
 
-| Export               | Description                              |
-| -------------------- | ---------------------------------------- |
-| `ardo/config`        | Configuration utilities (`defineConfig`) |
-| `ardo/vite`          | Vite plugin (`ardoPlugin`)               |
-| `ardo/runtime`       | React hooks and providers                |
-| `ardo/ui`            | Pre-built UI components                  |
-| `ardo/ui/styles.css` | Default theme styles                     |
+| Export               | Description               |
+| -------------------- | ------------------------- |
+| `ardo/vite`          | Vite plugin (`ardo`)      |
+| `ardo/runtime`       | React hooks and providers |
+| `ardo/ui`            | Pre-built UI components   |
+| `ardo/ui/styles.css` | Default theme styles      |
 
 ## Documentation
 

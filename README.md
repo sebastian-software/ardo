@@ -23,13 +23,13 @@
 
 ## What is Ardo?
 
-Ardo is a modern documentation framework built on React 19 and TanStack Start. It combines the developer experience of VitePress with the power of the React ecosystem.
+Ardo is a modern documentation framework built on React 19 and React Router 7. It combines the developer experience of VitePress with the power of the React ecosystem.
 
 **Key Features:**
 
-- **React 19** — Latest React features including Server Components
-- **TanStack Router** — Type-safe routing with full TypeScript support
-- **Vite 8 + Rolldown** — Lightning-fast builds with next-gen bundling
+- **React 19** — Latest React features and patterns
+- **React Router 7** — Modern file-based routing with pre-rendering
+- **Vite** — Lightning-fast builds and development
 - **Static Prerendering** — SEO-friendly static HTML generation
 - **Markdown + MDX** — Write content in Markdown with React components
 - **Shiki Syntax Highlighting** — Beautiful code blocks with build-time highlighting
@@ -74,50 +74,57 @@ Ardo builds to fully static HTML — deploy anywhere. Projects scaffolded with `
 
 ```
 my-docs/
-├── content/           # Markdown content
-│   ├── index.md       # Homepage
-│   ├── guide/
-│   │   └── getting-started.md
-│   └── api/
-│       └── reference.md
-├── press.config.ts    # Site configuration
-├── vite.config.ts     # Vite configuration
+├── app/
+│   ├── routes/            # MDX/MD content
+│   │   ├── guide/
+│   │   │   └── getting-started.mdx
+│   │   └── home.tsx       # Home page
+│   ├── root.tsx           # Root layout
+│   ├── entry.client.tsx   # Client entry
+│   └── entry.server.tsx   # Server entry
+├── vite.config.ts         # Vite + Ardo configuration
+├── react-router.config.ts # React Router configuration
 └── package.json
 ```
 
 ## Configuration
 
 ```typescript
-// press.config.ts
-import { defineConfig } from "ardo/config"
+// vite.config.ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
 
 export default defineConfig({
-  title: "My Documentation",
-  description: "Built with Ardo",
+  plugins: [
+    ardo({
+      title: "My Documentation",
+      description: "Built with Ardo",
 
-  themeConfig: {
-    nav: [
-      { text: "Guide", link: "/guide/getting-started" },
-      { text: "API", link: "/api/reference" },
-    ],
-    sidebar: [
-      {
-        text: "Guide",
-        items: [{ text: "Getting Started", link: "/guide/getting-started" }],
+      themeConfig: {
+        nav: [
+          { text: "Guide", link: "/guide/getting-started" },
+          { text: "API", link: "/api/reference" },
+        ],
+        sidebar: [
+          {
+            text: "Guide",
+            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
+          },
+        ],
       },
-    ],
-  },
+    }),
+  ],
 })
 ```
 
 ## Comparison
 
-|                      |      Ardo       |   VitePress   |  Docusaurus  |   Starlight   |
-| -------------------- | :-------------: | :-----------: | :----------: | :-----------: |
-| **UI Framework**     |    React 19     |     Vue 3     |   React 18   |     Astro     |
-| **Build Tool**       | Vite + Rolldown | Vite + Rollup |   Webpack    | Vite + Rollup |
-| **Router**           | TanStack Router |  Vue Router   | React Router | Astro Router  |
-| **Type-safe Routes** |       ✅        |      ❌       |      ❌      |      ❌       |
+|                   |      Ardo      |   VitePress   |  Docusaurus  |   Starlight   |
+| ----------------- | :------------: | :-----------: | :----------: | :-----------: |
+| **UI Framework**  |    React 19    |     Vue 3     |   React 18   |     Astro     |
+| **Build Tool**    |      Vite      | Vite + Rollup |   Webpack    | Vite + Rollup |
+| **Router**        | React Router 7 |  Vue Router   | React Router | Astro Router  |
+| **Pre-rendering** |       ✅       |      ✅       |      ✅      |      ✅       |
 
 See the [full comparison](https://sebastian-software.github.io/ardo/guide/comparison) in our documentation.
 
