@@ -15,11 +15,16 @@ function useTabsContext() {
   return context
 }
 
-interface TabsProps {
+export interface TabsProps {
+  /** Default active tab value */
   defaultValue?: string
+  /** Tab components (TabList and TabPanels) */
   children: ReactNode
 }
 
+/**
+ * Tabs container component for organizing content into tabbed panels.
+ */
 export function Tabs({ defaultValue, children }: TabsProps) {
   const [activeTab, setActiveTab] = useState(defaultValue || "")
 
@@ -30,10 +35,14 @@ export function Tabs({ defaultValue, children }: TabsProps) {
   )
 }
 
-interface TabListProps {
+export interface TabListProps {
+  /** Tab buttons */
   children: ReactNode
 }
 
+/**
+ * Container for Tab buttons.
+ */
 export function TabList({ children }: TabListProps) {
   return (
     <div className="ardo-tab-list" role="tablist">
@@ -42,11 +51,16 @@ export function TabList({ children }: TabListProps) {
   )
 }
 
-interface TabProps {
+export interface TabProps {
+  /** Unique value identifying this tab */
   value: string
+  /** Tab button label */
   children: ReactNode
 }
 
+/**
+ * Individual tab button.
+ */
 export function Tab({ value, children }: TabProps) {
   const { activeTab, setActiveTab } = useTabsContext()
   const isActive = activeTab === value
@@ -63,11 +77,16 @@ export function Tab({ value, children }: TabProps) {
   )
 }
 
-interface TabPanelProps {
+export interface TabPanelProps {
+  /** Value matching the corresponding Tab */
   value: string
+  /** Panel content */
   children: ReactNode
 }
 
+/**
+ * Content panel for a tab.
+ */
 export function TabPanel({ value, children }: TabPanelProps) {
   const { activeTab } = useTabsContext()
   const isActive = activeTab === value
@@ -83,10 +102,14 @@ export function TabPanel({ value, children }: TabPanelProps) {
   )
 }
 
-interface TabPanelsProps {
+export interface TabPanelsProps {
+  /** TabPanel components */
   children: ReactNode
 }
 
+/**
+ * Container for TabPanel components.
+ */
 export function TabPanels({ children }: TabPanelsProps) {
   return <div className="ardo-tab-panels">{children}</div>
 }

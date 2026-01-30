@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 export interface FeatureItem {
   /** Feature title */
   title: string
-  /** Icon (emoji or component) */
+  /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */
   icon?: ReactNode
   /** Feature description */
   details: string
@@ -31,12 +31,13 @@ export interface FeatureCardProps extends FeatureItem {
  *
  * @example
  * ```tsx
- * <FeatureCard
- *   title="Fast"
- *   icon="⚡"
- *   details="Lightning fast builds with Vite."
- *   link="/guide/performance"
- * />
+ * import { Zap } from "lucide-react"
+ *
+ * // Using emoji
+ * <FeatureCard title="Fast" icon="⚡" details="Lightning fast." />
+ *
+ * // Using Lucide icon (tree-shakeable)
+ * <FeatureCard title="Fast" icon={<Zap size={28} />} details="Lightning fast." />
  * ```
  */
 export function FeatureCard({ title, icon, details, link, linkText, className }: FeatureCardProps) {

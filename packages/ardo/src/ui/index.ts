@@ -40,6 +40,21 @@ export {
   Hero,
   Features,
   FeatureCard,
+  Icon,
+  registerIcons,
+  getRegisteredIconNames,
 } from "./components"
+export type { IconProps } from "./components"
 export type { HeroProps, HeroAction, HeroImage } from "./components"
 export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./components"
+export type { CodeBlockProps, CodeGroupProps } from "./components"
+export type {
+  ContainerProps,
+  ContainerType,
+  TipProps,
+  WarningProps,
+  DangerProps,
+  InfoProps,
+  NoteProps,
+} from "./components"
+export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabPanelsProps } from "./components"

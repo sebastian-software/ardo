@@ -9,6 +9,7 @@ export default defineConfig({
     "vite/index": "src/vite/index.ts",
     "runtime/index": "src/runtime/index.ts",
     "ui/index": "src/ui/index.ts",
+    "icons/index": "src/icons/index.ts",
     "typedoc/index": "src/typedoc/index.ts",
     "mdx/provider": "src/mdx/provider.tsx",
   },

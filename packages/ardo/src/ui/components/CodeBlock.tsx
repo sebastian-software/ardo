@@ -1,15 +1,24 @@
 import { useState } from "react"
 import { CopyButton } from "./CopyButton"
 
-interface CodeBlockProps {
+export interface CodeBlockProps {
+  /** The code to display */
   code: string
+  /** Programming language for syntax highlighting */
   language?: string
+  /** Optional title shown above the code */
   title?: string
+  /** Show line numbers */
   lineNumbers?: boolean
+  /** Line numbers to highlight */
   highlightLines?: number[]
+  /** Optional custom content to render instead of the code */
   children?: React.ReactNode
 }
 
+/**
+ * Syntax-highlighted code block with copy button.
+ */
 export function CodeBlock({
   code,
   language = "text",
@@ -50,10 +59,14 @@ export function CodeBlock({
   )
 }
 
-interface CodeGroupProps {
+export interface CodeGroupProps {
+  /** CodeBlock components to display as tabs */
   children: React.ReactNode
 }
 
+/**
+ * Tabbed group of code blocks.
+ */
 export function CodeGroup({ children }: CodeGroupProps) {
   const [activeTab, setActiveTab] = useState(0)
 
