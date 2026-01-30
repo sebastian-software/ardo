@@ -10,7 +10,6 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import remarkGfm from "remark-gfm"
 import remarkDirective from "remark-directive"
 import rehypeShiki from "@shikijs/rehype"
-import react from "@vitejs/plugin-react"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
@@ -280,19 +279,12 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   })
   plugins.push(mdxPlugin as Plugin)
 
-  // Add React Router Framework plugin
+  // Add React Router Framework plugin (includes React plugin internally)
   const reactRouterPlugin = reactRouter()
   const reactRouterPlugins = (
     Array.isArray(reactRouterPlugin) ? reactRouterPlugin : [reactRouterPlugin]
   ).filter((p): p is Plugin => p != null)
   plugins.push(...reactRouterPlugins)
-
-  // Add React plugin
-  const reactPlugin = react()
-  const reactPlugins = (Array.isArray(reactPlugin) ? reactPlugin : [reactPlugin]).filter(
-    (p): p is Plugin => p != null
-  )
-  plugins.push(...reactPlugins)
 
   return plugins
 }
