@@ -83,18 +83,17 @@ export class TypeDocGenerator {
       const dir = path.dirname(filePath)
       await fs.mkdir(dir, { recursive: true })
 
-      const frontmatter = [
+      const frontmatterLines = [
         "---",
         `title: ${doc.frontmatter.title}`,
-        doc.frontmatter.description ? `description: ${doc.frontmatter.description}` : "",
+        doc.frontmatter.description ? `description: ${doc.frontmatter.description}` : null,
         doc.frontmatter.sidebar_position !== undefined
           ? `sidebar_position: ${doc.frontmatter.sidebar_position}`
-          : "",
+          : null,
         "---",
-        "",
-      ]
-        .filter(Boolean)
-        .join("\n")
+      ].filter((line): line is string => line !== null)
+
+      const frontmatter = frontmatterLines.join("\n") + "\n\n"
 
       await fs.writeFile(filePath, frontmatter + doc.content)
     }
@@ -113,17 +112,24 @@ export class TypeDocGenerator {
     const children = this.project.children || []
 
     // Group functions and type aliases by source file
+    // React components (PascalCase) get their own pages
     const functionsByFile = new Map<string, DeclarationReflection[]>()
     const typesByFile = new Map<string, DeclarationReflection[]>()
+    const componentItems: DeclarationReflection[] = []
     const standaloneItems: DeclarationReflection[] = []
 
     for (const child of children) {
       const sourceFile = child.sources?.[0]?.fileName
 
       if (child.kind === ReflectionKind.Function && sourceFile) {
-        const existing = functionsByFile.get(sourceFile) || []
-        existing.push(child)
-        functionsByFile.set(sourceFile, existing)
+        // React components are PascalCase and get individual pages
+        if (this.isReactComponent(child.name)) {
+          componentItems.push(child)
+        } else {
+          const existing = functionsByFile.get(sourceFile) || []
+          existing.push(child)
+          functionsByFile.set(sourceFile, existing)
+        }
       } else if (child.kind === ReflectionKind.TypeAlias && sourceFile) {
         const existing = typesByFile.get(sourceFile) || []
         existing.push(child)
@@ -143,9 +149,32 @@ export class TypeDocGenerator {
       docs.push(this.generateGroupedTypesPage(sourceFile, types))
     }
 
-    // Generate individual pages for classes, interfaces, enums, etc.
+    // Generate individual pages for React components
+    // Sort alphabetically for consistent prev/next navigation
+    const sortedComponents = [...componentItems].sort((a, b) => a.name.localeCompare(b.name))
+    for (let i = 0; i < sortedComponents.length; i++) {
+      const prev = i > 0 ? sortedComponents[i - 1] : null
+      const next = i < sortedComponents.length - 1 ? sortedComponents[i + 1] : null
+      docs.push(this.generateComponentPage(sortedComponents[i], prev, next))
+    }
+
+    // Group standalone items by kind for prev/next navigation within each group
+    const itemsByKind = new Map<number, DeclarationReflection[]>()
     for (const child of standaloneItems) {
-      docs.push(...this.generateReflectionDocs(child, ""))
+      const kind = child.kind
+      const existing = itemsByKind.get(kind) || []
+      existing.push(child)
+      itemsByKind.set(kind, existing)
+    }
+
+    // Generate individual pages for classes, interfaces, enums, etc. with prev/next within group
+    for (const [, items] of itemsByKind) {
+      const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name))
+      for (let i = 0; i < sortedItems.length; i++) {
+        const prev = i > 0 ? sortedItems[i - 1] : null
+        const next = i < sortedItems.length - 1 ? sortedItems[i + 1] : null
+        docs.push(...this.generateReflectionDocs(sortedItems[i], "", prev, next))
+      }
     }
 
     return docs
@@ -214,7 +243,7 @@ export class TypeDocGenerator {
     }
 
     return {
-      path: `${slug}-functions.md`,
+      path: `functions/${slug}.md`,
       content: content.join("\n"),
       frontmatter: {
         title: `${moduleName} Functions`,
@@ -272,7 +301,7 @@ export class TypeDocGenerator {
     }
 
     return {
-      path: `${slug}-types.md`,
+      path: `types/${slug}.md`,
       content: content.join("\n"),
       frontmatter: {
         title: `${moduleName} Types`,
@@ -310,17 +339,23 @@ export class TypeDocGenerator {
     const children = this.project?.children || []
 
     // Group functions and types by source file for linking
+    // Separate React components from regular functions
     const functionsByFile = new Map<string, DeclarationReflection[]>()
     const typesByFile = new Map<string, DeclarationReflection[]>()
+    const componentItems: DeclarationReflection[] = []
     const standaloneItems: DeclarationReflection[] = []
 
     for (const child of children) {
       const sourceFile = child.sources?.[0]?.fileName
 
       if (child.kind === ReflectionKind.Function && sourceFile) {
-        const existing = functionsByFile.get(sourceFile) || []
-        existing.push(child)
-        functionsByFile.set(sourceFile, existing)
+        if (this.isReactComponent(child.name)) {
+          componentItems.push(child)
+        } else {
+          const existing = functionsByFile.get(sourceFile) || []
+          existing.push(child)
+          functionsByFile.set(sourceFile, existing)
+        }
       } else if (child.kind === ReflectionKind.TypeAlias && sourceFile) {
         const existing = typesByFile.get(sourceFile) || []
         existing.push(child)
@@ -328,6 +363,26 @@ export class TypeDocGenerator {
       } else {
         standaloneItems.push(child)
       }
+    }
+
+    // Render components
+    if (componentItems.length > 0) {
+      content.push("## Components")
+      content.push("")
+
+      const sortedComponents = [...componentItems].sort((a, b) => a.name.localeCompare(b.name))
+
+      for (const component of sortedComponents) {
+        const description = component.comment?.summary
+          ? this.renderCommentShort(component.comment.summary)
+          : ""
+        const descSuffix = description ? ` - ${description}` : ""
+        content.push(
+          `- [${component.name}](${this.basePath}/components/${this.getSlug(component.name)})${descSuffix}`
+        )
+      }
+
+      content.push("")
     }
 
     // Render grouped function modules
@@ -347,7 +402,7 @@ export class TypeDocGenerator {
           .map((f) => f.name)
           .sort()
           .join(", ")
-        content.push(`- [${moduleName}](${this.basePath}/${slug}-functions) - ${funcNames}`)
+        content.push(`- [${moduleName}](${this.basePath}/functions/${slug}) - ${funcNames}`)
       }
 
       content.push("")
@@ -369,7 +424,7 @@ export class TypeDocGenerator {
           .map((t) => t.name)
           .sort()
           .join(", ")
-        content.push(`- [${moduleName}](${this.basePath}/${slug}-types) - ${typeNames}`)
+        content.push(`- [${moduleName}](${this.basePath}/types/${slug}) - ${typeNames}`)
       }
 
       content.push("")
@@ -407,7 +462,10 @@ export class TypeDocGenerator {
           ? this.renderCommentShort(child.comment.summary)
           : ""
         const descSuffix = description ? ` - ${description}` : ""
-        content.push(`- [${child.name}](${this.basePath}/${this.getSlug(child.name)})${descSuffix}`)
+        const groupUrlPrefix = this.getGroupUrlPrefix(child.kind)
+        content.push(
+          `- [${child.name}](${this.basePath}/${groupUrlPrefix}/${this.getSlug(child.name)})${descSuffix}`
+        )
       }
 
       content.push("")
@@ -456,14 +514,22 @@ export class TypeDocGenerator {
 
   private generateReflectionDocs(
     reflection: DeclarationReflection,
-    parentPath: string
+    parentPath: string,
+    prev: DeclarationReflection | null = null,
+    next: DeclarationReflection | null = null
   ): GeneratedApiDoc[] {
     const docs: GeneratedApiDoc[] = []
     const slug = this.getSlug(reflection.name)
-    const currentPath = parentPath ? `${parentPath}/${slug}` : slug
+    // Use group prefix (e.g., "interfaces", "classes") when at top level
+    const groupPrefix = parentPath ? "" : this.getGroupUrlPrefix(reflection.kind)
+    const currentPath = parentPath
+      ? `${parentPath}/${slug}`
+      : groupPrefix
+        ? `${groupPrefix}/${slug}`
+        : slug
 
     // Generate main page for this reflection
-    docs.push(this.generateReflectionPage(reflection, currentPath))
+    docs.push(this.generateReflectionPage(reflection, currentPath, prev, next))
 
     // Generate pages for child classes, interfaces, etc.
     // Functions are grouped by source file, not individual pages
@@ -487,7 +553,9 @@ export class TypeDocGenerator {
 
   private generateReflectionPage(
     reflection: DeclarationReflection,
-    pagePath: string
+    pagePath: string,
+    prev: DeclarationReflection | null = null,
+    next: DeclarationReflection | null = null
   ): GeneratedApiDoc {
     const kind = this.getKindName(reflection.kind)
     const content: string[] = []
@@ -629,6 +697,25 @@ export class TypeDocGenerator {
         }
         content.push("")
       }
+    }
+
+    // Prev/Next navigation within group
+    if (prev || next) {
+      content.push("---")
+      content.push("")
+      const groupPrefix = this.getGroupUrlPrefix(reflection.kind)
+      const prevLink = prev
+        ? `[← ${prev.name}](${this.basePath}/${groupPrefix}/${this.getSlug(prev.name)})`
+        : ""
+      const nextLink = next
+        ? `[${next.name} →](${this.basePath}/${groupPrefix}/${this.getSlug(next.name)})`
+        : ""
+      if (prev && next) {
+        content.push(`${prevLink} | ${nextLink}`)
+      } else {
+        content.push(prevLink || nextLink)
+      }
+      content.push("")
     }
 
     return {
@@ -849,6 +936,18 @@ export class TypeDocGenerator {
     return kindNames[kind] || "Unknown"
   }
 
+  private getGroupUrlPrefix(kind: ReflectionKind): string {
+    const prefixes: Partial<Record<ReflectionKind, string>> = {
+      [ReflectionKind.Class]: "classes",
+      [ReflectionKind.Interface]: "interfaces",
+      [ReflectionKind.Enum]: "enums",
+      [ReflectionKind.Variable]: "variables",
+      [ReflectionKind.Namespace]: "namespaces",
+      [ReflectionKind.Module]: "modules",
+    }
+    return prefixes[kind] || "other"
+  }
+
   private getSlug(name: string): string {
     return name
       .toLowerCase()
@@ -860,6 +959,245 @@ export class TypeDocGenerator {
     if (!this.config.markdown?.sourceBaseUrl) return null
     const baseUrl = this.config.markdown.sourceBaseUrl.replace(/\/$/, "")
     return `${baseUrl}/${fileName}#L${line}`
+  }
+
+  /**
+   * Check if a function name looks like a React component (PascalCase)
+   */
+  private isReactComponent(name: string): boolean {
+    // React components start with uppercase and don't contain underscores
+    // Also check for common component patterns
+    if (name[0] !== name[0].toUpperCase()) return false
+    if (name.includes("_")) return false
+    // Exclude common non-component patterns
+    if (name.startsWith("use")) return false // hooks
+    if (name.endsWith("Props") || name.endsWith("Options") || name.endsWith("Config")) return false
+    return true
+  }
+
+  /**
+   * Generate a page for a React component
+   */
+  private generateComponentPage(
+    component: DeclarationReflection,
+    prev: DeclarationReflection | null,
+    next: DeclarationReflection | null
+  ): GeneratedApiDoc {
+    const slug = this.getSlug(component.name)
+    const groupPrefix = "components"
+    const content: string[] = []
+
+    content.push(`# ${component.name}`)
+    content.push("")
+
+    // Description
+    if (component.comment?.summary) {
+      content.push(this.renderComment(component.comment.summary))
+      content.push("")
+    }
+
+    // Signature
+    if (component.signatures) {
+      content.push("## Usage")
+      content.push("")
+      for (const sig of component.signatures) {
+        content.push(this.renderComponentSignature(sig, component.name))
+        content.push("")
+      }
+    }
+
+    // Examples
+    if (component.comment?.blockTags) {
+      const examples = component.comment.blockTags.filter((t) => t.tag === "@example")
+      if (examples.length > 0) {
+        content.push("## Example")
+        content.push("")
+        for (const example of examples) {
+          content.push(this.renderComment(example.content))
+          content.push("")
+        }
+      }
+    }
+
+    // Source link
+    if (this.config.markdown?.sourceLinks && component.sources?.[0]) {
+      const source = component.sources[0]
+      const sourceUrl = this.getSourceUrl(source.fileName, source.line)
+      if (sourceUrl) {
+        content.push(`[Source](${sourceUrl})`)
+        content.push("")
+      }
+    }
+
+    // Prev/Next navigation
+    if (prev || next) {
+      content.push("---")
+      content.push("")
+      const prevLink = prev
+        ? `[← ${prev.name}](${this.basePath}/${groupPrefix}/${this.getSlug(prev.name)})`
+        : ""
+      const nextLink = next
+        ? `[${next.name} →](${this.basePath}/${groupPrefix}/${this.getSlug(next.name)})`
+        : ""
+      if (prev && next) {
+        content.push(`${prevLink} | ${nextLink}`)
+      } else {
+        content.push(prevLink || nextLink)
+      }
+      content.push("")
+    }
+
+    return {
+      path: `${groupPrefix}/${slug}.md`,
+      content: content.join("\n"),
+      frontmatter: {
+        title: component.name,
+        description: component.comment?.summary
+          ? this.renderCommentShort(component.comment.summary)
+          : `${component.name} component`,
+      },
+    }
+  }
+
+  /**
+   * Get the name of a TypeDoc type (handles reference types, etc.)
+   */
+  private getTypeName(paramType: unknown): string | null {
+    if (!paramType || typeof paramType !== "object") return null
+
+    // Direct name property
+    if ("name" in paramType && typeof (paramType as { name: unknown }).name === "string") {
+      return (paramType as { name: string }).name
+    }
+
+    // Reference type with target
+    if ("type" in paramType && (paramType as { type: string }).type === "reference") {
+      const refType = paramType as { name?: string; qualifiedName?: string }
+      return refType.name || refType.qualifiedName || null
+    }
+
+    return null
+  }
+
+  /**
+   * Get props from a component's parameter type
+   */
+  private getPropsFromType(
+    paramType: unknown
+  ): Array<{ name: string; type: string; optional: boolean; description: string }> {
+    const props: Array<{ name: string; type: string; optional: boolean; description: string }> = []
+
+    // Check if it's a reflection type with inline declaration
+    if (paramType && typeof paramType === "object" && "declaration" in paramType) {
+      const declaration = (paramType as { declaration: DeclarationReflection }).declaration
+      const children = declaration.children || []
+      for (const child of children) {
+        props.push({
+          name: child.name,
+          type: child.type ? child.type.toString() : "unknown",
+          optional: child.flags.isOptional,
+          description: child.comment?.summary ? this.renderCommentShort(child.comment.summary) : "",
+        })
+      }
+    }
+    // Check if it's a reference type - look up the interface in the project
+    else {
+      const typeName = this.getTypeName(paramType)
+      if (typeName) {
+        // Find the interface/type alias in the project
+        let propsInterface = this.project?.getChildByName(typeName)
+
+        // If not found directly, search all children
+        if (!propsInterface && this.project?.children) {
+          for (const child of this.project.children) {
+            if (child.name === typeName) {
+              propsInterface = child
+              break
+            }
+          }
+        }
+
+        if (propsInterface && "children" in propsInterface) {
+          const children = (propsInterface as DeclarationReflection).children || []
+          for (const child of children) {
+            props.push({
+              name: child.name,
+              type: child.type ? child.type.toString() : "unknown",
+              optional: child.flags.isOptional,
+              description: child.comment?.summary
+                ? this.renderCommentShort(child.comment.summary)
+                : "",
+            })
+          }
+        }
+      }
+    }
+
+    return props
+  }
+
+  /**
+   * Render a component signature in a more readable format
+   */
+  private renderComponentSignature(sig: SignatureReflection, componentName: string): string {
+    const lines: string[] = []
+
+    // Get props from the first parameter
+    const propsParam = sig.parameters?.[0]
+    const props = propsParam ? this.getPropsFromType(propsParam.type) : []
+
+    // Get the props interface name for linking
+    const propsTypeName = propsParam?.type ? this.getTypeName(propsParam.type) : null
+
+    // Check if component has children prop
+    const hasChildren = props.some((p) => p.name === "children")
+    // Filter out children from props display (shown in JSX structure instead)
+    const displayProps = props.filter((p) => p.name !== "children")
+
+    lines.push("```tsx")
+    lines.push(`<${componentName}`)
+
+    if (displayProps.length > 0) {
+      for (const prop of displayProps) {
+        const optMark = prop.optional ? "?" : ""
+        lines.push(`  ${prop.name}${optMark}={${prop.type}}`)
+      }
+    } else if (!hasChildren) {
+      lines.push(`  {...props}`)
+    }
+
+    if (hasChildren) {
+      lines.push(`>`)
+      lines.push(`  {children}`)
+      lines.push(`</${componentName}>`)
+    } else {
+      lines.push(`/>`)
+    }
+    lines.push("```")
+
+    // Props table with link to props interface
+    if (props.length > 0) {
+      lines.push("")
+      if (propsTypeName) {
+        lines.push(`## [Props](${this.basePath}/interfaces/${this.getSlug(propsTypeName)})`)
+      } else {
+        lines.push("## Props")
+      }
+      lines.push("")
+      lines.push("| Prop | Type | Required | Description |")
+      lines.push("|------|------|----------|-------------|")
+
+      for (const prop of props) {
+        const type = `\`${prop.type}\``
+        const required = prop.optional ? "No" : "Yes"
+        const desc = prop.description || "-"
+        lines.push(`| ${prop.name} | ${type} | ${required} | ${desc} |`)
+      }
+    }
+
+    // Skip return value for components - it's always Element/JSX.Element
+
+    return lines.join("\n")
   }
 }
 
