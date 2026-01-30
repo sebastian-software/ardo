@@ -3,12 +3,13 @@ packages/create-ardo/templates/
 
 # Build outputs
 dist/
-.tanstack/
+build/
+.react-router/
 
 # Dependencies
 node_modules/
 
-# Auto-generated files
-docs/src/routes/
+# Auto-generated files (TypeDoc API reference)
+docs/app/routes/api-reference/
 CHANGELOG.md
 pnpm-lock.yaml

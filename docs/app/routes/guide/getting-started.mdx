@@ -121,11 +121,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
   return (
     <PressProvider config={config} sidebar={sidebar}>
-      <Layout
-        header={<Header title="My Docs" />}
-        sidebar={<Sidebar />}
-        footer={<Footer />}
-      >
+      <Layout header={<Header title="My Docs" />} sidebar={<Sidebar />} footer={<Footer />}>
         <Outlet />
       </Layout>
     </PressProvider>
