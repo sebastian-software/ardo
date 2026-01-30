@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build",
+    "build": "react-router build && node scripts/flatten-build.js",
     "preview": "vite preview"
   },
   "dependencies": {
