@@ -134,8 +134,8 @@ await generateApiDocs({
       timeout: 60_000,
     })
 
-    // 9. Build with vite
-    execSync("npx vite build", {
+    // 9. Build with react-router (handles client, server, and prerender)
+    execSync("npx react-router build", {
       cwd: tmpDir,
       stdio: "pipe",
       timeout: 120_000,
@@ -155,11 +155,11 @@ await generateApiDocs({
   })
 
   it("produces build/client directory", () => {
-    expect(fs.existsSync(path.join(tmpDir, "dist", "client"))).toBe(true)
+    expect(fs.existsSync(path.join(tmpDir, "build", "client"))).toBe(true)
   })
 
   it("generates home page with site title", () => {
-    const indexHtml = path.join(tmpDir, "dist", "client", "index.html")
+    const indexHtml = path.join(tmpDir, "build", "client", "index.html")
     expect(fs.existsSync(indexHtml)).toBe(true)
     const content = fs.readFileSync(indexHtml, "utf-8")
     expect(content).toContain("<!DOCTYPE html>")
@@ -167,7 +167,7 @@ await generateApiDocs({
   })
 
   it("generates getting-started page", () => {
-    const gsHtml = path.join(tmpDir, "dist", "client", "guide", "getting-started", "index.html")
+    const gsHtml = path.join(tmpDir, "build", "client", "guide", "getting-started", "index.html")
     expect(fs.existsSync(gsHtml)).toBe(true)
     const content = fs.readFileSync(gsHtml, "utf-8")
     expect(content).toContain("<!DOCTYPE html>")
@@ -180,15 +180,15 @@ await generateApiDocs({
     expect(mdFiles.length).toBeGreaterThan(0)
   })
 
-  it("generates TypeDoc API HTML pages in dist", () => {
-    const apiDistDir = path.join(tmpDir, "dist", "client", "api-reference")
+  it("generates TypeDoc API HTML pages in build", () => {
+    const apiDistDir = path.join(tmpDir, "build", "client", "api-reference")
     expect(fs.existsSync(apiDistDir)).toBe(true)
     const htmlFiles = collectFiles(apiDistDir, ".html")
     expect(htmlFiles.length).toBeGreaterThan(0)
   })
 
   it("includes JS and CSS assets", () => {
-    const assetsDir = path.join(tmpDir, "dist", "client", "assets")
+    const assetsDir = path.join(tmpDir, "build", "client", "assets")
     expect(fs.existsSync(assetsDir)).toBe(true)
 
     const files = fs.readdirSync(assetsDir)
