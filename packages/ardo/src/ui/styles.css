@@ -1745,11 +1745,7 @@ body {
    CTA Section
    ======================================== */
 .ardo-home-cta-section {
-  background: linear-gradient(
-    180deg,
-    var(--ardo-c-bg) 0%,
-    var(--ardo-c-brand-subtle) 100%
-  );
+  background: linear-gradient(180deg, var(--ardo-c-bg) 0%, var(--ardo-c-brand-subtle) 100%);
 }
 
 .dark .ardo-home-cta-section {
