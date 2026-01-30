@@ -1,5 +1,49 @@
 # Changelog
 
+## [2.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.3...ardo-v2.0.0) (2026-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* Import path changed from ardo/theme to ardo/ui
+
+### Features
+
+* add Icon component and improve UI components ([eca1f3f](https://github.com/sebastian-software/ardo/commit/eca1f3fc0f98475af2c5f9a1e333edb371241819))
+* add type-safe route support for Sidebar and Nav links ([6d2b06a](https://github.com/sebastian-software/ardo/commit/6d2b06a3bf376804d9b546599fdeacca78f94de6))
+* expand homepage with marketing sections ([d496755](https://github.com/sebastian-software/ardo/commit/d4967559c5931c5d4799a2a4383c1b3d33ecb56f))
+* export additional types and improve MDX provider ([fac0d2c](https://github.com/sebastian-software/ardo/commit/fac0d2cb02643a7bba128b65f68c9eae4d28b0ab))
+* implement search using virtual module ([f742235](https://github.com/sebastian-software/ardo/commit/f74223598ac0775c3fd0fd650f59ac2db4419816))
+* improve API index page with grouped and sorted entries ([dfa6bc2](https://github.com/sebastian-software/ardo/commit/dfa6bc28b2e2ebb583edbe9eab573091e5c3c06d))
+* type-safe links for Hero actions ([b9b328b](https://github.com/sebastian-software/ardo/commit/b9b328b9e3ff8bb803bbf60e13623ca069a4f966))
+
+
+### Bug Fixes
+
+* align header logo with sidebar text ([e832c03](https://github.com/sebastian-software/ardo/commit/e832c030c3669d827283d48f92d5c92af2b6a42b))
+* correct shiki configuration for MDX plugin ([bc06257](https://github.com/sebastian-software/ardo/commit/bc062571656913a68f33eaa3fa1c90c1062dca37))
+* generate index routes as {slug}/index.tsx ([a6a839b](https://github.com/sebastian-software/ardo/commit/a6a839b56c8aff6b10ee0707b426518ed5800c0c))
+* only log route generation on initial startup ([1543129](https://github.com/sebastian-software/ardo/commit/1543129b1db0577c287ee6ee92bc72e3327111d6))
+* remove duplicate React plugin from Vite config ([a68208c](https://github.com/sebastian-software/ardo/commit/a68208c01ff2e5eba471a312784804d5b74b2db2))
+* remove max-width from header container ([c962c4d](https://github.com/sebastian-software/ardo/commit/c962c4d30369135810595fee58a02a33817f989b))
+* resolve CSS and routing issues after React Router migration ([95a66a5](https://github.com/sebastian-software/ardo/commit/95a66a5b93f83b86c4d73c39ed1bfb772c368832))
+* update prettierignore and format files ([d80c904](https://github.com/sebastian-software/ardo/commit/d80c90455e30ec25dc802c3c1f2a884039dd08b8))
+* use React Router Link for internal MDX links ([5744338](https://github.com/sebastian-software/ardo/commit/5744338aacacff7c79e04a5bcbf0b61c8d553603))
+
+
+### Code Refactoring
+
+* improve TypeDoc generator output ([38ee369](https://github.com/sebastian-software/ardo/commit/38ee369990b5f255b02accfd3a7d2f771929cadf))
+* migrate from TanStack Start to React Router 7 ([b9e66ee](https://github.com/sebastian-software/ardo/commit/b9e66ee7e7a90d499c3ea7e85f735a59cae644dd))
+* rename theme to ui, add Hero/Features, use ardo- prefix ([2202661](https://github.com/sebastian-software/ardo/commit/22026618b071593387345d40301d2dc6962ec57c))
+* update code comments from TanStack to React Router ([bfe0f35](https://github.com/sebastian-software/ardo/commit/bfe0f351a2fa692871dc20241c0c11a38e3e35b3))
+* use system fonts instead of Google Fonts ([8cc3c88](https://github.com/sebastian-software/ardo/commit/8cc3c88779256353656d8defa0f659915818b0ea))
+
+
+### Documentation
+
+* update READMEs for React Router migration ([cfb2e38](https://github.com/sebastian-software/ardo/commit/cfb2e38318bfd8906e8c06ae46042878a9120897))
+
 ## [1.2.3](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.2...ardo-v1.2.3) (2026-01-29)
 
 
