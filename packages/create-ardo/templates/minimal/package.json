@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ardo": "^1.2.0",
+    "ardo": "^{{ARDO_VERSION}}",
     "isbot": "*",
     "react": "*",
     "react-dom": "*",

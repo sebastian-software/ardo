@@ -4,6 +4,12 @@ import { fileURLToPath } from "node:url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const templatesRoot = path.resolve(__dirname, "..", "templates")
+const packageJsonPath = path.resolve(__dirname, "..", "package.json")
+
+function getCliVersion(): string {
+  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"))
+  return pkg.version
+}
 
 export const templates = [
   {
@@ -25,6 +31,7 @@ export function createProjectStructure(root: string, template: string, options: 
   const vars: Record<string, string> = {
     SITE_TITLE: options.siteTitle,
     PROJECT_NAME: options.projectName,
+    ARDO_VERSION: getCliVersion(),
     TYPEDOC_CONFIG: options.typedoc
       ? "typedoc: true,"
       : "// typedoc: true, // Uncomment to enable API docs",
