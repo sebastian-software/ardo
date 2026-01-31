@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.0.0...create-ardo-v2.0.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* use CLI version for ardo dependency in scaffolded projects ([c67717b](https://github.com/sebastian-software/ardo/commit/c67717b135fcec08079dafd5dfbb49d43d780e12))
+
 ## [2.0.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v1.2.3...create-ardo-v2.0.0) (2026-01-30)
 
 

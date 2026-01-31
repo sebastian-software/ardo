@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.0.0...ardo-v2.0.1) (2026-01-31)
+
+
+### Miscellaneous
+
+* **ardo:** Synchronize ardo versions
+
 ## [2.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v1.2.3...ardo-v2.0.0) (2026-01-30)
 
 
