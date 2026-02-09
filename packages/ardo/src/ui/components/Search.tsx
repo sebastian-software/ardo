@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"
@@ -13,6 +13,7 @@ interface SearchDoc {
 }
 
 export function Search() {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
@@ -107,7 +108,7 @@ export function Search() {
     } else if (e.key === "Enter" && results[selectedIndex]) {
       e.preventDefault()
       const result = results[selectedIndex]
-      window.location.href = result.path as string
+      navigate(result.path as string)
       setIsOpen(false)
     } else if (e.key === "Escape") {
       setIsOpen(false)

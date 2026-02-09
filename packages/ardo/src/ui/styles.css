@@ -1175,6 +1175,7 @@ body {
 .ardo-search:focus-within .ardo-search-field {
   border-color: var(--ardo-c-brand);
   color: var(--ardo-c-text-light);
+  box-shadow: 0 0 0 3px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.14);
 }
 
 .ardo-search-kbd {
@@ -1210,6 +1211,10 @@ body {
 
 .ardo-search-input::placeholder {
   color: var(--ardo-c-text-lighter);
+}
+
+.ardo-search-input:focus-visible {
+  outline: none;
 }
 
 .ardo-search-popover {
