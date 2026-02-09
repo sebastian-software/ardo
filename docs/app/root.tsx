@@ -66,8 +66,6 @@ export default function Root() {
               <SidebarGroup title="Introduction">
                 <SidebarLink to="/guide/what-is-ardo">What is Ardo?</SidebarLink>
                 <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
-                <SidebarLink to="/guide/comparison">Framework Comparison</SidebarLink>
-                <SidebarLink to="/guide/roadmap">Roadmap</SidebarLink>
               </SidebarGroup>
 
               <SidebarGroup title="Writing">

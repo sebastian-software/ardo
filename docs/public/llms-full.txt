@@ -16,9 +16,8 @@ Ardo combines the developer experience of VitePress with the power of the React 
 6. [Custom Theme](#custom-theme)
 7. [TypeDoc Integration](#typedoc-integration)
 8. [Deployment](#deployment)
-9. [Framework Comparison](#framework-comparison)
-10. [Troubleshooting](#troubleshooting)
-11. [Package Exports Reference](#package-exports-reference)
+9. [Troubleshooting](#troubleshooting)
+10. [Package Exports Reference](#package-exports-reference)
 
 ---
 
@@ -442,24 +441,6 @@ Ardo produces a fully static site. When you run `pnpm build`, React Router prere
 
 - **Build command:** `pnpm build`
 - **Output directory:** `build/client`
-
----
-
-## Framework Comparison
-
-|                  | Ardo            | VitePress     | Docusaurus   | Starlight     |
-| ---------------- | --------------- | ------------- | ------------ | ------------- |
-| **UI Framework** | React 19        | Vue 3         | React 18     | Astro         |
-| **Build Tool**   | Vite            | Vite + Rollup | Webpack      | Vite + Rollup |
-| **Router**       | React Router 7  | Vue Router    | React Router | Astro Router  |
-| **Rendering**    | SSG + Hydration | SSG + SPA     | SSG + SPA    | Islands       |
-
-### Key Differentiators
-
-- **React ecosystem** — Use any React component, hook, or library
-- **React Router 7** — Modern routing with type-safe navigation
-- **TypeDoc built-in** — Auto-generate API docs from TypeScript source
-- **JSX-first architecture** — Theme components accept explicit props
 
 ---
 

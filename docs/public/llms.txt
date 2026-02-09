@@ -13,10 +13,8 @@ Ardo combines the developer experience of VitePress with the power of the React 
 - [Theme Configuration](https://sebastian-software.github.io/ardo/guide/theme-config): Navigation, sidebar, footer, search, and social links
 - [Custom Theme](https://sebastian-software.github.io/ardo/guide/custom-theme): CSS variables, component overrides, runtime hooks, and full custom themes
 - [TypeDoc Integration](https://sebastian-software.github.io/ardo/guide/typedoc): Auto-generate API documentation from TypeScript source
-- [Framework Comparison](https://sebastian-software.github.io/ardo/guide/comparison): How Ardo compares to VitePress, Docusaurus, and Starlight
 - [Troubleshooting](https://sebastian-software.github.io/ardo/guide/troubleshooting): Common issues and solutions
 - [Deployment](https://sebastian-software.github.io/ardo/guide/deployment): Deploy to GitHub Pages, Netlify, Vercel, and more
-- [Roadmap](https://sebastian-software.github.io/ardo/guide/roadmap): Planned features and future direction
 - [Full documentation as single file](https://sebastian-software.github.io/ardo/llms-full.txt): Complete documentation optimized for LLM consumption
 
 ## Package Exports
