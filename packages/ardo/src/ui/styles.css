@@ -8,8 +8,8 @@
 
   /* Brand - Teal/Green from logo - used sparingly for accents */
   --ardo-brand-h: 170;
-  --ardo-brand-c: 0.12;
-  --ardo-brand-l: 0.45;
+  --ardo-brand-c: 0.15;
+  --ardo-brand-l: 0.48;
 
   /* Semantic Colors (hue values) */
   --ardo-hue-success: 155;
@@ -34,22 +34,22 @@
     oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h)) 0%,
     oklch(
         calc(var(--ardo-brand-l) + 0.08) calc(var(--ardo-brand-c) - 0.02)
-          calc(var(--ardo-brand-h) + 15)
+          calc(var(--ardo-brand-h) + 30)
       )
       100%
   );
 
   /* ========================================
-     Neutral Background Colors (no green tint)
+     Neutral Background Colors (brand-tinted)
      ======================================== */
   --ardo-c-bg: #ffffff;
-  --ardo-c-bg-soft: #f8f9fa;
-  --ardo-c-bg-mute: #f1f3f5;
-  --ardo-c-bg-alt: #e9ecef;
+  --ardo-c-bg-soft: oklch(0.975 0.005 var(--ardo-brand-h));
+  --ardo-c-bg-mute: oklch(0.95 0.008 var(--ardo-brand-h));
+  --ardo-c-bg-alt: oklch(0.925 0.01 var(--ardo-brand-h));
 
-  /* Sidebar - subtle warm gray */
-  --ardo-sidebar-bg: #f8f9fa;
-  --ardo-sidebar-border: #e9ecef;
+  /* Sidebar - brand-tinted */
+  --ardo-sidebar-bg: oklch(0.975 0.006 var(--ardo-brand-h));
+  --ardo-sidebar-border: oklch(0.925 0.01 var(--ardo-brand-h));
 
   /* Code block styling - warm cream tone */
   --ardo-code-bg: #fdfcfb;
@@ -57,16 +57,23 @@
   --ardo-code-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 
   /* ========================================
-     Text Colors (neutral)
+     Text Colors (brand-tinted)
      ======================================== */
-  --ardo-c-text: #1a1a2e;
-  --ardo-c-text-light: #495057;
-  --ardo-c-text-lighter: #868e96;
+  --ardo-c-text: oklch(0.22 0.015 var(--ardo-brand-h));
+  --ardo-c-text-light: oklch(0.45 0.01 var(--ardo-brand-h));
+  --ardo-c-text-lighter: oklch(0.6 0.008 var(--ardo-brand-h));
 
-  /* Border Colors */
-  --ardo-c-border: #dee2e6;
-  --ardo-c-border-light: #e9ecef;
+  /* Border Colors (brand-tinted) */
+  --ardo-c-border: oklch(0.88 0.008 var(--ardo-brand-h));
+  --ardo-c-border-light: oklch(0.925 0.006 var(--ardo-brand-h));
   --ardo-c-divider: var(--ardo-c-border);
+
+  /* ========================================
+     Shadows
+     ======================================== */
+  --ardo-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04), 0 1px 3px oklch(0 0 0 / 0.06);
+  --ardo-shadow-md: 0 4px 6px oklch(0 0 0 / 0.04), 0 2px 4px oklch(0 0 0 / 0.03);
+  --ardo-shadow-lg: 0 10px 25px oklch(0 0 0 / 0.06), 0 4px 10px oklch(0 0 0 / 0.04);
 
   /* ========================================
      Container Colors (using hue variables)
@@ -122,31 +129,35 @@
 /* Dark mode */
 .dark {
   --ardo-brand-l: 0.65;
-  --ardo-brand-c: 0.14;
+  --ardo-brand-c: 0.16;
 
   --ardo-c-brand-subtle: oklch(0.2 0.04 var(--ardo-brand-h));
 
-  /* Dark backgrounds - cool slate */
-  --ardo-c-bg: #0f172a;
-  --ardo-c-bg-soft: #1e293b;
-  --ardo-c-bg-mute: #334155;
-  --ardo-c-bg-alt: #475569;
+  /* Dark backgrounds - brand-tinted slate */
+  --ardo-c-bg: oklch(0.15 0.015 var(--ardo-brand-h));
+  --ardo-c-bg-soft: oklch(0.2 0.02 var(--ardo-brand-h));
+  --ardo-c-bg-mute: oklch(0.28 0.02 var(--ardo-brand-h));
+  --ardo-c-bg-alt: oklch(0.38 0.015 var(--ardo-brand-h));
 
-  --ardo-sidebar-bg: #1e293b;
-  --ardo-sidebar-border: #334155;
+  --ardo-sidebar-bg: oklch(0.18 0.018 var(--ardo-brand-h));
+  --ardo-sidebar-border: oklch(0.28 0.02 var(--ardo-brand-h));
 
   --ardo-code-bg: #1c1917;
   --ardo-code-border: #292524;
   --ardo-code-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 
-  /* Light text on dark */
-  --ardo-c-text: #f1f5f9;
-  --ardo-c-text-light: #94a3b8;
-  --ardo-c-text-lighter: #64748b;
+  /* Light text on dark (brand-tinted) */
+  --ardo-c-text: oklch(0.93 0.008 var(--ardo-brand-h));
+  --ardo-c-text-light: oklch(0.7 0.015 var(--ardo-brand-h));
+  --ardo-c-text-lighter: oklch(0.55 0.012 var(--ardo-brand-h));
 
-  --ardo-c-border: #334155;
-  --ardo-c-border-light: #475569;
+  --ardo-c-border: oklch(0.3 0.02 var(--ardo-brand-h));
+  --ardo-c-border-light: oklch(0.38 0.015 var(--ardo-brand-h));
   --ardo-c-divider: var(--ardo-c-border);
+
+  --ardo-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.12), 0 1px 3px oklch(0 0 0 / 0.15);
+  --ardo-shadow-md: 0 4px 6px oklch(0 0 0 / 0.12), 0 2px 4px oklch(0 0 0 / 0.08);
+  --ardo-shadow-lg: 0 10px 25px oklch(0 0 0 / 0.2), 0 4px 10px oklch(0 0 0 / 0.12);
 
   /* Dark container backgrounds */
   --ardo-c-tip-bg: oklch(0.2 0.04 var(--ardo-hue-success));
@@ -227,13 +238,16 @@ body {
   left: 0;
   right: 0;
   height: var(--ardo-header-height);
-  background: var(--ardo-c-bg);
-  border-bottom: 1px solid var(--ardo-c-border);
+  background: oklch(1 0 0 / 0.85);
+  backdrop-filter: blur(12px) saturate(1.5);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.02);
   z-index: 100;
 }
 
 .dark .ardo-header {
-  background: var(--ardo-c-bg);
+  background: oklch(0.15 0.02 var(--ardo-brand-h) / 0.85);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.15), 0 1px 2px oklch(0 0 0 / 0.1);
 }
 
 .ardo-header-container {
@@ -389,7 +403,7 @@ body {
   height: calc(100vh - var(--ardo-header-height));
   padding: 24px 20px;
   overflow-y: auto;
-  border-right: 1px solid var(--ardo-c-border);
+  box-shadow: 1px 0 3px oklch(0 0 0 / 0.03);
   background: var(--ardo-sidebar-bg);
 }
 
@@ -435,6 +449,8 @@ body {
   color: var(--ardo-c-brand);
   background: var(--ardo-c-brand-subtle);
   font-weight: 500;
+  border-left: 3px solid var(--ardo-c-brand);
+  padding-left: 7px;
 }
 
 .ardo-sidebar-text {
@@ -445,6 +461,19 @@ body {
   letter-spacing: 0.05em;
   color: var(--ardo-c-text-lighter);
   padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ardo-sidebar-text::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ardo-c-brand);
+  opacity: 0.5;
+  flex-shrink: 0;
 }
 
 .ardo-sidebar-text:hover {
@@ -468,6 +497,10 @@ body {
 
 .ardo-sidebar-collapse.collapsed {
   transform: rotate(-90deg);
+}
+
+.dark .ardo-sidebar {
+  box-shadow: 1px 0 3px oklch(0 0 0 / 0.1);
 }
 
 @media (max-width: 1024px) {
@@ -615,7 +648,18 @@ body {
 .ardo-content h2 {
   font-size: 24px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--ardo-c-border);
+  border-bottom: none;
+  position: relative;
+}
+
+.ardo-content h2::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--ardo-c-brand);
+  border-radius: 2px;
+  margin-top: 10px;
 }
 .ardo-content h3 {
   font-size: 20px;
@@ -631,13 +675,14 @@ body {
 
 .ardo-content a {
   color: var(--ardo-c-brand);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--ardo-transition-fast);
+  text-decoration: underline;
+  text-decoration-color: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--ardo-transition-fast);
 }
 
 .ardo-content a:hover {
-  border-bottom-color: var(--ardo-c-brand);
+  text-decoration-color: var(--ardo-c-brand);
 }
 
 .ardo-content ul,
@@ -658,7 +703,7 @@ body {
 .ardo-content blockquote {
   margin: 20px 0;
   padding: 16px 20px;
-  border-left: 3px solid var(--ardo-c-brand);
+  border-left: 4px solid oklch(var(--ardo-brand-l) calc(var(--ardo-brand-c) + 0.03) var(--ardo-brand-h));
   background: var(--ardo-c-bg-soft);
   border-radius: 0 var(--ardo-radius) var(--ardo-radius) 0;
   font-style: italic;
@@ -691,6 +736,10 @@ body {
   font-size: 13px;
 }
 
+.ardo-content tbody tr:nth-child(even) {
+  background: var(--ardo-c-bg-soft);
+}
+
 .ardo-content img {
   max-width: 100%;
   border-radius: var(--ardo-radius);
@@ -702,9 +751,9 @@ body {
   font-family: var(--ardo-font-mono);
   font-size: 0.875em;
   padding: 3px 6px;
-  background: var(--ardo-c-bg-mute);
+  background: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.06);
   border-radius: var(--ardo-radius-sm);
-  border: 1px solid var(--ardo-c-border-light);
+  border: 1px solid oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
 }
 
 .ardo-content pre code {
@@ -741,7 +790,7 @@ body {
 
 .ardo-code-title {
   padding: 10px 16px;
-  background: var(--ardo-code-border);
+  background: linear-gradient(90deg, oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.04) 0%, var(--ardo-code-border) 100%);
   font-size: 13px;
   font-weight: 500;
   font-family: var(--ardo-font-mono);
@@ -773,7 +822,7 @@ body {
 }
 
 .ardo-code-line.highlighted {
-  background: rgba(99, 179, 237, 0.12);
+  background: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
   margin: 0 -16px;
   padding: 0 16px;
   border-left: 3px solid var(--ardo-c-brand);
@@ -808,7 +857,7 @@ body {
   font-family: var(--ardo-font-family);
   color: var(--ardo-c-text-light);
   opacity: 0;
-  transition: all var(--ardo-transition-fast);
+  transition: all var(--ardo-transition);
 }
 
 .ardo-code-wrapper:hover .ardo-copy-button {
@@ -874,34 +923,40 @@ body {
    ======================================== */
 .ardo-container {
   margin: 20px 0;
-  padding: 16px 20px;
+  padding: 20px 24px;
   border-radius: var(--ardo-radius);
   border: 1px solid;
+  border-left: 4px solid;
 }
 
 .ardo-container-tip {
   background: var(--ardo-c-tip-bg);
   border-color: var(--ardo-c-tip-border);
+  border-left-color: var(--ardo-c-tip);
 }
 
 .ardo-container-warning {
   background: var(--ardo-c-warning-bg);
   border-color: var(--ardo-c-warning-border);
+  border-left-color: var(--ardo-c-warning);
 }
 
 .ardo-container-danger {
   background: var(--ardo-c-danger-bg);
   border-color: var(--ardo-c-danger-border);
+  border-left-color: var(--ardo-c-danger);
 }
 
 .ardo-container-info {
   background: var(--ardo-c-info-bg);
   border-color: var(--ardo-c-info-border);
+  border-left-color: var(--ardo-c-info);
 }
 
 .ardo-container-note {
   background: var(--ardo-c-note-bg);
   border-color: var(--ardo-c-note-border);
+  border-left-color: var(--ardo-c-note);
 }
 
 .ardo-container-title {
@@ -1008,13 +1063,16 @@ body {
   border: 1px solid var(--ardo-c-border);
   border-radius: var(--ardo-radius);
   text-decoration: none;
-  transition: all var(--ardo-transition-fast);
+  box-shadow: var(--ardo-shadow-sm);
+  transition: all var(--ardo-transition);
 }
 
 .ardo-prev-link:hover,
 .ardo-next-link:hover {
-  border-color: var(--ardo-c-brand);
+  border-color: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
   background: var(--ardo-c-brand-subtle);
+  box-shadow: var(--ardo-shadow-md);
+  transform: translateY(-2px);
 }
 
 .ardo-next-link {
@@ -1039,8 +1097,13 @@ body {
 .ardo-footer {
   padding: 32px 24px;
   text-align: center;
-  border-top: 1px solid var(--ardo-c-border);
-  background: var(--ardo-c-bg-soft);
+  box-shadow: 0 -1px 3px oklch(0 0 0 / 0.03);
+  background: linear-gradient(180deg, var(--ardo-c-bg) 0%, oklch(0.97 0.01 var(--ardo-brand-h)) 100%);
+}
+
+.dark .ardo-footer {
+  box-shadow: 0 -1px 3px oklch(0 0 0 / 0.1);
+  background: linear-gradient(180deg, var(--ardo-c-bg) 0%, oklch(0.18 0.015 var(--ardo-brand-h)) 100%);
 }
 
 .ardo-footer-message,
@@ -1104,7 +1167,9 @@ body {
 .ardo-search-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: oklch(0 0 0 / 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -1116,8 +1181,9 @@ body {
   width: 100%;
   max-width: 560px;
   background: var(--ardo-c-bg);
-  border-radius: var(--ardo-radius-lg);
+  border-radius: 16px;
   border: 1px solid var(--ardo-c-border);
+  box-shadow: var(--ardo-shadow-lg);
   overflow: hidden;
 }
 
@@ -1175,7 +1241,7 @@ body {
 
 .ardo-search-result:hover,
 .ardo-search-result.selected {
-  background: var(--ardo-c-bg-soft);
+  background: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.05);
 }
 
 .ardo-search-result-title {
@@ -1290,7 +1356,7 @@ body {
   overflow: hidden;
 }
 
-/* Subtle gradient background */
+/* Gradient background with dual orbs */
 .ardo-hero::before {
   content: "";
   position: absolute;
@@ -1300,8 +1366,13 @@ body {
   bottom: 0;
   background:
     radial-gradient(
-      ellipse 80% 50% at 50% -20%,
-      oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.08) 0%,
+      ellipse 60% 50% at 30% 0%,
+      oklch(var(--ardo-brand-l) var(--ardo-brand-c) calc(var(--ardo-brand-h) + 30) / 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 70% -10%,
+      oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.12) 0%,
       transparent 70%
     ),
     linear-gradient(180deg, var(--ardo-c-bg) 0%, var(--ardo-c-bg-soft) 100%);
@@ -1311,8 +1382,13 @@ body {
 .dark .ardo-hero::before {
   background:
     radial-gradient(
-      ellipse 80% 50% at 50% -20%,
-      oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.15) 0%,
+      ellipse 60% 50% at 30% 0%,
+      oklch(var(--ardo-brand-l) var(--ardo-brand-c) calc(var(--ardo-brand-h) + 30) / 0.1) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 70% -10%,
+      oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.2) 0%,
       transparent 70%
     ),
     linear-gradient(180deg, var(--ardo-c-bg) 0%, var(--ardo-c-bg-soft) 100%);
@@ -1385,11 +1461,13 @@ body {
 .ardo-hero-action-brand {
   background: var(--ardo-c-brand);
   color: white;
+  box-shadow: 0 4px 14px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.3);
 }
 
 .ardo-hero-action-brand:hover {
   background: var(--ardo-c-brand-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
 }
 
 .ardo-hero-action-alt {
@@ -1425,12 +1503,22 @@ body {
   background: var(--ardo-c-bg);
   border-radius: var(--ardo-radius-lg);
   border: 1px solid var(--ardo-c-border);
+  box-shadow: var(--ardo-shadow-sm);
   transition: all var(--ardo-transition);
+  animation: ardo-fade-in-up 0.5s ease both;
 }
 
+.ardo-feature:nth-child(1) { animation-delay: 0ms; }
+.ardo-feature:nth-child(2) { animation-delay: 80ms; }
+.ardo-feature:nth-child(3) { animation-delay: 160ms; }
+.ardo-feature:nth-child(4) { animation-delay: 240ms; }
+.ardo-feature:nth-child(5) { animation-delay: 320ms; }
+.ardo-feature:nth-child(6) { animation-delay: 400ms; }
+
 .ardo-feature:hover {
-  border-color: var(--ardo-c-brand);
-  transform: translateY(-2px);
+  border-color: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
+  box-shadow: var(--ardo-shadow-md), 0 0 0 1px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
+  transform: translateY(-3px);
 }
 
 .ardo-feature-icon {
@@ -2181,6 +2269,38 @@ body {
 /* API Parameters */
 .ardo-api-parameters {
   margin: 16px 0;
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes ardo-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ardo-hero-animate {
+  animation: ardo-fade-in-up 0.6s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ardo-feature,
+  .ardo-hero-animate {
+    animation: none;
+  }
+
+  .ardo-feature:hover,
+  .ardo-prev-link:hover,
+  .ardo-next-link:hover,
+  .ardo-hero-action-brand:hover {
+    transform: none;
+  }
 }
 
 /* ========================================

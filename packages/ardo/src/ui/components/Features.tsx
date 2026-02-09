@@ -1,5 +1,5 @@
 import { Link } from "react-router"
-import type { ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
 
 export interface FeatureItem {
   /** Feature title */
@@ -44,9 +44,17 @@ export interface FeatureCardProps extends FeatureItem {
  * <FeatureCard title="Fast" icon={<Zap size={28} />} details="Lightning fast." />
  * ```
  */
-export function FeatureCard({ title, icon, details, link, linkText, className }: FeatureCardProps) {
+export function FeatureCard({
+  title,
+  icon,
+  details,
+  link,
+  linkText,
+  className,
+  style,
+}: FeatureCardProps & { style?: CSSProperties }) {
   return (
-    <div className={className ?? "ardo-feature"}>
+    <div className={className ?? "ardo-feature"} style={style}>
       {icon && <div className="ardo-feature-icon">{icon}</div>}
       <h3 className="ardo-feature-title">{title}</h3>
       <p className="ardo-feature-details">{details}</p>
@@ -90,7 +98,7 @@ export function Features({ items, title, subtitle, className }: FeaturesProps) {
       )}
       <div className="ardo-features-container">
         {items.map((feature, index) => (
-          <FeatureCard key={index} {...feature} />
+          <FeatureCard key={index} {...feature} style={{ animationDelay: `${index * 80}ms` }} />
         ))}
       </div>
     </section>

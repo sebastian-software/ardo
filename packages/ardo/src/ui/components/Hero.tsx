@@ -63,7 +63,7 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
 
   return (
     <section className={className ?? "ardo-hero"}>
-      <div className="ardo-hero-container">
+      <div className="ardo-hero-container ardo-hero-animate">
         {image && (
           <div className="ardo-hero-image">
             <img src={imageUrl} alt={imageAlt} />
