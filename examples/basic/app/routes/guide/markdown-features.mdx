@@ -1,0 +1,58 @@
+---
+title: Markdown Features
+description: Explore the Markdown features available in Ardo.
+order: 2
+---
+
+# Markdown Features
+
+Ardo supports standard Markdown, GitHub Flavored Markdown (GFM), and several extensions.
+
+## Code Blocks
+
+Syntax highlighting is powered by Shiki:
+
+```typescript
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greetUser(user: User): string {
+  return `Hello, ${user.name}!`
+}
+```
+
+## Tables
+
+| Feature         | Supported |
+| --------------- | --------- |
+| GFM Tables      | Yes       |
+| Task Lists      | Yes       |
+| Code Highlights | Yes       |
+| Containers      | Yes       |
+
+## Task Lists
+
+- [x] Set up project
+- [x] Add Markdown content
+- [ ] Deploy to production
+
+## Container Directives
+
+:::tip
+This is a helpful tip for your readers.
+:::
+
+:::warning
+Be careful when using this feature in production.
+:::
+
+:::danger
+This action cannot be undone!
+:::
+
+:::info
+Here is some additional context.
+:::
