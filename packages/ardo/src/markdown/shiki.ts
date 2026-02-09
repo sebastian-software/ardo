@@ -240,6 +240,37 @@ function escapeHtml(text: string): string {
 }
 
 /**
+ * Remark plugin that extracts code fence meta info and stores it as HAST
+ * data attributes before MDX compilation can corrupt it.
+ *
+ * MDX treats `{...}` in code fence meta as JSX expressions, which corrupts
+ * both the meta and the code content. This plugin strips the meta and
+ * stores parsed info as `data-ardo-*` attributes that survive MDX.
+ */
+export function remarkCodeMeta() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return function (tree: any) {
+    visit(tree, "code", (node: { meta?: string | null; data?: Record<string, unknown> }) => {
+      if (!node.meta) return
+
+      const meta = node.meta
+      const data = node.data || (node.data = {})
+      const hProperties = (data.hProperties as Record<string, unknown>) || {}
+
+      // Preserve meta as metastring property on the <code> HAST element.
+      // @shikijs/rehype reads head.properties.metastring and passes it
+      // to Shiki as meta.__raw, which ardoLineTransformer reads.
+      hProperties.metastring = meta
+      data.hProperties = hProperties
+
+      // Strip meta from the MDAST node to prevent MDX from
+      // misinterpreting {expressions} like {2,4-5} as JSX
+      node.meta = null
+    })
+  }
+}
+
+/**
  * Shiki transformer that adds Ardo-specific line classes, highlighting,
  * line numbers, and title attributes to code blocks.
  *
@@ -253,20 +284,24 @@ interface ArdoLineTransformerOptions {
 export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): ShikiTransformer {
   let highlightLines: number[] = []
   let showLineNumbers = false
+  let metaRaw = ""
 
   return {
     name: "ardo:lines",
+    // preprocess runs BEFORE line() hooks, so state is ready for line()
+    preprocess(_code, shikiOptions) {
+      metaRaw = (shikiOptions.meta?.__raw as string) || ""
+      highlightLines = parseHighlightLines(metaRaw)
+      showLineNumbers = options.globalLineNumbers || metaRaw.includes("showLineNumbers")
+    },
+    // pre runs AFTER line() — used only for node property modifications
     pre(node) {
-      const raw = (this.options.meta?.__raw as string) || ""
-      highlightLines = parseHighlightLines(raw)
-      showLineNumbers = options.globalLineNumbers || raw.includes("showLineNumbers")
       node.properties = node.properties || {}
-      const title = parseTitle(raw)
+      const title = parseTitle(metaRaw)
       if (title) {
         node.properties["data-title"] = title
       }
-      // Extract [Label] for code-group tabs
-      const labelMatch = raw.match(/\[([^\]]+)\]/)
+      const labelMatch = metaRaw.match(/\[([^\]]+)\]/)
       if (labelMatch) {
         node.properties["data-label"] = labelMatch[1]
       }

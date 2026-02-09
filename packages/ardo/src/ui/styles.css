@@ -824,13 +824,14 @@ body {
 
 .ardo-code-line {
   display: block;
+  margin: 0 -16px;
+  padding: 0 16px;
+  border-left: 3px solid transparent;
 }
 
 .ardo-code-line.highlighted {
   background: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
-  margin: 0 -16px;
-  padding: 0 16px;
-  border-left: 3px solid var(--ardo-c-brand);
+  border-left-color: var(--ardo-c-brand);
 }
 
 .ardo-line-number {
