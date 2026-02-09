@@ -4,6 +4,7 @@ import { PressProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
 import "ardo/ui/styles.css"
+import "./theme.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
