@@ -24,13 +24,13 @@ export default function HomePage() {
       {/* Hero Section */}
       <Hero
         name="Ardo"
-        text="React-first Documentation"
-        tagline="Build beautiful documentation sites with React, React Router, and Markdown. Automatically generate API references from TypeScript with built-in TypeDoc integration."
+        text="Documentation for React teams"
+        tagline="Your components. Your stack. Your docs. Build documentation with React 19, React Router 7, and MDX. Drop in your existing components and generate API references straight from TypeScript."
         image={logo}
         actions={[
-          { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
+          { text: "Start your first project", link: "/guide/getting-started", theme: "brand" },
           {
-            text: "View on GitHub",
+            text: "Browse on GitHub",
             link: "https://github.com/sebastian-software/ardo",
             theme: "alt",
           },
@@ -40,9 +40,9 @@ export default function HomePage() {
       {/* Quick Start Section */}
       <section className="ardo-home-section">
         <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Up and Running in Seconds</h2>
+          <h2 className="ardo-home-section-title">From zero to docs in four lines</h2>
           <p className="ardo-home-section-subtitle">
-            One command to scaffold a complete documentation site
+            Scaffold a complete documentation site. Add an MDX file, see it in the sidebar.
           </p>
 
           <div className="ardo-home-terminal">
@@ -70,55 +70,56 @@ export default function HomePage() {
 
       {/* Features Grid */}
       <Features
-        title="Everything You Need"
-        subtitle="A complete toolkit for building world-class documentation"
+        title="What's in the box"
+        subtitle="Everything a documentation site needs, nothing it doesn't"
         items={[
           {
-            title: "React 19",
+            title: "React 19, natively",
             icon: <Atom size={28} strokeWidth={1.5} />,
             details:
-              "Built on the latest React with full support for Server Components, Suspense, and modern patterns.",
+              "Not a React compatibility layer on top of something else. Actual React 19 with Server Components, Suspense, and the patterns you already use in your app.",
           },
           {
-            title: "Vite + Rolldown",
+            title: "Vite 8 with Rolldown",
             icon: <Zap size={28} strokeWidth={1.5} />,
             details:
-              "Lightning-fast builds with Vite 8 and Rolldown. Instant HMR and optimized production bundles.",
+              "Dev server starts in under a second. HMR updates hit the browser before you look up from your editor. Production builds are just as fast.",
           },
           {
-            title: "TypeDoc Built-in",
+            title: "TypeDoc, zero config",
             icon: <BookOpen size={28} strokeWidth={1.5} />,
             details:
-              "Auto-generate API documentation from TypeScript source code. Zero configuration required.",
+              "Point Ardo at your TypeScript source and it generates linked API reference pages. Interfaces, types, functions, classes. No plugins to install.",
           },
           {
-            title: "Type-Safe Routes",
+            title: "Type-safe routes",
             icon: <ShieldCheck size={28} strokeWidth={1.5} />,
             details:
-              "Full TypeScript support with type-safe navigation. Catch broken links at build time.",
+              "React Router 7 gives you typed navigation. Link to a page that doesn't exist? TypeScript tells you at build time, not your users at runtime.",
           },
           {
-            title: "Dark Mode",
+            title: "Light and dark mode",
             icon: <Moon size={28} strokeWidth={1.5} />,
             details:
-              "Beautiful light and dark themes with smooth transitions. Respects system preferences.",
+              "Both themes ship by default. Follows system preferences, togglable by the reader, smooth transitions. Covers code blocks too.",
           },
           {
-            title: "Full-Text Search",
+            title: "Offline-capable search",
             icon: <Search size={28} strokeWidth={1.5} />,
             details:
-              "Client-side search powered by MiniSearch. Works offline, no external services needed.",
+              "Full-text search powered by MiniSearch. Runs entirely in the browser. No external service to configure, no API keys, works offline.",
           },
           {
-            title: "MDX Support",
+            title: "MDX with Shiki",
             icon: <FileCode size={28} strokeWidth={1.5} />,
             details:
-              "Write Markdown with embedded React components. Syntax highlighting with Shiki.",
+              "Write Markdown, import React components where you need them. Code blocks are syntax-highlighted at build time with Shiki. No client-side JS for highlighting.",
           },
           {
-            title: "Customizable",
+            title: "Make it yours",
             icon: <Palette size={28} strokeWidth={1.5} />,
-            details: "CSS variables for easy theming. Override any component. Make it truly yours.",
+            details:
+              "CSS custom properties for theming. Override any component. Bring your own layout if the defaults don't fit. It's your site.",
           },
         ]}
       />
@@ -126,9 +127,12 @@ export default function HomePage() {
       {/* Code Example Section */}
       <section className="ardo-home-section ardo-home-section-alt">
         <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Write Docs, Not Boilerplate</h2>
+          <h2 className="ardo-home-section-title">
+            Markdown when it's enough, React when it's not
+          </h2>
           <p className="ardo-home-section-subtitle">
-            Simple Markdown with the full power of React when you need it
+            Plain Markdown for content. Drop in a React component when you need something
+            interactive.
           </p>
 
           <div className="ardo-home-code-example">
@@ -165,9 +169,9 @@ Use \`create-ardo\` for a complete project setup!
       {/* Comparison Section */}
       <section className="ardo-home-section">
         <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Why Ardo?</h2>
+          <h2 className="ardo-home-section-title">How Ardo compares</h2>
           <p className="ardo-home-section-subtitle">
-            The only React-native documentation framework with built-in TypeDoc
+            The only React-native docs framework with built-in TypeDoc and type-safe routing
           </p>
 
           <div className="ardo-home-comparison">
@@ -192,7 +196,7 @@ Use \`create-ardo\` for a complete project setup!
                   <td>Astro</td>
                 </tr>
                 <tr>
-                  <td>Build Tool</td>
+                  <td>Build tool</td>
                   <td className="ardo-home-comparison-highlight">
                     <strong>Vite 8 + Rolldown</strong>
                   </td>
@@ -201,7 +205,7 @@ Use \`create-ardo\` for a complete project setup!
                   <td>Vite 5</td>
                 </tr>
                 <tr>
-                  <td>TypeDoc Built-in</td>
+                  <td>TypeDoc built in</td>
                   <td className="ardo-home-comparison-highlight">
                     <Check size={18} className="ardo-home-check" />
                   </td>
@@ -214,7 +218,7 @@ Use \`create-ardo\` for a complete project setup!
                   </td>
                 </tr>
                 <tr>
-                  <td>Type-Safe Routes</td>
+                  <td>Type-safe routes</td>
                   <td className="ardo-home-comparison-highlight">
                     <Check size={18} className="ardo-home-check" />
                   </td>
@@ -229,7 +233,7 @@ Use \`create-ardo\` for a complete project setup!
                   </td>
                 </tr>
                 <tr>
-                  <td>React Components in MD</td>
+                  <td>React components in MD</td>
                   <td className="ardo-home-comparison-highlight">
                     <Check size={18} className="ardo-home-check" />
                   </td>
@@ -246,7 +250,7 @@ Use \`create-ardo\` for a complete project setup!
 
             <div className="ardo-home-comparison-cta">
               <Link to="/guide/comparison" className="ardo-home-link">
-                See full comparison <ArrowRight size={16} />
+                See the full comparison <ArrowRight size={16} />
               </Link>
             </div>
           </div>
@@ -256,9 +260,9 @@ Use \`create-ardo\` for a complete project setup!
       {/* Tech Stack Section */}
       <section className="ardo-home-section ardo-home-section-alt">
         <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Built on Modern Standards</h2>
+          <h2 className="ardo-home-section-title">Your stack, not ours</h2>
           <p className="ardo-home-section-subtitle">
-            Powered by the technologies you already know and love
+            Ardo is built on the tools React teams already use. Nothing new to learn.
           </p>
 
           <div className="ardo-home-tech-grid">
@@ -305,15 +309,15 @@ Use \`create-ardo\` for a complete project setup!
       {/* Final CTA Section */}
       <section className="ardo-home-section ardo-home-cta-section">
         <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Ready to Build?</h2>
+          <h2 className="ardo-home-section-title">Ship your docs this week</h2>
           <p className="ardo-home-section-subtitle">
-            Start creating beautiful documentation in minutes, not hours
+            Four lines in your terminal. A complete documentation site. What are you waiting for?
           </p>
 
           <div className="ardo-home-cta-buttons">
             <Link to="/guide/getting-started" className="ardo-home-cta-primary">
               <Rocket size={20} />
-              Get Started
+              Create your first project
             </Link>
             <a
               href="https://github.com/sebastian-software/ardo"
@@ -322,7 +326,7 @@ Use \`create-ardo\` for a complete project setup!
               rel="noopener noreferrer"
             >
               <Github size={20} />
-              View on GitHub
+              Browse on GitHub
             </a>
           </div>
         </div>

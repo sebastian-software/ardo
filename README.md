@@ -4,7 +4,7 @@
 
 <img src="./logo.svg" alt="Ardo Logo" width="120" height="120">
 
-**React-first Static Documentation Framework**
+**Documentation for React teams. No compromises.**
 
 [![CI](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)
@@ -21,71 +21,51 @@
 
 ---
 
-## What is Ardo?
+## The problem
 
-Ardo is a modern documentation framework built on React 19 and React Router 7. It combines the developer experience of VitePress with the power of the React ecosystem.
+You build your app in React. Your components are React. Your design system is React. Then you need documentation and suddenly you're writing Vue templates in VitePress, fighting Webpack configs in Docusaurus, or learning Astro from scratch.
 
-**Key Features:**
+Ardo fixes that. Write your docs with the same stack you already use: React 19, React Router 7, and Vite 8. Drop your existing components straight into MDX. No wrappers, no adapters, no context switching.
 
-- **React 19** — Latest React features and patterns
-- **React Router 7** — Modern file-based routing with pre-rendering
-- **Vite** — Lightning-fast builds and development
-- **Static Prerendering** — SEO-friendly static HTML generation
-- **Markdown + MDX** — Write content in Markdown with React components
-- **Shiki Syntax Highlighting** — Beautiful code blocks with build-time highlighting
-- **Dark Mode** — Built-in theme toggle with CSS custom properties
-- **Full-Text Search** — Client-side search powered by MiniSearch
+## What you actually get
 
-## Quick Start
+**Your React components in your docs.** Not through a compatibility layer. Natively. Import your design system, your interactive examples, your custom widgets. They just work.
+
+**API docs from your TypeScript source.** TypeDoc is built in. Point it at your code and it generates complete, linked API reference pages. No plugins to configure, no separate build step to maintain.
+
+**Type-safe routes that catch broken links at build time.** React Router 7 gives you typed route paths. A link to a page that doesn't exist? TypeScript catches it before your users do.
+
+**Builds that don't waste your time.** Vite 8 with Rolldown. Dev server starts in under a second. Production builds finish while you're still reaching for your coffee.
+
+## Quick start
 
 ```bash
-# Create a new project with the CLI
 pnpm create ardo@latest my-docs
-
-# Navigate to project
 cd my-docs
-
-# Install dependencies
 pnpm install
-
-# Start developing
 pnpm dev
 ```
 
-Or manually:
+Your site is running at `localhost:5173`. Add an `.mdx` file to `app/routes/` and it shows up in the sidebar.
+
+Or add Ardo to an existing project:
 
 ```bash
 pnpm add ardo react react-dom
 pnpm add -D typescript vite
 ```
 
-## Packages
+## How Ardo compares
 
-| Package                                   | Description                                                          | Version                                                                                           |
-| ----------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [**ardo**](./packages/ardo)               | Core framework with Vite plugin, runtime hooks, and theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)               |
-| [**create-ardo**](./packages/create-ardo) | Scaffolding CLI for new Ardo projects                                | [![npm](https://img.shields.io/npm/v/create-ardo.svg)](https://www.npmjs.com/package/create-ardo) |
+|                            |    **Ardo**     |   VitePress   | Docusaurus | Starlight |
+| -------------------------- | :-------------: | :-----------: | :--------: | :-------: |
+| **UI Framework**           |    React 19     |     Vue 3     |  React 18  |   Astro   |
+| **Build Tool**             | Vite 8 Rolldown | Vite + Rollup |  Webpack   |   Vite    |
+| **TypeDoc built in**       |       Yes       |      No       |   Plugin   |    No     |
+| **Type-safe routes**       |       Yes       |      No       |     No     |    No     |
+| **React components in MD** |       Yes       |   Vue only    |    Yes     |    Yes    |
 
-## Deployment
-
-Ardo builds to fully static HTML — deploy anywhere. Projects scaffolded with `create-ardo` include a GitHub Pages workflow out of the box. See the [Deployment Guide](https://sebastian-software.github.io/ardo/guide/deployment) for details on GitHub Pages, Netlify, and Vercel.
-
-## Documentation Structure
-
-```
-my-docs/
-├── app/
-│   ├── routes/            # MDX/MD content
-│   │   ├── guide/
-│   │   │   └── getting-started.mdx
-│   │   └── home.tsx       # Home page
-│   ├── root.tsx           # Root layout
-│   ├── entry.client.tsx   # Client entry
-│   └── entry.server.tsx   # Server entry
-├── vite.config.ts         # Vite + Ardo configuration
-├── react-router.config.ts # React Router configuration
-└── package.json
-```
+See the [full comparison](https://sebastian-software.github.io/ardo/guide/comparison) in the docs.
 
 ## Configuration
 
@@ -117,40 +97,46 @@ export default defineConfig({
 })
 ```
 
-## Comparison
+## Project structure
 
-|                   |      Ardo      |   VitePress   |  Docusaurus  |   Starlight   |
-| ----------------- | :------------: | :-----------: | :----------: | :-----------: |
-| **UI Framework**  |    React 19    |     Vue 3     |   React 18   |     Astro     |
-| **Build Tool**    |      Vite      | Vite + Rollup |   Webpack    | Vite + Rollup |
-| **Router**        | React Router 7 |  Vue Router   | React Router | Astro Router  |
-| **Pre-rendering** |       ✅       |      ✅       |      ✅      |      ✅       |
+```
+my-docs/
+├── app/
+│   ├── routes/            # MDX/MD content
+│   │   ├── guide/
+│   │   │   └── getting-started.mdx
+│   │   └── home.tsx       # Home page
+│   ├── root.tsx           # Root layout
+│   ├── entry.client.tsx   # Client entry
+│   └── entry.server.tsx   # Server entry
+├── vite.config.ts         # Vite + Ardo configuration
+├── react-router.config.ts # React Router configuration
+└── package.json
+```
 
-See the [full comparison](https://sebastian-software.github.io/ardo/guide/comparison) in our documentation.
+## Deployment
+
+Ardo builds to static HTML. Deploy it anywhere: Vercel, Netlify, GitHub Pages, Cloudflare Pages, or a plain file server. Projects created with `create-ardo` ship with a GitHub Pages workflow ready to go.
+
+See the [Deployment Guide](https://sebastian-software.github.io/ardo/guide/deployment) for setup details.
+
+## Packages
+
+| Package                                   | Description                                                  | Version                                                                                           |
+| ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| [**ardo**](./packages/ardo)               | Core framework: Vite plugin, runtime hooks, theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)               |
+| [**create-ardo**](./packages/create-ardo) | Scaffolding CLI for new projects                             | [![npm](https://img.shields.io/npm/v/create-ardo.svg)](https://www.npmjs.com/package/create-ardo) |
 
 ## Development
 
 ```bash
-# Clone the repository
 git clone https://github.com/sebastian-software/ardo.git
 cd ardo
-
-# Install dependencies
 pnpm install
-
-# Build the package
 pnpm build
-
-# Start the docs dev server
 pnpm docs:dev
 ```
 
-## Used By
-
-<!-- Add your project here! Submit a PR to be featured. -->
-
-_Your project could be here! [Submit a PR](https://github.com/sebastian-software/ardo/edit/main/README.md) to add your documentation site._
-
 ## License
 
-[MIT](./LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de)
+[MIT](./LICENSE) &copy; [Sebastian Software GmbH](https://sebastian-software.de)
