@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, Children, isValidElement } from "react"
 import { CopyButton } from "./CopyButton"
 
 export interface CodeBlockProps {
@@ -62,18 +62,30 @@ export function CodeBlock({
 export interface CodeGroupProps {
   /** CodeBlock components to display as tabs */
   children: React.ReactNode
+  /** Comma-separated tab labels (set by remarkContainersMdx from code block meta) */
+  labels?: string
 }
 
 /**
  * Tabbed group of code blocks.
+ * Labels come from the `labels` prop (set at remark level) or fall back to
+ * data-label / title / language props on children.
  */
-export function CodeGroup({ children }: CodeGroupProps) {
+export function CodeGroup({ children, labels: labelsStr }: CodeGroupProps) {
   const [activeTab, setActiveTab] = useState(0)
 
-  const childArray = Array.isArray(children) ? children : [children]
+  // Filter to only valid React elements (skip whitespace text nodes)
+  const childArray = Children.toArray(children).filter(isValidElement)
+  const labelArray = labelsStr ? labelsStr.split(",") : []
   const tabs = childArray.map((child, index) => {
-    const props = (child as React.ReactElement)?.props as { title?: string; language?: string }
-    return props?.title || props?.language || `Tab ${index + 1}`
+    if (labelArray[index]) return labelArray[index]
+    const props = child.props as Record<string, unknown>
+    return (
+      (props["data-label"] as string) ||
+      (props.title as string) ||
+      (props.language as string) ||
+      `Tab ${index + 1}`
+    )
   })
 
   return (

@@ -161,6 +161,35 @@ const containerToComponent: Record<string, string> = {
 export function remarkContainersMdx() {
   return function (tree: Root) {
     visit(tree, "containerDirective", (node: ContainerDirective, index, parent) => {
+      if (!parent || typeof index !== "number") return
+
+      // Handle code-group directives
+      if (node.name === "code-group") {
+        // Extract tab labels from code block meta strings at remark level
+        const labels = node.children
+          .filter((child) => child.type === "code")
+          .map((child) => {
+            const meta = (child as { meta?: string }).meta || ""
+            const match = meta.match(/\[([^\]]+)\]/)
+            return match ? match[1] : (child as { lang?: string }).lang || "Code"
+          })
+
+        const jsxNode = {
+          type: "mdxJsxFlowElement" as const,
+          name: "CodeGroup",
+          attributes: [
+            {
+              type: "mdxJsxAttribute" as const,
+              name: "labels",
+              value: labels.join(","),
+            },
+          ],
+          children: node.children,
+        }
+        parent.children[index] = jsxNode as unknown as (typeof parent.children)[number]
+        return
+      }
+
       const componentName = containerToComponent[node.name]
       if (!componentName) return
 
@@ -201,9 +230,7 @@ export function remarkContainersMdx() {
         children: node.children,
       }
 
-      if (parent && typeof index === "number") {
-        parent.children[index] = jsxNode as unknown as (typeof parent.children)[number]
-      }
+      parent.children[index] = jsxNode as unknown as (typeof parent.children)[number]
     })
   }
 }

@@ -260,10 +260,15 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
       const raw = (this.options.meta?.__raw as string) || ""
       highlightLines = parseHighlightLines(raw)
       showLineNumbers = options.globalLineNumbers || raw.includes("showLineNumbers")
+      node.properties = node.properties || {}
       const title = parseTitle(raw)
       if (title) {
-        node.properties = node.properties || {}
         node.properties["data-title"] = title
+      }
+      // Extract [Label] for code-group tabs
+      const labelMatch = raw.match(/\[([^\]]+)\]/)
+      if (labelMatch) {
+        node.properties["data-label"] = labelMatch[1]
       }
     },
     line(node, line) {

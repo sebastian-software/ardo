@@ -76,17 +76,19 @@ function extractTextContent(children: ReactNode): string {
 }
 
 /**
- * Code block wrapper with copy button and optional title
+ * Code block wrapper with copy button and optional title.
+ * Forwards data-label for CodeGroup tab labels.
  */
 function PreBlock({
   children,
   "data-title": dataTitle,
+  "data-label": dataLabel,
   ...props
-}: HTMLAttributes<HTMLPreElement> & { "data-title"?: string }) {
+}: HTMLAttributes<HTMLPreElement> & { "data-title"?: string; "data-label"?: string }) {
   const code = extractTextContent(children)
 
   return (
-    <div className="ardo-code-block">
+    <div className="ardo-code-block" data-label={dataLabel}>
       {dataTitle && <div className="ardo-code-title">{dataTitle}</div>}
       <div className="ardo-code-wrapper">
         <pre {...props}>{children}</pre>
