@@ -143,6 +143,7 @@ export function Search() {
         />
         {query && (
           <button
+            type="button"
             className="ardo-search-clear"
             onClick={(e) => {
               e.stopPropagation()
