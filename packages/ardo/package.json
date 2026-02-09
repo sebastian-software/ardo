@@ -71,7 +71,7 @@
     "remark-mdx-frontmatter": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^3.21.0",
+    "shiki": "^3.22.0",
     "tailwindcss": "^4.1.18",
     "typedoc": "^0.28.16",
     "unified": "^11.0.5",
