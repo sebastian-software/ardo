@@ -141,3 +141,69 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;")
 }
+
+/**
+ * MDX-compatible remark plugin that converts container directives
+ * (:::tip, :::warning, etc.) to MDX JSX elements (<Tip>, <Warning>, etc.)
+ * that map to the React components in ardo/ui.
+ *
+ * Unlike remarkContainers (which uses raw HTML nodes for the title),
+ * this produces proper MDX JSX flow elements that work with @mdx-js/rollup.
+ */
+const containerToComponent: Record<string, string> = {
+  tip: "Tip",
+  warning: "Warning",
+  danger: "Danger",
+  info: "Info",
+  note: "Note",
+}
+
+export function remarkContainersMdx() {
+  return function (tree: Root) {
+    visit(tree, "containerDirective", (node: ContainerDirective, index, parent) => {
+      const componentName = containerToComponent[node.name]
+      if (!componentName) return
+
+      // Extract custom title from directive label
+      const titleNode = node.children[0]
+      let customTitle: string | undefined
+
+      if (
+        titleNode &&
+        titleNode.type === "paragraph" &&
+        titleNode.children[0]?.type === "text" &&
+        titleNode.data?.directiveLabel
+      ) {
+        customTitle = (titleNode.children[0] as { value: string }).value
+        node.children.shift()
+      }
+
+      // Build MDX JSX attributes
+      const attributes: Array<{
+        type: "mdxJsxAttribute"
+        name: string
+        value: string
+      }> = []
+
+      if (customTitle) {
+        attributes.push({
+          type: "mdxJsxAttribute",
+          name: "title",
+          value: customTitle,
+        })
+      }
+
+      // Replace the directive node with an MDX JSX flow element
+      const jsxNode = {
+        type: "mdxJsxFlowElement" as const,
+        name: componentName,
+        attributes,
+        children: node.children,
+      }
+
+      if (parent && typeof index === "number") {
+        parent.children[index] = jsxNode as unknown as (typeof parent.children)[number]
+      }
+    })
+  }
+}

@@ -813,6 +813,11 @@ body {
   background: transparent !important;
 }
 
+.ardo-code-wrapper pre code {
+  display: flex;
+  flex-direction: column;
+}
+
 .dark .ardo-code-wrapper pre {
   color: #e2e8f0;
 }

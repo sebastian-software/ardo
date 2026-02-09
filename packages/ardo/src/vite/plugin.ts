@@ -11,6 +11,7 @@ import remarkGfm from "remark-gfm"
 import remarkDirective from "remark-directive"
 import rehypeShiki from "@shikijs/rehype"
 import { ardoLineTransformer } from "../markdown/shiki"
+import { remarkContainersMdx } from "../markdown/containers"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
@@ -324,6 +325,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       [remarkMdxFrontmatter, { name: "frontmatter" }],
       remarkGfm,
       remarkDirective,
+      remarkContainersMdx,
     ],
     rehypePlugins: [[rehypeShiki, shikiOptions]],
     providerImportSource: "ardo/mdx-provider",
