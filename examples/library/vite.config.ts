@@ -6,6 +6,7 @@ export default defineConfig({
     ardo({
       title: "Ardo Library Example",
       description: "A library documentation site with TypeDoc integration",
+      githubPages: false,
 
       themeConfig: {
         nav: [

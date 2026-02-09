@@ -6,6 +6,7 @@ export default defineConfig({
     ardo({
       title: "Ardo Basic Example",
       description: "A simple documentation site built with Ardo",
+      githubPages: false,
 
       themeConfig: {
         nav: [{ text: "Guide", link: "/guide/getting-started" }],

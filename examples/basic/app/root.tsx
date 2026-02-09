@@ -1,5 +1,14 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from "react-router"
-import { Layout, Header, Nav, NavLink, Sidebar, SidebarGroup, SidebarLink, Footer } from "ardo/ui"
+import {
+  Layout as ArdoLayout,
+  Header,
+  Nav,
+  NavLink,
+  Sidebar,
+  SidebarGroup,
+  SidebarLink,
+  Footer,
+} from "ardo/ui"
 import { PressProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
@@ -30,7 +39,7 @@ export default function Root() {
 
   return (
     <PressProvider config={config} sidebar={sidebar}>
-      <Layout
+      <ArdoLayout
         className={isHomePage ? "ardo-layout ardo-home" : "ardo-layout"}
         header={
           <Header
@@ -55,7 +64,7 @@ export default function Root() {
         footer={<Footer message="Built with Ardo" />}
       >
         <Outlet />
-      </Layout>
+      </ArdoLayout>
     </PressProvider>
   )
 }

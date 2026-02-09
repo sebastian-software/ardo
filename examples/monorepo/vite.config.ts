@@ -6,6 +6,7 @@ export default defineConfig({
     ardo({
       title: "Ardo Monorepo Example",
       description: "A monorepo documentation site with multiple TypeDoc entry points",
+      githubPages: false,
 
       themeConfig: {
         nav: [
