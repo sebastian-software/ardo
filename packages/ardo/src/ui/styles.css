@@ -923,12 +923,21 @@ body {
   display: block;
 }
 
+/* Strip inner code-block chrome when nested inside a code group */
+.ardo-code-group-panel .ardo-code-block {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
 /* ========================================
    Containers - Clear Visual Distinction
    ======================================== */
 .ardo-container {
-  margin: 20px 0;
-  padding: 20px 24px;
+  margin: 16px 0;
+  padding: 12px 16px;
   border-radius: var(--ardo-radius);
   border: 1px solid;
   border-left: 4px solid;
