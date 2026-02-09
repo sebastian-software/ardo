@@ -1,23 +1,23 @@
 ---
 title: Getting Started
-description: Get up and running with Ardo in minutes.
+description: From zero to a running documentation site in under a minute.
 order: 2
 ---
 
 # Getting Started
 
-This guide will help you set up a new Ardo documentation site from scratch.
+Four commands. That's how long it takes to go from nothing to a running documentation site with navigation, search, dark mode, and syntax highlighting. Let's get there.
 
 ## Prerequisites
 
-Before you begin, make sure you have:
+You'll need:
 
 - [Node.js](https://nodejs.org/) version 22 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
 ## Quick Start
 
-The fastest way to get started is with the `create-ardo` CLI:
+The fastest path is the `create-ardo` CLI. It scaffolds a complete project — configuration, example content, and a GitHub Pages deployment workflow — so you can focus on writing.
 
 ```bash
 pnpm create ardo@latest my-docs
@@ -26,11 +26,11 @@ pnpm install
 pnpm dev
 ```
 
-This scaffolds a complete project with configuration, example content, and a GitHub Pages deployment workflow.
+Open `http://localhost:5173` and you'll see your site. Add an MDX file to `app/routes/`, and it appears in the sidebar automatically.
 
 ## Manual Installation
 
-If you prefer to set up manually:
+If you'd rather set things up yourself, here's the full walkthrough. This is also helpful for understanding what `create-ardo` does under the hood.
 
 ### 1. Create a new project
 
@@ -49,7 +49,7 @@ pnpm add -D @react-router/dev typescript vite @types/react @types/react-dom
 
 ### 3. Create Vite configuration
 
-Create a `vite.config.ts` file with your Ardo configuration:
+This is the heart of your Ardo setup. Everything — title, navigation, sidebar — is configured in one place through the `ardo()` plugin:
 
 ```ts
 import { defineConfig } from "vite"
@@ -77,7 +77,7 @@ export default defineConfig({
 
 ### 4. Create React Router configuration
 
-Create a `react-router.config.ts` file:
+Ardo uses React Router 7 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
 
 ```ts
 import type { Config } from "@react-router/dev/config"
@@ -89,6 +89,8 @@ export default {
 ```
 
 ### 5. Create app files
+
+These are standard React Router entry files. If you've worked with React Router before, they'll look familiar.
 
 **`app/root.tsx`**:
 
@@ -199,8 +201,10 @@ title: Getting Started
 Welcome to your documentation site!
 ```
 
+That's it. Run `pnpm dev` and you've got a documentation site.
+
 :::tip
-Using `pnpm create ardo@latest` creates all these files automatically!
+The `create-ardo` CLI generates all of these files automatically — use it when you want to skip the boilerplate and get straight to writing.
 :::
 
 ## Development
@@ -211,19 +215,17 @@ Start the development server:
 pnpm dev
 ```
 
-Your documentation site will be available at `http://localhost:5173`.
+Your site will be running at `http://localhost:5173`. Changes to your MDX files show up instantly thanks to Vite's hot module replacement.
 
 ## Production Build
 
-Build your site for production:
+When you're ready to publish:
 
 ```bash
 pnpm build
 ```
 
-The output will be in `build/client/` ready for static hosting.
-
-Preview the production build:
+The output lands in `build/client/` — a fully static site ready for any hosting platform. Preview it locally before deploying:
 
 ```bash
 pnpm preview
@@ -231,7 +233,7 @@ pnpm preview
 
 ## Project Structure
 
-A typical Ardo project looks like this:
+Here's what an Ardo project looks like. If you've worked with React Router, the layout will feel natural:
 
 ```
 my-docs/
@@ -251,9 +253,9 @@ my-docs/
 
 ## Next Steps
 
-Now that you have a working documentation site:
+Your site is running. Now make it yours:
 
-- Learn about [Markdown Features](/guide/markdown)
-- Configure your [Theme](/guide/theme-config)
+- Write richer content with [Markdown Features](/guide/markdown)
+- Customize the look with [Theme Configuration](/guide/theme-config)
 - [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel
 - Explore the [API Reference](/api-reference)

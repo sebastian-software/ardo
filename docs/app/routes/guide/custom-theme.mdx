@@ -1,16 +1,22 @@
 ---
 title: Custom Theme
-description: Learn how to customize or create your own theme.
+description: Override a color, swap a component, or build an entirely new theme — it's your site.
 order: 7
 ---
 
 # Custom Theme
 
-Ardo allows you to fully customize the look and feel of your documentation site.
+Ardo's default theme is intentionally not a black box. Nothing is locked down, nothing requires workarounds. You have three levels of customization, and you can mix them freely:
+
+1. **CSS variables** — Change colors, spacing, and typography without touching components
+2. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
+3. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
+
+Start simple. Go deeper when you need to.
 
 ## CSS Variables
 
-The easiest way to customize the theme is by overriding CSS variables.
+The fastest way to make the theme yours. Override a few CSS custom properties and the entire site updates:
 
 Create a custom CSS file:
 
@@ -31,6 +37,8 @@ import "ardo/ui/styles.css"
 ```
 
 ### Available Variables
+
+Here's the full set of variables you can override. You don't need to set all of them — just the ones you want to change:
 
 ```css
 :root {
@@ -67,7 +75,7 @@ import "ardo/ui/styles.css"
 
 ## Component Overrides
 
-You can override individual theme components by creating your own:
+When CSS isn't enough, replace individual components with your own. Since everything in Ardo is a React component, this works exactly how you'd expect — write a component, use it in your layout:
 
 ```tsx
 // components/MyHeader.tsx
@@ -86,7 +94,7 @@ export function MyHeader() {
 }
 ```
 
-Then use it in your layout:
+Then use it in your layout. Mix your custom components with Ardo's defaults — replace the pieces you want, keep the rest:
 
 ```tsx
 // routes/__root.tsx
@@ -107,7 +115,7 @@ export function Layout({ children }) {
 
 ## Runtime Hooks
 
-Ardo provides several hooks for accessing configuration and page data:
+When building custom components, you'll need access to site configuration, sidebar data, and page metadata. Ardo provides React hooks for all of it:
 
 ### useConfig
 
@@ -183,7 +191,7 @@ function MyTOC() {
 
 ## Full Custom Theme
 
-For complete control, create your own theme from scratch:
+If you need complete control, you can build your own theme from scratch. Create your components, export them, and use them in your app. Ardo's runtime hooks give you all the data you need — you just decide how to render it:
 
 ```tsx
 // theme/index.tsx
@@ -195,4 +203,4 @@ export { MyContent as Content } from "./Content"
 export { MyFooter as Footer } from "./Footer"
 ```
 
-Then use your custom theme components throughout your app.
+Use your custom theme components in `root.tsx` and you have a fully custom documentation site — with all of Ardo's content processing, routing, and search still working underneath.

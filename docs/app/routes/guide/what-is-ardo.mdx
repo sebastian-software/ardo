@@ -1,47 +1,48 @@
 ---
 title: What is Ardo?
-description: Learn about Ardo and why you should use it for your documentation.
+description: A React-first documentation framework that lets you use the skills you already have.
 order: 1
 ---
 
 # What is Ardo?
 
-Ardo is a **React-first Static Documentation Framework** built on [React Router 7](https://reactrouter.com/) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
+You know React. You've built components, wired up state, wrestled with TypeScript generics. Then you need to write documentation — and suddenly you're learning a completely different system with its own component model, its own templating quirks, and its own way of doing things you already know how to do.
 
-## Why Ardo?
+**Ardo exists so you don't have to start over.**
 
-### React-First Approach
+It's a static documentation framework built entirely on [React](https://react.dev/), [React Router 7](https://reactrouter.com/), and [Vite](https://vite.dev/) — the same tools you use to build your apps. No proprietary abstractions. No unfamiliar templating languages. Just React.
 
-Unlike other documentation frameworks that use their own component systems, Ardo is built entirely with React. This means:
+## The Problem with Documentation Frameworks
 
-- Use your existing React knowledge
-- Import and use any React component in your docs
-- Full TypeScript support out of the box
-- Seamless integration with the React ecosystem
+Most documentation tools ask you to leave your stack at the door. They come with their own component systems, their own conventions, and their own learning curves. That's fine if you're starting from scratch — but if you already live in the React ecosystem, it means:
 
-### Powered by React Router 7
+- Rewriting components you already have
+- Learning patterns that don't transfer to your other work
+- Maintaining two mental models for the same kind of UI
 
-Ardo leverages the power of [React Router 7](https://reactrouter.com/) for:
+Ardo takes a different approach. Instead of inventing a new system, it builds on top of what the React ecosystem already provides.
 
-- **File-based routing** - Automatic route generation from your content
-- **Static pre-rendering** - Pre-rendered pages for fast loading
-- **Type-safe navigation** - Full TypeScript support for routes
-- **Modern React patterns** - Built on React 19
+## What Makes Ardo Different
 
-### Vite-Powered
+### Your React Knowledge, Applied Directly
 
-Built on Vite, Ardo offers:
+Every component in Ardo is a React component. Your documentation layout, your custom callouts, your interactive API playgrounds — they're all standard React. Import any component from npm. Use the hooks you already know. Write TypeScript the way you always do.
 
-- Instant dev server startup
-- Lightning-fast HMR
-- Optimized production builds
-- Rich plugin ecosystem
+There's nothing new to learn before you're productive.
 
-## Features
+### Built on React Router 7
 
-### Markdown + React
+Ardo doesn't reinvent routing. It uses [React Router 7](https://reactrouter.com/) — the same router that powers production React apps. This gives you file-based routing, static pre-rendering for fast page loads, type-safe navigation, and all the patterns from React 19.
 
-Write your documentation in Markdown with the ability to use React components:
+### Powered by Vite
+
+Your dev server starts instantly. Hot module replacement is near-instantaneous. Production builds are optimized out of the box. And the full Vite plugin ecosystem is available if you need it.
+
+## What You Get
+
+### Markdown + React Components
+
+Write documentation in Markdown, drop in React components where you need them:
 
 ```markdown
 # My Documentation
@@ -53,26 +54,22 @@ Regular markdown content...
 More markdown content...
 ```
 
-### Beautiful Default Theme
+No special syntax. No wrappers. Just MDX, the way it was designed to work.
 
-Ardo comes with a polished default theme featuring:
+### A Polished Default Theme
 
-- Responsive design
-- Dark/light mode
-- Full-text search
-- Table of contents
-- Syntax highlighting
-- And more...
+Ardo ships with a complete theme so you can focus on content, not design:
 
-### Customizable
+- Responsive layout that works on any device
+- Dark and light mode with automatic detection
+- Full-text search across all your pages
+- Automatic table of contents
+- Syntax highlighting with line numbers and highlights
 
-Every aspect of Ardo can be customized:
+### Fully Customizable
 
-- Theme colors and styles
-- Layout components
-- Markdown processing
-- Build pipeline
+When you're ready to make it yours, everything is accessible. Theme colors, layout components, Markdown processing, and the build pipeline — it's all standard React and Vite, so customization works the way you'd expect.
 
 ## Getting Started
 
-Ready to build your documentation? Head over to the [Getting Started](/guide/getting-started) guide.
+Ready to try it? The [Getting Started](/guide/getting-started) guide walks you through setup in a few minutes.

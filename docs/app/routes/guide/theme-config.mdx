@@ -1,14 +1,16 @@
 ---
 title: Theme Configuration
-description: Configure the default theme in Ardo.
+description: Make your documentation site look and feel like it belongs to your project.
 order: 6
 ---
 
 # Theme Configuration
 
-Ardo comes with a beautiful default theme that can be fully customized through the `themeConfig` option.
+Ardo's default theme is designed to look good out of the box — but your documentation should feel like *your* project, not a generic template. Everything from the logo to the footer is configurable through the `themeConfig` option in your Vite config.
 
 ## Site Title & Logo
+
+Give your site its identity. You can use a single logo or provide separate versions for light and dark mode:
 
 ```ts
 export default defineConfig({
@@ -28,7 +30,7 @@ export default defineConfig({
 
 ## Navigation
 
-Configure the top navigation bar:
+The top navigation bar is where readers find their way around. Links can be simple or grouped into dropdowns:
 
 ```ts
 export default defineConfig({
@@ -50,6 +52,8 @@ export default defineConfig({
 
 ## Sidebar
 
+The sidebar defines how readers navigate your content. Start with a simple flat structure and add hierarchy as your docs grow.
+
 ### Simple Array
 
 ```ts
@@ -70,7 +74,7 @@ export default defineConfig({
 
 ### Multi-Sidebar
 
-Different sidebars for different sections:
+As your documentation grows, different sections often need different navigation. Use an object keyed by path prefix to show context-specific sidebars:
 
 ```ts
 export default defineConfig({
@@ -107,6 +111,8 @@ export default defineConfig({
 
 ## Social Links
 
+Connect your documentation to your project's community. Icons appear in the header:
+
 ```ts
 export default defineConfig({
   themeConfig: {
@@ -136,6 +142,8 @@ export default defineConfig({
 
 ## Search
 
+Full-text search is built in and runs entirely in the browser — no external service needed. It's enabled by default, but you can configure the placeholder text:
+
 ```ts
 export default defineConfig({
   themeConfig: {
@@ -149,6 +157,8 @@ export default defineConfig({
 
 ## Edit Link
 
+Make it easy for readers to contribute. An "Edit this page" link appears at the bottom of each page, pointing to the source file in your repository:
+
 ```ts
 export default defineConfig({
   themeConfig: {
@@ -161,6 +171,8 @@ export default defineConfig({
 ```
 
 ## Last Updated
+
+Show readers when a page was last modified. This builds trust — especially for technical documentation where freshness matters:
 
 ```ts
 export default defineConfig({
@@ -178,7 +190,9 @@ export default defineConfig({
 })
 ```
 
-## Outline (TOC)
+## Outline (Table of Contents)
+
+The outline panel on the right side of each page helps readers scan content and jump to sections. Configure which heading levels to include:
 
 ```ts
 export default defineConfig({
