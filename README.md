@@ -23,7 +23,7 @@
 
 ## The problem
 
-You build your app in React. Your components are React. Your design system is React. Then you need documentation and suddenly you're writing Vue templates in VitePress, fighting Webpack configs in Docusaurus, or learning Astro from scratch.
+You build your app in React. Your components are React. Your design system is React. Then you need documentation and suddenly you're stuck with a different framework, a different component model, or a different mental model entirely.
 
 Ardo fixes that. Write your docs with the same stack you already use: React 19, React Router 7, and Vite 8. Drop your existing components straight into MDX. No wrappers, no adapters, no context switching.
 
@@ -54,18 +54,6 @@ Or add Ardo to an existing project:
 pnpm add ardo react react-dom
 pnpm add -D typescript vite
 ```
-
-## How Ardo compares
-
-|                            |    **Ardo**     |   VitePress   | Docusaurus | Starlight |
-| -------------------------- | :-------------: | :-----------: | :--------: | :-------: |
-| **UI Framework**           |    React 19     |     Vue 3     |  React 18  |   Astro   |
-| **Build Tool**             | Vite 8 Rolldown | Vite + Rollup |  Webpack   |   Vite    |
-| **TypeDoc built in**       |       Yes       |      No       |   Plugin   |    No     |
-| **Type-safe routes**       |       Yes       |      No       |     No     |    No     |
-| **React components in MD** |       Yes       |   Vue only    |    Yes     |    Yes    |
-
-See the [full comparison](https://sebastian-software.github.io/ardo/guide/comparison) in the docs.
 
 ## Configuration
 

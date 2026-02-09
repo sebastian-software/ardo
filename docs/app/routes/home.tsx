@@ -11,9 +11,6 @@ import {
   FileCode,
   Rocket,
   Terminal,
-  ArrowRight,
-  Check,
-  X,
   Github,
 } from "ardo/icons"
 import logo from "../assets/logo.svg"
@@ -161,97 +158,6 @@ Use \`create-ardo\` for a complete project setup!
   You can use **any React component** in your docs.
 </CustomAlert>`}</code>
               </pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Section */}
-      <section className="ardo-home-section">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">How Ardo compares</h2>
-          <p className="ardo-home-section-subtitle">
-            The only React-native docs framework with built-in TypeDoc and type-safe routing
-          </p>
-
-          <div className="ardo-home-comparison">
-            <table className="ardo-home-comparison-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className="ardo-home-comparison-highlight">Ardo</th>
-                  <th>VitePress</th>
-                  <th>Docusaurus</th>
-                  <th>Starlight</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>UI Framework</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <strong>React 19</strong>
-                  </td>
-                  <td>Vue 3</td>
-                  <td>React 18</td>
-                  <td>Astro</td>
-                </tr>
-                <tr>
-                  <td>Build tool</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <strong>Vite 8 + Rolldown</strong>
-                  </td>
-                  <td>Vite 5</td>
-                  <td>Webpack</td>
-                  <td>Vite 5</td>
-                </tr>
-                <tr>
-                  <td>TypeDoc built in</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <Check size={18} className="ardo-home-check" />
-                  </td>
-                  <td>
-                    <X size={18} className="ardo-home-x" />
-                  </td>
-                  <td>Plugin</td>
-                  <td>
-                    <X size={18} className="ardo-home-x" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Type-safe routes</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <Check size={18} className="ardo-home-check" />
-                  </td>
-                  <td>
-                    <X size={18} className="ardo-home-x" />
-                  </td>
-                  <td>
-                    <X size={18} className="ardo-home-x" />
-                  </td>
-                  <td>
-                    <X size={18} className="ardo-home-x" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>React components in MD</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <Check size={18} className="ardo-home-check" />
-                  </td>
-                  <td>Vue only</td>
-                  <td>
-                    <Check size={18} className="ardo-home-check" />
-                  </td>
-                  <td>
-                    <Check size={18} className="ardo-home-check" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div className="ardo-home-comparison-cta">
-              <Link to="/guide/comparison" className="ardo-home-link">
-                See the full comparison <ArrowRight size={16} />
-              </Link>
             </div>
           </div>
         </div>
