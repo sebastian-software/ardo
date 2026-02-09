@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.0.1...ardo-v2.1.0) (2026-02-09)
+
+
+### Features
+
+* auto-detect project metadata from package.json for footer ([0129df7](https://github.com/sebastian-software/ardo/commit/0129df7a8d7ba55c23c2fa1d42bb364c0806f5c3))
+* refresh UI with editorial/modern look and feel ([7959769](https://github.com/sebastian-software/ardo/commit/795976968ec408fb080e253e9565c7c57519a755))
+
+
+### Bug Fixes
+
+* add code-group support and fix container directive syntax in MDX ([54e36a5](https://github.com/sebastian-software/ardo/commit/54e36a5654105d8aa5232a369b787ade6956c340))
+* correct line highlighting, line numbers, and highlight indent ([a6a124a](https://github.com/sebastian-software/ardo/commit/a6a124a1c8fbd0453666fdfa8e0354d80e61282e))
+* correct TypeDoc links for index routes in React Router ([ec1b630](https://github.com/sebastian-software/ardo/commit/ec1b630fbc479f853010517dcbef7f7850fc9981))
+* enable line highlighting and line numbers for MDX code blocks ([9a3bd85](https://github.com/sebastian-software/ardo/commit/9a3bd857dd1d79ed278ffe1a5aa04340d887d92f))
+* reduce code-group double borders and compact container padding ([98a76dc](https://github.com/sebastian-software/ardo/commit/98a76dc2c9ecbc2b49b5bbc29d5b3b4e0fc56d7a))
+* resolve code block line spacing and container directive rendering ([9275432](https://github.com/sebastian-software/ardo/commit/9275432b6c5e7943be057fa8bdc16033f667670b))
+* style formatting ([a15564b](https://github.com/sebastian-software/ardo/commit/a15564b6d044dc3619ef53ea7eb3af94a1d02381))
+* update docs references, improve TOC heading IDs, and harden scaffold ([1d05a9b](https://github.com/sebastian-software/ardo/commit/1d05a9b2219b5d1c8c16c6d28d79d8aa641e55d2))
+
 ## [2.0.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.0.0...ardo-v2.0.1) (2026-01-31)
 
 

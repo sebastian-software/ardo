@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.0.1...create-ardo-v2.1.0) (2026-02-09)
+
+
+### Features
+
+* auto-detect project metadata from package.json for footer ([0129df7](https://github.com/sebastian-software/ardo/commit/0129df7a8d7ba55c23c2fa1d42bb364c0806f5c3))
+* improve footer with Ardo link and copyright ([bc3598f](https://github.com/sebastian-software/ardo/commit/bc3598f47d01ab268af617509277bf6bee42c997))
+
+
+### Bug Fixes
+
+* resolve Layout naming conflict and disable githubPages in examples ([a3da3bc](https://github.com/sebastian-software/ardo/commit/a3da3bcd69990aa5b597d382ecbb1c179aa6fbf8))
+* update docs references, improve TOC heading IDs, and harden scaffold ([1d05a9b](https://github.com/sebastian-software/ardo/commit/1d05a9b2219b5d1c8c16c6d28d79d8aa641e55d2))
+
 ## [2.0.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.0.0...create-ardo-v2.0.1) (2026-01-31)
 
 
