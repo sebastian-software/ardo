@@ -59,7 +59,11 @@ export default function Root() {
             </Sidebar>
           )
         }
-        footer={<Footer message="Built with Ardo" />}
+        footer={
+          <Footer
+            message="Built with <a href='https://github.com/sebastian-software/ardo'>Ardo</a> — React-first Documentation Framework"
+          />
+        }
       >
         <Outlet />
       </ArdoLayout>
