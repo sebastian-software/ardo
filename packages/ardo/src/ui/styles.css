@@ -241,13 +241,17 @@ body {
   background: oklch(1 0 0 / 0.85);
   backdrop-filter: blur(12px) saturate(1.5);
   -webkit-backdrop-filter: blur(12px) saturate(1.5);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.02);
+  box-shadow:
+    0 1px 3px oklch(0 0 0 / 0.04),
+    0 1px 2px oklch(0 0 0 / 0.02);
   z-index: 100;
 }
 
 .dark .ardo-header {
   background: oklch(0.15 0.02 var(--ardo-brand-h) / 0.85);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.15), 0 1px 2px oklch(0 0 0 / 0.1);
+  box-shadow:
+    0 1px 3px oklch(0 0 0 / 0.15),
+    0 1px 2px oklch(0 0 0 / 0.1);
 }
 
 .ardo-header-container {
@@ -703,7 +707,8 @@ body {
 .ardo-content blockquote {
   margin: 20px 0;
   padding: 16px 20px;
-  border-left: 4px solid oklch(var(--ardo-brand-l) calc(var(--ardo-brand-c) + 0.03) var(--ardo-brand-h));
+  border-left: 4px solid
+    oklch(var(--ardo-brand-l) calc(var(--ardo-brand-c) + 0.03) var(--ardo-brand-h));
   background: var(--ardo-c-bg-soft);
   border-radius: 0 var(--ardo-radius) var(--ardo-radius) 0;
   font-style: italic;
@@ -790,7 +795,11 @@ body {
 
 .ardo-code-title {
   padding: 10px 16px;
-  background: linear-gradient(90deg, oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.04) 0%, var(--ardo-code-border) 100%);
+  background: linear-gradient(
+    90deg,
+    oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.04) 0%,
+    var(--ardo-code-border) 100%
+  );
   font-size: 13px;
   font-weight: 500;
   font-family: var(--ardo-font-mono);
@@ -1113,12 +1122,20 @@ body {
   padding: 32px 24px;
   text-align: center;
   box-shadow: 0 -1px 3px oklch(0 0 0 / 0.03);
-  background: linear-gradient(180deg, var(--ardo-c-bg) 0%, oklch(0.97 0.01 var(--ardo-brand-h)) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--ardo-c-bg) 0%,
+    oklch(0.97 0.01 var(--ardo-brand-h)) 100%
+  );
 }
 
 .dark .ardo-footer {
   box-shadow: 0 -1px 3px oklch(0 0 0 / 0.1);
-  background: linear-gradient(180deg, var(--ardo-c-bg) 0%, oklch(0.18 0.015 var(--ardo-brand-h)) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--ardo-c-bg) 0%,
+    oklch(0.18 0.015 var(--ardo-brand-h)) 100%
+  );
 }
 
 .ardo-footer-message,
@@ -1523,16 +1540,30 @@ body {
   animation: ardo-fade-in-up 0.5s ease both;
 }
 
-.ardo-feature:nth-child(1) { animation-delay: 0ms; }
-.ardo-feature:nth-child(2) { animation-delay: 80ms; }
-.ardo-feature:nth-child(3) { animation-delay: 160ms; }
-.ardo-feature:nth-child(4) { animation-delay: 240ms; }
-.ardo-feature:nth-child(5) { animation-delay: 320ms; }
-.ardo-feature:nth-child(6) { animation-delay: 400ms; }
+.ardo-feature:nth-child(1) {
+  animation-delay: 0ms;
+}
+.ardo-feature:nth-child(2) {
+  animation-delay: 80ms;
+}
+.ardo-feature:nth-child(3) {
+  animation-delay: 160ms;
+}
+.ardo-feature:nth-child(4) {
+  animation-delay: 240ms;
+}
+.ardo-feature:nth-child(5) {
+  animation-delay: 320ms;
+}
+.ardo-feature:nth-child(6) {
+  animation-delay: 400ms;
+}
 
 .ardo-feature:hover {
   border-color: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
-  box-shadow: var(--ardo-shadow-md), 0 0 0 1px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
+  box-shadow:
+    var(--ardo-shadow-md),
+    0 0 0 1px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
   transform: translateY(-3px);
 }
 
