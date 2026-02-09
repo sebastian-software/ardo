@@ -17,8 +17,10 @@ export function Search() {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchResult[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const themeConfig = useThemeConfig()
+  const hasQuery = query.trim().length > 0
 
   const placeholder = themeConfig.search?.placeholder ?? "Search..."
 
@@ -26,6 +28,7 @@ export function Search() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault()
+        inputRef.current?.focus()
         setIsOpen(true)
       }
 
@@ -46,9 +49,20 @@ export function Search() {
 
   useEffect(() => {
     if (!isOpen) {
-      setQuery("")
-      setResults([])
-      setSelectedIndex(0)
+      return
+    }
+
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick)
+    document.addEventListener("touchstart", handleOutsideClick)
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick)
+      document.removeEventListener("touchstart", handleOutsideClick)
     }
   }, [isOpen])
 
@@ -72,19 +86,22 @@ export function Search() {
 
     if (!searchQuery.trim()) {
       setResults([])
+      setIsOpen(false)
+      setSelectedIndex(0)
       return
     }
 
     const searchResults = searchIndex.search(searchQuery).slice(0, 10)
     setResults(searchResults)
     setSelectedIndex(0)
+    setIsOpen(true)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" && results.length > 0) {
       e.preventDefault()
       setSelectedIndex((prev) => Math.min(prev + 1, results.length - 1))
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp" && results.length > 0) {
       e.preventDefault()
       setSelectedIndex((prev) => Math.max(prev - 1, 0))
     } else if (e.key === "Enter" && results[selectedIndex]) {
@@ -92,87 +109,97 @@ export function Search() {
       const result = results[selectedIndex]
       window.location.href = result.path as string
       setIsOpen(false)
+    } else if (e.key === "Escape") {
+      setIsOpen(false)
+      inputRef.current?.blur()
     }
   }
 
   return (
-    <>
-      <button className="ardo-search-button" onClick={() => setIsOpen(true)} aria-label="Search">
+    <div
+      className="ardo-search"
+      ref={containerRef}
+      data-expanded={isOpen || hasQuery ? "true" : "false"}
+      onClick={() => inputRef.current?.focus()}
+    >
+      <div className="ardo-search-field">
         <SearchIcon />
-        <span className="ardo-search-button-text">{placeholder}</span>
+        <input
+          ref={inputRef}
+          type="text"
+          className="ardo-search-input"
+          placeholder={placeholder}
+          value={query}
+          onChange={(e) => handleSearch(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => {
+            if (hasQuery) {
+              setIsOpen(true)
+            }
+          }}
+          aria-expanded={isOpen}
+          aria-label="Search"
+        />
+        {query && (
+          <button
+            className="ardo-search-clear"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleSearch("")
+              inputRef.current?.focus()
+            }}
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
         <span className="ardo-search-kbd">
           <kbd>⌘</kbd>
           <kbd>K</kbd>
         </span>
-      </button>
+      </div>
 
-      {isOpen && (
-        <div className="ardo-search-modal" onClick={() => setIsOpen(false)}>
-          <div className="ardo-search-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="ardo-search-input-wrapper">
-              <SearchIcon />
-              <input
-                ref={inputRef}
-                type="text"
-                className="ardo-search-input"
-                placeholder={placeholder}
-                value={query}
-                onChange={(e) => handleSearch(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              {query && (
-                <button
-                  className="ardo-search-clear"
-                  onClick={() => handleSearch("")}
-                  aria-label="Clear search"
-                >
-                  ×
-                </button>
-              )}
-            </div>
+      {isOpen && hasQuery && (
+        <div className="ardo-search-popover">
+          {results.length > 0 && (
+            <ul className="ardo-search-results">
+              {results.map((result, index) => (
+                <li key={result.id}>
+                  <Link
+                    to={result.path as string}
+                    className={["ardo-search-result", index === selectedIndex && "selected"]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span className="ardo-search-result-title">{result.title as string}</span>
+                    {result.section && (
+                      <span className="ardo-search-result-section">{result.section as string}</span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
 
-            {results.length > 0 && (
-              <ul className="ardo-search-results">
-                {results.map((result, index) => (
-                  <li key={result.id}>
-                    <Link
-                      to={result.path as string}
-                      className={["ardo-search-result", index === selectedIndex && "selected"]
-                        .filter(Boolean)
-                        .join(" ")}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <span className="ardo-search-result-title">{result.title as string}</span>
-                      {result.section && (
-                        <span className="ardo-search-result-section">
-                          {result.section as string}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+          {query && results.length === 0 && (
+            <div className="ardo-search-no-results">No results found for "{query}"</div>
+          )}
 
-            {query && results.length === 0 && (
-              <div className="ardo-search-no-results">No results found for "{query}"</div>
-            )}
-
-            <div className="ardo-search-footer">
-              <span>
-                <kbd>↑</kbd> <kbd>↓</kbd> to navigate
-              </span>
-              <span>
-                <kbd>↵</kbd> to select
-              </span>
-              <span>
-                <kbd>esc</kbd> to close
-              </span>
-            </div>
+          <div className="ardo-search-footer">
+            <span>
+              <kbd>↑</kbd> <kbd>↓</kbd> to navigate
+            </span>
+            <span>
+              <kbd>↵</kbd> to select
+            </span>
+            <span>
+              <kbd>esc</kbd> to close
+            </span>
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 
