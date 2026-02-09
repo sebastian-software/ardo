@@ -378,7 +378,7 @@ export class TypeDocGenerator {
           : ""
         const descSuffix = description ? ` - ${description}` : ""
         content.push(
-          `- [${component.name}](${this.basePath}/components/${this.getSlug(component.name)})${descSuffix}`
+          `- [${component.name}](${this.buildLink("components", this.getSlug(component.name))})${descSuffix}`
         )
       }
 
@@ -402,7 +402,7 @@ export class TypeDocGenerator {
           .map((f) => f.name)
           .sort()
           .join(", ")
-        content.push(`- [${moduleName}](${this.basePath}/functions/${slug}) - ${funcNames}`)
+        content.push(`- [${moduleName}](${this.buildLink("functions", slug)}) - ${funcNames}`)
       }
 
       content.push("")
@@ -424,7 +424,7 @@ export class TypeDocGenerator {
           .map((t) => t.name)
           .sort()
           .join(", ")
-        content.push(`- [${moduleName}](${this.basePath}/types/${slug}) - ${typeNames}`)
+        content.push(`- [${moduleName}](${this.buildLink("types", slug)}) - ${typeNames}`)
       }
 
       content.push("")
@@ -464,7 +464,7 @@ export class TypeDocGenerator {
         const descSuffix = description ? ` - ${description}` : ""
         const groupUrlPrefix = this.getGroupUrlPrefix(child.kind)
         content.push(
-          `- [${child.name}](${this.basePath}/${groupUrlPrefix}/${this.getSlug(child.name)})${descSuffix}`
+          `- [${child.name}](${this.buildLink(groupUrlPrefix, this.getSlug(child.name))})${descSuffix}`
         )
       }
 
@@ -705,10 +705,10 @@ export class TypeDocGenerator {
       content.push("")
       const groupPrefix = this.getGroupUrlPrefix(reflection.kind)
       const prevLink = prev
-        ? `[← ${prev.name}](${this.basePath}/${groupPrefix}/${this.getSlug(prev.name)})`
+        ? `[← ${prev.name}](${this.buildLink(groupPrefix, this.getSlug(prev.name))})`
         : ""
       const nextLink = next
-        ? `[${next.name} →](${this.basePath}/${groupPrefix}/${this.getSlug(next.name)})`
+        ? `[${next.name} →](${this.buildLink(groupPrefix, this.getSlug(next.name))})`
         : ""
       if (prev && next) {
         content.push(`${prevLink} | ${nextLink}`)
@@ -955,6 +955,18 @@ export class TypeDocGenerator {
       .replace(/^-|-$/g, "")
   }
 
+  /**
+   * Build a route-compatible link path for a category/slug pair.
+   * React Router maps "category/index.md" to the "/category" route,
+   * so links must not include a trailing "/index".
+   */
+  private buildLink(category: string, slug: string): string {
+    if (slug === "index") {
+      return `${this.basePath}/${category}`
+    }
+    return `${this.basePath}/${category}/${slug}`
+  }
+
   private getSourceUrl(fileName: string, line: number): string | null {
     if (!this.config.markdown?.sourceBaseUrl) return null
     const baseUrl = this.config.markdown.sourceBaseUrl.replace(/\/$/, "")
@@ -1034,10 +1046,10 @@ export class TypeDocGenerator {
       content.push("---")
       content.push("")
       const prevLink = prev
-        ? `[← ${prev.name}](${this.basePath}/${groupPrefix}/${this.getSlug(prev.name)})`
+        ? `[← ${prev.name}](${this.buildLink(groupPrefix, this.getSlug(prev.name))})`
         : ""
       const nextLink = next
-        ? `[${next.name} →](${this.basePath}/${groupPrefix}/${this.getSlug(next.name)})`
+        ? `[${next.name} →](${this.buildLink(groupPrefix, this.getSlug(next.name))})`
         : ""
       if (prev && next) {
         content.push(`${prevLink} | ${nextLink}`)
