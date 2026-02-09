@@ -10,6 +10,7 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import remarkGfm from "remark-gfm"
 import remarkDirective from "remark-directive"
 import rehypeShiki from "@shikijs/rehype"
+import { ardoLineTransformer } from "../markdown/shiki"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
@@ -299,8 +300,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   // Add MDX plugin with Ardo's markdown pipeline
   const themeConfig = pressConfig.markdown?.theme
   const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
+  const lineNumbers = pressConfig.markdown?.lineNumbers || false
 
-  // Build shiki options - only include themes when using dual theme mode
+  // Build shiki options with Ardo's custom line transformer
   const shikiOptions = hasThemeObject
     ? {
         themes: {
@@ -308,9 +310,11 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           dark: themeConfig.dark || "github-dark",
         },
         defaultColor: false as const,
+        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
       }
     : {
         theme: (themeConfig as string) || "github-dark",
+        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
       }
 
   const mdxPlugin = mdx({

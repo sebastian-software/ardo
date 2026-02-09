@@ -1,4 +1,9 @@
-import { createHighlighter, type Highlighter, type BundledTheme } from "shiki"
+import {
+  createHighlighter,
+  type Highlighter,
+  type BundledTheme,
+  type ShikiTransformer,
+} from "shiki"
 import type { Root, Element, Text } from "hast"
 import { visit } from "unist-util-visit"
 import type { MarkdownConfig } from "../config/types"
@@ -232,4 +237,55 @@ function escapeHtml(text: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;")
+}
+
+/**
+ * Shiki transformer that adds Ardo-specific line classes, highlighting,
+ * line numbers, and title attributes to code blocks.
+ *
+ * Used with @shikijs/rehype in the MDX pipeline where proper HAST nodes
+ * are required (raw HTML nodes cause "Cannot handle unknown node `raw`" errors).
+ */
+interface ArdoLineTransformerOptions {
+  globalLineNumbers?: boolean
+}
+
+export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): ShikiTransformer {
+  let highlightLines: number[] = []
+  let showLineNumbers = false
+
+  return {
+    name: "ardo:lines",
+    pre(node) {
+      const raw = (this.options.meta?.__raw as string) || ""
+      highlightLines = parseHighlightLines(raw)
+      showLineNumbers = options.globalLineNumbers || raw.includes("showLineNumbers")
+      const title = parseTitle(raw)
+      if (title) {
+        node.properties = node.properties || {}
+        node.properties["data-title"] = title
+      }
+    },
+    line(node, line) {
+      const currentClass = (node.properties?.class as string) || ""
+      const classes = currentClass ? currentClass.split(" ") : []
+      classes.push("ardo-code-line")
+
+      if (highlightLines.includes(line)) {
+        classes.push("highlighted")
+      }
+
+      node.properties = node.properties || {}
+      node.properties.class = classes.join(" ")
+
+      if (showLineNumbers) {
+        node.children.unshift({
+          type: "element",
+          tagName: "span",
+          properties: { class: "ardo-line-number" },
+          children: [{ type: "text", value: String(line) }],
+        } as Element)
+      }
+    },
+  }
 }

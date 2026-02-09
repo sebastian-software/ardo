@@ -76,13 +76,18 @@ function extractTextContent(children: ReactNode): string {
 }
 
 /**
- * Code block wrapper with copy button
+ * Code block wrapper with copy button and optional title
  */
-function PreBlock({ children, ...props }: HTMLAttributes<HTMLPreElement>) {
+function PreBlock({
+  children,
+  "data-title": dataTitle,
+  ...props
+}: HTMLAttributes<HTMLPreElement> & { "data-title"?: string }) {
   const code = extractTextContent(children)
 
   return (
     <div className="ardo-code-block">
+      {dataTitle && <div className="ardo-code-title">{dataTitle}</div>}
       <div className="ardo-code-wrapper">
         <pre {...props}>{children}</pre>
         <CopyButton code={code} />
