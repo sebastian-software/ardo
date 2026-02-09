@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.1.0...ardo-v2.1.1) (2026-02-09)
+
+
+### Bug Fixes
+
+* **ardo:** set explicit button type for search clear action ([81f2df5](https://github.com/sebastian-software/ardo/commit/81f2df538c913d409f9d3c97bd97d9c0bacf8fd7))
+
 ## [2.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.0.1...ardo-v2.1.0) (2026-02-09)
 
 
