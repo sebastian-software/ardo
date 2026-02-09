@@ -31,6 +31,14 @@ async function main() {
         name: "projectName",
         message: reset("Project name:"),
         initial: defaultTargetDir,
+        validate: (value: string) => {
+          const name = value.trim()
+          if (!name) return "Project name is required"
+          if (/^[.-]/.test(name)) return "Project name cannot start with a dot or hyphen"
+          if (!/^[a-z0-9-]+$/.test(name))
+            return "Project name may only contain lowercase letters, digits, and hyphens"
+          return true
+        },
         onState: (state) => {
           targetDir = formatTargetDir(state.value) || defaultTargetDir
         },

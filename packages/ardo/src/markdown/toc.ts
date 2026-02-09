@@ -17,6 +17,7 @@ export function remarkExtractToc(options: TocOptions) {
 
   return function (tree: Root) {
     const headings: Array<{ text: string; level: number; id: string }> = []
+    let headingIndex = 0
 
     visit(tree, "heading", (node: Heading) => {
       if (node.depth < minLevel || node.depth > maxLevel) {
@@ -24,7 +25,9 @@ export function remarkExtractToc(options: TocOptions) {
       }
 
       const text = getHeadingText(node)
-      const id = slugify(text)
+      const slug = slugify(text)
+      const id = slug || `heading-${headingIndex}`
+      headingIndex++
 
       headings.push({
         text,
