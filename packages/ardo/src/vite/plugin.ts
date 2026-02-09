@@ -1,5 +1,5 @@
 import type { Plugin, UserConfig } from "vite"
-import type { PressConfig, ResolvedConfig } from "../config/types"
+import type { PressConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
 import { resolveConfig } from "../config/index"
 import { generateApiDocs } from "../typedoc/generator"
@@ -14,6 +14,7 @@ import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
 import { execSync } from "child_process"
+import matter from "gray-matter"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 /**
@@ -59,6 +60,46 @@ function detectGitHubRepoName(cwd: string): string | undefined {
     return match?.[1]
   } catch {
     return undefined
+  }
+}
+
+/**
+ * Reads project metadata from the nearest package.json.
+ */
+function readProjectMeta(root: string): ProjectMeta {
+  const pkgPath = path.join(root, "package.json")
+  try {
+    const raw = fsSync.readFileSync(pkgPath, "utf-8")
+    const pkg = JSON.parse(raw)
+
+    let repository: string | undefined
+    if (typeof pkg.repository === "string") {
+      repository = pkg.repository
+    } else if (pkg.repository?.url) {
+      // Normalize git+https://... or git://... URLs
+      repository = pkg.repository.url
+        .replace(/^git\+/, "")
+        .replace(/^git:\/\//, "https://")
+        .replace(/\.git$/, "")
+    }
+
+    let author: string | undefined
+    if (typeof pkg.author === "string") {
+      author = pkg.author
+    } else if (pkg.author?.name) {
+      author = pkg.author.name
+    }
+
+    return {
+      name: pkg.name,
+      homepage: pkg.homepage,
+      repository,
+      version: pkg.version,
+      author,
+      license: pkg.license,
+    }
+  } catch {
+    return {}
   }
 }
 
@@ -137,6 +178,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       const root = config.root
       routesDir = routesDirOption || path.join(root, "app", "routes")
 
+      // Auto-detect project metadata from package.json
+      const detectedProject = readProjectMeta(root)
+      const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
+
       const defaultConfig: PressConfig = {
         title: pressConfig.title ?? "Ardo",
         description: pressConfig.description ?? "Documentation powered by Ardo",
@@ -146,6 +191,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       const configWithRoutes = {
         ...defaultConfig,
         ...pressConfig,
+        project,
         srcDir: routesDir,
       }
 
@@ -172,6 +218,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           base: resolvedConfig.base,
           lang: resolvedConfig.lang,
           themeConfig: resolvedConfig.themeConfig,
+          project: resolvedConfig.project,
         }
         return `export default ${JSON.stringify(clientConfig)}`
       }
@@ -301,7 +348,7 @@ async function generateSidebar(config: ResolvedConfig, routesDir: string) {
   }
 
   try {
-    const sidebar = await scanDirectory(routesDir, routesDir, config.base)
+    const sidebar = await scanDirectory(routesDir, routesDir)
     return sidebar
   } catch {
     return []
@@ -310,8 +357,7 @@ async function generateSidebar(config: ResolvedConfig, routesDir: string) {
 
 async function scanDirectory(
   dir: string,
-  rootDir: string,
-  _basePath: string
+  rootDir: string
 ): Promise<Array<{ text: string; link?: string; items?: unknown[] }>> {
   const entries = await fs.readdir(dir, { withFileTypes: true })
   const items: Array<{ text: string; link?: string; items?: unknown[]; order?: number }> = []
@@ -321,7 +367,7 @@ async function scanDirectory(
     const relativePath = path.relative(rootDir, fullPath)
 
     if (entry.isDirectory()) {
-      const children = await scanDirectory(fullPath, rootDir, _basePath)
+      const children = await scanDirectory(fullPath, rootDir)
       if (children.length > 0) {
         // Check for index.mdx in the directory
         const indexPath = path.join(fullPath, "index.mdx")
@@ -346,24 +392,12 @@ async function scanDirectory(
       entry.name !== "index.md"
     ) {
       const fileContent = await fs.readFile(fullPath, "utf-8")
-      const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
+      const { data: frontmatter } = matter(fileContent)
 
       const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
-      let title = formatTitle(entry.name.replace(ext, ""))
-      let order: number | undefined
-
-      if (frontmatterMatch) {
-        const frontmatterText = frontmatterMatch[1]
-        const titleMatch = frontmatterText.match(/title:\s*["']?([^"'\n]+)["']?/)
-        const orderMatch = frontmatterText.match(/order:\s*(\d+)/)
-
-        if (titleMatch) {
-          title = titleMatch[1].trim()
-        }
-        if (orderMatch) {
-          order = parseInt(orderMatch[1], 10)
-        }
-      }
+      const title = frontmatter.title || formatTitle(entry.name.replace(ext, ""))
+      const order: number | undefined =
+        typeof frontmatter.order === "number" ? frontmatter.order : undefined
 
       const link = "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
 
@@ -420,20 +454,10 @@ async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
           const fileContent = await fs.readFile(fullPath, "utf-8")
 
           // Extract frontmatter
-          const frontmatterMatch = fileContent.match(/^---\n([\s\S]*?)\n---/)
+          const { data: frontmatter, content: rawContent } = matter(fileContent)
           const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
-          let title = formatTitle(entry.name.replace(ext, ""))
-          let content = fileContent
-
-          if (frontmatterMatch) {
-            const frontmatterText = frontmatterMatch[1]
-            const titleMatch = frontmatterText.match(/title:\s*["']?([^"'\n]+)["']?/)
-            if (titleMatch) {
-              title = titleMatch[1].trim()
-            }
-            // Remove frontmatter from content
-            content = fileContent.slice(frontmatterMatch[0].length)
-          }
+          const title = frontmatter.title || formatTitle(entry.name.replace(ext, ""))
+          let content = rawContent
 
           // Clean up content: remove markdown/MDX syntax, keep text
           content = content
@@ -466,8 +490,11 @@ async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
           })
         }
       }
-    } catch {
-      // Directory may not exist
+    } catch (error) {
+      console.warn(
+        "[ardo] Failed to scan for search index:",
+        error instanceof Error ? error.message : error
+      )
     }
   }
 

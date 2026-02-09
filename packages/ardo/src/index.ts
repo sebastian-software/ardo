@@ -13,6 +13,7 @@ export type {
   TOCItem,
   PageData,
   HeadConfig,
+  ProjectMeta,
 } from "./config"
 
 // Vite Plugin

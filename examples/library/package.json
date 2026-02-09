@@ -2,6 +2,8 @@
   "name": "ardo-example-library",
   "private": true,
   "type": "module",
+  "homepage": "https://github.com/sebastian-software/ardo/tree/main/examples/library",
+  "author": "Sebastian Software GmbH",
   "scripts": {
     "dev": "react-router dev",
     "build": "node prebuild.mjs && react-router build",

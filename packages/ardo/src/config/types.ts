@@ -153,6 +153,25 @@ export interface TypeDocConfig {
 }
 
 // =============================================================================
+// Project Metadata (auto-detected from package.json)
+// =============================================================================
+
+export interface ProjectMeta {
+  /** Package name from package.json */
+  name?: string
+  /** Homepage URL from package.json */
+  homepage?: string
+  /** Repository URL (resolved from package.json repository field) */
+  repository?: string
+  /** Package version */
+  version?: string
+  /** Package author */
+  author?: string
+  /** Package license */
+  license?: string
+}
+
+// =============================================================================
 // Press Config (Main Configuration)
 // =============================================================================
 
@@ -192,6 +211,11 @@ export interface PressConfig {
   typedoc?: true | TypeDocConfig
   /** Custom Vite configuration */
   vite?: Record<string, unknown>
+  /**
+   * Project metadata (auto-detected from package.json if not provided).
+   * Available at runtime via `config.project` from `virtual:ardo/config`.
+   */
+  project?: ProjectMeta
 }
 
 // =============================================================================
@@ -250,7 +274,10 @@ export interface PageData {
 // Resolved Config (Internal)
 // =============================================================================
 
-export interface ResolvedConfig extends Required<Omit<PressConfig, "vite" | "typedoc">> {
+export interface ResolvedConfig extends Required<
+  Omit<PressConfig, "vite" | "typedoc" | "project">
+> {
+  project: ProjectMeta
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig
   root: string

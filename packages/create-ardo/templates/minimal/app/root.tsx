@@ -61,7 +61,17 @@ export default function Root() {
         }
         footer={
           <Footer
-            message="Built with <a href='https://github.com/sebastian-software/ardo'>Ardo</a> — React-first Documentation Framework"
+            message={[
+              config.project?.homepage
+                ? `<a href="${config.project.homepage}">${config.title}</a>`
+                : config.title,
+              "Built with <a href='https://github.com/sebastian-software/ardo'>Ardo</a>",
+            ].join(" &middot; ")}
+            copyright={
+              config.project?.author
+                ? `Copyright &copy; ${new Date().getFullYear()} ${config.project.author}`
+                : undefined
+            }
           />
         }
       >

@@ -2,6 +2,8 @@
   "name": "ardo-example-basic",
   "private": true,
   "type": "module",
+  "homepage": "https://github.com/sebastian-software/ardo/tree/main/examples/basic",
+  "author": "Sebastian Software GmbH",
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",

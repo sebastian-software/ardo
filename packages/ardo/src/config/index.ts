@@ -1,5 +1,6 @@
 import type {
   PressConfig,
+  ProjectMeta,
   ResolvedConfig,
   ThemeConfig,
   MarkdownConfig,
@@ -16,6 +17,7 @@ import path from "path"
 
 export type {
   PressConfig,
+  ProjectMeta,
   ResolvedConfig,
   ThemeConfig,
   MarkdownConfig,
@@ -80,6 +82,7 @@ export function resolveConfig(config: PressConfig, root: string): ResolvedConfig
       ...config.markdown,
     },
     vite: config.vite,
+    project: config.project ?? {},
     root,
     contentDir,
   }

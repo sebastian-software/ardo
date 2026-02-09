@@ -64,8 +64,17 @@ export default function Root() {
         }
         footer={
           <Footer
-            message="<a href='https://github.com/sebastian-software/ardo/tree/main/examples/library'>Ardo Library Example</a> &middot; Built with <a href='https://github.com/sebastian-software/ardo'>Ardo</a>"
-            copyright={`Copyright &copy; ${new Date().getFullYear()} <a href='https://github.com/sebastian-software'>Sebastian Software GmbH</a>`}
+            message={[
+              config.project?.homepage
+                ? `<a href="${config.project.homepage}">${config.title}</a>`
+                : config.title,
+              "Built with <a href='https://github.com/sebastian-software/ardo'>Ardo</a>",
+            ].join(" &middot; ")}
+            copyright={
+              config.project?.author
+                ? `Copyright &copy; ${new Date().getFullYear()} ${config.project.author}`
+                : undefined
+            }
           />
         }
       >

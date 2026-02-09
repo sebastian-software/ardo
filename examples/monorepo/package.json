@@ -2,6 +2,8 @@
   "name": "ardo-example-monorepo",
   "private": true,
   "type": "module",
+  "homepage": "https://github.com/sebastian-software/ardo/tree/main/examples/monorepo",
+  "author": "Sebastian Software GmbH",
   "scripts": {
     "dev": "react-router dev",
     "build": "node prebuild.mjs && react-router build",
