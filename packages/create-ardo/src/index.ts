@@ -9,6 +9,7 @@ import {
   isEmpty,
   emptyDir,
   isValidTemplate,
+  detectProjectDescription,
 } from "./scaffold"
 
 const defaultTargetDir = "my-docs"
@@ -132,11 +133,13 @@ async function main() {
   console.log()
 
   // Create project structure
+  const description = detectProjectDescription(root) || "Built with Ardo"
   createProjectStructure(root, template, {
     siteTitle,
     projectName: targetDir,
     typedoc: docType === "library",
     githubPages: githubPages ?? true,
+    description,
   })
 
   console.log(`  ${green("Done!")} Now run:`)

@@ -46,6 +46,7 @@ export default function Root() {
             nav={
               <Nav>
                 <NavLink to="/guide/getting-started">Guide</NavLink>
+                {{TYPEDOC_NAVLINK}}
               </Nav>
             }
           />
@@ -56,6 +57,7 @@ export default function Root() {
               <SidebarGroup title="Guide">
                 <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
               </SidebarGroup>
+              {{TYPEDOC_SIDEBARLINK}}
             </Sidebar>
           )
         }

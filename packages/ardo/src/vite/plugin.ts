@@ -105,6 +105,46 @@ function readProjectMeta(root: string): ProjectMeta {
   }
 }
 
+/**
+ * Recursively copies files from src to dest, overwriting existing files.
+ */
+function copyRecursive(src: string, dest: string) {
+  const stat = fsSync.statSync(src)
+
+  if (stat.isDirectory()) {
+    if (!fsSync.existsSync(dest)) {
+      fsSync.mkdirSync(dest, { recursive: true })
+    }
+    for (const item of fsSync.readdirSync(src)) {
+      copyRecursive(path.join(src, item), path.join(dest, item))
+    }
+  } else {
+    fsSync.copyFileSync(src, dest)
+  }
+}
+
+/**
+ * Detects the GitHub Pages basename from the git remote URL.
+ * Returns `"/repo-name/"` if a GitHub repo is detected, otherwise `undefined`.
+ *
+ * Use this in `react-router.config.ts` to synchronize client-side routing
+ * with the Vite `base` path that Ardo auto-detects:
+ *
+ * ```ts
+ * import { detectGitHubBasename } from "ardo/vite"
+ *
+ * export default {
+ *   ssr: false,
+ *   prerender: true,
+ *   basename: detectGitHubBasename(),
+ * } satisfies Config
+ * ```
+ */
+export function detectGitHubBasename(cwd?: string): string | undefined {
+  const repoName = detectGitHubRepoName(cwd || process.cwd())
+  return repoName ? `/${repoName}/` : undefined
+}
+
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID
 
@@ -114,9 +154,10 @@ const RESOLVED_VIRTUAL_SIDEBAR_ID = "\0" + VIRTUAL_SIDEBAR_ID
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 const RESOLVED_VIRTUAL_SEARCH_ID = "\0" + VIRTUAL_SEARCH_ID
 
-// Module-level flag to prevent duplicate TypeDoc generation across plugin instances
+// Module-level flags to prevent duplicate operations across plugin instances
 // This is necessary because React Router creates multiple Vite instances
 let typedocGenerated = false
+let flattenExecuted = false
 
 export interface ArdoPluginOptions extends Partial<PressConfig> {
   /** Options for the routes generator plugin */
@@ -339,6 +380,48 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     Array.isArray(reactRouterPlugin) ? reactRouterPlugin : [reactRouterPlugin]
   ).filter((p): p is Plugin => p != null)
   plugins.push(...reactRouterPlugins)
+
+  // Add flatten plugin for GitHub Pages (must run after React Router build)
+  if (githubPages) {
+    let detectedBase: string | undefined
+
+    const flattenPlugin: Plugin = {
+      name: "ardo:flatten-github-pages",
+      enforce: "post",
+
+      configResolved(config) {
+        if (config.base && config.base !== "/") {
+          detectedBase = config.base
+        }
+      },
+
+      closeBundle() {
+        if (flattenExecuted || !detectedBase) {
+          return
+        }
+
+        // Strip leading/trailing slashes to get the directory name
+        const baseName = detectedBase.replace(/^\/|\/$/g, "")
+        if (!baseName) return
+
+        const buildDir = path.join(process.cwd(), "build", "client")
+        const nestedDir = path.join(buildDir, baseName)
+
+        if (!fsSync.existsSync(nestedDir)) {
+          return
+        }
+
+        console.log(`[ardo] Flattening build/client/${baseName}/ to build/client/ for GitHub Pages`)
+        copyRecursive(nestedDir, buildDir)
+        fsSync.rmSync(nestedDir, { recursive: true, force: true })
+        console.log("[ardo] Build output flattened successfully.")
+
+        flattenExecuted = true
+      },
+    }
+
+    plugins.push(flattenPlugin)
+  }
 
   return plugins
 }

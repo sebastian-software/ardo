@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [
     ardo({
       title: '{{SITE_TITLE}}',
-      description: 'Built with Ardo',
+      description: '{{DESCRIPTION}}',
 
       {{TYPEDOC_CONFIG}}
 
@@ -14,13 +14,17 @@ export default defineConfig({
       themeConfig: {
         siteTitle: '{{SITE_TITLE}}',
 
-        nav: [{ text: 'Guide', link: '/guide/getting-started' }],
+        nav: [
+          { text: 'Guide', link: '/guide/getting-started' },
+          {{TYPEDOC_NAV}}
+        ],
 
         sidebar: [
           {
             text: 'Guide',
             items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
           },
+          {{TYPEDOC_SIDEBAR}}
         ],
 
         footer: {

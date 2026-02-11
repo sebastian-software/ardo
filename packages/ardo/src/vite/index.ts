@@ -2,6 +2,7 @@
 export { ardoPlugin, ardoPlugin as ardo, type ArdoPluginOptions } from "./plugin"
 export { ardoPlugin as default } from "./plugin"
 export { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
+export { detectGitHubBasename } from "./plugin"
 
 // Build-time utilities (Node.js only)
 export {

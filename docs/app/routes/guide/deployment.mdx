@@ -12,25 +12,30 @@ The build output is located in `build/client/` and can be deployed to any static
 
 ## GitHub Pages
 
-### Step 1: Configure Base Path
+### Step 1: Configure Base Path and Basename
 
-If your site is deployed to a subdirectory (e.g. `https://username.github.io/my-docs/`), set the `base` option in `vite.config.ts`:
+Ardo automatically detects your GitHub repository name from the git remote and sets Vite's `base` path for you. No manual `base` configuration is needed in `vite.config.ts`.
+
+For client-side routing to work correctly under the subdirectory (e.g. `https://username.github.io/my-docs/`), add `basename` to your `react-router.config.ts`:
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import type { Config } from "@react-router/dev/config"
+import { detectGitHubBasename } from "ardo/vite"
 
-export default defineConfig({
-  base: "/my-docs/",
-  plugins: [
-    ardo({
-      /* ... */
-    }),
-  ],
-})
+export default {
+  ssr: false,
+  prerender: true,
+  basename: detectGitHubBasename(),
+} satisfies Config
 ```
 
-If you deploy to the root (`https://username.github.io/`), no `base` configuration is needed.
+`detectGitHubBasename()` returns `"/repo-name/"` when a GitHub remote is detected, or `undefined` otherwise — so it's safe to leave in place for all environments.
+
+:::tip
+The build output is automatically flattened by Ardo. When `basename` creates nested directories like `build/client/repo-name/`, the plugin moves files back to `build/client/` so GitHub Pages serves them correctly. No post-build script is needed.
+:::
+
+If you deploy to the root (`https://username.github.io/`), no configuration is needed — both `base` and `basename` will remain at their defaults.
 
 ### Step 2: Add a GitHub Actions Workflow
 

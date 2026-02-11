@@ -36,6 +36,7 @@ describe("scaffold integration build", () => {
       projectName: "test-project",
       typedoc: false,
       githubPages: false,
+      description: "Built with Ardo",
     })
 
     // 3. Add pseudo API source for TypeDoc testing (src/index.ts is the default entry point)

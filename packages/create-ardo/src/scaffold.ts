@@ -24,6 +24,7 @@ export interface ScaffoldOptions {
   projectName: string
   typedoc: boolean
   githubPages: boolean
+  description: string
 }
 
 export function createProjectStructure(root: string, template: string, options: ScaffoldOptions) {
@@ -38,6 +39,19 @@ export function createProjectStructure(root: string, template: string, options: 
     GITHUB_PAGES_CONFIG: options.githubPages
       ? "// GitHub Pages: base path auto-detected from git remote"
       : "githubPages: false, // Disabled for non-GitHub Pages deployment",
+    GITHUB_PAGES_BASENAME_IMPORT: options.githubPages
+      ? 'import { detectGitHubBasename } from "ardo/vite"'
+      : "",
+    GITHUB_PAGES_BASENAME: options.githubPages
+      ? "basename: detectGitHubBasename(),"
+      : "// basename: detectGitHubBasename(), // Uncomment for GitHub Pages",
+    DESCRIPTION: options.description,
+    TYPEDOC_NAV: options.typedoc ? "{ text: 'API', link: '/api-reference' }," : "",
+    TYPEDOC_SIDEBAR: options.typedoc ? "{ text: 'API Reference', link: '/api-reference' }," : "",
+    TYPEDOC_NAVLINK: options.typedoc ? '<NavLink to="/api-reference">API</NavLink>' : "",
+    TYPEDOC_SIDEBARLINK: options.typedoc
+      ? '<SidebarLink to="/api-reference">API Reference</SidebarLink>'
+      : "",
   }
 
   copyDir(templateDir, root, vars)
@@ -87,4 +101,19 @@ export function emptyDir(dir: string) {
 
 export function isValidTemplate(template: string) {
   return templates.some((t) => t.name === template)
+}
+
+export function detectProjectDescription(targetDir: string): string | undefined {
+  for (const dir of [path.dirname(targetDir), targetDir]) {
+    const pkgPath = path.join(dir, "package.json")
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"))
+      if (pkg.description) {
+        return pkg.description
+      }
+    } catch {
+      // package.json doesn't exist or is invalid
+    }
+  }
+  return undefined
 }
