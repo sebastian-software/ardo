@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.3.0...ardo-v2.4.0) (2026-02-11)
+
+
+### Features
+
+* replace inline SVGs with Lucide icons and improve accessibility ([7624ff9](https://github.com/sebastian-software/ardo/commit/7624ff9ccfed9d4208701736c6bfcf70283f6430))
+* style refinements for brand consistency ([a3ff42c](https://github.com/sebastian-software/ardo/commit/a3ff42cdba97af1dccdf2d89961f65cd6d79105c))
+* style refinements for brand consistency and readability ([635841c](https://github.com/sebastian-software/ardo/commit/635841c11c8509bf49b7b5ed8beaecaa5c50cb76))
+
+
+### Bug Fixes
+
+* align config test with actual default theme names ([806f7e0](https://github.com/sebastian-software/ardo/commit/806f7e04d38fa20815f05c9fd4622b07461fdfca))
+
 ## [2.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.2...ardo-v2.3.0) (2026-02-11)
 
 
