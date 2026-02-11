@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.1...ardo-v2.2.2) (2026-02-11)
+
+
+### Bug Fixes
+
+* return "/" instead of undefined from detectGitHubBasename in dev mode ([afc8679](https://github.com/sebastian-software/ardo/commit/afc8679797c8e367a869ef200cdad055f70cb235))
+
 ## [2.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.0...ardo-v2.2.1) (2026-02-11)
 
 
