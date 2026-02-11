@@ -46,7 +46,7 @@ export function TOC() {
     <aside className="ardo-toc">
       <div className="ardo-toc-container">
         <h3 className="ardo-toc-title">{label}</h3>
-        <nav className="ardo-toc-nav">
+        <nav className="ardo-toc-nav" aria-label="Table of contents">
           <TOCItems items={toc} activeId={activeId} />
         </nav>
       </div>

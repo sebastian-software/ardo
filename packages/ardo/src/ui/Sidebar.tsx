@@ -8,6 +8,7 @@ import {
   useContext,
 } from "react"
 import { NavLink, useLocation } from "react-router"
+import { ChevronDown } from "lucide-react"
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -73,7 +74,7 @@ export function Sidebar({ items, children, className }: SidebarProps) {
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
       <aside className={className ?? "ardo-sidebar"}>
-        <nav className="ardo-sidebar-nav">
+        <nav className="ardo-sidebar-nav" aria-label="Main navigation">
           {items ? (
             <SidebarItems items={items} depth={0} />
           ) : (
@@ -176,16 +177,7 @@ export function SidebarGroup({
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
-            <svg
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+            <ChevronDown size={16} />
           </button>
         )}
       </div>
@@ -306,16 +298,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
-            <svg
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
+            <ChevronDown size={16} />
           </button>
         )}
       </div>

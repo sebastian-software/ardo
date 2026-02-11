@@ -72,7 +72,7 @@ export function Content({ children }: ContentProps) {
         )}
 
         {(prev || next) && (
-          <nav className="ardo-prev-next">
+          <nav className="ardo-prev-next" aria-label="Page navigation">
             {prev ? (
               <Link to={prev.link!} className="ardo-prev-link">
                 <span className="ardo-prev-next-label">Previous</span>

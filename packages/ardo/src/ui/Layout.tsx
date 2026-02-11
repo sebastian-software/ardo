@@ -34,10 +34,15 @@ export interface LayoutProps {
 export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
   return (
     <div className={className ?? "ardo-layout"}>
+      <a href="#main-content" className="ardo-skip-link">
+        Skip to content
+      </a>
       {header}
       <div className="ardo-layout-container">
         {sidebar}
-        <main className="ardo-main">{children}</main>
+        <main id="main-content" className="ardo-main">
+          {children}
+        </main>
       </div>
       {footer}
     </div>

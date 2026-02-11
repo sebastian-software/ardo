@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router"
 import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"
+import { Search as SearchIcon } from "lucide-react"
 
 interface SearchDoc {
   id: string
@@ -124,7 +125,7 @@ export function Search() {
       onClick={() => inputRef.current?.focus()}
     >
       <div className="ardo-search-field">
-        <SearchIcon />
+        <SearchIcon size={18} />
         <input
           ref={inputRef}
           type="text"
@@ -202,21 +203,5 @@ export function Search() {
         </div>
       )}
     </div>
-  )
-}
-
-function SearchIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
   )
 }

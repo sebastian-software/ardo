@@ -184,8 +184,13 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--ardo-header-height) + 24px);
+  scroll-padding-top: calc(var(--ardo-header-height) + env(safe-area-inset-top) + 24px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -237,7 +242,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: var(--ardo-header-height);
+  height: calc(var(--ardo-header-height) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
   background: oklch(1 0 0 / 0.85);
   backdrop-filter: blur(12px) saturate(1.5);
   -webkit-backdrop-filter: blur(12px) saturate(1.5);
@@ -872,15 +878,12 @@ body {
   font-size: 12px;
   font-family: var(--ardo-font-family);
   color: var(--ardo-c-text-light);
-  opacity: 0;
+  opacity: 0.6;
   transition: all var(--ardo-transition);
 }
 
-.ardo-code-wrapper:hover .ardo-copy-button {
-  opacity: 1;
-}
-
 .ardo-copy-button:hover {
+  opacity: 1;
   background: var(--ardo-c-bg-soft);
   border-color: var(--ardo-c-brand);
   color: var(--ardo-c-brand);
@@ -1097,7 +1100,13 @@ body {
   border-color: oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
   background: var(--ardo-c-brand-subtle);
   box-shadow: var(--ardo-shadow-md);
-  transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+  .ardo-prev-link:hover,
+  .ardo-next-link:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .ardo-next-link {
@@ -1556,8 +1565,13 @@ body {
 
 .ardo-hero-action-brand:hover {
   background: var(--ardo-c-brand-dark);
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.4);
+}
+
+@media (hover: hover) {
+  .ardo-hero-action-brand:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .ardo-hero-action-alt {
@@ -1622,7 +1636,12 @@ body {
   box-shadow:
     var(--ardo-shadow-md),
     0 0 0 1px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.1);
-  transform: translateY(-3px);
+}
+
+@media (hover: hover) {
+  .ardo-feature:hover {
+    transform: translateY(-3px);
+  }
 }
 
 .ardo-feature-icon {
@@ -1634,7 +1653,7 @@ body {
   margin-bottom: 16px;
   background: var(--ardo-c-brand-subtle);
   border: 1px solid oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.12);
-  border-radius: var(--ardo-radius);
+  border-radius: 50%;
   color: var(--ardo-c-brand);
   transition: all var(--ardo-transition);
 }
@@ -1922,7 +1941,12 @@ body {
 
 .ardo-home-tech-item:hover {
   border-color: var(--ardo-c-brand);
-  transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+  .ardo-home-tech-item:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .ardo-home-tech-icon {
@@ -1983,8 +2007,13 @@ body {
 
 .ardo-home-cta-primary:hover {
   background: var(--ardo-c-brand-dark);
-  transform: translateY(-2px);
   box-shadow: 0 8px 24px oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.3);
+}
+
+@media (hover: hover) {
+  .ardo-home-cta-primary:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .ardo-home-cta-secondary {
@@ -2093,12 +2122,12 @@ body {
 .ardo-api-anchor {
   color: var(--ardo-c-text-lighter);
   text-decoration: none;
-  opacity: 0;
+  opacity: 0.4;
   transition: opacity var(--ardo-transition-fast);
 }
 
 .ardo-api-item-title:hover .ardo-api-anchor {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .ardo-api-item-description {
@@ -2410,9 +2439,33 @@ body {
   .ardo-feature:hover,
   .ardo-prev-link:hover,
   .ardo-next-link:hover,
-  .ardo-hero-action-brand:hover {
+  .ardo-hero-action-brand:hover,
+  .ardo-home-tech-item:hover,
+  .ardo-home-cta-primary:hover {
     transform: none;
   }
+}
+
+/* ========================================
+   Skip Link - Accessibility
+   ======================================== */
+.ardo-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 200;
+  padding: 12px 24px;
+  background: var(--ardo-c-brand);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: var(--ardo-radius);
+  box-shadow: var(--ardo-shadow-md);
+}
+
+.ardo-skip-link:focus {
+  top: 16px;
 }
 
 /* ========================================
