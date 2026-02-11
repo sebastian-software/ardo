@@ -51,8 +51,8 @@ const defaultThemeConfig: ThemeConfig = {
 
 const defaultMarkdownConfig: MarkdownConfig = {
   theme: {
-    light: "github-light",
-    dark: "github-dark",
+    light: "github-light-default",
+    dark: "github-dark-default",
   },
   lineNumbers: false,
   anchor: true,
