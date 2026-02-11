@@ -99,7 +99,10 @@ describe("resolveConfig", () => {
     const resolved = resolveConfig(config, "/project")
 
     expect(resolved.markdown.lineNumbers).toBe(true)
-    expect(resolved.markdown.theme).toEqual({ light: "github-light", dark: "github-dark" })
+    expect(resolved.markdown.theme).toEqual({
+      light: "github-light-default",
+      dark: "github-dark-default",
+    })
     expect(resolved.markdown.anchor).toBe(true)
   })
 
