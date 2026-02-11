@@ -140,12 +140,12 @@ function copyRecursive(src: string, dest: string) {
  * } satisfies Config
  * ```
  */
-export function detectGitHubBasename(cwd?: string): string | undefined {
+export function detectGitHubBasename(cwd?: string): string {
   if (process.env.NODE_ENV !== "production") {
-    return undefined
+    return "/"
   }
   const repoName = detectGitHubRepoName(cwd || process.cwd())
-  return repoName ? `/${repoName}/` : undefined
+  return repoName ? `/${repoName}/` : "/"
 }
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
