@@ -51,9 +51,9 @@
   --ardo-sidebar-bg: oklch(0.975 0.006 var(--ardo-brand-h));
   --ardo-sidebar-border: oklch(0.925 0.01 var(--ardo-brand-h));
 
-  /* Code block styling - warm cream tone */
-  --ardo-code-bg: #fdfcfb;
-  --ardo-code-border: #f0ebe4;
+  /* Code block styling - derived from brand hue */
+  --ardo-code-bg: oklch(0.985 0.004 var(--ardo-brand-h));
+  --ardo-code-border: oklch(0.92 0.008 var(--ardo-brand-h));
   --ardo-code-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 
   /* ========================================
@@ -142,8 +142,8 @@
   --ardo-sidebar-bg: oklch(0.18 0.018 var(--ardo-brand-h));
   --ardo-sidebar-border: oklch(0.28 0.02 var(--ardo-brand-h));
 
-  --ardo-code-bg: #1c1917;
-  --ardo-code-border: #292524;
+  --ardo-code-bg: oklch(0.17 0.01 var(--ardo-brand-h));
+  --ardo-code-border: oklch(0.25 0.015 var(--ardo-brand-h));
   --ardo-code-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 
   /* Light text on dark (brand-tinted) */
@@ -654,6 +654,7 @@ body {
   padding-bottom: 10px;
   border-bottom: none;
   position: relative;
+  letter-spacing: -0.02em;
 }
 
 .ardo-content h2::after {
@@ -1632,8 +1633,16 @@ body {
   height: 48px;
   margin-bottom: 16px;
   background: var(--ardo-c-brand-subtle);
+  border: 1px solid oklch(var(--ardo-brand-l) var(--ardo-brand-c) var(--ardo-brand-h) / 0.12);
   border-radius: var(--ardo-radius);
   color: var(--ardo-c-brand);
+  transition: all var(--ardo-transition);
+}
+
+.ardo-feature:hover .ardo-feature-icon {
+  background: var(--ardo-c-brand);
+  color: white;
+  border-color: transparent;
 }
 
 .ardo-feature-title {
