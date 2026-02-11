@@ -11,10 +11,7 @@ import type { MarkdownConfig } from "../config/types"
 export type ShikiHighlighter = Highlighter
 
 export async function createShikiHighlighter(config: MarkdownConfig): Promise<ShikiHighlighter> {
-  const themeConfig = config.theme ?? {
-    light: "github-light",
-    dark: "github-dark",
-  }
+  const themeConfig = config.theme!
 
   const themes: BundledTheme[] =
     typeof themeConfig === "string" ? [themeConfig] : [themeConfig.light, themeConfig.dark]
@@ -52,10 +49,7 @@ interface RehypeShikiOptions {
 export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
   const { highlighter, config } = options
 
-  const themeConfig = config.theme ?? {
-    light: "github-light",
-    dark: "github-dark",
-  }
+  const themeConfig = config.theme!
 
   return function (tree: Root) {
     visit(tree, "element", (node: Element, index, parent) => {
