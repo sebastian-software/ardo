@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.0...ardo-v2.2.1) (2026-02-11)
+
+
+### Bug Fixes
+
+* skip GitHub Pages basename in dev mode ([14d0adf](https://github.com/sebastian-software/ardo/commit/14d0adfa2dee9110ebec4d01988d999216afbc9b))
+
 ## [2.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.1.1...ardo-v2.2.0) (2026-02-11)
 
 
