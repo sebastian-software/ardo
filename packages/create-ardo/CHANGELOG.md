@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.1.1...create-ardo-v2.2.0) (2026-02-11)
+
+
+### Features
+
+* add API nav links to scaffold and detect description from package.json ([3ea39a5](https://github.com/sebastian-software/ardo/commit/3ea39a5ad2e3341d6dd2fe7fb8f8c6bf5a4e8a40))
+
 ## [2.1.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.1.0...create-ardo-v2.1.1) (2026-02-09)
 
 
