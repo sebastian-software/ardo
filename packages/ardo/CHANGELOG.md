@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.2...ardo-v2.3.0) (2026-02-11)
+
+
+### Features
+
+* add icon prop to HeroAction ([4d46119](https://github.com/sebastian-software/ardo/commit/4d46119bb288ce9757f089301ec6731260561eaf))
+* add icon prop to HeroAction for button icons ([b4e87a6](https://github.com/sebastian-software/ardo/commit/b4e87a6a37b4a7a3df810c568ac0c880dd50e5ac))
+
 ## [2.2.2](https://github.com/sebastian-software/ardo/compare/ardo-v2.2.1...ardo-v2.2.2) (2026-02-11)
 
 
