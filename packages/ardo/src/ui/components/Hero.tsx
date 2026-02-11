@@ -1,4 +1,4 @@
-import { type ComponentProps } from "react"
+import { type ComponentProps, type ReactNode } from "react"
 import { Link } from "react-router"
 
 /** Internal route path from React Router */
@@ -14,6 +14,8 @@ export interface HeroAction {
   link: RoutePath | ExternalUrl
   /** Visual theme: "brand" for primary, "alt" for secondary */
   theme?: "brand" | "alt"
+  /** Optional icon as ReactNode (e.g. Lucide icon component) */
+  icon?: ReactNode
 }
 
 export interface HeroImage {
@@ -45,14 +47,16 @@ export interface HeroProps {
  *
  * @example
  * ```tsx
+ * import { ArrowRight, Github } from "lucide-react"
+ *
  * <Hero
  *   name="Ardo"
  *   text="React-first Documentation"
  *   tagline="Build beautiful documentation sites with React."
  *   image="/logo.svg"
  *   actions={[
- *     { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
- *     { text: "GitHub", link: "https://github.com/...", theme: "alt" }
+ *     { text: "Get Started", link: "/guide/getting-started", theme: "brand", icon: <ArrowRight size={16} /> },
+ *     { text: "GitHub", link: "https://github.com/...", theme: "alt", icon: <Github size={16} /> }
  *   ]}
  * />
  * ```
@@ -84,6 +88,13 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
                   (link.startsWith("http://") || link.startsWith("https://"))
                 const className = `ardo-hero-action ardo-hero-action-${action.theme || "brand"}`
 
+                const content = (
+                  <>
+                    {action.icon}
+                    {action.text}
+                  </>
+                )
+
                 if (isExternal) {
                   return (
                     <a
@@ -93,14 +104,14 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {action.text}
+                      {content}
                     </a>
                   )
                 }
 
                 return (
                   <Link key={index} to={link} className={className}>
-                    {action.text}
+                    {content}
                   </Link>
                 )
               })}
