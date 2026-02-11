@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.3.0...create-ardo-v2.4.0) (2026-02-11)
+
+
+### Features
+
+* replace inline SVGs with Lucide icons and improve accessibility ([7624ff9](https://github.com/sebastian-software/ardo/commit/7624ff9ccfed9d4208701736c6bfcf70283f6430))
+
 ## [2.3.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.2.2...create-ardo-v2.3.0) (2026-02-11)
 
 
