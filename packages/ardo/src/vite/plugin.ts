@@ -141,6 +141,9 @@ function copyRecursive(src: string, dest: string) {
  * ```
  */
 export function detectGitHubBasename(cwd?: string): string | undefined {
+  if (process.env.NODE_ENV !== "production") {
+    return undefined
+  }
   const repoName = detectGitHubRepoName(cwd || process.cwd())
   return repoName ? `/${repoName}/` : undefined
 }
