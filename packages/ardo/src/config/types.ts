@@ -23,6 +23,15 @@ export interface NavItem {
 }
 
 // =============================================================================
+// Sponsor Types
+// =============================================================================
+
+export interface SponsorConfig {
+  text: string
+  link: string
+}
+
+// =============================================================================
 // Social Link Types
 // =============================================================================
 
@@ -56,6 +65,7 @@ export interface ThemeConfig {
   footer?: {
     message?: string
     copyright?: string
+    sponsor?: SponsorConfig
   }
   /** Search configuration */
   search?: {

@@ -90,6 +90,7 @@ export class TypeDocGenerator {
         doc.frontmatter.sidebar_position !== undefined
           ? `sidebar_position: ${doc.frontmatter.sidebar_position}`
           : null,
+        doc.frontmatter.sidebar === false ? `sidebar: false` : null,
         "---",
       ].filter((line): line is string => line !== null)
 
@@ -177,7 +178,147 @@ export class TypeDocGenerator {
       }
     }
 
+    // Generate category index pages for non-empty categories
+    docs.push(
+      ...this.generateCategoryIndexPages(
+        docs,
+        componentItems,
+        functionsByFile,
+        typesByFile,
+        standaloneItems
+      )
+    )
+
     return docs
+  }
+
+  private generateCategoryIndexPages(
+    docs: GeneratedApiDoc[],
+    componentItems: DeclarationReflection[],
+    functionsByFile: Map<string, DeclarationReflection[]>,
+    typesByFile: Map<string, DeclarationReflection[]>,
+    standaloneItems: DeclarationReflection[]
+  ): GeneratedApiDoc[] {
+    const indexPages: GeneratedApiDoc[] = []
+
+    // Components index
+    if (componentItems.length > 0) {
+      const sorted = [...componentItems].sort((a, b) => a.name.localeCompare(b.name))
+      const content = [
+        `# Components`,
+        "",
+        ...sorted.map((c) => {
+          const desc = c.comment?.summary ? ` - ${this.renderCommentShort(c.comment.summary)}` : ""
+          return `- [${c.name}](${this.buildLink("components", this.getSlug(c.name))})${desc}`
+        }),
+        "",
+      ]
+      indexPages.push({
+        path: "components/index.md",
+        content: content.join("\n"),
+        frontmatter: { title: "Components", sidebar: false },
+      })
+    }
+
+    // Functions index
+    if (functionsByFile.size > 0) {
+      const sortedModules = [...functionsByFile.entries()].sort((a, b) =>
+        this.getModuleNameFromPath(a[0]).localeCompare(this.getModuleNameFromPath(b[0]))
+      )
+      const content = [
+        `# Functions`,
+        "",
+        ...sortedModules.map(([sourceFile, functions]) => {
+          const moduleName = this.getModuleNameFromPath(sourceFile)
+          const slug = this.getSlug(moduleName)
+          const funcNames = functions
+            .map((f) => f.name)
+            .sort()
+            .join(", ")
+          return `- [${moduleName}](${this.buildLink("functions", slug)}) - ${funcNames}`
+        }),
+        "",
+      ]
+      indexPages.push({
+        path: "functions/index.md",
+        content: content.join("\n"),
+        frontmatter: { title: "Functions", sidebar: false },
+      })
+    }
+
+    // Group standalone items by kind for category indexes
+    const interfaces = standaloneItems.filter((c) => c.kind === ReflectionKind.Interface)
+    const classes = standaloneItems.filter((c) => c.kind === ReflectionKind.Class)
+
+    // Interfaces index
+    if (interfaces.length > 0) {
+      const sorted = [...interfaces].sort((a, b) => a.name.localeCompare(b.name))
+      const content = [
+        `# Interfaces`,
+        "",
+        ...sorted.map((item) => {
+          const desc = item.comment?.summary
+            ? ` - ${this.renderCommentShort(item.comment.summary)}`
+            : ""
+          return `- [${item.name}](${this.buildLink("interfaces", this.getSlug(item.name))})${desc}`
+        }),
+        "",
+      ]
+      indexPages.push({
+        path: "interfaces/index.md",
+        content: content.join("\n"),
+        frontmatter: { title: "Interfaces", sidebar: false },
+      })
+    }
+
+    // Types index
+    if (typesByFile.size > 0) {
+      const sortedModules = [...typesByFile.entries()].sort((a, b) =>
+        this.getModuleNameFromPath(a[0]).localeCompare(this.getModuleNameFromPath(b[0]))
+      )
+      const content = [
+        `# Types`,
+        "",
+        ...sortedModules.map(([sourceFile, types]) => {
+          const moduleName = this.getModuleNameFromPath(sourceFile)
+          const slug = this.getSlug(moduleName)
+          const typeNames = types
+            .map((t) => t.name)
+            .sort()
+            .join(", ")
+          return `- [${moduleName}](${this.buildLink("types", slug)}) - ${typeNames}`
+        }),
+        "",
+      ]
+      indexPages.push({
+        path: "types/index.md",
+        content: content.join("\n"),
+        frontmatter: { title: "Types", sidebar: false },
+      })
+    }
+
+    // Classes index
+    if (classes.length > 0) {
+      const sorted = [...classes].sort((a, b) => a.name.localeCompare(b.name))
+      const content = [
+        `# Classes`,
+        "",
+        ...sorted.map((item) => {
+          const desc = item.comment?.summary
+            ? ` - ${this.renderCommentShort(item.comment.summary)}`
+            : ""
+          return `- [${item.name}](${this.buildLink("classes", this.getSlug(item.name))})${desc}`
+        }),
+        "",
+      ]
+      indexPages.push({
+        path: "classes/index.md",
+        content: content.join("\n"),
+        frontmatter: { title: "Classes", sidebar: false },
+      })
+    }
+
+    return indexPages
   }
 
   private generateGroupedFunctionsPage(

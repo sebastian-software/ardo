@@ -37,6 +37,35 @@ Ardo fixes that. Write your docs with the same stack you already use: React 19, 
 
 **Builds that don't waste your time.** Vite 8 with Rolldown. Dev server starts in under a second. Production builds finish while you're still reaching for your coffee.
 
+## Why Ardo?
+
+There are good documentation frameworks out there. The question is whether they fit your stack.
+
+If your app is React, your components are React, and your team thinks in React — switching to a different framework for docs means maintaining two mental models, two component systems, and two sets of conventions. Ardo lets you skip that entirely.
+
+|                           | **Ardo**   | **Docusaurus**  | **Starlight**                 | **VitePress** |
+| ------------------------- | ---------- | --------------- | ----------------------------- | ------------- |
+| UI framework              | React 19   | React           | Astro                         | Vue           |
+| Build tool                | Vite 8     | Webpack         | Astro/Vite                    | Vite          |
+| Use your React components | Native     | Native          | Via islands (adapters needed) | Not supported |
+| TypeDoc built in          | Yes        | Plugin required | Plugin required               | Not available |
+| First load (gzipped)      | ~111 KB    | ~500 KB+        | ~50 KB                        | ~50 KB        |
+| Subsequent navigations    | ~1 KB      | ~1 KB           | Full page reload              | ~1 KB         |
+| CO₂ per visit             | ~0.04g (A) | ~0.10g (B)      | ~0.01g (A+)                   | ~0.04g (A)    |
+
+**Starlight and VitePress are lighter** — they ship less JavaScript because Astro and Vue have smaller runtimes than React. That's a real tradeoff. If minimal page weight is your top priority and you don't need React components in your docs, those are solid choices.
+
+**Docusaurus is React-based** — but it's built on webpack with a heavier architecture. Build times are slower and the runtime is roughly 4x larger.
+
+**Ardo is built for teams already committed to React.** You get your existing components, your existing design system, and your existing knowledge — with a modern Vite-powered build that keeps page weight reasonable despite including the React runtime.
+
+<details>
+<summary>Environmental impact methodology</summary>
+
+CO₂ estimates follow the [Website Carbon Calculator](https://www.websitecarbon.com/) methodology (Sustainable Web Design model). Comparison values for Docusaurus, Starlight, and VitePress are sourced from [Starlight's environmental impact page](https://starlight.astro.build/environmental-impact/). Ardo's estimate is calculated from measured build output (~111 KB gzipped transfer size).
+
+</details>
+
 ## Quick start
 
 ```bash
