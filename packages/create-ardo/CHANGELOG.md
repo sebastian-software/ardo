@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.4.1...create-ardo-v2.5.0) (2026-02-12)
+
+
+### Features
+
+* replace lucide-react with external SVG icons, add sideEffects, lazy-load search ([d6052f5](https://github.com/sebastian-software/ardo/commit/d6052f5180d6696bb5ce1b5be87dff22fcbfad5d)), closes [#43](https://github.com/sebastian-software/ardo/issues/43)
+* replace lucide-react with external SVG icons, lazy-load search ([ca07af1](https://github.com/sebastian-software/ardo/commit/ca07af19f12bb7c32d4496361ddacd969710db94))
+
 ## [2.4.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.4.0...create-ardo-v2.4.1) (2026-02-12)
 
 

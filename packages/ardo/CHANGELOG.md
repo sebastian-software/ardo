@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.4.1...ardo-v2.5.0) (2026-02-12)
+
+
+### Features
+
+* add version display, build timestamp, sponsor link in footer ([691b047](https://github.com/sebastian-software/ardo/commit/691b047c81763ab80e41f30fb60bada732d8464a))
+* add version display, build timestamp, sponsor link in footer ([8b66bdc](https://github.com/sebastian-software/ardo/commit/8b66bdc7b195be79d20bd5e9ba2913fb81a5d55c)), closes [#43](https://github.com/sebastian-software/ardo/issues/43)
+* replace lucide-react with external SVG icons, add sideEffects, lazy-load search ([d6052f5](https://github.com/sebastian-software/ardo/commit/d6052f5180d6696bb5ce1b5be87dff22fcbfad5d)), closes [#43](https://github.com/sebastian-software/ardo/issues/43)
+* replace lucide-react with external SVG icons, lazy-load search ([ca07af1](https://github.com/sebastian-software/ardo/commit/ca07af19f12bb7c32d4496361ddacd969710db94))
+
+
+### Bug Fixes
+
+* align all Shiki theme fallbacks with config defaults ([e64c89e](https://github.com/sebastian-software/ardo/commit/e64c89efa7a68d21d741b4e72d9bb92f5802f13d))
+* apply default markdown theme in vite plugin for shiki ([908eb73](https://github.com/sebastian-software/ardo/commit/908eb73b55cddf4da5afde231d92532f0993a32a))
+* format styles.css icon classes with prettier ([bf75f05](https://github.com/sebastian-software/ardo/commit/bf75f0549a631289ce67df4b9191c53caeeb1448))
+* single source of truth for Shiki theme defaults ([1f1e7dd](https://github.com/sebastian-software/ardo/commit/1f1e7dd296da233793e6cd7588a98e343ca16c2c))
+
 ## [2.4.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.4.0...ardo-v2.4.1) (2026-02-12)
 
 
