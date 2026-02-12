@@ -40,6 +40,8 @@ export interface HeroProps {
   actions?: HeroAction[]
   /** Additional CSS class */
   className?: string
+  /** Version string displayed as a pill badge above the name */
+  version?: string
 }
 
 /**
@@ -61,7 +63,7 @@ export interface HeroProps {
  * />
  * ```
  */
-export function Hero({ name, text, tagline, image, actions, className }: HeroProps) {
+export function Hero({ name, text, tagline, image, actions, className, version }: HeroProps) {
   const imageUrl = typeof image === "string" ? image : image?.light
   const imageAlt = typeof image === "string" ? name : (image?.alt ?? name)
 
@@ -75,6 +77,7 @@ export function Hero({ name, text, tagline, image, actions, className }: HeroPro
         )}
 
         <div className="ardo-hero-content">
+          {version && <span className="ardo-hero-version">v{version}</span>}
           {name && <h1 className="ardo-hero-name">{name}</h1>}
           {text && <p className="ardo-hero-text">{text}</p>}
           {tagline && <p className="ardo-hero-tagline">{tagline}</p>}

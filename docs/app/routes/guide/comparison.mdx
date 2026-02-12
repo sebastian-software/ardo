@@ -1,0 +1,88 @@
+---
+title: Comparison
+description: How Ardo compares to Docusaurus, Starlight, and VitePress.
+order: 2
+---
+
+# Comparison
+
+There are good documentation frameworks out there. The question is whether they fit your stack.
+
+If your app is React, your components are React, and your team thinks in React — switching to a different framework for docs means maintaining two mental models, two component systems, and two sets of conventions. Ardo lets you skip that.
+
+## At a glance
+
+|                           | **Ardo**   | **Docusaurus**  | **Starlight**                 | **VitePress** |
+| ------------------------- | ---------- | --------------- | ----------------------------- | ------------- |
+| UI framework              | React 19   | React           | Astro                         | Vue           |
+| Build tool                | Vite 8     | Webpack         | Astro/Vite                    | Vite          |
+| Use your React components | Native     | Native          | Via islands (adapters needed) | Not supported |
+| TypeDoc built in          | Yes        | Plugin required | Plugin required               | Not available |
+| First load (gzipped)      | ~123 KB    | ~500 KB+        | ~50 KB                        | ~50 KB        |
+| Subsequent navigations    | ~1 KB      | ~1 KB           | Full page reload              | ~1 KB         |
+| CO₂ per visit             | ~0.05g (A) | ~0.10g (B)      | ~0.01g (A+)                   | ~0.04g (A)    |
+
+## Docusaurus
+
+[Docusaurus](https://docusaurus.io/) is the most established React documentation framework. It's battle-tested, well-documented, and backed by Meta. If you need a proven solution with a massive plugin ecosystem, Docusaurus delivers.
+
+**Where it fits:** Large teams that need maximum flexibility, plugin support, and a large community. If your project has complex internationalization needs or relies on specific Docusaurus plugins, it may be the right choice.
+
+**Where Ardo differs:**
+
+- **Build tooling.** Docusaurus uses webpack. Ardo uses Vite 8 with Rolldown. The difference is most obvious in dev server startup (seconds vs. near-instant) and hot module replacement speed.
+- **Runtime weight.** A typical Docusaurus site ships over 500 KB of JavaScript on first load. Ardo ships ~123 KB. Both include the React runtime, but Ardo's leaner architecture and Vite's tree-shaking produce a significantly smaller bundle.
+- **Configuration surface.** Docusaurus has a large configuration API that evolved over many years. Ardo takes a simpler approach: a single Vite plugin with sensible defaults. Most sites need fewer than 10 lines of config.
+
+## Starlight
+
+[Starlight](https://starlight.astro.build/) is excellent engineering. Built on Astro, it produces ultra-lightweight pages (as little as 50 KB on first load) and earns an A+ environmental rating. If page weight is your top priority, Starlight is hard to beat.
+
+**Where it fits:** Content-heavy documentation that doesn't need interactive React components. If your docs are mostly prose and code examples, and you don't need to embed your existing React design system, Starlight gives you the lightest possible output.
+
+**Where Ardo differs:**
+
+- **Component model.** Starlight uses Astro components, not React. You _can_ render React components through Astro's island architecture, but they load as isolated islands with their own hydration boundary. Your React context, your state management, your design system's theme provider — none of that flows naturally across island boundaries.
+- **Routing.** Astro uses its own file-based routing, separate from React Router. If your team already knows React Router patterns, that knowledge doesn't transfer.
+- **Mental model.** With Starlight, you're learning Astro's way of building pages. With Ardo, you're using React the way you already use it. The difference matters most when customizing layouts, building interactive documentation, or embedding components from your main application.
+
+## VitePress
+
+[VitePress](https://vitepress.dev/) is modern, fast, and well-designed. It's the closest to Ardo in philosophy: Vite-powered, file-based routing, Markdown-first with component support. If your team uses Vue, VitePress is an outstanding choice.
+
+**Where it fits:** Vue teams, or projects where the documentation is standalone and doesn't need to share components with a React app.
+
+**Where Ardo differs:**
+
+- **The framework.** VitePress is Vue. If your application is React, using VitePress means your project depends on two UI frameworks. Two sets of dependencies, two component models, and zero component sharing between your app and your docs.
+- **Ecosystem alignment.** With Ardo, the same component you built for your app works in your docs. With VitePress, you'd need to rewrite it in Vue — or maintain a framework-agnostic wrapper.
+
+## Environmental impact
+
+Every page view consumes energy. Smaller pages mean less data transferred, less energy used, and less CO₂ emitted. Here's how the frameworks compare:
+
+| Framework  | CO₂ per visit | Rating |
+| ---------- | ------------- | ------ |
+| Starlight  | ~0.01g        | A+     |
+| VitePress  | ~0.04g        | A      |
+| **Ardo**   | **~0.05g**    | **A**  |
+| Docusaurus | ~0.10g        | B      |
+
+Ardo ships more JavaScript than Starlight or VitePress because it includes the React runtime. That's a real tradeoff — React is larger than Astro's zero-JS output or Vue's smaller runtime. But compared to other React-based frameworks like Docusaurus, Ardo's Vite-powered build pipeline cuts the payload roughly in half.
+
+For subsequent page navigations, Ardo transfers only the content chunk (~1 KB), keeping the ongoing environmental cost minimal.
+
+:::tip Methodology
+CO₂ estimates follow the [Website Carbon Calculator](https://www.websitecarbon.com/) methodology (Sustainable Web Design model). Comparison values for Docusaurus, Starlight, and VitePress are sourced from [Starlight's environmental impact page](https://starlight.astro.build/environmental-impact/). Ardo's estimate is calculated from measured build output (~123 KB gzipped transfer size).
+:::
+
+## The bottom line
+
+All four are good tools. The right choice depends on your team:
+
+- **Already using React?** Ardo keeps you in your stack.
+- **Already using Vue?** VitePress is excellent.
+- **Don't need interactive components?** Starlight is the lightest option.
+- **Need maximum plugin ecosystem?** Docusaurus has the most mature community.
+
+Ardo is built for one specific scenario: you're a React team and you want your docs to feel like the rest of your codebase. If that's you, [get started in two minutes](/guide/getting-started).

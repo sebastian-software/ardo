@@ -200,6 +200,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       routesDir = routesDirOption || path.join(root, "app", "routes")
 
       const result: UserConfig = {
+        define: {
+          __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+        },
         optimizeDeps: {
           exclude: ["ardo/ui/styles.css"],
         },
@@ -265,6 +268,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           lang: resolvedConfig.lang,
           themeConfig: resolvedConfig.themeConfig,
           project: resolvedConfig.project,
+          buildTime: new Date().toISOString(),
         }
         return `export default ${JSON.stringify(clientConfig)}`
       }

@@ -65,6 +65,7 @@ export default function Root() {
             <Sidebar>
               <SidebarGroup title="Introduction">
                 <SidebarLink to="/guide/what-is-ardo">What is Ardo?</SidebarLink>
+                <SidebarLink to="/guide/comparison">Comparison</SidebarLink>
                 <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
               </SidebarGroup>
 
@@ -84,12 +85,21 @@ export default function Root() {
                 <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
               </SidebarGroup>
 
-              <SidebarLink to="/api-reference">API Reference</SidebarLink>
+              <SidebarGroup title="API Reference" to="/api-reference" collapsed>
+                <SidebarLink to="/api-reference/components">Components</SidebarLink>
+                <SidebarLink to="/api-reference/functions">Functions</SidebarLink>
+                <SidebarLink to="/api-reference/interfaces">Interfaces</SidebarLink>
+                <SidebarLink to="/api-reference/types">Types</SidebarLink>
+                <SidebarLink to="/api-reference/classes">Classes</SidebarLink>
+              </SidebarGroup>
             </Sidebar>
           )
         }
         footer={
           <Footer
+            project={config.project}
+            sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
+            buildTime={config.buildTime}
             message="Released under the MIT License."
             copyright="Copyright 2026 Sebastian Software GmbH"
           />

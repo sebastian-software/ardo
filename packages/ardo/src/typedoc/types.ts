@@ -226,5 +226,6 @@ export interface GeneratedApiDoc {
     title: string
     description?: string
     sidebar_position?: number
+    sidebar?: boolean
   }
 }

@@ -1,8 +1,10 @@
 /// <reference types="vite/client" />
 
+declare const __BUILD_TIME__: string
+
 declare module "virtual:ardo/config" {
   import type { PressConfig } from "./config/types"
-  const config: PressConfig
+  const config: PressConfig & { buildTime: string }
   export default config
 }
 
