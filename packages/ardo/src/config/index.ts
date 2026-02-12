@@ -49,7 +49,7 @@ const defaultThemeConfig: ThemeConfig = {
   },
 }
 
-const defaultMarkdownConfig: MarkdownConfig = {
+export const defaultMarkdownConfig: MarkdownConfig = {
   theme: {
     light: "github-light-default",
     dark: "github-dark-default",
