@@ -351,14 +351,14 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const shikiOptions = hasThemeObject
     ? {
         themes: {
-          light: themeConfig.light || "github-light",
-          dark: themeConfig.dark || "github-dark",
+          light: themeConfig.light || "github-light-default",
+          dark: themeConfig.dark || "github-dark-default",
         },
         defaultColor: false as const,
         transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
       }
     : {
-        theme: (themeConfig as string) || "github-dark",
+        theme: (themeConfig as string) || "github-dark-default",
         transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
       }
 
