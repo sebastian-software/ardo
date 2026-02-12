@@ -1,7 +1,7 @@
 import type { Plugin, UserConfig } from "vite"
 import type { PressConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
-import { resolveConfig } from "../config/index"
+import { resolveConfig, defaultMarkdownConfig } from "../config/index"
 import { generateApiDocs } from "../typedoc/generator"
 import { reactRouter } from "@react-router/dev/vite"
 import mdx from "@mdx-js/rollup"
@@ -343,7 +343,8 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   }
 
   // Add MDX plugin with Ardo's markdown pipeline
-  const themeConfig = pressConfig.markdown?.theme
+  // Apply default theme if user didn't configure one
+  const themeConfig = pressConfig.markdown?.theme ?? defaultMarkdownConfig.theme
   const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
   const lineNumbers = pressConfig.markdown?.lineNumbers || false
 
