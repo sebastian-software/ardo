@@ -1,13 +1,16 @@
-import type { LucideProps, LucideIcon } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ComponentType, SVGAttributes, ReactNode } from "react"
 
-export interface IconProps extends Omit<LucideProps, "ref"> {
+type IconComponent = ComponentType<SVGAttributes<SVGSVGElement> & { size?: number }>
+
+export interface IconProps extends SVGAttributes<SVGSVGElement> {
   /** Name of the registered icon */
   name: string
+  /** Icon size */
+  size?: number
 }
 
 // Icon registry - users register only the icons they need
-const iconRegistry = new Map<string, LucideIcon>()
+const iconRegistry = new Map<string, IconComponent>()
 
 /**
  * Register icons for use with the Icon component.
@@ -22,7 +25,7 @@ const iconRegistry = new Map<string, LucideIcon>()
  * registerIcons({ Zap, Rocket, Code })
  * ```
  */
-export function registerIcons(icons: Record<string, LucideIcon>): void {
+export function registerIcons(icons: Record<string, IconComponent>): void {
   for (const [name, icon] of Object.entries(icons)) {
     iconRegistry.set(name, icon)
   }
@@ -36,7 +39,7 @@ export function getRegisteredIconNames(): string[] {
 }
 
 /**
- * Renders a registered Lucide icon by name.
+ * Renders a registered icon by name.
  * Icons must be registered first using `registerIcons()`.
  *
  * @example
@@ -54,12 +57,12 @@ export function getRegisteredIconNames(): string[] {
  * @see https://lucide.dev/icons for available icon names
  */
 export function Icon({ name, ...props }: IconProps): ReactNode {
-  const LucideIcon = iconRegistry.get(name)
+  const IconComp = iconRegistry.get(name)
 
-  if (!LucideIcon) {
+  if (!IconComp) {
     console.warn(`[Ardo] Icon "${name}" not found. Did you register it with registerIcons()?`)
     return null
   }
 
-  return <LucideIcon {...props} />
+  return <IconComp {...props} />
 }

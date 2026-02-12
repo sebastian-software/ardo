@@ -212,6 +212,90 @@ Use \`create-ardo\` for a complete project setup!
         </div>
       </section>
 
+      {/* Comparison Section */}
+      <section className="ardo-home-section">
+        <div className="ardo-home-section-container">
+          <h2 className="ardo-home-section-title">How Ardo compares</h2>
+          <p className="ardo-home-section-subtitle">
+            Great tools exist. The question is whether they fit your stack.
+          </p>
+
+          <div className="ardo-home-comparison">
+            <table className="ardo-home-comparison-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th className="ardo-home-comparison-highlight">Ardo</th>
+                  <th>Docusaurus</th>
+                  <th>Starlight</th>
+                  <th>VitePress</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>UI framework</td>
+                  <td className="ardo-home-comparison-highlight">React 19</td>
+                  <td>React</td>
+                  <td>Astro</td>
+                  <td>Vue</td>
+                </tr>
+                <tr>
+                  <td>Build tool</td>
+                  <td className="ardo-home-comparison-highlight">Vite 8</td>
+                  <td>Webpack</td>
+                  <td>Astro/Vite</td>
+                  <td>Vite</td>
+                </tr>
+                <tr>
+                  <td>Your React components</td>
+                  <td className="ardo-home-comparison-highlight">
+                    <span className="ardo-home-check">Native</span>
+                  </td>
+                  <td>
+                    <span className="ardo-home-check">Native</span>
+                  </td>
+                  <td>Via islands</td>
+                  <td>
+                    <span className="ardo-home-x">No</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>TypeDoc built in</td>
+                  <td className="ardo-home-comparison-highlight">
+                    <span className="ardo-home-check">Yes</span>
+                  </td>
+                  <td>Plugin</td>
+                  <td>Plugin</td>
+                  <td>
+                    <span className="ardo-home-x">No</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>First load</td>
+                  <td className="ardo-home-comparison-highlight">~111 KB</td>
+                  <td>~500 KB+</td>
+                  <td>~50 KB</td>
+                  <td>~50 KB</td>
+                </tr>
+                <tr>
+                  <td>CO₂ per visit</td>
+                  <td className="ardo-home-comparison-highlight">~0.04g (A)</td>
+                  <td>~0.10g (B)</td>
+                  <td>~0.01g (A+)</td>
+                  <td>~0.04g (A)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="ardo-home-comparison-cta">
+            <Link to="/guide/comparison" className="ardo-home-link">
+              Read the full comparison <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA Section */}
       <section className="ardo-home-section ardo-home-cta-section">
         <div className="ardo-home-section-container">

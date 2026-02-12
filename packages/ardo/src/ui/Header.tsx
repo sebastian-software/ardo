@@ -1,8 +1,16 @@
-import { useState, type ReactNode } from "react"
+import { useState, lazy, Suspense, type ReactNode } from "react"
 import { Link } from "react-router"
-import { Github, Twitter, MessageCircle, Linkedin, Youtube, Package } from "lucide-react"
+import {
+  GithubIcon,
+  TwitterIcon,
+  MessageCircleIcon,
+  LinkedinIcon,
+  YoutubeIcon,
+  PackageIcon,
+} from "./icons"
 import { ThemeToggle } from "./components/ThemeToggle"
-import { Search } from "./components/Search"
+
+const LazySearch = lazy(() => import("./components/Search").then((m) => ({ default: m.Search })))
 
 // =============================================================================
 // Header Component
@@ -91,7 +99,11 @@ export function Header({
 
         {/* Right: Search, Theme Toggle, Actions */}
         <div className="ardo-header-right">
-          {search && <Search />}
+          {search && (
+            <Suspense fallback={<span className="ardo-search-placeholder" />}>
+              <LazySearch />
+            </Suspense>
+          )}
           {themeToggle && <ThemeToggle />}
           {actions}
         </div>
@@ -151,15 +163,15 @@ export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps
 // =============================================================================
 
 const socialIcons = {
-  github: Github,
-  twitter: Twitter,
-  discord: MessageCircle,
-  linkedin: Linkedin,
-  youtube: Youtube,
-  npm: Package,
+  github: GithubIcon,
+  twitter: TwitterIcon,
+  discord: MessageCircleIcon,
+  linkedin: LinkedinIcon,
+  youtube: YoutubeIcon,
+  npm: PackageIcon,
 } as const
 
 function SocialIcon({ icon }: { icon: string }) {
-  const IconComponent = socialIcons[icon as keyof typeof socialIcons] ?? Github
+  const IconComponent = socialIcons[icon as keyof typeof socialIcons] ?? GithubIcon
   return <IconComponent size={20} />
 }

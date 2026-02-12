@@ -1,5 +1,5 @@
 import { type ReactNode } from "react"
-import { Lightbulb, AlertTriangle, XCircle, Info as InfoIcon, FileText } from "lucide-react"
+import { LightbulbIcon, AlertTriangleIcon, XCircleIcon, InfoIcon, FileTextIcon } from "../icons"
 
 export type ContainerType = "tip" | "warning" | "danger" | "info" | "note"
 
@@ -21,11 +21,11 @@ const defaultTitles: Record<ContainerType, string> = {
 }
 
 const icons: Record<ContainerType, ReactNode> = {
-  tip: <Lightbulb size={18} strokeWidth={2.5} />,
-  warning: <AlertTriangle size={18} strokeWidth={2.5} />,
-  danger: <XCircle size={18} strokeWidth={2.5} />,
-  info: <InfoIcon size={18} strokeWidth={2.5} />,
-  note: <FileText size={18} strokeWidth={2.5} />,
+  tip: <LightbulbIcon size={18} />,
+  warning: <AlertTriangleIcon size={18} />,
+  danger: <XCircleIcon size={18} />,
+  info: <InfoIcon size={18} />,
+  note: <FileTextIcon size={18} />,
 }
 
 /**

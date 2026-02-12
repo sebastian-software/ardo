@@ -8,7 +8,7 @@ import {
   useContext,
 } from "react"
 import { NavLink, useLocation } from "react-router"
-import { ChevronDown } from "lucide-react"
+import { ChevronDownIcon } from "./icons"
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -177,7 +177,7 @@ export function SidebarGroup({
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
-            <ChevronDown size={16} />
+            <ChevronDownIcon size={16} />
           </button>
         )}
       </div>
@@ -298,7 +298,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
-            <ChevronDown size={16} />
+            <ChevronDownIcon size={16} />
           </button>
         )}
       </div>
