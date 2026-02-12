@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Copy, Check } from "lucide-react"
+import { CopyIcon, CheckIcon } from "../icons"
 
 interface CopyButtonProps {
   code: string
@@ -24,7 +24,7 @@ export function CopyButton({ code }: CopyButtonProps) {
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >
-      {copied ? <Check size={16} /> : <Copy size={16} />}
+      {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
       <span className="ardo-copy-text">{copied ? "Copied!" : "Copy"}</span>
     </button>
   )

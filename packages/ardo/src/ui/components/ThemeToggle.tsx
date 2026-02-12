@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Sun, Moon, Monitor } from "lucide-react"
+import { SunIcon, MoonIcon, MonitorIcon } from "../icons"
 
 type Theme = "light" | "dark" | "system"
 
@@ -30,7 +30,7 @@ export function ThemeToggle() {
     return (
       <button className="ardo-theme-toggle" aria-label="Toggle theme">
         <span className="ardo-theme-icon">
-          <Sun size={20} />
+          <SunIcon size={20} />
         </span>
       </button>
     )
@@ -43,9 +43,9 @@ export function ThemeToggle() {
       aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}
     >
       <span className="ardo-theme-icon">
-        {theme === "light" && <Sun size={20} />}
-        {theme === "dark" && <Moon size={20} />}
-        {theme === "system" && <Monitor size={20} />}
+        {theme === "light" && <SunIcon size={20} />}
+        {theme === "dark" && <MoonIcon size={20} />}
+        {theme === "system" && <MonitorIcon size={20} />}
       </span>
     </button>
   )

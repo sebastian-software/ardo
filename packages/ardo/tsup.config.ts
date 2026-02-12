@@ -1,5 +1,5 @@
 import { defineConfig } from "tsup"
-import { copyFileSync, mkdirSync } from "fs"
+import { copyFileSync, mkdirSync, readdirSync } from "fs"
 import { dirname, join } from "path"
 
 export default defineConfig({
@@ -29,6 +29,7 @@ export default defineConfig({
     "@react-router/dev/config",
     "vite",
     "tailwindcss",
+    "lucide-react",
     /^virtual:ardo\//,
   ],
   esbuildOptions(options) {
@@ -40,5 +41,16 @@ export default defineConfig({
     mkdirSync(dirname(destPath), { recursive: true })
     copyFileSync(join("src", "ui", "styles.css"), destPath)
     console.log("Copied styles.css to dist/ui/")
+
+    // Copy SVG icons
+    const iconsDir = join("src", "ui", "icons")
+    const destIconsDir = join("dist", "ui", "icons")
+    mkdirSync(destIconsDir, { recursive: true })
+    for (const file of readdirSync(iconsDir)) {
+      if (file.endsWith(".svg")) {
+        copyFileSync(join(iconsDir, file), join(destIconsDir, file))
+      }
+    }
+    console.log("Copied SVG icons to dist/ui/icons/")
   },
 })

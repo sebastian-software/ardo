@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router"
 import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"
-import { Search as SearchIcon } from "lucide-react"
+import { SearchIcon } from "../icons"
 
 interface SearchDoc {
   id: string
