@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.4.0...ardo-v2.4.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* align vite plugin Shiki theme fallbacks with config defaults ([2201bdc](https://github.com/sebastian-software/ardo/commit/2201bdca5ebf05b3b20adcd9a3a8a856488f4983))
+* align vite plugin Shiki theme fallbacks with config defaults ([243686f](https://github.com/sebastian-software/ardo/commit/243686fae63b80ac0c6cb74d3432e4e06e4e7122))
+
 ## [2.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.3.0...ardo-v2.4.0) (2026-02-11)
 
 
