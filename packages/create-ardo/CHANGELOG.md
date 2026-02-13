@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.7.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.6.0...create-ardo-v2.7.0) (2026-02-13)
+
+
+### Features
+
+* add upgrade detection to create-ardo CLI ([68414ec](https://github.com/sebastian-software/ardo/commit/68414ec4e63341a8aadacb04be7f80ac4bdfa529))
+* make Footer context-aware with automatic config resolution ([a6ec21f](https://github.com/sebastian-software/ardo/commit/a6ec21fdb07fac109ff2a571f757b474ea0365cf))
+* make Header context-aware with automatic title and logo resolution ([85af709](https://github.com/sebastian-software/ardo/commit/85af7092477e9bfaa7c7221bf03132e4d472c131))
+* ship virtual module types via ardo/virtual, eliminate vite-env.d.ts ([3c2d0ea](https://github.com/sebastian-software/ardo/commit/3c2d0eaf9943425f1b28daaa59cf96c4192ae378))
+
+
+### Code Refactoring
+
+* simplify all root.tsx files using ArdoRoot and RootLayout ([a96bb55](https://github.com/sebastian-software/ardo/commit/a96bb5590b6449e8552bb905a53ae139850d2242))
+
 ## [2.6.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.5.0...create-ardo-v2.6.0) (2026-02-13)
 
 
