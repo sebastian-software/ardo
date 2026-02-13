@@ -141,10 +141,6 @@ export function SidebarGroup({
     .filter(Boolean)
     .join(" ")
 
-  const linkClassName = ["ardo-sidebar-link", isChildActive && "child-active"]
-    .filter(Boolean)
-    .join(" ")
-
   const hasChildren = Children.count(children) > 0
 
   return (
@@ -153,8 +149,9 @@ export function SidebarGroup({
         {to ? (
           <NavLink
             to={to}
+            end
             className={({ isActive }) =>
-              [linkClassName, isActive && "active"].filter(Boolean).join(" ")
+              [textClassName, isActive && "active"].filter(Boolean).join(" ")
             }
           >
             {title}

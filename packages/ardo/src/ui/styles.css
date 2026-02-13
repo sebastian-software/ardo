@@ -476,6 +476,21 @@ body {
   gap: 6px;
 }
 
+/* When a sidebar group title is also a link */
+a.ardo-sidebar-text {
+  text-decoration: none;
+  border-radius: var(--ardo-radius-sm);
+  transition: all var(--ardo-transition-fast);
+}
+
+a.ardo-sidebar-text:hover {
+  color: var(--ardo-c-text);
+}
+
+a.ardo-sidebar-text.active {
+  color: var(--ardo-c-brand);
+}
+
 .ardo-sidebar-text::before {
   content: "";
   width: 5px;
