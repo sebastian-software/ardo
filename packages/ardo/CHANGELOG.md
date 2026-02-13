@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.6.0...ardo-v2.7.0) (2026-02-13)
+
+
+### Features
+
+* add ArdoRoot combo component combining Provider, Layout, and routing ([dcd4893](https://github.com/sebastian-software/ardo/commit/dcd4893487a3999703fbfab5012e907786d48efc))
+* add RootLayout component to eliminate html/head/body boilerplate ([d1df64e](https://github.com/sebastian-software/ardo/commit/d1df64e15834b82512a0180882734d719dea872b))
+* make Footer context-aware with automatic config resolution ([a6ec21f](https://github.com/sebastian-software/ardo/commit/a6ec21fdb07fac109ff2a571f757b474ea0365cf))
+* make Header context-aware with automatic title and logo resolution ([85af709](https://github.com/sebastian-software/ardo/commit/85af7092477e9bfaa7c7221bf03132e4d472c131))
+* make Sidebar context-aware with automatic rendering from virtual module ([77948b0](https://github.com/sebastian-software/ardo/commit/77948b095d6798cc3b8e6e7bac4dc394cfc817a0))
+* ship virtual module types via ardo/virtual, eliminate vite-env.d.ts ([3c2d0ea](https://github.com/sebastian-software/ardo/commit/3c2d0eaf9943425f1b28daaa59cf96c4192ae378))
+
+
+### Bug Fixes
+
+* remove unused SocialLinkConfig import in Header ([a9f6b2c](https://github.com/sebastian-software/ardo/commit/a9f6b2ce4d1cecbf6a569582c8fd01ea3bab0d38))
+
+
+### Code Refactoring
+
+* simplify all root.tsx files using ArdoRoot and RootLayout ([a96bb55](https://github.com/sebastian-software/ardo/commit/a96bb5590b6449e8552bb905a53ae139850d2242))
+
 ## [2.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.5.0...ardo-v2.6.0) (2026-02-13)
 
 
