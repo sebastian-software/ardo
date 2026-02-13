@@ -4,7 +4,7 @@ declare const __BUILD_TIME__: string
 
 declare module "virtual:ardo/config" {
   import type { ArdoConfig } from "./config/types"
-  const config: ArdoConfig & { buildTime: string; buildHash?: string }
+  const config: ArdoConfig
   export default config
 }
 

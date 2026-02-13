@@ -228,6 +228,10 @@ export interface ArdoConfig {
    * Available at runtime via `config.project` from `virtual:ardo/config`.
    */
   project?: ProjectMeta
+  /** Build timestamp (ISO string, set automatically by the Vite plugin) */
+  buildTime?: string
+  /** Git commit hash (set automatically by the Vite plugin) */
+  buildHash?: string
 }
 
 // =============================================================================
@@ -286,7 +290,9 @@ export interface PageData {
 // Resolved Config (Internal)
 // =============================================================================
 
-export interface ResolvedConfig extends Required<Omit<ArdoConfig, "vite" | "typedoc" | "project">> {
+export interface ResolvedConfig extends Required<
+  Omit<ArdoConfig, "vite" | "typedoc" | "project" | "buildTime" | "buildHash">
+> {
   project: ProjectMeta
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig

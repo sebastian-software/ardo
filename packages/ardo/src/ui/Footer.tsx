@@ -1,5 +1,6 @@
 import { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
+import { useConfig, useThemeConfig } from "../runtime/hooks"
 
 // =============================================================================
 // Footer Component
@@ -42,22 +43,23 @@ function formatBuildTime(iso: string): string {
 /**
  * Footer component with structured layout for project info, sponsor, and build metadata.
  *
+ * Automatically pulls data from Ardo context (`config.project`, `config.buildTime`,
+ * `config.buildHash`, `themeConfig.footer.*`). Props serve as overrides.
+ *
  * When `children` is provided, all automatic rendering is skipped.
  *
- * @example Structured usage
+ * @example Automatic (zero-config)
+ * ```tsx
+ * <Footer />
+ * ```
+ *
+ * @example With overrides
  * ```tsx
  * <Footer
- *   project={config.project}
  *   sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
- *   buildTime={config.buildTime}
  *   message="Released under the MIT License."
  *   copyright="Copyright 2026 Sebastian Software GmbH"
  * />
- * ```
- *
- * @example Simple usage
- * ```tsx
- * <Footer message="MIT License" copyright="2026 Sebastian Software" />
  * ```
  *
  * @example Custom content
@@ -78,7 +80,24 @@ export function Footer({
   buildHash,
   ardoLink = true,
 }: FooterProps) {
-  const hasContent = message || copyright || children || project || sponsor || buildTime || ardoLink
+  const config = useConfig()
+  const themeConfig = useThemeConfig()
+
+  const resolvedProject = project ?? config.project
+  const resolvedBuildTime = buildTime ?? config.buildTime
+  const resolvedBuildHash = buildHash ?? config.buildHash
+  const resolvedMessage = message ?? themeConfig.footer?.message
+  const resolvedCopyright = copyright ?? themeConfig.footer?.copyright
+  const resolvedSponsor = sponsor ?? themeConfig.footer?.sponsor
+
+  const hasContent =
+    resolvedMessage ||
+    resolvedCopyright ||
+    children ||
+    resolvedProject ||
+    resolvedSponsor ||
+    resolvedBuildTime ||
+    ardoLink
 
   if (!hasContent) {
     return null
@@ -90,24 +109,24 @@ export function Footer({
         {children ?? (
           <>
             {/* Primary line: project · ardo · sponsor */}
-            {(project || ardoLink || sponsor) && (
+            {(resolvedProject || ardoLink || resolvedSponsor) && (
               <p className="ardo-footer-primary">
-                {project?.name && (
+                {resolvedProject?.name && (
                   <>
-                    {project.homepage ? (
-                      <a href={project.homepage} className="ardo-footer-link">
-                        {project.name}
-                        {project.version ? ` v${project.version}` : ""}
+                    {resolvedProject.homepage ? (
+                      <a href={resolvedProject.homepage} className="ardo-footer-link">
+                        {resolvedProject.name}
+                        {resolvedProject.version ? ` v${resolvedProject.version}` : ""}
                       </a>
                     ) : (
                       <span>
-                        {project.name}
-                        {project.version ? ` v${project.version}` : ""}
+                        {resolvedProject.name}
+                        {resolvedProject.version ? ` v${resolvedProject.version}` : ""}
                       </span>
                     )}
                   </>
                 )}
-                {project?.name && ardoLink && (
+                {resolvedProject?.name && ardoLink && (
                   <span className="ardo-footer-separator" aria-hidden="true" />
                 )}
                 {ardoLink && (
@@ -115,31 +134,34 @@ export function Footer({
                     Built with Ardo
                   </a>
                 )}
-                {(project?.name || ardoLink) && sponsor && (
+                {(resolvedProject?.name || ardoLink) && resolvedSponsor && (
                   <span className="ardo-footer-separator" aria-hidden="true" />
                 )}
-                {sponsor && (
-                  <a href={sponsor.link} className="ardo-footer-link">
-                    Sponsored by {sponsor.text}
+                {resolvedSponsor && (
+                  <a href={resolvedSponsor.link} className="ardo-footer-link">
+                    Sponsored by {resolvedSponsor.text}
                   </a>
                 )}
               </p>
             )}
             {/* Secondary line: message / copyright */}
-            {message && (
-              <p className="ardo-footer-message" dangerouslySetInnerHTML={{ __html: message }} />
+            {resolvedMessage && (
+              <p
+                className="ardo-footer-message"
+                dangerouslySetInnerHTML={{ __html: resolvedMessage }}
+              />
             )}
-            {copyright && (
+            {resolvedCopyright && (
               <p
                 className="ardo-footer-copyright"
-                dangerouslySetInnerHTML={{ __html: copyright }}
+                dangerouslySetInnerHTML={{ __html: resolvedCopyright }}
               />
             )}
             {/* Tertiary line: build timestamp */}
-            {buildTime && (
+            {resolvedBuildTime && (
               <p className="ardo-footer-build-time">
-                Built on {formatBuildTime(buildTime)}
-                {buildHash && <> ({buildHash})</>}
+                Built on {formatBuildTime(resolvedBuildTime)}
+                {resolvedBuildHash && <> ({resolvedBuildHash})</>}
               </p>
             )}
           </>

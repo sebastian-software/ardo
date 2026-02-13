@@ -28,7 +28,7 @@ export default defineConfig({
         ],
 
         footer: {
-          message: 'Built with Ardo',
+          message: 'Released under the MIT License.',
         },
 
         search: {
