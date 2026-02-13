@@ -10,6 +10,7 @@ import {
 import { NavLink, useLocation } from "react-router"
 import { ChevronDownIcon } from "./icons"
 import type { SidebarItem as SidebarItemType } from "../config/types"
+import { useSidebar } from "../runtime/hooks"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -46,7 +47,15 @@ export interface SidebarProps {
 // =============================================================================
 
 /**
- * Sidebar component supporting both data-driven and JSX composition patterns.
+ * Sidebar component supporting data-driven, JSX composition, and zero-config patterns.
+ *
+ * When neither `items` nor `children` are provided, automatically renders from
+ * the Ardo sidebar context (`virtual:ardo/sidebar`).
+ *
+ * @example Zero-config (from context)
+ * ```tsx
+ * <Sidebar />
+ * ```
  *
  * @example Data-driven (items prop)
  * ```tsx
@@ -70,16 +79,18 @@ export interface SidebarProps {
  */
 export function Sidebar({ items, children, className }: SidebarProps) {
   const { pathname } = useLocation()
+  const contextSidebar = useSidebar()
+  const resolvedItems = items ?? (children ? undefined : contextSidebar)
 
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
       <aside className={className ?? "ardo-sidebar"}>
         <nav className="ardo-sidebar-nav" aria-label="Main navigation">
-          {items ? (
-            <SidebarItems items={items} depth={0} />
-          ) : (
+          {children ? (
             <ul className="ardo-sidebar-list ardo-sidebar-list-0">{children}</ul>
-          )}
+          ) : resolvedItems?.length ? (
+            <SidebarItems items={resolvedItems} depth={0} />
+          ) : null}
         </nav>
       </aside>
     </SidebarContext.Provider>
