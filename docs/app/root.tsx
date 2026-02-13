@@ -52,7 +52,6 @@ export default function Root() {
         header={
           <Header
             logo={logo}
-            title="Ardo"
             nav={
               <Nav>
                 <NavLink to="/guide/getting-started">Guide</NavLink>

@@ -47,7 +47,6 @@ export default function Root() {
         className={isHomePage ? "ardo-layout ardo-home" : "ardo-layout"}
         header={
           <Header
-            title="{{SITE_TITLE}}"
             nav={
               <Nav>
                 <NavLink to="/guide/getting-started">Guide</NavLink>

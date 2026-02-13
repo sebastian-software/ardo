@@ -9,6 +9,7 @@ import {
   PackageIcon,
 } from "./icons"
 import { ThemeToggle } from "./components/ThemeToggle"
+import { useConfig, useThemeConfig } from "../runtime/hooks"
 
 const LazySearch = lazy(() => import("./components/Search").then((m) => ({ default: m.Search })))
 
@@ -36,7 +37,15 @@ export interface HeaderProps {
 /**
  * Header component with explicit slot props.
  *
- * @example
+ * Automatically pulls `title` from config and `logo`/`siteTitle` from themeConfig.
+ * Props serve as overrides.
+ *
+ * @example Zero-config
+ * ```tsx
+ * <Header />
+ * ```
+ *
+ * @example With overrides
  * ```tsx
  * <Header
  *   logo="/logo.svg"
@@ -46,9 +55,6 @@ export interface HeaderProps {
  *       <NavLink to="/guide">Guide</NavLink>
  *       <NavLink to="/api">API</NavLink>
  *     </Nav>
- *   }
- *   actions={
- *     <SocialLink href="https://github.com/..." icon="github" />
  *   }
  * />
  * ```
@@ -62,7 +68,13 @@ export function Header({
   themeToggle = true,
   className,
 }: HeaderProps) {
+  const config = useConfig()
+  const themeConfig = useThemeConfig()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const resolvedLogo = logo ?? themeConfig.logo
+  const resolvedTitle =
+    title ?? (themeConfig.siteTitle !== false ? (themeConfig.siteTitle ?? config.title) : undefined)
 
   return (
     <header className={className ?? "ardo-header"}>
@@ -83,14 +95,14 @@ export function Header({
           </button>
 
           <Link to="/" className="ardo-logo-link">
-            {logo && (
+            {resolvedLogo && (
               <img
-                src={typeof logo === "string" ? logo : logo.light}
-                alt={title ?? "Logo"}
+                src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
+                alt={resolvedTitle ?? "Logo"}
                 className="ardo-logo"
               />
             )}
-            {title && <span className="ardo-site-title">{title}</span>}
+            {resolvedTitle && <span className="ardo-site-title">{resolvedTitle}</span>}
           </Link>
         </div>
 
