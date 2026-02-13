@@ -2,6 +2,9 @@
 export { Layout, RootLayout } from "./Layout"
 export type { LayoutProps, RootLayoutProps } from "./Layout"
 
+export { ArdoRoot } from "./ArdoRoot"
+export type { ArdoRootProps } from "./ArdoRoot"
+
 export { Header, SocialLink } from "./Header"
 export type { HeaderProps, SocialLinkProps } from "./Header"
 
