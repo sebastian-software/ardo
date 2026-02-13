@@ -1,0 +1,429 @@
+---
+title: Configuration
+description: Complete reference for all Ardo configuration options.
+order: 10
+---
+
+# Configuration
+
+Ardo is configured through the `ardo()` plugin in your `vite.config.ts`. This page documents every available option.
+
+## Basic Setup
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Documentation",
+      description: "My awesome docs",
+    }),
+  ],
+})
+```
+
+The `ardo()` function accepts an options object that combines site configuration (from `ArdoConfig`) with plugin-specific settings.
+
+---
+
+## Site Configuration
+
+These options control the identity and basic behavior of your documentation site.
+
+### title
+
+- **Type:** `string`
+- **Required**
+
+The site title, used in the default `<title>` meta tag and displayed in the header.
+
+```ts
+ardo({
+  title: "My Documentation",
+})
+```
+
+### description
+
+- **Type:** `string`
+- **Default:** `""`
+
+Site description for the default meta tags.
+
+```ts
+ardo({
+  title: "My Docs",
+  description: "A comprehensive guide to my library",
+})
+```
+
+### titleSeparator
+
+- **Type:** `string`
+- **Default:** `" | "`
+
+Separator between the page title and the site title in `<title>` tags. For example, a page titled "Getting Started" produces `Getting Started | My Docs`.
+
+```ts
+ardo({
+  title: "My Docs",
+  titleSeparator: " - ",
+})
+```
+
+### base
+
+- **Type:** `string`
+- **Default:** `"/"`
+
+Base URL path for the site. Set this if your docs live under a subpath.
+
+```ts
+ardo({
+  title: "My Docs",
+  base: "/docs/",
+})
+```
+
+:::tip
+When deploying to GitHub Pages, Ardo auto-detects the repository name and sets the base path for you. See the `githubPages` plugin option below.
+:::
+
+### srcDir
+
+- **Type:** `string`
+- **Default:** `"content"`
+
+Content source directory, relative to the project root. This is where Ardo looks for your markdown files when using the config-driven approach.
+
+```ts
+ardo({
+  title: "My Docs",
+  srcDir: "docs",
+})
+```
+
+### outDir
+
+- **Type:** `string`
+- **Default:** `"dist"`
+
+Build output directory.
+
+```ts
+ardo({
+  title: "My Docs",
+  outDir: "build",
+})
+```
+
+### lang
+
+- **Type:** `string`
+- **Default:** `"en"`
+
+Site language. Sets the `lang` attribute on the `<html>` element.
+
+```ts
+ardo({
+  title: "My Docs",
+  lang: "de",
+})
+```
+
+---
+
+## Plugin Options
+
+These options are specific to the `ardo()` Vite plugin and are **not** part of `ArdoConfig`.
+
+### routes
+
+- **Type:** `ArdoRoutesPluginOptions | false`
+- **Default:** automatic
+
+Configuration for the automatic route generation plugin. Set to `false` to disable auto-routing entirely.
+
+### githubPages
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+When `true`, Ardo auto-detects your GitHub repository name from the git remote and sets `base: '/repo-name/'` for GitHub Pages deployment.
+
+```ts
+ardo({
+  title: "My Docs",
+  githubPages: false, // Disable auto-detection
+})
+```
+
+### routesDir
+
+- **Type:** `string`
+- **Default:** `"./app/routes"`
+
+Directory where route files are located.
+
+```ts
+ardo({
+  title: "My Docs",
+  routesDir: "./src/routes",
+})
+```
+
+---
+
+## Markdown
+
+Markdown processing options are configured under the `markdown` key.
+
+```ts
+ardo({
+  title: "My Docs",
+  markdown: {
+    theme: { light: "github-light-default", dark: "github-dark-default" },
+    lineNumbers: true,
+  },
+})
+```
+
+### markdown.theme
+
+- **Type:** `BundledTheme | { light: BundledTheme; dark: BundledTheme }`
+- **Default:** `{ light: "github-light-default", dark: "github-dark-default" }`
+
+Syntax highlighting theme. Can be a single Shiki theme name or a light/dark pair.
+
+```ts
+markdown: {
+  theme: "one-dark-pro",
+}
+```
+
+### markdown.lineNumbers
+
+- **Type:** `boolean`
+- **Default:** `false`
+
+Show line numbers in code blocks.
+
+### markdown.anchor
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Enable anchor links on headings.
+
+### markdown.toc
+
+- **Type:** `{ level?: [number, number] }`
+- **Default:** `{ level: [2, 3] }`
+
+Table of contents configuration. The `level` tuple specifies which heading levels to include (min, max).
+
+```ts
+markdown: {
+  toc: {
+    level: [2, 4], // Include h2, h3, and h4
+  },
+}
+```
+
+### markdown.remarkPlugins
+
+- **Type:** `unknown[]`
+- **Default:** `[]`
+
+Additional remark plugins for markdown processing. Ardo already includes `remark-frontmatter`, `remark-mdx-frontmatter`, `remark-gfm`, and `remark-directive`.
+
+### markdown.rehypePlugins
+
+- **Type:** `unknown[]`
+- **Default:** `[]`
+
+Additional rehype plugins for HTML processing. Ardo already includes `@shikijs/rehype` for syntax highlighting.
+
+---
+
+## TypeDoc
+
+Enable TypeDoc API documentation generation. Pass `true` for defaults or an object for fine-grained control.
+
+```ts
+ardo({
+  title: "My Docs",
+  typedoc: true, // Enable with defaults (./src/index.ts)
+})
+```
+
+### typedoc (boolean shorthand)
+
+- **Type:** `true`
+
+Enables TypeDoc with default settings — reads from `./src/index.ts` and outputs to `content/api-reference/`.
+
+### typedoc.enabled
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Explicitly enable or disable TypeDoc generation.
+
+### typedoc.entryPoints
+
+- **Type:** `string[]`
+- **Required** (when using object config)
+
+Entry point files for TypeDoc.
+
+```ts
+typedoc: {
+  entryPoints: ["./src/index.ts", "./src/utils.ts"],
+}
+```
+
+### typedoc.tsconfig
+
+- **Type:** `string`
+- **Default:** auto-detected
+
+Path to the TypeScript configuration file for TypeDoc.
+
+```ts
+typedoc: {
+  entryPoints: ["./src/index.ts"],
+  tsconfig: "./tsconfig.api.json",
+}
+```
+
+### typedoc.out
+
+- **Type:** `string`
+- **Default:** `"content/api-reference"`
+
+Output directory for generated API documentation.
+
+### typedoc.exclude
+
+- **Type:** `string[]`
+
+Glob patterns for files to exclude from documentation.
+
+### typedoc.excludeExternals
+
+- **Type:** `boolean`
+
+Exclude external modules from documentation.
+
+### typedoc.excludePrivate
+
+- **Type:** `boolean`
+
+Exclude private members from documentation.
+
+### typedoc.excludeProtected
+
+- **Type:** `boolean`
+
+Exclude protected members from documentation.
+
+### typedoc.excludeInternal
+
+- **Type:** `boolean`
+
+Exclude `@internal` tagged items from documentation.
+
+### typedoc.sort
+
+- **Type:** `Array<"source-order" | "alphabetical" | "enum-value-ascending" | "enum-value-descending" | "required-first" | "visibility">`
+
+Sorting strategy for documented items.
+
+```ts
+typedoc: {
+  entryPoints: ["./src/index.ts"],
+  sort: ["alphabetical", "required-first"],
+}
+```
+
+### typedoc.watch
+
+- **Type:** `boolean`
+
+Enable watch mode for TypeDoc during development.
+
+### typedoc.sidebar
+
+- **Type:** `{ title?: string; position?: number; collapsed?: boolean }`
+
+Sidebar configuration for the generated API reference section.
+
+### typedoc.markdown
+
+- **Type:** `{ breadcrumbs?: boolean; hierarchy?: boolean; sourceLinks?: boolean; sourceBaseUrl?: string; codeBlocks?: boolean }`
+
+Options controlling the generated markdown output.
+
+---
+
+## Theme Configuration
+
+Runtime UI configuration, passed under `themeConfig`. In the JSX-first architecture, most of these are better handled via component props directly in `root.tsx`.
+
+```ts
+ardo({
+  title: "My Docs",
+  themeConfig: {
+    search: { enabled: true, placeholder: "Search docs..." },
+    editLink: { pattern: "https://github.com/my-org/my-repo/edit/main/docs/:path" },
+  },
+})
+```
+
+See [Theme Config](/guide/theme-config) for details.
+
+---
+
+## Frontmatter
+
+Per-page configuration is done through frontmatter in your MDX files. See the dedicated [Frontmatter](/guide/frontmatter) page for all available options.
+
+---
+
+## Full Example
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Library",
+      description: "Comprehensive documentation for My Library",
+      lang: "en",
+
+      markdown: {
+        theme: { light: "github-light-default", dark: "github-dark-default" },
+        lineNumbers: false,
+        toc: { level: [2, 3] },
+      },
+
+      typedoc: {
+        entryPoints: ["./src/index.ts"],
+        tsconfig: "./tsconfig.api.json",
+      },
+
+      themeConfig: {
+        search: { enabled: true },
+        editLink: {
+          pattern: "https://github.com/my-org/my-lib/edit/main/docs/:path",
+        },
+      },
+    }),
+  ],
+})
+```

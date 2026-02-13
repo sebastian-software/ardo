@@ -57,6 +57,7 @@ export default function Root() {
               <Nav>
                 <NavLink to="/guide/getting-started">Guide</NavLink>
                 <NavLink to="/api-reference">API</NavLink>
+                <NavLink to="/showcase">Showcase</NavLink>
                 <NavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
                   Changelog
                 </NavLink>
@@ -82,6 +83,7 @@ export default function Root() {
               </SidebarGroup>
 
               <SidebarGroup title="Customization">
+                <SidebarLink to="/guide/configuration">Configuration</SidebarLink>
                 <SidebarLink to="/guide/theme-config">Theme Config</SidebarLink>
                 <SidebarLink to="/guide/custom-theme">Custom Theme</SidebarLink>
               </SidebarGroup>

@@ -74,6 +74,8 @@ export {
   Hero,
   Features,
   FeatureCard,
+  Steps,
+  FileTree,
 } from "./ui"
 export type { HeroProps, HeroAction, HeroImage } from "./ui"
 export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./ui"
@@ -88,6 +90,8 @@ export type {
   NoteProps,
 } from "./ui"
 export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabPanelsProps } from "./ui"
+export type { StepsProps } from "./ui"
+export type { FileTreeProps } from "./ui"
 
 // TypeDoc
 export {

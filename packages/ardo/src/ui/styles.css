@@ -2598,3 +2598,164 @@ a:focus-visible {
 .ardo-icon-search {
   mask-image: url("./icons/search.svg");
 }
+.ardo-icon-folder {
+  mask-image: url("./icons/folder.svg");
+}
+
+/* ========================================
+   Steps Component
+   ======================================== */
+.ardo-steps {
+  margin: 24px 0;
+}
+
+.ardo-steps ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: ardo-step;
+}
+
+.ardo-steps ol > li {
+  position: relative;
+  padding-left: 48px;
+  padding-bottom: 24px;
+  counter-increment: ardo-step;
+  margin-bottom: 0;
+}
+
+.ardo-steps ol > li:last-child {
+  padding-bottom: 0;
+}
+
+/* Step number badge */
+.ardo-steps ol > li::before {
+  content: counter(ardo-step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ardo-c-brand);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Vertical connecting line */
+.ardo-steps ol > li::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 38px;
+  bottom: 0;
+  width: 2px;
+  background: var(--ardo-c-border);
+}
+
+.ardo-steps ol > li:last-child::after {
+  display: none;
+}
+
+/* Override inherited content styles */
+.ardo-content .ardo-steps ol {
+  padding-left: 0;
+  max-width: none;
+}
+
+.ardo-content .ardo-steps ol > li {
+  padding-left: 48px;
+  margin-bottom: 0;
+}
+
+.ardo-content .ardo-steps ol > li::marker {
+  content: none;
+}
+
+/* ========================================
+   FileTree Component
+   ======================================== */
+.ardo-filetree {
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: var(--ardo-c-bg-soft);
+  border: 1px solid var(--ardo-c-border);
+  border-radius: var(--ardo-radius);
+  font-family: var(--ardo-font-mono);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.ardo-filetree ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.ardo-filetree ul ul {
+  padding-left: 20px;
+  border-left: 1px solid var(--ardo-c-border);
+  margin-left: 8px;
+}
+
+.ardo-filetree li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 0;
+}
+
+/* File icon */
+.ardo-filetree-file::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: var(--ardo-c-text-light);
+  mask-image: url("./icons/file-text.svg");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+/* Folder icon */
+.ardo-filetree-dir::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: var(--ardo-c-brand);
+  mask-image: url("./icons/folder.svg");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+/* Override inherited content styles */
+.ardo-content .ardo-filetree ul {
+  padding-left: 0;
+  margin-bottom: 0;
+  max-width: none;
+}
+
+.ardo-content .ardo-filetree ul ul {
+  padding-left: 20px;
+}
+
+.ardo-content .ardo-filetree li {
+  margin-bottom: 0;
+}
+
+.ardo-content .ardo-filetree li::marker {
+  content: none;
+}
