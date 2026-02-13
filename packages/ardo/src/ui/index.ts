@@ -1,6 +1,6 @@
 // Layout components
-export { Layout } from "./Layout"
-export type { LayoutProps } from "./Layout"
+export { Layout, RootLayout } from "./Layout"
+export type { LayoutProps, RootLayoutProps } from "./Layout"
 
 export { Header, SocialLink } from "./Header"
 export type { HeaderProps, SocialLinkProps } from "./Header"
