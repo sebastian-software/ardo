@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.5.0...ardo-v2.6.0) (2026-02-13)
+
+
+### Features
+
+* add automatic title meta tags and rename Press to Ardo ([19da807](https://github.com/sebastian-software/ardo/commit/19da807fb6011b9fdca794b12766f55bdd5345ea))
+* add git commit hash to footer build info ([603c53d](https://github.com/sebastian-software/ardo/commit/603c53d4b97041dca588182a8a2ba5d141fac2f3))
+* add Steps and FileTree components, configuration reference, and showcase page ([826ccae](https://github.com/sebastian-software/ardo/commit/826ccae5cba53b455aad31a4d3362826d801bea6))
+* switch docs hosting from GitHub Pages to Vercel ([3a88fad](https://github.com/sebastian-software/ardo/commit/3a88fad52634a4e152c397908e37786102aaef0e))
+
+
+### Bug Fixes
+
+* sidebar group title link uses correct styling and exact path matching ([9521b2f](https://github.com/sebastian-software/ardo/commit/9521b2fd7d0c7fbcd46a2176b64e0010e82dbf7d))
+
 ## [2.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.4.1...ardo-v2.5.0) (2026-02-12)
 
 

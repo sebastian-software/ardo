@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.5.0...create-ardo-v2.6.0) (2026-02-13)
+
+
+### Features
+
+* add automatic title meta tags and rename Press to Ardo ([19da807](https://github.com/sebastian-software/ardo/commit/19da807fb6011b9fdca794b12766f55bdd5345ea))
+* switch docs hosting from GitHub Pages to Vercel ([3a88fad](https://github.com/sebastian-software/ardo/commit/3a88fad52634a4e152c397908e37786102aaef0e))
+
 ## [2.5.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v2.4.1...create-ardo-v2.5.0) (2026-02-12)
 
 
