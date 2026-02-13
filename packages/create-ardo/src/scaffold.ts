@@ -48,10 +48,6 @@ export function createProjectStructure(root: string, template: string, options: 
     DESCRIPTION: options.description,
     TYPEDOC_NAV: options.typedoc ? "{ text: 'API', link: '/api-reference' }," : "",
     TYPEDOC_SIDEBAR: options.typedoc ? "{ text: 'API Reference', link: '/api-reference' }," : "",
-    TYPEDOC_NAVLINK: options.typedoc ? '<NavLink to="/api-reference">API</NavLink>' : "",
-    TYPEDOC_SIDEBARLINK: options.typedoc
-      ? '<SidebarLink to="/api-reference">API Reference</SidebarLink>'
-      : "",
   }
 
   copyDir(templateDir, root, vars)

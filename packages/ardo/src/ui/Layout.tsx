@@ -1,6 +1,6 @@
-import { type ReactNode } from "react"
+import { type ReactNode, useContext } from "react"
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
-import { useConfig } from "../runtime/hooks"
+import { ArdoContext } from "../runtime/hooks"
 
 // =============================================================================
 // RootLayout Component (html/head/body shell)
@@ -31,8 +31,9 @@ export interface RootLayoutProps {
  * ```
  */
 export function RootLayout({ children, favicon, lang }: RootLayoutProps) {
-  const config = useConfig()
-  const resolvedLang = lang ?? config.lang ?? "en"
+  // Use optional context (RootLayout renders before ArdoProvider is available)
+  const context = useContext(ArdoContext)
+  const resolvedLang = lang ?? context?.config.lang ?? "en"
 
   return (
     <html lang={resolvedLang} suppressHydrationWarning>

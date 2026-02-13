@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, type ReactNode } from "react"
-import { Link } from "react-router"
+import { Link, NavLink as RouterNavLink } from "react-router"
 import {
   GithubIcon,
   TwitterIcon,
@@ -10,6 +10,7 @@ import {
 } from "./icons"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { useConfig, useThemeConfig } from "../runtime/hooks"
+import type { NavItem, SocialLink as SocialLinkConfig } from "../config/types"
 
 const LazySearch = lazy(() => import("./components/Search").then((m) => ({ default: m.Search })))
 
@@ -76,6 +77,19 @@ export function Header({
   const resolvedTitle =
     title ?? (themeConfig.siteTitle !== false ? (themeConfig.siteTitle ?? config.title) : undefined)
 
+  // Auto-render nav from themeConfig.nav when no nav prop given
+  const resolvedNav =
+    nav ?? (themeConfig.nav?.length ? <AutoNav items={themeConfig.nav} /> : undefined)
+
+  // Auto-render social links from themeConfig.socialLinks when no actions prop given
+  const resolvedActions =
+    actions ??
+    (themeConfig.socialLinks?.length
+      ? themeConfig.socialLinks.map((link, i) => (
+          <SocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
+        ))
+      : undefined)
+
   return (
     <header className={className ?? "ardo-header"}>
       <div className="ardo-header-container">
@@ -107,7 +121,7 @@ export function Header({
         </div>
 
         {/* Center: Navigation */}
-        {nav && <div className="ardo-nav">{nav}</div>}
+        {resolvedNav && <div className="ardo-nav">{resolvedNav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
         <div className="ardo-header-right">
@@ -117,7 +131,7 @@ export function Header({
             </Suspense>
           )}
           {themeToggle && <ThemeToggle />}
-          {actions}
+          {resolvedActions}
         </div>
       </div>
 
@@ -125,7 +139,7 @@ export function Header({
       {mobileMenuOpen && (
         <div className="ardo-mobile-menu">
           <nav className="ardo-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
-            {nav}
+            {resolvedNav}
           </nav>
         </div>
       )}
@@ -168,6 +182,45 @@ export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps
       <SocialIcon icon={icon} />
     </a>
   )
+}
+
+// =============================================================================
+// Auto Nav Component (internal, renders from NavItem[])
+// =============================================================================
+
+function AutoNav({ items }: { items: NavItem[] }) {
+  return (
+    <nav className="ardo-nav">
+      {items.map((item, i) => (
+        <AutoNavItem key={i} item={item} />
+      ))}
+    </nav>
+  )
+}
+
+function AutoNavItem({ item }: { item: NavItem }) {
+  if (item.link?.startsWith("http")) {
+    return (
+      <a href={item.link} className="ardo-nav-link" target="_blank" rel="noopener noreferrer">
+        {item.text}
+      </a>
+    )
+  }
+
+  if (item.link) {
+    return (
+      <RouterNavLink
+        to={item.link}
+        className={({ isActive }: { isActive: boolean }) =>
+          ["ardo-nav-link", isActive && "active"].filter(Boolean).join(" ")
+        }
+      >
+        {item.text}
+      </RouterNavLink>
+    )
+  }
+
+  return <span className="ardo-nav-link">{item.text}</span>
 }
 
 // =============================================================================
