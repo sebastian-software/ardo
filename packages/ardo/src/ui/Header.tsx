@@ -10,7 +10,7 @@ import {
 } from "./icons"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { useConfig, useThemeConfig } from "../runtime/hooks"
-import type { NavItem, SocialLink as SocialLinkConfig } from "../config/types"
+import type { NavItem } from "../config/types"
 
 const LazySearch = lazy(() => import("./components/Search").then((m) => ({ default: m.Search })))
 
