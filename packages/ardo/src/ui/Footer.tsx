@@ -20,6 +20,8 @@ export interface FooterProps {
   sponsor?: SponsorConfig
   /** Build timestamp (ISO string) — renders formatted date */
   buildTime?: string
+  /** Git commit hash — rendered next to the build date */
+  buildHash?: string
   /** Show "Built with Ardo" link (default: true) */
   ardoLink?: boolean
 }
@@ -73,6 +75,7 @@ export function Footer({
   project,
   sponsor,
   buildTime,
+  buildHash,
   ardoLink = true,
 }: FooterProps) {
   const hasContent = message || copyright || children || project || sponsor || buildTime || ardoLink
@@ -134,7 +137,10 @@ export function Footer({
             )}
             {/* Tertiary line: build timestamp */}
             {buildTime && (
-              <p className="ardo-footer-build-time">Built on {formatBuildTime(buildTime)}</p>
+              <p className="ardo-footer-build-time">
+                Built on {formatBuildTime(buildTime)}
+                {buildHash && <> ({buildHash})</>}
+              </p>
             )}
           </>
         )}

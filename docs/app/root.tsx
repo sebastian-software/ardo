@@ -108,6 +108,7 @@ export default function Root() {
             project={config.project}
             sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
             buildTime={config.buildTime}
+            buildHash={config.buildHash}
             message="Released under the MIT License."
             copyright="Copyright 2026 Sebastian Software GmbH"
           />

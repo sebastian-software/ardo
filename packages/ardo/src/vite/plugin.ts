@@ -66,6 +66,21 @@ function detectGitHubRepoName(cwd: string): string | undefined {
 }
 
 /**
+ * Detects the current short git commit hash.
+ */
+function detectGitHash(cwd: string): string | undefined {
+  try {
+    return execSync("git rev-parse --short HEAD", {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim()
+  } catch {
+    return undefined
+  }
+}
+
+/**
  * Reads project metadata from the nearest package.json.
  */
 function readProjectMeta(root: string): ProjectMeta {
@@ -269,6 +284,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           themeConfig: resolvedConfig.themeConfig,
           project: resolvedConfig.project,
           buildTime: new Date().toISOString(),
+          buildHash: detectGitHash(resolvedConfig.root),
         }
         return `export default ${JSON.stringify(clientConfig)}`
       }
