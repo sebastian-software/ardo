@@ -10,9 +10,16 @@ import {
   emptyDir,
   isValidTemplate,
   detectProjectDescription,
+  isArdoProject,
+  upgradeProject,
+  getCliVersion,
 } from "./scaffold"
 
 const defaultTargetDir = "my-docs"
+
+const onCancel = () => {
+  throw new Error(red("✖") + " Operation cancelled")
+}
 
 async function main() {
   console.log()
@@ -23,12 +30,12 @@ async function main() {
   const argTemplate = process.argv[3]
 
   let targetDir = argTargetDir || defaultTargetDir
-  let template = argTemplate
 
-  const response = await prompts(
-    [
+  // Step 1: Get project name (if not provided as CLI arg)
+  if (!argTargetDir) {
+    const { projectName } = await prompts(
       {
-        type: argTargetDir ? null : "text",
+        type: "text",
         name: "projectName",
         message: reset("Project name:"),
         initial: defaultTargetDir,
@@ -40,12 +47,65 @@ async function main() {
             return "Project name may only contain lowercase letters, digits, and hyphens"
           return true
         },
-        onState: (state) => {
-          targetDir = formatTargetDir(state.value) || defaultTargetDir
-        },
       },
+      { onCancel }
+    )
+    targetDir = formatTargetDir(projectName) || defaultTargetDir
+  }
+
+  const root = path.join(process.cwd(), targetDir)
+
+  // Step 2: Check for existing Ardo project → upgrade flow
+  if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
+    const cliVersion = getCliVersion()
+    const { action } = await prompts(
       {
-        type: () => (!fs.existsSync(targetDir) || isEmpty(targetDir) ? null : "select"),
+        type: "select",
+        name: "action",
+        message: `Existing Ardo project detected. Upgrade to v${cliVersion}?`,
+        choices: [
+          { title: "Upgrade framework files", value: "upgrade" },
+          { title: "Cancel", value: "cancel" },
+        ],
+      },
+      { onCancel }
+    )
+
+    if (action === "cancel") {
+      throw new Error(red("✖") + " Operation cancelled")
+    }
+
+    console.log()
+    console.log(`  ${cyan("Upgrading project in")} ${root}...`)
+    console.log()
+
+    const result = upgradeProject(root)
+
+    for (const file of result.updated) {
+      console.log(`  ${green("●")} ${file}`)
+    }
+    for (const file of result.deleted) {
+      console.log(`  ${yellow("●")} ${file} ${dim("(removed)")}`)
+    }
+    for (const file of result.skipped) {
+      console.log(`  ${dim("○")} ${file} ${dim("(not found, skipped)")}`)
+    }
+
+    console.log()
+    console.log(`  ${green("Done!")} Now run:`)
+    console.log()
+    console.log(`  ${blue("pnpm install")}`)
+    console.log()
+    return
+  }
+
+  // Step 3: New project flow
+  let template = argTemplate
+
+  const response = await prompts(
+    [
+      {
+        type: () => (!fs.existsSync(root) || isEmpty(root) ? null : "select"),
         name: "overwrite",
         message: () =>
           `${targetDir === "." ? "Current directory" : `Target directory "${targetDir}"`} is not empty. How would you like to proceed?`,
@@ -110,17 +170,12 @@ async function main() {
         ],
       },
     ],
-    {
-      onCancel: () => {
-        throw new Error(red("✖") + " Operation cancelled")
-      },
-    }
+    { onCancel }
   )
 
   const { overwrite, template: templateChoice, siteTitle, docType, githubPages } = response
 
   template = templateChoice || template || "minimal"
-  const root = path.join(process.cwd(), targetDir)
 
   if (overwrite === "yes") {
     emptyDir(root)
