@@ -1,5 +1,5 @@
 import type {
-  PressConfig,
+  ArdoConfig,
   ProjectMeta,
   ResolvedConfig,
   ThemeConfig,
@@ -17,7 +17,7 @@ import type {
 import path from "path"
 
 export type {
-  PressConfig,
+  ArdoConfig,
   ProjectMeta,
   ResolvedConfig,
   ThemeConfig,
@@ -33,7 +33,7 @@ export type {
   HeadConfig,
 }
 
-export function defineConfig(config: PressConfig): PressConfig {
+export function defineConfig(config: ArdoConfig): ArdoConfig {
   return config
 }
 
@@ -63,13 +63,14 @@ export const defaultMarkdownConfig: MarkdownConfig = {
   },
 }
 
-export function resolveConfig(config: PressConfig, root: string): ResolvedConfig {
+export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig {
   const srcDir = config.srcDir ?? "content"
   const contentDir = path.resolve(root, srcDir)
 
   return {
     title: config.title,
     description: config.description ?? "",
+    titleSeparator: config.titleSeparator ?? " | ",
     base: config.base ?? "/",
     srcDir,
     outDir: config.outDir ?? "dist",
@@ -95,7 +96,7 @@ export async function loadConfig(root: string): Promise<ResolvedConfig> {
 
   try {
     const configModule = await import(configPath)
-    const config = configModule.default as PressConfig
+    const config = configModule.default as ArdoConfig
     return resolveConfig(config, root)
   } catch {
     return resolveConfig(

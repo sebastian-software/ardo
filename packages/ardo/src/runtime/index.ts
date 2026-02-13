@@ -5,14 +5,14 @@
 
 // React hooks and context
 export {
-  usePressContext,
+  useArdoContext,
   useConfig,
   useThemeConfig,
   useSidebar,
   usePageData,
   useTOC,
-  PressProvider,
-  PressContext,
+  ArdoProvider,
+  ArdoContext,
 } from "./hooks"
 
 // Client-safe sidebar utilities

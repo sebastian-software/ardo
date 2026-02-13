@@ -1,5 +1,10 @@
 import { Hero, Features } from "ardo/ui"
 import { Zap, Sparkles, Palette, ArrowRight, Github } from "ardo/icons"
+import type { MetaFunction } from "react-router"
+
+export const meta: MetaFunction = () => [
+  { title: "{{SITE_TITLE}}" },
+]
 
 export default function HomePage() {
   return (

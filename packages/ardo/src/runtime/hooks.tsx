@@ -1,60 +1,58 @@
 import { createContext, useContext, type ReactNode } from "react"
-import type { PressConfig, ThemeConfig, SidebarItem, TOCItem, PageData } from "../config/types"
+import type { ArdoConfig, ThemeConfig, SidebarItem, TOCItem, PageData } from "../config/types"
 
-interface PressContextValue {
-  config: PressConfig
+interface ArdoContextValue {
+  config: ArdoConfig
   sidebar: SidebarItem[]
   currentPage?: PageData
 }
 
-const PressContext = createContext<PressContextValue | null>(null)
+const ArdoContext = createContext<ArdoContextValue | null>(null)
 
-export function usePressContext(): PressContextValue {
-  const context = useContext(PressContext)
+export function useArdoContext(): ArdoContextValue {
+  const context = useContext(ArdoContext)
   if (!context) {
-    throw new Error("usePressContext must be used within a PressProvider")
+    throw new Error("useArdoContext must be used within an ArdoProvider")
   }
   return context
 }
 
-export function useConfig(): PressConfig {
-  const { config } = usePressContext()
+export function useConfig(): ArdoConfig {
+  const { config } = useArdoContext()
   return config
 }
 
 export function useThemeConfig(): ThemeConfig {
-  const { config } = usePressContext()
+  const { config } = useArdoContext()
   return config.themeConfig ?? {}
 }
 
 export function useSidebar(): SidebarItem[] {
-  const { sidebar } = usePressContext()
+  const { sidebar } = useArdoContext()
   return sidebar
 }
 
 export function usePageData(): PageData | undefined {
-  const { currentPage } = usePressContext()
+  const { currentPage } = useArdoContext()
   return currentPage
 }
 
 export function useTOC(): TOCItem[] {
-  const { currentPage } = usePressContext()
+  const { currentPage } = useArdoContext()
   return currentPage?.toc ?? []
 }
 
-interface PressProviderProps {
-  config: PressConfig
+interface ArdoProviderProps {
+  config: ArdoConfig
   sidebar: SidebarItem[]
   currentPage?: PageData
   children: ReactNode
 }
 
-export function PressProvider({ config, sidebar, currentPage, children }: PressProviderProps) {
+export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
   return (
-    <PressContext.Provider value={{ config, sidebar, currentPage }}>
-      {children}
-    </PressContext.Provider>
+    <ArdoContext.Provider value={{ config, sidebar, currentPage }}>{children}</ArdoContext.Provider>
   )
 }
 
-export { PressContext }
+export { ArdoContext }

@@ -1,5 +1,5 @@
 import type { Plugin, UserConfig } from "vite"
-import type { PressConfig, ProjectMeta, ResolvedConfig } from "../config/types"
+import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
 import { resolveConfig, defaultMarkdownConfig } from "../config/index"
 import { generateApiDocs } from "../typedoc/generator"
@@ -162,7 +162,7 @@ const RESOLVED_VIRTUAL_SEARCH_ID = "\0" + VIRTUAL_SEARCH_ID
 let typedocGenerated = false
 let flattenExecuted = false
 
-export interface ArdoPluginOptions extends Partial<PressConfig> {
+export interface ArdoPluginOptions extends Partial<ArdoConfig> {
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
   /**
@@ -182,7 +182,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   let resolvedConfig: ResolvedConfig
   let routesDir: string
 
-  // Extract ardo-specific options from the rest (which is PressConfig)
+  // Extract ardo-specific options from the rest (which is ArdoConfig)
   const {
     routes,
     typedoc,
@@ -231,7 +231,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       const detectedProject = readProjectMeta(root)
       const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
 
-      const defaultConfig: PressConfig = {
+      const defaultConfig: ArdoConfig = {
         title: pressConfig.title ?? "Ardo",
         description: pressConfig.description ?? "Documentation powered by Ardo",
       }
@@ -281,6 +281,41 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
         const searchIndex = await generateSearchIndex(routesDir)
         return `export default ${JSON.stringify(searchIndex)}`
+      }
+    },
+
+    transform(code, id) {
+      // Only process .mdx/.md files inside the routes directory
+      if (!/\.(mdx|md)$/.test(id)) return
+      if (!id.startsWith(routesDir)) return
+
+      // Skip if the file already exports a meta function
+      if (/export\s+(const|function)\s+meta\b/.test(code)) return
+
+      // Extract frontmatter values from the compiled MDX export
+      const titleMatch = code.match(
+        /export\s+const\s+frontmatter\s*=\s*\{[^}]*title\s*:\s*"([^"]*)"/
+      )
+      const descMatch = code.match(
+        /export\s+const\s+frontmatter\s*=\s*\{[^}]*description\s*:\s*"([^"]*)"/
+      )
+
+      const pageTitle = titleMatch?.[1]
+      if (!pageTitle) return
+
+      const siteTitle = resolvedConfig.title
+      const separator = resolvedConfig.titleSeparator
+      const fullTitle = `${pageTitle}${separator}${siteTitle}`
+      const description = descMatch?.[1]
+
+      const metaEntries = [`{ title: ${JSON.stringify(fullTitle)} }`]
+      if (description) {
+        metaEntries.push(`{ name: "description", content: ${JSON.stringify(description)} }`)
+      }
+
+      return {
+        code: `${code}\nexport const meta = () => [${metaEntries.join(", ")}];\n`,
+        map: null,
       }
     },
   }

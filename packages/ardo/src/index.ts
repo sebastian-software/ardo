@@ -1,7 +1,7 @@
 // Config
 export { defineConfig, resolveConfig, loadConfig } from "./config"
 export type {
-  PressConfig,
+  ArdoConfig,
   ResolvedConfig,
   ThemeConfig,
   MarkdownConfig,
@@ -22,8 +22,8 @@ export type { ArdoPluginOptions } from "./vite"
 
 // Runtime (React hooks and context - client-safe)
 export {
-  PressProvider,
-  usePressContext,
+  ArdoProvider,
+  useArdoContext,
   useConfig,
   useThemeConfig,
   useSidebar,

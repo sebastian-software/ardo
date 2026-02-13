@@ -1,5 +1,15 @@
 import { Hero, Features } from "ardo/ui"
 import { Link } from "react-router"
+import type { MetaFunction } from "react-router"
+
+export const meta: MetaFunction = () => [
+  { title: "Ardo — Documentation for React teams" },
+  {
+    name: "description",
+    content:
+      "Build documentation with React 19, React Router 7, and MDX. Drop in your existing components and generate API references straight from TypeScript.",
+  },
+]
 import {
   Atom,
   Zap,

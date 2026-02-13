@@ -182,7 +182,7 @@ export interface ProjectMeta {
 }
 
 // =============================================================================
-// Press Config (Main Configuration)
+// Ardo Config (Main Configuration)
 // =============================================================================
 
 /**
@@ -191,11 +191,13 @@ export interface ProjectMeta {
  * In JSX-first architecture, only build-time options are needed here.
  * Runtime UI configuration (header, sidebar, footer) is done in JSX.
  */
-export interface PressConfig {
+export interface ArdoConfig {
   /** Site title (used for default meta tags) */
   title: string
   /** Site description (used for default meta tags) */
   description?: string
+  /** Separator between page title and site title (default: " | ") */
+  titleSeparator?: string
   /** Base URL path */
   base?: string
   /** Content source directory (default: 'content') */
@@ -284,9 +286,7 @@ export interface PageData {
 // Resolved Config (Internal)
 // =============================================================================
 
-export interface ResolvedConfig extends Required<
-  Omit<PressConfig, "vite" | "typedoc" | "project">
-> {
+export interface ResolvedConfig extends Required<Omit<ArdoConfig, "vite" | "typedoc" | "project">> {
   project: ProjectMeta
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig

@@ -486,7 +486,7 @@ pnpm add ardo react react-dom react-router isbot
 
 ### Key Types
 
-- `PressConfig` — Main site configuration
+- `ArdoConfig` — Main site configuration
 - `ThemeConfig` — Theme settings (nav, sidebar, footer, search)
 - `SidebarItem` — Sidebar navigation item
 - `NavItem` — Top navigation item

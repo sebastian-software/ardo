@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 
 declare module "virtual:ardo/config" {
-  import type { PressConfig } from "ardo"
-  const config: PressConfig
+  import type { ArdoConfig } from "ardo"
+  const config: ArdoConfig
   export default config
 }
 

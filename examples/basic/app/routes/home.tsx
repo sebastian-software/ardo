@@ -1,4 +1,7 @@
 import { Hero, Features } from "ardo/ui"
+import type { MetaFunction } from "react-router"
+
+export const meta: MetaFunction = () => [{ title: "Ardo Basic Example" }]
 
 export default function HomePage() {
   return (
