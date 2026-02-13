@@ -93,7 +93,7 @@ export default function Root() {
                 <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
               </SidebarGroup>
 
-              <SidebarGroup title="API Reference" to="/api-reference" collapsed>
+              <SidebarGroup title="API Reference" to="/api-reference">
                 <SidebarLink to="/api-reference/components">Components</SidebarLink>
                 <SidebarLink to="/api-reference/functions">Functions</SidebarLink>
                 <SidebarLink to="/api-reference/interfaces">Interfaces</SidebarLink>
