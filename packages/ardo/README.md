@@ -96,9 +96,9 @@ function App() {
 
 ## Documentation
 
-Full documentation available at [sebastian-software.github.io/ardo](https://sebastian-software.github.io/ardo/)
+Full documentation available at [ardo-docs.dev](https://ardo-docs.dev)
 
-LLM-optimized documentation: [llms-full.txt](https://sebastian-software.github.io/ardo/llms-full.txt)
+LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/llms-full.txt)
 
 ## License
 

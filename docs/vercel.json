@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter ardo build && pnpm docs:build",
+  "outputDirectory": "docs/build/client",
+  "installCommand": "pnpm install",
+  "framework": null
+}

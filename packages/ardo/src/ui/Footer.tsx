@@ -108,7 +108,7 @@ export function Footer({
                   <span className="ardo-footer-separator" aria-hidden="true" />
                 )}
                 {ardoLink && (
-                  <a href="https://ardo.dev" className="ardo-footer-link">
+                  <a href="https://ardo-docs.dev" className="ardo-footer-link">
                     Built with Ardo
                   </a>
                 )}

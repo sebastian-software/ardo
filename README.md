@@ -13,9 +13,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Node](https://img.shields.io/badge/Node-%3E%3D22-green.svg)](https://nodejs.org/)
 
-[Documentation](https://sebastian-software.github.io/ardo/) ·
-[Getting Started](https://sebastian-software.github.io/ardo/guide/getting-started) ·
-[API Reference](https://sebastian-software.github.io/ardo/api/config)
+[Documentation](https://ardo-docs.dev) ·
+[Getting Started](https://ardo-docs.dev/guide/getting-started) ·
+[API Reference](https://ardo-docs.dev/api/config)
 
 </div>
 
@@ -135,7 +135,7 @@ my-docs/
 
 Ardo builds to static HTML. Deploy it anywhere: Vercel, Netlify, GitHub Pages, Cloudflare Pages, or a plain file server. Projects created with `create-ardo` ship with a GitHub Pages workflow ready to go.
 
-See the [Deployment Guide](https://sebastian-software.github.io/ardo/guide/deployment) for setup details.
+See the [Deployment Guide](https://ardo-docs.dev/guide/deployment) for setup details.
 
 ## Packages
 

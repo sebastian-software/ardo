@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/sebastian-software/ardo/discussions
     about: Ask questions and discuss ideas in GitHub Discussions
   - name: Documentation
-    url: https://sebastian-software.github.io/ardo/
+    url: https://ardo-docs.dev
     about: Check our documentation for guides and API reference

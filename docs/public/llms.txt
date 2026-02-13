@@ -6,16 +6,16 @@ Ardo combines the developer experience of VitePress with the power of the React 
 
 ## Docs
 
-- [What is Ardo?](https://sebastian-software.github.io/ardo/guide/what-is-ardo): Overview, philosophy, and core features
-- [Getting Started](https://sebastian-software.github.io/ardo/guide/getting-started): Installation, setup, and project structure
-- [Markdown Features](https://sebastian-software.github.io/ardo/guide/markdown): Syntax highlighting, containers, code groups, and custom components
-- [Frontmatter](https://sebastian-software.github.io/ardo/guide/frontmatter): Page-level configuration via YAML frontmatter
-- [Theme Configuration](https://sebastian-software.github.io/ardo/guide/theme-config): Navigation, sidebar, footer, search, and social links
-- [Custom Theme](https://sebastian-software.github.io/ardo/guide/custom-theme): CSS variables, component overrides, runtime hooks, and full custom themes
-- [TypeDoc Integration](https://sebastian-software.github.io/ardo/guide/typedoc): Auto-generate API documentation from TypeScript source
-- [Troubleshooting](https://sebastian-software.github.io/ardo/guide/troubleshooting): Common issues and solutions
-- [Deployment](https://sebastian-software.github.io/ardo/guide/deployment): Deploy to GitHub Pages, Netlify, Vercel, and more
-- [Full documentation as single file](https://sebastian-software.github.io/ardo/llms-full.txt): Complete documentation optimized for LLM consumption
+- [What is Ardo?](https://ardo-docs.dev/guide/what-is-ardo): Overview, philosophy, and core features
+- [Getting Started](https://ardo-docs.dev/guide/getting-started): Installation, setup, and project structure
+- [Markdown Features](https://ardo-docs.dev/guide/markdown): Syntax highlighting, containers, code groups, and custom components
+- [Frontmatter](https://ardo-docs.dev/guide/frontmatter): Page-level configuration via YAML frontmatter
+- [Theme Configuration](https://ardo-docs.dev/guide/theme-config): Navigation, sidebar, footer, search, and social links
+- [Custom Theme](https://ardo-docs.dev/guide/custom-theme): CSS variables, component overrides, runtime hooks, and full custom themes
+- [TypeDoc Integration](https://ardo-docs.dev/guide/typedoc): Auto-generate API documentation from TypeScript source
+- [Troubleshooting](https://ardo-docs.dev/guide/troubleshooting): Common issues and solutions
+- [Deployment](https://ardo-docs.dev/guide/deployment): Deploy to GitHub Pages, Netlify, Vercel, and more
+- [Full documentation as single file](https://ardo-docs.dev/llms-full.txt): Complete documentation optimized for LLM consumption
 
 ## Package Exports
 
