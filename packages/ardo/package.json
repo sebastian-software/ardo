@@ -40,13 +40,17 @@
       "import": "./dist/mdx/provider.js",
       "types": "./dist/mdx/provider.d.ts"
     },
-    "./press.css": "./dist/ui/styles.css"
+    "./press.css": "./dist/ui/styles.css",
+    "./virtual": {
+      "types": "./virtual.d.ts"
+    }
   },
   "sideEffects": [
     "*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "virtual.d.ts"
   ],
   "scripts": {
     "dev": "tsup --watch",

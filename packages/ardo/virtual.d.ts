@@ -1,4 +1,19 @@
-/// <reference types="vite/client" />
+/**
+ * Ambient module declarations for Ardo virtual modules.
+ *
+ * These types are automatically available when importing from
+ * `virtual:ardo/config`, `virtual:ardo/sidebar`, or `virtual:ardo/search-index`.
+ *
+ * To use, add to your tsconfig.json:
+ * ```json
+ * { "compilerOptions": { "types": ["ardo/virtual"] } }
+ * ```
+ *
+ * Or add a triple-slash reference in any .d.ts file:
+ * ```ts
+ * /// <reference types="ardo/virtual" />
+ * ```
+ */
 
 declare module "virtual:ardo/config" {
   import type { ArdoConfig } from "ardo"
