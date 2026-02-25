@@ -10,6 +10,7 @@ import {
 } from "typedoc"
 import path from "path"
 import fs from "fs/promises"
+import { readPackageUp } from "read-package-up"
 import type { TypeDocConfig, GeneratedApiDoc } from "./types"
 
 export class TypeDocGenerator {
@@ -17,6 +18,7 @@ export class TypeDocGenerator {
   private app: Application | undefined
   private project: ProjectReflection | undefined
   private basePath: string
+  private packageNameCache = new Map<string, string | undefined>()
 
   constructor(config: TypeDocConfig) {
     this.config = {
@@ -44,6 +46,9 @@ export class TypeDocGenerator {
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
+    // Pre-populate package name cache for all entry points
+    await Promise.all(this.config.entryPoints.map((ep) => this.resolvePackageName(ep)))
+
     const typedocOptions: Record<string, unknown> = {
       entryPoints: this.config.entryPoints,
       tsconfig: this.config.tsconfig,
@@ -451,6 +456,19 @@ export class TypeDocGenerator {
     }
   }
 
+  private async resolvePackageName(filePath: string): Promise<string | undefined> {
+    const dir = path.dirname(path.resolve(filePath))
+    if (this.packageNameCache.has(dir)) {
+      return this.packageNameCache.get(dir)
+    }
+
+    const result = await readPackageUp({ cwd: dir })
+    const name = result?.packageJson.name
+    const resolved = name ? name.replace(/^@[^/]+\//, "") : undefined
+    this.packageNameCache.set(dir, resolved)
+    return resolved
+  }
+
   private getModuleNameFromPath(filePath: string): string {
     // Include parent directory to avoid naming conflicts
     // "src/utils/string.ts" -> "utils/string"
@@ -463,6 +481,11 @@ export class TypeDocGenerator {
     const parent = parts.pop()
     if (parent && parent !== "src") {
       return `${parent}/${basename}`
+    }
+    if (basename === "index") {
+      const dir = path.dirname(path.resolve(filePath))
+      const packageName = this.packageNameCache.get(dir)
+      if (packageName) return packageName
     }
     return basename
   }
