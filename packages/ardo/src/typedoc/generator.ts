@@ -10,6 +10,7 @@ import {
 } from "typedoc"
 import path from "path"
 import fs from "fs/promises"
+import fsSync from "fs"
 import type { TypeDocConfig, GeneratedApiDoc } from "./types"
 
 export class TypeDocGenerator {
@@ -17,6 +18,7 @@ export class TypeDocGenerator {
   private app: Application | undefined
   private project: ProjectReflection | undefined
   private basePath: string
+  private packageName: string | undefined
 
   constructor(config: TypeDocConfig) {
     this.config = {
@@ -41,6 +43,7 @@ export class TypeDocGenerator {
     }
     // Use the output directory as the base path for links
     this.basePath = "/" + this.config.out!
+    this.packageName = this.resolvePackageName()
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
@@ -451,6 +454,28 @@ export class TypeDocGenerator {
     }
   }
 
+  private resolvePackageName(): string | undefined {
+    const entryPoint = this.config.entryPoints[0]
+    if (!entryPoint) return undefined
+
+    let dir = path.dirname(path.resolve(entryPoint))
+    const root = path.parse(dir).root
+
+    while (dir !== root) {
+      const pkgPath = path.join(dir, "package.json")
+      try {
+        const pkg = JSON.parse(fsSync.readFileSync(pkgPath, "utf-8"))
+        if (pkg.name) {
+          return pkg.name.replace(/^@[^/]+\//, "")
+        }
+      } catch {
+        // No package.json here, keep walking up
+      }
+      dir = path.dirname(dir)
+    }
+    return undefined
+  }
+
   private getModuleNameFromPath(filePath: string): string {
     // Include parent directory to avoid naming conflicts
     // "src/utils/string.ts" -> "utils/string"
@@ -463,6 +488,9 @@ export class TypeDocGenerator {
     const parent = parts.pop()
     if (parent && parent !== "src") {
       return `${parent}/${basename}`
+    }
+    if (basename === "index" && this.packageName) {
+      return this.packageName
     }
     return basename
   }
