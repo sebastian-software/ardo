@@ -40,7 +40,7 @@ export function RootLayout({ children, favicon, lang }: RootLayoutProps) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {favicon && <link rel="icon" type="image/svg+xml" href={favicon} />}
+        {favicon ? <link rel="icon" type="image/svg+xml" href={favicon} /> : <link rel="icon" href="data:," />}
         <Meta />
         <Links />
       </head>
