@@ -10,7 +10,7 @@ import {
 } from "typedoc"
 import path from "path"
 import fs from "fs/promises"
-import fsSync from "fs"
+import { readPackageUp } from "read-package-up"
 import type { TypeDocConfig, GeneratedApiDoc } from "./types"
 
 export class TypeDocGenerator {
@@ -43,10 +43,11 @@ export class TypeDocGenerator {
     }
     // Use the output directory as the base path for links
     this.basePath = "/" + this.config.out!
-    this.packageName = this.resolvePackageName()
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
+    this.packageName = await this.resolvePackageName()
+
     const typedocOptions: Record<string, unknown> = {
       entryPoints: this.config.entryPoints,
       tsconfig: this.config.tsconfig,
@@ -454,26 +455,19 @@ export class TypeDocGenerator {
     }
   }
 
-  private resolvePackageName(): string | undefined {
+  private async resolvePackageName(): Promise<string | undefined> {
     const entryPoint = this.config.entryPoints[0]
     if (!entryPoint) return undefined
 
-    let dir = path.dirname(path.resolve(entryPoint))
-    const root = path.parse(dir).root
+    const result = await readPackageUp({
+      cwd: path.dirname(path.resolve(entryPoint)),
+    })
 
-    while (dir !== root) {
-      const pkgPath = path.join(dir, "package.json")
-      try {
-        const pkg = JSON.parse(fsSync.readFileSync(pkgPath, "utf-8"))
-        if (pkg.name) {
-          return pkg.name.replace(/^@[^/]+\//, "")
-        }
-      } catch {
-        // No package.json here, keep walking up
-      }
-      dir = path.dirname(dir)
-    }
-    return undefined
+    const name = result?.packageJson.name
+    if (!name) return undefined
+
+    // Strip scope prefix: @org/name -> name
+    return name.replace(/^@[^/]+\//, "")
   }
 
   private getModuleNameFromPath(filePath: string): string {
