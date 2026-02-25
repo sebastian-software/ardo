@@ -18,7 +18,7 @@ export class TypeDocGenerator {
   private app: Application | undefined
   private project: ProjectReflection | undefined
   private basePath: string
-  private packageName: string | undefined
+  private packageNameCache = new Map<string, string | undefined>()
 
   constructor(config: TypeDocConfig) {
     this.config = {
@@ -46,7 +46,8 @@ export class TypeDocGenerator {
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
-    this.packageName = await this.resolvePackageName()
+    // Pre-populate package name cache for all entry points
+    await Promise.all(this.config.entryPoints.map((ep) => this.resolvePackageName(ep)))
 
     const typedocOptions: Record<string, unknown> = {
       entryPoints: this.config.entryPoints,
@@ -455,19 +456,17 @@ export class TypeDocGenerator {
     }
   }
 
-  private async resolvePackageName(): Promise<string | undefined> {
-    const entryPoint = this.config.entryPoints[0]
-    if (!entryPoint) return undefined
+  private async resolvePackageName(filePath: string): Promise<string | undefined> {
+    const dir = path.dirname(path.resolve(filePath))
+    if (this.packageNameCache.has(dir)) {
+      return this.packageNameCache.get(dir)
+    }
 
-    const result = await readPackageUp({
-      cwd: path.dirname(path.resolve(entryPoint)),
-    })
-
+    const result = await readPackageUp({ cwd: dir })
     const name = result?.packageJson.name
-    if (!name) return undefined
-
-    // Strip scope prefix: @org/name -> name
-    return name.replace(/^@[^/]+\//, "")
+    const resolved = name ? name.replace(/^@[^/]+\//, "") : undefined
+    this.packageNameCache.set(dir, resolved)
+    return resolved
   }
 
   private getModuleNameFromPath(filePath: string): string {
@@ -483,8 +482,10 @@ export class TypeDocGenerator {
     if (parent && parent !== "src") {
       return `${parent}/${basename}`
     }
-    if (basename === "index" && this.packageName) {
-      return this.packageName
+    if (basename === "index") {
+      const dir = path.dirname(path.resolve(filePath))
+      const packageName = this.packageNameCache.get(dir)
+      if (packageName) return packageName
     }
     return basename
   }
