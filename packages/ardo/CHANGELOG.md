@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.2](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.1...ardo-v2.7.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* resolve TypeDoc index module name via cache iteration ([80d4b71](https://github.com/sebastian-software/ardo/commit/80d4b71de24961ed2abc5a51a8500b784a1153e9)), closes [#54](https://github.com/sebastian-software/ardo/issues/54)
+
 ## [2.7.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.0...ardo-v2.7.1) (2026-02-26)
 
 
