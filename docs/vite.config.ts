@@ -6,6 +6,7 @@ export default defineConfig({
     ardo({
       title: "Ardo",
       description: "React-first Static Documentation Framework",
+      githubPages: false,
 
       themeConfig: {
         nav: [

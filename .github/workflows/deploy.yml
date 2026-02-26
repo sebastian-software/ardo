@@ -1,0 +1,71 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy ${{ matrix.site }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site: [docs, basic, library, monorepo]
+        include:
+          - site: docs
+            directory: docs
+          - site: basic
+            directory: examples/basic
+          - site: library
+            directory: examples/library
+          - site: monorepo
+            directory: examples/monorepo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel
+
+      - name: Build ardo package
+        run: pnpm build
+
+      - name: Set Vercel Project ID
+        run: |
+          case "${{ matrix.site }}" in
+            docs)     echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DOCS }}" >> $GITHUB_ENV ;;
+            basic)    echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_BASIC }}" >> $GITHUB_ENV ;;
+            library)  echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_LIBRARY }}" >> $GITHUB_ENV ;;
+            monorepo) echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_MONOREPO }}" >> $GITHUB_ENV ;;
+          esac
+
+      - name: Build site
+        run: pnpm build
+        working-directory: ${{ matrix.directory }}
+
+      - name: Prepare Vercel output
+        run: |
+          mkdir -p .vercel
+          echo '{"orgId":"${{ secrets.VERCEL_ORG_ID }}","projectId":"${{ env.VERCEL_PROJECT_ID }}"}' > .vercel/project.json
+          mkdir -p .vercel/output/static
+          cp -r ${{ matrix.directory }}/build/client/* .vercel/output/static/
+          echo '{"version":3}' > .vercel/output/config.json
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}

@@ -1,4 +1,5 @@
 {
+  "git": { "deploymentEnabled": false },
   "buildCommand": "pnpm --filter ardo build && pnpm build",
   "outputDirectory": "build/client",
   "installCommand": "pnpm install",
