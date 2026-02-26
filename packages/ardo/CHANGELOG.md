@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.7.1](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.0...ardo-v2.7.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* provide default favicon to prevent browser console warnings ([d13b682](https://github.com/sebastian-software/ardo/commit/d13b6823d125cdc171e223de923c01db81937a44))
+* provide default favicon to prevent browser console warnings ([1cf167d](https://github.com/sebastian-software/ardo/commit/1cf167d31d7ea29ad001ae4bddf2dd26a6abd6a7)), closes [#55](https://github.com/sebastian-software/ardo/issues/55)
+* resolve package name per source file instead of globally ([902bfe9](https://github.com/sebastian-software/ardo/commit/902bfe91749b4252486c26fb941c26958149770b))
+* update logo and favicon to new lineart version ([eeba325](https://github.com/sebastian-software/ardo/commit/eeba3256f3c632eba711982b473d6217b718678f))
+* use Ardo logo as default favicon to prevent browser console warnings ([61d9667](https://github.com/sebastian-software/ardo/commit/61d9667a68a73e4d0ad7f8a74605b449f2489c4c)), closes [#55](https://github.com/sebastian-software/ardo/issues/55)
+* use package name instead of 'index' for TypeDoc module names ([05c73d7](https://github.com/sebastian-software/ardo/commit/05c73d7eadf4ed9dd051882b4ea591152c5dcc71))
+* use package name instead of 'index' for TypeDoc module names ([6e5724a](https://github.com/sebastian-software/ardo/commit/6e5724a8b1851ba5571540919ba0e45381b0929b)), closes [#54](https://github.com/sebastian-software/ardo/issues/54)
+* use read-package-up for async package name resolution in TypeDoc ([0a4d115](https://github.com/sebastian-software/ardo/commit/0a4d1152be38699dadc07cb3fe4317ab85a4f494))
+
 ## [2.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.6.0...ardo-v2.7.0) (2026-02-13)
 
 
