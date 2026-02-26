@@ -70,6 +70,20 @@ describe("examples/library build", () => {
     expect(htmlFiles.length).toBeGreaterThan(0)
   })
 
+  it("uses package name instead of 'index' for src/index.ts modules (#54)", () => {
+    // Regression test: TypeDoc should resolve the module name from package.json
+    // instead of using the literal filename "index" for src/index.ts entry points.
+    const apiIndexMd = path.join(__dirname, "app", "routes", "api-reference", "index.md")
+    expect(fs.existsSync(apiIndexMd)).toBe(true)
+    const content = fs.readFileSync(apiIndexMd, "utf-8")
+
+    // Should contain the package name as module name
+    expect(content).toContain("ardo-example-library")
+
+    // Should NOT contain "index" as a standalone module name in links
+    expect(content).not.toMatch(/\[index\]\(/)
+  })
+
   it("includes JS and CSS assets", () => {
     const assetsDir = path.join(__dirname, "build", "client", "assets")
     expect(fs.existsSync(assetsDir)).toBe(true)
