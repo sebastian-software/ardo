@@ -1,15 +1,1 @@
-<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" style="stroke-linecap:round;stroke-linejoin:round;">
-    <defs>
-        <symbol id="side" overflow="visible">
-            <path d="M300,300l-149,-172l2,178l-41,94l93,0c-35,32-55,68-63,107M205,401l95,81M268,386l28,88"/>
-            <ellipse cx="222" cy="327" rx="20" ry="33" fill="#00655a" stroke="none"/>
-            <circle cx="227" cy="324" r="71"/>
-        </symbol>
-    </defs>
-    <g stroke="#00655a" fill="none" stroke-width="16">
-        <path id="Head" d="M155,318c2,-70 66,-126 145,-126c79,0 143,56 145,126"/>
-        <circle id="Outer" cx="300" cy="290" r="270"/>
-        <use href="#side"/>
-        <use href="#side" transform="translate(600) scale(-1,1)"/>
-    </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 600 600"><defs><symbol id="a" overflow="visible"><path d="M300 300 151 128l2 178-41 94h93c-35 32-55 68-63 107m63-106 95 81m-32-96 28 88"/><ellipse cx="222" cy="327" fill="#00655a" rx="20" ry="33"/><circle cx="227" cy="324" r="71"/></symbol></defs><g fill="none" stroke="#00655a" stroke-width="16"><path d="M155 318c2-70 66-126 145-126s143 56 145 126"/><circle cx="300" cy="290" r="270"/><use href="#a"/><use href="#a" transform="matrix(-1 0 0 1 600 0)"/></g></svg>
