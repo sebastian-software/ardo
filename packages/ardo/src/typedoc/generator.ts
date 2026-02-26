@@ -483,9 +483,12 @@ export class TypeDocGenerator {
       return `${parent}/${basename}`
     }
     if (basename === "index") {
-      const dir = path.dirname(path.resolve(filePath))
-      const packageName = this.packageNameCache.get(dir)
-      if (packageName) return packageName
+      // Find the first cached package name. We cannot use path.resolve() here
+      // because TypeDoc reports sourceFile paths relative to the project root,
+      // while entry points were resolved relative to a different CWD (e.g. docs/).
+      for (const packageName of this.packageNameCache.values()) {
+        if (packageName) return packageName
+      }
     }
     return basename
   }
