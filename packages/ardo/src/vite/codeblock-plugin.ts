@@ -21,14 +21,18 @@ function outdent(text: string): string {
 }
 
 /**
- * Vite plugin that pre-highlights CodeBlock components with static props.
+ * Vite plugin that pre-highlights CodeBlock components at build time.
  *
- * Supports two patterns:
- * 1. `<CodeBlock code="..." language="..." />`
- * 2. `<CodeBlock language="...">{\`...\`}</CodeBlock>`
+ * Runs before the JSX parser, so children can contain arbitrary code
+ * (including `<`, `{`, etc.) without causing syntax errors.
  *
- * Injects pre-rendered Shiki HTML as a `__html` prop so that syntax
- * highlighting works outside the MDX pipeline.
+ * Supports three patterns:
+ * 1. `<CodeBlock code="..." language="..." />`  — code prop
+ * 2. `<CodeBlock language="...">{\`...\`}</CodeBlock>`  — template literal children
+ * 3. `<CodeBlock language="...">raw code here</CodeBlock>`  — plain text children
+ *
+ * All patterns are rewritten to a self-closing tag with pre-rendered
+ * Shiki HTML before the JSX parser ever sees them.
  */
 export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
   return {
@@ -43,8 +47,8 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
       let result = code
       let offset = 0
 
-      // Pattern 1: <CodeBlock code="..." language="..." />
-      const propRegex = /<CodeBlock\s+([^>]*?)(?:\/>|>)/g
+      // Pattern 1: Self-closing <CodeBlock code="..." language="..." />
+      const propRegex = /<CodeBlock\s+([^>]*?)\/>/g
       let match: RegExpExecArray | null
 
       while ((match = propRegex.exec(code)) !== null) {
@@ -88,22 +92,28 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
         }
       }
 
-      // Pattern 2: <CodeBlock language="...">{\`...\`}</CodeBlock>
-      // or <CodeBlock language="...">{`...`}</CodeBlock>
-      const childrenRegex = /<CodeBlock\s+([^>]*?)>\s*\{`([\s\S]*?)`\}\s*<\/CodeBlock>/g
+      // Pattern 2+3: <CodeBlock language="...">...children...</CodeBlock>
+      // Matches both template literal children {`...`} and raw text children.
+      // Since this runs before JSX parsing, raw text with <, {, etc. is fine.
+      const childrenRegex = /<CodeBlock\s+([^>]*?)>([\s\S]*?)<\/CodeBlock>/g
 
-      // Reset for second pass — work on original code, apply to result
       offset = result.length - code.length
       while ((match = childrenRegex.exec(code)) !== null) {
         const fullMatch = match[0]
         const propsStr = match[1]
-        const rawChildren = match[2]
+        let rawChildren = match[2]
 
         const langMatch =
           propsStr.match(/\blanguage="([^"]*)"/) || propsStr.match(/\blanguage=\{"([^"]*)"\}/)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
+
+        // Unwrap template literal braces if present: {`...`} → ...
+        const templateMatch = rawChildren.match(/^\s*\{`([\s\S]*)`\}\s*$/)
+        if (templateMatch) {
+          rawChildren = templateMatch[1]
+        }
 
         const codeContent = outdent(rawChildren)
         const language = langMatch[1]
@@ -114,8 +124,8 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
           })
 
           const escapedHtml = JSON.stringify(html)
-          // Rewrite to self-closing tag with __html and code props
-          const newTag = `<CodeBlock __html={${escapedHtml}} code={${JSON.stringify(codeContent)}} ${propsStr} />`
+          const escapedCode = JSON.stringify(codeContent)
+          const newTag = `<CodeBlock __html={${escapedHtml}} code={${escapedCode}} ${propsStr} />`
 
           result =
             result.slice(0, match.index + offset) +
