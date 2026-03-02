@@ -1,9 +1,29 @@
 import { useState, Children, isValidElement } from "react"
 import { CopyButton } from "./CopyButton"
 
+/**
+ * Strips leading/trailing blank lines and removes common leading whitespace
+ * so that template literals in indented JSX render cleanly.
+ */
+function outdent(text: string): string {
+  // Remove leading/trailing blank lines
+  const trimmed = text.replace(/^\n+/, "").replace(/\n\s*$/, "")
+  const lines = trimmed.split("\n")
+
+  // Find minimum indentation (ignoring empty lines)
+  const indent = lines.reduce((min, line) => {
+    if (line.trim().length === 0) return min
+    const match = line.match(/^(\s*)/)
+    return match ? Math.min(min, match[1].length) : min
+  }, Infinity)
+
+  if (indent === 0 || indent === Infinity) return trimmed
+  return lines.map((line) => line.slice(indent)).join("\n")
+}
+
 export interface CodeBlockProps {
-  /** The code to display */
-  code: string
+  /** The code to display (as prop or as children string) */
+  code?: string
   /** Programming language for syntax highlighting */
   language?: string
   /** Optional title shown above the code */
@@ -12,7 +32,7 @@ export interface CodeBlockProps {
   lineNumbers?: boolean
   /** Line numbers to highlight */
   highlightLines?: number[]
-  /** Optional custom content to render instead of the code */
+  /** Code as children — supports template literals with auto-outdent */
   children?: React.ReactNode
   /** Pre-rendered Shiki HTML (injected by ardo:codeblock-highlight plugin) */
   __html?: string
@@ -20,9 +40,18 @@ export interface CodeBlockProps {
 
 /**
  * Syntax-highlighted code block with copy button.
+ *
+ * Code can be provided via the `code` prop or as children:
+ * ```tsx
+ * <CodeBlock language="typescript">{`
+ *   const x = 42
+ * `}</CodeBlock>
+ * ```
+ * When children is a string, leading/trailing blank lines and common
+ * indentation are stripped automatically.
  */
 export function CodeBlock({
-  code,
+  code: codeProp,
   language = "text",
   title,
   lineNumbers = false,
@@ -30,36 +59,43 @@ export function CodeBlock({
   children,
   __html,
 }: CodeBlockProps) {
+  const code = codeProp ?? (typeof children === "string" ? outdent(children) : "")
+  const hasCustomChildren = children != null && typeof children !== "string"
   const lines = code.split("\n")
+
+  let content: React.ReactNode
+  if (__html) {
+    content = <div dangerouslySetInnerHTML={{ __html }} />
+  } else if (hasCustomChildren) {
+    content = <>{children}</>
+  } else {
+    content = (
+      <pre className={`language-${language}`}>
+        <code>
+          {lines.map((line, index) => {
+            const lineNum = index + 1
+            const isHighlighted = highlightLines.includes(lineNum)
+            const classes = ["ardo-code-line"]
+            if (isHighlighted) classes.push("highlighted")
+
+            return (
+              <span key={index} className={classes.join(" ")}>
+                {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
+                <span className="ardo-line-content">{line}</span>
+                {index < lines.length - 1 && "\n"}
+              </span>
+            )
+          })}
+        </code>
+      </pre>
+    )
+  }
 
   return (
     <div className="ardo-code-block" data-lang={language}>
       {title && <div className="ardo-code-title">{title}</div>}
       <div className="ardo-code-wrapper">
-        {__html ? (
-          <div dangerouslySetInnerHTML={{ __html }} />
-        ) : (
-          children || (
-            <pre className={`language-${language}`}>
-              <code>
-                {lines.map((line, index) => {
-                  const lineNum = index + 1
-                  const isHighlighted = highlightLines.includes(lineNum)
-                  const classes = ["ardo-code-line"]
-                  if (isHighlighted) classes.push("highlighted")
-
-                  return (
-                    <span key={index} className={classes.join(" ")}>
-                      {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
-                      <span className="ardo-line-content">{line}</span>
-                      {index < lines.length - 1 && "\n"}
-                    </span>
-                  )
-                })}
-              </code>
-            </pre>
-          )
-        )}
+        {content}
         <CopyButton code={code} />
       </div>
     </div>

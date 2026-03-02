@@ -180,17 +180,30 @@ def greet(name):
 
 ## CodeBlock in `.tsx` Routes
 
-When using the `CodeBlock` component in `.tsx` route files (outside MDX), syntax highlighting is applied automatically at build time. The `ardo:codeblock-highlight` Vite plugin detects static `code` and `language` props and pre-renders Shiki HTML:
+The `CodeBlock` component can be used directly in `.tsx` route files. Code can be passed as children (recommended) or via the `code` prop:
 
 ```tsx
 import { CodeBlock } from "ardo/ui"
 
 export default function MyPage() {
-  return <CodeBlock code="const x: number = 42" language="typescript" />
+  return (
+    <CodeBlock language="typescript">{`
+      const x: number = 42
+      const y = x + 1
+    `}</CodeBlock>
+  )
 }
 ```
 
-This works out of the box — no extra configuration needed. If your code or language is dynamic, the component falls back to plain text rendering.
+Common indentation from template literals is stripped automatically, so you can indent naturally inside JSX. The `ardo:codeblock-highlight` Vite plugin pre-renders Shiki HTML at build time — no extra configuration needed.
+
+The `code` prop is still supported for backwards compatibility:
+
+```tsx
+<CodeBlock code="const x = 42" language="typescript" />
+```
+
+If code or language are dynamic (from variables), the component falls back to plain text rendering.
 
 ## Embedding MDX Snippets with BareContent
 
