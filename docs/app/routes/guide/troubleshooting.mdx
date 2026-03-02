@@ -108,9 +108,15 @@ Supported languages: [Shiki Languages](https://shiki.style/languages)
 
 ### CodeBlock Not Highlighted in `.tsx` Routes
 
-The `ardo:codeblock-highlight` plugin only processes `CodeBlock` usages with **static string** `code` and `language` props. If your props are dynamic (from variables, props, or expressions), highlighting won't be applied at build time.
+The `ardo:codeblock-highlight` plugin requires a **static** `language` prop. If the language is dynamic (from a variable or expression), build-time highlighting is skipped and the code renders as plain text.
 
-For dynamic code, use the `highlightCode` utility from `ardo/vite` at build time:
+Code can be provided as plain text children, template literal children, or via the `code` prop:
+
+```tsx
+<CodeBlock language="typescript">const x = 42</CodeBlock>
+```
+
+For fully dynamic code, use the `highlightCode` utility from `ardo/vite` at build time:
 
 ```typescript
 import { highlightCode } from "ardo/vite"

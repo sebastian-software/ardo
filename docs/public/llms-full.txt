@@ -501,5 +501,6 @@ pnpm add ardo react react-dom react-router isbot
 - `Sidebar` — Left sidebar navigation
 - `TOC` — Right sidebar table of contents
 - `Footer` — Page footer
-- `CodeBlock` — Syntax-highlighted code
+- `CodeBlock` — Syntax-highlighted code (supports plain text children in `.tsx` routes)
+- `BareContent` — Renders imported MDX without article/footer wrapper
 - `Search` — Full-text search dialog
