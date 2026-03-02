@@ -178,6 +178,37 @@ def greet(name):
 
 :::
 
+## CodeBlock in `.tsx` Routes
+
+When using the `CodeBlock` component in `.tsx` route files (outside MDX), syntax highlighting is applied automatically at build time. The `ardo:codeblock-highlight` Vite plugin detects static `code` and `language` props and pre-renders Shiki HTML:
+
+```tsx
+import { CodeBlock } from "ardo/ui"
+
+export default function MyPage() {
+  return <CodeBlock code="const x: number = 42" language="typescript" />
+}
+```
+
+This works out of the box — no extra configuration needed. If your code or language is dynamic, the component falls back to plain text rendering.
+
+## Embedding MDX Snippets with BareContent
+
+When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). To embed it as a plain content snippet, wrap it in `BareContent`:
+
+```tsx
+import { BareContent } from "ardo/ui"
+import MySnippet from "./snippet.mdx"
+
+export default function MyPage() {
+  return (
+    <BareContent>
+      <MySnippet />
+    </BareContent>
+  )
+}
+```
+
 ## Custom Components
 
 You can use React components directly in your markdown:

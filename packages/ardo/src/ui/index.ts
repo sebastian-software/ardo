@@ -19,6 +19,7 @@ export type { NavProps, NavLinkProps, NavDropdownProps } from "./Nav"
 
 export { TOC } from "./TOC"
 export { Content } from "./Content"
+export { BareContent } from "./BareContent"
 export { DocPage, DocContent, DocLayout } from "./DocPage"
 export { HomePage } from "./HomePage"
 

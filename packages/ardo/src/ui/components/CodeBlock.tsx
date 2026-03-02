@@ -14,6 +14,8 @@ export interface CodeBlockProps {
   highlightLines?: number[]
   /** Optional custom content to render instead of the code */
   children?: React.ReactNode
+  /** Pre-rendered Shiki HTML (injected by ardo:codeblock-highlight plugin) */
+  __html?: string
 }
 
 /**
@@ -26,6 +28,7 @@ export function CodeBlock({
   lineNumbers = false,
   highlightLines = [],
   children,
+  __html,
 }: CodeBlockProps) {
   const lines = code.split("\n")
 
@@ -33,25 +36,29 @@ export function CodeBlock({
     <div className="ardo-code-block" data-lang={language}>
       {title && <div className="ardo-code-title">{title}</div>}
       <div className="ardo-code-wrapper">
-        {children || (
-          <pre className={`language-${language}`}>
-            <code>
-              {lines.map((line, index) => {
-                const lineNum = index + 1
-                const isHighlighted = highlightLines.includes(lineNum)
-                const classes = ["ardo-code-line"]
-                if (isHighlighted) classes.push("highlighted")
+        {__html ? (
+          <div dangerouslySetInnerHTML={{ __html }} />
+        ) : (
+          children || (
+            <pre className={`language-${language}`}>
+              <code>
+                {lines.map((line, index) => {
+                  const lineNum = index + 1
+                  const isHighlighted = highlightLines.includes(lineNum)
+                  const classes = ["ardo-code-line"]
+                  if (isHighlighted) classes.push("highlighted")
 
-                return (
-                  <span key={index} className={classes.join(" ")}>
-                    {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
-                    <span className="ardo-line-content">{line}</span>
-                    {index < lines.length - 1 && "\n"}
-                  </span>
-                )
-              })}
-            </code>
-          </pre>
+                  return (
+                    <span key={index} className={classes.join(" ")}>
+                      {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
+                      <span className="ardo-line-content">{line}</span>
+                      {index < lines.length - 1 && "\n"}
+                    </span>
+                  )
+                })}
+              </code>
+            </pre>
+          )
         )}
         <CopyButton code={code} />
       </div>

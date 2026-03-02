@@ -23,4 +23,4 @@ export {
   type TransformResult,
 } from "../markdown/pipeline"
 
-export { createShikiHighlighter, type ShikiHighlighter } from "../markdown/shiki"
+export { createShikiHighlighter, highlightCode, type ShikiHighlighter } from "../markdown/shiki"

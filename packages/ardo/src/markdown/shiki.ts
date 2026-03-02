@@ -10,6 +10,45 @@ import type { MarkdownConfig } from "../config/types"
 
 export type ShikiHighlighter = Highlighter
 
+/** Default Ardo themes used when no config is provided */
+const DEFAULT_THEMES = {
+  light: "github-light-default" as BundledTheme,
+  dark: "github-dark-default" as BundledTheme,
+}
+
+let cachedHighlighter: ShikiHighlighter | undefined
+
+/**
+ * Highlights code using Shiki with Ardo's default themes.
+ * Creates and caches a highlighter instance for reuse.
+ */
+export async function highlightCode(
+  code: string,
+  language: string,
+  options?: { theme?: MarkdownConfig["theme"] }
+): Promise<string> {
+  const themeConfig = options?.theme ?? DEFAULT_THEMES
+
+  if (!cachedHighlighter) {
+    cachedHighlighter = await createShikiHighlighter({
+      theme: themeConfig,
+      lineNumbers: false,
+      anchor: false,
+      toc: { level: [2, 3] },
+    })
+  }
+
+  if (typeof themeConfig === "string") {
+    return cachedHighlighter.codeToHtml(code, { lang: language, theme: themeConfig })
+  }
+
+  return cachedHighlighter.codeToHtml(code, {
+    lang: language,
+    themes: { light: themeConfig.light, dark: themeConfig.dark },
+    defaultColor: false,
+  })
+}
+
 export async function createShikiHighlighter(config: MarkdownConfig): Promise<ShikiHighlighter> {
   const themeConfig = config.theme!
 

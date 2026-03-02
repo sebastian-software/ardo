@@ -18,6 +18,7 @@ import path from "path"
 import { execSync } from "child_process"
 import matter from "gray-matter"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
+import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 
 /**
  * Finds the package root by looking for package.json in parent directories.
@@ -396,6 +397,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
     plugins.unshift(typedocPlugin)
   }
+
+  // Add CodeBlock highlight plugin for .tsx/.jsx files
+  plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
 
   // Add MDX plugin with Ardo's markdown pipeline
   // Apply default theme if user didn't configure one

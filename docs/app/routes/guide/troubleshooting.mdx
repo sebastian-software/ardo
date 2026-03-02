@@ -106,6 +106,17 @@ const foo = "bar"
 
 Supported languages: [Shiki Languages](https://shiki.style/languages)
 
+### CodeBlock Not Highlighted in `.tsx` Routes
+
+The `ardo:codeblock-highlight` plugin only processes `CodeBlock` usages with **static string** `code` and `language` props. If your props are dynamic (from variables, props, or expressions), highlighting won't be applied at build time.
+
+For dynamic code, use the `highlightCode` utility from `ardo/vite` at build time:
+
+```typescript
+import { highlightCode } from "ardo/vite"
+const html = await highlightCode(dynamicCode, "typescript")
+```
+
 ### Images Not Loading
 
 Use relative paths from your markdown file:

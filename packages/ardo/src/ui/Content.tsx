@@ -2,16 +2,22 @@ import { type ReactNode } from "react"
 import { usePageData, useThemeConfig, useSidebar } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { Link, useLocation } from "react-router"
+import { useBareContent } from "./BareContent"
 
 interface ContentProps {
   children: ReactNode
 }
 
 export function Content({ children }: ContentProps) {
+  const isBare = useBareContent()
   const pageData = usePageData()
   const themeConfig = useThemeConfig()
   const sidebar = useSidebar()
   const location = useLocation()
+
+  if (isBare) {
+    return <div className="ardo-content-body ardo-content">{children}</div>
+  }
 
   const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
 
