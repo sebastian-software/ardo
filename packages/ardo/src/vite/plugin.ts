@@ -222,16 +222,12 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
         },
         ssr: {
           noExternal: ["ardo"],
-        },
-        build: {
-          rollupOptions: {
-            // Workaround: Rolldown (Vite 8) treats all files as UTF-8 text and
-            // fails on native .node binaries like fsevents with "stream did not
-            // contain valid UTF-8". This is a known Rolldown limitation:
-            // https://github.com/rolldown/rolldown/issues/5662
-            // Remove once Rolldown handles native modules natively.
-            external: ["fsevents"],
-          },
+          // Workaround: Rolldown (Vite 8) treats all files as UTF-8 text and
+          // fails on native .node binaries like fsevents with "stream did not
+          // contain valid UTF-8". This is a known Rolldown limitation:
+          // https://github.com/rolldown/rolldown/issues/5662
+          // Remove once Rolldown handles native modules natively.
+          external: ["fsevents"],
         },
       }
 
