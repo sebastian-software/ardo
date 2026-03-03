@@ -849,6 +849,13 @@ a.ardo-sidebar-text.active {
   flex-direction: column;
 }
 
+/* Shiki emits empty <span class="line"></span> for blank lines.
+   Inside a flex column these collapse to 0 height, so we give
+   every line a minimum height equal to one line of code. */
+.ardo-code-wrapper pre code .line {
+  min-height: 1lh;
+}
+
 .dark .ardo-code-wrapper pre {
   color: #e2e8f0;
 }
