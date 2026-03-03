@@ -1,4 +1,4 @@
-import { Hero, Features } from "ardo/ui"
+import { Hero, Features, CodeBlock } from "ardo/ui"
 import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
@@ -143,32 +143,27 @@ export default function HomePage() {
           </p>
 
           <div className="ardo-home-code-example">
-            <div className="ardo-home-code-block">
-              <div className="ardo-home-code-header">
-                <span>getting-started.mdx</span>
-              </div>
-              <pre className="ardo-home-code-content">
-                <code>{`---
-title: Getting Started
----
+            <CodeBlock language="markdown" title="getting-started.mdx">{`
+              ---
+              title: Getting Started
+              ---
 
-# Getting Started
+              # Getting Started
 
-Install Ardo with your favorite package manager:
+              Install Ardo with your favorite package manager:
 
-\`\`\`bash
-pnpm add ardo react react-dom
-\`\`\`
+              \`\`\`bash
+              pnpm add ardo react react-dom
+              \`\`\`
 
-:::tip
-Use \`create-ardo\` for a complete project setup!
-:::
+              :::tip
+              Use \`create-ardo\` for a complete project setup!
+              :::
 
-<CustomAlert type="info">
-  You can use **any React component** in your docs.
-</CustomAlert>`}</code>
-              </pre>
-            </div>
+              <CustomAlert type="info">
+                You can use **any React component** in your docs.
+              </CustomAlert>
+            `}</CodeBlock>
           </div>
         </div>
       </section>
