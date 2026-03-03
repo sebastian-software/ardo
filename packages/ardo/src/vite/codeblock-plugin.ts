@@ -21,6 +21,114 @@ function outdent(text: string): string {
 }
 
 /**
+ * Finds self-closing `<CodeBlock ... />` tags by scanning for balanced
+ * quotes and braces. A simple `[^>]` regex fails when prop values contain
+ * `>` characters (e.g. `code={'<Tip>Hello</Tip>'}`).
+ */
+function findSelfClosingCodeBlocks(
+  source: string
+): Array<{ fullMatch: string; propsStr: string; index: number }> {
+  const results: Array<{ fullMatch: string; propsStr: string; index: number }> = []
+  const tag = "<CodeBlock"
+  let searchFrom = 0
+
+  while (true) {
+    const start = source.indexOf(tag, searchFrom)
+    if (start === -1) break
+
+    // Char after tag name must be whitespace (not > or /)
+    const afterTag = start + tag.length
+    if (afterTag >= source.length || !/\s/.test(source[afterTag])) {
+      searchFrom = afterTag
+      continue
+    }
+
+    // Scan forward, skipping quoted strings and balanced braces
+    let i = afterTag
+    let depth = 0
+    let inSingle = false
+    let inDouble = false
+    let inTemplate = false
+    let found = false
+
+    while (i < source.length) {
+      const ch = source[i]
+
+      // Handle escape sequences inside strings
+      if ((inSingle || inDouble || inTemplate) && ch === "\\") {
+        i += 2
+        continue
+      }
+
+      if (inSingle) {
+        if (ch === "'") inSingle = false
+        i++
+        continue
+      }
+      if (inDouble) {
+        if (ch === '"') inDouble = false
+        i++
+        continue
+      }
+      if (inTemplate) {
+        if (ch === "`") inTemplate = false
+        i++
+        continue
+      }
+
+      if (ch === "'") {
+        inSingle = true
+        i++
+        continue
+      }
+      if (ch === '"') {
+        inDouble = true
+        i++
+        continue
+      }
+      if (ch === "`") {
+        inTemplate = true
+        i++
+        continue
+      }
+      if (ch === "{") {
+        depth++
+        i++
+        continue
+      }
+      if (ch === "}") {
+        depth--
+        i++
+        continue
+      }
+
+      // Look for /> at depth 0
+      if (depth === 0 && ch === "/" && i + 1 < source.length && source[i + 1] === ">") {
+        const fullMatch = source.substring(start, i + 2)
+        const propsStr = source.substring(afterTag, i).trim()
+        results.push({ fullMatch, propsStr, index: start })
+        found = true
+        searchFrom = i + 2
+        break
+      }
+
+      // If we hit > without / at depth 0, this is an opening tag, not self-closing
+      if (depth === 0 && ch === ">") {
+        searchFrom = i + 1
+        found = true
+        break
+      }
+
+      i++
+    }
+
+    if (!found) break
+  }
+
+  return results
+}
+
+/**
  * Vite plugin that pre-highlights CodeBlock components at build time.
  *
  * Runs before the JSX parser, so children can contain arbitrary code
@@ -48,20 +156,23 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
       let offset = 0
 
       // Pattern 1: Self-closing <CodeBlock code="..." language="..." />
-      const propRegex = /<CodeBlock\s+([^>]*?)\/>/g
-      let match: RegExpExecArray | null
+      // Use a scanner instead of regex because [^>] fails when prop values
+      // contain > characters (e.g. code={'<Tip>Hello</Tip>'}).
+      const propMatches = findSelfClosingCodeBlocks(code)
 
-      while ((match = propRegex.exec(code)) !== null) {
-        const fullMatch = match[0]
-        const propsStr = match[1]
+      for (const match of propMatches) {
+        const { fullMatch, propsStr } = match
 
         const codeMatch =
           propsStr.match(/\bcode="((?:[^"\\]|\\.)*)"/s) ||
-          propsStr.match(/\bcode=\{"((?:[^"\\]|\\.)*)"\}/s)
+          propsStr.match(/\bcode=\{\s*"((?:[^"\\]|\\.)*)"\s*\}/s) ||
+          propsStr.match(/\bcode=\{\s*'((?:[^'\\]|\\.)*)'\s*\}/s)
         if (!codeMatch) continue
 
         const langMatch =
-          propsStr.match(/\blanguage="([^"]*)"/) || propsStr.match(/\blanguage=\{"([^"]*)"\}/)
+          propsStr.match(/\blanguage="([^"]*)"/) ||
+          propsStr.match(/\blanguage=\{"([^"]*)"\}/) ||
+          propsStr.match(/\blanguage=\{'([^']*)'\}/)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
@@ -98,13 +209,16 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
       const childrenRegex = /<CodeBlock\s+([^>]*?)>([\s\S]*?)<\/CodeBlock>/g
 
       offset = result.length - code.length
-      while ((match = childrenRegex.exec(code)) !== null) {
-        const fullMatch = match[0]
-        const propsStr = match[1]
-        let rawChildren = match[2]
+      let regexMatch: RegExpExecArray | null
+      while ((regexMatch = childrenRegex.exec(code)) !== null) {
+        const fullMatch = regexMatch[0]
+        const propsStr = regexMatch[1]
+        let rawChildren = regexMatch[2]
 
         const langMatch =
-          propsStr.match(/\blanguage="([^"]*)"/) || propsStr.match(/\blanguage=\{"([^"]*)"\}/)
+          propsStr.match(/\blanguage="([^"]*)"/) ||
+          propsStr.match(/\blanguage=\{"([^"]*)"\}/) ||
+          propsStr.match(/\blanguage=\{'([^']*)'\}/)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
@@ -128,9 +242,9 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
           const newTag = `<CodeBlock __html={${escapedHtml}} code={${escapedCode}} ${propsStr} />`
 
           result =
-            result.slice(0, match.index + offset) +
+            result.slice(0, regexMatch.index + offset) +
             newTag +
-            result.slice(match.index + offset + fullMatch.length)
+            result.slice(regexMatch.index + offset + fullMatch.length)
 
           offset += newTag.length - fullMatch.length
         } catch {
