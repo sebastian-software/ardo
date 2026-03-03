@@ -223,6 +223,13 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
         ssr: {
           noExternal: ["ardo"],
         },
+        build: {
+          rollupOptions: {
+            // fsevents is a macOS-only native binary (.node file) that Rolldown
+            // (used by Vite 8) incorrectly tries to parse as JavaScript UTF-8.
+            external: ["fsevents"],
+          },
+        },
       }
 
       // Auto-detect GitHub Pages base path for production builds
