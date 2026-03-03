@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.3](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.2...ardo-v3.0.3) (2026-03-03)
+
+
+### Bug Fixes
+
+* externalize fsevents in both client and SSR builds ([e23566a](https://github.com/sebastian-software/ardo/commit/e23566a303b061f1726815880cf668e791a7fb70)), closes [#85](https://github.com/sebastian-software/ardo/issues/85)
+
 ## [3.0.2](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.1...ardo-v3.0.2) (2026-03-03)
 
 
