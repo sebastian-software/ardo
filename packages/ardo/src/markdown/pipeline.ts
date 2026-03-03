@@ -2,12 +2,10 @@ import { unified } from "unified"
 import remarkParse from "remark-parse"
 import remarkGfm from "remark-gfm"
 import remarkFrontmatter from "remark-frontmatter"
-import remarkDirective from "remark-directive"
 import remarkRehype from "remark-rehype"
 import rehypeStringify from "rehype-stringify"
 import matter from "gray-matter"
 import type { MarkdownConfig, TOCItem, PageFrontmatter } from "../config/types"
-import { remarkContainers } from "./containers"
 import { remarkExtractToc, type TocExtraction } from "./toc"
 import { createShikiHighlighter, rehypeShikiFromHighlighter, type ShikiHighlighter } from "./shiki"
 import { rehypeLinks } from "./links"
@@ -38,8 +36,6 @@ export async function transformMarkdown(
     .use(remarkParse)
     .use(remarkFrontmatter, ["yaml"])
     .use(remarkGfm)
-    .use(remarkDirective)
-    .use(remarkContainers)
     .use(remarkExtractToc, { tocExtraction, levels: config.toc?.level ?? [2, 3] })
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeShikiFromHighlighter, { highlighter, config })

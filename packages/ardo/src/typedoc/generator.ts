@@ -849,9 +849,9 @@ export class TypeDocGenerator {
 
       const deprecated = reflection.comment.blockTags.find((t) => t.tag === "@deprecated")
       if (deprecated) {
-        content.push(":::warning Deprecated")
+        content.push('<Warning title="Deprecated">')
         content.push(this.renderComment(deprecated.content))
-        content.push(":::")
+        content.push("</Warning>")
         content.push("")
       }
 

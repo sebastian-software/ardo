@@ -121,62 +121,50 @@ export function greet(name: string) {
 }
 ```
 
-## Container Directives
+## Callout Components
 
-Use container directives to highlight important information.
+Use callout components to highlight important information. These JSX components are auto-registered in MDX files — no import needed.
 
-:::tip
-This is a helpful tip for readers.
-:::
+<Tip>This is a helpful tip for readers.</Tip>
 
-:::warning
-Be careful when using this feature.
-:::
+<Warning>Be careful when using this feature.</Warning>
 
-:::danger
-This action cannot be undone!
-:::
+<Danger>This action cannot be undone!</Danger>
 
-:::info
-Here's some additional information.
-:::
+<Info>Here's some additional information.</Info>
 
-:::note
-This is a note for reference.
-:::
+<Note>This is a note for reference.</Note>
 
 ### Custom Titles
 
-You can customize the container title:
+You can customize the callout title:
 
-:::tip[Pro Tip]
-This is a pro tip with a custom title.
-:::
+<Tip title="Pro Tip">This is a pro tip with a custom title.</Tip>
 
 ## Code Groups
 
 Display multiple code variants in tabs:
 
-:::code-group
+<CodeGroup labels="JavaScript,TypeScript,Python">
 
-```js [JavaScript]
+```js
 function greet(name) {
   return `Hello, ${name}!`
 }
 ```
 
-```ts [TypeScript]
+```ts
 function greet(name: string): string {
   return `Hello, ${name}!`
 }
 ```
 
-```python [Python]
+```python
 def greet(name):
     return f"Hello, {name}!"
 ```
 
-:::
+</CodeGroup>
 
 ## CodeBlock in `.tsx` Routes
 

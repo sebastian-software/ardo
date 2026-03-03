@@ -147,7 +147,7 @@ export default function HomePage() {
               language="markdown"
               title="getting-started.mdx"
               code={
-                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n:::tip\nUse `create-ardo` for a complete project setup!\n:::\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
+                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n<Tip>\nUse `create-ardo` for a complete project setup!\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
               }
             />
           </div>

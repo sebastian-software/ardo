@@ -31,9 +31,11 @@ export default {
 
 `detectGitHubBasename()` returns `"/repo-name/"` when a GitHub remote is detected, or `undefined` otherwise — so it's safe to leave in place for all environments.
 
-:::tip
-The build output is automatically flattened by Ardo. When `basename` creates nested directories like `build/client/repo-name/`, the plugin moves files back to `build/client/` so GitHub Pages serves them correctly. No post-build script is needed.
-:::
+<Tip>
+  The build output is automatically flattened by Ardo. When `basename` creates nested directories
+  like `build/client/repo-name/`, the plugin moves files back to `build/client/` so GitHub Pages
+  serves them correctly. No post-build script is needed.
+</Tip>
 
 If you deploy to the root (`https://username.github.io/`), no configuration is needed — both `base` and `basename` will remain at their defaults.
 
@@ -106,9 +108,7 @@ In your repository settings, go to **Pages** and set the source to **GitHub Acti
 
 Push to `main` and the workflow will build and deploy your site automatically.
 
-:::tip
-Projects scaffolded with `pnpm create ardo@latest` include this workflow out of the box.
-:::
+<Tip>Projects scaffolded with `pnpm create ardo@latest` include this workflow out of the box.</Tip>
 
 ## Netlify
 

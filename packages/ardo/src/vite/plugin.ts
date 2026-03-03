@@ -8,10 +8,8 @@ import mdx from "@mdx-js/rollup"
 import remarkFrontmatter from "remark-frontmatter"
 import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import remarkGfm from "remark-gfm"
-import remarkDirective from "remark-directive"
 import rehypeShiki from "@shikijs/rehype"
 import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
-import { remarkContainersMdx } from "../markdown/containers"
 import fs from "fs/promises"
 import fsSync from "fs"
 import path from "path"
@@ -429,8 +427,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       remarkFrontmatter,
       [remarkMdxFrontmatter, { name: "frontmatter" }],
       remarkGfm,
-      remarkDirective,
-      remarkContainersMdx,
       remarkCodeMeta,
     ],
     rehypePlugins: [[rehypeShiki, shikiOptions]],

@@ -140,9 +140,9 @@ Create the following files in `app/`:
 - `app/entry.client.tsx` — Client hydration entry
 - `app/entry.server.tsx` — Server rendering entry using renderToReadableStream
 
-:::tip
+<Tip>
 Use `pnpm create ardo@latest` to scaffold all these files automatically!
-:::
+</Tip>
 
 #### 6. Create your first document
 
@@ -243,27 +243,27 @@ function example() {
 
 **Code block title** — Use `title="filename"`
 
-### Container Directives
+### Callout Components
 
-Highlight important information:
+Highlight important information using JSX components (auto-registered in MDX, no import needed):
 
 ```markdown
-:::tip
+<Tip>
 This is a helpful tip.
-:::
+</Tip>
 
-:::warning
+<Warning>
 Be careful!
-:::
+</Warning>
 
-:::danger
+<Danger>
 This action cannot be undone!
-:::
+</Danger>
 ```
 
 ### Code Groups
 
-Display multiple code variants in tabs using `::: code-group`.
+Display multiple code variants in tabs using `<CodeGroup labels="...">`.
 
 ### Custom Components in Markdown
 

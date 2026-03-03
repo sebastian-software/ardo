@@ -105,7 +105,7 @@ export function CodeBlock({
 export interface CodeGroupProps {
   /** CodeBlock components to display as tabs */
   children: React.ReactNode
-  /** Comma-separated tab labels (set by remarkContainersMdx from code block meta) */
+  /** Comma-separated tab labels */
   labels?: string
 }
 
