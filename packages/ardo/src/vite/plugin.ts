@@ -220,19 +220,8 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
         optimizeDeps: {
           exclude: ["ardo/ui/styles.css"],
         },
-        // Workaround: Rolldown (Vite 8) treats all files as UTF-8 text and
-        // fails on native .node binaries like fsevents with "stream did not
-        // contain valid UTF-8". This is a known Rolldown limitation:
-        // https://github.com/rolldown/rolldown/issues/5662
-        // Remove once Rolldown handles native modules natively.
-        build: {
-          rollupOptions: {
-            external: ["fsevents"],
-          },
-        },
         ssr: {
           noExternal: ["ardo"],
-          external: ["fsevents"],
         },
       }
 
