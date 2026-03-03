@@ -66,6 +66,7 @@ export async function createShikiHighlighter(config: MarkdownConfig): Promise<Sh
       "html",
       "css",
       "markdown",
+      "mdx",
       "bash",
       "shell",
       "yaml",

@@ -144,7 +144,7 @@ export default function HomePage() {
 
           <div className="ardo-home-code-example">
             <CodeBlock
-              language="markdown"
+              language="mdx"
               title="getting-started.mdx"
               code={
                 '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n<Tip>\n  Use `create-ardo` for a complete project setup!\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
