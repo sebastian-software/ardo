@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.2...ardo-v2.8.0) (2026-03-03)
+
+
+### Features
+
+* improve CodeBlock usability outside MDX pipeline ([354d4ac](https://github.com/sebastian-software/ardo/commit/354d4ace384cafd2307c6c489ddf436c5e480c01)), closes [#66](https://github.com/sebastian-software/ardo/issues/66)
+* support children as code source in CodeBlock with auto-outdent ([ca9c3ab](https://github.com/sebastian-software/ardo/commit/ca9c3ab7d264e1efdc0a800c440929f9d9688e60))
+* support plain text children in CodeBlock ([11dcbb1](https://github.com/sebastian-software/ardo/commit/11dcbb11ab9a6363fca3822043bb09bd9880d5ff))
+
 ## [2.7.2](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.1...ardo-v2.7.2) (2026-02-26)
 
 
