@@ -58,18 +58,33 @@ export async function createShikiHighlighter(config: MarkdownConfig): Promise<Sh
   const highlighter = await createHighlighter({
     themes,
     langs: [
+      // Web fundamentals
       "javascript",
       "typescript",
       "jsx",
       "tsx",
-      "json",
       "html",
       "css",
+      "scss",
+
+      // Data & config formats
+      "json",
+      "jsonc",
+      "yaml",
+      "toml",
+      "xml",
+      "graphql",
+
+      // Markdown & docs
       "markdown",
       "mdx",
+
+      // Shell & DevOps
       "bash",
       "shell",
-      "yaml",
+      "dockerfile",
+
+      // General purpose
       "python",
       "rust",
       "go",
