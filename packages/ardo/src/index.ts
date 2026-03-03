@@ -1,4 +1,4 @@
-// Config
+// Config (client-safe: pure types and small utility functions)
 export { defineConfig, resolveConfig, loadConfig } from "./config"
 export type {
   ArdoConfig,
@@ -16,10 +16,6 @@ export type {
   ProjectMeta,
 } from "./config"
 
-// Vite Plugin
-export { ardoPlugin } from "./vite"
-export type { ArdoPluginOptions } from "./vite"
-
 // Runtime (React hooks and context - client-safe)
 export {
   ArdoProvider,
@@ -33,18 +29,7 @@ export {
   getPrevNextLinks,
 } from "./runtime"
 
-// Build-time utilities (re-exported from ./vite for convenience)
-export {
-  loadDoc,
-  loadAllDocs,
-  getSlugFromPath,
-  getPageDataForRoute,
-  generateSidebar,
-  transformMarkdown,
-  transformMarkdownToReact,
-} from "./vite"
-
-// UI Components
+// UI Components (client-safe)
 export {
   Layout,
   Header,
@@ -93,28 +78,11 @@ export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabPanelsProps }
 export type { StepsProps } from "./ui"
 export type { FileTreeProps } from "./ui"
 
-// TypeDoc
-export {
-  TypeDocGenerator,
-  generateApiDocs,
-  typedocPlugin,
-  createTypedocWatcher,
-  ApiSignature,
-  ApiParametersTable,
-  ApiReturns,
-  ApiItem,
-  ApiKindBadge,
-  ApiHierarchy,
-} from "./typedoc"
-export type {
-  TypeDocPluginOptions,
-  ApiDocItem,
-  ApiDocKind,
-  ApiDocParameter,
-  ApiDocReturn,
-  ApiDocTag,
-  ApiDocSource,
-  ApiDocTypeParameter,
-  ApiDocHierarchy,
-  GeneratedApiDoc,
-} from "./typedoc"
+// ===========================================================================
+// Server-only exports are NOT re-exported from the main entry.
+// They pull in heavy Node.js dependencies (Vite, Rolldown, TypeDoc, etc.)
+// that break client-side bundling. Use the dedicated subpath exports instead:
+//
+//   import { ardo } from "ardo/vite"         — Vite plugin & build utilities
+//   import { generateApiDocs } from "ardo/typedoc"  — TypeDoc integration
+// ===========================================================================
