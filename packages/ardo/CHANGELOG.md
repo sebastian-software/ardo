@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.8.0...ardo-v3.0.0) (2026-03-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* The `:::tip`, `:::warning`, `:::danger`, `:::info`, `:::note`, and `:::code-group` directive syntax is removed. Use JSX components (`<Tip>`, `<Warning>`, `<Danger>`, `<Info>`, `<Note>`, `<CodeGroup>`) instead — they are auto-registered in MDX and require no imports.
+
+### Features
+
+* expand bundled Shiki languages for documentation use cases ([797186e](https://github.com/sebastian-software/ardo/commit/797186ec7d8aaf208874cce7be397756babfbe3c))
+* remove container directive syntax in favor of JSX components ([7374efb](https://github.com/sebastian-software/ardo/commit/7374efb8caee507e2987189162f498d749a4c116))
+
+
+### Bug Fixes
+
+* handle &gt; characters in CodeBlock code prop for build-time highlighting ([f963ba3](https://github.com/sebastian-software/ardo/commit/f963ba3619e7a996ee47d6eaa0a7b28d6d92382d))
+* prevent empty Shiki lines from collapsing in code blocks ([4f00132](https://github.com/sebastian-software/ardo/commit/4f001324f23a243e70e11ed7a05cb4f5e8c366c8))
+* use mdx language for homepage code example highlighting ([e0ab704](https://github.com/sebastian-software/ardo/commit/e0ab704ef1a98733cb1e7cc817f8a74480fcfab6))
+
 ## [2.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.7.2...ardo-v2.8.0) (2026-03-03)
 
 
