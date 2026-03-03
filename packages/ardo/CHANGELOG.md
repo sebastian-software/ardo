@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.1...ardo-v3.0.2) (2026-03-03)
+
+
+### Bug Fixes
+
+* move fsevents external from build to ssr config ([fa40a26](https://github.com/sebastian-software/ardo/commit/fa40a2636362e52e73c7d2ee2a655d186cff0dd1)), closes [#85](https://github.com/sebastian-software/ardo/issues/85)
+
 ## [3.0.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.0...ardo-v3.0.1) (2026-03-03)
 
 
