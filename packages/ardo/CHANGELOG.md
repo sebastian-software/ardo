@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.4](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.3...ardo-v3.0.4) (2026-03-03)
+
+
+### Bug Fixes
+
+* remove server-only re-exports from main entry point ([60a7af5](https://github.com/sebastian-software/ardo/commit/60a7af51ae82eda85493275121b3bdcfddcf6763)), closes [#85](https://github.com/sebastian-software/ardo/issues/85)
+
+
+### Code Refactoring
+
+* remove fsevents external workaround ([3a3c1ef](https://github.com/sebastian-software/ardo/commit/3a3c1efd53d863f6f332955bc6ca6ab42fe8d668))
+
 ## [3.0.3](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.2...ardo-v3.0.3) (2026-03-03)
 
 
