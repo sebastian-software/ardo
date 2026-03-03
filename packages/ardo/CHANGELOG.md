@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.0...ardo-v3.0.1) (2026-03-03)
+
+
+### Bug Fixes
+
+* externalize fsevents to prevent Rolldown UTF-8 parse error ([6d0ccda](https://github.com/sebastian-software/ardo/commit/6d0ccdaba3d78aa7698c084ab0c28b8e5c2c472d)), closes [#85](https://github.com/sebastian-software/ardo/issues/85)
+
+
+### Documentation
+
+* add upstream issue references to fsevents workaround comment ([87b3170](https://github.com/sebastian-software/ardo/commit/87b31701b8c7f75add0f9385bbac0d6ad1c089e6))
+
 ## [3.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v2.8.0...ardo-v3.0.0) (2026-03-03)
 
 
