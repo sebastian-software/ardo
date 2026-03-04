@@ -58,7 +58,7 @@ jobs:
         working-directory: ${{ matrix.directory }}
 
       - name: Build and copy Storybook (docs only)
-        if: matrix.site == "docs"
+        if: matrix.site == 'docs'
         run: |
           pnpm storybook:build
           mkdir -p docs/build/client/storybook
