@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite"
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import path from "node:path"
 
 const config: StorybookConfig = {
@@ -24,6 +25,10 @@ const config: StorybookConfig = {
       ...normalizedAlias,
       "virtual:ardo/search-index": path.resolve(__dirname, "./mocks/search-index.ts"),
     }
+
+    // Add Vanilla Extract plugin
+    baseConfig.plugins ??= []
+    baseConfig.plugins.push(vanillaExtractPlugin())
 
     return baseConfig
   },

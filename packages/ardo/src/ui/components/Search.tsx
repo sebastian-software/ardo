@@ -4,6 +4,7 @@ import { useThemeConfig } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"
 import { SearchIcon } from "../icons"
+import * as styles from "./Search.css"
 
 interface SearchDoc {
   id: string
@@ -119,17 +120,17 @@ export function Search() {
 
   return (
     <div
-      className="ardo-search"
+      className={styles.search}
       ref={containerRef}
       data-expanded={isOpen || hasQuery ? "true" : "false"}
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="ardo-search-field">
+      <div className={styles.searchField}>
         <SearchIcon size={18} />
         <input
           ref={inputRef}
           type="text"
-          className="ardo-search-input"
+          className={styles.searchInput}
           placeholder={placeholder}
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
@@ -145,7 +146,7 @@ export function Search() {
         {query && (
           <button
             type="button"
-            className="ardo-search-clear"
+            className={styles.searchClear}
             onClick={(e) => {
               e.stopPropagation()
               handleSearch("")
@@ -156,28 +157,28 @@ export function Search() {
             ×
           </button>
         )}
-        <span className="ardo-search-kbd">
+        <span className={styles.searchKbd}>
           <kbd>⌘</kbd>
           <kbd>K</kbd>
         </span>
       </div>
 
       {isOpen && hasQuery && (
-        <div className="ardo-search-popover">
+        <div className={styles.searchPopover}>
           {results.length > 0 && (
-            <ul className="ardo-search-results">
+            <ul className={styles.searchResults}>
               {results.map((result, index) => (
                 <li key={result.id}>
                   <Link
                     to={result.path as string}
-                    className={["ardo-search-result", index === selectedIndex && "selected"]
+                    className={[styles.searchResult, index === selectedIndex && "selected"]
                       .filter(Boolean)
                       .join(" ")}
                     onClick={() => setIsOpen(false)}
                   >
-                    <span className="ardo-search-result-title">{result.title as string}</span>
+                    <span className={styles.searchResultTitle}>{result.title as string}</span>
                     {result.section && (
-                      <span className="ardo-search-result-section">{result.section as string}</span>
+                      <span className={styles.searchResultSection}>{result.section as string}</span>
                     )}
                   </Link>
                 </li>
@@ -186,10 +187,10 @@ export function Search() {
           )}
 
           {query && results.length === 0 && (
-            <div className="ardo-search-no-results">No results found for "{query}"</div>
+            <div className={styles.searchNoResults}>No results found for "{query}"</div>
           )}
 
-          <div className="ardo-search-footer">
+          <div className={styles.searchFooter}>
             <span>
               <kbd>↑</kbd> <kbd>↓</kbd> to navigate
             </span>

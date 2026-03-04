@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { CopyIcon, CheckIcon } from "../icons"
+import * as styles from "./CopyButton.css"
 
 interface CopyButtonProps {
   code: string
@@ -20,7 +21,7 @@ export function CopyButton({ code }: CopyButtonProps) {
 
   return (
     <button
-      className="ardo-copy-button"
+      className={styles.copyButton}
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >

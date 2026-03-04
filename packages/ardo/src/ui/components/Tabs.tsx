@@ -8,6 +8,7 @@ import {
   useContext,
   type ReactNode,
 } from "react"
+import * as styles from "./Tabs.css"
 
 interface TabsContextValue {
   activeTab: string
@@ -63,7 +64,7 @@ export function Tabs({ defaultValue, children }: TabsProps) {
 
   return (
     <TabsContext.Provider value={{ activeTab, setActiveTab, getTabValue, getPanelValue }}>
-      <div className="ardo-tabs">{children}</div>
+      <div className={styles.tabs}>{children}</div>
     </TabsContext.Provider>
   )
 }
@@ -78,7 +79,7 @@ export interface TabListProps {
  */
 export function TabList({ children }: TabListProps) {
   return (
-    <div className="ardo-tab-list" role="tablist">
+    <div className={styles.tabList} role="tablist">
       {children}
     </div>
   )
@@ -104,7 +105,7 @@ export function Tab({ value, children }: TabProps) {
       type="button"
       role="tab"
       aria-selected={isActive}
-      className={["ardo-tab", isActive && "active"].filter(Boolean).join(" ")}
+      className={[styles.tab, isActive && "active"].filter(Boolean).join(" ")}
       onClick={() => setActiveTab(resolvedValue)}
     >
       {children}
@@ -132,7 +133,7 @@ export function TabPanel({ value, children }: TabPanelProps) {
   }
 
   return (
-    <div role="tabpanel" className="ardo-tab-panel">
+    <div role="tabpanel" className={styles.tabPanel}>
       {children}
     </div>
   )

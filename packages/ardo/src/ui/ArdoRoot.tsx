@@ -6,6 +6,7 @@ import { Layout } from "./Layout"
 import { Header, type HeaderProps } from "./Header"
 import { Sidebar, type SidebarProps } from "./Sidebar"
 import { Footer, type FooterProps } from "./Footer"
+import * as layoutStyles from "./Layout.css"
 
 // =============================================================================
 // ArdoRoot Component
@@ -89,7 +90,8 @@ export function ArdoRoot({
   const resolvedHeader = header ?? <Header {...headerProps} />
   const resolvedSidebar = isHomePage ? undefined : (sidebarContent ?? <Sidebar {...sidebarProps} />)
   const resolvedFooter = footer ?? <Footer {...footerProps} />
-  const resolvedClassName = className ?? (isHomePage ? "ardo-layout ardo-home" : "ardo-layout")
+  const resolvedClassName =
+    className ?? (isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout)
 
   return (
     <ArdoProvider config={config} sidebar={sidebar}>

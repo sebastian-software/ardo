@@ -1,5 +1,6 @@
 import { useState, Children, isValidElement } from "react"
 import { CopyButton } from "./CopyButton"
+import * as styles from "./CodeBlock.css"
 
 /**
  * Strips leading/trailing blank lines and removes common leading whitespace
@@ -75,13 +76,13 @@ export function CodeBlock({
           {lines.map((line, index) => {
             const lineNum = index + 1
             const isHighlighted = highlightLines.includes(lineNum)
-            const classes = ["ardo-code-line"]
+            const classes = [styles.codeLine]
             if (isHighlighted) classes.push("highlighted")
 
             return (
               <span key={index} className={classes.join(" ")}>
-                {lineNumbers && <span className="ardo-line-number">{lineNum}</span>}
-                <span className="ardo-line-content">{line}</span>
+                {lineNumbers && <span className={styles.lineNumber}>{lineNum}</span>}
+                <span>{line}</span>
                 {index < lines.length - 1 && "\n"}
               </span>
             )
@@ -92,9 +93,9 @@ export function CodeBlock({
   }
 
   return (
-    <div className="ardo-code-block" data-lang={language}>
-      {title && <div className="ardo-code-title">{title}</div>}
-      <div className="ardo-code-wrapper">
+    <div className={styles.codeBlock} data-lang={language}>
+      {title && <div className={styles.codeTitle}>{title}</div>}
+      <div className={styles.codeWrapper}>
         {content}
         <CopyButton code={code} />
       </div>
@@ -132,12 +133,12 @@ export function CodeGroup({ children, labels: labelsStr }: CodeGroupProps) {
   })
 
   return (
-    <div className="ardo-code-group">
-      <div className="ardo-code-group-tabs">
+    <div className={styles.codeGroup}>
+      <div className={styles.codeGroupTabs}>
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={["ardo-code-group-tab", index === activeTab && "active"]
+            className={[styles.codeGroupTab, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
             onClick={() => setActiveTab(index)}

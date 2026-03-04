@@ -1,4 +1,5 @@
 import { type ReactNode } from "react"
+import * as styles from "./Steps.css"
 
 export interface StepsProps {
   /** Content to display — expects an ordered list (`<ol>`) from MDX */
@@ -18,5 +19,5 @@ export interface StepsProps {
  * ```
  */
 export function Steps({ children }: StepsProps) {
-  return <div className="ardo-steps">{children}</div>
+  return <div className={styles.steps}>{children}</div>
 }

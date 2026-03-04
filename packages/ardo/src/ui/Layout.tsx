@@ -1,6 +1,7 @@
 import { type ReactNode, useContext } from "react"
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
 import { ArdoContext } from "../runtime/hooks"
+import * as styles from "./Layout.css"
 
 // =============================================================================
 // RootLayout Component (html/head/body shell)
@@ -89,14 +90,14 @@ export interface LayoutProps {
  */
 export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
   return (
-    <div className={className ?? "ardo-layout"}>
-      <a href="#main-content" className="ardo-skip-link">
+    <div className={className ?? styles.layout}>
+      <a href="#main-content" className={styles.skipLink}>
         Skip to content
       </a>
       {header}
-      <div className="ardo-layout-container">
+      <div className={styles.layoutContainer}>
         {sidebar}
-        <main id="main-content" className="ardo-main">
+        <main id="main-content" className={styles.main}>
           {children}
         </main>
       </div>

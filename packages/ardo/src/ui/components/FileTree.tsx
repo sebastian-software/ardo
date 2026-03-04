@@ -6,6 +6,7 @@ import {
   isValidElement,
   cloneElement,
 } from "react"
+import * as styles from "./FileTree.css"
 
 export interface FileTreeProps {
   /** Content to display — expects an unordered list (`<ul>`) from MDX */
@@ -89,5 +90,5 @@ function processChildren(children: ReactNode): ReactNode {
  * ```
  */
 export function FileTree({ children }: FileTreeProps) {
-  return <div className="ardo-filetree">{processChildren(children)}</div>
+  return <div className={styles.filetree}>{processChildren(children)}</div>
 }

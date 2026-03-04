@@ -36,11 +36,11 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/react-vite": "^8.6.14",
     "eslint": "^10.0.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -60,5 +60,11 @@
   "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "^1.18.0",
+    "@vanilla-extract/esbuild-plugin": "^2.3.21",
+    "@vanilla-extract/recipes": "^0.5.7",
+    "@vanilla-extract/vite-plugin": "^5.1.4"
   }
 }

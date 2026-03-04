@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { SunIcon, MoonIcon, MonitorIcon } from "../icons"
+import * as styles from "./ThemeToggle.css"
 
 type Theme = "light" | "dark" | "system"
 
@@ -28,7 +29,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="ardo-theme-toggle" aria-label="Toggle theme">
+      <button className={styles.themeToggle} aria-label="Toggle theme">
         <span className="ardo-theme-icon">
           <SunIcon size={20} />
         </span>
@@ -38,7 +39,7 @@ export function ThemeToggle() {
 
   return (
     <button
-      className="ardo-theme-toggle"
+      className={styles.themeToggle}
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}
     >

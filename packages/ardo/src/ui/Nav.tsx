@@ -1,5 +1,6 @@
 import { type ReactNode, type ComponentProps, useState, createContext, useContext } from "react"
 import { NavLink as RouterNavLink } from "react-router"
+import * as styles from "./Nav.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof RouterNavLink>["to"]
@@ -38,7 +39,7 @@ export interface NavProps {
  * ```
  */
 export function Nav({ children, className }: NavProps) {
-  return <nav className={className ?? "ardo-nav"}>{children}</nav>
+  return <nav className={className ?? styles.nav}>{children}</nav>
 }
 
 // =============================================================================
@@ -78,7 +79,7 @@ export function NavLink({
   activeMatch: _activeMatch,
 }: NavLinkProps) {
   const navContext = useNavContext()
-  const baseClassName = className ?? "ardo-nav-link"
+  const baseClassName = className ?? styles.navLink
 
   // Handle click for mobile menu
   const handleClick = () => {
@@ -148,7 +149,7 @@ export function NavDropdown({ text, children, className }: NavDropdownProps) {
 
   return (
     <div
-      className={className ?? "ardo-nav-dropdown"}
+      className={className ?? "ardo-nav-dropdown" /* TODO: migrate dropdown styles */}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >

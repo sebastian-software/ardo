@@ -1,5 +1,7 @@
 import { useState, lazy, Suspense, type ReactNode } from "react"
 import { Link, NavLink as RouterNavLink } from "react-router"
+import * as styles from "./Header.css"
+import * as navStyles from "./Nav.css"
 import {
   GithubIcon,
   TwitterIcon,
@@ -91,42 +93,42 @@ export function Header({
       : undefined)
 
   return (
-    <header className={className ?? "ardo-header"}>
-      <div className="ardo-header-container">
+    <header className={className ?? styles.header}>
+      <div className={styles.headerContainer}>
         {/* Left: Mobile menu button + Logo/Title */}
-        <div className="ardo-header-left">
+        <div className={styles.headerLeft}>
           <button
-            className="ardo-mobile-menu-button"
+            className={styles.mobileMenuButton}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
-            <span className="ardo-hamburger">
+            <span className={styles.hamburger}>
               <span></span>
               <span></span>
               <span></span>
             </span>
           </button>
 
-          <Link to="/" className="ardo-logo-link">
+          <Link to="/" className={styles.logoLink}>
             {resolvedLogo && (
               <img
                 src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
                 alt={resolvedTitle ?? "Logo"}
-                className="ardo-logo"
+                className={styles.logo}
               />
             )}
-            {resolvedTitle && <span className="ardo-site-title">{resolvedTitle}</span>}
+            {resolvedTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
           </Link>
         </div>
 
         {/* Center: Navigation */}
-        {resolvedNav && <div className="ardo-desktop-nav">{resolvedNav}</div>}
+        {resolvedNav && <div className={styles.desktopNav}>{resolvedNav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
-        <div className="ardo-header-right">
+        <div className={styles.headerRight}>
           {search && (
-            <Suspense fallback={<span className="ardo-search-placeholder" />}>
+            <Suspense fallback={<span />}>
               <LazySearch />
             </Suspense>
           )}
@@ -137,8 +139,8 @@ export function Header({
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="ardo-mobile-menu">
-          <nav className="ardo-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
+        <div className={styles.mobileMenu}>
+          <nav className={styles.mobileNav} onClick={() => setMobileMenuOpen(false)}>
             {resolvedNav}
           </nav>
         </div>
@@ -176,7 +178,7 @@ export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ?? "ardo-social-link"}
+      className={className ?? navStyles.socialLink}
       aria-label={ariaLabel ?? icon}
     >
       <SocialIcon icon={icon} />
@@ -190,7 +192,7 @@ export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps
 
 function AutoNav({ items }: { items: NavItem[] }) {
   return (
-    <nav className="ardo-nav">
+    <nav className={navStyles.nav}>
       {items.map((item, i) => (
         <AutoNavItem key={i} item={item} />
       ))}
@@ -201,7 +203,7 @@ function AutoNav({ items }: { items: NavItem[] }) {
 function AutoNavItem({ item }: { item: NavItem }) {
   if (item.link?.startsWith("http")) {
     return (
-      <a href={item.link} className="ardo-nav-link" target="_blank" rel="noopener noreferrer">
+      <a href={item.link} className={navStyles.navLink} target="_blank" rel="noopener noreferrer">
         {item.text}
       </a>
     )
@@ -212,7 +214,7 @@ function AutoNavItem({ item }: { item: NavItem }) {
       <RouterNavLink
         to={item.link}
         className={({ isActive }: { isActive: boolean }) =>
-          ["ardo-nav-link", isActive && "active"].filter(Boolean).join(" ")
+          [navStyles.navLink, isActive && "active"].filter(Boolean).join(" ")
         }
       >
         {item.text}
@@ -220,7 +222,7 @@ function AutoNavItem({ item }: { item: NavItem }) {
     )
   }
 
-  return <span className="ardo-nav-link">{item.text}</span>
+  return <span className={navStyles.navLink}>{item.text}</span>
 }
 
 // =============================================================================

@@ -16,6 +16,7 @@ import path from "path"
 import { execSync } from "child_process"
 import matter from "gray-matter"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 
 /**
@@ -433,6 +434,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     providerImportSource: "ardo/mdx-provider",
   })
   plugins.push(mdxPlugin as Plugin)
+
+  // Add Vanilla Extract plugin (must run before React Router for SSR)
+  plugins.push(...(vanillaExtractPlugin() as Plugin[]))
 
   // Add React Router Framework plugin (includes React plugin internally)
   const reactRouterPlugin = reactRouter()

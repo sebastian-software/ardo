@@ -1,5 +1,6 @@
 import { Link } from "react-router"
 import type { CSSProperties, ReactNode } from "react"
+import * as styles from "./Features.css"
 
 export interface FeatureItem {
   /** Feature title */
@@ -54,12 +55,12 @@ export function FeatureCard({
   style,
 }: FeatureCardProps & { style?: CSSProperties }) {
   return (
-    <div className={className ?? "ardo-feature"} style={style}>
-      {icon && <div className="ardo-feature-icon">{icon}</div>}
-      <h3 className="ardo-feature-title">{title}</h3>
-      <p className="ardo-feature-details">{details}</p>
+    <div className={className ?? styles.feature} style={style}>
+      {icon && <div className={styles.featureIcon}>{icon}</div>}
+      <h3 className={styles.featureTitle}>{title}</h3>
+      <p className={styles.featureDetails}>{details}</p>
       {link && (
-        <Link to={link} className="ardo-feature-link">
+        <Link to={link} className={styles.featureLink}>
           {linkText || "Learn more"}
         </Link>
       )}
@@ -89,14 +90,14 @@ export function Features({ items, title, subtitle, className }: FeaturesProps) {
   }
 
   return (
-    <section className={className ?? "ardo-features"}>
+    <section className={className ?? styles.features}>
       {(title || subtitle) && (
-        <div className="ardo-features-header">
-          {title && <h2 className="ardo-features-title">{title}</h2>}
-          {subtitle && <p className="ardo-features-subtitle">{subtitle}</p>}
+        <div className={styles.featuresHeader}>
+          {title && <h2 className={styles.featuresTitle}>{title}</h2>}
+          {subtitle && <p className={styles.featuresSubtitle}>{subtitle}</p>}
         </div>
       )}
-      <div className="ardo-features-container">
+      <div className={styles.featuresContainer}>
         {items.map((feature, index) => (
           <FeatureCard key={index} {...feature} style={{ animationDelay: `${index * 80}ms` }} />
         ))}
