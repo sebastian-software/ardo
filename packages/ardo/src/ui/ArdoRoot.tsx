@@ -1,4 +1,4 @@
-import { type ReactNode } from "react"
+import { cloneElement, isValidElement, type ReactNode } from "react"
 import { Outlet, useLocation } from "react-router"
 import { ArdoProvider } from "../runtime/hooks"
 import type { ArdoConfig, SidebarItem } from "../config/types"
@@ -87,8 +87,16 @@ export function ArdoRoot({
   const location = useLocation()
   const isHomePage = location.pathname === "/" || location.pathname === ""
 
-  const resolvedHeader = header ?? <Header {...headerProps} />
   const resolvedSidebar = isHomePage ? undefined : (sidebarContent ?? <Sidebar {...sidebarProps} />)
+  const inferredMobileMenuContent = isHomePage ? undefined : resolvedSidebar
+  const resolvedHeader = header ? (
+    enhanceHeaderWithMobileMenuContent(header, inferredMobileMenuContent)
+  ) : (
+    <Header
+      {...headerProps}
+      mobileMenuContent={headerProps?.mobileMenuContent ?? inferredMobileMenuContent}
+    />
+  )
   const resolvedFooter = footer ?? <Footer {...footerProps} />
   const resolvedClassName =
     className ?? (isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout)
@@ -105,4 +113,20 @@ export function ArdoRoot({
       </Layout>
     </ArdoProvider>
   )
+}
+
+function enhanceHeaderWithMobileMenuContent(
+  header: ReactNode,
+  mobileMenuContent: ReactNode
+): ReactNode {
+  if (!isValidElement<HeaderProps>(header) || header.type !== Header) {
+    return header
+  }
+
+  const existingMobileMenuContent = header.props.mobileMenuContent
+  if (existingMobileMenuContent !== undefined) {
+    return header
+  }
+
+  return cloneElement(header, { mobileMenuContent })
 }
