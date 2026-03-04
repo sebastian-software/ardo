@@ -25,6 +25,7 @@ import {
   Github,
 } from "ardo/icons"
 import logo from "../assets/logo.svg"
+import * as styles from "./home.css"
 
 export default function HomePage() {
   return (
@@ -46,30 +47,30 @@ export default function HomePage() {
       />
 
       {/* Quick Start Section */}
-      <section className="ardo-home-section">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">From zero to docs in four lines</h2>
-          <p className="ardo-home-section-subtitle">
+      <section className={styles.section}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>From zero to docs in four lines</h2>
+          <p className={styles.sectionSubtitle}>
             Scaffold a complete documentation site. Add an MDX file, see it in the sidebar.
           </p>
 
-          <div className="ardo-home-terminal">
-            <div className="ardo-home-terminal-header">
-              <span className="ardo-home-terminal-dot" />
-              <span className="ardo-home-terminal-dot" />
-              <span className="ardo-home-terminal-dot" />
+          <div className={styles.terminal}>
+            <div className={styles.terminalHeader}>
+              <span className={styles.terminalDot} />
+              <span className={styles.terminalDot} />
+              <span className={styles.terminalDot} />
             </div>
-            <div className="ardo-home-terminal-body">
+            <div className={styles.terminalBody}>
               <code>
-                <span className="ardo-home-terminal-prompt">$</span> pnpm create ardo@latest my-docs
+                <span className={styles.terminalPrompt}>$</span> pnpm create ardo@latest my-docs
                 <br />
-                <span className="ardo-home-terminal-prompt">$</span> cd my-docs && pnpm install
+                <span className={styles.terminalPrompt}>$</span> cd my-docs && pnpm install
                 <br />
-                <span className="ardo-home-terminal-prompt">$</span> pnpm dev
+                <span className={styles.terminalPrompt}>$</span> pnpm dev
                 <br />
                 <br />
-                <span className="ardo-home-terminal-success">✓</span> Server running at{" "}
-                <span className="ardo-home-terminal-link">http://localhost:5173</span>
+                <span className={styles.terminalSuccess}>✓</span> Server running at{" "}
+                <span className={styles.terminalLink}>http://localhost:5173</span>
               </code>
             </div>
           </div>
@@ -139,17 +140,15 @@ export default function HomePage() {
       />
 
       {/* Code Example Section */}
-      <section className="ardo-home-section ardo-home-section-alt">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">
-            Markdown when it's enough, React when it's not
-          </h2>
-          <p className="ardo-home-section-subtitle">
+      <section className={`${styles.section} ${styles.sectionAlt}`}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Markdown when it's enough, React when it's not</h2>
+          <p className={styles.sectionSubtitle}>
             Plain Markdown for content. Drop in a React component when you need something
             interactive.
           </p>
 
-          <div className="ardo-home-code-example">
+          <div className={styles.codeExample}>
             <ArdoCodeBlock
               language="mdx"
               title="getting-started.mdx"
@@ -162,52 +161,52 @@ export default function HomePage() {
       </section>
 
       {/* Tech Stack Section */}
-      <section className="ardo-home-section ardo-home-section-alt">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Your stack, not ours</h2>
-          <p className="ardo-home-section-subtitle">
+      <section className={`${styles.section} ${styles.sectionAlt}`}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Your stack, not ours</h2>
+          <p className={styles.sectionSubtitle}>
             Ardo is built on the tools React teams already use. Nothing new to learn.
           </p>
 
-          <div className="ardo-home-tech-grid">
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+          <div className={styles.techGrid}>
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <Atom size={32} />
               </div>
               <span>React 19</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <Zap size={32} />
               </div>
               <span>Vite 8</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <FileCode size={32} />
               </div>
               <span>TypeScript</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <Rocket size={32} />
               </div>
               <span>React Router 7</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <BookOpen size={32} />
               </div>
               <span>MDX</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <Terminal size={32} />
               </div>
               <span>Shiki</span>
             </div>
-            <div className="ardo-home-tech-item">
-              <div className="ardo-home-tech-icon">
+            <div className={styles.techItem}>
+              <div className={styles.techIcon}>
                 <Paintbrush size={32} />
               </div>
               <span>Vanilla Extract</span>
@@ -217,19 +216,19 @@ export default function HomePage() {
       </section>
 
       {/* Comparison Section */}
-      <section className="ardo-home-section">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">How Ardo compares</h2>
-          <p className="ardo-home-section-subtitle">
+      <section className={styles.section}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>How Ardo compares</h2>
+          <p className={styles.sectionSubtitle}>
             Great tools exist. The question is whether they fit your stack.
           </p>
 
-          <div className="ardo-home-comparison">
-            <table className="ardo-home-comparison-table">
+          <div className={styles.comparison}>
+            <table className={styles.comparisonTable}>
               <thead>
                 <tr>
                   <th></th>
-                  <th className="ardo-home-comparison-highlight">Ardo</th>
+                  <th className={styles.comparisonHighlight}>Ardo</th>
                   <th>Docusaurus</th>
                   <th>Starlight</th>
                   <th>VitePress</th>
@@ -238,22 +237,22 @@ export default function HomePage() {
               <tbody>
                 <tr>
                   <td>UI framework</td>
-                  <td className="ardo-home-comparison-highlight">React 19</td>
+                  <td className={styles.comparisonHighlight}>React 19</td>
                   <td>React</td>
                   <td>Astro</td>
                   <td>Vue</td>
                 </tr>
                 <tr>
                   <td>Build tool</td>
-                  <td className="ardo-home-comparison-highlight">Vite 8</td>
+                  <td className={styles.comparisonHighlight}>Vite 8</td>
                   <td>Webpack</td>
                   <td>Astro/Vite</td>
                   <td>Vite</td>
                 </tr>
                 <tr>
                   <td>Styling</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <span className="ardo-home-check">Vanilla Extract</span>
+                  <td className={styles.comparisonHighlight}>
+                    <span className={styles.check}>Vanilla Extract</span>
                   </td>
                   <td>CSS Modules</td>
                   <td>Tailwind</td>
@@ -261,38 +260,38 @@ export default function HomePage() {
                 </tr>
                 <tr>
                   <td>Your React components</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <span className="ardo-home-check">Native</span>
+                  <td className={styles.comparisonHighlight}>
+                    <span className={styles.check}>Native</span>
                   </td>
                   <td>
-                    <span className="ardo-home-check">Native</span>
+                    <span className={styles.check}>Native</span>
                   </td>
                   <td>Via islands</td>
                   <td>
-                    <span className="ardo-home-x">No</span>
+                    <span className={styles.x}>No</span>
                   </td>
                 </tr>
                 <tr>
                   <td>TypeDoc built in</td>
-                  <td className="ardo-home-comparison-highlight">
-                    <span className="ardo-home-check">Yes</span>
+                  <td className={styles.comparisonHighlight}>
+                    <span className={styles.check}>Yes</span>
                   </td>
                   <td>Plugin</td>
                   <td>Plugin</td>
                   <td>
-                    <span className="ardo-home-x">No</span>
+                    <span className={styles.x}>No</span>
                   </td>
                 </tr>
                 <tr>
                   <td>First load</td>
-                  <td className="ardo-home-comparison-highlight">~111 KB</td>
+                  <td className={styles.comparisonHighlight}>~111 KB</td>
                   <td>~500 KB+</td>
                   <td>~50 KB</td>
                   <td>~50 KB</td>
                 </tr>
                 <tr>
                   <td>CO₂ per visit</td>
-                  <td className="ardo-home-comparison-highlight">~0.04g (A)</td>
+                  <td className={styles.comparisonHighlight}>~0.04g (A)</td>
                   <td>~0.10g (B)</td>
                   <td>~0.01g (A+)</td>
                   <td>~0.04g (A)</td>
@@ -301,8 +300,8 @@ export default function HomePage() {
             </table>
           </div>
 
-          <div className="ardo-home-comparison-cta">
-            <Link to="/guide/comparison" className="ardo-home-link">
+          <div className={styles.comparisonCta}>
+            <Link to="/guide/comparison" className={styles.link}>
               Read the full comparison <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
@@ -310,21 +309,21 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="ardo-home-section ardo-home-cta-section">
-        <div className="ardo-home-section-container">
-          <h2 className="ardo-home-section-title">Ship your docs this week</h2>
-          <p className="ardo-home-section-subtitle">
+      <section className={`${styles.section} ${styles.ctaSection}`}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Ship your docs this week</h2>
+          <p className={styles.sectionSubtitle}>
             Four lines in your terminal. A complete documentation site. What are you waiting for?
           </p>
 
-          <div className="ardo-home-cta-buttons">
-            <Link to="/guide/getting-started" className="ardo-home-cta-primary">
+          <div className={styles.ctaButtons}>
+            <Link to="/guide/getting-started" className={styles.ctaPrimary}>
               <Rocket size={20} />
               Create your first project
             </Link>
             <a
               href="https://github.com/sebastian-software/ardo"
-              className="ardo-home-cta-secondary"
+              className={styles.ctaSecondary}
               target="_blank"
               rel="noopener noreferrer"
             >
