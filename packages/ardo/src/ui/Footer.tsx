@@ -50,25 +50,19 @@ function formatBuildTime(iso: string): string {
  * When `children` is provided, all automatic rendering is skipped.
  *
  * @example Automatic (zero-config)
- * ```tsx
  * <Footer />
- * ```
  *
  * @example With overrides
- * ```tsx
  * <Footer
  *   sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
  *   message="Released under the MIT License."
  *   copyright="Copyright 2026 Sebastian Software GmbH"
  * />
- * ```
  *
  * @example Custom content
- * ```tsx
  * <Footer>
  *   <CustomFooterContent />
  * </Footer>
- * ```
  */
 export function Footer({
   message,

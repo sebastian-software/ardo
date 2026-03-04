@@ -40,17 +40,14 @@ export interface ArdoRootProps {
  * Sidebar, Footer, and homepage detection into a single component.
  *
  * @example Minimal usage
- * ```tsx
  * import config from "virtual:ardo/config"
  * import sidebar from "virtual:ardo/sidebar"
  *
  * export default function Root() {
  *   return <ArdoRoot config={config} sidebar={sidebar} />
  * }
- * ```
  *
  * @example With custom nav and footer overrides
- * ```tsx
  * export default function Root() {
  *   return (
  *     <ArdoRoot
@@ -70,7 +67,6 @@ export interface ArdoRootProps {
  *     />
  *   )
  * }
- * ```
  */
 export function ArdoRoot({
   config,

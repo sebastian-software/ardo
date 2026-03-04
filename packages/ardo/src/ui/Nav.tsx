@@ -30,13 +30,11 @@ export interface NavProps {
  * Navigation container component for composing navigation links.
  *
  * @example
- * ```tsx
  * <Nav>
  *   <NavLink to="/guide">Guide</NavLink>
  *   <NavLink to="/api">API</NavLink>
  *   <NavLink href="https://github.com/...">GitHub</NavLink>
  * </Nav>
- * ```
  */
 export function Nav({ children, className }: NavProps) {
   return <nav className={className ?? styles.nav}>{children}</nav>
@@ -63,13 +61,11 @@ export interface NavLinkProps {
  * Navigation link component supporting both internal routes and external URLs.
  *
  * @example
- * ```tsx
  * // Internal link
  * <NavLink to="/guide">Guide</NavLink>
  *
  * // External link
  * <NavLink href="https://github.com/...">GitHub</NavLink>
- * ```
  */
 export function NavLink({
   to,
@@ -137,12 +133,10 @@ export interface NavDropdownProps {
  * Dropdown navigation menu for grouping related links.
  *
  * @example
- * ```tsx
  * <NavDropdown text="Resources">
  *   <NavLink to="/docs">Documentation</NavLink>
  *   <NavLink to="/blog">Blog</NavLink>
  * </NavDropdown>
- * ```
  */
 export function NavDropdown({ text, children, className }: NavDropdownProps) {
   const [open, setOpen] = useState(false)

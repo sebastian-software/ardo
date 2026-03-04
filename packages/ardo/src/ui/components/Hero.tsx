@@ -49,7 +49,6 @@ export interface HeroProps {
  * Hero section component for landing pages.
  *
  * @example
- * ```tsx
  * import { ArrowRight, Github } from "lucide-react"
  *
  * <Hero
@@ -62,7 +61,6 @@ export interface HeroProps {
  *     { text: "GitHub", link: "https://github.com/...", theme: "alt", icon: <Github size={16} /> }
  *   ]}
  * />
- * ```
  */
 export function Hero({ name, text, tagline, image, actions, className, version }: HeroProps) {
   const imageUrl = typeof image === "string" ? image : image?.light

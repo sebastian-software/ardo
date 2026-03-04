@@ -77,7 +77,6 @@ function processChildren(children: ReactNode): ReactNode {
  * A wrapper for unordered lists that renders a file/folder tree with icons.
  *
  * @example
- * ```mdx
  * <FileTree>
  * - src/
  *   - components/
@@ -87,7 +86,6 @@ function processChildren(children: ReactNode): ReactNode {
  * - package.json
  * - README.md
  * </FileTree>
- * ```
  */
 export function FileTree({ children }: FileTreeProps) {
   return <div className={styles.filetree}>{processChildren(children)}</div>

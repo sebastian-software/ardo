@@ -35,7 +35,6 @@ export interface FeatureCardProps extends FeatureItem {
  * Individual feature card component.
  *
  * @example
- * ```tsx
  * import { Zap } from "lucide-react"
  *
  * // Using emoji
@@ -43,7 +42,6 @@ export interface FeatureCardProps extends FeatureItem {
  *
  * // Using Lucide icon (tree-shakeable)
  * <FeatureCard title="Fast" icon={<Zap size={28} />} details="Lightning fast." />
- * ```
  */
 export function FeatureCard({
   title,
@@ -72,7 +70,6 @@ export function FeatureCard({
  * Features grid component for displaying multiple feature cards.
  *
  * @example
- * ```tsx
  * <Features
  *   title="Key Features"
  *   subtitle="Everything you need to build great docs"
@@ -82,7 +79,6 @@ export function FeatureCard({
  *     { title: "Type-Safe", icon: "📝", details: "Full TypeScript support." },
  *   ]}
  * />
- * ```
  */
 export function Features({ items, title, subtitle, className }: FeaturesProps) {
   if (!items || items.length === 0) {
