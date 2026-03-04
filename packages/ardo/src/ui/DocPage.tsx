@@ -1,8 +1,8 @@
 import { type ReactNode } from "react"
-import { usePageData } from "../runtime/hooks"
-import { Layout } from "./Layout"
-import { Content } from "./Content"
-import { TOC } from "./TOC"
+import { useArdoPageData } from "../runtime/hooks"
+import { ArdoLayout } from "./Layout"
+import { ArdoContent } from "./Content"
+import { ArdoTOC } from "./TOC"
 import * as styles from "./DocPage.css"
 
 // =============================================================================
@@ -24,18 +24,18 @@ interface DocPageProps {
  * </DocPage>
  * ```
  */
-export function DocPage({ children }: DocPageProps) {
-  const pageData = usePageData()
+export function ArdoDocPage({ children }: DocPageProps) {
+  const pageData = useArdoPageData()
   const showToc =
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
 
   return (
-    <Layout>
+    <ArdoLayout>
       <div className={styles.docPage}>
-        <Content>{children}</Content>
-        {showToc && <TOC />}
+        <ArdoContent>{children}</ArdoContent>
+        {showToc && <ArdoTOC />}
       </div>
-    </Layout>
+    </ArdoLayout>
   )
 }
 
@@ -67,15 +67,15 @@ interface DocContentProps {
  * </DocContent>
  * ```
  */
-export function DocContent({ children }: DocContentProps) {
-  const pageData = usePageData()
+export function ArdoDocContent({ children }: DocContentProps) {
+  const pageData = useArdoPageData()
   const showToc =
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
 
   return (
     <div className={styles.docPage}>
-      <Content>{children}</Content>
-      {showToc && <TOC />}
+      <ArdoContent>{children}</ArdoContent>
+      {showToc && <ArdoTOC />}
     </div>
   )
 }
@@ -91,6 +91,6 @@ interface DocLayoutProps {
 /**
  * @deprecated Use DocPage or DocContent instead
  */
-export function DocLayout({ content }: DocLayoutProps) {
-  return <DocPage>{content}</DocPage>
+export function ArdoDocLayout({ content }: DocLayoutProps) {
+  return <ArdoDocPage>{content}</ArdoDocPage>
 }

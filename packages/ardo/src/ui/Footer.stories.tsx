@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Footer } from "./Footer"
+import { ArdoFooter } from "./Footer"
 
 const meta = {
   title: "Layout/Footer",
-  component: Footer,
+  component: ArdoFooter,
   tags: ["autodocs"],
-} satisfies Meta<typeof Footer>
+} satisfies Meta<typeof ArdoFooter>
 
 export default meta
 

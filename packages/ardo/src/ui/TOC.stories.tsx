@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { TOC } from "./TOC"
+import { ArdoTOC } from "./TOC"
 
 const meta = {
   title: "Layout/TOC",
-  component: TOC,
+  component: ArdoTOC,
   tags: ["autodocs"],
-} satisfies Meta<typeof TOC>
+} satisfies Meta<typeof ArdoTOC>
 
 export default meta
 
@@ -20,7 +20,7 @@ export const Default: Story = {
         <h2 id="baseline-components">Baseline components</h2>
         <h3 id="interactive">Interactive</h3>
       </main>
-      <TOC />
+      <ArdoTOC />
     </div>
   ),
 }

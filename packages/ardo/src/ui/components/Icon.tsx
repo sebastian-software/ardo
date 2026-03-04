@@ -2,7 +2,7 @@ import type { ComponentType, SVGAttributes, ReactNode } from "react"
 
 type IconComponent = ComponentType<SVGAttributes<SVGSVGElement> & { size?: number }>
 
-export interface IconProps extends SVGAttributes<SVGSVGElement> {
+export interface ArdoIconProps extends SVGAttributes<SVGSVGElement> {
   /** Name of the registered icon */
   name: string
   /** Icon size */
@@ -56,7 +56,7 @@ export function getRegisteredIconNames(): string[] {
  *
  * @see https://lucide.dev/icons for available icon names
  */
-export function Icon({ name, ...props }: IconProps): ReactNode {
+export function ArdoIcon({ name, ...props }: ArdoIconProps): ReactNode {
   const IconComp = iconRegistry.get(name)
 
   if (!IconComp) {

@@ -10,17 +10,19 @@ import {
   YoutubeIcon,
   PackageIcon,
 } from "./icons"
-import { ThemeToggle } from "./components/ThemeToggle"
-import { useConfig, useThemeConfig } from "../runtime/hooks"
+import { ArdoThemeToggle } from "./components/ThemeToggle"
+import { useArdoConfig, useArdoTheme } from "../runtime/hooks"
 import type { NavItem } from "../config/types"
 
-const LazySearch = lazy(() => import("./components/Search").then((m) => ({ default: m.Search })))
+const LazySearch = lazy(() =>
+  import("./components/Search").then((m) => ({ default: m.ArdoSearch }))
+)
 
 // =============================================================================
 // Header Component
 // =============================================================================
 
-export interface HeaderProps {
+export interface ArdoHeaderProps {
   /** Logo image URL or light/dark variants */
   logo?: string | { light: string; dark: string }
   /** Site title displayed next to logo */
@@ -64,7 +66,7 @@ export interface HeaderProps {
  * />
  * ```
  */
-export function Header({
+export function ArdoHeader({
   logo,
   title,
   nav,
@@ -73,10 +75,10 @@ export function Header({
   themeToggle = true,
   mobileMenuContent,
   className,
-}: HeaderProps) {
+}: ArdoHeaderProps) {
   const location = useLocation()
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+  const config = useArdoConfig()
+  const themeConfig = useArdoTheme()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const resolvedLogo = logo ?? themeConfig.logo
@@ -92,7 +94,7 @@ export function Header({
     actions ??
     (themeConfig.socialLinks?.length
       ? themeConfig.socialLinks.map((link, i) => (
-          <SocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
+          <ArdoSocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
         ))
       : undefined)
   const hasMobileMenu = Boolean(mobileMenuContent)
@@ -151,14 +153,14 @@ export function Header({
               <LazySearch />
             </Suspense>
           )}
-          {themeToggle && <ThemeToggle />}
+          {themeToggle && <ArdoThemeToggle />}
           {resolvedActions}
         </div>
       </div>
 
       {resolvedNav && (
-        <div className="ardo-mobile-top-nav">
-          <div className="ardo-mobile-top-nav-inner">{resolvedNav}</div>
+        <div className={styles.mobileTopNav}>
+          <div>{resolvedNav}</div>
         </div>
       )}
 
@@ -167,7 +169,7 @@ export function Header({
         <div className={styles.mobileMenu}>
           {mobileMenuContent && (
             <div
-              className="ardo-mobile-menu-content ardo-mobile-menu-section"
+              className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
               onClick={handleMobileMenuClick}
             >
               {mobileMenuContent}
@@ -183,7 +185,7 @@ export function Header({
 // SocialLink Component
 // =============================================================================
 
-export interface SocialLinkProps {
+export interface ArdoSocialLinkProps {
   /** URL to link to */
   href: string
   /** Social icon type */
@@ -202,7 +204,7 @@ export interface SocialLinkProps {
  * <SocialLink href="https://github.com/..." icon="github" />
  * ```
  */
-export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps) {
+export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialLinkProps) {
   return (
     <a
       href={href}

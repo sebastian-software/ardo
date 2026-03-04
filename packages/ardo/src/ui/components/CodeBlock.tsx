@@ -1,5 +1,5 @@
 import { useState, Children, isValidElement } from "react"
-import { CopyButton } from "./CopyButton"
+import { ArdoCopyButton } from "./CopyButton"
 import * as styles from "./CodeBlock.css"
 
 /**
@@ -22,7 +22,7 @@ function outdent(text: string): string {
   return lines.map((line) => line.slice(indent)).join("\n")
 }
 
-export interface CodeBlockProps {
+export interface ArdoCodeBlockProps {
   /** The code to display (as prop or as children string) */
   code?: string
   /** Programming language for syntax highlighting */
@@ -51,7 +51,7 @@ export interface CodeBlockProps {
  * When children is a string, leading/trailing blank lines and common
  * indentation are stripped automatically.
  */
-export function CodeBlock({
+export function ArdoCodeBlock({
   code: codeProp,
   language = "text",
   title,
@@ -59,7 +59,7 @@ export function CodeBlock({
   highlightLines = [],
   children,
   __html,
-}: CodeBlockProps) {
+}: ArdoCodeBlockProps) {
   const code = codeProp ?? (typeof children === "string" ? outdent(children) : "")
   const hasCustomChildren = children != null && typeof children !== "string"
   const lines = code.split("\n")
@@ -97,13 +97,13 @@ export function CodeBlock({
       {title && <div className={styles.codeTitle}>{title}</div>}
       <div className={styles.codeWrapper}>
         {content}
-        <CopyButton code={code} />
+        <ArdoCopyButton code={code} />
       </div>
     </div>
   )
 }
 
-export interface CodeGroupProps {
+export interface ArdoCodeGroupProps {
   /** CodeBlock components to display as tabs */
   children: React.ReactNode
   /** Comma-separated tab labels */
@@ -115,7 +115,7 @@ export interface CodeGroupProps {
  * Labels come from the `labels` prop (set at remark level) or fall back to
  * data-label / title / language props on children.
  */
-export function CodeGroup({ children, labels: labelsStr }: CodeGroupProps) {
+export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProps) {
   const [activeTab, setActiveTab] = useState(0)
 
   // Filter to only valid React elements (skip whitespace text nodes)
@@ -147,11 +147,11 @@ export function CodeGroup({ children, labels: labelsStr }: CodeGroupProps) {
           </button>
         ))}
       </div>
-      <div className="ardo-code-group-panels">
+      <div className={styles.codeGroupPanels}>
         {childArray.map((child, index) => (
           <div
             key={index}
-            className={["ardo-code-group-panel", index === activeTab && "active"]
+            className={[styles.codeGroupPanel, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
             style={{ display: index === activeTab ? "block" : "none" }}

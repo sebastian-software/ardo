@@ -1,24 +1,25 @@
 import { type ReactNode } from "react"
-import { usePageData, useThemeConfig, useSidebar } from "../runtime/hooks"
+import { useArdoPageData, useArdoTheme, useArdoSidebar } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { Link, useLocation } from "react-router"
 import { useBareContent } from "./BareContent"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
+import { ardoContent } from "./content.css"
 
 interface ContentProps {
   children: ReactNode
 }
 
-export function Content({ children }: ContentProps) {
+export function ArdoContent({ children }: ContentProps) {
   const isBare = useBareContent()
-  const pageData = usePageData()
-  const themeConfig = useThemeConfig()
-  const sidebar = useSidebar()
+  const pageData = useArdoPageData()
+  const themeConfig = useArdoTheme()
+  const sidebar = useArdoSidebar()
   const location = useLocation()
 
   if (isBare) {
-    return <div className={`${docStyles.contentBody} ardo-content`}>{children}</div>
+    return <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
   }
 
   const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
@@ -56,7 +57,7 @@ export function Content({ children }: ContentProps) {
         </header>
       )}
 
-      <div className={`${docStyles.contentBody} ardo-content`}>{children}</div>
+      <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
 
       <footer className={footerStyles.contentFooter}>
         {(showEditLink || showLastUpdated) && (

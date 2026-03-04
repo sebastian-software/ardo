@@ -14,7 +14,7 @@ const BareContentContext = createContext(false)
  * </BareContent>
  * ```
  */
-export function BareContent({ children }: { children: ReactNode }) {
+export function ArdoBareContent({ children }: { children: ReactNode }) {
   return <BareContentContext value={true}>{children}</BareContentContext>
 }
 

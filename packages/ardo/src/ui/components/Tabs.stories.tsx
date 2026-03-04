@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from "./Tabs"
+import { ArdoTabs, ArdoTabList, ArdoTab, ArdoTabPanels, ArdoTabPanel } from "./Tabs"
 
 const meta = {
   title: "Content/Tabs",
-  component: Tabs,
+  component: ArdoTabs,
   tags: ["autodocs"],
-} satisfies Meta<typeof Tabs>
+} satisfies Meta<typeof ArdoTabs>
 
 export default meta
 
@@ -15,18 +15,18 @@ export const Default: Story = {
   args: {
     children: (
       <>
-        <TabList>
-          <Tab>pnpm</Tab>
-          <Tab>npm</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
+        <ArdoTabList>
+          <ArdoTab>pnpm</ArdoTab>
+          <ArdoTab>npm</ArdoTab>
+        </ArdoTabList>
+        <ArdoTabPanels>
+          <ArdoTabPanel>
             <code>pnpm storybook</code>
-          </TabPanel>
-          <TabPanel>
+          </ArdoTabPanel>
+          <ArdoTabPanel>
             <code>npm run storybook</code>
-          </TabPanel>
-        </TabPanels>
+          </ArdoTabPanel>
+        </ArdoTabPanels>
       </>
     ),
   },

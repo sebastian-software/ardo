@@ -2,10 +2,10 @@ import { cloneElement, isValidElement, type ReactNode } from "react"
 import { Outlet, useLocation } from "react-router"
 import { ArdoProvider } from "../runtime/hooks"
 import type { ArdoConfig, SidebarItem } from "../config/types"
-import { Layout } from "./Layout"
-import { Header, type HeaderProps } from "./Header"
-import { Sidebar, type SidebarProps } from "./Sidebar"
-import { Footer, type FooterProps } from "./Footer"
+import { ArdoLayout } from "./Layout"
+import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
+import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import * as layoutStyles from "./Layout.css"
 
 // =============================================================================
@@ -23,12 +23,12 @@ export interface ArdoRootProps {
   sidebarContent?: ReactNode
   /** Custom footer element (overrides auto-generated footer) */
   footer?: ReactNode
-  /** Props passed to auto-generated Header (ignored when header is provided) */
-  headerProps?: HeaderProps
-  /** Props passed to auto-generated Sidebar (ignored when sidebarContent is provided) */
-  sidebarProps?: SidebarProps
-  /** Props passed to auto-generated Footer (ignored when footer is provided) */
-  footerProps?: FooterProps
+  /** Props passed to auto-generated ArdoHeader (ignored when header is provided) */
+  headerProps?: ArdoHeaderProps
+  /** Props passed to auto-generated ArdoSidebar (ignored when sidebarContent is provided) */
+  sidebarProps?: ArdoSidebarProps
+  /** Props passed to auto-generated ArdoFooter (ignored when footer is provided) */
+  footerProps?: ArdoFooterProps
   /** Additional CSS classes for the layout */
   className?: string
   /** Content to render (defaults to <Outlet />) */
@@ -87,30 +87,32 @@ export function ArdoRoot({
   const location = useLocation()
   const isHomePage = location.pathname === "/" || location.pathname === ""
 
-  const resolvedSidebar = isHomePage ? undefined : (sidebarContent ?? <Sidebar {...sidebarProps} />)
+  const resolvedSidebar = isHomePage
+    ? undefined
+    : (sidebarContent ?? <ArdoSidebar {...sidebarProps} />)
   const inferredMobileMenuContent = isHomePage ? undefined : resolvedSidebar
   const resolvedHeader = header ? (
     enhanceHeaderWithMobileMenuContent(header, inferredMobileMenuContent)
   ) : (
-    <Header
+    <ArdoHeader
       {...headerProps}
       mobileMenuContent={headerProps?.mobileMenuContent ?? inferredMobileMenuContent}
     />
   )
-  const resolvedFooter = footer ?? <Footer {...footerProps} />
+  const resolvedFooter = footer ?? <ArdoFooter {...footerProps} />
   const resolvedClassName =
     className ?? (isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout)
 
   return (
     <ArdoProvider config={config} sidebar={sidebar}>
-      <Layout
+      <ArdoLayout
         className={resolvedClassName}
         header={resolvedHeader}
         sidebar={resolvedSidebar}
         footer={resolvedFooter}
       >
         {children ?? <Outlet />}
-      </Layout>
+      </ArdoLayout>
     </ArdoProvider>
   )
 }
@@ -119,7 +121,7 @@ function enhanceHeaderWithMobileMenuContent(
   header: ReactNode,
   mobileMenuContent: ReactNode
 ): ReactNode {
-  if (!isValidElement<HeaderProps>(header) || header.type !== Header) {
+  if (!isValidElement<ArdoHeaderProps>(header) || header.type !== ArdoHeader) {
     return header
   }
 

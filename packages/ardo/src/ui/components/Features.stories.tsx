@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Features } from "./Features"
+import { ArdoFeatures } from "./Features"
 
 const meta = {
   title: "Content/Features",
-  component: Features,
+  component: ArdoFeatures,
   tags: ["autodocs"],
-} satisfies Meta<typeof Features>
+} satisfies Meta<typeof ArdoFeatures>
 
 export default meta
 

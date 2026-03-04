@@ -1,13 +1,13 @@
 import { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
-import { useConfig, useThemeConfig } from "../runtime/hooks"
+import { useArdoConfig, useArdoTheme } from "../runtime/hooks"
 import * as styles from "./Footer.css"
 
 // =============================================================================
 // Footer Component
 // =============================================================================
 
-export interface FooterProps {
+export interface ArdoFooterProps {
   /** Footer message (supports HTML string) */
   message?: string
   /** Copyright text (supports HTML string) */
@@ -70,7 +70,7 @@ function formatBuildTime(iso: string): string {
  * </Footer>
  * ```
  */
-export function Footer({
+export function ArdoFooter({
   message,
   copyright,
   children,
@@ -80,9 +80,9 @@ export function Footer({
   buildTime,
   buildHash,
   ardoLink = true,
-}: FooterProps) {
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+}: ArdoFooterProps) {
+  const config = useArdoConfig()
+  const themeConfig = useArdoTheme()
 
   const resolvedProject = project ?? config.project
   const resolvedBuildTime = buildTime ?? config.buildTime
@@ -106,7 +106,7 @@ export function Footer({
 
   return (
     <footer className={className ?? styles.footer}>
-      <div className="ardo-footer-container" /* container has no special styles */>
+      <div className={styles.footerContainer}>
         {children ?? (
           <>
             {/* Primary line: project · ardo · sponsor */}
@@ -173,12 +173,12 @@ export function Footer({
 }
 
 // Type exports for compound pattern (kept for backwards compatibility)
-export interface FooterMessageProps {
+export interface ArdoFooterMessageProps {
   children: ReactNode
   className?: string
 }
 
-export interface FooterCopyrightProps {
+export interface ArdoFooterCopyrightProps {
   children: ReactNode
   className?: string
 }

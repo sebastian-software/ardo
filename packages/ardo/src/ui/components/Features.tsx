@@ -2,7 +2,7 @@ import { Link } from "react-router"
 import type { CSSProperties, ReactNode } from "react"
 import * as styles from "./Features.css"
 
-export interface FeatureItem {
+export interface ArdoFeatureItem {
   /** Feature title */
   title: string
   /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */
@@ -15,9 +15,9 @@ export interface FeatureItem {
   linkText?: string
 }
 
-export interface FeaturesProps {
+export interface ArdoFeaturesProps {
   /** Array of feature items to display */
-  items: FeatureItem[]
+  items: ArdoFeatureItem[]
   /** Section title */
   title?: string
   /** Section subtitle */
@@ -26,7 +26,7 @@ export interface FeaturesProps {
   className?: string
 }
 
-export interface FeatureCardProps extends FeatureItem {
+export interface ArdoFeatureCardProps extends ArdoFeatureItem {
   /** Additional CSS class */
   className?: string
 }
@@ -45,7 +45,7 @@ export interface FeatureCardProps extends FeatureItem {
  * <FeatureCard title="Fast" icon={<Zap size={28} />} details="Lightning fast." />
  * ```
  */
-export function FeatureCard({
+export function ArdoFeatureCard({
   title,
   icon,
   details,
@@ -53,7 +53,7 @@ export function FeatureCard({
   linkText,
   className,
   style,
-}: FeatureCardProps & { style?: CSSProperties }) {
+}: ArdoFeatureCardProps & { style?: CSSProperties }) {
   return (
     <div className={className ?? styles.feature} style={style}>
       {icon && <div className={styles.featureIcon}>{icon}</div>}
@@ -84,7 +84,7 @@ export function FeatureCard({
  * />
  * ```
  */
-export function Features({ items, title, subtitle, className }: FeaturesProps) {
+export function ArdoFeatures({ items, title, subtitle, className }: ArdoFeaturesProps) {
   if (!items || items.length === 0) {
     return null
   }
@@ -99,7 +99,7 @@ export function Features({ items, title, subtitle, className }: FeaturesProps) {
       )}
       <div className={styles.featuresContainer}>
         {items.map((feature, index) => (
-          <FeatureCard key={index} {...feature} style={{ animationDelay: `${index * 80}ms` }} />
+          <ArdoFeatureCard key={index} {...feature} style={{ animationDelay: `${index * 80}ms` }} />
         ))}
       </div>
     </section>

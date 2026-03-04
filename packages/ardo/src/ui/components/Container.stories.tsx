@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Tip } from "./Container"
+import { ArdoTip } from "./Container"
 
 const meta = {
   title: "Content/Container",
-  component: Tip,
+  component: ArdoTip,
   tags: ["autodocs"],
-} satisfies Meta<typeof Tip>
+} satisfies Meta<typeof ArdoTip>
 
 export default meta
 

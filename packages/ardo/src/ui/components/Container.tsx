@@ -2,18 +2,18 @@ import { type ReactNode } from "react"
 import { LightbulbIcon, AlertTriangleIcon, XCircleIcon, InfoIcon, FileTextIcon } from "../icons"
 import * as styles from "./Container.css"
 
-export type ContainerType = "tip" | "warning" | "danger" | "info" | "note"
+export type ArdoContainerType = "tip" | "warning" | "danger" | "info" | "note"
 
-export interface ContainerProps {
+export interface ArdoContainerProps {
   /** Container type determining the style */
-  type: ContainerType
+  type: ArdoContainerType
   /** Optional custom title */
   title?: string
   /** Content to display inside the container */
   children: ReactNode
 }
 
-const defaultTitles: Record<ContainerType, string> = {
+const defaultTitles: Record<ArdoContainerType, string> = {
   tip: "TIP",
   warning: "WARNING",
   danger: "DANGER",
@@ -21,7 +21,7 @@ const defaultTitles: Record<ContainerType, string> = {
   note: "NOTE",
 }
 
-const icons: Record<ContainerType, ReactNode> = {
+const icons: Record<ArdoContainerType, ReactNode> = {
   tip: <LightbulbIcon size={18} />,
   warning: <AlertTriangleIcon size={18} />,
   danger: <XCircleIcon size={18} />,
@@ -32,7 +32,7 @@ const icons: Record<ContainerType, ReactNode> = {
 /**
  * A styled container for callouts, tips, warnings, etc.
  */
-export function Container({ type, title, children }: ContainerProps) {
+export function ArdoContainer({ type, title, children }: ArdoContainerProps) {
   const displayTitle = title || defaultTitles[type]
 
   return (
@@ -46,7 +46,7 @@ export function Container({ type, title, children }: ContainerProps) {
   )
 }
 
-export interface TipProps {
+export interface ArdoTipProps {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -56,15 +56,15 @@ export interface TipProps {
 /**
  * A tip container for helpful information.
  */
-export function Tip({ title, children }: TipProps) {
+export function ArdoTip({ title, children }: ArdoTipProps) {
   return (
-    <Container type="tip" title={title}>
+    <ArdoContainer type="tip" title={title}>
       {children}
-    </Container>
+    </ArdoContainer>
   )
 }
 
-export interface WarningProps {
+export interface ArdoWarningProps {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -74,15 +74,15 @@ export interface WarningProps {
 /**
  * A warning container for cautionary information.
  */
-export function Warning({ title, children }: WarningProps) {
+export function ArdoWarning({ title, children }: ArdoWarningProps) {
   return (
-    <Container type="warning" title={title}>
+    <ArdoContainer type="warning" title={title}>
       {children}
-    </Container>
+    </ArdoContainer>
   )
 }
 
-export interface DangerProps {
+export interface ArdoDangerProps {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -92,15 +92,15 @@ export interface DangerProps {
 /**
  * A danger container for critical warnings.
  */
-export function Danger({ title, children }: DangerProps) {
+export function ArdoDanger({ title, children }: ArdoDangerProps) {
   return (
-    <Container type="danger" title={title}>
+    <ArdoContainer type="danger" title={title}>
       {children}
-    </Container>
+    </ArdoContainer>
   )
 }
 
-export interface InfoProps {
+export interface ArdoInfoProps {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -110,15 +110,15 @@ export interface InfoProps {
 /**
  * An info container for informational content.
  */
-export function Info({ title, children }: InfoProps) {
+export function ArdoInfo({ title, children }: ArdoInfoProps) {
   return (
-    <Container type="info" title={title}>
+    <ArdoContainer type="info" title={title}>
       {children}
-    </Container>
+    </ArdoContainer>
   )
 }
 
-export interface NoteProps {
+export interface ArdoNoteProps {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -128,10 +128,10 @@ export interface NoteProps {
 /**
  * A note container for additional information.
  */
-export function Note({ title, children }: NoteProps) {
+export function ArdoNote({ title, children }: ArdoNoteProps) {
   return (
-    <Container type="note" title={title}>
+    <ArdoContainer type="note" title={title}>
       {children}
-    </Container>
+    </ArdoContainer>
   )
 }

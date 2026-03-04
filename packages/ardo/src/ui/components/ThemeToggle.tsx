@@ -4,7 +4,7 @@ import * as styles from "./ThemeToggle.css"
 
 type Theme = "light" | "dark" | "system"
 
-export function ThemeToggle() {
+export function ArdoThemeToggle() {
   const [theme, setTheme] = useState<Theme>("system")
   const [mounted, setMounted] = useState(false)
 
@@ -30,7 +30,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button className={styles.themeToggle} aria-label="Toggle theme">
-        <span className="ardo-theme-icon">
+        <span className={styles.themeIcon}>
           <SunIcon size={20} />
         </span>
       </button>
@@ -43,7 +43,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}
     >
-      <span className="ardo-theme-icon">
+      <span className={styles.themeIcon}>
         {theme === "light" && <SunIcon size={20} />}
         {theme === "dark" && <MoonIcon size={20} />}
         {theme === "system" && <MonitorIcon size={20} />}

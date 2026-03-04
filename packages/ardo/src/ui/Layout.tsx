@@ -10,7 +10,7 @@ import * as styles from "./Layout.css"
 const ARDO_FAVICON =
   "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20style%3D%22stroke-linecap%3Around%3Bstroke-linejoin%3Around%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3Csymbol%20id%3D%22a%22%20overflow%3D%22visible%22%3E%3Cpath%20d%3D%22M300%20300%20151%20128l2%20178-41%2094h93c-35%2032-55%2068-63%20107m63-106%2095%2081m-32-96%2028%2088%22%2F%3E%3Cellipse%20cx%3D%22222%22%20cy%3D%22327%22%20fill%3D%22%2300655a%22%20rx%3D%2220%22%20ry%3D%2233%22%2F%3E%3Ccircle%20cx%3D%22227%22%20cy%3D%22324%22%20r%3D%2271%22%2F%3E%3C%2Fsymbol%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%2300655a%22%20stroke-width%3D%2216%22%3E%3Cpath%20d%3D%22M155%20318c2-70%2066-126%20145-126s143%2056%20145%20126%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22290%22%20r%3D%22270%22%2F%3E%3Cuse%20href%3D%22%23a%22%2F%3E%3Cuse%20href%3D%22%23a%22%20transform%3D%22matrix%28-1%200%200%201%20600%200%29%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
 
-export interface RootLayoutProps {
+export interface ArdoRootLayoutProps {
   children: ReactNode
   /** Favicon URL (renders <link rel="icon">) */
   favicon?: string
@@ -34,7 +34,7 @@ export interface RootLayoutProps {
  * export const Layout = (props) => <RootLayout favicon={logo} {...props} />
  * ```
  */
-export function RootLayout({ children, favicon, lang }: RootLayoutProps) {
+export function ArdoRootLayout({ children, favicon, lang }: ArdoRootLayoutProps) {
   // Use optional context (RootLayout renders before ArdoProvider is available)
   const context = useContext(ArdoContext)
   const resolvedLang = lang ?? context?.config.lang ?? "en"
@@ -61,7 +61,7 @@ export function RootLayout({ children, favicon, lang }: RootLayoutProps) {
 // Layout Component
 // =============================================================================
 
-export interface LayoutProps {
+export interface ArdoLayoutProps {
   /** Header content */
   header?: ReactNode
   /** Sidebar content */
@@ -88,7 +88,7 @@ export interface LayoutProps {
  * </Layout>
  * ```
  */
-export function Layout({ header, sidebar, footer, children, className }: LayoutProps) {
+export function ArdoLayout({ header, sidebar, footer, children, className }: ArdoLayoutProps) {
   return (
     <div className={className ?? styles.layout}>
       <a href="#main-content" className={styles.skipLink}>

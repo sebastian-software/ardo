@@ -6,11 +6,11 @@
 // React hooks and context
 export {
   useArdoContext,
-  useConfig,
-  useThemeConfig,
-  useSidebar,
-  usePageData,
-  useTOC,
+  useArdoConfig,
+  useArdoTheme,
+  useArdoSidebar,
+  useArdoPageData,
+  useArdoTOC,
   ArdoProvider,
   ArdoContext,
 } from "./hooks"

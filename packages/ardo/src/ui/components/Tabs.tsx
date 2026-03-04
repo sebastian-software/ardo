@@ -23,22 +23,22 @@ const AUTO_TAB_PREFIX = "__ardo-tab-"
 function useTabsContext() {
   const context = useContext(TabsContext)
   if (!context) {
-    throw new Error("Tab components must be used within a Tabs component")
+    throw new Error("Tab components must be used within an ArdoTabs component")
   }
   return context
 }
 
-export interface TabsProps {
+export interface ArdoTabsProps {
   /** Default active tab value */
   defaultValue?: string
-  /** Tab components (TabList and TabPanels) */
+  /** Tab components (ArdoTabList and ArdoTabPanels) */
   children: ReactNode
 }
 
 /**
  * Tabs container component for organizing content into tabbed panels.
  */
-export function Tabs({ defaultValue, children }: TabsProps) {
+export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   const [activeTab, setActiveTab] = useState(() => defaultValue ?? findFirstTabValue(children))
   const tabIndexRef = useRef(0)
   const panelIndexRef = useRef(0)
@@ -69,15 +69,15 @@ export function Tabs({ defaultValue, children }: TabsProps) {
   )
 }
 
-export interface TabListProps {
+export interface ArdoTabListProps {
   /** Tab buttons */
   children: ReactNode
 }
 
 /**
- * Container for Tab buttons.
+ * Container for ArdoTab buttons.
  */
-export function TabList({ children }: TabListProps) {
+export function ArdoTabList({ children }: ArdoTabListProps) {
   return (
     <div className={styles.tabList} role="tablist">
       {children}
@@ -85,7 +85,7 @@ export function TabList({ children }: TabListProps) {
   )
 }
 
-export interface TabProps {
+export interface ArdoTabProps {
   /** Unique value identifying this tab (optional if tab order matches panels) */
   value?: string
   /** Tab button label */
@@ -95,7 +95,7 @@ export interface TabProps {
 /**
  * Individual tab button.
  */
-export function Tab({ value, children }: TabProps) {
+export function ArdoTab({ value, children }: ArdoTabProps) {
   const { activeTab, setActiveTab, getTabValue } = useTabsContext()
   const resolvedValue = getTabValue(value)
   const isActive = activeTab === resolvedValue
@@ -113,8 +113,8 @@ export function Tab({ value, children }: TabProps) {
   )
 }
 
-export interface TabPanelProps {
-  /** Value matching the corresponding Tab (optional if panel order matches tabs) */
+export interface ArdoTabPanelProps {
+  /** Value matching the corresponding ArdoTab (optional if panel order matches tabs) */
   value?: string
   /** Panel content */
   children: ReactNode
@@ -123,7 +123,7 @@ export interface TabPanelProps {
 /**
  * Content panel for a tab.
  */
-export function TabPanel({ value, children }: TabPanelProps) {
+export function ArdoTabPanel({ value, children }: ArdoTabPanelProps) {
   const { activeTab, getPanelValue } = useTabsContext()
   const resolvedValue = getPanelValue(value)
   const isActive = activeTab === resolvedValue
@@ -139,16 +139,16 @@ export function TabPanel({ value, children }: TabPanelProps) {
   )
 }
 
-export interface TabPanelsProps {
-  /** TabPanel components */
+export interface ArdoTabPanelsProps {
+  /** ArdoTabPanel components */
   children: ReactNode
 }
 
 /**
- * Container for TabPanel components.
+ * Container for ArdoTabPanel components.
  */
-export function TabPanels({ children }: TabPanelsProps) {
-  return <div className="ardo-tab-panels">{children}</div>
+export function ArdoTabPanels({ children }: ArdoTabPanelsProps) {
+  return <div className={styles.tabPanels}>{children}</div>
 }
 
 function findFirstTabValue(children: ReactNode): string {
@@ -157,7 +157,7 @@ function findFirstTabValue(children: ReactNode): string {
       continue
     }
 
-    if (child.type === Tab) {
+    if (child.type === ArdoTab) {
       const tabValue = (child.props as { value?: string }).value
       return tabValue ?? `${AUTO_TAB_PREFIX}0`
     }

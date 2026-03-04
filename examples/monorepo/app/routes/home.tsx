@@ -1,4 +1,4 @@
-import { Hero, Features } from "ardo/ui"
+import { ArdoHero, ArdoFeatures } from "ardo/ui"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Monorepo Example" }]
@@ -6,7 +6,7 @@ export const meta: MetaFunction = () => [{ title: "Ardo Monorepo Example" }]
 export default function HomePage() {
   return (
     <>
-      <Hero
+      <ArdoHero
         name="Ardo Monorepo Example"
         text="Multi-Package Documentation"
         tagline="Demonstrates Ardo with multiple TypeDoc entry points from a monorepo structure."
@@ -16,7 +16,7 @@ export default function HomePage() {
           { text: "Beta API", link: "/api-reference/beta", theme: "alt" },
         ]}
       />
-      <Features
+      <ArdoFeatures
         items={[
           {
             title: "Alpha Package",

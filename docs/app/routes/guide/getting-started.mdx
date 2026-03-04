@@ -96,7 +96,7 @@ These are standard React Router entry files. If you've worked with React Router 
 
 ```tsx
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
-import { Layout, Header, Sidebar, Footer } from "ardo/ui"
+import { ArdoLayout, ArdoHeader, ArdoSidebar, ArdoFooter } from "ardo/ui"
 import { ArdoProvider } from "ardo/runtime"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
@@ -123,9 +123,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
   return (
     <ArdoProvider config={config} sidebar={sidebar}>
-      <Layout header={<Header title="My Docs" />} sidebar={<Sidebar />} footer={<Footer />}>
+      <ArdoLayout
+        header={<ArdoHeader title="My Docs" />}
+        sidebar={<ArdoSidebar />}
+        footer={<ArdoFooter />}
+      >
         <Outlet />
-      </Layout>
+      </ArdoLayout>
     </ArdoProvider>
   )
 }

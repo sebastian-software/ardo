@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { Link, useNavigate } from "react-router"
-import { useThemeConfig } from "../../runtime/hooks"
+import { useArdoTheme } from "../../runtime/hooks"
 import MiniSearch, { type SearchResult } from "minisearch"
 import searchDocs from "virtual:ardo/search-index"
 import { SearchIcon } from "../icons"
@@ -14,7 +14,7 @@ interface SearchDoc {
   section?: string
 }
 
-export function Search() {
+export function ArdoSearch() {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
@@ -22,7 +22,7 @@ export function Search() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const themeConfig = useThemeConfig()
+  const themeConfig = useArdoTheme()
   const hasQuery = query.trim().length > 0
 
   const placeholder = themeConfig.search?.placeholder ?? "Search..."

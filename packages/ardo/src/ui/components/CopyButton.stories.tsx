@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { CopyButton } from "./CopyButton"
+import { ArdoCopyButton } from "./CopyButton"
 
 const meta = {
   title: "Utilities/CopyButton",
-  component: CopyButton,
+  component: ArdoCopyButton,
   tags: ["autodocs"],
-} satisfies Meta<typeof CopyButton>
+} satisfies Meta<typeof ArdoCopyButton>
 
 export default meta
 

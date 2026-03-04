@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Hero } from "./Hero"
+import { ArdoHero } from "./Hero"
 
 const meta = {
   title: "Content/Hero",
-  component: Hero,
+  component: ArdoHero,
   tags: ["autodocs"],
-} satisfies Meta<typeof Hero>
+} satisfies Meta<typeof ArdoHero>
 
 export default meta
 

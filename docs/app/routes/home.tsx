@@ -1,4 +1,4 @@
-import { Hero, Features, CodeBlock } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoCodeBlock } from "ardo/ui"
 import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
@@ -30,7 +30,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <Hero
+      <ArdoHero
         name="Ardo"
         text="Documentation for React teams"
         tagline="Your components. Your stack. Your docs. Build documentation with React 19, React Router 7, and MDX. Drop in your existing components and generate API references straight from TypeScript."
@@ -77,7 +77,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Grid */}
-      <Features
+      <ArdoFeatures
         title="What's in the box"
         subtitle="Everything a documentation site needs, nothing it doesn't"
         items={[
@@ -150,7 +150,7 @@ export default function HomePage() {
           </p>
 
           <div className="ardo-home-code-example">
-            <CodeBlock
+            <ArdoCodeBlock
               language="mdx"
               title="getting-started.mdx"
               code={

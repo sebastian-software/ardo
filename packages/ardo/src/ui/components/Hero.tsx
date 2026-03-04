@@ -8,7 +8,7 @@ type RoutePath = ComponentProps<typeof Link>["to"]
 /** External URL starting with http:// or https:// */
 type ExternalUrl = `http://${string}` | `https://${string}`
 
-export interface HeroAction {
+export interface ArdoHeroAction {
   /** Button text */
   text: string
   /** Link destination - internal route path or external URL */
@@ -19,7 +19,7 @@ export interface HeroAction {
   icon?: ReactNode
 }
 
-export interface HeroImage {
+export interface ArdoHeroImage {
   /** Image for light mode */
   light: string
   /** Image for dark mode */
@@ -28,7 +28,7 @@ export interface HeroImage {
   alt?: string
 }
 
-export interface HeroProps {
+export interface ArdoHeroProps {
   /** Large title displayed prominently */
   name?: string
   /** Secondary text below the name */
@@ -36,9 +36,9 @@ export interface HeroProps {
   /** Descriptive tagline */
   tagline?: string
   /** Hero image - can be a string URL or an object with light/dark variants */
-  image?: string | HeroImage
+  image?: string | ArdoHeroImage
   /** Call-to-action buttons */
-  actions?: HeroAction[]
+  actions?: ArdoHeroAction[]
   /** Additional CSS class */
   className?: string
   /** Version string displayed as a pill badge above the name */
@@ -64,7 +64,15 @@ export interface HeroProps {
  * />
  * ```
  */
-export function Hero({ name, text, tagline, image, actions, className, version }: HeroProps) {
+export function ArdoHero({
+  name,
+  text,
+  tagline,
+  image,
+  actions,
+  className,
+  version,
+}: ArdoHeroProps) {
   const imageUrl = typeof image === "string" ? image : image?.light
   const imageAlt = typeof image === "string" ? name : (image?.alt ?? name)
 

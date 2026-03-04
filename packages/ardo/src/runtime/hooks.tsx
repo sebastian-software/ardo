@@ -17,27 +17,27 @@ export function useArdoContext(): ArdoContextValue {
   return context
 }
 
-export function useConfig(): ArdoConfig {
+export function useArdoConfig(): ArdoConfig {
   const { config } = useArdoContext()
   return config
 }
 
-export function useThemeConfig(): ThemeConfig {
+export function useArdoTheme(): ThemeConfig {
   const { config } = useArdoContext()
   return config.themeConfig ?? {}
 }
 
-export function useSidebar(): SidebarItem[] {
+export function useArdoSidebar(): SidebarItem[] {
   const { sidebar } = useArdoContext()
   return sidebar
 }
 
-export function usePageData(): PageData | undefined {
+export function useArdoPageData(): PageData | undefined {
   const { currentPage } = useArdoContext()
   return currentPage
 }
 
-export function useTOC(): TOCItem[] {
+export function useArdoTOC(): TOCItem[] {
   const { currentPage } = useArdoContext()
   return currentPage?.toc ?? []
 }

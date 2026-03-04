@@ -57,13 +57,13 @@ The `ardo()` plugin includes React Router, MDX processing, and all necessary con
 Access configuration and page data in your components:
 
 ```tsx
-import { useConfig, useSidebar, usePageData, useTOC } from "ardo/runtime"
+import { useArdoConfig, useArdoSidebar, useArdoPageData, useArdoTOC } from "ardo/runtime"
 
 function MyComponent() {
-  const config = useConfig()
-  const sidebar = useSidebar()
-  const page = usePageData()
-  const toc = useTOC()
+  const config = useArdoConfig()
+  const sidebar = useArdoSidebar()
+  const page = useArdoPageData()
+  const toc = useArdoTOC()
 
   return <h1>{config.title}</h1>
 }
@@ -74,13 +74,13 @@ function MyComponent() {
 Use pre-built components for your documentation:
 
 ```tsx
-import { Layout, Header, Sidebar, Footer } from "ardo/ui"
+import { ArdoLayout, ArdoHeader, ArdoSidebar, ArdoFooter } from "ardo/ui"
 
 function App() {
   return (
-    <Layout header={<Header />} sidebar={<Sidebar />} footer={<Footer />}>
+    <ArdoLayout header={<ArdoHeader />} sidebar={<ArdoSidebar />} footer={<ArdoFooter />}>
       <YourContent />
-    </Layout>
+    </ArdoLayout>
   )
 }
 ```

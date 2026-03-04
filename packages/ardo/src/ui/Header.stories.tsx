@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Header } from "./Header"
-import { Nav, NavLink } from "./Nav"
+import { ArdoHeader } from "./Header"
+import { ArdoNav, ArdoNavLink } from "./Nav"
 
-const meta: Meta<typeof Header> = {
+const meta: Meta<typeof ArdoHeader> = {
   title: "Layout/Header",
-  component: Header,
+  component: ArdoHeader,
   tags: ["autodocs"],
   decorators: [
     (Story) => (
@@ -36,10 +36,10 @@ export const WithNav: Story = {
     title: "Ardo",
     search: false,
     nav: (
-      <Nav>
-        <NavLink to="/guide">Guide</NavLink>
-        <NavLink to="/api">API</NavLink>
-      </Nav>
+      <ArdoNav>
+        <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+        <ArdoNavLink to="/api">API</ArdoNavLink>
+      </ArdoNav>
     ),
   },
 }

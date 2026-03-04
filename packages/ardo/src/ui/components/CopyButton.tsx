@@ -6,7 +6,7 @@ interface CopyButtonProps {
   code: string
 }
 
-export function CopyButton({ code }: CopyButtonProps) {
+export function ArdoCopyButton({ code }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -26,7 +26,7 @@ export function CopyButton({ code }: CopyButtonProps) {
       aria-label={copied ? "Copied!" : "Copy code"}
     >
       {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
-      <span className="ardo-copy-text">{copied ? "Copied!" : "Copy"}</span>
+      <span className={styles.copyText}>{copied ? "Copied!" : "Copy"}</span>
     </button>
   )
 }

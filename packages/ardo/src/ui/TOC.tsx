@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { useTOC, useThemeConfig } from "../runtime/hooks"
+import { useArdoTOC, useArdoTheme } from "../runtime/hooks"
 import type { TOCItem } from "../config/types"
 import * as styles from "./TOC.css"
 
-export function TOC() {
-  const toc = useTOC()
-  const themeConfig = useThemeConfig()
+export function ArdoTOC() {
+  const toc = useArdoTOC()
+  const themeConfig = useArdoTheme()
   const [activeId, setActiveId] = useState<string>("")
 
   const label = themeConfig.outline?.label ?? "On this page"

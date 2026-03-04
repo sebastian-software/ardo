@@ -154,11 +154,11 @@ When CSS isn't enough, replace individual components with your own. Since everyt
 
 ```tsx
 // components/MyHeader.tsx
-import { useConfig, useThemeConfig } from "ardo/runtime"
+import { useArdoConfig, useArdoTheme } from "ardo/runtime"
 
 export function MyHeader() {
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+  const config = useArdoConfig()
+  const themeConfig = useArdoTheme()
 
   return (
     <header className="my-custom-header">
@@ -174,15 +174,15 @@ Then use it in your layout. Mix your custom components with Ardo's defaults — 
 ```tsx
 // routes/__root.tsx
 import { MyHeader } from "../components/MyHeader"
-import { Sidebar, Footer } from "ardo/ui"
+import { ArdoSidebar, ArdoFooter } from "ardo/ui"
 
 export function Layout({ children }) {
   return (
     <div>
       <MyHeader />
-      <Sidebar />
+      <ArdoSidebar />
       <main>{children}</main>
-      <Footer />
+      <ArdoFooter />
     </div>
   )
 }
@@ -192,24 +192,24 @@ export function Layout({ children }) {
 
 When building custom components, you'll need access to site configuration, sidebar data, and page metadata. Ardo provides React hooks for all of it:
 
-### useConfig
+### useArdoConfig
 
 ```tsx
-import { useConfig } from "ardo/runtime"
+import { useArdoConfig } from "ardo/runtime"
 
 function MyComponent() {
-  const config = useConfig()
+  const config = useArdoConfig()
   return <h1>{config.title}</h1>
 }
 ```
 
-### useThemeConfig
+### useArdoTheme
 
 ```tsx
-import { useThemeConfig } from "ardo/runtime"
+import { useArdoTheme } from "ardo/runtime"
 
 function MyNav() {
-  const themeConfig = useThemeConfig()
+  const themeConfig = useArdoTheme()
   return (
     <nav>
       {themeConfig.nav?.map((item) => (
@@ -220,24 +220,24 @@ function MyNav() {
 }
 ```
 
-### useSidebar
+### useArdoSidebar
 
 ```tsx
-import { useSidebar } from "ardo/runtime"
+import { useArdoSidebar } from "ardo/runtime"
 
 function MySidebar() {
-  const sidebar = useSidebar()
+  const sidebar = useArdoSidebar()
   // Render sidebar items
 }
 ```
 
-### usePageData
+### useArdoPageData
 
 ```tsx
-import { usePageData } from "ardo/runtime"
+import { useArdoPageData } from "ardo/runtime"
 
 function MyContent() {
-  const pageData = usePageData()
+  const pageData = useArdoPageData()
   return (
     <article>
       <h1>{pageData?.title}</h1>
@@ -247,13 +247,13 @@ function MyContent() {
 }
 ```
 
-### useTOC
+### useArdoTOC
 
 ```tsx
-import { useTOC } from "ardo/runtime"
+import { useArdoTOC } from "ardo/runtime"
 
 function MyTOC() {
-  const toc = useTOC()
+  const toc = useArdoTOC()
   return (
     <nav>
       {toc.map((item) => (

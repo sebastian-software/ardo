@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Search } from "./Search"
+import { ArdoSearch } from "./Search"
 
 const meta = {
   title: "Utilities/Search",
-  component: Search,
+  component: ArdoSearch,
   tags: ["autodocs"],
-} satisfies Meta<typeof Search>
+} satisfies Meta<typeof ArdoSearch>
 
 export default meta
 

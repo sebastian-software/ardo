@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { CodeBlock } from "./CodeBlock"
+import { ArdoCodeBlock } from "./CodeBlock"
 
 const meta = {
   title: "Utilities/CodeBlock",
-  component: CodeBlock,
+  component: ArdoCodeBlock,
   tags: ["autodocs"],
-} satisfies Meta<typeof CodeBlock>
+} satisfies Meta<typeof ArdoCodeBlock>
 
 export default meta
 

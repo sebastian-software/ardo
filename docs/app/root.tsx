@@ -1,14 +1,14 @@
 import {
-  RootLayout,
+  ArdoRootLayout,
   ArdoRoot,
-  Header,
-  Nav,
-  NavLink,
-  Sidebar,
-  SidebarGroup,
-  SidebarLink,
-  Footer,
-  SocialLink,
+  ArdoHeader,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoSidebar,
+  ArdoSidebarGroup,
+  ArdoSidebarLink,
+  ArdoFooter,
+  ArdoSocialLink,
 } from "ardo/ui"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => [
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return <RootLayout favicon={logo}>{children}</RootLayout>
+  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
 }
 
 export default function Root() {
@@ -31,58 +31,60 @@ export default function Root() {
       config={config}
       sidebar={sidebar}
       header={
-        <Header
+        <ArdoHeader
           logo={logo}
           nav={
-            <Nav>
-              <NavLink to="/guide/getting-started">Guide</NavLink>
-              <NavLink to="/api-reference">API</NavLink>
-              <NavLink to="/showcase">Showcase</NavLink>
-              <NavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
+            <ArdoNav>
+              <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+              <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+              <ArdoNavLink to="/showcase">Showcase</ArdoNavLink>
+              <ArdoNavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
                 Changelog
-              </NavLink>
-              <NavLink href="https://github.com/sebastian-software/ardo">GitHub</NavLink>
-            </Nav>
+              </ArdoNavLink>
+              <ArdoNavLink href="https://github.com/sebastian-software/ardo">GitHub</ArdoNavLink>
+            </ArdoNav>
           }
-          actions={<SocialLink href="https://github.com/sebastian-software/ardo" icon="github" />}
+          actions={
+            <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />
+          }
         />
       }
       sidebarContent={
-        <Sidebar>
-          <SidebarGroup title="Introduction">
-            <SidebarLink to="/guide/what-is-ardo">What is Ardo?</SidebarLink>
-            <SidebarLink to="/guide/comparison">Comparison</SidebarLink>
-            <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
-          </SidebarGroup>
+        <ArdoSidebar>
+          <ArdoSidebarGroup title="Introduction">
+            <ArdoSidebarLink to="/guide/what-is-ardo">What is Ardo?</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/comparison">Comparison</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+          </ArdoSidebarGroup>
 
-          <SidebarGroup title="Writing">
-            <SidebarLink to="/guide/markdown">Markdown Features</SidebarLink>
-            <SidebarLink to="/guide/frontmatter">Frontmatter</SidebarLink>
-            <SidebarLink to="/guide/typedoc">TypeDoc Integration</SidebarLink>
-          </SidebarGroup>
+          <ArdoSidebarGroup title="Writing">
+            <ArdoSidebarLink to="/guide/markdown">Markdown Features</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/frontmatter">Frontmatter</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/typedoc">TypeDoc Integration</ArdoSidebarLink>
+          </ArdoSidebarGroup>
 
-          <SidebarGroup title="Customization">
-            <SidebarLink to="/guide/configuration">Configuration</SidebarLink>
-            <SidebarLink to="/guide/theme-config">Theme Config</SidebarLink>
-            <SidebarLink to="/guide/custom-theme">Custom Theme</SidebarLink>
-          </SidebarGroup>
+          <ArdoSidebarGroup title="Customization">
+            <ArdoSidebarLink to="/guide/configuration">Configuration</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/theme-config">Theme Config</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/custom-theme">Custom Theme</ArdoSidebarLink>
+          </ArdoSidebarGroup>
 
-          <SidebarGroup title="Deploy & Troubleshoot">
-            <SidebarLink to="/guide/deployment">Deployment</SidebarLink>
-            <SidebarLink to="/guide/troubleshooting">Troubleshooting</SidebarLink>
-          </SidebarGroup>
+          <ArdoSidebarGroup title="Deploy & Troubleshoot">
+            <ArdoSidebarLink to="/guide/deployment">Deployment</ArdoSidebarLink>
+            <ArdoSidebarLink to="/guide/troubleshooting">Troubleshooting</ArdoSidebarLink>
+          </ArdoSidebarGroup>
 
-          <SidebarGroup title="API Reference" to="/api-reference">
-            <SidebarLink to="/api-reference/components">Components</SidebarLink>
-            <SidebarLink to="/api-reference/functions">Functions</SidebarLink>
-            <SidebarLink to="/api-reference/interfaces">Interfaces</SidebarLink>
-            <SidebarLink to="/api-reference/types">Types</SidebarLink>
-            <SidebarLink to="/api-reference/classes">Classes</SidebarLink>
-          </SidebarGroup>
-        </Sidebar>
+          <ArdoSidebarGroup title="API Reference" to="/api-reference">
+            <ArdoSidebarLink to="/api-reference/components">Components</ArdoSidebarLink>
+            <ArdoSidebarLink to="/api-reference/functions">Functions</ArdoSidebarLink>
+            <ArdoSidebarLink to="/api-reference/interfaces">Interfaces</ArdoSidebarLink>
+            <ArdoSidebarLink to="/api-reference/types">Types</ArdoSidebarLink>
+            <ArdoSidebarLink to="/api-reference/classes">Classes</ArdoSidebarLink>
+          </ArdoSidebarGroup>
+        </ArdoSidebar>
       }
       footer={
-        <Footer
+        <ArdoFooter
           sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
           message="Released under the MIT License."
           copyright="Copyright 2026 Sebastian Software GmbH"

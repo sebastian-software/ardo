@@ -174,47 +174,47 @@ def greet(name):
 
 </CodeGroup>
 
-## CodeBlock in `.tsx` Routes
+## ArdoCodeBlock in `.tsx` Routes
 
-The `CodeBlock` component can be used directly in `.tsx` route files. Just write the code as children — no template literals or special escaping needed:
+The `ArdoCodeBlock` component can be used directly in `.tsx` route files. Just write the code as children — no template literals or special escaping needed:
 
 ```tsx
-import { CodeBlock } from "ardo/ui"
+import { ArdoCodeBlock } from "ardo/ui"
 
 export default function MyPage() {
   return (
-    <CodeBlock language="tsx">
+    <ArdoCodeBlock language="tsx">
       export function Hello() {
         return <div>Hello world!</div>
       }
-    </CodeBlock>
+    </ArdoCodeBlock>
   )
 }
 ```
 
-The `ardo:codeblock-highlight` Vite plugin processes CodeBlock **before the JSX parser runs**, so the children can contain any syntax (`<`, `{`, `>`, etc.) without causing errors. Common indentation is stripped automatically.
+The `ardo:codeblock-highlight` Vite plugin processes ArdoCodeBlock **before the JSX parser runs**, so the children can contain any syntax (`<`, `{`, `>`, etc.) without causing errors. Common indentation is stripped automatically.
 
 The `code` prop and template literal children are also supported:
 
 ```tsx
-<CodeBlock code="const x = 42" language="typescript" />
+<ArdoCodeBlock code="const x = 42" language="typescript" />
 ```
 
 If the `language` prop is dynamic (from a variable), build-time highlighting is skipped and the code renders as plain text.
 
-## Embedding MDX Snippets with BareContent
+## Embedding MDX Snippets with ArdoBareContent
 
-When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). To embed it as a plain content snippet, wrap it in `BareContent`:
+When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). To embed it as a plain content snippet, wrap it in `ArdoBareContent`:
 
 ```tsx
-import { BareContent } from "ardo/ui"
+import { ArdoBareContent } from "ardo/ui"
 import MySnippet from "./snippet.mdx"
 
 export default function MyPage() {
   return (
-    <BareContent>
+    <ArdoBareContent>
       <MySnippet />
-    </BareContent>
+    </ArdoBareContent>
   )
 }
 ```

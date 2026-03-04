@@ -1,64 +1,70 @@
 // Layout components
-export { Layout, RootLayout } from "./Layout"
-export type { LayoutProps, RootLayoutProps } from "./Layout"
+export { ArdoLayout, ArdoRootLayout } from "./Layout"
+export type { ArdoLayoutProps, ArdoRootLayoutProps } from "./Layout"
 
 export { ArdoRoot } from "./ArdoRoot"
 export type { ArdoRootProps } from "./ArdoRoot"
 
-export { Header, SocialLink } from "./Header"
-export type { HeaderProps, SocialLinkProps } from "./Header"
+export { ArdoHeader, ArdoSocialLink } from "./Header"
+export type { ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
 
-export { Sidebar, SidebarGroup, SidebarLink } from "./Sidebar"
-export type { SidebarProps, SidebarGroupProps, SidebarLinkProps } from "./Sidebar"
+export { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink } from "./Sidebar"
+export type { ArdoSidebarProps, ArdoSidebarGroupProps, ArdoSidebarLinkProps } from "./Sidebar"
 
-export { Footer } from "./Footer"
-export type { FooterProps, FooterMessageProps, FooterCopyrightProps } from "./Footer"
+export { ArdoFooter } from "./Footer"
+export type { ArdoFooterProps, ArdoFooterMessageProps, ArdoFooterCopyrightProps } from "./Footer"
 
-export { Nav, NavLink } from "./Nav"
-export type { NavProps, NavLinkProps } from "./Nav"
+export { ArdoNav, ArdoNavLink } from "./Nav"
+export type { ArdoNavProps, ArdoNavLinkProps } from "./Nav"
 
-export { TOC } from "./TOC"
-export { Content } from "./Content"
-export { BareContent } from "./BareContent"
-export { DocPage, DocContent, DocLayout } from "./DocPage"
-export { HomePage } from "./HomePage"
+export { ArdoTOC } from "./TOC"
+export { ArdoContent } from "./Content"
+export { ArdoBareContent } from "./BareContent"
+export { ArdoDocPage, ArdoDocContent, ArdoDocLayout } from "./DocPage"
+export { ArdoHomePage } from "./HomePage"
 
 // UI components
 export {
-  ThemeToggle,
-  Search,
-  CodeBlock,
-  CodeGroup,
-  Container,
-  Tip,
-  Warning,
-  Danger,
-  Info,
-  Note,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  TabPanels,
-  CopyButton,
-  Hero,
-  Features,
-  FeatureCard,
-  Icon,
+  ArdoThemeToggle,
+  ArdoSearch,
+  ArdoCodeBlock,
+  ArdoCodeGroup,
+  ArdoContainer,
+  ArdoTip,
+  ArdoWarning,
+  ArdoDanger,
+  ArdoInfo,
+  ArdoNote,
+  ArdoTabs,
+  ArdoTabList,
+  ArdoTab,
+  ArdoTabPanel,
+  ArdoTabPanels,
+  ArdoCopyButton,
+  ArdoHero,
+  ArdoFeatures,
+  ArdoFeatureCard,
+  ArdoIcon,
   registerIcons,
   getRegisteredIconNames,
 } from "./components"
-export type { IconProps } from "./components"
-export type { HeroProps, HeroAction, HeroImage } from "./components"
-export type { FeaturesProps, FeatureCardProps, FeatureItem } from "./components"
-export type { CodeBlockProps, CodeGroupProps } from "./components"
+export type { ArdoIconProps } from "./components"
+export type { ArdoHeroProps, ArdoHeroAction, ArdoHeroImage } from "./components"
+export type { ArdoFeaturesProps, ArdoFeatureCardProps, ArdoFeatureItem } from "./components"
+export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./components"
 export type {
-  ContainerProps,
-  ContainerType,
-  TipProps,
-  WarningProps,
-  DangerProps,
-  InfoProps,
-  NoteProps,
+  ArdoContainerProps,
+  ArdoContainerType,
+  ArdoTipProps,
+  ArdoWarningProps,
+  ArdoDangerProps,
+  ArdoInfoProps,
+  ArdoNoteProps,
 } from "./components"
-export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabPanelsProps } from "./components"
+export type {
+  ArdoTabsProps,
+  ArdoTabListProps,
+  ArdoTabProps,
+  ArdoTabPanelProps,
+  ArdoTabPanelsProps,
+} from "./components"

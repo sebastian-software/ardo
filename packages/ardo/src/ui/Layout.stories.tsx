@@ -1,17 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Layout } from "./Layout"
-import { Header } from "./Header"
-import { Sidebar } from "./Sidebar"
-import { Footer } from "./Footer"
+import { ArdoLayout } from "./Layout"
+import { ArdoHeader } from "./Header"
+import { ArdoSidebar } from "./Sidebar"
+import { ArdoFooter } from "./Footer"
+import { ardoContent } from "./content.css"
 
 const meta = {
   title: "Layout/Layout",
-  component: Layout,
+  component: ArdoLayout,
   tags: ["autodocs"],
   parameters: {
     routerPath: "/guide/getting-started",
   },
-} satisfies Meta<typeof Layout>
+} satisfies Meta<typeof ArdoLayout>
 
 export default meta
 
@@ -19,11 +20,11 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    header: <Header />,
-    sidebar: <Sidebar />,
-    footer: <Footer />,
+    header: <ArdoHeader />,
+    sidebar: <ArdoSidebar />,
+    footer: <ArdoFooter />,
     children: (
-      <article className="ardo-content" style={{ padding: "2rem" }}>
+      <article className={ardoContent} style={{ padding: "2rem" }}>
         <h1>Getting Started</h1>
         <p>Use this story to validate shell spacing and responsive behavior.</p>
       </article>

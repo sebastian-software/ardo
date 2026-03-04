@@ -1,4 +1,4 @@
-import { Hero, Features } from "ardo/ui"
+import { ArdoHero, ArdoFeatures } from "ardo/ui"
 import { Zap, Sparkles, Palette, ArrowRight, Github } from "ardo/icons"
 import type { MetaFunction } from "react-router"
 
@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => [
 export default function HomePage() {
   return (
     <>
-      <Hero
+      <ArdoHero
         name="{{SITE_TITLE}}"
         text="Documentation Made Simple"
         tagline="Focus on your content, not configuration"
@@ -28,7 +28,7 @@ export default function HomePage() {
           },
         ]}
       />
-      <Features
+      <ArdoFeatures
         items={[
           {
             title: "Fast",

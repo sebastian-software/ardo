@@ -10,7 +10,7 @@ import {
 import { NavLink, useLocation } from "react-router"
 import { ChevronDownIcon } from "./icons"
 import type { SidebarItem as SidebarItemType } from "../config/types"
-import { useSidebar } from "../runtime/hooks"
+import { useArdoSidebar } from "../runtime/hooks"
 import * as styles from "./Sidebar.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -34,7 +34,7 @@ function useSidebarContext() {
 // Sidebar Component Types
 // =============================================================================
 
-export interface SidebarProps {
+export interface ArdoSidebarProps {
   /** Sidebar items (for data-driven approach) */
   items?: SidebarItemType[]
   /** Children for JSX composition (SidebarGroup, SidebarLink) */
@@ -78,9 +78,9 @@ export interface SidebarProps {
  * </Sidebar>
  * ```
  */
-export function Sidebar({ items, children, className }: SidebarProps) {
+export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
-  const contextSidebar = useSidebar()
+  const contextSidebar = useArdoSidebar()
   const resolvedItems = items ?? (children ? undefined : contextSidebar)
 
   return (
@@ -102,7 +102,7 @@ export function Sidebar({ items, children, className }: SidebarProps) {
 // SidebarGroup Component
 // =============================================================================
 
-export interface SidebarGroupProps {
+export interface ArdoSidebarGroupProps {
   /** Group title */
   title: string
   /** Optional link for the group title */
@@ -135,14 +135,14 @@ export interface SidebarGroupProps {
  * </SidebarGroup>
  * ```
  */
-export function SidebarGroup({
+export function ArdoSidebarGroup({
   title,
   to,
   collapsed: initialCollapsed = false,
   collapsible = true,
   children,
   className,
-}: SidebarGroupProps) {
+}: ArdoSidebarGroupProps) {
   const [collapsed, setCollapsed] = useState(initialCollapsed)
   const { currentPath } = useSidebarContext()
 
@@ -200,7 +200,7 @@ export function SidebarGroup({
 // SidebarLink Component
 // =============================================================================
 
-export interface SidebarLinkProps {
+export interface ArdoSidebarLinkProps {
   /** Internal route path (type-safe with React Router's registered routes) */
   to: RoutePath
   /** Link text */
@@ -217,7 +217,7 @@ export interface SidebarLinkProps {
  * <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
  * ```
  */
-export function SidebarLink({ to, children, className }: SidebarLinkProps) {
+export function ArdoSidebarLink({ to, children, className }: ArdoSidebarLinkProps) {
   const baseClassName = className ?? styles.sidebarLink
   return (
     <li className={styles.sidebarItem}>
@@ -327,14 +327,17 @@ function checkChildrenActive(children: ReactNode, currentPath: string): boolean 
 
     if (isValidElement(child)) {
       // Check SidebarLink
-      if (child.type === SidebarLink && (child.props as SidebarLinkProps).to === currentPath) {
+      if (
+        child.type === ArdoSidebarLink &&
+        (child.props as ArdoSidebarLinkProps).to === currentPath
+      ) {
         isActive = true
         return
       }
 
       // Check nested SidebarGroup
-      if (child.type === SidebarGroup) {
-        const groupProps = child.props as SidebarGroupProps
+      if (child.type === ArdoSidebarGroup) {
+        const groupProps = child.props as ArdoSidebarGroupProps
         if (groupProps.to === currentPath) {
           isActive = true
           return

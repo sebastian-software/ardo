@@ -21,7 +21,7 @@ function useNavContext() {
 // Nav Component
 // =============================================================================
 
-export interface NavProps {
+export interface ArdoNavProps {
   children?: ReactNode
   className?: string
 }
@@ -38,7 +38,7 @@ export interface NavProps {
  * </Nav>
  * ```
  */
-export function Nav({ children, className }: NavProps) {
+export function ArdoNav({ children, className }: ArdoNavProps) {
   return <nav className={className ?? styles.nav}>{children}</nav>
 }
 
@@ -46,7 +46,7 @@ export function Nav({ children, className }: NavProps) {
 // NavLink Component
 // =============================================================================
 
-export interface NavLinkProps {
+export interface ArdoNavLinkProps {
   /** Internal route path (type-safe with React Router's registered routes) */
   to?: RoutePath
   /** External URL (uses anchor tag) */
@@ -71,13 +71,13 @@ export interface NavLinkProps {
  * <NavLink href="https://github.com/...">GitHub</NavLink>
  * ```
  */
-export function NavLink({
+export function ArdoNavLink({
   to,
   href,
   children,
   className,
   activeMatch: _activeMatch,
-}: NavLinkProps) {
+}: ArdoNavLinkProps) {
   const navContext = useNavContext()
   const baseClassName = className ?? styles.navLink
 

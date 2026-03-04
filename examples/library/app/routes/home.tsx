@@ -1,4 +1,4 @@
-import { Hero, Features } from "ardo/ui"
+import { ArdoHero, ArdoFeatures } from "ardo/ui"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Library Example" }]
@@ -6,7 +6,7 @@ export const meta: MetaFunction = () => [{ title: "Ardo Library Example" }]
 export default function HomePage() {
   return (
     <>
-      <Hero
+      <ArdoHero
         name="Ardo Library Example"
         text="Library Documentation"
         tagline="Demonstrates Ardo with TypeDoc integration for automatic API reference generation."
@@ -15,7 +15,7 @@ export default function HomePage() {
           { text: "API Reference", link: "/api-reference", theme: "alt" },
         ]}
       />
-      <Features
+      <ArdoFeatures
         items={[
           {
             title: "TypeDoc",

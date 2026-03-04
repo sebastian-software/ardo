@@ -1,38 +1,43 @@
 import { Link } from "react-router"
-import { usePageData, useConfig, useThemeConfig } from "../runtime/hooks"
-import { Header, SocialLink } from "./Header"
-import { Footer } from "./Footer"
-import { Nav, NavLink } from "./Nav"
+import { useArdoPageData, useArdoConfig, useArdoTheme } from "../runtime/hooks"
+import { ArdoHeader, ArdoSocialLink } from "./Header"
+import { ArdoFooter } from "./Footer"
+import { ArdoNav, ArdoNavLink } from "./Nav"
 import * as layoutStyles from "./Layout.css"
 import * as heroStyles from "./components/Hero.css"
 import * as featureStyles from "./components/Features.css"
 
-export function HomePage() {
-  const pageData = usePageData()
-  const config = useConfig()
-  const themeConfig = useThemeConfig()
+export function ArdoHomePage() {
+  const pageData = useArdoPageData()
+  const config = useArdoConfig()
+  const themeConfig = useArdoTheme()
 
   const hero = pageData?.frontmatter.hero
   const features = pageData?.frontmatter.features
 
   return (
     <div className={layoutStyles.home}>
-      <Header
+      <ArdoHeader
         logo={themeConfig.logo}
         title={themeConfig.siteTitle !== false ? config.title : undefined}
         nav={
           themeConfig.nav && themeConfig.nav.length > 0 ? (
-            <Nav>
+            <ArdoNav>
               {themeConfig.nav.map((item, index) => (
-                <NavLink key={index} to={item.link}>
+                <ArdoNavLink key={index} to={item.link}>
                   {item.text}
-                </NavLink>
+                </ArdoNavLink>
               ))}
-            </Nav>
+            </ArdoNav>
           ) : undefined
         }
         actions={themeConfig.socialLinks?.map((link, index) => (
-          <SocialLink key={index} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
+          <ArdoSocialLink
+            key={index}
+            href={link.link}
+            icon={link.icon}
+            ariaLabel={link.ariaLabel}
+          />
         ))}
       />
 
@@ -92,7 +97,7 @@ export function HomePage() {
         )}
       </main>
 
-      <Footer />
+      <ArdoFooter />
     </div>
   )
 }
