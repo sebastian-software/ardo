@@ -121,7 +121,7 @@ export function Header({
         </div>
 
         {/* Center: Navigation */}
-        {resolvedNav && <div className="ardo-nav">{resolvedNav}</div>}
+        {resolvedNav && <div className="ardo-desktop-nav">{resolvedNav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
         <div className="ardo-header-right">

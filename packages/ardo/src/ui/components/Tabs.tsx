@@ -1,11 +1,23 @@
-import { useState, createContext, useContext, type ReactNode } from "react"
+import {
+  Children,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+  createContext,
+  useContext,
+  type ReactNode,
+} from "react"
 
 interface TabsContextValue {
   activeTab: string
   setActiveTab: (tab: string) => void
+  getTabValue: (value?: string) => string
+  getPanelValue: (value?: string) => string
 }
 
 const TabsContext = createContext<TabsContextValue | null>(null)
+const AUTO_TAB_PREFIX = "__ardo-tab-"
 
 function useTabsContext() {
   const context = useContext(TabsContext)
@@ -26,10 +38,31 @@ export interface TabsProps {
  * Tabs container component for organizing content into tabbed panels.
  */
 export function Tabs({ defaultValue, children }: TabsProps) {
-  const [activeTab, setActiveTab] = useState(defaultValue || "")
+  const [activeTab, setActiveTab] = useState(() => defaultValue ?? findFirstTabValue(children))
+  const tabIndexRef = useRef(0)
+  const panelIndexRef = useRef(0)
+
+  tabIndexRef.current = 0
+  panelIndexRef.current = 0
+
+  const getTabValue = (value?: string) => {
+    const index = tabIndexRef.current++
+    return value ?? `${AUTO_TAB_PREFIX}${index}`
+  }
+
+  const getPanelValue = (value?: string) => {
+    const index = panelIndexRef.current++
+    return value ?? `${AUTO_TAB_PREFIX}${index}`
+  }
+
+  useEffect(() => {
+    if (defaultValue !== undefined) {
+      setActiveTab(defaultValue)
+    }
+  }, [defaultValue])
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabsContext.Provider value={{ activeTab, setActiveTab, getTabValue, getPanelValue }}>
       <div className="ardo-tabs">{children}</div>
     </TabsContext.Provider>
   )
@@ -52,8 +85,8 @@ export function TabList({ children }: TabListProps) {
 }
 
 export interface TabProps {
-  /** Unique value identifying this tab */
-  value: string
+  /** Unique value identifying this tab (optional if tab order matches panels) */
+  value?: string
   /** Tab button label */
   children: ReactNode
 }
@@ -62,15 +95,17 @@ export interface TabProps {
  * Individual tab button.
  */
 export function Tab({ value, children }: TabProps) {
-  const { activeTab, setActiveTab } = useTabsContext()
-  const isActive = activeTab === value
+  const { activeTab, setActiveTab, getTabValue } = useTabsContext()
+  const resolvedValue = getTabValue(value)
+  const isActive = activeTab === resolvedValue
 
   return (
     <button
+      type="button"
       role="tab"
       aria-selected={isActive}
       className={["ardo-tab", isActive && "active"].filter(Boolean).join(" ")}
-      onClick={() => setActiveTab(value)}
+      onClick={() => setActiveTab(resolvedValue)}
     >
       {children}
     </button>
@@ -78,8 +113,8 @@ export function Tab({ value, children }: TabProps) {
 }
 
 export interface TabPanelProps {
-  /** Value matching the corresponding Tab */
-  value: string
+  /** Value matching the corresponding Tab (optional if panel order matches tabs) */
+  value?: string
   /** Panel content */
   children: ReactNode
 }
@@ -88,8 +123,9 @@ export interface TabPanelProps {
  * Content panel for a tab.
  */
 export function TabPanel({ value, children }: TabPanelProps) {
-  const { activeTab } = useTabsContext()
-  const isActive = activeTab === value
+  const { activeTab, getPanelValue } = useTabsContext()
+  const resolvedValue = getPanelValue(value)
+  const isActive = activeTab === resolvedValue
 
   if (!isActive) {
     return null
@@ -112,4 +148,27 @@ export interface TabPanelsProps {
  */
 export function TabPanels({ children }: TabPanelsProps) {
   return <div className="ardo-tab-panels">{children}</div>
+}
+
+function findFirstTabValue(children: ReactNode): string {
+  for (const child of Children.toArray(children)) {
+    if (!isValidElement(child)) {
+      continue
+    }
+
+    if (child.type === Tab) {
+      const tabValue = (child.props as { value?: string }).value
+      return tabValue ?? `${AUTO_TAB_PREFIX}0`
+    }
+
+    const nestedChildren = (child.props as { children?: ReactNode }).children
+    if (nestedChildren) {
+      const nestedValue = findFirstTabValue(nestedChildren)
+      if (nestedValue) {
+        return nestedValue
+      }
+    }
+  }
+
+  return ""
 }
