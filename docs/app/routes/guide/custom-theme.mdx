@@ -15,6 +15,41 @@ Ardo's default theme is intentionally not a black box. Nothing is locked down, n
 
 Start simple. Go deeper when you need to.
 
+## Brand Color
+
+The fastest way to customize Ardo's look. Every color in the theme derives from a single OKLCH hue value. Change the hue and all backgrounds, text, borders, and brand colors update together — keeping the carefully tuned lightness and contrast relationships intact.
+
+Create a `.css.ts` file:
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme(240) // deep blue
+```
+
+Import it in your `root.tsx` after Ardo's styles:
+
+```ts
+import "ardo/ui/styles.css"
+import "./styles/brand.css"
+```
+
+The default hue is `170` (teal). Some starting points:
+
+| Hue   | Color          |
+| ----- | -------------- |
+| `170` | Teal (default) |
+| `240` | Blue           |
+| `260` | Indigo         |
+| `290` | Purple         |
+| `330` | Pink           |
+| `25`  | Red            |
+| `45`  | Orange         |
+| `130` | Green          |
+
+For full control over individual tokens, use `createTheme()` instead — it returns the complete `{ light, dark }` token sets for a given hue, which you can modify before passing to `createGlobalTheme`.
+
 ## CSS Variables
 
 The fastest way to make the theme yours. Override a few CSS custom properties and the entire site updates:
