@@ -19,6 +19,8 @@
     "typecheck": "pnpm -r typecheck",
     "docs:dev": "pnpm -r --filter ./docs dev",
     "docs:build": "pnpm -r --filter './docs' build",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "STORYBOOK_BASE=/storybook/ storybook build --output-dir storybook-static",
     "prepare": "husky"
   },
   "keywords": [
@@ -34,6 +36,9 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@storybook/addon-docs": "^10.2.15",
+    "@storybook/react": "^10.2.15",
+    "@storybook/react-vite": "^10.2.15",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -44,6 +49,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.3.1",
     "prettier": "^3.8.1",
+    "storybook": "^10.2.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
     "vitest": "^4.0.18"
@@ -55,5 +61,11 @@
   "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "^1.18.0",
+    "@vanilla-extract/esbuild-plugin": "^2.3.21",
+    "@vanilla-extract/recipes": "^0.5.7",
+    "@vanilla-extract/vite-plugin": "^5.1.4"
   }
 }

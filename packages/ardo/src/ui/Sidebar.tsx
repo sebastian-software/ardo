@@ -11,6 +11,7 @@ import { NavLink, useLocation } from "react-router"
 import { ChevronDownIcon } from "./icons"
 import type { SidebarItem as SidebarItemType } from "../config/types"
 import { useSidebar } from "../runtime/hooks"
+import * as styles from "./Sidebar.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -84,10 +85,10 @@ export function Sidebar({ items, children, className }: SidebarProps) {
 
   return (
     <SidebarContext.Provider value={{ currentPath: pathname }}>
-      <aside className={className ?? "ardo-sidebar"}>
-        <nav className="ardo-sidebar-nav" aria-label="Main navigation">
+      <aside className={className ?? styles.sidebar}>
+        <nav aria-label="Main navigation">
           {children ? (
-            <ul className="ardo-sidebar-list ardo-sidebar-list-0">{children}</ul>
+            <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
           ) : resolvedItems?.length ? (
             <SidebarItems items={resolvedItems} depth={0} />
           ) : null}
@@ -148,15 +149,15 @@ export function SidebarGroup({
   // Check if any child is active
   const isChildActive = checkChildrenActive(children, currentPath)
 
-  const textClassName = ["ardo-sidebar-text", isChildActive && "child-active"]
+  const textClassName = [styles.sidebarText, isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
   const hasChildren = Children.count(children) > 0
 
   return (
-    <li className={className ?? "ardo-sidebar-item"}>
-      <div className="ardo-sidebar-item-header">
+    <li className={className ?? styles.sidebarItem}>
+      <div className={styles.sidebarItemHeader}>
         {to ? (
           <NavLink
             to={to}
@@ -179,9 +180,7 @@ export function SidebarGroup({
 
         {collapsible && hasChildren && (
           <button
-            className={["ardo-sidebar-collapse", collapsed && "collapsed"]
-              .filter(Boolean)
-              .join(" ")}
+            className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
@@ -191,7 +190,7 @@ export function SidebarGroup({
       </div>
 
       {hasChildren && !collapsed && (
-        <ul className="ardo-sidebar-list ardo-sidebar-list-1">{children}</ul>
+        <ul className={`${styles.sidebarList} ${styles.sidebarList1}`}>{children}</ul>
       )}
     </li>
   )
@@ -219,9 +218,9 @@ export interface SidebarLinkProps {
  * ```
  */
 export function SidebarLink({ to, children, className }: SidebarLinkProps) {
-  const baseClassName = className ?? "ardo-sidebar-link"
+  const baseClassName = className ?? styles.sidebarLink
   return (
-    <li className="ardo-sidebar-item">
+    <li className={styles.sidebarItem}>
       <NavLink
         to={to}
         className={({ isActive }) =>
@@ -245,7 +244,9 @@ interface SidebarItemsProps {
 
 function SidebarItems({ items, depth }: SidebarItemsProps) {
   return (
-    <ul className={`ardo-sidebar-list ardo-sidebar-list-${depth}`}>
+    <ul
+      className={`${styles.sidebarList} ${depth === 0 ? styles.sidebarList0 : styles.sidebarList1}`}
+    >
       {items.map((item, index) => (
         <SidebarItemComponent key={index} item={item} depth={depth} />
       ))}
@@ -272,17 +273,17 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         (child.items && child.items.some((grandchild) => grandchild.link === currentPath))
     )
 
-  const linkClassName = ["ardo-sidebar-link", isChildActive && "child-active"]
+  const linkClassName = [styles.sidebarLink, isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
-  const textClassName = ["ardo-sidebar-text", isChildActive && "child-active"]
+  const textClassName = [styles.sidebarText, isChildActive && "child-active"]
     .filter(Boolean)
     .join(" ")
 
   return (
-    <li className="ardo-sidebar-item">
-      <div className="ardo-sidebar-item-header">
+    <li className={styles.sidebarItem}>
+      <div className={styles.sidebarItemHeader}>
         {item.link ? (
           <NavLink
             to={item.link}
@@ -300,9 +301,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 
         {hasChildren && (
           <button
-            className={["ardo-sidebar-collapse", collapsed && "collapsed"]
-              .filter(Boolean)
-              .join(" ")}
+            className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >

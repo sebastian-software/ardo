@@ -3,6 +3,8 @@ import { usePageData, useThemeConfig, useSidebar } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { Link, useLocation } from "react-router"
 import { useBareContent } from "./BareContent"
+import * as docStyles from "./DocPage.css"
+import * as footerStyles from "./Footer.css"
 
 interface ContentProps {
   children: ReactNode
@@ -16,7 +18,7 @@ export function Content({ children }: ContentProps) {
   const location = useLocation()
 
   if (isBare) {
-    return <div className="ardo-content-body ardo-content">{children}</div>
+    return <div className={`${docStyles.contentBody} ardo-content`}>{children}</div>
   }
 
   const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
@@ -44,33 +46,33 @@ export function Content({ children }: ContentProps) {
     : null
 
   return (
-    <article className="ardo-content-container">
+    <article className={docStyles.contentContainer}>
       {pageData?.frontmatter.title && (
-        <header className="ardo-content-header">
-          <h1 className="ardo-content-title">{pageData.frontmatter.title}</h1>
+        <header className={docStyles.contentHeader}>
+          <h1 className={docStyles.contentTitle}>{pageData.frontmatter.title}</h1>
           {pageData.frontmatter.description && (
-            <p className="ardo-content-description">{pageData.frontmatter.description}</p>
+            <p className={docStyles.contentDescription}>{pageData.frontmatter.description}</p>
           )}
         </header>
       )}
 
-      <div className="ardo-content-body ardo-content">{children}</div>
+      <div className={`${docStyles.contentBody} ardo-content`}>{children}</div>
 
-      <footer className="ardo-content-footer">
+      <footer className={footerStyles.contentFooter}>
         {(showEditLink || showLastUpdated) && (
-          <div className="ardo-content-meta">
+          <div className={footerStyles.contentMeta}>
             {showEditLink && (
               <a
                 href={editLink!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ardo-edit-link"
+                className={footerStyles.editLink}
               >
                 {themeConfig.editLink?.text ?? "Edit this page"}
               </a>
             )}
             {showLastUpdated && (
-              <span className="ardo-last-updated">
+              <span>
                 {themeConfig.lastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
               </span>
             )}
@@ -78,19 +80,19 @@ export function Content({ children }: ContentProps) {
         )}
 
         {(prev || next) && (
-          <nav className="ardo-prev-next" aria-label="Page navigation">
+          <nav className={footerStyles.prevNext} aria-label="Page navigation">
             {prev ? (
-              <Link to={prev.link!} className="ardo-prev-link">
-                <span className="ardo-prev-next-label">Previous</span>
-                <span className="ardo-prev-next-title">{prev.text}</span>
+              <Link to={prev.link!} className={footerStyles.prevLink}>
+                <span className={footerStyles.prevNextLabel}>Previous</span>
+                <span className={footerStyles.prevNextTitle}>{prev.text}</span>
               </Link>
             ) : (
               <div />
             )}
             {next ? (
-              <Link to={next.link!} className="ardo-next-link">
-                <span className="ardo-prev-next-label">Next</span>
-                <span className="ardo-prev-next-title">{next.text}</span>
+              <Link to={next.link!} className={footerStyles.nextLink}>
+                <span className={footerStyles.prevNextLabel}>Next</span>
+                <span className={footerStyles.prevNextTitle}>{next.text}</span>
               </Link>
             ) : (
               <div />

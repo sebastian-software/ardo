@@ -1,6 +1,7 @@
 import { defineConfig } from "tsup"
+import { vanillaExtractPlugin } from "@vanilla-extract/esbuild-plugin"
 import { copyFileSync, mkdirSync, readdirSync } from "fs"
-import { dirname, join } from "path"
+import { join } from "path"
 
 export default defineConfig({
   entry: {
@@ -12,6 +13,8 @@ export default defineConfig({
     "icons/index": "src/icons/index.ts",
     "typedoc/index": "src/typedoc/index.ts",
     "mdx/provider": "src/mdx/provider.tsx",
+    "theme/index": "src/ui/theme/index.ts",
+    "ui/styles": "src/ui/styles.css.ts",
   },
   format: ["esm"],
   dts: true,
@@ -32,16 +35,11 @@ export default defineConfig({
     "lucide-react",
     /^virtual:ardo\//,
   ],
+  esbuildPlugins: [vanillaExtractPlugin()],
   esbuildOptions(options) {
     options.jsx = "automatic"
   },
   onSuccess: async () => {
-    // Copy static assets
-    const destPath = join("dist", "ui", "styles.css")
-    mkdirSync(dirname(destPath), { recursive: true })
-    copyFileSync(join("src", "ui", "styles.css"), destPath)
-    console.log("Copied styles.css to dist/ui/")
-
     // Copy SVG icons
     const iconsDir = join("src", "ui", "icons")
     const destIconsDir = join("dist", "ui", "icons")

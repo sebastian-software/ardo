@@ -1,5 +1,6 @@
 import { type ReactNode, type ComponentProps, useState, createContext, useContext } from "react"
 import { NavLink as RouterNavLink } from "react-router"
+import * as styles from "./Nav.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof RouterNavLink>["to"]
@@ -38,7 +39,7 @@ export interface NavProps {
  * ```
  */
 export function Nav({ children, className }: NavProps) {
-  return <nav className={className ?? "ardo-nav"}>{children}</nav>
+  return <nav className={className ?? styles.nav}>{children}</nav>
 }
 
 // =============================================================================
@@ -78,7 +79,7 @@ export function NavLink({
   activeMatch: _activeMatch,
 }: NavLinkProps) {
   const navContext = useNavContext()
-  const baseClassName = className ?? "ardo-nav-link"
+  const baseClassName = className ?? styles.navLink
 
   // Handle click for mobile menu
   const handleClick = () => {
@@ -117,48 +118,6 @@ export function NavLink({
 
   // Text-only (no link)
   return <span className={baseClassName}>{children}</span>
-}
-
-// =============================================================================
-// NavDropdown Component
-// =============================================================================
-
-export interface NavDropdownProps {
-  /** Dropdown trigger text */
-  text: string
-  /** Dropdown items */
-  children: ReactNode
-  /** Additional CSS classes */
-  className?: string
-}
-
-/**
- * Dropdown navigation menu for grouping related links.
- *
- * @example
- * ```tsx
- * <NavDropdown text="Resources">
- *   <NavLink to="/docs">Documentation</NavLink>
- *   <NavLink to="/blog">Blog</NavLink>
- * </NavDropdown>
- * ```
- */
-export function NavDropdown({ text, children, className }: NavDropdownProps) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div
-      className={className ?? "ardo-nav-dropdown"}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button className="ardo-nav-dropdown-button">
-        {text}
-        <span className="ardo-nav-dropdown-icon">▼</span>
-      </button>
-      {open && <div className="ardo-nav-dropdown-menu">{children}</div>}
-    </div>
-  )
 }
 
 // =============================================================================

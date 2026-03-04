@@ -15,6 +15,7 @@ import {
   Zap,
   BookOpen,
   ShieldCheck,
+  Paintbrush,
   Palette,
   Search,
   Moon,
@@ -123,10 +124,16 @@ export default function HomePage() {
               "Write Markdown, import React components where you need them. Code blocks are syntax-highlighted at build time with Shiki. No client-side JS for highlighting.",
           },
           {
+            title: "Vanilla Extract styling",
+            icon: <Paintbrush size={28} strokeWidth={1.5} />,
+            details:
+              "All styles are type-safe Vanilla Extract. Import design tokens from ardo/theme, write your own .css.ts files, and override any component — with full autocomplete.",
+          },
+          {
             title: "Make it yours",
             icon: <Palette size={28} strokeWidth={1.5} />,
             details:
-              "CSS custom properties for theming. Override any component. Bring your own layout if the defaults don't fit. It's your site.",
+              "Override CSS variables, swap components, or build an entirely custom theme. Ardo's runtime hooks give you all the data — you decide how to render it.",
           },
         ]}
       />
@@ -199,6 +206,12 @@ export default function HomePage() {
               </div>
               <span>Shiki</span>
             </div>
+            <div className="ardo-home-tech-item">
+              <div className="ardo-home-tech-icon">
+                <Paintbrush size={32} />
+              </div>
+              <span>Vanilla Extract</span>
+            </div>
           </div>
         </div>
       </section>
@@ -236,6 +249,15 @@ export default function HomePage() {
                   <td>Webpack</td>
                   <td>Astro/Vite</td>
                   <td>Vite</td>
+                </tr>
+                <tr>
+                  <td>Styling</td>
+                  <td className="ardo-home-comparison-highlight">
+                    <span className="ardo-home-check">Vanilla Extract</span>
+                  </td>
+                  <td>CSS Modules</td>
+                  <td>Tailwind</td>
+                  <td>PostCSS</td>
                 </tr>
                 <tr>
                   <td>Your React components</td>

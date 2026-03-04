@@ -57,6 +57,13 @@ jobs:
         run: pnpm build
         working-directory: ${{ matrix.directory }}
 
+      - name: Build and copy Storybook (docs only)
+        if: matrix.site == "docs"
+        run: |
+          pnpm storybook:build
+          mkdir -p docs/build/client/storybook
+          cp -r storybook-static/* docs/build/client/storybook/
+
       - name: Prepare Vercel output
         run: |
           mkdir -p .vercel

@@ -1,6 +1,7 @@
 import { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
 import { useConfig, useThemeConfig } from "../runtime/hooks"
+import * as styles from "./Footer.css"
 
 // =============================================================================
 // Footer Component
@@ -104,17 +105,17 @@ export function Footer({
   }
 
   return (
-    <footer className={className ?? "ardo-footer"}>
-      <div className="ardo-footer-container">
+    <footer className={className ?? styles.footer}>
+      <div className="ardo-footer-container" /* container has no special styles */>
         {children ?? (
           <>
             {/* Primary line: project · ardo · sponsor */}
             {(resolvedProject || ardoLink || resolvedSponsor) && (
-              <p className="ardo-footer-primary">
+              <p className={styles.footerPrimary}>
                 {resolvedProject?.name && (
                   <>
                     {resolvedProject.homepage ? (
-                      <a href={resolvedProject.homepage} className="ardo-footer-link">
+                      <a href={resolvedProject.homepage} className={styles.footerLink}>
                         {resolvedProject.name}
                         {resolvedProject.version ? ` v${resolvedProject.version}` : ""}
                       </a>
@@ -127,18 +128,18 @@ export function Footer({
                   </>
                 )}
                 {resolvedProject?.name && ardoLink && (
-                  <span className="ardo-footer-separator" aria-hidden="true" />
+                  <span className={styles.footerSeparator} aria-hidden="true" />
                 )}
                 {ardoLink && (
-                  <a href="https://ardo-docs.dev" className="ardo-footer-link">
+                  <a href="https://ardo-docs.dev" className={styles.footerLink}>
                     Built with Ardo
                   </a>
                 )}
                 {(resolvedProject?.name || ardoLink) && resolvedSponsor && (
-                  <span className="ardo-footer-separator" aria-hidden="true" />
+                  <span className={styles.footerSeparator} aria-hidden="true" />
                 )}
                 {resolvedSponsor && (
-                  <a href={resolvedSponsor.link} className="ardo-footer-link">
+                  <a href={resolvedSponsor.link} className={styles.footerLink}>
                     Sponsored by {resolvedSponsor.text}
                   </a>
                 )}
@@ -147,19 +148,19 @@ export function Footer({
             {/* Secondary line: message / copyright */}
             {resolvedMessage && (
               <p
-                className="ardo-footer-message"
+                className={styles.footerMessage}
                 dangerouslySetInnerHTML={{ __html: resolvedMessage }}
               />
             )}
             {resolvedCopyright && (
               <p
-                className="ardo-footer-copyright"
+                className={styles.footerCopyright}
                 dangerouslySetInnerHTML={{ __html: resolvedCopyright }}
               />
             )}
             {/* Tertiary line: build timestamp */}
             {resolvedBuildTime && (
-              <p className="ardo-footer-build-time">
+              <p className={styles.footerBuildTime}>
                 Built on {formatBuildTime(resolvedBuildTime)}
                 {resolvedBuildHash && <> ({resolvedBuildHash})</>}
               </p>

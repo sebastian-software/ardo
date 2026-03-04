@@ -45,3 +45,7 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Build Storybook
+        if: matrix.node-version == '22'
+        run: pnpm storybook:build

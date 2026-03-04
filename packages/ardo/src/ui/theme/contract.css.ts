@@ -1,0 +1,69 @@
+import { createGlobalThemeContract } from "@vanilla-extract/css"
+
+const prefix = (value: string) => `ardo-${value}`
+
+export const vars = createGlobalThemeContract(
+  {
+    color: {
+      brand: null,
+      brandLight: null,
+      brandDark: null,
+      brandSubtle: null,
+      brandGradient: null,
+      bg: null,
+      bgSoft: null,
+      bgMute: null,
+      bgAlt: null,
+      text: null,
+      textLight: null,
+      textLighter: null,
+      border: null,
+      borderLight: null,
+      divider: null,
+      sidebarBg: null,
+      sidebarBorder: null,
+      codeBg: null,
+      codeBorder: null,
+      codeShadow: null,
+      shadowSm: null,
+      shadowMd: null,
+      shadowLg: null,
+      tip: null,
+      tipBg: null,
+      tipBorder: null,
+      warning: null,
+      warningBg: null,
+      warningBorder: null,
+      danger: null,
+      dangerBg: null,
+      dangerBorder: null,
+      info: null,
+      infoBg: null,
+      infoBorder: null,
+      note: null,
+      noteBg: null,
+      noteBorder: null,
+    },
+    layout: {
+      sidebarWidth: null,
+      tocWidth: null,
+      contentMaxWidth: null,
+      headerHeight: null,
+    },
+    transition: {
+      fast: null,
+      base: null,
+      slow: null,
+    },
+    font: {
+      family: null,
+      mono: null,
+    },
+    radius: {
+      sm: null,
+      base: null,
+      lg: null,
+    },
+  },
+  (_value, path) => prefix(path.join("-"))
+)

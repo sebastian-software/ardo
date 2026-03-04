@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useTOC, useThemeConfig } from "../runtime/hooks"
 import type { TOCItem } from "../config/types"
+import * as styles from "./TOC.css"
 
 export function TOC() {
   const toc = useTOC()
@@ -43,10 +44,10 @@ export function TOC() {
   }
 
   return (
-    <aside className="ardo-toc">
-      <div className="ardo-toc-container">
-        <h3 className="ardo-toc-title">{label}</h3>
-        <nav className="ardo-toc-nav" aria-label="Table of contents">
+    <aside className={styles.toc}>
+      <div>
+        <h3 className={styles.tocTitle}>{label}</h3>
+        <nav aria-label="Table of contents">
           <TOCItems items={toc} activeId={activeId} />
         </nav>
       </div>
@@ -61,7 +62,7 @@ interface TOCItemsProps {
 
 function TOCItems({ items, activeId }: TOCItemsProps) {
   return (
-    <ul className="ardo-toc-list">
+    <ul className={styles.tocList}>
       {items.map((item) => (
         <TOCItemComponent key={item.id} item={item} activeId={activeId} />
       ))}
@@ -79,11 +80,13 @@ function TOCItemComponent({ item, activeId }: TOCItemComponentProps) {
   const hasActiveChild = hasActiveDescendant(item, activeId)
 
   return (
-    <li className="ardo-toc-item">
+    <li>
       <a
         href={`#${item.id}`}
         className={[
-          `ardo-toc-link ardo-toc-link-${item.level}`,
+          styles.tocLink,
+          item.level === 3 && styles.tocLink3,
+          item.level === 4 && styles.tocLink4,
           isActive && "active",
           hasActiveChild && "child-active",
         ]

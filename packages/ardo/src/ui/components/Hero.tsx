@@ -1,5 +1,6 @@
 import { type ComponentProps, type ReactNode } from "react"
 import { Link } from "react-router"
+import * as styles from "./Hero.css"
 
 /** Internal route path from React Router */
 type RoutePath = ComponentProps<typeof Link>["to"]
@@ -68,28 +69,28 @@ export function Hero({ name, text, tagline, image, actions, className, version }
   const imageAlt = typeof image === "string" ? name : (image?.alt ?? name)
 
   return (
-    <section className={className ?? "ardo-hero"}>
-      <div className="ardo-hero-container ardo-hero-animate">
+    <section className={className ?? styles.hero}>
+      <div className={`${styles.heroContainer} ${styles.heroAnimate}`}>
         {image && (
-          <div className="ardo-hero-image">
+          <div>
             <img src={imageUrl} alt={imageAlt} />
           </div>
         )}
 
-        <div className="ardo-hero-content">
-          {version && <span className="ardo-hero-version">v{version}</span>}
-          {name && <h1 className="ardo-hero-name">{name}</h1>}
-          {text && <p className="ardo-hero-text">{text}</p>}
-          {tagline && <p className="ardo-hero-tagline">{tagline}</p>}
+        <div>
+          {version && <span className={styles.heroVersion}>v{version}</span>}
+          {name && <h1 className={styles.heroName}>{name}</h1>}
+          {text && <p className={styles.heroText}>{text}</p>}
+          {tagline && <p className={styles.heroTagline}>{tagline}</p>}
 
           {actions && actions.length > 0 && (
-            <div className="ardo-hero-actions">
+            <div className={styles.heroActions}>
               {actions.map((action, index) => {
                 const link = action.link
                 const isExternal =
                   typeof link === "string" &&
                   (link.startsWith("http://") || link.startsWith("https://"))
-                const className = `ardo-hero-action ardo-hero-action-${action.theme || "brand"}`
+                const actionClass = `${styles.heroAction} ${action.theme === "alt" ? styles.heroActionAlt : styles.heroActionBrand}`
 
                 const content = (
                   <>
@@ -103,7 +104,7 @@ export function Hero({ name, text, tagline, image, actions, className, version }
                     <a
                       key={index}
                       href={link}
-                      className={className}
+                      className={actionClass}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -113,7 +114,7 @@ export function Hero({ name, text, tagline, image, actions, className, version }
                 }
 
                 return (
-                  <Link key={index} to={link} className={className}>
+                  <Link key={index} to={link} className={actionClass}>
                     {content}
                   </Link>
                 )

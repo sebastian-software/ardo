@@ -1,5 +1,6 @@
 import { type ReactNode } from "react"
 import { LightbulbIcon, AlertTriangleIcon, XCircleIcon, InfoIcon, FileTextIcon } from "../icons"
+import * as styles from "./Container.css"
 
 export type ContainerType = "tip" | "warning" | "danger" | "info" | "note"
 
@@ -35,12 +36,12 @@ export function Container({ type, title, children }: ContainerProps) {
   const displayTitle = title || defaultTitles[type]
 
   return (
-    <div className={`ardo-container ardo-container-${type}`}>
-      <p className="ardo-container-title">
-        <span className="ardo-container-icon">{icons[type]}</span>
+    <div className={styles.container({ type })}>
+      <p className={styles.containerTitle({ type })}>
+        <span>{icons[type]}</span>
         {displayTitle}
       </p>
-      <div className="ardo-container-content">{children}</div>
+      <div className={styles.containerContent}>{children}</div>
     </div>
   )
 }

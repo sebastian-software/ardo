@@ -3,6 +3,7 @@ import { usePageData } from "../runtime/hooks"
 import { Layout } from "./Layout"
 import { Content } from "./Content"
 import { TOC } from "./TOC"
+import * as styles from "./DocPage.css"
 
 // =============================================================================
 // DocPage Component (includes Layout - for backwards compatibility)
@@ -30,7 +31,7 @@ export function DocPage({ children }: DocPageProps) {
 
   return (
     <Layout>
-      <div className="ardo-doc-page">
+      <div className={styles.docPage}>
         <Content>{children}</Content>
         {showToc && <TOC />}
       </div>
@@ -72,7 +73,7 @@ export function DocContent({ children }: DocContentProps) {
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
 
   return (
-    <div className="ardo-doc-page">
+    <div className={styles.docPage}>
       <Content>{children}</Content>
       {showToc && <TOC />}
     </div>
