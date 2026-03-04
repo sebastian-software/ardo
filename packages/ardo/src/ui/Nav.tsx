@@ -149,15 +149,15 @@ export function NavDropdown({ text, children, className }: NavDropdownProps) {
 
   return (
     <div
-      className={className ?? "ardo-nav-dropdown" /* TODO: migrate dropdown styles */}
+      className={className ?? styles.navDropdown}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="ardo-nav-dropdown-button">
+      <button className={styles.navDropdownButton}>
         {text}
-        <span className="ardo-nav-dropdown-icon">▼</span>
+        <span className={styles.navDropdownIcon}>▼</span>
       </button>
-      {open && <div className="ardo-nav-dropdown-menu">{children}</div>}
+      {open && <div className={styles.navDropdownMenu}>{children}</div>}
     </div>
   )
 }

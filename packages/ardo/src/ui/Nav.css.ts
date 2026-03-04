@@ -42,6 +42,54 @@ export const navLink = style({
   },
 })
 
+export const navDropdown = style({
+  position: "relative",
+})
+
+export const navDropdownButton = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "4px",
+  color: vars.color.textLight,
+  fontSize: "14px",
+  fontWeight: 500,
+  padding: "8px 14px",
+  borderRadius: vars.radius.sm,
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  transition: `all ${vars.transition.fast}`,
+  selectors: {
+    "&:hover": {
+      color: vars.color.text,
+      background: vars.color.bgSoft,
+    },
+  },
+})
+
+export const navDropdownIcon = style({
+  fontSize: "10px",
+  transition: `transform ${vars.transition.fast}`,
+  selectors: {
+    [`${navDropdown}:hover &`]: {
+      transform: "rotate(180deg)",
+    },
+  },
+})
+
+export const navDropdownMenu = style({
+  position: "absolute",
+  top: "100%",
+  left: 0,
+  minWidth: "160px",
+  padding: "4px",
+  background: vars.color.bg,
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radius.base,
+  boxShadow: vars.color.shadowMd,
+  zIndex: 100,
+})
+
 export const socialLink = style({
   display: "flex",
   alignItems: "center",
