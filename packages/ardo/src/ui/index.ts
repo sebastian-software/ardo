@@ -14,8 +14,8 @@ export type { SidebarProps, SidebarGroupProps, SidebarLinkProps } from "./Sideba
 export { Footer } from "./Footer"
 export type { FooterProps, FooterMessageProps, FooterCopyrightProps } from "./Footer"
 
-export { Nav, NavLink, NavDropdown } from "./Nav"
-export type { NavProps, NavLinkProps, NavDropdownProps } from "./Nav"
+export { Nav, NavLink } from "./Nav"
+export type { NavProps, NavLinkProps } from "./Nav"
 
 export { TOC } from "./TOC"
 export { Content } from "./Content"

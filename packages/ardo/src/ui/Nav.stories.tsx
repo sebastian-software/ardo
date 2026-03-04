@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { Nav, NavLink, NavDropdown } from "./Nav"
+import { Nav, NavLink } from "./Nav"
 
 const meta = {
   title: "Layout/Nav",
@@ -16,9 +16,7 @@ export const Default: Story = {
     <Nav>
       <NavLink to="/guide/getting-started">Guide</NavLink>
       <NavLink to="/api-reference">API</NavLink>
-      <NavDropdown text="Resources">
-        <NavLink href="https://github.com/sebastian-software/ardo">GitHub</NavLink>
-      </NavDropdown>
+      <NavLink href="https://github.com/sebastian-software/ardo">GitHub</NavLink>
     </Nav>
   ),
 }

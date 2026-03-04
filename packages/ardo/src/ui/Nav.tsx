@@ -121,48 +121,6 @@ export function NavLink({
 }
 
 // =============================================================================
-// NavDropdown Component
-// =============================================================================
-
-export interface NavDropdownProps {
-  /** Dropdown trigger text */
-  text: string
-  /** Dropdown items */
-  children: ReactNode
-  /** Additional CSS classes */
-  className?: string
-}
-
-/**
- * Dropdown navigation menu for grouping related links.
- *
- * @example
- * ```tsx
- * <NavDropdown text="Resources">
- *   <NavLink to="/docs">Documentation</NavLink>
- *   <NavLink to="/blog">Blog</NavLink>
- * </NavDropdown>
- * ```
- */
-export function NavDropdown({ text, children, className }: NavDropdownProps) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div
-      className={className ?? styles.navDropdown}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button className={styles.navDropdownButton}>
-        {text}
-        <span className={styles.navDropdownIcon}>▼</span>
-      </button>
-      {open && <div className={styles.navDropdownMenu}>{children}</div>}
-    </div>
-  )
-}
-
-// =============================================================================
 // NavProvider Component
 // =============================================================================
 
