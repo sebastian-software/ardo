@@ -93,7 +93,7 @@ export function Header({
           <SocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
         ))
       : undefined)
-  const hasMobileMenu = Boolean(resolvedNav || mobileMenuContent)
+  const hasMobileMenu = Boolean(mobileMenuContent)
 
   useEffect(() => {
     setMobileMenuOpen(false)
@@ -105,9 +105,15 @@ export function Header({
       setMobileMenuOpen(false)
     }
   }
+  const resolvedClassName = [
+    className ?? "ardo-header",
+    resolvedNav && "ardo-header-with-mobile-top-nav",
+  ]
+    .filter(Boolean)
+    .join(" ")
 
   return (
-    <header className={className ?? "ardo-header"}>
+    <header className={resolvedClassName}>
       <div className="ardo-header-container">
         {/* Left: Mobile menu button + Logo/Title */}
         <div className="ardo-header-left">
@@ -154,17 +160,15 @@ export function Header({
         </div>
       </div>
 
+      {resolvedNav && (
+        <div className="ardo-mobile-top-nav">
+          <div className="ardo-mobile-top-nav-inner">{resolvedNav}</div>
+        </div>
+      )}
+
       {/* Mobile menu */}
       {mobileMenuOpen && hasMobileMenu && (
         <div className="ardo-mobile-menu">
-          {resolvedNav && (
-            <nav
-              className="ardo-mobile-nav ardo-mobile-menu-section"
-              onClick={handleMobileMenuClick}
-            >
-              {resolvedNav}
-            </nav>
-          )}
           {mobileMenuContent && (
             <div
               className="ardo-mobile-menu-content ardo-mobile-menu-section"
