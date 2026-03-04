@@ -409,6 +409,12 @@ body {
   z-index: 99;
 }
 
+.ardo-mobile-menu-section + .ardo-mobile-menu-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ardo-c-border);
+}
+
 .ardo-mobile-nav .ardo-nav {
   display: flex;
   flex-direction: column;
@@ -420,7 +426,24 @@ body {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+.ardo-mobile-menu .ardo-sidebar {
+  position: static;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  padding: 0;
+  overflow-y: visible;
+  box-shadow: none;
+  background: transparent;
+  display: block;
+}
+
+.ardo-mobile-menu .ardo-sidebar-text {
+  font-size: 11px;
+}
+
+@media (max-width: 1024px) {
   .ardo-mobile-menu-button {
     display: block;
   }

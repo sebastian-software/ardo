@@ -1,5 +1,5 @@
-import { useState, lazy, Suspense, type ReactNode } from "react"
-import { Link, NavLink as RouterNavLink } from "react-router"
+import { useEffect, useState, lazy, Suspense, type MouseEvent, type ReactNode } from "react"
+import { Link, NavLink as RouterNavLink, useLocation } from "react-router"
 import {
   GithubIcon,
   TwitterIcon,
@@ -31,6 +31,8 @@ export interface HeaderProps {
   search?: boolean
   /** Show theme toggle (default: true) */
   themeToggle?: boolean
+  /** Additional content rendered in the mobile menu (e.g. sidebar) */
+  mobileMenuContent?: ReactNode
   /** Additional CSS classes */
   className?: string
 }
@@ -67,8 +69,10 @@ export function Header({
   actions,
   search = true,
   themeToggle = true,
+  mobileMenuContent,
   className,
 }: HeaderProps) {
+  const location = useLocation()
   const config = useConfig()
   const themeConfig = useThemeConfig()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -89,24 +93,39 @@ export function Header({
           <SocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
         ))
       : undefined)
+  const hasMobileMenu = Boolean(resolvedNav || mobileMenuContent)
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  const handleMobileMenuClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement
+    if (target.closest("a")) {
+      setMobileMenuOpen(false)
+    }
+  }
 
   return (
     <header className={className ?? "ardo-header"}>
       <div className="ardo-header-container">
         {/* Left: Mobile menu button + Logo/Title */}
         <div className="ardo-header-left">
-          <button
-            className="ardo-mobile-menu-button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            <span className="ardo-hamburger">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </button>
+          {hasMobileMenu && (
+            <button
+              type="button"
+              className="ardo-mobile-menu-button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <span className="ardo-hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+          )}
 
           <Link to="/" className="ardo-logo-link">
             {resolvedLogo && (
@@ -136,11 +155,24 @@ export function Header({
       </div>
 
       {/* Mobile menu */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && hasMobileMenu && (
         <div className="ardo-mobile-menu">
-          <nav className="ardo-mobile-nav" onClick={() => setMobileMenuOpen(false)}>
-            {resolvedNav}
-          </nav>
+          {resolvedNav && (
+            <nav
+              className="ardo-mobile-nav ardo-mobile-menu-section"
+              onClick={handleMobileMenuClick}
+            >
+              {resolvedNav}
+            </nav>
+          )}
+          {mobileMenuContent && (
+            <div
+              className="ardo-mobile-menu-content ardo-mobile-menu-section"
+              onClick={handleMobileMenuClick}
+            >
+              {mobileMenuContent}
+            </div>
+          )}
         </div>
       )}
     </header>
