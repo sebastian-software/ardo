@@ -36,3 +36,5 @@ export const tab = style({
 export const tabPanel = style({
   padding: "20px 0",
 })
+
+export const tabPanels = style({})

@@ -126,6 +126,19 @@ export const mobileMenu = style({
   zIndex: 99,
 })
 
+export const mobileTopNav = style({
+  display: "none",
+  "@media": {
+    "(max-width: 768px)": {
+      display: "block",
+    },
+  },
+})
+
+export const mobileMenuContent = style({})
+
+export const mobileMenuSection = style({})
+
 export const mobileNav = style({})
 
 globalStyle(`${mobileNav} nav`, {

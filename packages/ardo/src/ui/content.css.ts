@@ -1,7 +1,8 @@
-import { globalStyle } from "@vanilla-extract/css"
+import { style, globalStyle } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
-const c = ".ardo-content"
+export const ardoContent = style({})
+const c = `.${ardoContent}`
 
 globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   fontWeight: 600,

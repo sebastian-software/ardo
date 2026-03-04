@@ -1,6 +1,12 @@
 import { style } from "@vanilla-extract/css"
 import { vars } from "../theme/contract.css"
 
+export const themeIcon = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+})
+
 export const themeToggle = style({
   display: "flex",
   alignItems: "center",

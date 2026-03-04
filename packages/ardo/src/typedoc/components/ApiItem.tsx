@@ -1,6 +1,7 @@
 import type { ApiDocItem, ApiDocKind } from "../types"
 import { ApiSignature, ApiParametersTable, ApiReturns } from "./ApiSignature"
 import type { JSX } from "react"
+import * as styles from "../../ui/components/ApiItem.css"
 
 interface ApiItemProps {
   item: ApiDocItem
@@ -11,16 +12,16 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
   const HeadingTag = `h${Math.min(level, 6)}` as keyof JSX.IntrinsicElements
 
   return (
-    <div className={`ardo-api-item ardo-api-item-${item.kind}`} id={item.id}>
-      <HeadingTag className="ardo-api-item-title">
+    <div className={styles.apiItem} id={item.id}>
+      <HeadingTag className={styles.apiItemTitle}>
         <ApiKindBadge kind={item.kind} />
-        <span className="ardo-api-item-name">{item.name}</span>
-        <a href={`#${item.id}`} className="ardo-api-anchor">
+        <span className={styles.apiItemName}>{item.name}</span>
+        <a href={`#${item.id}`} className={styles.apiAnchor}>
           #
         </a>
       </HeadingTag>
 
-      {item.description && <p className="ardo-api-item-description">{item.description}</p>}
+      {item.description && <p className={styles.apiItemDescription}>{item.description}</p>}
 
       {item.signature && (
         <ApiSignature
@@ -38,10 +39,10 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       {item.returns && <ApiReturns returns={item.returns} />}
 
       {item.examples && item.examples.length > 0 && (
-        <div className="ardo-api-examples">
-          <h4 className="ardo-api-section-title">Examples</h4>
+        <div className={styles.apiExamples}>
+          <h4 className={styles.apiSectionTitle}>Examples</h4>
           {item.examples.map((example, i) => (
-            <pre key={i} className="ardo-api-example">
+            <pre key={i} className={styles.apiExample}>
               <code>{example}</code>
             </pre>
           ))}
@@ -49,7 +50,7 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       )}
 
       {item.source && (
-        <div className="ardo-api-source">
+        <div className={styles.apiSource}>
           {item.source.url ? (
             <a href={item.source.url} target="_blank" rel="noopener noreferrer">
               {item.source.file}:{item.source.line}
@@ -63,7 +64,7 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       )}
 
       {item.children && item.children.length > 0 && (
-        <div className="ardo-api-children">
+        <div className={styles.apiChildren}>
           {item.children.map((child) => (
             <ApiItem key={child.id} item={child} level={level + 1} />
           ))}
@@ -75,6 +76,19 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
 
 interface ApiKindBadgeProps {
   kind: ApiDocKind
+}
+
+const badgeKinds: Record<
+  string,
+  NonNullable<NonNullable<Parameters<typeof styles.apiBadge>[0]>["kind"]>
+> = {
+  class: "class",
+  interface: "interface",
+  type: "type",
+  enum: "enum",
+  function: "function",
+  method: "method",
+  property: "property",
 }
 
 export function ApiKindBadge({ kind }: ApiKindBadgeProps) {
@@ -96,17 +110,7 @@ export function ApiKindBadge({ kind }: ApiKindBadgeProps) {
     enumMember: "Enum Member",
   }
 
-  const kindColors: Record<string, string> = {
-    class: "ardo-api-badge-class",
-    interface: "ardo-api-badge-interface",
-    type: "ardo-api-badge-type",
-    enum: "ardo-api-badge-enum",
-    function: "ardo-api-badge-function",
-    method: "ardo-api-badge-method",
-    property: "ardo-api-badge-property",
-  }
-
-  return <span className={`ardo-api-badge ${kindColors[kind] || ""}`}>{kindLabels[kind]}</span>
+  return <span className={styles.apiBadge({ kind: badgeKinds[kind] })}>{kindLabels[kind]}</span>
 }
 
 interface ApiHierarchyProps {
@@ -133,30 +137,30 @@ export function ApiHierarchy({ hierarchy }: ApiHierarchyProps) {
   }
 
   return (
-    <div className="ardo-api-hierarchy">
-      <h4 className="ardo-api-section-title">Hierarchy</h4>
-      <ul className="ardo-api-hierarchy-list">
+    <div className={styles.apiHierarchy}>
+      <h4 className={styles.apiSectionTitle}>Hierarchy</h4>
+      <ul className={styles.apiHierarchyList}>
         {extendsTypes?.map((type) => (
           <li key={type}>
-            <span className="ardo-api-hierarchy-label">extends</span>
+            <span className={styles.apiHierarchyLabel}>extends</span>
             <code>{type}</code>
           </li>
         ))}
         {implementsTypes?.map((type) => (
           <li key={type}>
-            <span className="ardo-api-hierarchy-label">implements</span>
+            <span className={styles.apiHierarchyLabel}>implements</span>
             <code>{type}</code>
           </li>
         ))}
         {extendedBy?.map((type) => (
           <li key={type}>
-            <span className="ardo-api-hierarchy-label">extended by</span>
+            <span className={styles.apiHierarchyLabel}>extended by</span>
             <code>{type}</code>
           </li>
         ))}
         {implementedBy?.map((type) => (
           <li key={type}>
-            <span className="ardo-api-hierarchy-label">implemented by</span>
+            <span className={styles.apiHierarchyLabel}>implemented by</span>
             <code>{type}</code>
           </li>
         ))}

@@ -129,8 +129,12 @@ export const codeGroupTab = style({
   },
 })
 
+export const codeGroupPanels = style({})
+
+export const codeGroupPanel = style({})
+
 // Strip inner code-block chrome when nested inside a code group
-globalStyle(`.ardo-code-group-panel ${codeBlock}`, {
+globalStyle(`${codeGroupPanel} ${codeBlock}`, {
   margin: 0,
   border: "none",
   borderRadius: 0,

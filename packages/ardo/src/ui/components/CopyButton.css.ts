@@ -1,6 +1,8 @@
 import { style } from "@vanilla-extract/css"
 import { vars } from "../theme/contract.css"
 
+export const copyText = style({})
+
 export const copyButton = style({
   position: "absolute",
   top: "10px",

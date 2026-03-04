@@ -14,6 +14,8 @@ export const footer = style({
   },
 })
 
+export const footerContainer = style({})
+
 export const footerPrimary = style({
   display: "flex",
   alignItems: "center",
