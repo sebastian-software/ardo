@@ -12,13 +12,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: () => (
-    <Steps>
+  args: {
+    children: (
       <ol>
         <li>Start Storybook locally.</li>
         <li>Review component states with your team.</li>
         <li>Ship UI changes confidently.</li>
       </ol>
-    </Steps>
-  ),
+    ),
+  },
 }

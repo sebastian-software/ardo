@@ -12,5 +12,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: () => <Tip title="Storybook tip">Use controls to evaluate variants quickly.</Tip>,
+  args: {
+    title: "Storybook tip",
+    children: "Use controls to evaluate variants quickly.",
+  },
 }

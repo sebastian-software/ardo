@@ -13,12 +13,32 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    children: `my-docs/
-├── app/
-│   ├── routes/
-│   │   └── guide/
-│   │       └── getting-started.mdx
-│   └── root.tsx
-└── vite.config.ts`,
+    children: (
+      <ul>
+        <li>
+          my-docs/
+          <ul>
+            <li>
+              app/
+              <ul>
+                <li>
+                  routes/
+                  <ul>
+                    <li>
+                      guide/
+                      <ul>
+                        <li>getting-started.mdx</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>root.tsx</li>
+              </ul>
+            </li>
+            <li>vite.config.ts</li>
+          </ul>
+        </li>
+      </ul>
+    ),
   },
 }

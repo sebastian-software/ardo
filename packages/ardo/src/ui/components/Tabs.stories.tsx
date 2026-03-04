@@ -12,20 +12,22 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: () => (
-    <Tabs>
-      <TabList>
-        <Tab>pnpm</Tab>
-        <Tab>npm</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <code>pnpm storybook</code>
-        </TabPanel>
-        <TabPanel>
-          <code>npm run storybook</code>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
-  ),
+  args: {
+    children: (
+      <>
+        <TabList>
+          <Tab>pnpm</Tab>
+          <Tab>npm</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <code>pnpm storybook</code>
+          </TabPanel>
+          <TabPanel>
+            <code>npm run storybook</code>
+          </TabPanel>
+        </TabPanels>
+      </>
+    ),
+  },
 }

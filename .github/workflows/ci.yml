@@ -43,8 +43,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Build Storybook
-        run: pnpm storybook:build
-
       - name: Run tests
         run: pnpm test
+
+      - name: Build Storybook
+        if: matrix.node-version == '22'
+        run: pnpm storybook:build
