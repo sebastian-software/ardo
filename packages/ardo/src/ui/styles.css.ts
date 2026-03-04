@@ -25,17 +25,10 @@ import "./components/Search.css"
 import "./components/Tabs.css"
 import "./components/ThemeToggle.css"
 import "./components/CopyButton.css"
-import "./components/Steps.css"
-import "./components/FileTree.css"
 
 // Home page
 import "./components/Hero.css"
 import "./components/Features.css"
-import "./components/HomeSection.css"
-import "./components/Terminal.css"
-import "./components/Comparison.css"
-import "./components/TechGrid.css"
-import "./components/CTA.css"
 
 // API documentation
 import "./components/ApiItem.css"
