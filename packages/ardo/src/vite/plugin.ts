@@ -436,7 +436,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(mdxPlugin as Plugin)
 
   // Add Vanilla Extract plugin (must run before React Router for SSR)
-  plugins.push(...(vanillaExtractPlugin() as Plugin[]))
+  plugins.push(...(vanillaExtractPlugin({ identifiers: "short" }) as Plugin[]))
 
   // Add React Router Framework plugin (includes React plugin internally)
   const reactRouterPlugin = reactRouter()

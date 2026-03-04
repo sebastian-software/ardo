@@ -35,7 +35,7 @@ export default defineConfig({
     "lucide-react",
     /^virtual:ardo\//,
   ],
-  esbuildPlugins: [vanillaExtractPlugin()],
+  esbuildPlugins: [vanillaExtractPlugin({ identifiers: "short" })],
   esbuildOptions(options) {
     options.jsx = "automatic"
   },
