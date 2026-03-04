@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.5...ardo-v3.1.0) (2026-03-04)
+
+
+### Features
+
+* add Storybook, migrate to Vanilla Extract, and add brand color customization ([bd1fbd0](https://github.com/sebastian-software/ardo/commit/bd1fbd0a9be8705ffd43112f523bbc76724ecca4))
+
 ## [3.0.5](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.4...ardo-v3.0.5) (2026-03-04)
 
 

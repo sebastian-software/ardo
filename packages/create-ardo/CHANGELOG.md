@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.0.5...create-ardo-v3.1.0) (2026-03-04)
+
+
+### Miscellaneous
+
+* **create-ardo:** Synchronize ardo versions
+
 ## [3.0.5](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.0.4...create-ardo-v3.0.5) (2026-03-04)
 
 
