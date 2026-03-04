@@ -8,6 +8,13 @@ import type { Root, Element, Text } from "hast"
 import { visit } from "unist-util-visit"
 import type { MarkdownConfig } from "../config/types"
 
+/**
+ * Single CSS class applied to the server-rendered code block container.
+ * All child elements are styled via structural/attribute selectors in
+ * CodeBlock.css.ts (globalStyle rules scoped under this class).
+ */
+export const SHIKI_CONTAINER = "ardo-shiki"
+
 export type ShikiHighlighter = Highlighter
 
 /** Default Ardo themes used when no config is provided */
@@ -151,7 +158,7 @@ export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
         const highlightLines = parseHighlightLines(metaString)
         const title = parseTitle(metaString)
 
-        const wrapperHtml = buildCodeBlockHtml(html, {
+        const innerHtml = buildCodeBlockHtml(html, {
           lang,
           lineNumbers,
           highlightLines,
@@ -163,13 +170,12 @@ export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
             type: "element",
             tagName: "div",
             properties: {
-              className: ["ardo-code-block"],
-              "data-lang": lang,
+              className: [SHIKI_CONTAINER],
             },
             children: [
               {
                 type: "raw",
-                value: wrapperHtml,
+                value: innerHtml,
               } as unknown as Element,
             ],
           }
@@ -225,16 +231,25 @@ interface CodeBlockOptions {
   title?: string
 }
 
+/**
+ * Builds inner HTML for a server-rendered code block.
+ *
+ * Structure (styled via structural selectors in CodeBlock.css.ts):
+ *   [data-title]          — optional title bar
+ *   div[data-lang]        — wrapper (position context for copy button)
+ *     pre > code > .line  — Shiki output
+ *     button[data-code]   — copy button
+ */
 function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): string {
   const { lang, lineNumbers, highlightLines, title } = options
 
   let html = ""
 
   if (title) {
-    html += `<div class="ardo-code-title">${escapeHtml(title)}</div>`
+    html += `<div data-title>${escapeHtml(title)}</div>`
   }
 
-  html += `<div class="ardo-code-wrapper" data-lang="${lang}">`
+  html += `<div data-lang="${lang}">`
 
   if (lineNumbers || highlightLines.length > 0) {
     const lines = shikiHtml.split("\n")
@@ -242,15 +257,10 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
       .map((line, i) => {
         const lineNum = i + 1
         const isHighlighted = highlightLines.includes(lineNum)
-        const classes = ["ardo-code-line"]
-        if (isHighlighted) classes.push("highlighted")
+        const cls = isHighlighted ? "line highlighted" : "line"
+        const lnAttr = lineNumbers ? ` data-ln="${lineNum}"` : ""
 
-        let prefix = ""
-        if (lineNumbers) {
-          prefix = `<span class="ardo-line-number">${lineNum}</span>`
-        }
-
-        return `<span class="${classes.join(" ")}">${prefix}${line}</span>`
+        return `<span class="${cls}"${lnAttr}>${line}</span>`
       })
       .join("\n")
 
@@ -259,9 +269,9 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
     html += shikiHtml
   }
 
-  html += `<button class="ardo-copy-button" data-code="${encodeURIComponent(extractCodeFromHtml(shikiHtml))}">
-    <span class="ardo-copy-icon">Copy</span>
-    <span class="ardo-copied-icon" style="display:none">Copied!</span>
+  html += `<button data-code="${encodeURIComponent(extractCodeFromHtml(shikiHtml))}">
+    <span>Copy</span>
+    <span style="display:none">Copied!</span>
   </button>`
 
   html += "</div>"
@@ -320,11 +330,12 @@ export function remarkCodeMeta() {
 }
 
 /**
- * Shiki transformer that adds Ardo-specific line classes, highlighting,
- * line numbers, and title attributes to code blocks.
+ * Shiki transformer that adds line highlighting, line numbers, and title
+ * attributes to code blocks in the MDX pipeline.
  *
- * Used with @shikijs/rehype in the MDX pipeline where proper HAST nodes
- * are required (raw HTML nodes cause "Cannot handle unknown node `raw`" errors).
+ * Uses Shiki's built-in `.line` class for line spans. Highlighted lines
+ * get `.highlighted`. Line numbers are added via `data-ln` attributes
+ * (rendered with CSS `::before`).
  */
 interface ArdoLineTransformerOptions {
   globalLineNumbers?: boolean
@@ -356,24 +367,15 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
       }
     },
     line(node, line) {
-      const currentClass = (node.properties?.class as string) || ""
-      const classes = currentClass ? currentClass.split(" ") : []
-      classes.push("ardo-code-line")
-
       if (highlightLines.includes(line)) {
-        classes.push("highlighted")
+        const currentClass = (node.properties?.class as string) || ""
+        node.properties = node.properties || {}
+        node.properties.class = currentClass ? `${currentClass} highlighted` : "highlighted"
       }
 
-      node.properties = node.properties || {}
-      node.properties.class = classes.join(" ")
-
       if (showLineNumbers) {
-        node.children.unshift({
-          type: "element",
-          tagName: "span",
-          properties: { class: "ardo-line-number" },
-          children: [{ type: "text", value: String(line) }],
-        } as Element)
+        node.properties = node.properties || {}
+        node.properties["data-ln"] = String(line)
       }
     },
   }
