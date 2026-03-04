@@ -7,13 +7,7 @@ import {
 import type { Root, Element, Text } from "hast"
 import { visit } from "unist-util-visit"
 import type { MarkdownConfig } from "../config/types"
-
-/**
- * Single CSS class applied to the server-rendered code block container.
- * All child elements are styled via structural/attribute selectors in
- * CodeBlock.css.ts (globalStyle rules scoped under this class).
- */
-export const SHIKI_CONTAINER = "ardo-shiki"
+import { shikiContainer } from "../ui/components/CodeBlock.css"
 
 export type ShikiHighlighter = Highlighter
 
@@ -170,7 +164,7 @@ export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
             type: "element",
             tagName: "div",
             properties: {
-              className: [SHIKI_CONTAINER],
+              className: [shikiContainer],
             },
             children: [
               {

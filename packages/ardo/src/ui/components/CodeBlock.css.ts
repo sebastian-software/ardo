@@ -94,9 +94,7 @@ export const lineNumber = style({
 //       button[data-code]  — copy button
 // =============================================================================
 
-const s = ".ardo-shiki"
-
-globalStyle(s, {
+export const shikiContainer = style({
   margin: "20px 0",
   marginLeft: "-16px",
   borderRadius: vars.radius.base,
@@ -105,6 +103,8 @@ globalStyle(s, {
   border: `1px solid ${vars.color.codeBorder}`,
   boxShadow: vars.color.codeShadow,
 })
+
+const s = `.${shikiContainer}`
 
 // Title bar
 globalStyle(`${s} > [data-title]`, {
