@@ -12,6 +12,7 @@ export default defineConfig({
         nav: [
           { text: "Guide", link: "/guide/getting-started" },
           { text: "API", link: "/api-reference" },
+          { text: "Storybook", link: "/storybook" },
         ],
         socialLinks: [{ icon: "github", link: "https://github.com/sebastian-software/ardo" }],
         search: {

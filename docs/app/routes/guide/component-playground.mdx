@@ -1,0 +1,37 @@
+---
+title: Component Playground
+description: Explore Ardo UI components in Storybook.
+order: 11
+---
+
+# Component Playground
+
+Ardo ships with a growing internal UI kit in `ardo/ui`. The Storybook playground provides an isolated workbench to iterate on these components safely and review changes before shipping.
+
+## Open Storybook
+
+Use the hosted playground:
+
+- [Open Storybook](/storybook)
+
+For local development from the repository root:
+
+```bash
+pnpm storybook
+```
+
+Create a production-ready static build:
+
+```bash
+pnpm storybook:build
+```
+
+## What's covered in v1
+
+The baseline stories focus on the core components used to compose Ardo documentation experiences:
+
+- Layout: `Layout`, `Header`, `Sidebar`, `Footer`, `Nav`, `TOC`
+- Content: `Hero`, `Features`, `Tabs`, `Container`, `Steps`, `FileTree`
+- Utilities: `ThemeToggle`, `Search`, `CopyButton`, `CodeBlock`
+
+As new components are introduced, stories should be added in `packages/ardo/src/ui` next to the implementation.

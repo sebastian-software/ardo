@@ -19,6 +19,8 @@
     "typecheck": "pnpm -r typecheck",
     "docs:dev": "pnpm -r --filter ./docs dev",
     "docs:build": "pnpm -r --filter './docs' build",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "STORYBOOK_BASE=/storybook/ storybook build --output-dir storybook-static",
     "prepare": "husky"
   },
   "keywords": [
@@ -37,6 +39,8 @@
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
     "eslint": "^10.0.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -44,6 +48,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.3.1",
     "prettier": "^3.8.1",
+    "storybook": "^8.6.14",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
     "vitest": "^4.0.18"
