@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Library Example" }]
@@ -15,25 +15,17 @@ export default function HomePage() {
           { text: "API Reference", link: "/api-reference", theme: "alt" },
         ]}
       />
-      <ArdoFeatures
-        items={[
-          {
-            title: "TypeDoc",
-            icon: "📚",
-            details: "Auto-generated API docs from TypeScript source code",
-          },
-          {
-            title: "Prebuild",
-            icon: "🔧",
-            details: "TypeDoc runs before the build via prebuild.mjs",
-          },
-          {
-            title: "Deployable",
-            icon: "🚀",
-            details: "Ready to deploy on Vercel as a static site",
-          },
-        ]}
-      />
+      <ArdoFeatures>
+        <ArdoFeatureCard title="TypeDoc" icon="📚">
+          Auto-generated API docs from TypeScript source code
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Prebuild" icon="🔧">
+          TypeDoc runs before the build via prebuild.mjs
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Deployable" icon="🚀">
+          Ready to deploy on Vercel as a static site
+        </ArdoFeatureCard>
+      </ArdoFeatures>
     </>
   )
 }

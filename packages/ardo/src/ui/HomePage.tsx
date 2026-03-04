@@ -3,9 +3,9 @@ import { Link } from "react-router"
 import { useArdoPageData, useArdoConfig } from "../runtime/hooks"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
+import { ArdoFeatures, ArdoFeatureCard } from "./components/Features"
 import * as layoutStyles from "./Layout.css"
 import * as heroStyles from "./components/Hero.css"
-import * as featureStyles from "./components/Features.css"
 
 export interface ArdoHomePageProps {
   /** Props passed to the Header component */
@@ -66,22 +66,19 @@ export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoH
         )}
 
         {features && features.length > 0 && (
-          <section className={featureStyles.features}>
-            <div className={featureStyles.featuresContainer}>
-              {features.map((feature, index) => (
-                <div key={index} className={featureStyles.feature}>
-                  {feature.icon && <div className={featureStyles.featureIcon}>{feature.icon}</div>}
-                  <h3 className={featureStyles.featureTitle}>{feature.title}</h3>
-                  <p className={featureStyles.featureDetails}>{feature.details}</p>
-                  {feature.link && (
-                    <Link to={feature.link} className={featureStyles.featureLink}>
-                      {feature.linkText || "Learn more"}
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
+          <ArdoFeatures>
+            {features.map((feature, index) => (
+              <ArdoFeatureCard
+                key={index}
+                title={feature.title}
+                icon={feature.icon}
+                link={feature.link}
+                linkText={feature.linkText}
+              >
+                {feature.details}
+              </ArdoFeatureCard>
+            ))}
+          </ArdoFeatures>
         )}
       </main>
 

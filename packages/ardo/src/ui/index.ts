@@ -52,7 +52,7 @@ export {
 } from "./components"
 export type { ArdoIconProps } from "./components"
 export type { ArdoHeroProps, ArdoHeroAction, ArdoHeroImage } from "./components"
-export type { ArdoFeaturesProps, ArdoFeatureCardProps, ArdoFeatureItem } from "./components"
+export type { ArdoFeaturesProps, ArdoFeatureCardProps } from "./components"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./components"
 export type {
   ArdoContainerProps,

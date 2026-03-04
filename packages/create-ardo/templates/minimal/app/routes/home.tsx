@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
 import { Zap, Sparkles, Palette, ArrowRight, Github } from "ardo/icons"
 import type { MetaFunction } from "react-router"
 
@@ -28,25 +28,17 @@ export default function HomePage() {
           },
         ]}
       />
-      <ArdoFeatures
-        items={[
-          {
-            title: "Fast",
-            icon: <Zap size={28} strokeWidth={1.5} />,
-            details: "Lightning fast builds with Vite",
-          },
-          {
-            title: "Simple",
-            icon: <Sparkles size={28} strokeWidth={1.5} />,
-            details: "Easy to set up and use",
-          },
-          {
-            title: "Flexible",
-            icon: <Palette size={28} strokeWidth={1.5} />,
-            details: "Fully customizable theme",
-          },
-        ]}
-      />
+      <ArdoFeatures>
+        <ArdoFeatureCard title="Fast" icon={<Zap size={28} strokeWidth={1.5} />}>
+          Lightning fast builds with Vite
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Simple" icon={<Sparkles size={28} strokeWidth={1.5} />}>
+          Easy to set up and use
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Flexible" icon={<Palette size={28} strokeWidth={1.5} />}>
+          Fully customizable theme
+        </ArdoFeatureCard>
+      </ArdoFeatures>
     </>
   )
 }

@@ -62,7 +62,7 @@ export {
   ArdoFeatureCard,
 } from "./ui"
 export type { ArdoHeroProps, ArdoHeroAction, ArdoHeroImage } from "./ui"
-export type { ArdoFeaturesProps, ArdoFeatureCardProps, ArdoFeatureItem } from "./ui"
+export type { ArdoFeaturesProps, ArdoFeatureCardProps } from "./ui"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./ui"
 export type {
   ArdoContainerProps,

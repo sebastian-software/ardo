@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Monorepo Example" }]
@@ -16,25 +16,17 @@ export default function HomePage() {
           { text: "Beta API", link: "/api-reference/beta", theme: "alt" },
         ]}
       />
-      <ArdoFeatures
-        items={[
-          {
-            title: "Alpha Package",
-            icon: "🔢",
-            details: "Math utilities: add, subtract, multiply, divide, clamp",
-          },
-          {
-            title: "Beta Package",
-            icon: "📝",
-            details: "String utilities: capitalize, slugify, truncate, repeat",
-          },
-          {
-            title: "Unified Docs",
-            icon: "📦",
-            details: "Both packages documented in a single Ardo site",
-          },
-        ]}
-      />
+      <ArdoFeatures>
+        <ArdoFeatureCard title="Alpha Package" icon="🔢">
+          Math utilities: add, subtract, multiply, divide, clamp
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Beta Package" icon="📝">
+          String utilities: capitalize, slugify, truncate, repeat
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Unified Docs" icon="📦">
+          Both packages documented in a single Ardo site
+        </ArdoFeatureCard>
+      </ArdoFeatures>
     </>
   )
 }

@@ -1,23 +1,10 @@
 import { Link } from "react-router"
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 import * as styles from "./Features.css"
 
-export interface ArdoFeatureItem {
-  /** Feature title */
-  title: string
-  /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */
-  icon?: ReactNode
-  /** Feature description */
-  details: string
-  /** Optional link */
-  link?: string
-  /** Link text (defaults to "Learn more") */
-  linkText?: string
-}
-
 export interface ArdoFeaturesProps {
-  /** Array of feature items to display */
-  items: ArdoFeatureItem[]
+  /** Feature cards as children */
+  children: ReactNode
   /** Section title */
   title?: string
   /** Section subtitle */
@@ -26,7 +13,17 @@ export interface ArdoFeaturesProps {
   className?: string
 }
 
-export interface ArdoFeatureCardProps extends ArdoFeatureItem {
+export interface ArdoFeatureCardProps {
+  /** Feature title */
+  title: string
+  /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */
+  icon?: ReactNode
+  /** Feature description as children */
+  children: ReactNode
+  /** Optional link */
+  link?: string
+  /** Link text (defaults to "Learn more") */
+  linkText?: string
   /** Additional CSS class */
   className?: string
 }
@@ -38,27 +35,24 @@ export interface ArdoFeatureCardProps extends ArdoFeatureItem {
  * ```tsx
  * import { Zap } from "lucide-react"
  *
- * // Using emoji
- * <FeatureCard title="Fast" icon="⚡" details="Lightning fast." />
- *
- * // Using Lucide icon (tree-shakeable)
- * <FeatureCard title="Fast" icon={<Zap size={28} />} details="Lightning fast." />
+ * <ArdoFeatureCard title="Fast" icon={<Zap size={28} />}>
+ *   Lightning fast builds with Vite
+ * </ArdoFeatureCard>
  * ```
  */
 export function ArdoFeatureCard({
   title,
   icon,
-  details,
+  children,
   link,
   linkText,
   className,
-  style,
-}: ArdoFeatureCardProps & { style?: CSSProperties }) {
+}: ArdoFeatureCardProps) {
   return (
-    <div className={className ?? styles.feature} style={style}>
+    <div className={className ?? styles.feature}>
       {icon && <div className={styles.featureIcon}>{icon}</div>}
       <h3 className={styles.featureTitle}>{title}</h3>
-      <p className={styles.featureDetails}>{details}</p>
+      <p className={styles.featureDetails}>{children}</p>
       {link && (
         <Link to={link} className={styles.featureLink}>
           {linkText || "Learn more"}
@@ -73,22 +67,13 @@ export function ArdoFeatureCard({
  *
  * @example
  * ```tsx
- * <Features
- *   title="Key Features"
- *   subtitle="Everything you need to build great docs"
- *   items={[
- *     { title: "React-First", icon: "⚛️", details: "Built on React." },
- *     { title: "Fast", icon: "⚡", details: "Powered by Vite." },
- *     { title: "Type-Safe", icon: "📝", details: "Full TypeScript support." },
- *   ]}
- * />
+ * <ArdoFeatures title="Key Features" subtitle="Everything you need">
+ *   <ArdoFeatureCard title="React-First" icon="⚛️">Built on React.</ArdoFeatureCard>
+ *   <ArdoFeatureCard title="Fast" icon="⚡">Powered by Vite.</ArdoFeatureCard>
+ * </ArdoFeatures>
  * ```
  */
-export function ArdoFeatures({ items, title, subtitle, className }: ArdoFeaturesProps) {
-  if (!items || items.length === 0) {
-    return null
-  }
-
+export function ArdoFeatures({ children, title, subtitle, className }: ArdoFeaturesProps) {
   return (
     <section className={className ?? styles.features}>
       {(title || subtitle) && (
@@ -97,11 +82,7 @@ export function ArdoFeatures({ items, title, subtitle, className }: ArdoFeatures
           {subtitle && <p className={styles.featuresSubtitle}>{subtitle}</p>}
         </div>
       )}
-      <div className={styles.featuresContainer}>
-        {items.map((feature, index) => (
-          <ArdoFeatureCard key={index} {...feature} style={{ animationDelay: `${index * 80}ms` }} />
-        ))}
-      </div>
+      <div className={styles.featuresContainer}>{children}</div>
     </section>
   )
 }

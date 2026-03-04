@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ArdoFeatures } from "./Features"
+import { ArdoFeatures, ArdoFeatureCard } from "./Features"
 
 const meta = {
   title: "Content/Features",
@@ -15,14 +15,18 @@ export const Default: Story = {
   args: {
     title: "Baseline coverage",
     subtitle: "Core building blocks documented in Storybook.",
-    items: [
-      { title: "Layout", details: "Header, sidebar, footer and navigation stories.", icon: "🧱" },
-      {
-        title: "Content",
-        details: "Hero, features, tabs and structured docs helpers.",
-        icon: "📄",
-      },
-      { title: "Utilities", details: "Theme, search, copy and syntax highlighting.", icon: "🛠️" },
-    ],
+    children: (
+      <>
+        <ArdoFeatureCard title="Layout" icon="🧱">
+          Header, sidebar, footer and navigation stories.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Content" icon="📄">
+          Hero, features, tabs and structured docs helpers.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Utilities" icon="🛠️">
+          Theme, search, copy and syntax highlighting.
+        </ArdoFeatureCard>
+      </>
+    ),
   },
 }

@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures, ArdoCodeBlock } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard, ArdoCodeBlock } from "ardo/ui"
 import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
@@ -81,63 +81,56 @@ export default function HomePage() {
       <ArdoFeatures
         title="What's in the box"
         subtitle="Everything a documentation site needs, nothing it doesn't"
-        items={[
-          {
-            title: "React 19, natively",
-            icon: <Atom size={28} strokeWidth={1.5} />,
-            details:
-              "Not a React compatibility layer on top of something else. Actual React 19 with Server Components, Suspense, and the patterns you already use in your app.",
-          },
-          {
-            title: "Vite 8 with Rolldown",
-            icon: <Zap size={28} strokeWidth={1.5} />,
-            details:
-              "Dev server starts in under a second. HMR updates hit the browser before you look up from your editor. Production builds are just as fast.",
-          },
-          {
-            title: "TypeDoc, zero config",
-            icon: <BookOpen size={28} strokeWidth={1.5} />,
-            details:
-              "Point Ardo at your TypeScript source and it generates linked API reference pages. Interfaces, types, functions, classes. No plugins to install.",
-          },
-          {
-            title: "Type-safe routes",
-            icon: <ShieldCheck size={28} strokeWidth={1.5} />,
-            details:
-              "React Router 7 gives you typed navigation. Link to a page that doesn't exist? TypeScript tells you at build time, not your users at runtime.",
-          },
-          {
-            title: "Light and dark mode",
-            icon: <Moon size={28} strokeWidth={1.5} />,
-            details:
-              "Both themes ship by default. Follows system preferences, togglable by the reader, smooth transitions. Covers code blocks too.",
-          },
-          {
-            title: "Offline-capable search",
-            icon: <Search size={28} strokeWidth={1.5} />,
-            details:
-              "Full-text search powered by MiniSearch. Runs entirely in the browser. No external service to configure, no API keys, works offline.",
-          },
-          {
-            title: "MDX with Shiki",
-            icon: <FileCode size={28} strokeWidth={1.5} />,
-            details:
-              "Write Markdown, import React components where you need them. Code blocks are syntax-highlighted at build time with Shiki. No client-side JS for highlighting.",
-          },
-          {
-            title: "Vanilla Extract styling",
-            icon: <Paintbrush size={28} strokeWidth={1.5} />,
-            details:
-              "All styles are type-safe Vanilla Extract. Import design tokens from ardo/theme, write your own .css.ts files, and override any component — with full autocomplete.",
-          },
-          {
-            title: "Make it yours",
-            icon: <Palette size={28} strokeWidth={1.5} />,
-            details:
-              "Override CSS variables, swap components, or build an entirely custom theme. Ardo's runtime hooks give you all the data — you decide how to render it.",
-          },
-        ]}
-      />
+      >
+        <ArdoFeatureCard title="React 19, natively" icon={<Atom size={28} strokeWidth={1.5} />}>
+          Not a React compatibility layer on top of something else. Actual React 19 with Server
+          Components, Suspense, and the patterns you already use in your app.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Vite 8 with Rolldown" icon={<Zap size={28} strokeWidth={1.5} />}>
+          Dev server starts in under a second. HMR updates hit the browser before you look up from
+          your editor. Production builds are just as fast.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard
+          title="TypeDoc, zero config"
+          icon={<BookOpen size={28} strokeWidth={1.5} />}
+        >
+          Point Ardo at your TypeScript source and it generates linked API reference pages.
+          Interfaces, types, functions, classes. No plugins to install.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard
+          title="Type-safe routes"
+          icon={<ShieldCheck size={28} strokeWidth={1.5} />}
+        >
+          React Router 7 gives you typed navigation. Link to a page that doesn't exist? TypeScript
+          tells you at build time, not your users at runtime.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Light and dark mode" icon={<Moon size={28} strokeWidth={1.5} />}>
+          Both themes ship by default. Follows system preferences, togglable by the reader, smooth
+          transitions. Covers code blocks too.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard
+          title="Offline-capable search"
+          icon={<Search size={28} strokeWidth={1.5} />}
+        >
+          Full-text search powered by MiniSearch. Runs entirely in the browser. No external service
+          to configure, no API keys, works offline.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="MDX with Shiki" icon={<FileCode size={28} strokeWidth={1.5} />}>
+          Write Markdown, import React components where you need them. Code blocks are
+          syntax-highlighted at build time with Shiki. No client-side JS for highlighting.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard
+          title="Vanilla Extract styling"
+          icon={<Paintbrush size={28} strokeWidth={1.5} />}
+        >
+          All styles are type-safe Vanilla Extract. Import design tokens from ardo/theme, write your
+          own .css.ts files, and override any component — with full autocomplete.
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="Make it yours" icon={<Palette size={28} strokeWidth={1.5} />}>
+          Override CSS variables, swap components, or build an entirely custom theme. Ardo's runtime
+          hooks give you all the data — you decide how to render it.
+        </ArdoFeatureCard>
+      </ArdoFeatures>
 
       {/* Code Example Section */}
       <section className={`${styles.section} ${styles.sectionAlt}`}>
