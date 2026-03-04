@@ -47,7 +47,7 @@ export interface CodeBlockProps {
  * <CodeBlock language="typescript">{`
  *   const x = 42
  * `}</CodeBlock>
- * ```
+ * ```tsx
  * When children is a string, leading/trailing blank lines and common
  * indentation are stripped automatically.
  */

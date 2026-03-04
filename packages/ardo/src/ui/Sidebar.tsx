@@ -54,12 +54,12 @@ export interface SidebarProps {
  * the Ardo sidebar context (`virtual:ardo/sidebar`).
  *
  * @example Zero-config (from context)
- * ```
+ * ```tsx
  * <Sidebar />
  * ```
  *
  * @example Data-driven (items prop)
- * ```
+ * ```tsx
  * <Sidebar items={[
  *   { text: 'Introduction', link: '/intro' },
  *   { text: 'Guide', items: [
@@ -69,7 +69,7 @@ export interface SidebarProps {
  * ```
  *
  * @example JSX composition
- * ```
+ * ```tsx
  * <Sidebar>
  *   <SidebarLink to="/intro">Introduction</SidebarLink>
  *   <SidebarGroup title="Guide">
@@ -121,7 +121,7 @@ export interface SidebarGroupProps {
  * Group component for organizing sidebar links.
  *
  * @example
- * ```
+ * ```tsx
  * <SidebarGroup title="Guide">
  *   <SidebarLink to="/guide/intro">Introduction</SidebarLink>
  *   <SidebarLink to="/guide/setup">Setup</SidebarLink>
@@ -129,7 +129,7 @@ export interface SidebarGroupProps {
  * ```
  *
  * @example With collapsible state
- * ```
+ * ```tsx
  * <SidebarGroup title="Advanced" collapsed>
  *   <SidebarLink to="/advanced/config">Configuration</SidebarLink>
  * </SidebarGroup>
@@ -213,7 +213,7 @@ export interface SidebarLinkProps {
  * Sidebar navigation link.
  *
  * @example
- * ```
+ * ```tsx
  * <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
  * ```
  */

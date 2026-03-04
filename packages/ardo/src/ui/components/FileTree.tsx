@@ -77,7 +77,7 @@ function processChildren(children: ReactNode): ReactNode {
  * A wrapper for unordered lists that renders a file/folder tree with icons.
  *
  * @example
- * ```
+ * ```tsx
  * <FileTree>
  * - src/
  *   - components/

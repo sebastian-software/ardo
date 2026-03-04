@@ -35,7 +35,7 @@ export interface FeatureCardProps extends FeatureItem {
  * Individual feature card component.
  *
  * @example
- * ```
+ * ```tsx
  * import { Zap } from "lucide-react"
  *
  * // Using emoji
@@ -72,7 +72,7 @@ export function FeatureCard({
  * Features grid component for displaying multiple feature cards.
  *
  * @example
- * ```
+ * ```tsx
  * <Features
  *   title="Key Features"
  *   subtitle="Everything you need to build great docs"

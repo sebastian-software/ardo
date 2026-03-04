@@ -49,7 +49,7 @@ export interface HeroProps {
  * Hero section component for landing pages.
  *
  * @example
- * ```
+ * ```tsx
  * import { ArrowRight, Github } from "lucide-react"
  *
  * <Hero

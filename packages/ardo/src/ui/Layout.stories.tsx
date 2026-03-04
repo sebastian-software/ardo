@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Layout } from "./Layout"
 import { Header } from "./Header"
 import { Sidebar } from "./Sidebar"

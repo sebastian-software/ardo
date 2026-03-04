@@ -1,17 +1,20 @@
+import path, { dirname } from "node:path"
+import { fileURLToPath } from "node:url"
 import type { StorybookConfig } from "@storybook/react-vite"
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
-import path from "node:path"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const config: StorybookConfig = {
   stories: ["../packages/ardo/src/ui/**/*.stories.@(ts|tsx)"],
-  addons: ["@storybook/addon-essentials"],
+  addons: ["@storybook/addon-docs"],
+
   framework: {
     name: "@storybook/react-vite",
     options: {},
   },
-  docs: {
-    autodocs: "tag",
-  },
+
   async viteFinal(baseConfig) {
     baseConfig.base = process.env.STORYBOOK_BASE ?? "/"
     baseConfig.resolve ??= {}

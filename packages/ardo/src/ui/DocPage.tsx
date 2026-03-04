@@ -18,7 +18,7 @@ interface DocPageProps {
  * Use this when you don't have a _layout.tsx file.
  *
  * @example
- * ```
+ * ```tsx
  * <DocPage>
  *   <Content />
  * </DocPage>
@@ -52,7 +52,7 @@ interface DocContentProps {
  * Use this when you have a _layout.tsx that provides the Layout.
  *
  * @example
- * ```
+ * ```tsx
  * // In _layout.tsx:
  * <Layout>
  *   <Header ... />

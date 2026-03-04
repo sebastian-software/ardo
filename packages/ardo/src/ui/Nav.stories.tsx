@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Nav, NavLink, NavDropdown } from "./Nav"
 
 const meta = {

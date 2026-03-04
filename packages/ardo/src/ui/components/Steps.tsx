@@ -10,7 +10,7 @@ export interface StepsProps {
  * A wrapper for ordered lists that renders numbered step indicators.
  *
  * @example
- * ```
+ * ```tsx
  * <Steps>
  * 1. Install the package
  * 2. Configure your site

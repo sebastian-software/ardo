@@ -23,13 +23,13 @@ export interface RootLayoutProps {
  * that every root.tsx must define for React Router.
  *
  * @example Basic usage
- * ```
+ * ```tsx
  * // app/root.tsx
  * export { RootLayout as Layout } from "ardo/ui"
  * ```
  *
  * @example With favicon
- * ```
+ * ```tsx
  * import logo from "./assets/logo.svg"
  * export const Layout = (props) => <RootLayout favicon={logo} {...props} />
  * ```
@@ -78,7 +78,7 @@ export interface LayoutProps {
  * Layout component with explicit slot props.
  *
  * @example
- * ```
+ * ```tsx
  * <Layout
  *   header={<Header logo="/logo.svg" title="Ardo" nav={...} />}
  *   sidebar={<Sidebar>...</Sidebar>}

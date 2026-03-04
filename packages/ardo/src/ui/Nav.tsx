@@ -30,7 +30,7 @@ export interface NavProps {
  * Navigation container component for composing navigation links.
  *
  * @example
- * ```
+ * ```tsx
  * <Nav>
  *   <NavLink to="/guide">Guide</NavLink>
  *   <NavLink to="/api">API</NavLink>
@@ -63,7 +63,7 @@ export interface NavLinkProps {
  * Navigation link component supporting both internal routes and external URLs.
  *
  * @example
- * ```
+ * ```tsx
  * // Internal link
  * <NavLink to="/guide">Guide</NavLink>
  *
@@ -137,7 +137,7 @@ export interface NavDropdownProps {
  * Dropdown navigation menu for grouping related links.
  *
  * @example
- * ```
+ * ```tsx
  * <NavDropdown text="Resources">
  *   <NavLink to="/docs">Documentation</NavLink>
  *   <NavLink to="/blog">Blog</NavLink>

@@ -44,12 +44,12 @@ export interface HeaderProps {
  * Props serve as overrides.
  *
  * @example Zero-config
- * ```
+ * ```tsx
  * <Header />
  * ```
  *
  * @example With overrides
- * ```
+ * ```tsx
  * <Header
  *   logo="/logo.svg"
  *   title="Ardo"
@@ -168,7 +168,7 @@ export interface SocialLinkProps {
  * Social media link with icon.
  *
  * @example
- * ```
+ * ```tsx
  * <SocialLink href="https://github.com/..." icon="github" />
  * ```
  */

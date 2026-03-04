@@ -17,7 +17,7 @@ const iconRegistry = new Map<string, IconComponent>()
  * Only registered icons are included in your bundle.
  *
  * @example
- * ```
+ * ```tsx
  * // In your app's entry point or layout:
  * import { registerIcons } from "ardo/ui"
  * import { Zap, Rocket, Code } from "lucide-react"
@@ -43,7 +43,7 @@ export function getRegisteredIconNames(): string[] {
  * Icons must be registered first using `registerIcons()`.
  *
  * @example
- * ```
+ * ```tsx
  * // First register icons in your app:
  * import { registerIcons } from "ardo/ui"
  * import { Zap, Rocket } from "lucide-react"
