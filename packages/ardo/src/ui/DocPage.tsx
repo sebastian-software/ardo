@@ -18,9 +18,11 @@ interface DocPageProps {
  * Use this when you don't have a _layout.tsx file.
  *
  * @example
+ * ```
  * <DocPage>
  *   <Content />
  * </DocPage>
+ * ```
  */
 export function DocPage({ children }: DocPageProps) {
   const pageData = usePageData()
@@ -50,6 +52,7 @@ interface DocContentProps {
  * Use this when you have a _layout.tsx that provides the Layout.
  *
  * @example
+ * ```
  * // In _layout.tsx:
  * <Layout>
  *   <Header ... />
@@ -62,6 +65,7 @@ interface DocContentProps {
  * <DocContent>
  *   <MarkdownContent />
  * </DocContent>
+ * ```
  */
 export function DocContent({ children }: DocContentProps) {
   const pageData = usePageData()

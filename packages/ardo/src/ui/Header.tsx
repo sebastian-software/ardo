@@ -44,9 +44,12 @@ export interface HeaderProps {
  * Props serve as overrides.
  *
  * @example Zero-config
+ * ```
  * <Header />
+ * ```
  *
  * @example With overrides
+ * ```
  * <Header
  *   logo="/logo.svg"
  *   title="Ardo"
@@ -57,6 +60,7 @@ export interface HeaderProps {
  *     </Nav>
  *   }
  * />
+ * ```
  */
 export function Header({
   logo,
@@ -164,7 +168,9 @@ export interface SocialLinkProps {
  * Social media link with icon.
  *
  * @example
+ * ```
  * <SocialLink href="https://github.com/..." icon="github" />
+ * ```
  */
 export function SocialLink({ href, icon, ariaLabel, className }: SocialLinkProps) {
   return (
