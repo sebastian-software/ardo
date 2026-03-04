@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.5](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.4...ardo-v3.0.5) (2026-03-04)
+
+
+### Bug Fixes
+
+* **ui:** expose sidebar content in mobile burger menu ([a6f9219](https://github.com/sebastian-software/ardo/commit/a6f9219a51aabe49dd58c6968a617eac124a29d2))
+* **ui:** restore mobile nav toggle and tabs default behavior ([cfaa704](https://github.com/sebastian-software/ardo/commit/cfaa7041bff2dd74f06c3170b6f1a200e742849b))
+
+
+### Code Refactoring
+
+* **ui:** split mobile top nav from sidebar burger menu ([ae7efd9](https://github.com/sebastian-software/ardo/commit/ae7efd9d7c6b46007dafbfd57db4f468bad5a6f7))
+
 ## [3.0.4](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.3...ardo-v3.0.4) (2026-03-03)
 
 
