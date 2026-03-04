@@ -1,6 +1,6 @@
 import { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
-import { useArdoConfig, useArdoTheme } from "../runtime/hooks"
+import { useArdoConfig } from "../runtime/hooks"
 import * as styles from "./Footer.css"
 
 // =============================================================================
@@ -45,7 +45,7 @@ function formatBuildTime(iso: string): string {
  * Footer component with structured layout for project info, sponsor, and build metadata.
  *
  * Automatically pulls data from Ardo context (`config.project`, `config.buildTime`,
- * `config.buildHash`, `themeConfig.footer.*`). Props serve as overrides.
+ * `config.buildHash`). Props serve as overrides.
  *
  * When `children` is provided, all automatic rendering is skipped.
  *
@@ -82,14 +82,13 @@ export function ArdoFooter({
   ardoLink = true,
 }: ArdoFooterProps) {
   const config = useArdoConfig()
-  const themeConfig = useArdoTheme()
 
   const resolvedProject = project ?? config.project
   const resolvedBuildTime = buildTime ?? config.buildTime
   const resolvedBuildHash = buildHash ?? config.buildHash
-  const resolvedMessage = message ?? themeConfig.footer?.message
-  const resolvedCopyright = copyright ?? themeConfig.footer?.copyright
-  const resolvedSponsor = sponsor ?? themeConfig.footer?.sponsor
+  const resolvedMessage = message
+  const resolvedCopyright = copyright
+  const resolvedSponsor = sponsor
 
   const hasContent =
     resolvedMessage ||

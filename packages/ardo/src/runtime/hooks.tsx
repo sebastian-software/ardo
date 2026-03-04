@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react"
-import type { ArdoConfig, ThemeConfig, SidebarItem, TOCItem, PageData } from "../config/types"
+import type { ArdoConfig, SidebarItem, TOCItem, PageData } from "../config/types"
 
 interface ArdoContextValue {
   config: ArdoConfig
@@ -20,11 +20,6 @@ export function useArdoContext(): ArdoContextValue {
 export function useArdoConfig(): ArdoConfig {
   const { config } = useArdoContext()
   return config
-}
-
-export function useArdoTheme(): ThemeConfig {
-  const { config } = useArdoContext()
-  return config.themeConfig ?? {}
 }
 
 export function useArdoSidebar(): SidebarItem[] {
@@ -56,3 +51,28 @@ export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoPro
 }
 
 export { ArdoContext }
+
+// =============================================================================
+// ArdoSiteConfig — cross-cutting content settings (editLink, lastUpdated, TOC)
+// =============================================================================
+
+export interface ArdoSiteConfig {
+  editLink?: { pattern: string; text?: string }
+  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  tocLabel?: string
+}
+
+const ArdoSiteConfigContext = createContext<ArdoSiteConfig>({})
+
+export function useArdoSiteConfig(): ArdoSiteConfig {
+  return useContext(ArdoSiteConfigContext)
+}
+
+interface ArdoSiteConfigProviderProps {
+  value: ArdoSiteConfig
+  children: ReactNode
+}
+
+export function ArdoSiteConfigProvider({ value, children }: ArdoSiteConfigProviderProps) {
+  return <ArdoSiteConfigContext.Provider value={value}>{children}</ArdoSiteConfigContext.Provider>
+}

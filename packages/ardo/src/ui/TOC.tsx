@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react"
-import { useArdoTOC, useArdoTheme } from "../runtime/hooks"
+import { useArdoTOC, useArdoSiteConfig } from "../runtime/hooks"
 import type { TOCItem } from "../config/types"
 import * as styles from "./TOC.css"
 
-export function ArdoTOC() {
+export interface ArdoTOCProps {
+  /** Label for the TOC heading (default: "On this page") */
+  label?: string
+}
+
+export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   const toc = useArdoTOC()
-  const themeConfig = useArdoTheme()
+  const siteConfig = useArdoSiteConfig()
   const [activeId, setActiveId] = useState<string>("")
 
-  const label = themeConfig.outline?.label ?? "On this page"
+  const label = labelProp ?? siteConfig.tocLabel ?? "On this page"
 
   useEffect(() => {
     if (toc.length === 0) return

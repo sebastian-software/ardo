@@ -35,22 +35,12 @@ export default defineConfig({
     ardo({
       title: "My Documentation",
       description: "Built with Ardo",
-
-      themeConfig: {
-        nav: [{ text: "Guide", link: "/guide/getting-started" }],
-        sidebar: [
-          {
-            text: "Guide",
-            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
-          },
-        ],
-      },
     }),
   ],
 })
 ```
 
-The `ardo()` plugin includes React Router, MDX processing, and all necessary configuration.
+The `ardo()` plugin includes React Router, MDX processing, and all necessary configuration. Navigation, sidebar, footer, and other UI configuration is done via JSX props in your `root.tsx`.
 
 ### Runtime Hooks
 

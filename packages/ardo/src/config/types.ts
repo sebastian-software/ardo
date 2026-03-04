@@ -42,55 +42,6 @@ export interface SocialLink {
 }
 
 // =============================================================================
-// Theme Config (Runtime UI configuration)
-// =============================================================================
-
-/**
- * Theme configuration for backwards compatibility with config-driven approach.
- * In JSX-first architecture, most of these settings are passed directly
- * as props to the components instead.
- */
-export interface ThemeConfig {
-  /** Logo image URL or light/dark variants */
-  logo?: string | { light: string; dark: string }
-  /** Site title (set to false to hide) */
-  siteTitle?: string | false
-  /** Navigation items (deprecated: use <Nav> component instead) */
-  nav?: NavItem[]
-  /** Sidebar configuration (deprecated: use <Sidebar> component instead) */
-  sidebar?: SidebarItem[] | Record<string, SidebarItem[]>
-  /** Social links (deprecated: use <SocialLink> component instead) */
-  socialLinks?: SocialLink[]
-  /** Footer configuration (deprecated: use <Footer> component instead) */
-  footer?: {
-    message?: string
-    copyright?: string
-    sponsor?: SponsorConfig
-  }
-  /** Search configuration */
-  search?: {
-    enabled?: boolean
-    placeholder?: string
-  }
-  /** Edit link configuration */
-  editLink?: {
-    pattern: string
-    text?: string
-  }
-  /** Last updated configuration */
-  lastUpdated?: {
-    enabled?: boolean
-    text?: string
-    formatOptions?: Intl.DateTimeFormatOptions
-  }
-  /** Table of contents configuration */
-  outline?: {
-    level?: number | [number, number]
-    label?: string
-  }
-}
-
-// =============================================================================
 // Markdown Config
 // =============================================================================
 
@@ -208,11 +159,6 @@ export interface ArdoConfig {
   lang?: string
   /** Additional head tags (deprecated: use React Router Meta instead) */
   head?: HeadConfig[]
-  /**
-   * Theme configuration for backwards compatibility.
-   * Prefer using JSX components with props instead.
-   */
-  themeConfig?: ThemeConfig
   /** Markdown processing options */
   markdown?: MarkdownConfig
   /**

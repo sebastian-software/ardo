@@ -154,11 +154,10 @@ When CSS isn't enough, replace individual components with your own. Since everyt
 
 ```tsx
 // components/MyHeader.tsx
-import { useArdoConfig, useArdoTheme } from "ardo/runtime"
+import { useArdoConfig } from "ardo/runtime"
 
 export function MyHeader() {
   const config = useArdoConfig()
-  const themeConfig = useArdoTheme()
 
   return (
     <header className="my-custom-header">
@@ -203,20 +202,17 @@ function MyComponent() {
 }
 ```
 
-### useArdoTheme
+### useArdoSiteConfig
+
+Access cross-cutting content settings (editLink, lastUpdated, TOC label) set on `<ArdoRoot>`:
 
 ```tsx
-import { useArdoTheme } from "ardo/runtime"
+import { useArdoSiteConfig } from "ardo/runtime"
 
-function MyNav() {
-  const themeConfig = useArdoTheme()
-  return (
-    <nav>
-      {themeConfig.nav?.map((item) => (
-        <a href={item.link}>{item.text}</a>
-      ))}
-    </nav>
-  )
+function MyEditLink() {
+  const { editLink } = useArdoSiteConfig()
+  if (!editLink) return null
+  return <a href={editLink.pattern}>{editLink.text ?? "Edit this page"}</a>
 }
 ```
 

@@ -281,7 +281,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
           description: resolvedConfig.description,
           base: resolvedConfig.base,
           lang: resolvedConfig.lang,
-          themeConfig: resolvedConfig.themeConfig,
           project: resolvedConfig.project,
           buildTime: new Date().toISOString(),
           buildHash: detectGitHash(resolvedConfig.root),
@@ -290,7 +289,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       }
 
       if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
-        const sidebar = await generateSidebar(resolvedConfig, routesDir)
+        const sidebar = await generateSidebar(routesDir)
         return `export default ${JSON.stringify(sidebar)}`
       }
 
@@ -490,17 +489,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   return plugins
 }
 
-async function generateSidebar(config: ResolvedConfig, routesDir: string) {
-  const { themeConfig } = config
-
-  if (themeConfig.sidebar && !Array.isArray(themeConfig.sidebar)) {
-    return themeConfig.sidebar
-  }
-
-  if (themeConfig.sidebar && Array.isArray(themeConfig.sidebar) && themeConfig.sidebar.length > 0) {
-    return themeConfig.sidebar
-  }
-
+async function generateSidebar(routesDir: string) {
   try {
     const sidebar = await scanDirectory(routesDir, routesDir)
     return sidebar

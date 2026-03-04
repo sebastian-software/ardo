@@ -7,13 +7,15 @@
 export {
   useArdoContext,
   useArdoConfig,
-  useArdoTheme,
+  useArdoSiteConfig,
   useArdoSidebar,
   useArdoPageData,
   useArdoTOC,
   ArdoProvider,
   ArdoContext,
+  ArdoSiteConfigProvider,
 } from "./hooks"
+export type { ArdoSiteConfig } from "./hooks"
 
 // Client-safe sidebar utilities
 export { findCurrentSidebarItem, getPrevNextLinks } from "./sidebar-utils"

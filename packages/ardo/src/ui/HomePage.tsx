@@ -1,45 +1,33 @@
+import { type ReactNode } from "react"
 import { Link } from "react-router"
-import { useArdoPageData, useArdoConfig, useArdoTheme } from "../runtime/hooks"
-import { ArdoHeader, ArdoSocialLink } from "./Header"
-import { ArdoFooter } from "./Footer"
-import { ArdoNav, ArdoNavLink } from "./Nav"
+import { useArdoPageData, useArdoConfig } from "../runtime/hooks"
+import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import * as layoutStyles from "./Layout.css"
 import * as heroStyles from "./components/Hero.css"
 import * as featureStyles from "./components/Features.css"
 
-export function ArdoHomePage() {
+export interface ArdoHomePageProps {
+  /** Props passed to the Header component */
+  headerProps?: ArdoHeaderProps
+  /** Props passed to the Footer component */
+  footerProps?: ArdoFooterProps
+  /** Custom header element (overrides auto-generated header) */
+  header?: ReactNode
+  /** Custom footer element (overrides auto-generated footer) */
+  footer?: ReactNode
+}
+
+export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoHomePageProps = {}) {
   const pageData = useArdoPageData()
   const config = useArdoConfig()
-  const themeConfig = useArdoTheme()
 
   const hero = pageData?.frontmatter.hero
   const features = pageData?.frontmatter.features
 
   return (
     <div className={layoutStyles.home}>
-      <ArdoHeader
-        logo={themeConfig.logo}
-        title={themeConfig.siteTitle !== false ? config.title : undefined}
-        nav={
-          themeConfig.nav && themeConfig.nav.length > 0 ? (
-            <ArdoNav>
-              {themeConfig.nav.map((item, index) => (
-                <ArdoNavLink key={index} to={item.link}>
-                  {item.text}
-                </ArdoNavLink>
-              ))}
-            </ArdoNav>
-          ) : undefined
-        }
-        actions={themeConfig.socialLinks?.map((link, index) => (
-          <ArdoSocialLink
-            key={index}
-            href={link.link}
-            icon={link.icon}
-            ariaLabel={link.ariaLabel}
-          />
-        ))}
-      />
+      {header ?? <ArdoHeader title={config.title} {...headerProps} />}
 
       <main className={layoutStyles.homeMain}>
         {hero && (
@@ -97,7 +85,7 @@ export function ArdoHomePage() {
         )}
       </main>
 
-      <ArdoFooter />
+      {footer ?? <ArdoFooter {...footerProps} />}
     </div>
   )
 }

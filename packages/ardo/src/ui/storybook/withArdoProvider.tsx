@@ -14,26 +14,6 @@ const storybookConfig: ArdoConfig = {
     version: "dev",
     homepage: "https://ardo-docs.dev",
   },
-  themeConfig: {
-    siteTitle: "Ardo",
-    nav: [
-      { text: "Guide", link: "/guide/getting-started" },
-      { text: "API", link: "/api-reference" },
-      { text: "Storybook", link: "/storybook" },
-    ],
-    socialLinks: [{ icon: "github", link: "https://github.com/sebastian-software/ardo" }],
-    search: {
-      enabled: true,
-      placeholder: "Search components...",
-    },
-    footer: {
-      message: "Released under the MIT License.",
-      copyright: "Copyright © 2026 Sebastian Software GmbH",
-    },
-    outline: {
-      label: "On this page",
-    },
-  },
 }
 
 const sidebar: SidebarItem[] = [

@@ -10,7 +10,6 @@ Ardo combines the developer experience of VitePress with the power of the React 
 - [Getting Started](https://ardo-docs.dev/guide/getting-started): Installation, setup, and project structure
 - [Markdown Features](https://ardo-docs.dev/guide/markdown): Syntax highlighting, containers, code groups, and custom components
 - [Frontmatter](https://ardo-docs.dev/guide/frontmatter): Page-level configuration via YAML frontmatter
-- [Theme Configuration](https://ardo-docs.dev/guide/theme-config): Navigation, sidebar, footer, search, and social links
 - [Custom Theme](https://ardo-docs.dev/guide/custom-theme): CSS variables, component overrides, runtime hooks, and full custom themes
 - [TypeDoc Integration](https://ardo-docs.dev/guide/typedoc): Auto-generate API documentation from TypeScript source
 - [Troubleshooting](https://ardo-docs.dev/guide/troubleshooting): Common issues and solutions
@@ -20,7 +19,7 @@ Ardo combines the developer experience of VitePress with the power of the React 
 ## Package Exports
 
 - `ardo/vite` — Vite plugin (`ardo()` function that returns all required plugins including React Router)
-- `ardo/runtime` — React hooks (`useConfig`, `useThemeConfig`, `useSidebar`, `usePageData`, `useTOC`)
+- `ardo/runtime` — React hooks (`useArdoConfig`, `useArdoSiteConfig`, `useArdoSidebar`, `useArdoPageData`, `useArdoTOC`)
 - `ardo/ui` — Pre-built UI components (Layout, Header, Sidebar, TOC, Footer, DocPage, HomePage, CodeBlock, BareContent, Hero, Features, etc.)
 - `ardo/ui/styles.css` — Default theme stylesheet
 - `ardo/typedoc` — TypeDoc generation utilities (`generateApiDocs`)
@@ -39,11 +38,11 @@ pnpm add -D typescript vite @types/react @types/react-dom
 ## Key Concepts
 
 - Configuration via `vite.config.ts` using the `ardo()` plugin from `ardo/vite`
-- All config (title, description, themeConfig) is passed directly to `ardo()`
+- Build-time config (title, description, markdown, typedoc) is passed to `ardo()`
+- UI configuration (nav, sidebar, footer, editLink) is done via JSX props in `root.tsx`
 - Content lives in `app/routes/` as MDX/MD files
 - Uses React Router 7 for file-based routing and pre-rendering
 - JSX-first architecture: theme components accept explicit props
-- Supports both config-driven sidebar/nav and JSX composition
 - Built-in full-text search via MiniSearch
 - Dark mode via CSS custom properties
 - TypeDoc integration for API reference generation

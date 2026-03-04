@@ -370,21 +370,9 @@ Options controlling the generated markdown output.
 
 ---
 
-## Theme Configuration
+## UI Configuration
 
-Runtime UI configuration, passed under `themeConfig`. In the JSX-first architecture, most of these are better handled via component props directly in `root.tsx`.
-
-```ts
-ardo({
-  title: "My Docs",
-  themeConfig: {
-    search: { enabled: true, placeholder: "Search docs..." },
-    editLink: { pattern: "https://github.com/my-org/my-repo/edit/main/docs/:path" },
-  },
-})
-```
-
-See [Theme Config](/guide/theme-config) for details.
+Navigation, sidebar, footer, editLink, lastUpdated, and search are configured via JSX props in your `root.tsx` using `<ArdoRoot>`. See [Custom Theme](/guide/custom-theme) for details.
 
 ---
 
@@ -416,13 +404,6 @@ export default defineConfig({
       typedoc: {
         entryPoints: ["./src/index.ts"],
         tsconfig: "./tsconfig.api.json",
-      },
-
-      themeConfig: {
-        search: { enabled: true },
-        editLink: {
-          pattern: "https://github.com/my-org/my-lib/edit/main/docs/:path",
-        },
       },
     }),
   ],

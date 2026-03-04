@@ -3,7 +3,6 @@ export { defineConfig, resolveConfig, loadConfig } from "./config"
 export type {
   ArdoConfig,
   ResolvedConfig,
-  ThemeConfig,
   MarkdownConfig,
   TypeDocConfig,
   SidebarItem,
@@ -19,15 +18,17 @@ export type {
 // Runtime (React hooks and context - client-safe)
 export {
   ArdoProvider,
+  ArdoSiteConfigProvider,
   useArdoContext,
   useArdoConfig,
-  useArdoTheme,
+  useArdoSiteConfig,
   useArdoSidebar,
   useArdoPageData,
   useArdoTOC,
   findCurrentSidebarItem,
   getPrevNextLinks,
 } from "./runtime"
+export type { ArdoSiteConfig } from "./runtime"
 
 // UI Components (client-safe)
 export {

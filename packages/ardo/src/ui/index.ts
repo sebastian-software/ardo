@@ -18,10 +18,12 @@ export { ArdoNav, ArdoNavLink } from "./Nav"
 export type { ArdoNavProps, ArdoNavLinkProps } from "./Nav"
 
 export { ArdoTOC } from "./TOC"
+export type { ArdoTOCProps } from "./TOC"
 export { ArdoContent } from "./Content"
 export { ArdoBareContent } from "./BareContent"
 export { ArdoDocPage, ArdoDocContent, ArdoDocLayout } from "./DocPage"
 export { ArdoHomePage } from "./HomePage"
+export type { ArdoHomePageProps } from "./HomePage"
 
 // UI components
 export {

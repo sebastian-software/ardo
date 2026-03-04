@@ -8,27 +8,6 @@ export default defineConfig({
       description: "React-first Static Documentation Framework",
       githubPages: false,
 
-      themeConfig: {
-        nav: [
-          { text: "Guide", link: "/guide/getting-started" },
-          { text: "API", link: "/api-reference" },
-          { text: "Storybook", link: "/storybook" },
-        ],
-        socialLinks: [{ icon: "github", link: "https://github.com/sebastian-software/ardo" }],
-        search: {
-          enabled: true,
-          placeholder: "Search documentation...",
-        },
-        editLink: {
-          pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
-          text: "Edit this page on GitHub",
-        },
-        lastUpdated: {
-          enabled: true,
-          text: "Last updated",
-        },
-      },
-
       // TypeDoc API documentation
       typedoc: {
         entryPoints: ["../packages/ardo/src/index.ts"],

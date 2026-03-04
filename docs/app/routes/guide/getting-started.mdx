@@ -49,7 +49,7 @@ pnpm add -D @react-router/dev typescript vite @types/react @types/react-dom
 
 ### 3. Create Vite configuration
 
-This is the heart of your Ardo setup. Everything — title, navigation, sidebar — is configured in one place through the `ardo()` plugin:
+The `ardo()` plugin handles build-time configuration. UI configuration (navigation, sidebar, footer) is done via JSX props in `root.tsx`:
 
 ```ts
 import { defineConfig } from "vite"
@@ -60,16 +60,6 @@ export default defineConfig({
     ardo({
       title: "My Documentation",
       description: "My awesome documentation site",
-
-      themeConfig: {
-        nav: [{ text: "Guide", link: "/guide/getting-started" }],
-        sidebar: [
-          {
-            text: "Guide",
-            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
-          },
-        ],
-      },
     }),
   ],
 })

@@ -11,6 +11,12 @@ import * as styles from "./DocPage.css"
 
 interface DocPageProps {
   children: ReactNode
+  /** Edit link configuration (forwarded to Content) */
+  editLink?: { pattern: string; text?: string }
+  /** Last updated configuration (forwarded to Content) */
+  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** TOC label (forwarded to TOC) */
+  tocLabel?: string
 }
 
 /**
@@ -24,7 +30,7 @@ interface DocPageProps {
  * </DocPage>
  * ```
  */
-export function ArdoDocPage({ children }: DocPageProps) {
+export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPageProps) {
   const pageData = useArdoPageData()
   const showToc =
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
@@ -32,8 +38,10 @@ export function ArdoDocPage({ children }: DocPageProps) {
   return (
     <ArdoLayout>
       <div className={styles.docPage}>
-        <ArdoContent>{children}</ArdoContent>
-        {showToc && <ArdoTOC />}
+        <ArdoContent editLink={editLink} lastUpdated={lastUpdated}>
+          {children}
+        </ArdoContent>
+        {showToc && <ArdoTOC label={tocLabel} />}
       </div>
     </ArdoLayout>
   )
@@ -45,6 +53,12 @@ export function ArdoDocPage({ children }: DocPageProps) {
 
 interface DocContentProps {
   children: ReactNode
+  /** Edit link configuration (forwarded to Content) */
+  editLink?: { pattern: string; text?: string }
+  /** Last updated configuration (forwarded to Content) */
+  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** TOC label (forwarded to TOC) */
+  tocLabel?: string
 }
 
 /**
@@ -67,15 +81,17 @@ interface DocContentProps {
  * </DocContent>
  * ```
  */
-export function ArdoDocContent({ children }: DocContentProps) {
+export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: DocContentProps) {
   const pageData = useArdoPageData()
   const showToc =
     pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
 
   return (
     <div className={styles.docPage}>
-      <ArdoContent>{children}</ArdoContent>
-      {showToc && <ArdoTOC />}
+      <ArdoContent editLink={editLink} lastUpdated={lastUpdated}>
+        {children}
+      </ArdoContent>
+      {showToc && <ArdoTOC label={tocLabel} />}
     </div>
   )
 }

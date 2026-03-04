@@ -2,7 +2,6 @@ import type {
   ArdoConfig,
   ProjectMeta,
   ResolvedConfig,
-  ThemeConfig,
   MarkdownConfig,
   TypeDocConfig,
   SidebarItem,
@@ -20,7 +19,6 @@ export type {
   ArdoConfig,
   ProjectMeta,
   ResolvedConfig,
-  ThemeConfig,
   MarkdownConfig,
   TypeDocConfig,
   SidebarItem,
@@ -35,20 +33,6 @@ export type {
 
 export function defineConfig(config: ArdoConfig): ArdoConfig {
   return config
-}
-
-const defaultThemeConfig: ThemeConfig = {
-  nav: [],
-  sidebar: [],
-  socialLinks: [],
-  search: {
-    enabled: true,
-    placeholder: "Search...",
-  },
-  outline: {
-    level: 2,
-    label: "On this page",
-  },
 }
 
 export const defaultMarkdownConfig: MarkdownConfig = {
@@ -76,10 +60,6 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     outDir: config.outDir ?? "dist",
     lang: config.lang ?? "en",
     head: config.head ?? [],
-    themeConfig: {
-      ...defaultThemeConfig,
-      ...config.themeConfig,
-    },
     markdown: {
       ...defaultMarkdownConfig,
       ...config.markdown,

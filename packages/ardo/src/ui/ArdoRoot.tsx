@@ -1,6 +1,6 @@
-import { cloneElement, isValidElement, type ReactNode } from "react"
+import { cloneElement, isValidElement, useMemo, type ReactNode } from "react"
 import { Outlet, useLocation } from "react-router"
-import { ArdoProvider } from "../runtime/hooks"
+import { ArdoProvider, ArdoSiteConfigProvider, type ArdoSiteConfig } from "../runtime/hooks"
 import type { ArdoConfig, SidebarItem } from "../config/types"
 import { ArdoLayout } from "./Layout"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
@@ -29,6 +29,12 @@ export interface ArdoRootProps {
   sidebarProps?: ArdoSidebarProps
   /** Props passed to auto-generated ArdoFooter (ignored when footer is provided) */
   footerProps?: ArdoFooterProps
+  /** Edit link configuration (applied site-wide via ArdoSiteConfig) */
+  editLink?: { pattern: string; text?: string }
+  /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
+  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** TOC label (applied site-wide via ArdoSiteConfig) */
+  tocLabel?: string
   /** Additional CSS classes for the layout */
   className?: string
   /** Content to render (defaults to <Outlet />) */
@@ -67,6 +73,11 @@ export interface ArdoRootProps {
  *       footerProps={{
  *         message: "Released under the MIT License.",
  *       }}
+ *       editLink={{
+ *         pattern: "https://github.com/user/repo/edit/main/docs/:path",
+ *         text: "Edit this page on GitHub",
+ *       }}
+ *       lastUpdated={{ enabled: true }}
  *     />
  *   )
  * }
@@ -81,6 +92,9 @@ export function ArdoRoot({
   headerProps,
   sidebarProps,
   footerProps,
+  editLink,
+  lastUpdated,
+  tocLabel,
   className,
   children,
 }: ArdoRootProps) {
@@ -103,7 +117,14 @@ export function ArdoRoot({
   const resolvedClassName =
     className ?? (isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout)
 
-  return (
+  const siteConfig = useMemo<ArdoSiteConfig>(
+    () => ({ editLink, lastUpdated, tocLabel }),
+    [editLink, lastUpdated, tocLabel]
+  )
+
+  const hasSiteConfig = editLink || lastUpdated || tocLabel
+
+  const content = (
     <ArdoProvider config={config} sidebar={sidebar}>
       <ArdoLayout
         className={resolvedClassName}
@@ -115,6 +136,12 @@ export function ArdoRoot({
       </ArdoLayout>
     </ArdoProvider>
   )
+
+  if (hasSiteConfig) {
+    return <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
+  }
+
+  return content
 }
 
 function enhanceHeaderWithMobileMenuContent(

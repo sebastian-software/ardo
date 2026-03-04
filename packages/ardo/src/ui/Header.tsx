@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense, type MouseEvent, type ReactNode } from "react"
-import { Link, NavLink as RouterNavLink, useLocation } from "react-router"
+import { Link, useLocation } from "react-router"
 import * as styles from "./Header.css"
 import * as navStyles from "./Nav.css"
 import {
@@ -11,8 +11,7 @@ import {
   PackageIcon,
 } from "./icons"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
-import { useArdoConfig, useArdoTheme } from "../runtime/hooks"
-import type { NavItem } from "../config/types"
+import { useArdoConfig } from "../runtime/hooks"
 
 const LazySearch = lazy(() =>
   import("./components/Search").then((m) => ({ default: m.ArdoSearch }))
@@ -33,6 +32,8 @@ export interface ArdoHeaderProps {
   actions?: ReactNode
   /** Show search (default: true) */
   search?: boolean
+  /** Placeholder text for the search input */
+  searchPlaceholder?: string
   /** Show theme toggle (default: true) */
   themeToggle?: boolean
   /** Additional content rendered in the mobile menu (e.g. sidebar) */
@@ -44,8 +45,7 @@ export interface ArdoHeaderProps {
 /**
  * Header component with explicit slot props.
  *
- * Automatically pulls `title` from config and `logo`/`siteTitle` from themeConfig.
- * Props serve as overrides.
+ * Automatically pulls `title` from config. Props serve as overrides.
  *
  * @example Zero-config
  * ```tsx
@@ -72,31 +72,18 @@ export function ArdoHeader({
   nav,
   actions,
   search = true,
+  searchPlaceholder,
   themeToggle = true,
   mobileMenuContent,
   className,
 }: ArdoHeaderProps) {
   const location = useLocation()
   const config = useArdoConfig()
-  const themeConfig = useArdoTheme()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const resolvedLogo = logo ?? themeConfig.logo
-  const resolvedTitle =
-    title ?? (themeConfig.siteTitle !== false ? (themeConfig.siteTitle ?? config.title) : undefined)
+  const resolvedLogo = logo
+  const resolvedTitle = title ?? config.title
 
-  // Auto-render nav from themeConfig.nav when no nav prop given
-  const resolvedNav =
-    nav ?? (themeConfig.nav?.length ? <AutoNav items={themeConfig.nav} /> : undefined)
-
-  // Auto-render social links from themeConfig.socialLinks when no actions prop given
-  const resolvedActions =
-    actions ??
-    (themeConfig.socialLinks?.length
-      ? themeConfig.socialLinks.map((link, i) => (
-          <ArdoSocialLink key={i} href={link.link} icon={link.icon} ariaLabel={link.ariaLabel} />
-        ))
-      : undefined)
   const hasMobileMenu = Boolean(mobileMenuContent)
 
   useEffect(() => {
@@ -144,23 +131,23 @@ export function ArdoHeader({
         </div>
 
         {/* Center: Navigation */}
-        {resolvedNav && <div className={styles.desktopNav}>{resolvedNav}</div>}
+        {nav && <div className={styles.desktopNav}>{nav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
         <div className={styles.headerRight}>
           {search && (
             <Suspense fallback={<span />}>
-              <LazySearch />
+              <LazySearch placeholder={searchPlaceholder} />
             </Suspense>
           )}
           {themeToggle && <ArdoThemeToggle />}
-          {resolvedActions}
+          {actions}
         </div>
       </div>
 
-      {resolvedNav && (
+      {nav && (
         <div className={styles.mobileTopNav}>
-          <div>{resolvedNav}</div>
+          <div>{nav}</div>
         </div>
       )}
 
@@ -216,45 +203,6 @@ export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialL
       <SocialIcon icon={icon} />
     </a>
   )
-}
-
-// =============================================================================
-// Auto Nav Component (internal, renders from NavItem[])
-// =============================================================================
-
-function AutoNav({ items }: { items: NavItem[] }) {
-  return (
-    <nav className={navStyles.nav}>
-      {items.map((item, i) => (
-        <AutoNavItem key={i} item={item} />
-      ))}
-    </nav>
-  )
-}
-
-function AutoNavItem({ item }: { item: NavItem }) {
-  if (item.link?.startsWith("http")) {
-    return (
-      <a href={item.link} className={navStyles.navLink} target="_blank" rel="noopener noreferrer">
-        {item.text}
-      </a>
-    )
-  }
-
-  if (item.link) {
-    return (
-      <RouterNavLink
-        to={item.link}
-        className={({ isActive }: { isActive: boolean }) =>
-          [navStyles.navLink, isActive && "active"].filter(Boolean).join(" ")
-        }
-      >
-        {item.text}
-      </RouterNavLink>
-    )
-  }
-
-  return <span className={navStyles.navLink}>{item.text}</span>
 }
 
 // =============================================================================

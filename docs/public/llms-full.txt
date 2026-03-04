@@ -12,7 +12,7 @@ Ardo combines the developer experience of VitePress with the power of the React 
 2. [Getting Started](#getting-started)
 3. [Markdown Features](#markdown-features)
 4. [Frontmatter](#frontmatter)
-5. [Theme Configuration](#theme-configuration)
+5. [UI Configuration](#ui-configuration)
 6. [Custom Theme](#custom-theme)
 7. [TypeDoc Integration](#typedoc-integration)
 8. [Deployment](#deployment)
@@ -104,20 +104,12 @@ export default defineConfig({
     ardo({
       title: 'My Documentation',
       description: 'My awesome documentation site',
-
-      themeConfig: {
-        nav: [{ text: 'Guide', link: '/guide/getting-started' }],
-        sidebar: [
-          {
-            text: 'Guide',
-            items: [{ text: 'Getting Started', link: '/guide/getting-started' }],
-          },
-        ],
-      },
     }),
   ],
 })
 ```
+
+The `ardo()` plugin handles build-time configuration only (title, description, markdown, typedoc). All UI configuration (navigation, sidebar, footer, editLink) is done via JSX props in your `root.tsx`.
 
 #### 4. Create React Router configuration
 
@@ -186,10 +178,10 @@ my-docs/
 │   ├── routes/               # MDX/MD content files
 │   │   ├── guide/*.mdx       # Documentation pages
 │   │   └── home.tsx          # Home page
-│   ├── root.tsx              # Root layout
+│   ├── root.tsx              # Root layout (UI configuration lives here)
 │   ├── entry.client.tsx      # Client entry
 │   └── entry.server.tsx      # Server entry
-├── vite.config.ts            # Vite + Ardo configuration
+├── vite.config.ts            # Vite + Ardo build configuration
 ├── react-router.config.ts    # React Router configuration
 └── package.json
 ```
@@ -293,79 +285,125 @@ Frontmatter is YAML metadata at the top of your markdown files.
 
 ---
 
-## Theme Configuration
+## UI Configuration
 
-Configure the theme via `themeConfig` in your `vite.config.ts`:
+Ardo uses a JSX-first approach. All UI configuration is done via component props in your `root.tsx`, not in the Vite config.
 
-### Navigation
+### ArdoRoot Component
 
-```ts
-themeConfig: {
-  nav: [
-    { text: 'Guide', link: '/guide/introduction' },
-    { text: 'API', link: '/api-reference' },
-  ],
+The `ArdoRoot` component is the all-in-one entry point that combines provider, layout, header, sidebar, and footer:
+
+```tsx
+import { ArdoRoot, ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+
+export default function Root() {
+  return (
+    <ArdoRoot
+      config={config}
+      sidebar={sidebar}
+      headerProps={{
+        nav: (
+          <ArdoNav>
+            <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+            <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+          </ArdoNav>
+        ),
+      }}
+      footerProps={{
+        message: "Released under the MIT License.",
+      }}
+      editLink={{
+        pattern: "https://github.com/user/repo/edit/main/docs/:path",
+        text: "Edit this page on GitHub",
+      }}
+      lastUpdated={{ enabled: true }}
+    />
+  )
 }
 ```
 
-### Sidebar
+### Navigation
 
-```ts
-themeConfig: {
-  sidebar: [
-    {
-      text: 'Guide',
-      items: [
-        { text: 'Introduction', link: '/guide/introduction' },
-      ],
-    },
-  ],
-}
+Pass navigation as JSX to `headerProps.nav`:
+
+```tsx
+<ArdoRoot
+  headerProps={{
+    nav: (
+      <ArdoNav>
+        <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+        <ArdoNavLink to="/api">API</ArdoNavLink>
+        <ArdoNavLink href="https://github.com/...">GitHub</ArdoNavLink>
+      </ArdoNav>
+    ),
+  }}
+/>
 ```
 
 ### Social Links
 
-```ts
-themeConfig: {
-  socialLinks: [
-    { icon: 'github', link: 'https://github.com/...' },
-  ],
-}
+Pass social links to `headerProps.actions`:
+
+```tsx
+<ArdoRoot
+  headerProps={{
+    actions: <ArdoSocialLink href="https://github.com/..." icon="github" />,
+  }}
+/>
 ```
 
 Supported icons: `github`, `twitter`, `discord`, `linkedin`, `youtube`, `npm`
 
 ### Footer
 
-```ts
-themeConfig: {
-  footer: {
-    message: 'Released under the MIT License.',
-    copyright: 'Copyright © 2024 Your Name',
-  },
-}
+Pass footer content via `footerProps`:
+
+```tsx
+<ArdoRoot
+  footerProps={{
+    message: "Released under the MIT License.",
+    copyright: "Copyright © 2024 Your Name",
+    sponsor: { text: "Acme Corp", link: "https://acme.example" },
+  }}
+/>
 ```
 
 ### Search
 
-```ts
-themeConfig: {
-  search: {
-    enabled: true,
-    placeholder: 'Search docs...',
-  },
-}
+Search is enabled by default. Customize the placeholder via `headerProps.searchPlaceholder`:
+
+```tsx
+<ArdoRoot
+  headerProps={{
+    searchPlaceholder: "Search docs...",
+  }}
+/>
 ```
 
-### Edit Link
+### Edit Link & Last Updated
 
-```ts
-themeConfig: {
-  editLink: {
-    pattern: 'https://github.com/user/repo/edit/main/docs/:path',
-    text: 'Edit this page on GitHub',
-  },
-}
+These are set as props on `ArdoRoot` and apply site-wide:
+
+```tsx
+<ArdoRoot
+  editLink={{
+    pattern: "https://github.com/user/repo/edit/main/docs/:path",
+    text: "Edit this page on GitHub",
+  }}
+  lastUpdated={{
+    enabled: true,
+    text: "Last updated",
+    formatOptions: { year: "numeric", month: "long", day: "numeric" },
+  }}
+/>
+```
+
+### TOC Label
+
+```tsx
+<ArdoRoot tocLabel="On this page" />
 ```
 
 ---
@@ -378,19 +416,19 @@ Override CSS variables to customize colors:
 
 ```css
 :root {
-  --ardo-c-brand: #8b5cf6;
-  --ardo-c-brand-light: #a78bfa;
-  --ardo-c-brand-dark: #7c3aed;
+  --ardo-color-brand: oklch(0.6 0.2 260);
+  --ardo-color-brandLight: oklch(0.7 0.15 260);
+  --ardo-color-brandDark: oklch(0.5 0.25 260);
 }
 ```
 
 ### Runtime Hooks
 
-- `useConfig()` — Returns full site configuration
-- `useThemeConfig()` — Returns theme-specific configuration
-- `useSidebar()` — Returns resolved sidebar items
-- `usePageData()` — Returns current page metadata
-- `useTOC()` — Returns table of contents items
+- `useArdoConfig()` — Returns full site configuration
+- `useArdoSiteConfig()` — Returns cross-cutting content settings (editLink, lastUpdated, tocLabel)
+- `useArdoSidebar()` — Returns resolved sidebar items
+- `useArdoPageData()` — Returns current page metadata
+- `useArdoTOC()` — Returns table of contents items
 
 ### Component Overrides
 
@@ -476,18 +514,18 @@ pnpm add ardo react react-dom react-router isbot
 
 ## Package Exports Reference
 
-| Export               | Description                                              |
-| -------------------- | -------------------------------------------------------- |
-| `ardo/vite`          | Vite plugin with React Router, MDX, and all config       |
-| `ardo/runtime`       | React hooks: useConfig, useThemeConfig, useSidebar, etc. |
-| `ardo/ui`            | UI components: Layout, Header, Sidebar, TOC, Footer      |
-| `ardo/ui/styles.css` | Default theme stylesheet                                 |
-| `ardo/typedoc`       | TypeDoc utilities: generateApiDocs                       |
+| Export               | Description                                                     |
+| -------------------- | --------------------------------------------------------------- |
+| `ardo/vite`          | Vite plugin with React Router, MDX, and all config              |
+| `ardo/runtime`       | React hooks: useArdoConfig, useArdoSiteConfig, useArdoSidebar  |
+| `ardo/ui`            | UI components: Layout, Header, Sidebar, TOC, Footer             |
+| `ardo/ui/styles.css` | Default theme stylesheet                                        |
+| `ardo/typedoc`       | TypeDoc utilities: generateApiDocs                              |
 
 ### Key Types
 
-- `ArdoConfig` — Main site configuration
-- `ThemeConfig` — Theme settings (nav, sidebar, footer, search)
+- `ArdoConfig` — Main site configuration (build-time)
+- `ArdoSiteConfig` — Cross-cutting content settings (editLink, lastUpdated, tocLabel)
 - `SidebarItem` — Sidebar navigation item
 - `NavItem` — Top navigation item
 - `PageFrontmatter` — Frontmatter fields
@@ -496,11 +534,12 @@ pnpm add ardo react react-dom react-router isbot
 
 ### Key Components
 
+- `ArdoRoot` — All-in-one root component (provider + layout + header + sidebar + footer)
 - `Layout` — Main page layout wrapper
-- `Header` — Top navigation bar
+- `Header` — Top navigation bar (props: logo, title, nav, actions, searchPlaceholder)
 - `Sidebar` — Left sidebar navigation
-- `TOC` — Right sidebar table of contents
-- `Footer` — Page footer
+- `TOC` — Right sidebar table of contents (props: label)
+- `Footer` — Page footer (props: message, copyright, sponsor)
 - `CodeBlock` — Syntax-highlighted code (supports plain text children in `.tsx` routes)
 - `BareContent` — Renders imported MDX without article/footer wrapper
-- `Search` — Full-text search dialog
+- `Search` — Full-text search dialog (props: placeholder)

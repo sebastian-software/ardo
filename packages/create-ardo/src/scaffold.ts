@@ -46,8 +46,6 @@ export function createProjectStructure(root: string, template: string, options: 
       ? "basename: detectGitHubBasename(),"
       : "// basename: detectGitHubBasename(), // Uncomment for GitHub Pages",
     DESCRIPTION: options.description,
-    TYPEDOC_NAV: options.typedoc ? "{ text: 'API', link: '/api-reference' }," : "",
-    TYPEDOC_SIDEBAR: options.typedoc ? "{ text: 'API Reference', link: '/api-reference' }," : "",
   }
 
   copyDir(templateDir, root, vars)

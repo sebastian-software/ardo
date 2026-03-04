@@ -1,5 +1,5 @@
 import { type ReactNode } from "react"
-import { useArdoPageData, useArdoTheme, useArdoSidebar } from "../runtime/hooks"
+import { useArdoPageData, useArdoSiteConfig, useArdoSidebar } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { Link, useLocation } from "react-router"
 import { useBareContent } from "./BareContent"
@@ -9,12 +9,16 @@ import { ardoContent } from "./content.css"
 
 interface ContentProps {
   children: ReactNode
+  /** Edit link configuration (overrides ArdoSiteConfig) */
+  editLink?: { pattern: string; text?: string }
+  /** Last updated configuration (overrides ArdoSiteConfig) */
+  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
 }
 
-export function ArdoContent({ children }: ContentProps) {
+export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
   const isBare = useBareContent()
   const pageData = useArdoPageData()
-  const themeConfig = useArdoTheme()
+  const siteConfig = useArdoSiteConfig()
   const sidebar = useArdoSidebar()
   const location = useLocation()
 
@@ -24,21 +28,24 @@ export function ArdoContent({ children }: ContentProps) {
 
   const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
 
-  const showEditLink = pageData?.frontmatter.editLink !== false && themeConfig.editLink?.pattern
+  const resolvedEditLink = editLink ?? siteConfig.editLink
+  const resolvedLastUpdated = lastUpdated ?? siteConfig.lastUpdated
+
+  const showEditLink = pageData?.frontmatter.editLink !== false && resolvedEditLink?.pattern
 
   const showLastUpdated =
     pageData?.frontmatter.lastUpdated !== false &&
-    themeConfig.lastUpdated?.enabled &&
+    resolvedLastUpdated?.enabled &&
     pageData?.lastUpdated
 
-  const editLink = showEditLink
-    ? themeConfig.editLink!.pattern.replace(":path", pageData?.relativePath || "")
+  const editHref = showEditLink
+    ? resolvedEditLink!.pattern.replace(":path", pageData?.relativePath || "")
     : null
 
   const lastUpdatedText = showLastUpdated
     ? new Date(pageData!.lastUpdated!).toLocaleDateString(
         undefined,
-        themeConfig.lastUpdated?.formatOptions ?? {
+        resolvedLastUpdated?.formatOptions ?? {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -64,17 +71,17 @@ export function ArdoContent({ children }: ContentProps) {
           <div className={footerStyles.contentMeta}>
             {showEditLink && (
               <a
-                href={editLink!}
+                href={editHref!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={footerStyles.editLink}
               >
-                {themeConfig.editLink?.text ?? "Edit this page"}
+                {resolvedEditLink?.text ?? "Edit this page"}
               </a>
             )}
             {showLastUpdated && (
               <span>
-                {themeConfig.lastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
+                {resolvedLastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
               </span>
             )}
           </div>

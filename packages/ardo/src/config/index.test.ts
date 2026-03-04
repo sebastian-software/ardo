@@ -19,9 +19,6 @@ describe("defineConfig", () => {
       description: "Description",
       base: "/docs/",
       srcDir: "documentation",
-      themeConfig: {
-        nav: [{ text: "Home", link: "/" }],
-      },
     }
 
     const result = defineConfig(config)
@@ -29,7 +26,6 @@ describe("defineConfig", () => {
     expect(result.title).toBe("My Docs")
     expect(result.base).toBe("/docs/")
     expect(result.srcDir).toBe("documentation")
-    expect(result.themeConfig?.nav).toHaveLength(1)
   })
 })
 
@@ -69,23 +65,6 @@ describe("resolveConfig", () => {
     expect(resolved.outDir).toBe("build")
     expect(resolved.lang).toBe("de")
     expect(resolved.contentDir).toBe("/project/docs")
-  })
-
-  it("merges theme config with defaults", () => {
-    const config = {
-      title: "Test",
-      themeConfig: {
-        siteTitle: "My Site",
-        nav: [{ text: "Guide", link: "/guide" }],
-      },
-    }
-
-    const resolved = resolveConfig(config, "/project")
-
-    expect(resolved.themeConfig.siteTitle).toBe("My Site")
-    expect(resolved.themeConfig.nav).toHaveLength(1)
-    expect(resolved.themeConfig.search?.enabled).toBe(true)
-    expect(resolved.themeConfig.outline?.level).toBe(2)
   })
 
   it("merges markdown config with defaults", () => {

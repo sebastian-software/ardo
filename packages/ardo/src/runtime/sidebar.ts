@@ -11,18 +11,7 @@ export interface SidebarGenerationOptions {
 }
 
 export async function generateSidebar(options: SidebarGenerationOptions): Promise<SidebarItem[]> {
-  const { contentDir, basePath, config } = options
-
-  const configSidebar = config.themeConfig.sidebar
-
-  if (configSidebar) {
-    if (Array.isArray(configSidebar) && configSidebar.length > 0) {
-      return configSidebar
-    }
-    if (!Array.isArray(configSidebar)) {
-      return []
-    }
-  }
+  const { contentDir, basePath } = options
 
   return await scanDirectoryForSidebar(contentDir, contentDir, basePath)
 }

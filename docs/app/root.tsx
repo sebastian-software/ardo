@@ -30,9 +30,18 @@ export default function Root() {
     <ArdoRoot
       config={config}
       sidebar={sidebar}
+      editLink={{
+        pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
+        text: "Edit this page on GitHub",
+      }}
+      lastUpdated={{
+        enabled: true,
+        text: "Last updated",
+      }}
       header={
         <ArdoHeader
           logo={logo}
+          searchPlaceholder="Search documentation..."
           nav={
             <ArdoNav>
               <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
@@ -65,7 +74,6 @@ export default function Root() {
 
           <ArdoSidebarGroup title="Customization">
             <ArdoSidebarLink to="/guide/configuration">Configuration</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/theme-config">Theme Config</ArdoSidebarLink>
             <ArdoSidebarLink to="/guide/custom-theme">Custom Theme</ArdoSidebarLink>
           </ArdoSidebarGroup>
 
