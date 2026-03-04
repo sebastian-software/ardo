@@ -6,11 +6,12 @@ order: 7
 
 # Custom Theme
 
-Ardo's default theme is intentionally not a black box. Nothing is locked down, nothing requires workarounds. You have three levels of customization, and you can mix them freely:
+Ardo's default theme is intentionally not a black box. Nothing is locked down, nothing requires workarounds. You have four levels of customization, and you can mix them freely:
 
 1. **CSS variables** — Change colors, spacing, and typography without touching components
-2. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
-3. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
+2. **Vanilla Extract tokens** — Type-safe styling with `ardo/theme` imports and `.css.ts` files
+3. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
+4. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
 
 Start simple. Go deeper when you need to.
 
@@ -23,9 +24,9 @@ Create a custom CSS file:
 ```css
 /* styles/custom.css */
 :root {
-  --ardo-c-brand: #8b5cf6;
-  --ardo-c-brand-light: #a78bfa;
-  --ardo-c-brand-dark: #7c3aed;
+  --ardo-color-brand: oklch(0.6 0.2 260);
+  --ardo-color-brandLight: oklch(0.7 0.15 260);
+  --ardo-color-brandDark: oklch(0.5 0.25 260);
 }
 ```
 
@@ -43,35 +44,74 @@ Here's the full set of variables you can override. You don't need to set all of 
 ```css
 :root {
   /* Brand colors */
-  --ardo-c-brand: #3b82f6;
-  --ardo-c-brand-light: #60a5fa;
-  --ardo-c-brand-dark: #2563eb;
+  --ardo-color-brand: oklch(0.62 0.19 260);
+  --ardo-color-brandLight: oklch(0.7 0.14 260);
+  --ardo-color-brandDark: oklch(0.55 0.24 260);
 
   /* Background colors */
-  --ardo-c-bg: #ffffff;
-  --ardo-c-bg-soft: #f8fafc;
-  --ardo-c-bg-mute: #f1f5f9;
+  --ardo-color-bg: oklch(1 0 0);
+  --ardo-color-bgSoft: oklch(0.97 0.005 260);
+  --ardo-color-bgMute: oklch(0.95 0.008 260);
 
   /* Text colors */
-  --ardo-c-text: #1e293b;
-  --ardo-c-text-light: #475569;
-  --ardo-c-text-lighter: #64748b;
+  --ardo-color-text: oklch(0.25 0.02 260);
+  --ardo-color-textLight: oklch(0.4 0.02 260);
+  --ardo-color-textLighter: oklch(0.5 0.02 260);
 
   /* Layout */
-  --ardo-sidebar-width: 280px;
-  --ardo-toc-width: 240px;
-  --ardo-content-max-width: 800px;
-  --ardo-header-height: 64px;
+  --ardo-layout-sidebarWidth: 280px;
+  --ardo-layout-tocWidth: 240px;
+  --ardo-layout-contentMaxWidth: 800px;
+  --ardo-layout-headerHeight: 64px;
 
   /* Typography */
   --ardo-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
   --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
 
   /* Border radius */
-  --ardo-radius: 8px;
+  --ardo-radius-base: 8px;
   --ardo-radius-sm: 4px;
 }
 ```
+
+## Vanilla Extract Tokens
+
+Ardo's UI is built with [Vanilla Extract](https://vanilla-extract.style/). All design tokens are available as type-safe imports from `ardo/theme`, which means you get full autocomplete and compile-time errors when referencing tokens.
+
+The `ardo()` Vite plugin automatically includes the Vanilla Extract plugin, so `.css.ts` files work in your project without extra configuration.
+
+### Using tokens in your styles
+
+Create a `.css.ts` file anywhere in your project:
+
+```ts
+// styles/custom.css.ts
+import { style, globalStyle } from "@vanilla-extract/css"
+import { vars } from "ardo/theme"
+
+export const highlight = style({
+  background: vars.color.brandSubtle,
+  borderLeft: `3px solid ${vars.color.brand}`,
+  padding: "16px",
+  borderRadius: vars.radius.base,
+})
+
+// Override Ardo's default styles
+globalStyle(".ardo-content a", {
+  color: vars.color.brand,
+  textDecoration: "underline",
+})
+```
+
+### Available token categories
+
+The `vars` object provides tokens for:
+
+- **`vars.color`** — Brand colors, backgrounds, text, borders, shadows, and semantic colors (tip, warning, danger, info, note)
+- **`vars.layout`** — Sidebar width, TOC width, content max width, header height
+- **`vars.transition`** — Fast, base, and slow transition durations
+- **`vars.font`** — Font family and monospace family
+- **`vars.radius`** — Small, base, and large border radii
 
 ## Component Overrides
 

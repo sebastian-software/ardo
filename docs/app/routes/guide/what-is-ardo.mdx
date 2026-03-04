@@ -66,6 +66,22 @@ Ardo ships with a complete theme so you can focus on content, not design:
 - Automatic table of contents
 - Syntax highlighting with line numbers and highlights
 
+### Type-Safe Styling with Vanilla Extract
+
+Ardo's UI is built with [Vanilla Extract](https://vanilla-extract.style/) — a zero-runtime CSS-in-TypeScript solution. Every design token (colors, spacing, radii, transitions) is available as a type-safe import:
+
+```ts
+import { vars } from "ardo/theme"
+
+// Full autocomplete for all design tokens
+const myStyle = style({
+  color: vars.color.brand,
+  borderRadius: vars.radius.base,
+})
+```
+
+The `ardo()` Vite plugin automatically includes the Vanilla Extract plugin, so you can write `.css.ts` files in your own project without any extra setup.
+
 ### Fully Customizable
 
 When you're ready to make it yours, everything is accessible. Theme colors, layout components, Markdown processing, and the build pipeline — it's all standard React and Vite, so customization works the way you'd expect.
