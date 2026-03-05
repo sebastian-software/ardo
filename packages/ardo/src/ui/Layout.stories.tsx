@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ArdoLayout } from "./Layout"
-import { ArdoHeader } from "./Header"
-import { ArdoSidebar } from "./Sidebar"
-import { ArdoFooter } from "./Footer"
+
 import { ardoContent } from "./content.css"
+import { ArdoFooter } from "./Footer"
+import { ArdoHeader } from "./Header"
+import { ArdoLayout } from "./Layout"
+import { ArdoSidebar } from "./Sidebar"
 
 const meta = {
   title: "Layout/Layout",

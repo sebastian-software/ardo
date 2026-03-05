@@ -25,7 +25,7 @@ export interface TypeDocConfig {
    * Include README in the API docs
    * @default false
    */
-  readme?: string | "none"
+  readme?: "none" | string
 
   /**
    * Plugin options passed to TypeDoc
@@ -66,11 +66,11 @@ export interface TypeDocConfig {
    * @default ['source-order']
    */
   sort?: Array<
-    | "source-order"
     | "alphabetical"
     | "enum-value-ascending"
     | "enum-value-descending"
     | "required-first"
+    | "source-order"
     | "visibility"
   >
 
@@ -165,21 +165,21 @@ export interface ApiDocItem {
 }
 
 export type ApiDocKind =
+  | "accessor"
+  | "class"
+  | "constructor"
+  | "enum"
+  | "enumMember"
+  | "function"
+  | "interface"
+  | "method"
   | "module"
   | "namespace"
-  | "class"
-  | "interface"
-  | "type"
-  | "enum"
-  | "function"
-  | "variable"
-  | "property"
-  | "method"
-  | "accessor"
-  | "constructor"
   | "parameter"
+  | "property"
+  | "type"
   | "typeParameter"
-  | "enumMember"
+  | "variable"
 
 export interface ApiDocParameter {
   name: string

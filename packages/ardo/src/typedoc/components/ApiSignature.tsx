@@ -1,4 +1,5 @@
 import type { ApiDocParameter, ApiDocReturn, ApiDocTypeParameter } from "../types"
+
 import * as styles from "../../ui/components/ApiItem.css"
 
 interface ApiSignatureProps {

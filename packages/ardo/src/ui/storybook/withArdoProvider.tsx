@@ -1,7 +1,10 @@
 import type { Decorator } from "@storybook/react"
+
 import { MemoryRouter } from "react-router"
-import { ArdoProvider } from "../../runtime"
+
 import type { ArdoConfig, PageData, SidebarItem } from "../../config/types"
+
+import { ArdoProvider } from "../../runtime"
 
 const storybookConfig: ArdoConfig = {
   title: "Ardo UI",

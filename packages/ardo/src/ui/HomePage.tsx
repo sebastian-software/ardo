@@ -1,11 +1,13 @@
-import { type ReactNode } from "react"
+import type { ReactNode } from "react"
+
 import { Link } from "react-router"
-import { useArdoPageData, useArdoConfig } from "../runtime/hooks"
-import { ArdoHeader, type ArdoHeaderProps } from "./Header"
-import { ArdoFooter, type ArdoFooterProps } from "./Footer"
-import { ArdoFeatures, ArdoFeatureCard } from "./components/Features"
-import * as layoutStyles from "./Layout.css"
+
+import { useArdoConfig, useArdoPageData } from "../runtime/hooks"
+import { ArdoFeatureCard, ArdoFeatures } from "./components/Features"
 import * as heroStyles from "./components/Hero.css"
+import { ArdoFooter, type ArdoFooterProps } from "./Footer"
+import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import * as layoutStyles from "./Layout.css"
 
 export interface ArdoHomePageProps {
   /** Props passed to the Header component */

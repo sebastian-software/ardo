@@ -1,6 +1,7 @@
-import { style, globalStyle } from "@vanilla-extract/css"
-import { vars } from "../theme/contract.css"
+import { globalStyle, style } from "@vanilla-extract/css"
+
 import { fadeInUp } from "../theme/animations.css"
+import { vars } from "../theme/contract.css"
 
 export const features = style({
   padding: "80px 24px",

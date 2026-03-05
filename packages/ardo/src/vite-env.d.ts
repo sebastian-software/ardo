@@ -4,12 +4,14 @@ declare const __BUILD_TIME__: string
 
 declare module "virtual:ardo/config" {
   import type { ArdoConfig } from "./config/types"
+
   const config: ArdoConfig
   export default config
 }
 
 declare module "virtual:ardo/sidebar" {
   import type { SidebarItem } from "./config/types"
+
   const sidebar: SidebarItem[]
   export default sidebar
 }

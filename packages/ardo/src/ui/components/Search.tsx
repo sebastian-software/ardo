@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useMemo } from "react"
-import { Link, useNavigate } from "react-router"
 import MiniSearch, { type SearchResult } from "minisearch"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
+
 import { SearchIcon } from "../icons"
 import * as styles from "./Search.css"
 
@@ -42,7 +43,9 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
     }
 
     document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+    }
   }, [])
 
   useEffect(() => {
@@ -134,7 +137,9 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
           className={styles.searchInput}
           placeholder={placeholder}
           value={query}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => {
+            handleSearch(e.target.value)
+          }}
           onKeyDown={handleKeyDown}
           onFocus={() => {
             if (hasQuery) {
@@ -175,7 +180,9 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
                     className={[styles.searchResult, index === selectedIndex && "selected"]
                       .filter(Boolean)
                       .join(" ")}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      setIsOpen(false)
+                    }}
                   >
                     <span className={styles.searchResultTitle}>{result.title as string}</span>
                     {result.section && (

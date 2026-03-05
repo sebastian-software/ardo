@@ -1,13 +1,13 @@
 import {
   Children,
+  createContext,
   isValidElement,
+  type ReactNode,
   useEffect,
   useRef,
   useState,
-  createContext,
-  useContext,
-  type ReactNode,
 } from "react"
+
 import * as styles from "./Tabs.css"
 
 interface TabsContextValue {
@@ -17,11 +17,11 @@ interface TabsContextValue {
   getPanelValue: (value?: string) => string
 }
 
-const TabsContext = createContext<TabsContextValue | null>(null)
+const TabsContext = createContext<null | TabsContextValue>(null)
 const AUTO_TAB_PREFIX = "__ardo-tab-"
 
 function useTabsContext() {
-  const context = useContext(TabsContext)
+  const context = use(TabsContext)
   if (!context) {
     throw new Error("Tab components must be used within an ArdoTabs component")
   }
@@ -63,9 +63,9 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   }, [defaultValue])
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab, getTabValue, getPanelValue }}>
+    <TabsContext value={{ activeTab, setActiveTab, getTabValue, getPanelValue }}>
       <div className={styles.tabs}>{children}</div>
-    </TabsContext.Provider>
+    </TabsContext>
   )
 }
 
@@ -106,7 +106,9 @@ export function ArdoTab({ value, children }: ArdoTabProps) {
       role="tab"
       aria-selected={isActive}
       className={[styles.tab, isActive && "active"].filter(Boolean).join(" ")}
-      onClick={() => setActiveTab(resolvedValue)}
+      onClick={() => {
+        setActiveTab(resolvedValue)
+      }}
     >
       {children}
     </button>

@@ -1,8 +1,9 @@
-import { type ReactNode } from "react"
-import { LightbulbIcon, AlertTriangleIcon, XCircleIcon, InfoIcon, FileTextIcon } from "../icons"
+import type { ReactNode } from "react"
+
+import { AlertTriangleIcon, FileTextIcon, InfoIcon, LightbulbIcon, XCircleIcon } from "../icons"
 import * as styles from "./Container.css"
 
-export type ArdoContainerType = "tip" | "warning" | "danger" | "info" | "note"
+export type ArdoContainerType = "danger" | "info" | "note" | "tip" | "warning"
 
 export interface ArdoContainerProps {
   /** Container type determining the style */

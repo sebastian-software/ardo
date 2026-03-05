@@ -1,7 +1,9 @@
-import type { ApiDocItem, ApiDocKind } from "../types"
-import { ApiSignature, ApiParametersTable, ApiReturns } from "./ApiSignature"
 import type { JSX } from "react"
+
+import type { ApiDocItem, ApiDocKind } from "../types"
+
 import * as styles from "../../ui/components/ApiItem.css"
+import { ApiParametersTable, ApiReturns, ApiSignature } from "./ApiSignature"
 
 interface ApiItemProps {
   item: ApiDocItem

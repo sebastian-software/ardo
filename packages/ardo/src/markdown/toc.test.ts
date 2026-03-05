@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest"
-import { flattenToc } from "./toc"
+import { describe, expect, it } from "vitest"
+
 import type { TOCItem } from "../config/types"
+
+import { flattenToc } from "./toc"
 
 describe("flattenToc", () => {
   it("returns empty array for empty toc", () => {

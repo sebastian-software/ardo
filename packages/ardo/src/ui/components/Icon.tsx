@@ -1,6 +1,6 @@
-import type { ComponentType, SVGAttributes, ReactNode } from "react"
+import type { ComponentType, ReactNode, SVGAttributes } from "react"
 
-type IconComponent = ComponentType<SVGAttributes<SVGSVGElement> & { size?: number }>
+type IconComponent = ComponentType<{ size?: number } & SVGAttributes<SVGSVGElement>>
 
 export interface ArdoIconProps extends SVGAttributes<SVGSVGElement> {
   /** Name of the registered icon */
@@ -35,7 +35,7 @@ export function registerIcons(icons: Record<string, IconComponent>): void {
  * Get all registered icon names (useful for documentation).
  */
 export function getRegisteredIconNames(): string[] {
-  return Array.from(iconRegistry.keys())
+  return [...iconRegistry.keys()]
 }
 
 /**

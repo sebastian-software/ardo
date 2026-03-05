@@ -1,5 +1,7 @@
-import { Link } from "react-router"
 import type { ReactNode } from "react"
+
+import { Link } from "react-router"
+
 import * as styles from "./Features.css"
 
 export interface ArdoFeaturesProps {

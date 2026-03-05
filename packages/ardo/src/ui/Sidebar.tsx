@@ -1,16 +1,17 @@
 import {
-  useState,
-  type ReactNode,
-  type ComponentProps,
   Children,
-  isValidElement,
+  type ComponentProps,
   createContext,
-  useContext,
+  isValidElement,
+  type ReactNode,
+  useState,
 } from "react"
 import { NavLink, useLocation } from "react-router"
-import { ChevronDownIcon } from "./icons"
+
 import type { SidebarItem as SidebarItemType } from "../config/types"
+
 import { useArdoSidebar } from "../runtime/hooks"
+import { ChevronDownIcon } from "./icons"
 import * as styles from "./Sidebar.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -27,7 +28,7 @@ interface SidebarContextValue {
 const SidebarContext = createContext<SidebarContextValue>({ currentPath: "" })
 
 function useSidebarContext() {
-  return useContext(SidebarContext)
+  return use(SidebarContext)
 }
 
 // =============================================================================
@@ -84,7 +85,7 @@ export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
   const resolvedItems = items ?? (children ? undefined : contextSidebar)
 
   return (
-    <SidebarContext.Provider value={{ currentPath: pathname }}>
+    <SidebarContext value={{ currentPath: pathname }}>
       <aside className={className ?? styles.sidebar}>
         <nav aria-label="Main navigation">
           {children ? (
@@ -94,7 +95,7 @@ export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
           ) : null}
         </nav>
       </aside>
-    </SidebarContext.Provider>
+    </SidebarContext>
   )
 }
 
@@ -181,7 +182,9 @@ export function ArdoSidebarGroup({
         {collapsible && hasChildren && (
           <button
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              setCollapsed(!collapsed)
+            }}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
             <ChevronDownIcon size={16} />
@@ -270,7 +273,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
     item.items!.some(
       (child) =>
         child.link === currentPath ||
-        (child.items && child.items.some((grandchild) => grandchild.link === currentPath))
+        child.items?.some((grandchild) => grandchild.link === currentPath)
     )
 
   const linkClassName = [styles.sidebarLink, isChildActive && "child-active"]
@@ -302,7 +305,9 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         {hasChildren && (
           <button
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              setCollapsed(!collapsed)
+            }}
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
             <ChevronDownIcon size={16} />
@@ -344,7 +349,6 @@ function checkChildrenActive(children: ReactNode, currentPath: string): boolean 
         }
         if (groupProps.children && checkChildrenActive(groupProps.children, currentPath)) {
           isActive = true
-          return
         }
       }
     }

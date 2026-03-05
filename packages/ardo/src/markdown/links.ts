@@ -1,5 +1,6 @@
+import type { Element, Root } from "hast"
+
 import { visit } from "unist-util-visit"
-import type { Root, Element } from "hast"
 
 export interface RehypeLinkOptions {
   basePath: string

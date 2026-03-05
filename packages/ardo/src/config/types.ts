@@ -36,7 +36,7 @@ export interface SponsorConfig {
 // =============================================================================
 
 export interface SocialLink {
-  icon: "github" | "twitter" | "discord" | "linkedin" | "youtube" | "npm"
+  icon: "discord" | "github" | "linkedin" | "npm" | "twitter" | "youtube"
   link: string
   ariaLabel?: string
 }
@@ -47,7 +47,7 @@ export interface SocialLink {
 
 export interface MarkdownConfig {
   /** Syntax highlighting theme */
-  theme?: BundledTheme | { light: BundledTheme; dark: BundledTheme }
+  theme?: { light: BundledTheme; dark: BundledTheme } | BundledTheme
   /** Show line numbers in code blocks */
   lineNumbers?: boolean
   /** Enable anchor links for headings */
@@ -68,7 +68,7 @@ export interface MarkdownConfig {
 
 export interface HeadConfig {
   tag: string
-  attrs?: Record<string, string | boolean>
+  attrs?: Record<string, boolean | string>
   children?: string
 }
 
@@ -81,7 +81,7 @@ export interface TypeDocConfig {
   entryPoints: string[]
   tsconfig?: string
   out?: string
-  readme?: string | "none"
+  readme?: "none" | string
   plugin?: string[]
   exclude?: string[]
   excludeExternals?: boolean
@@ -89,11 +89,11 @@ export interface TypeDocConfig {
   excludeProtected?: boolean
   excludeInternal?: boolean
   sort?: Array<
-    | "source-order"
     | "alphabetical"
     | "enum-value-ascending"
     | "enum-value-descending"
     | "required-first"
+    | "source-order"
     | "visibility"
   >
   categoryOrder?: string[]
@@ -189,20 +189,20 @@ export interface PageFrontmatter {
   description?: string
   layout?: "doc" | "home" | "page"
   sidebar?: boolean
-  outline?: boolean | number | [number, number]
+  outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
-  prev?: string | { text: string; link: string } | false
-  next?: string | { text: string; link: string } | false
+  prev?: { text: string; link: string } | false | string
+  next?: { text: string; link: string } | false | string
   hero?: {
     name?: string
     text?: string
     tagline?: string
-    image?: string | { light: string; dark: string }
+    image?: { light: string; dark: string } | string
     actions?: Array<{
       text: string
       link: string
-      theme?: "brand" | "alt"
+      theme?: "alt" | "brand"
     }>
   }
   features?: Array<{
@@ -237,7 +237,7 @@ export interface PageData {
 // =============================================================================
 
 export interface ResolvedConfig extends Required<
-  Omit<ArdoConfig, "vite" | "typedoc" | "project" | "buildTime" | "buildHash">
+  Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "vite">
 > {
   project: ProjectMeta
   vite?: Record<string, unknown>

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ArdoTabs, ArdoTabList, ArdoTab, ArdoTabPanels, ArdoTabPanel } from "./Tabs"
+
+import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "./Tabs"
 
 const meta = {
   title: "Content/Tabs",

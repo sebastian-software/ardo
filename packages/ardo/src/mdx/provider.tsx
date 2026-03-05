@@ -1,13 +1,15 @@
 import type { MDXComponents } from "mdx/types"
-import type { ReactNode, HTMLAttributes, AnchorHTMLAttributes } from "react"
+import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
+
 import { Link } from "react-router"
-import { ArdoContent } from "../ui/Content"
-import { ArdoCopyButton } from "../ui/components/CopyButton"
-import * as codeStyles from "../ui/components/CodeBlock.css"
-import { ArdoIcon } from "../ui/components/Icon"
-import { ArdoTip, ArdoWarning, ArdoDanger, ArdoInfo, ArdoNote } from "../ui/components/Container"
-import { ArdoTabs, ArdoTabList, ArdoTab, ArdoTabPanel, ArdoTabPanels } from "../ui/components/Tabs"
+
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
+import * as codeStyles from "../ui/components/CodeBlock.css"
+import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
+import { ArdoCopyButton } from "../ui/components/CopyButton"
+import { ArdoIcon } from "../ui/components/Icon"
+import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
+import { ArdoContent } from "../ui/Content"
 
 /**
  * Smart link component that uses React Router for internal links
@@ -71,7 +73,7 @@ function PreBlock({
   "data-title": dataTitle,
   "data-label": dataLabel,
   ...props
-}: HTMLAttributes<HTMLPreElement> & { "data-title"?: string; "data-label"?: string }) {
+}: { "data-title"?: string; "data-label"?: string } & HTMLAttributes<HTMLPreElement>) {
   const code = extractTextContent(children)
 
   return (

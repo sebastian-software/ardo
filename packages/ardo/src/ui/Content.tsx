@@ -1,11 +1,13 @@
-import { type ReactNode } from "react"
-import { useArdoPageData, useArdoSiteConfig, useArdoSidebar } from "../runtime/hooks"
-import { getPrevNextLinks } from "../runtime/sidebar-utils"
+import type { ReactNode } from "react"
+
 import { Link, useLocation } from "react-router"
+
+import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
+import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { useBareContent } from "./BareContent"
+import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
-import { ardoContent } from "./content.css"
 
 interface ContentProps {
   children: ReactNode
@@ -39,11 +41,11 @@ export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
     pageData?.lastUpdated
 
   const editHref = showEditLink
-    ? resolvedEditLink!.pattern.replace(":path", pageData?.relativePath || "")
+    ? resolvedEditLink.pattern.replace(":path", pageData?.relativePath || "")
     : null
 
   const lastUpdatedText = showLastUpdated
-    ? new Date(pageData!.lastUpdated!).toLocaleDateString(
+    ? new Date(pageData.lastUpdated!).toLocaleDateString(
         undefined,
         resolvedLastUpdated?.formatOptions ?? {
           year: "numeric",

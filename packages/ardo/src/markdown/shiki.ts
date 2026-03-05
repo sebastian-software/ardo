@@ -1,12 +1,15 @@
+import type { Element, Root, Text } from "hast"
+
 import {
+  type BundledTheme,
   createHighlighter,
   type Highlighter,
-  type BundledTheme,
   type ShikiTransformer,
 } from "shiki"
-import type { Root, Element, Text } from "hast"
 import { visit } from "unist-util-visit"
+
 import type { MarkdownConfig } from "../config/types"
+
 import { shikiContainer } from "../ui/components/CodeBlock.css"
 
 export type ShikiHighlighter = Highlighter
@@ -56,7 +59,7 @@ export async function createShikiHighlighter(config: MarkdownConfig): Promise<Sh
   const themes: BundledTheme[] =
     typeof themeConfig === "string" ? [themeConfig] : [themeConfig.light, themeConfig.dark]
 
-  const highlighter = await createHighlighter({
+  return createHighlighter({
     themes,
     langs: [
       // Web fundamentals
@@ -93,8 +96,6 @@ export async function createShikiHighlighter(config: MarkdownConfig): Promise<Sh
       "diff",
     ],
   })
-
-  return highlighter
 }
 
 interface RehypeShikiOptions {
@@ -193,7 +194,7 @@ function getTextContent(node: Element | Text): string {
 }
 
 function parseHighlightLines(meta: string): number[] {
-  const match = meta.match(/\{([\d,-]+)\}/)
+  const match = /{([\d,-]+)}/.exec(meta)
   if (!match) return []
 
   const ranges = match[1].split(",")
@@ -214,7 +215,7 @@ function parseHighlightLines(meta: string): number[] {
 }
 
 function parseTitle(meta: string): string | undefined {
-  const match = meta.match(/title="([^"]+)"/)
+  const match = /title="([^"]+)"/.exec(meta)
   return match ? match[1] : undefined
 }
 
@@ -275,21 +276,21 @@ function buildCodeBlockHtml(shikiHtml: string, options: CodeBlockOptions): strin
 
 function extractCodeFromHtml(html: string): string {
   return html
-    .replace(/<[^>]+>/g, "")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replaceAll(/<[^>]+>/g, "")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'")
 }
 
 function escapeHtml(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
 }
 
 /**
@@ -303,7 +304,7 @@ function escapeHtml(text: string): string {
 export function remarkCodeMeta() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (tree: any) {
-    visit(tree, "code", (node: { meta?: string | null; data?: Record<string, unknown> }) => {
+    visit(tree, "code", (node: { meta?: null | string; data?: Record<string, unknown> }) => {
       if (!node.meta) return
 
       const meta = node.meta
@@ -344,7 +345,7 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
     name: "ardo:lines",
     // preprocess runs BEFORE line() hooks, so state is ready for line()
     preprocess(_code, shikiOptions) {
-      metaRaw = (shikiOptions.meta?.__raw as string) || ""
+      metaRaw = shikiOptions.meta?.__raw! || ""
       highlightLines = parseHighlightLines(metaRaw)
       showLineNumbers = options.globalLineNumbers || metaRaw.includes("showLineNumbers")
     },
@@ -355,7 +356,7 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
       if (title) {
         node.properties["data-title"] = title
       }
-      const labelMatch = metaRaw.match(/\[([^\]]+)\]/)
+      const labelMatch = /\[([^\]]+)]/.exec(metaRaw)
       if (labelMatch) {
         node.properties["data-label"] = labelMatch[1]
       }

@@ -5,15 +5,15 @@
 
 // React hooks and context
 export {
-  useArdoContext,
-  useArdoConfig,
-  useArdoSiteConfig,
-  useArdoSidebar,
-  useArdoPageData,
-  useArdoTOC,
-  ArdoProvider,
   ArdoContext,
+  ArdoProvider,
   ArdoSiteConfigProvider,
+  useArdoConfig,
+  useArdoContext,
+  useArdoPageData,
+  useArdoSidebar,
+  useArdoSiteConfig,
+  useArdoTOC,
 } from "./hooks"
 export type { ArdoSiteConfig } from "./hooks"
 

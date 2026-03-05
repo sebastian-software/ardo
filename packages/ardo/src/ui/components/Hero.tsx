@@ -1,5 +1,7 @@
-import { type ComponentProps, type ReactNode } from "react"
+import type { ComponentProps, ReactNode } from "react"
+
 import { Link } from "react-router"
+
 import * as styles from "./Hero.css"
 
 /** Internal route path from React Router */
@@ -12,9 +14,9 @@ export interface ArdoHeroAction {
   /** Button text */
   text: string
   /** Link destination - internal route path or external URL */
-  link: RoutePath | ExternalUrl
+  link: ExternalUrl | RoutePath
   /** Visual theme: "brand" for primary, "alt" for secondary */
-  theme?: "brand" | "alt"
+  theme?: "alt" | "brand"
   /** Optional icon as ReactNode (e.g. Lucide icon component) */
   icon?: ReactNode
 }
@@ -36,7 +38,7 @@ export interface ArdoHeroProps {
   /** Descriptive tagline */
   tagline?: string
   /** Hero image - can be a string URL or an object with light/dark variants */
-  image?: string | ArdoHeroImage
+  image?: ArdoHeroImage | string
   /** Call-to-action buttons */
   actions?: ArdoHeroAction[]
   /** Additional CSS class */

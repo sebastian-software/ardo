@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react"
-import { SunIcon, MoonIcon, MonitorIcon } from "../icons"
+import { useEffect, useState } from "react"
+
+import { MonitorIcon, MoonIcon, SunIcon } from "../icons"
 import * as styles from "./ThemeToggle.css"
 
-type Theme = "light" | "dark" | "system"
+type Theme = "dark" | "light" | "system"
 
 export function ArdoThemeToggle() {
   const [theme, setTheme] = useState<Theme>("system")
@@ -11,7 +12,7 @@ export function ArdoThemeToggle() {
   useEffect(() => {
     setMounted(true)
 
-    const stored = localStorage.getItem("ardo-theme") as Theme | null
+    const stored = localStorage.getItem("ardo-theme") as null | Theme
     if (stored) {
       setTheme(stored)
       applyTheme(stored)
@@ -56,7 +57,7 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement
 
   if (theme === "system") {
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    const isDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches
     root.classList.toggle("dark", isDark)
     root.classList.toggle("light", !isDark)
   } else {

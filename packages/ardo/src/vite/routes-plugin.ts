@@ -1,7 +1,8 @@
 import type { Plugin } from "vite"
-import fs from "fs/promises"
-import fsSync from "fs"
-import path from "path"
+
+import fsSync from "node:fs"
+import fs from "node:fs/promises"
+import path from "node:path"
 
 export interface ArdoRoutesPluginOptions {
   /** Directory where routes are located (default: "./app/routes") */
@@ -62,18 +63,18 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
           if (baseName === "index" || baseName === "home") {
             // Index route - use parent directory path
             const parentDir = path.dirname(relativePath)
-            urlPath = parentDir === "." ? "/" : "/" + parentDir.replace(/\\/g, "/")
+            urlPath = parentDir === "." ? "/" : `/${parentDir.replaceAll("\\", "/")}`
           } else {
             // Regular route
-            urlPath = "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
+            urlPath = `/${relativePath.replace(ext, "").replaceAll("\\", "/")}`
           }
 
           // Handle dynamic segments ($param -> :param)
-          urlPath = urlPath.replace(/\$(\w+)/g, ":$1")
+          urlPath = urlPath.replaceAll(/\$(\w+)/g, ":$1")
 
           routes.push({
             path: urlPath,
-            file: "routes/" + relativePath.replace(/\\/g, "/"),
+            file: `routes/${relativePath.replaceAll("\\", "/")}`,
             isIndex: baseName === "index" || baseName === "home",
           })
         }
@@ -100,7 +101,7 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
         return `  index("${r.file}"),`
       }
       // Remove leading slash for route path
-      const routePath = r.path.substring(1)
+      const routePath = r.path.slice(1)
       return `  route("${routePath}", "${r.file}"),`
     })
 
@@ -126,7 +127,7 @@ ${entries.join("\n")}
 
     // Only write if content changed
     try {
-      const existing = fsSync.readFileSync(routesFilePath, "utf-8")
+      const existing = fsSync.readFileSync(routesFilePath, "utf8")
       if (existing === content) {
         return
       }
@@ -152,7 +153,7 @@ ${entries.join("\n")}
 
     // Only write if content changed
     try {
-      const existing = await fs.readFile(routesFilePath, "utf-8")
+      const existing = await fs.readFile(routesFilePath, "utf8")
       if (existing === content) {
         return
       }
@@ -179,8 +180,8 @@ ${entries.join("\n")}
       // React Router needs routes.ts to exist before it starts
       try {
         writeRoutesFileSync()
-      } catch (err) {
-        console.warn("[ardo] Could not generate routes.ts in config phase:", err)
+      } catch (error) {
+        console.warn("[ardo] Could not generate routes.ts in config phase:", error)
       }
     },
 

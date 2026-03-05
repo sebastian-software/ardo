@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest"
+import { execSync } from "node:child_process"
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import { execSync } from "node:child_process"
-import { fileURLToPath } from "node:url"
+import { afterAll, beforeAll, describe, expect, it } from "vitest"
+
 import { createProjectStructure } from "./scaffold"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = import.meta.dirname
 const ardoPackageDir = path.resolve(__dirname, "..", "..", "ardo")
 
 function collectFiles(dir: string, ext: string): string[] {
@@ -102,7 +102,7 @@ export function greet(name: string, config?: GreeterConfig): string {
 
     // 5. Patch package.json — use local ardo (wildcard deps resolve via ardo)
     const pkgPath = path.join(tmpDir, "package.json")
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"))
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
     pkg.dependencies.ardo = `file:${ardoPackageDir}`
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
@@ -162,7 +162,7 @@ await generateApiDocs({
   it("generates home page with site title", () => {
     const indexHtml = path.join(tmpDir, "build", "client", "index.html")
     expect(fs.existsSync(indexHtml)).toBe(true)
-    const content = fs.readFileSync(indexHtml, "utf-8")
+    const content = fs.readFileSync(indexHtml, "utf8")
     expect(content).toContain("<!DOCTYPE html>")
     expect(content).toContain("Integration Test Docs")
   })
@@ -170,7 +170,7 @@ await generateApiDocs({
   it("generates getting-started page", () => {
     const gsHtml = path.join(tmpDir, "build", "client", "guide", "getting-started", "index.html")
     expect(fs.existsSync(gsHtml)).toBe(true)
-    const content = fs.readFileSync(gsHtml, "utf-8")
+    const content = fs.readFileSync(gsHtml, "utf8")
     expect(content).toContain("<!DOCTYPE html>")
   })
 

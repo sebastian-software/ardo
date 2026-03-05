@@ -1,5 +1,6 @@
-import { type ReactNode, useContext } from "react"
+import { type ReactNode, use } from "react"
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
+
 import { ArdoContext } from "../runtime/hooks"
 import * as styles from "./Layout.css"
 
@@ -36,7 +37,7 @@ export interface ArdoRootLayoutProps {
  */
 export function ArdoRootLayout({ children, favicon, lang }: ArdoRootLayoutProps) {
   // Use optional context (RootLayout renders before ArdoProvider is available)
-  const context = useContext(ArdoContext)
+  const context = use(ArdoContext)
   const resolvedLang = lang ?? context?.config.lang ?? "en"
 
   return (

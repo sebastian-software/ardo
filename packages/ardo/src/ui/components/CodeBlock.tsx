@@ -1,6 +1,7 @@
-import { useState, Children, isValidElement } from "react"
-import { ArdoCopyButton } from "./CopyButton"
+import { Children, isValidElement, useState } from "react"
+
 import * as styles from "./CodeBlock.css"
+import { ArdoCopyButton } from "./CopyButton"
 
 /**
  * Strips leading/trailing blank lines and removes common leading whitespace
@@ -14,7 +15,7 @@ function outdent(text: string): string {
   // Find minimum indentation (ignoring empty lines)
   const indent = lines.reduce((min, line) => {
     if (line.trim().length === 0) return min
-    const match = line.match(/^(\s*)/)
+    const match = /^(\s*)/.exec(line)
     return match ? Math.min(min, match[1].length) : min
   }, Infinity)
 
@@ -141,7 +142,9 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
             className={[styles.codeGroupTab, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
-            onClick={() => setActiveTab(index)}
+            onClick={() => {
+              setActiveTab(index)
+            }}
           >
             {tab}
           </button>

@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from "react"
+import { createContext, type ReactNode, use } from "react"
 
 const BareContentContext = createContext(false)
 
@@ -15,9 +15,9 @@ const BareContentContext = createContext(false)
  * ```
  */
 export function ArdoBareContent({ children }: { children: ReactNode }) {
-  return <BareContentContext value={true}>{children}</BareContentContext>
+  return <BareContentContext value>{children}</BareContentContext>
 }
 
 export function useBareContent(): boolean {
-  return useContext(BareContentContext)
+  return use(BareContentContext)
 }

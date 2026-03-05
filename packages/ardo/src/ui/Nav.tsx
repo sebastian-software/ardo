@@ -1,5 +1,6 @@
-import { type ReactNode, type ComponentProps, useState, createContext, useContext } from "react"
+import { type ComponentProps, createContext, type ReactNode, useState } from "react"
 import { NavLink as RouterNavLink } from "react-router"
+
 import * as styles from "./Nav.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -14,7 +15,7 @@ interface NavContextValue {
 const NavContext = createContext<NavContextValue | null>(null)
 
 function useNavContext() {
-  return useContext(NavContext)
+  return use(NavContext)
 }
 
 // =============================================================================
@@ -135,11 +136,7 @@ export interface NavProviderProps {
 export function NavProvider({ children }: NavProviderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  return (
-    <NavContext.Provider value={{ mobileMenuOpen, setMobileMenuOpen }}>
-      {children}
-    </NavContext.Provider>
-  )
+  return <NavContext value={{ mobileMenuOpen, setMobileMenuOpen }}>{children}</NavContext>
 }
 
 // Export context hook for external use

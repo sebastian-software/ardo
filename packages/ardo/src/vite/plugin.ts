@@ -1,23 +1,26 @@
 import type { Plugin, UserConfig } from "vite"
+
+import mdx from "@mdx-js/rollup"
+import { reactRouter } from "@react-router/dev/vite"
+import rehypeShiki from "@shikijs/rehype"
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
+import matter from "gray-matter"
+import { execSync } from "node:child_process"
+import fsSync from "node:fs"
+import fs from "node:fs/promises"
+import path from "node:path"
+import remarkFrontmatter from "remark-frontmatter"
+import remarkGfm from "remark-gfm"
+import remarkMdxFrontmatter from "remark-mdx-frontmatter"
+
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
-import { resolveConfig, defaultMarkdownConfig } from "../config/index"
-import { generateApiDocs } from "../typedoc/generator"
-import { reactRouter } from "@react-router/dev/vite"
-import mdx from "@mdx-js/rollup"
-import remarkFrontmatter from "remark-frontmatter"
-import remarkMdxFrontmatter from "remark-mdx-frontmatter"
-import remarkGfm from "remark-gfm"
-import rehypeShiki from "@shikijs/rehype"
+
+import { defaultMarkdownConfig, resolveConfig } from "../config/index"
 import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
-import fs from "fs/promises"
-import fsSync from "fs"
-import path from "path"
-import { execSync } from "child_process"
-import matter from "gray-matter"
-import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
+import { generateApiDocs } from "../typedoc/generator"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
+import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 /**
  * Finds the package root by looking for package.json in parent directories.
@@ -58,7 +61,7 @@ function detectGitHubRepoName(cwd: string): string | undefined {
     // Parse GitHub URL (supports both HTTPS and SSH)
     // https://github.com/user/repo.git
     // git@github.com:user/repo.git
-    const match = remoteUrl.match(/github\.com[/:][\w-]+\/([\w.-]+?)(?:\.git)?$/)
+    const match = /github\.com[/:][\w-]+\/([\w.-]+?)(?:\.git)?$/.exec(remoteUrl)
     return match?.[1]
   } catch {
     return undefined
@@ -86,7 +89,7 @@ function detectGitHash(cwd: string): string | undefined {
 function readProjectMeta(root: string): ProjectMeta {
   const pkgPath = path.join(root, "package.json")
   try {
-    const raw = fsSync.readFileSync(pkgPath, "utf-8")
+    const raw = fsSync.readFileSync(pkgPath, "utf8")
     const pkg = JSON.parse(raw)
 
     let repository: string | undefined
@@ -164,13 +167,13 @@ export function detectGitHubBasename(cwd?: string): string {
 }
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
-const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID
+const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`
 
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
-const RESOLVED_VIRTUAL_SIDEBAR_ID = "\0" + VIRTUAL_SIDEBAR_ID
+const RESOLVED_VIRTUAL_SIDEBAR_ID = `\0${VIRTUAL_SIDEBAR_ID}`
 
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
-const RESOLVED_VIRTUAL_SEARCH_ID = "\0" + VIRTUAL_SEARCH_ID
+const RESOLVED_VIRTUAL_SEARCH_ID = `\0${VIRTUAL_SEARCH_ID}`
 
 // Module-level flags to prevent duplicate operations across plugin instances
 // This is necessary because React Router creates multiple Vite instances
@@ -308,12 +311,11 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       if (/export\s+(const|function)\s+meta\b/.test(code)) return
 
       // Extract frontmatter values from the compiled MDX export
-      const titleMatch = code.match(
-        /export\s+const\s+frontmatter\s*=\s*\{[^}]*title\s*:\s*"([^"]*)"/
+      const titleMatch = /export\s+const\s+frontmatter\s*=\s*\{[^}]*title\s*:\s*"([^"]*)"/.exec(
+        code
       )
-      const descMatch = code.match(
-        /export\s+const\s+frontmatter\s*=\s*\{[^}]*description\s*:\s*"([^"]*)"/
-      )
+      const descMatch =
+        /export\s+const\s+frontmatter\s*=\s*\{[^}]*description\s*:\s*"([^"]*)"/.exec(code)
 
       const pageTitle = titleMatch?.[1]
       if (!pageTitle) return
@@ -435,7 +437,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(mdxPlugin as Plugin)
 
   // Add Vanilla Extract plugin (must run before React Router for SSR)
-  plugins.push(...(vanillaExtractPlugin({ identifiers: "short" }) as Plugin[]))
+  plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
 
   // Add React Router Framework plugin (includes React plugin internally)
   const reactRouterPlugin = reactRouter()
@@ -464,7 +466,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
         }
 
         // Strip leading/trailing slashes to get the directory name
-        const baseName = detectedBase.replace(/^\/|\/$/g, "")
+        const baseName = detectedBase.replaceAll(/^\/|\/$/g, "")
         if (!baseName) return
 
         const buildDir = path.join(process.cwd(), "build", "client")
@@ -491,8 +493,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
 async function generateSidebar(routesDir: string) {
   try {
-    const sidebar = await scanDirectory(routesDir, routesDir)
-    return sidebar
+    return await scanDirectory(routesDir, routesDir)
   } catch {
     return []
   }
@@ -518,7 +519,7 @@ async function scanDirectory(
 
         try {
           await fs.access(indexPath)
-          link = "/" + relativePath.replace(/\\/g, "/")
+          link = `/${relativePath.replaceAll("\\", "/")}`
         } catch {
           // No index.mdx
         }
@@ -534,7 +535,7 @@ async function scanDirectory(
       entry.name !== "index.mdx" &&
       entry.name !== "index.md"
     ) {
-      const fileContent = await fs.readFile(fullPath, "utf-8")
+      const fileContent = await fs.readFile(fullPath, "utf8")
       const { data: frontmatter } = matter(fileContent)
 
       const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
@@ -542,7 +543,7 @@ async function scanDirectory(
       const order: number | undefined =
         typeof frontmatter.order === "number" ? frontmatter.order : undefined
 
-      const link = "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
+      const link = `/${relativePath.replace(ext, "").replaceAll("\\", "/")}`
 
       items.push({
         text: title,
@@ -565,7 +566,7 @@ async function scanDirectory(
 }
 
 function formatTitle(name: string): string {
-  return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+  return name.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (c) => c.toUpperCase())
 }
 
 interface SearchDoc {
@@ -594,7 +595,7 @@ async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
           await scanForSearch(fullPath, newSection)
         } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
           const relativePath = path.relative(routesDir, fullPath)
-          const fileContent = await fs.readFile(fullPath, "utf-8")
+          const fileContent = await fs.readFile(fullPath, "utf8")
 
           // Extract frontmatter
           const { data: frontmatter, content: rawContent } = matter(fileContent)
@@ -604,22 +605,22 @@ async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
 
           // Clean up content: remove markdown/MDX syntax, keep text
           content = content
-            .replace(/```[\s\S]*?```/g, "") // Remove code blocks
-            .replace(/`[^`]+`/g, "") // Remove inline code
-            .replace(/import\s+.*?from\s+['"].*?['"]/g, "") // Remove imports
-            .replace(/<[^>]+>/g, "") // Remove JSX tags
-            .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links to text
-            .replace(/[#*_~>]/g, "") // Remove markdown symbols
-            .replace(/\n+/g, " ") // Newlines to spaces
-            .replace(/\s+/g, " ") // Multiple spaces to single
+            .replaceAll(/```[\S\s]*?```/g, "") // Remove code blocks
+            .replaceAll(/`[^`]+`/g, "") // Remove inline code
+            .replaceAll(/import\s+(?:\S.*?)??from\s+["'].*?["']/g, "") // Remove imports
+            .replaceAll(/<[^>]+>/g, "") // Remove JSX tags
+            .replaceAll(/\[([^\]]+)]\([^)]+\)/g, "$1") // Links to text
+            .replaceAll(/[#*>_~]/g, "") // Remove markdown symbols
+            .replaceAll(/\n+/g, " ") // Newlines to spaces
+            .replaceAll(/\s+/g, " ") // Multiple spaces to single
             .trim()
             .slice(0, 2000) // Limit content size
 
           // Generate path for the route
           const routePath =
             entry.name === "index.mdx" || entry.name === "index.md"
-              ? "/" + path.dirname(relativePath).replace(/\\/g, "/")
-              : "/" + relativePath.replace(ext, "").replace(/\\/g, "/")
+              ? `/${path.dirname(relativePath).replaceAll("\\", "/")}`
+              : `/${relativePath.replace(ext, "").replaceAll("\\", "/")}`
 
           // Skip root index (use "/" as path)
           const finalPath = routePath === "/." ? "/" : routePath

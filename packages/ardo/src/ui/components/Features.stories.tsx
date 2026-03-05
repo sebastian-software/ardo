@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { ArdoFeatures, ArdoFeatureCard } from "./Features"
+
+import { ArdoFeatureCard, ArdoFeatures } from "./Features"
 
 const meta = {
   title: "Content/Features",

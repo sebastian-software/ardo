@@ -1,2 +1,2 @@
-export { ApiSignature, ApiParametersTable, ApiReturns } from "./ApiSignature"
-export { ApiItem, ApiKindBadge, ApiHierarchy } from "./ApiItem"
+export { ApiHierarchy, ApiItem, ApiKindBadge } from "./ApiItem"
+export { ApiParametersTable, ApiReturns, ApiSignature } from "./ApiSignature"

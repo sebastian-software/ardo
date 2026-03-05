@@ -1,34 +1,35 @@
+import path from "node:path"
+
 import type {
   ArdoConfig,
+  HeadConfig,
+  MarkdownConfig,
+  NavItem,
+  PageData,
+  PageFrontmatter,
   ProjectMeta,
   ResolvedConfig,
-  MarkdownConfig,
-  TypeDocConfig,
   SidebarItem,
-  NavItem,
   SocialLink,
   SponsorConfig,
-  PageFrontmatter,
   TOCItem,
-  PageData,
-  HeadConfig,
+  TypeDocConfig,
 } from "./types"
-import path from "path"
 
 export type {
   ArdoConfig,
+  HeadConfig,
+  MarkdownConfig,
+  NavItem,
+  PageData,
+  PageFrontmatter,
   ProjectMeta,
   ResolvedConfig,
-  MarkdownConfig,
-  TypeDocConfig,
   SidebarItem,
-  NavItem,
   SocialLink,
   SponsorConfig,
-  PageFrontmatter,
   TOCItem,
-  PageData,
-  HeadConfig,
+  TypeDocConfig,
 }
 
 export function defineConfig(config: ArdoConfig): ArdoConfig {

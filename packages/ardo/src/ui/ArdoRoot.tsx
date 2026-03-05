@@ -1,12 +1,14 @@
-import { cloneElement, isValidElement, useMemo, type ReactNode } from "react"
+import { cloneElement, isValidElement, type ReactNode, useMemo } from "react"
 import { Outlet, useLocation } from "react-router"
-import { ArdoProvider, ArdoSiteConfigProvider, type ArdoSiteConfig } from "../runtime/hooks"
+
 import type { ArdoConfig, SidebarItem } from "../config/types"
-import { ArdoLayout } from "./Layout"
-import { ArdoHeader, type ArdoHeaderProps } from "./Header"
-import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
+
+import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
+import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import { ArdoLayout } from "./Layout"
 import * as layoutStyles from "./Layout.css"
+import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
 
 // =============================================================================
 // ArdoRoot Component

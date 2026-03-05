@@ -1,6 +1,8 @@
-import fs from "fs/promises"
-import path from "path"
-import type { PageData, PageFrontmatter, TOCItem, ResolvedConfig } from "../config/types"
+import fs from "node:fs/promises"
+import path from "node:path"
+
+import type { PageData, PageFrontmatter, ResolvedConfig, TOCItem } from "../config/types"
+
 import { transformMarkdown } from "../markdown/pipeline"
 
 export interface LoadDocOptions {
@@ -26,12 +28,12 @@ export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | 
     path.join(contentDir, slug, "index.md"),
   ]
 
-  let filePath: string | null = null
-  let fileContent: string | null = null
+  let filePath: null | string = null
+  let fileContent: null | string = null
 
   for (const tryPath of possiblePaths) {
     try {
-      fileContent = await fs.readFile(tryPath, "utf-8")
+      fileContent = await fs.readFile(tryPath, "utf8")
       filePath = tryPath
       break
     } catch {
@@ -76,7 +78,7 @@ export async function loadAllDocs(contentDir: string, config: ResolvedConfig): P
       if (entry.isDirectory()) {
         await scanDir(fullPath)
       } else if (entry.name.endsWith(".md")) {
-        const fileContent = await fs.readFile(fullPath, "utf-8")
+        const fileContent = await fs.readFile(fullPath, "utf8")
         const result = await transformMarkdown(fileContent, config.markdown)
         const relativePath = path.relative(contentDir, fullPath)
 
@@ -107,14 +109,14 @@ export async function loadAllDocs(contentDir: string, config: ResolvedConfig): P
 }
 
 function formatTitle(name: string): string {
-  return name.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+  return name.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export function getSlugFromPath(relativePath: string): string {
   return relativePath
     .replace(/\.md$/, "")
     .replace(/\/index$/, "")
-    .replace(/\\/g, "/")
+    .replaceAll("\\", "/")
 }
 
 export function getPageDataForRoute(docs: PageData[], slug: string): PageData | undefined {

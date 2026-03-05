@@ -1,5 +1,7 @@
-import type { Root, Heading } from "mdast"
+import type { Heading, Root } from "mdast"
+
 import { visit } from "unist-util-visit"
+
 import type { TOCItem } from "../config/types"
 
 export interface TocExtraction {
@@ -70,9 +72,9 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replaceAll(/[^\s\w-]/g, "")
+    .replaceAll(/[\s_-]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
 }
 
 function buildTocTree(
@@ -89,14 +91,14 @@ function buildTocTree(
       level: heading.level,
     }
 
-    while (stack.length > 0 && stack[stack.length - 1].level >= heading.level) {
+    while (stack.length > 0 && stack.at(-1).level >= heading.level) {
       stack.pop()
     }
 
     if (stack.length === 0) {
       result.push(item)
     } else {
-      const parent = stack[stack.length - 1].item
+      const parent = stack.at(-1).item
       if (!parent.children) {
         parent.children = []
       }

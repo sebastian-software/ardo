@@ -1,5 +1,7 @@
-import { type ReactNode } from "react"
+import type { ReactNode } from "react"
+
 import type { ProjectMeta, SponsorConfig } from "../config/types"
+
 import { useArdoConfig } from "../runtime/hooks"
 import * as styles from "./Footer.css"
 

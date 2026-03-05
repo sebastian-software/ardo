@@ -1,17 +1,18 @@
-import { useEffect, useState, lazy, Suspense, type MouseEvent, type ReactNode } from "react"
+import { lazy, type MouseEvent, type ReactNode, Suspense, useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
+
+import { useArdoConfig } from "../runtime/hooks"
+import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
-import * as navStyles from "./Nav.css"
 import {
   GithubIcon,
-  TwitterIcon,
-  MessageCircleIcon,
   LinkedinIcon,
-  YoutubeIcon,
+  MessageCircleIcon,
   PackageIcon,
+  TwitterIcon,
+  YoutubeIcon,
 } from "./icons"
-import { ArdoThemeToggle } from "./components/ThemeToggle"
-import { useArdoConfig } from "../runtime/hooks"
+import * as navStyles from "./Nav.css"
 
 const LazySearch = lazy(() =>
   import("./components/Search").then((m) => ({ default: m.ArdoSearch }))
@@ -23,7 +24,7 @@ const LazySearch = lazy(() =>
 
 export interface ArdoHeaderProps {
   /** Logo image URL or light/dark variants */
-  logo?: string | { light: string; dark: string }
+  logo?: { light: string; dark: string } | string
   /** Site title displayed next to logo */
   title?: string
   /** Navigation content (Nav component or custom) */
@@ -106,14 +107,16 @@ export function ArdoHeader({
             <button
               type="button"
               className={styles.mobileMenuButton}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen)
+              }}
               aria-label="Toggle menu"
               aria-expanded={mobileMenuOpen}
             >
               <span className={styles.hamburger}>
-                <span></span>
-                <span></span>
-                <span></span>
+                <span />
+                <span />
+                <span />
               </span>
             </button>
           )}
@@ -176,7 +179,7 @@ export interface ArdoSocialLinkProps {
   /** URL to link to */
   href: string
   /** Social icon type */
-  icon: "github" | "twitter" | "discord" | "linkedin" | "youtube" | "npm"
+  icon: "discord" | "github" | "linkedin" | "npm" | "twitter" | "youtube"
   /** Accessible label */
   ariaLabel?: string
   /** Additional CSS classes */

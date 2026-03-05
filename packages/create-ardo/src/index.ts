@@ -1,24 +1,25 @@
+import { blue, cyan, dim, green, red, reset, yellow } from "kolorist"
 import fs from "node:fs"
 import path from "node:path"
 import prompts from "prompts"
-import { blue, cyan, green, red, reset, yellow, dim } from "kolorist"
+
 import {
-  templates,
   createProjectStructure,
-  formatTargetDir,
-  isEmpty,
-  emptyDir,
-  isValidTemplate,
   detectProjectDescription,
-  isArdoProject,
-  upgradeProject,
+  emptyDir,
+  formatTargetDir,
   getCliVersion,
+  isArdoProject,
+  isEmpty,
+  isValidTemplate,
+  templates,
+  upgradeProject,
 } from "./scaffold"
 
 const defaultTargetDir = "my-docs"
 
 const onCancel = () => {
-  throw new Error(red("✖") + " Operation cancelled")
+  throw new Error(`${red("✖")} Operation cancelled`)
 }
 
 async function main() {
@@ -43,7 +44,7 @@ async function main() {
           const name = value.trim()
           if (!name) return "Project name is required"
           if (/^[.-]/.test(name)) return "Project name cannot start with a dot or hyphen"
-          if (!/^[a-z0-9-]+$/.test(name))
+          if (!/^[\da-z-]+$/.test(name))
             return "Project name may only contain lowercase letters, digits, and hyphens"
           return true
         },
@@ -72,7 +73,7 @@ async function main() {
     )
 
     if (action === "cancel") {
-      throw new Error(red("✖") + " Operation cancelled")
+      throw new Error(`${red("✖")} Operation cancelled`)
     }
 
     console.log()
@@ -118,7 +119,7 @@ async function main() {
       {
         type: (_, { overwrite }: { overwrite?: string }) => {
           if (overwrite === "no") {
-            throw new Error(red("✖") + " Operation cancelled")
+            throw new Error(`${red("✖")} Operation cancelled`)
           }
           return null
         },
@@ -207,7 +208,7 @@ async function main() {
   console.log()
 }
 
-main().catch((e) => {
-  console.error(e.message)
+main().catch((error) => {
+  console.error(error.message)
   process.exit(1)
 })

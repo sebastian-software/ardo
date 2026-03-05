@@ -1,5 +1,7 @@
 import type { Plugin } from "vite"
+
 import type { MarkdownConfig } from "../config/types"
+
 import { highlightCode } from "../markdown/shiki"
 
 /**
@@ -12,7 +14,7 @@ function outdent(text: string): string {
 
   const indent = lines.reduce((min, line) => {
     if (line.trim().length === 0) return min
-    const match = line.match(/^(\s*)/)
+    const match = /^(\s*)/.exec(line)
     return match ? Math.min(min, match[1].length) : min
   }, Infinity)
 
@@ -164,23 +166,23 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
         const { fullMatch, propsStr } = match
 
         const codeMatch =
-          propsStr.match(/\bcode="((?:[^"\\]|\\.)*)"/s) ||
-          propsStr.match(/\bcode=\{\s*"((?:[^"\\]|\\.)*)"\s*\}/s) ||
-          propsStr.match(/\bcode=\{\s*'((?:[^'\\]|\\.)*)'\s*\}/s)
+          /\bcode="((?:[^"\\]|\\.)*)"/s.exec(propsStr) ||
+          /\bcode={\s*"((?:[^"\\]|\\.)*)"\s*}/s.exec(propsStr) ||
+          /\bcode={\s*'((?:[^'\\]|\\.)*)'\s*}/s.exec(propsStr)
         if (!codeMatch) continue
 
         const langMatch =
-          propsStr.match(/\blanguage="([^"]*)"/) ||
-          propsStr.match(/\blanguage=\{"([^"]*)"\}/) ||
-          propsStr.match(/\blanguage=\{'([^']*)'\}/)
+          /\blanguage="([^"]*)"/.exec(propsStr) ||
+          /\blanguage={"([^"]*)"}/.exec(propsStr) ||
+          /\blanguage={'([^']*)'}/.exec(propsStr)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
 
         const codeContent = codeMatch[1]
-          .replace(/\\n/g, "\n")
-          .replace(/\\"/g, '"')
-          .replace(/\\\\/g, "\\")
+          .replaceAll("\\n", "\n")
+          .replaceAll('\\"', '"')
+          .replaceAll("\\\\", "\\")
         const language = langMatch[1]
 
         try {
@@ -189,7 +191,7 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
           })
 
           const escapedHtml = JSON.stringify(html)
-          const newPropsStr = `__html={${escapedHtml}} ` + propsStr
+          const newPropsStr = `__html={${escapedHtml}} ${propsStr}`
           const newFullMatch = fullMatch.replace(propsStr, newPropsStr)
 
           result =
@@ -206,25 +208,25 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
       // Pattern 2+3: <ArdoCodeBlock language="...">...children...</ArdoCodeBlock>
       // Matches both template literal children {`...`} and raw text children.
       // Since this runs before JSX parsing, raw text with <, {, etc. is fine.
-      const childrenRegex = /<ArdoCodeBlock\s+([^>]*?)>([\s\S]*?)<\/ArdoCodeBlock>/g
+      const childrenRegex = /<ArdoCodeBlock\s+([^>]*)>([\s\S]*?)<\/ArdoCodeBlock>/g
 
       offset = result.length - code.length
-      let regexMatch: RegExpExecArray | null
+      let regexMatch: null | RegExpExecArray
       while ((regexMatch = childrenRegex.exec(code)) !== null) {
         const fullMatch = regexMatch[0]
         const propsStr = regexMatch[1]
         let rawChildren = regexMatch[2]
 
         const langMatch =
-          propsStr.match(/\blanguage="([^"]*)"/) ||
-          propsStr.match(/\blanguage=\{"([^"]*)"\}/) ||
-          propsStr.match(/\blanguage=\{'([^']*)'\}/)
+          /\blanguage="([^"]*)"/.exec(propsStr) ||
+          /\blanguage={"([^"]*)"}/.exec(propsStr) ||
+          /\blanguage={'([^']*)'}/.exec(propsStr)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
 
         // Unwrap template literal braces if present: {`...`} → ...
-        const templateMatch = rawChildren.match(/^\s*\{`([\s\S]*)`\}\s*$/)
+        const templateMatch = /^\s*{`([\S\s]*)`}\s*$/.exec(rawChildren)
         if (templateMatch) {
           rawChildren = templateMatch[1]
         }

@@ -1,8 +1,10 @@
-import fs from "fs/promises"
-import type { Dirent } from "fs"
-import path from "path"
+import type { Dirent } from "node:fs"
+
 import matter from "gray-matter"
-import type { SidebarItem, ResolvedConfig } from "../config/types"
+import fs from "node:fs/promises"
+import path from "node:path"
+
+import type { ResolvedConfig, SidebarItem } from "../config/types"
 
 export interface SidebarGenerationOptions {
   contentDir: string
@@ -13,7 +15,7 @@ export interface SidebarGenerationOptions {
 export async function generateSidebar(options: SidebarGenerationOptions): Promise<SidebarItem[]> {
   const { contentDir, basePath } = options
 
-  return await scanDirectoryForSidebar(contentDir, contentDir, basePath)
+  return scanDirectoryForSidebar(contentDir, contentDir, basePath)
 }
 
 async function scanDirectoryForSidebar(
@@ -24,7 +26,7 @@ async function scanDirectoryForSidebar(
   let entries: Dirent[]
 
   try {
-    entries = (await fs.readdir(dir, { withFileTypes: true })) as Dirent[]
+    entries = await fs.readdir(dir, { withFileTypes: true })
   } catch {
     return []
   }
@@ -53,7 +55,7 @@ async function scanDirectoryForSidebar(
         let order: number | undefined
 
         try {
-          const indexContent = await fs.readFile(indexPath, "utf-8")
+          const indexContent = await fs.readFile(indexPath, "utf8")
           const { data: frontmatter } = matter(indexContent)
 
           if (frontmatter.title) {
@@ -78,7 +80,7 @@ async function scanDirectoryForSidebar(
         })
       }
     } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
-      const fileContent = await fs.readFile(fullPath, "utf-8")
+      const fileContent = await fs.readFile(fullPath, "utf8")
       const { data: frontmatter } = matter(fileContent)
 
       if (frontmatter.sidebar === false) {
@@ -114,10 +116,10 @@ async function scanDirectoryForSidebar(
 function formatTitle(name: string): string {
   return name
     .replace(/^\d+-/, "")
-    .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replaceAll(/[_-]/g, " ")
+    .replaceAll(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function normalizePath(p: string): string {
-  return "/" + p.replace(/\\/g, "/").replace(/^\/+/, "")
+  return `/${p.replaceAll("\\", "/").replace(/^\/+/, "")}`
 }

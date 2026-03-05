@@ -1,13 +1,12 @@
 import fs from "node:fs"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = import.meta.dirname
 const templatesRoot = path.resolve(__dirname, "..", "templates")
 const packageJsonPath = path.resolve(__dirname, "..", "package.json")
 
 export function getCliVersion(): string {
-  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"))
+  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
   return pkg.version
 }
 
@@ -63,7 +62,7 @@ function copyDir(src: string, dest: string, vars: Record<string, string>) {
     if (entry.isDirectory()) {
       copyDir(srcPath, destPath, vars)
     } else {
-      let content = fs.readFileSync(srcPath, "utf-8")
+      let content = fs.readFileSync(srcPath, "utf8")
       for (const [key, value] of Object.entries(vars)) {
         content = content.replaceAll(`{{${key}}}`, value)
       }
@@ -73,7 +72,7 @@ function copyDir(src: string, dest: string, vars: Record<string, string>) {
 }
 
 export function formatTargetDir(targetDir: string | undefined) {
-  return targetDir?.trim().replace(/\/+$/g, "")
+  return targetDir?.trim().replaceAll(/\/+$/g, "")
 }
 
 export function isEmpty(dirPath: string) {
@@ -101,7 +100,7 @@ export function detectProjectDescription(targetDir: string): string | undefined 
   for (const dir of [path.dirname(targetDir), targetDir]) {
     const pkgPath = path.join(dir, "package.json")
     try {
-      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"))
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
       if (pkg.description) {
         return pkg.description
       }
@@ -125,7 +124,7 @@ export interface UpgradeResult {
 export function isArdoProject(dir: string): boolean {
   try {
     const pkgPath = path.join(dir, "package.json")
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"))
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
     return Boolean(pkg.dependencies?.ardo)
   } catch {
     return false
@@ -160,8 +159,8 @@ export function upgradeProject(root: string): UpgradeResult {
   // 2. Merge package.json
   const userPkgPath = path.join(root, "package.json")
   const templatePkgPath = path.join(templateDir, "package.json")
-  const userPkg = JSON.parse(fs.readFileSync(userPkgPath, "utf-8"))
-  const templatePkg = JSON.parse(fs.readFileSync(templatePkgPath, "utf-8"))
+  const userPkg = JSON.parse(fs.readFileSync(userPkgPath, "utf8"))
+  const templatePkg = JSON.parse(fs.readFileSync(templatePkgPath, "utf8"))
 
   // Always update ardo version
   if (userPkg.dependencies) {
@@ -187,7 +186,7 @@ export function upgradeProject(root: string): UpgradeResult {
     userPkg.devDependencies[dep] = version
   }
 
-  fs.writeFileSync(userPkgPath, JSON.stringify(userPkg, null, 2) + "\n")
+  fs.writeFileSync(userPkgPath, `${JSON.stringify(userPkg, null, 2)}\n`)
   result.updated.push("package.json")
 
   // 3. Delete obsolete files

@@ -1,17 +1,18 @@
+import fs from "node:fs/promises"
+import path from "node:path"
+import { readPackageUp } from "read-package-up"
 import {
   Application,
-  TSConfigReader,
-  TypeDocReader,
+  type DeclarationReflection,
   type ProjectReflection,
   ReflectionKind,
-  type DeclarationReflection,
   type SignatureReflection,
+  TSConfigReader,
+  TypeDocReader,
   type TypeParameterReflection,
 } from "typedoc"
-import path from "path"
-import fs from "fs/promises"
-import { readPackageUp } from "read-package-up"
-import type { TypeDocConfig, GeneratedApiDoc } from "./types"
+
+import type { GeneratedApiDoc, TypeDocConfig } from "./types"
 
 export class TypeDocGenerator {
   private config: TypeDocConfig
@@ -42,7 +43,7 @@ export class TypeDocGenerator {
       ...config,
     }
     // Use the output directory as the base path for links
-    this.basePath = "/" + this.config.out!
+    this.basePath = `/${this.config.out!}`
   }
 
   async generate(outputDir: string): Promise<GeneratedApiDoc[]> {
@@ -99,7 +100,7 @@ export class TypeDocGenerator {
         "---",
       ].filter((line): line is string => line !== null)
 
-      const frontmatter = frontmatterLines.join("\n") + "\n\n"
+      const frontmatter = `${frontmatterLines.join("\n")}\n\n`
 
       await fs.writeFile(filePath, frontmatter + doc.content)
     }
@@ -701,16 +702,16 @@ export class TypeDocGenerator {
     // Generate pages for child classes, interfaces, etc.
     // Functions are grouped by source file, not individual pages
     const children = reflection.children || []
-    const hasOwnPage = [
+    const hasOwnPage = new Set([
       ReflectionKind.Class,
       ReflectionKind.Interface,
       ReflectionKind.Enum,
       ReflectionKind.Namespace,
       ReflectionKind.Module,
-    ]
+    ])
 
     for (const child of children) {
-      if (hasOwnPage.includes(child.kind)) {
+      if (hasOwnPage.has(child.kind)) {
         docs.push(...this.generateReflectionDocs(child, currentPath))
       }
     }
@@ -1028,7 +1029,7 @@ export class TypeDocGenerator {
     return lines.join("\n")
   }
 
-  private renderHierarchy(reflection: DeclarationReflection): string | null {
+  private renderHierarchy(reflection: DeclarationReflection): null | string {
     const lines: string[] = []
 
     if (reflection.extendedTypes && reflection.extendedTypes.length > 0) {
@@ -1062,14 +1063,14 @@ export class TypeDocGenerator {
     return lines.length > 0 ? lines.join("\n") : null
   }
 
-  private renderComment(parts: { kind: string; text: string }[]): string {
+  private renderComment(parts: Array<{ kind: string; text: string }>): string {
     return parts.map((p) => p.text).join("")
   }
 
-  private renderCommentShort(parts: { kind: string; text: string }[]): string {
+  private renderCommentShort(parts: Array<{ kind: string; text: string }>): string {
     const text = this.renderComment(parts)
-    const firstSentence = text.split(/[.!?]\s/)[0]
-    return firstSentence.length < text.length ? firstSentence + "." : text
+    const firstSentence = text.split(/[!.?]\s/)[0]
+    return firstSentence.length < text.length ? `${firstSentence}.` : text
   }
 
   private generateBreadcrumbs(pagePath: string): string {
@@ -1082,7 +1083,7 @@ export class TypeDocGenerator {
       breadcrumbs.push(`[${parts[i]}](${this.basePath}/${currentPath})`)
     }
 
-    breadcrumbs.push(parts[parts.length - 1])
+    breadcrumbs.push(parts.at(-1))
 
     return breadcrumbs.join(" / ")
   }
@@ -1118,8 +1119,8 @@ export class TypeDocGenerator {
   private getSlug(name: string): string {
     return name
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
+      .replaceAll(/[^\da-z]+/g, "-")
+      .replaceAll(/^-|-$/g, "")
   }
 
   /**
@@ -1134,7 +1135,7 @@ export class TypeDocGenerator {
     return `${this.basePath}/${category}/${slug}`
   }
 
-  private getSourceUrl(fileName: string, line: number): string | null {
+  private getSourceUrl(fileName: string, line: number): null | string {
     if (!this.config.markdown?.sourceBaseUrl) return null
     const baseUrl = this.config.markdown.sourceBaseUrl.replace(/\/$/, "")
     return `${baseUrl}/${fileName}#L${line}`
@@ -1241,7 +1242,7 @@ export class TypeDocGenerator {
   /**
    * Get the name of a TypeDoc type (handles reference types, etc.)
    */
-  private getTypeName(paramType: unknown): string | null {
+  private getTypeName(paramType: unknown): null | string {
     if (!paramType || typeof paramType !== "object") return null
 
     // Direct name property

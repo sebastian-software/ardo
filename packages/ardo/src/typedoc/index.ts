@@ -1,29 +1,29 @@
+// Components
+export {
+  ApiHierarchy,
+  ApiItem,
+  ApiKindBadge,
+  ApiParametersTable,
+  ApiReturns,
+  ApiSignature,
+} from "./components"
+
+// Generator
+export { generateApiDocs, TypeDocGenerator } from "./generator"
+
 // Types
 export type {
-  TypeDocConfig,
+  ApiDocHierarchy,
   ApiDocItem,
   ApiDocKind,
   ApiDocParameter,
   ApiDocReturn,
-  ApiDocTag,
   ApiDocSource,
+  ApiDocTag,
   ApiDocTypeParameter,
-  ApiDocHierarchy,
   GeneratedApiDoc,
+  TypeDocConfig,
 } from "./types"
 
-// Generator
-export { TypeDocGenerator, generateApiDocs } from "./generator"
-
 // Vite Plugin
-export { typedocPlugin, createTypedocWatcher, type TypeDocPluginOptions } from "./vite-plugin"
-
-// Components
-export {
-  ApiSignature,
-  ApiParametersTable,
-  ApiReturns,
-  ApiItem,
-  ApiKindBadge,
-  ApiHierarchy,
-} from "./components"
+export { createTypedocWatcher, typedocPlugin, type TypeDocPluginOptions } from "./vite-plugin"

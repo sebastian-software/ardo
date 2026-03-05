@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react"
-import { useArdoTOC, useArdoSiteConfig } from "../runtime/hooks"
+import { useEffect, useState } from "react"
+
 import type { TOCItem } from "../config/types"
+
+import { useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
 import * as styles from "./TOC.css"
 
 export interface ArdoTOCProps {
@@ -102,7 +104,7 @@ function TOCItemComponent({ item, activeId }: TOCItemComponentProps) {
           const element = document.getElementById(item.id)
           if (element) {
             element.scrollIntoView({ behavior: "smooth" })
-            window.history.pushState(null, "", `#${item.id}`)
+            globalThis.history.pushState(null, "", `#${item.id}`)
           }
         }}
       >

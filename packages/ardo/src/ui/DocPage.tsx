@@ -1,9 +1,10 @@
-import { type ReactNode } from "react"
+import type { ReactNode } from "react"
+
 import { useArdoPageData } from "../runtime/hooks"
-import { ArdoLayout } from "./Layout"
 import { ArdoContent } from "./Content"
-import { ArdoTOC } from "./TOC"
 import * as styles from "./DocPage.css"
+import { ArdoLayout } from "./Layout"
+import { ArdoTOC } from "./TOC"
 
 // =============================================================================
 // DocPage Component (includes Layout - for backwards compatibility)

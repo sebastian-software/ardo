@@ -1,5 +1,6 @@
-import { createContext, useContext, type ReactNode } from "react"
-import type { ArdoConfig, SidebarItem, TOCItem, PageData } from "../config/types"
+import { createContext, type ReactNode, use } from "react"
+
+import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
 
 interface ArdoContextValue {
   config: ArdoConfig
@@ -10,7 +11,7 @@ interface ArdoContextValue {
 const ArdoContext = createContext<ArdoContextValue | null>(null)
 
 export function useArdoContext(): ArdoContextValue {
-  const context = useContext(ArdoContext)
+  const context = use(ArdoContext)
   if (!context) {
     throw new Error("useArdoContext must be used within an ArdoProvider")
   }
@@ -45,9 +46,7 @@ interface ArdoProviderProps {
 }
 
 export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
-  return (
-    <ArdoContext.Provider value={{ config, sidebar, currentPage }}>{children}</ArdoContext.Provider>
-  )
+  return <ArdoContext value={{ config, sidebar, currentPage }}>{children}</ArdoContext>
 }
 
 export { ArdoContext }
@@ -65,7 +64,7 @@ export interface ArdoSiteConfig {
 const ArdoSiteConfigContext = createContext<ArdoSiteConfig>({})
 
 export function useArdoSiteConfig(): ArdoSiteConfig {
-  return useContext(ArdoSiteConfigContext)
+  return use(ArdoSiteConfigContext)
 }
 
 interface ArdoSiteConfigProviderProps {
@@ -74,5 +73,5 @@ interface ArdoSiteConfigProviderProps {
 }
 
 export function ArdoSiteConfigProvider({ value, children }: ArdoSiteConfigProviderProps) {
-  return <ArdoSiteConfigContext.Provider value={value}>{children}</ArdoSiteConfigContext.Provider>
+  return <ArdoSiteConfigContext value={value}>{children}</ArdoSiteConfigContext>
 }

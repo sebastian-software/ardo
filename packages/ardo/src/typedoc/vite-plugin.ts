@@ -1,9 +1,11 @@
 import type { Plugin } from "vite"
+
+import fsSync, { type FSWatcher } from "node:fs"
+import path from "node:path"
+
 import type { TypeDocConfig } from "./types"
+
 import { generateApiDocs } from "./generator"
-import path from "path"
-import fsSync from "fs"
-import type { FSWatcher } from "fs"
 
 export interface TypeDocPluginOptions extends Partial<TypeDocConfig> {
   /**

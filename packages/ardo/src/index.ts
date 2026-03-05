@@ -1,84 +1,84 @@
 // Config (client-safe: pure types and small utility functions)
-export { defineConfig, resolveConfig, loadConfig } from "./config"
+export { defineConfig, loadConfig, resolveConfig } from "./config"
 export type {
   ArdoConfig,
-  ResolvedConfig,
-  MarkdownConfig,
-  TypeDocConfig,
-  SidebarItem,
-  NavItem,
-  SocialLink,
-  PageFrontmatter,
-  TOCItem,
-  PageData,
   HeadConfig,
+  MarkdownConfig,
+  NavItem,
+  PageData,
+  PageFrontmatter,
   ProjectMeta,
+  ResolvedConfig,
+  SidebarItem,
+  SocialLink,
+  TOCItem,
+  TypeDocConfig,
 } from "./config"
 
 // Runtime (React hooks and context - client-safe)
 export {
   ArdoProvider,
   ArdoSiteConfigProvider,
-  useArdoContext,
-  useArdoConfig,
-  useArdoSiteConfig,
-  useArdoSidebar,
-  useArdoPageData,
-  useArdoTOC,
   findCurrentSidebarItem,
   getPrevNextLinks,
+  useArdoConfig,
+  useArdoContext,
+  useArdoPageData,
+  useArdoSidebar,
+  useArdoSiteConfig,
+  useArdoTOC,
 } from "./runtime"
 export type { ArdoSiteConfig } from "./runtime"
 
 // UI Components (client-safe)
 export {
-  ArdoLayout,
-  ArdoHeader,
-  ArdoSidebar,
-  ArdoTOC,
-  ArdoContent,
-  ArdoFooter,
-  ArdoDocPage,
-  ArdoDocLayout,
-  ArdoHomePage,
-  ArdoThemeToggle,
-  ArdoSearch,
   ArdoCodeBlock,
   ArdoCodeGroup,
   ArdoContainer,
-  ArdoTip,
-  ArdoWarning,
+  ArdoContent,
+  ArdoCopyButton,
   ArdoDanger,
+  ArdoDocLayout,
+  ArdoDocPage,
+  ArdoFeatureCard,
+  ArdoFeatures,
+  ArdoFooter,
+  ArdoHeader,
+  ArdoHero,
+  ArdoHomePage,
   ArdoInfo,
+  ArdoLayout,
   ArdoNote,
-  ArdoTabs,
-  ArdoTabList,
+  ArdoSearch,
+  ArdoSidebar,
   ArdoTab,
+  ArdoTabList,
   ArdoTabPanel,
   ArdoTabPanels,
-  ArdoCopyButton,
-  ArdoHero,
-  ArdoFeatures,
-  ArdoFeatureCard,
+  ArdoTabs,
+  ArdoThemeToggle,
+  ArdoTip,
+  ArdoTOC,
+  ArdoWarning,
 } from "./ui"
-export type { ArdoHeroProps, ArdoHeroAction, ArdoHeroImage } from "./ui"
-export type { ArdoFeaturesProps, ArdoFeatureCardProps } from "./ui"
+export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./ui"
+export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./ui"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./ui"
 export type {
   ArdoContainerProps,
   ArdoContainerType,
-  ArdoTipProps,
-  ArdoWarningProps,
   ArdoDangerProps,
   ArdoInfoProps,
   ArdoNoteProps,
+  ArdoTipProps,
+  ArdoWarningProps,
 } from "./ui"
 export type {
-  ArdoTabsProps,
   ArdoTabListProps,
-  ArdoTabProps,
   ArdoTabPanelProps,
   ArdoTabPanelsProps,
+  ArdoTabProps,
+  ArdoTabsProps,
 } from "./ui"
 
 // ===========================================================================
