@@ -1,0 +1,3 @@
+import { getEslintConfig } from "eslint-config-setup"
+
+export default await getEslintConfig({ react: true })
