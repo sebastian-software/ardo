@@ -15,63 +15,131 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
 
   return (
     <div className={styles.apiItem} id={item.id}>
-      <HeadingTag className={styles.apiItemTitle}>
-        <ApiKindBadge kind={item.kind} />
-        <span className={styles.apiItemName}>{item.name}</span>
-        <a href={`#${item.id}`} className={styles.apiAnchor}>
-          #
+      <ApiItemHeader headingTag={HeadingTag} id={item.id} kind={item.kind} name={item.name} />
+      <ApiItemDescription description={item.description} />
+      <ApiItemSignature item={item} />
+      <ApiItemParameters parameters={item.parameters} />
+      <ApiItemReturns returns={item.returns} />
+      <ApiExamples examples={item.examples} itemId={item.id} />
+      <ApiSourceSection source={item.source} />
+      <ApiChildren childItems={item.children} level={level} />
+    </div>
+  )
+}
+
+function ApiItemDescription(params: { description: string | undefined }) {
+  const { description } = params
+  const hasDescription = description != null && description.length > 0
+  if (!hasDescription) {
+    return null
+  }
+  return <p className={styles.apiItemDescription}>{description}</p>
+}
+
+function ApiItemSignature(params: { item: ApiDocItem }) {
+  const { item } = params
+  const hasSignature = item.signature != null && item.signature.length > 0
+  if (!hasSignature) {
+    return null
+  }
+
+  return (
+    <ApiSignature
+      name={item.name}
+      typeParameters={item.typeParameters}
+      parameters={item.parameters}
+      returns={item.returns}
+    />
+  )
+}
+
+function ApiItemParameters(params: { parameters: ApiDocItem["parameters"] }) {
+  const { parameters } = params
+  if (parameters == null || parameters.length === 0) {
+    return null
+  }
+  return <ApiParametersTable parameters={parameters} />
+}
+
+function ApiItemReturns(params: { returns: ApiDocItem["returns"] }) {
+  const { returns } = params
+  if (returns == null) {
+    return null
+  }
+  return <ApiReturns returns={returns} />
+}
+
+function ApiItemHeader(params: {
+  headingTag: keyof JSX.IntrinsicElements
+  id: string
+  kind: ApiDocKind
+  name: string
+}) {
+  const { headingTag: HeadingTag, id, kind, name } = params
+
+  return (
+    <HeadingTag className={styles.apiItemTitle}>
+      <ApiKindBadge kind={kind} />
+      <span className={styles.apiItemName}>{name}</span>
+      <a href={`#${id}`} className={styles.apiAnchor}>
+        #
+      </a>
+    </HeadingTag>
+  )
+}
+
+function ApiExamples(params: { examples: null | string[] | undefined; itemId: string }) {
+  const { examples, itemId } = params
+  if (examples == null || examples.length === 0) {
+    return null
+  }
+
+  return (
+    <div className={styles.apiExamples}>
+      <h4 className={styles.apiSectionTitle}>Examples</h4>
+      {examples.map((example) => (
+        <pre key={`${itemId}-${example}`} className={styles.apiExample}>
+          <code>{example}</code>
+        </pre>
+      ))}
+    </div>
+  )
+}
+
+function ApiSourceSection(params: { source: ApiDocItem["source"] }) {
+  const { source } = params
+  if (source == null) {
+    return null
+  }
+
+  const hasSourceUrl = source.url != null && source.url.length > 0
+
+  return (
+    <div className={styles.apiSource}>
+      {hasSourceUrl ? (
+        <a href={source.url} target="_blank" rel="noopener noreferrer">
+          {source.file}:{source.line}
         </a>
-      </HeadingTag>
-
-      {item.description && <p className={styles.apiItemDescription}>{item.description}</p>}
-
-      {item.signature && (
-        <ApiSignature
-          name={item.name}
-          typeParameters={item.typeParameters}
-          parameters={item.parameters}
-          returns={item.returns}
-        />
+      ) : (
+        <span>
+          {source.file}:{source.line}
+        </span>
       )}
+    </div>
+  )
+}
 
-      {item.parameters && item.parameters.length > 0 && (
-        <ApiParametersTable parameters={item.parameters} />
-      )}
+function ApiChildren(params: { childItems: ApiDocItem["children"]; level: number }) {
+  const { childItems, level } = params
+  if (childItems == null || childItems.length === 0) {
+    return null
+  }
 
-      {item.returns && <ApiReturns returns={item.returns} />}
-
-      {item.examples && item.examples.length > 0 && (
-        <div className={styles.apiExamples}>
-          <h4 className={styles.apiSectionTitle}>Examples</h4>
-          {item.examples.map((example, i) => (
-            <pre key={i} className={styles.apiExample}>
-              <code>{example}</code>
-            </pre>
-          ))}
-        </div>
-      )}
-
-      {item.source && (
-        <div className={styles.apiSource}>
-          {item.source.url ? (
-            <a href={item.source.url} target="_blank" rel="noopener noreferrer">
-              {item.source.file}:{item.source.line}
-            </a>
-          ) : (
-            <span>
-              {item.source.file}:{item.source.line}
-            </span>
-          )}
-        </div>
-      )}
-
-      {item.children && item.children.length > 0 && (
-        <div className={styles.apiChildren}>
-          {item.children.map((child) => (
-            <ApiItem key={child.id} item={child} level={level + 1} />
-          ))}
-        </div>
-      )}
+  return (
+    <div className={styles.apiChildren}>
+      {childItems.map((child) => (
+        <ApiItem key={child.id} item={child} level={level + 1} />
+      ))}
     </div>
   )
 }
@@ -119,22 +187,18 @@ interface ApiHierarchyProps {
   hierarchy: ApiDocItem["hierarchy"]
 }
 
+interface HierarchyEntry {
+  label: string
+  types: string[]
+}
+
 export function ApiHierarchy({ hierarchy }: ApiHierarchyProps) {
-  if (!hierarchy) return null
+  if (hierarchy == null) {
+    return null
+  }
 
-  const {
-    extends: extendsTypes,
-    implements: implementsTypes,
-    extendedBy,
-    implementedBy,
-  } = hierarchy
-
-  if (
-    !extendsTypes?.length &&
-    !implementsTypes?.length &&
-    !extendedBy?.length &&
-    !implementedBy?.length
-  ) {
+  const entries = collectHierarchyEntries(hierarchy)
+  if (entries.length === 0) {
     return null
   }
 
@@ -142,31 +206,38 @@ export function ApiHierarchy({ hierarchy }: ApiHierarchyProps) {
     <div className={styles.apiHierarchy}>
       <h4 className={styles.apiSectionTitle}>Hierarchy</h4>
       <ul className={styles.apiHierarchyList}>
-        {extendsTypes?.map((type) => (
-          <li key={type}>
-            <span className={styles.apiHierarchyLabel}>extends</span>
-            <code>{type}</code>
-          </li>
-        ))}
-        {implementsTypes?.map((type) => (
-          <li key={type}>
-            <span className={styles.apiHierarchyLabel}>implements</span>
-            <code>{type}</code>
-          </li>
-        ))}
-        {extendedBy?.map((type) => (
-          <li key={type}>
-            <span className={styles.apiHierarchyLabel}>extended by</span>
-            <code>{type}</code>
-          </li>
-        ))}
-        {implementedBy?.map((type) => (
-          <li key={type}>
-            <span className={styles.apiHierarchyLabel}>implemented by</span>
-            <code>{type}</code>
-          </li>
-        ))}
+        {entries.flatMap((entry) =>
+          entry.types.map((type) => (
+            <li key={`${entry.label}-${type}`}>
+              <span className={styles.apiHierarchyLabel}>{entry.label}</span>
+              <code>{type}</code>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   )
+}
+
+function collectHierarchyEntries(
+  hierarchy: NonNullable<ApiDocItem["hierarchy"]>
+): HierarchyEntry[] {
+  const entries: HierarchyEntry[] = []
+
+  appendHierarchyEntry(entries, "extends", hierarchy.extends)
+  appendHierarchyEntry(entries, "implements", hierarchy.implements)
+  appendHierarchyEntry(entries, "extended by", hierarchy.extendedBy)
+  appendHierarchyEntry(entries, "implemented by", hierarchy.implementedBy)
+
+  return entries
+}
+
+function appendHierarchyEntry(
+  entries: HierarchyEntry[],
+  label: string,
+  types: string[] | undefined
+): void {
+  if (types != null && types.length > 0) {
+    entries.push({ label, types })
+  }
 }

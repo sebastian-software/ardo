@@ -7,119 +7,193 @@ import path from "node:path"
 import type { ResolvedConfig, SidebarItem } from "../config/types"
 
 export interface SidebarGenerationOptions {
-  contentDir: string
   basePath: string
   config: ResolvedConfig
+  contentDir: string
+}
+
+interface SidebarItemWithOrder extends SidebarItem {
+  order?: number
+}
+
+interface SidebarFrontmatter {
+  order?: number
+  sidebar?: boolean
+  title?: string
 }
 
 export async function generateSidebar(options: SidebarGenerationOptions): Promise<SidebarItem[]> {
-  const { contentDir, basePath } = options
-
-  return scanDirectoryForSidebar(contentDir, contentDir, basePath)
+  const { contentDir } = options
+  return scanDirectoryForSidebar(contentDir, contentDir)
 }
 
-async function scanDirectoryForSidebar(
-  dir: string,
-  rootDir: string,
-  _basePath: string
-): Promise<SidebarItem[]> {
-  let entries: Dirent[]
-
-  try {
-    entries = await fs.readdir(dir, { withFileTypes: true })
-  } catch {
-    return []
-  }
-
-  interface SidebarItemWithOrder extends SidebarItem {
-    order?: number
-  }
-
+async function scanDirectoryForSidebar(dir: string, rootDir: string): Promise<SidebarItem[]> {
+  const entries = await readDirectoryEntries(dir)
   const items: SidebarItemWithOrder[] = []
 
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name)
-    const relativePath = path.relative(rootDir, fullPath)
+    const sidebarItem = await createSidebarItemFromEntry({
+      dir,
+      entry,
+      rootDir,
+    })
 
-    if (entry.name.startsWith(".") || entry.name.startsWith("_")) {
-      continue
-    }
-
-    if (entry.isDirectory()) {
-      const children = await scanDirectoryForSidebar(fullPath, rootDir, _basePath)
-
-      if (children.length > 0) {
-        const indexPath = path.join(fullPath, "index.md")
-        let link: string | undefined
-        let title = formatTitle(entry.name)
-        let order: number | undefined
-
-        try {
-          const indexContent = await fs.readFile(indexPath, "utf8")
-          const { data: frontmatter } = matter(indexContent)
-
-          if (frontmatter.title) {
-            title = frontmatter.title
-          }
-          if (typeof frontmatter.order === "number") {
-            order = frontmatter.order
-          }
-
-          // Don't include basePath - React Router handles it automatically
-          link = normalizePath(relativePath)
-        } catch {
-          // No index.md file
-        }
-
-        items.push({
-          text: title,
-          link,
-          collapsed: false,
-          items: children,
-          order,
-        })
-      }
-    } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
-      const fileContent = await fs.readFile(fullPath, "utf8")
-      const { data: frontmatter } = matter(fileContent)
-
-      if (frontmatter.sidebar === false) {
-        continue
-      }
-
-      const title = frontmatter.title || formatTitle(entry.name.replace(/\.md$/, ""))
-      const order = typeof frontmatter.order === "number" ? frontmatter.order : undefined
-
-      // Don't include basePath - React Router handles it automatically
-      const link = normalizePath(relativePath.replace(/\.md$/, ""))
-
-      items.push({
-        text: title,
-        link,
-        order,
-      })
+    if (sidebarItem != null) {
+      items.push(sidebarItem)
     }
   }
 
-  items.sort((a, b) => {
-    if (a.order !== undefined && b.order !== undefined) {
-      return a.order - b.order
-    }
-    if (a.order !== undefined) return -1
-    if (b.order !== undefined) return 1
-    return a.text.localeCompare(b.text)
-  })
-
+  sortSidebarItems(items)
   return items.map(({ order: _order, ...item }) => item)
+}
+
+async function readDirectoryEntries(dir: string): Promise<Dirent[]> {
+  try {
+    return await fs.readdir(dir, { withFileTypes: true })
+  } catch {
+    return []
+  }
+}
+
+async function createSidebarItemFromEntry(params: {
+  dir: string
+  entry: Dirent
+  rootDir: string
+}): Promise<null | SidebarItemWithOrder> {
+  const { dir, entry, rootDir } = params
+  if (isIgnoredEntry(entry.name)) {
+    return null
+  }
+
+  const fullPath = path.join(dir, entry.name)
+  const relativePath = path.relative(rootDir, fullPath)
+
+  if (entry.isDirectory()) {
+    return createDirectorySidebarItem(fullPath, relativePath, rootDir)
+  }
+
+  if (isMarkdownPage(entry.name)) {
+    return createMarkdownSidebarItem(fullPath, relativePath, entry.name)
+  }
+
+  return null
+}
+
+function isIgnoredEntry(entryName: string): boolean {
+  return entryName.startsWith(".") || entryName.startsWith("_")
+}
+
+function isMarkdownPage(entryName: string): boolean {
+  return entryName.endsWith(".md") && entryName !== "index.md"
+}
+
+async function createDirectorySidebarItem(
+  fullPath: string,
+  relativePath: string,
+  rootDir: string
+): Promise<null | SidebarItemWithOrder> {
+  const children = await scanDirectoryForSidebar(fullPath, rootDir)
+  if (children.length === 0) {
+    return null
+  }
+
+  const metadata = await readDirectoryIndexMetadata(fullPath, relativePath)
+  const title = metadata.title ?? formatTitle(path.basename(fullPath))
+
+  return {
+    collapsed: false,
+    items: children,
+    link: metadata.link,
+    order: metadata.order,
+    text: title,
+  }
+}
+
+async function readDirectoryIndexMetadata(
+  fullPath: string,
+  relativePath: string
+): Promise<{ link?: string; order?: number; title?: string }> {
+  const indexPath = path.join(fullPath, "index.md")
+  const frontmatter = await readFrontmatter(indexPath)
+
+  return {
+    link: frontmatter == null ? undefined : normalizePath(relativePath),
+    order: frontmatter?.order,
+    title: frontmatter?.title,
+  }
+}
+
+async function createMarkdownSidebarItem(
+  fullPath: string,
+  relativePath: string,
+  fileName: string
+): Promise<null | SidebarItemWithOrder> {
+  const frontmatter = await readFrontmatter(fullPath)
+  if (frontmatter?.sidebar === false) {
+    return null
+  }
+
+  const fallbackTitle = formatTitle(fileName.replace(/\.md$/u, ""))
+  const title = frontmatter?.title ?? fallbackTitle
+
+  return {
+    link: normalizePath(relativePath.replace(/\.md$/u, "")),
+    order: frontmatter?.order,
+    text: title,
+  }
+}
+
+async function readFrontmatter(filePath: string): Promise<null | SidebarFrontmatter> {
+  try {
+    const fileContent = await fs.readFile(filePath, "utf8")
+    const parsed = matter(fileContent)
+    return toSidebarFrontmatter(parsed.data)
+  } catch {
+    return null
+  }
+}
+
+function toSidebarFrontmatter(data: unknown): SidebarFrontmatter {
+  if (!isRecord(data)) {
+    return {}
+  }
+
+  return {
+    order: typeof data.order === "number" ? data.order : undefined,
+    sidebar: typeof data.sidebar === "boolean" ? data.sidebar : undefined,
+    title: typeof data.title === "string" ? data.title : undefined,
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
+}
+
+function sortSidebarItems(items: SidebarItemWithOrder[]): void {
+  items.sort((left, right) => {
+    if (left.order != null && right.order != null) {
+      return left.order - right.order
+    }
+
+    if (left.order != null) {
+      return -1
+    }
+
+    if (right.order != null) {
+      return 1
+    }
+
+    return left.text.localeCompare(right.text)
+  })
 }
 
 function formatTitle(name: string): string {
   return name
-    .replace(/^\d+-/, "")
-    .replaceAll(/[_-]/g, " ")
-    .replaceAll(/\b\w/g, (c) => c.toUpperCase())
+    .replace(/^\d+-/u, "")
+    .replaceAll(/[_-]/gu, " ")
+    .replaceAll(/\b\w/gu, (char) => char.toUpperCase())
 }
 
 function normalizePath(p: string): string {
-  return `/${p.replaceAll("\\", "/").replace(/^\/+/, "")}`
+  return `/${p.replaceAll("\\", "/").replace(/^\/+/u, "")}`
 }
