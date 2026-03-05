@@ -12,5 +12,15 @@
     "*.min.css",
     ".git"
   ],
-  "words": ["ardo", "rehype", "remark", "shiki", "tailwindcss", "typedoc", "vite", "vitest"]
+  "words": [
+    "ardo",
+    "rehype",
+    "remark",
+    "shiki",
+    "tailwindcss",
+    "typedoc",
+    "vite",
+    "vitest",
+    "oklch"
+  ]
 }
