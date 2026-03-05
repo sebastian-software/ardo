@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "build",
+    "pnpm-lock.yaml",
+    "coverage",
+    "*.min.js",
+    "*.min.css",
+    ".git"
+  ],
+  "words": ["ardo", "rehype", "remark", "shiki", "tailwindcss", "typedoc", "vite", "vitest"]
+}
