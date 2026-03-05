@@ -21,7 +21,7 @@ function outdent(text: string): string {
 }
 
 /**
- * Finds self-closing `<CodeBlock ... />` tags by scanning for balanced
+ * Finds self-closing `<ArdoCodeBlock ... />` tags by scanning for balanced
  * quotes and braces. A simple `[^>]` regex fails when prop values contain
  * `>` characters (e.g. `code={'<Tip>Hello</Tip>'}`).
  */
@@ -29,7 +29,7 @@ function findSelfClosingCodeBlocks(
   source: string
 ): Array<{ fullMatch: string; propsStr: string; index: number }> {
   const results: Array<{ fullMatch: string; propsStr: string; index: number }> = []
-  const tag = "<CodeBlock"
+  const tag = "<ArdoCodeBlock"
   let searchFrom = 0
 
   while (true) {
@@ -129,15 +129,15 @@ function findSelfClosingCodeBlocks(
 }
 
 /**
- * Vite plugin that pre-highlights CodeBlock components at build time.
+ * Vite plugin that pre-highlights ArdoCodeBlock components at build time.
  *
  * Runs before the JSX parser, so children can contain arbitrary code
  * (including `<`, `{`, etc.) without causing syntax errors.
  *
  * Supports three patterns:
- * 1. `<CodeBlock code="..." language="..." />`  — code prop
- * 2. `<CodeBlock language="...">{\`...\`}</CodeBlock>`  — template literal children
- * 3. `<CodeBlock language="...">raw code here</CodeBlock>`  — plain text children
+ * 1. `<ArdoCodeBlock code="..." language="..." />`  — code prop
+ * 2. `<ArdoCodeBlock language="...">{\`...\`}</ArdoCodeBlock>`  — template literal children
+ * 3. `<ArdoCodeBlock language="...">raw code here</ArdoCodeBlock>`  — plain text children
  *
  * All patterns are rewritten to a self-closing tag with pre-rendered
  * Shiki HTML before the JSX parser ever sees them.
@@ -149,13 +149,13 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
 
     async transform(code, id) {
       if (!/\.[jt]sx$/.test(id)) return
-      if (!code.includes("CodeBlock")) return
+      if (!code.includes("ArdoCodeBlock")) return
       if (id.includes("node_modules")) return
 
       let result = code
       let offset = 0
 
-      // Pattern 1: Self-closing <CodeBlock code="..." language="..." />
+      // Pattern 1: Self-closing <ArdoCodeBlock code="..." language="..." />
       // Use a scanner instead of regex because [^>] fails when prop values
       // contain > characters (e.g. code={'<Tip>Hello</Tip>'}).
       const propMatches = findSelfClosingCodeBlocks(code)
@@ -203,10 +203,10 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
         }
       }
 
-      // Pattern 2+3: <CodeBlock language="...">...children...</CodeBlock>
+      // Pattern 2+3: <ArdoCodeBlock language="...">...children...</ArdoCodeBlock>
       // Matches both template literal children {`...`} and raw text children.
       // Since this runs before JSX parsing, raw text with <, {, etc. is fine.
-      const childrenRegex = /<CodeBlock\s+([^>]*?)>([\s\S]*?)<\/CodeBlock>/g
+      const childrenRegex = /<ArdoCodeBlock\s+([^>]*?)>([\s\S]*?)<\/ArdoCodeBlock>/g
 
       offset = result.length - code.length
       let regexMatch: RegExpExecArray | null
@@ -239,7 +239,7 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
 
           const escapedHtml = JSON.stringify(html)
           const escapedCode = JSON.stringify(codeContent)
-          const newTag = `<CodeBlock __html={${escapedHtml}} code={${escapedCode}} ${propsStr} />`
+          const newTag = `<ArdoCodeBlock __html={${escapedHtml}} code={${escapedCode}} ${propsStr} />`
 
           result =
             result.slice(0, regexMatch.index + offset) +
