@@ -1,191 +1,57 @@
 import type { Plugin, UserConfig } from "vite"
 
-import mdx from "@mdx-js/rollup"
-import { reactRouter } from "@react-router/dev/vite"
-import rehypeShiki from "@shikijs/rehype"
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
-import matter from "gray-matter"
-import { execSync } from "node:child_process"
-import fsSync from "node:fs"
-import fs from "node:fs/promises"
 import path from "node:path"
-import remarkFrontmatter from "remark-frontmatter"
-import remarkGfm from "remark-gfm"
-import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { TypeDocConfig } from "../typedoc/types"
 
-import { defaultMarkdownConfig, resolveConfig } from "../config/index"
-import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
+import { resolveConfig } from "../config/index"
 import { generateApiDocs } from "../typedoc/generator"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
+import { createFlattenPlugin } from "./flatten-plugin"
+import {
+  detectGitHash,
+  detectGitHubBasename,
+  detectGitHubRepoName,
+  findPackageRoot,
+} from "./git-utils"
+import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
+import { readProjectMeta } from "./project-meta"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
-
-/**
- * Finds the package root by looking for package.json in parent directories.
- * Returns the path relative to cwd, or undefined if not found.
- */
-function findPackageRoot(cwd: string): string | undefined {
-  let dir = path.resolve(cwd)
-  const root = path.parse(dir).root
-
-  while (dir !== root) {
-    const parentDir = path.dirname(dir)
-    const packageJsonPath = path.join(parentDir, "package.json")
-
-    if (fsSync.existsSync(packageJsonPath)) {
-      // Return relative path from cwd to parent
-      return path.relative(cwd, parentDir) || "."
-    }
-
-    dir = parentDir
-  }
-
-  return undefined
-}
-
-/**
- * Detects the GitHub repository name from git remote URL.
- * Returns the repo name (e.g., 'ardo' from 'github.com/sebastian-software/ardo')
- * or undefined if not a GitHub repo.
- */
-function detectGitHubRepoName(cwd: string): string | undefined {
-  try {
-    const remoteUrl = execSync("git remote get-url origin", {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    }).trim()
-
-    // Parse GitHub URL (supports both HTTPS and SSH)
-    // https://github.com/user/repo.git
-    // git@github.com:user/repo.git
-    const match = /github\.com[/:][\w-]+\/([\w.-]+?)(?:\.git)?$/.exec(remoteUrl)
-    return match?.[1]
-  } catch {
-    return undefined
-  }
-}
-
-/**
- * Detects the current short git commit hash.
- */
-function detectGitHash(cwd: string): string | undefined {
-  try {
-    return execSync("git rev-parse --short HEAD", {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    }).trim()
-  } catch {
-    return undefined
-  }
-}
-
-/**
- * Reads project metadata from the nearest package.json.
- */
-function readProjectMeta(root: string): ProjectMeta {
-  const pkgPath = path.join(root, "package.json")
-  try {
-    const raw = fsSync.readFileSync(pkgPath, "utf8")
-    const pkg = JSON.parse(raw)
-
-    let repository: string | undefined
-    if (typeof pkg.repository === "string") {
-      repository = pkg.repository
-    } else if (pkg.repository?.url) {
-      // Normalize git+https://... or git://... URLs
-      repository = pkg.repository.url
-        .replace(/^git\+/, "")
-        .replace(/^git:\/\//, "https://")
-        .replace(/\.git$/, "")
-    }
-
-    let author: string | undefined
-    if (typeof pkg.author === "string") {
-      author = pkg.author
-    } else if (pkg.author?.name) {
-      author = pkg.author.name
-    }
-
-    return {
-      name: pkg.name,
-      homepage: pkg.homepage,
-      repository,
-      version: pkg.version,
-      author,
-      license: pkg.license,
-    }
-  } catch {
-    return {}
-  }
-}
-
-/**
- * Recursively copies files from src to dest, overwriting existing files.
- */
-function copyRecursive(src: string, dest: string) {
-  const stat = fsSync.statSync(src)
-
-  if (stat.isDirectory()) {
-    if (!fsSync.existsSync(dest)) {
-      fsSync.mkdirSync(dest, { recursive: true })
-    }
-    for (const item of fsSync.readdirSync(src)) {
-      copyRecursive(path.join(src, item), path.join(dest, item))
-    }
-  } else {
-    fsSync.copyFileSync(src, dest)
-  }
-}
-
-/**
- * Detects the GitHub Pages basename from the git remote URL.
- * Returns `"/repo-name/"` if a GitHub repo is detected, otherwise `undefined`.
- *
- * Use this in `react-router.config.ts` to synchronize client-side routing
- * with the Vite `base` path that Ardo auto-detects:
- *
- * ```ts
- * import { detectGitHubBasename } from "ardo/vite"
- *
- * export default {
- *   ssr: false,
- *   prerender: true,
- *   basename: detectGitHubBasename(),
- * } satisfies Config
- * ```
- */
-export function detectGitHubBasename(cwd?: string): string {
-  if (process.env.NODE_ENV !== "production") {
-    return "/"
-  }
-  const repoName = detectGitHubRepoName(cwd || process.cwd())
-  return repoName ? `/${repoName}/` : "/"
-}
+import { generateSearchIndex } from "./search-index"
+import { generateSidebar } from "./sidebar-index"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`
-
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
 const RESOLVED_VIRTUAL_SIDEBAR_ID = `\0${VIRTUAL_SIDEBAR_ID}`
-
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 const RESOLVED_VIRTUAL_SEARCH_ID = `\0${VIRTUAL_SEARCH_ID}`
 
-// Module-level flags to prevent duplicate operations across plugin instances
-// This is necessary because React Router creates multiple Vite instances
 let typedocGenerated = false
-let flattenExecuted = false
+
+interface PluginState {
+  resolvedConfig?: ResolvedConfig
+  routesDir: string
+}
+
+interface MainPluginOptions {
+  githubPages: boolean
+  pressConfig: PressConfigOptions
+  routesDirOption: string | undefined
+}
+
+type PressConfigOptions = Omit<
+  ArdoPluginOptions,
+  "githubPages" | "routes" | "routesDir" | "typedoc"
+>
 
 export interface ArdoPluginOptions extends Partial<ArdoConfig> {
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
   /**
    * Auto-detect GitHub repository and set base path for GitHub Pages.
-   * When true, automatically sets `base: '/repo-name/'` if deploying to GitHub Pages.
    * @default true
    */
   githubPages?: boolean
@@ -196,11 +62,9 @@ export interface ArdoPluginOptions extends Partial<ArdoConfig> {
   routesDir?: string
 }
 
-export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
-  let resolvedConfig: ResolvedConfig
-  let routesDir: string
+export { detectGitHubBasename }
 
-  // Extract ardo-specific options from the rest (which is ArdoConfig)
+export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
     routes,
     typedoc,
@@ -208,442 +72,291 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     routesDir: routesDirOption,
     ...pressConfig
   } = options
+  const state: PluginState = { routesDir: resolveRoutesDir(process.cwd(), routesDirOption) }
 
-  const mainPlugin: Plugin = {
-    name: "ardo",
-    enforce: "pre",
+  const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
+  const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  addRoutesPlugin(plugins, routes, routesDirOption)
+  addTypeDocPlugin(plugins, typedoc, state)
 
-    config(userConfig, env): UserConfig {
-      const root = userConfig.root || process.cwd()
-      routesDir = routesDirOption || path.join(root, "app", "routes")
-
-      const result: UserConfig = {
-        define: {
-          __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-        },
-        optimizeDeps: {
-          exclude: ["ardo/ui/styles.css"],
-        },
-        ssr: {
-          noExternal: ["ardo"],
-        },
-      }
-
-      // Auto-detect GitHub Pages base path for production builds
-      if (githubPages && env.command === "build" && !userConfig.base) {
-        const repoName = detectGitHubRepoName(root)
-        if (repoName) {
-          result.base = `/${repoName}/`
-          console.log(`[ardo] GitHub Pages detected, using base: ${result.base}`)
-        }
-      }
-
-      return result
-    },
-
-    async configResolved(config) {
-      const root = config.root
-      routesDir = routesDirOption || path.join(root, "app", "routes")
-
-      // Auto-detect project metadata from package.json
-      const detectedProject = readProjectMeta(root)
-      const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
-
-      const defaultConfig: ArdoConfig = {
-        title: pressConfig.title ?? "Ardo",
-        description: pressConfig.description ?? "Documentation powered by Ardo",
-      }
-
-      // For React Router, contentDir is the routes directory
-      const configWithRoutes = {
-        ...defaultConfig,
-        ...pressConfig,
-        project,
-        srcDir: routesDir,
-      }
-
-      resolvedConfig = resolveConfig(configWithRoutes, root)
-    },
-
-    resolveId(id) {
-      if (id === VIRTUAL_MODULE_ID) {
-        return RESOLVED_VIRTUAL_MODULE_ID
-      }
-      if (id === VIRTUAL_SIDEBAR_ID) {
-        return RESOLVED_VIRTUAL_SIDEBAR_ID
-      }
-      if (id === VIRTUAL_SEARCH_ID) {
-        return RESOLVED_VIRTUAL_SEARCH_ID
-      }
-    },
-
-    async load(id) {
-      if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-        const clientConfig = {
-          title: resolvedConfig.title,
-          description: resolvedConfig.description,
-          base: resolvedConfig.base,
-          lang: resolvedConfig.lang,
-          project: resolvedConfig.project,
-          buildTime: new Date().toISOString(),
-          buildHash: detectGitHash(resolvedConfig.root),
-        }
-        return `export default ${JSON.stringify(clientConfig)}`
-      }
-
-      if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
-        const sidebar = await generateSidebar(routesDir)
-        return `export default ${JSON.stringify(sidebar)}`
-      }
-
-      if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
-        const searchIndex = await generateSearchIndex(routesDir)
-        return `export default ${JSON.stringify(searchIndex)}`
-      }
-    },
-
-    transform(code, id) {
-      // Only process .mdx/.md files inside the routes directory
-      if (!/\.(mdx|md)$/.test(id)) return
-      if (!id.startsWith(routesDir)) return
-
-      // Skip if the file already exports a meta function
-      if (/export\s+(const|function)\s+meta\b/.test(code)) return
-
-      // Extract frontmatter values from the compiled MDX export
-      const titleMatch = /export\s+const\s+frontmatter\s*=\s*\{[^}]*title\s*:\s*"([^"]*)"/.exec(
-        code
-      )
-      const descMatch =
-        /export\s+const\s+frontmatter\s*=\s*\{[^}]*description\s*:\s*"([^"]*)"/.exec(code)
-
-      const pageTitle = titleMatch?.[1]
-      if (!pageTitle) return
-
-      const siteTitle = resolvedConfig.title
-      const separator = resolvedConfig.titleSeparator
-      const fullTitle = `${pageTitle}${separator}${siteTitle}`
-      const description = descMatch?.[1]
-
-      const metaEntries = [`{ title: ${JSON.stringify(fullTitle)} }`]
-      if (description) {
-        metaEntries.push(`{ name: "description", content: ${JSON.stringify(description)} }`)
-      }
-
-      return {
-        code: `${code}\nexport const meta = () => [${metaEntries.join(", ")}];\n`,
-        map: null,
-      }
-    },
-  }
-
-  const plugins: Plugin[] = [mainPlugin]
-
-  // Add routes plugin unless explicitly disabled
-  if (routes !== false) {
-    plugins.push(
-      ardoRoutesPlugin({
-        routesDir: routesDirOption,
-        ...routes,
-      })
-    )
-  }
-
-  // Add TypeDoc plugin if enabled
-  if (typedoc) {
-    // Find package root to use as default entry point and tsconfig base
-    const packageRoot = findPackageRoot(process.cwd())
-    const defaultEntryPoint = packageRoot ? `${packageRoot}/src/index.ts` : "./src/index.ts"
-    const defaultTsconfig = packageRoot ? `${packageRoot}/tsconfig.json` : "./tsconfig.json"
-
-    const defaultTypedocConfig: TypeDocConfig = {
-      enabled: true,
-      entryPoints: [defaultEntryPoint],
-      tsconfig: defaultTsconfig,
-      out: "api-reference",
-      excludePrivate: true,
-      excludeInternal: true,
-    }
-
-    const typedocConfig: TypeDocConfig =
-      typedoc === true ? defaultTypedocConfig : { ...defaultTypedocConfig, ...typedoc }
-
-    const typedocPlugin: Plugin = {
-      name: "ardo:typedoc",
-
-      async buildStart() {
-        // Use module-level flag to prevent duplicate generation across plugin instances
-        if (typedocGenerated || !typedocConfig.enabled) {
-          return
-        }
-
-        console.log("[ardo] Generating API documentation with TypeDoc...")
-        const startTime = Date.now()
-        try {
-          const outputDir = routesDirOption || "./app/routes"
-          const docs = await generateApiDocs(typedocConfig, outputDir)
-          const duration = Date.now() - startTime
-          console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
-        } catch (error) {
-          console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
-          console.warn("[ardo] Check your typedoc.entryPoints configuration.")
-          if (error instanceof Error) {
-            console.warn(`[ardo] Error: ${error.message}`)
-          }
-        }
-        typedocGenerated = true
-      },
-    }
-
-    plugins.unshift(typedocPlugin)
-  }
-
-  // Add CodeBlock highlight plugin for .tsx/.jsx files
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
-
-  // Add MDX plugin with Ardo's markdown pipeline
-  // Apply default theme if user didn't configure one
-  const themeConfig = pressConfig.markdown?.theme ?? defaultMarkdownConfig.theme
-  const hasThemeObject = themeConfig && typeof themeConfig === "object" && "light" in themeConfig
-  const lineNumbers = pressConfig.markdown?.lineNumbers || false
-
-  // Build shiki options with Ardo's custom line transformer
-  // Theme defaults are guaranteed by resolveConfig (defaultMarkdownConfig)
-  const shikiOptions = hasThemeObject
-    ? {
-        themes: {
-          light: themeConfig.light,
-          dark: themeConfig.dark,
-        },
-        defaultColor: false as const,
-        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
-      }
-    : {
-        theme: themeConfig as string,
-        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
-      }
-
-  const mdxPlugin = mdx({
-    include: /\.(md|mdx)$/,
-    remarkPlugins: [
-      remarkFrontmatter,
-      [remarkMdxFrontmatter, { name: "frontmatter" }],
-      remarkGfm,
-      remarkCodeMeta,
-    ],
-    rehypePlugins: [[rehypeShiki, shikiOptions]],
-    providerImportSource: "ardo/mdx-provider",
-  })
-  plugins.push(mdxPlugin as Plugin)
-
-  // Add Vanilla Extract plugin (must run before React Router for SSR)
+  plugins.push(createMdxPlugin(pressConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
+  plugins.push(...getReactRouterPlugins())
 
-  // Add React Router Framework plugin (includes React plugin internally)
-  const reactRouterPlugin = reactRouter()
-  const reactRouterPlugins = (
-    Array.isArray(reactRouterPlugin) ? reactRouterPlugin : [reactRouterPlugin]
-  ).filter((p): p is Plugin => p != null)
-  plugins.push(...reactRouterPlugins)
-
-  // Add flatten plugin for GitHub Pages (must run after React Router build)
   if (githubPages) {
-    let detectedBase: string | undefined
-
-    const flattenPlugin: Plugin = {
-      name: "ardo:flatten-github-pages",
-      enforce: "post",
-
-      configResolved(config) {
-        if (config.base && config.base !== "/") {
-          detectedBase = config.base
-        }
-      },
-
-      closeBundle() {
-        if (flattenExecuted || !detectedBase) {
-          return
-        }
-
-        // Strip leading/trailing slashes to get the directory name
-        const baseName = detectedBase.replaceAll(/^\/|\/$/g, "")
-        if (!baseName) return
-
-        const buildDir = path.join(process.cwd(), "build", "client")
-        const nestedDir = path.join(buildDir, baseName)
-
-        if (!fsSync.existsSync(nestedDir)) {
-          return
-        }
-
-        console.log(`[ardo] Flattening build/client/${baseName}/ to build/client/ for GitHub Pages`)
-        copyRecursive(nestedDir, buildDir)
-        fsSync.rmSync(nestedDir, { recursive: true, force: true })
-        console.log("[ardo] Build output flattened successfully.")
-
-        flattenExecuted = true
-      },
-    }
-
-    plugins.push(flattenPlugin)
+    plugins.push(createFlattenPlugin())
   }
 
   return plugins
 }
 
-async function generateSidebar(routesDir: string) {
-  try {
-    return await scanDirectory(routesDir, routesDir)
-  } catch {
-    return []
+function addRoutesPlugin(
+  plugins: Plugin[],
+  routes: ArdoPluginOptions["routes"],
+  routesDirOption: string | undefined
+): void {
+  if (routes === false) {
+    return
+  }
+
+  const routePluginOptions = routes ?? {}
+  plugins.push(ardoRoutesPlugin({ routesDir: routesDirOption, ...routePluginOptions }))
+}
+
+function addTypeDocPlugin(
+  plugins: Plugin[],
+  typedoc: ArdoPluginOptions["typedoc"],
+  state: PluginState
+): void {
+  const typedocConfig = resolveTypedocConfig(typedoc)
+  if (typedocConfig != null) {
+    plugins.unshift(createTypeDocPlugin(typedocConfig, state))
   }
 }
 
-async function scanDirectory(
-  dir: string,
-  rootDir: string
-): Promise<Array<{ text: string; link?: string; items?: unknown[] }>> {
-  const entries = await fs.readdir(dir, { withFileTypes: true })
-  const items: Array<{ text: string; link?: string; items?: unknown[]; order?: number }> = []
-
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name)
-    const relativePath = path.relative(rootDir, fullPath)
-
-    if (entry.isDirectory()) {
-      const children = await scanDirectory(fullPath, rootDir)
-      if (children.length > 0) {
-        // Check for index.mdx in the directory
-        const indexPath = path.join(fullPath, "index.mdx")
-        let link: string | undefined
-
-        try {
-          await fs.access(indexPath)
-          link = `/${relativePath.replaceAll("\\", "/")}`
-        } catch {
-          // No index.mdx
-        }
-
-        items.push({
-          text: formatTitle(entry.name),
-          link,
-          items: children,
-        })
-      }
-    } else if (
-      (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) &&
-      entry.name !== "index.mdx" &&
-      entry.name !== "index.md"
-    ) {
-      const fileContent = await fs.readFile(fullPath, "utf8")
-      const { data: frontmatter } = matter(fileContent)
-
-      const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
-      const title = frontmatter.title || formatTitle(entry.name.replace(ext, ""))
-      const order: number | undefined =
-        typeof frontmatter.order === "number" ? frontmatter.order : undefined
-
-      const link = `/${relativePath.replace(ext, "").replaceAll("\\", "/")}`
-
-      items.push({
-        text: title,
-        link,
-        order,
+function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {
+  return {
+    name: "ardo",
+    enforce: "pre",
+    config(userConfig, env): UserConfig {
+      return createMainConfig(state, {
+        userConfig,
+        command: env.command,
+        githubPages: options.githubPages,
+        routesDirOption: options.routesDirOption,
       })
+    },
+    configResolved(config) {
+      state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
+      state.resolvedConfig = resolveArdoConfig(config.root, state.routesDir, options.pressConfig)
+    },
+    resolveId(id) {
+      return resolveVirtualModuleId(id)
+    },
+    async load(id) {
+      return loadVirtualModule(id, state)
+    },
+    transform(code, id) {
+      return transformMarkdownMeta(code, id, state)
+    },
+  }
+}
+
+function createMainConfig(
+  state: PluginState,
+  input: {
+    command: string
+    githubPages: boolean
+    routesDirOption: string | undefined
+    userConfig: UserConfig
+  }
+): UserConfig {
+  const { command, githubPages, routesDirOption, userConfig } = input
+  const root = userConfig.root ?? process.cwd()
+  state.routesDir = resolveRoutesDir(root, routesDirOption)
+
+  const config: UserConfig = {
+    define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
+    optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
+    ssr: { noExternal: ["ardo"] },
+  }
+
+  if (githubPages && command === "build" && userConfig.base == null) {
+    const repoName = detectGitHubRepoName(root)
+    if (repoName != null) {
+      config.base = `/${repoName}/`
+      console.log(`[ardo] GitHub Pages detected, using base: ${config.base}`)
     }
   }
 
-  items.sort((a, b) => {
-    if (a.order !== undefined && b.order !== undefined) {
-      return a.order - b.order
+  return config
+}
+
+function resolveArdoConfig(
+  root: string,
+  routesDir: string,
+  pressConfig: PressConfigOptions
+): ResolvedConfig {
+  const detectedProject = readProjectMeta(root)
+  const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
+  const configWithDefaults: ArdoConfig = {
+    title: pressConfig.title ?? "Ardo",
+    description: pressConfig.description ?? "Documentation powered by Ardo",
+  }
+
+  return resolveConfig(
+    {
+      ...configWithDefaults,
+      ...pressConfig,
+      project,
+      srcDir: routesDir,
+    },
+    root
+  )
+}
+
+function resolveVirtualModuleId(id: string): string | undefined {
+  if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID
+  if (id === VIRTUAL_SIDEBAR_ID) return RESOLVED_VIRTUAL_SIDEBAR_ID
+  if (id === VIRTUAL_SEARCH_ID) return RESOLVED_VIRTUAL_SEARCH_ID
+  return undefined
+}
+
+async function loadVirtualModule(id: string, state: PluginState): Promise<string | undefined> {
+  if (state.resolvedConfig == null) {
+    return undefined
+  }
+
+  if (id === RESOLVED_VIRTUAL_MODULE_ID) {
+    const clientConfig = {
+      title: state.resolvedConfig.title,
+      description: state.resolvedConfig.description,
+      base: state.resolvedConfig.base,
+      lang: state.resolvedConfig.lang,
+      project: state.resolvedConfig.project,
+      buildTime: new Date().toISOString(),
+      buildHash: detectGitHash(state.resolvedConfig.root),
     }
-    if (a.order !== undefined) return -1
-    if (b.order !== undefined) return 1
-    return a.text.localeCompare(b.text)
+    return `export default ${JSON.stringify(clientConfig)}`
+  }
+
+  if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
+    const sidebar = await generateSidebar(state.routesDir)
+    return `export default ${JSON.stringify(sidebar)}`
+  }
+
+  if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
+    const searchIndex = await generateSearchIndex(state.routesDir)
+    return `export default ${JSON.stringify(searchIndex)}`
+  }
+
+  return undefined
+}
+
+function transformMarkdownMeta(
+  code: string,
+  id: string,
+  state: PluginState
+): { code: string; map: null } | undefined {
+  if (!shouldInjectMeta(code, id, state)) {
+    return undefined
+  }
+
+  const pageTitle = extractFrontmatterValue(code, "title")
+  if (pageTitle == null || pageTitle === "") {
+    return undefined
+  }
+
+  const siteTitle = state.resolvedConfig?.title ?? "Ardo"
+  const titleSeparator = state.resolvedConfig?.titleSeparator ?? " | "
+  const description = extractFrontmatterValue(code, "description")
+  const entries = buildMetaEntries({
+    pageTitle,
+    siteTitle,
+    titleSeparator,
+    description,
   })
-
-  return items.map(({ order: _order, ...item }) => item)
+  return { code: `${code}\nexport const meta = () => [${entries.join(", ")}];\n`, map: null }
 }
 
-function formatTitle(name: string): string {
-  return name.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (c) => c.toUpperCase())
+function shouldInjectMeta(code: string, id: string, state: PluginState): boolean {
+  return isMarkdownFile(id) && id.startsWith(state.routesDir) && !hasMetaExport(code)
 }
 
-interface SearchDoc {
-  id: string
-  title: string
-  content: string
-  path: string
-  section?: string
+function buildMetaEntries(input: {
+  pageTitle: string
+  siteTitle: string
+  titleSeparator: string
+  description?: string
+}): string[] {
+  const fullTitle = `${input.pageTitle}${input.titleSeparator}${input.siteTitle}`
+  const entries = [`{ title: ${JSON.stringify(fullTitle)} }`]
+  if (input.description != null && input.description !== "") {
+    entries.push(`{ name: "description", content: ${JSON.stringify(input.description)} }`)
+  }
+
+  return entries
 }
 
-async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
-  const docs: SearchDoc[] = []
+function isMarkdownFile(id: string): boolean {
+  return id.endsWith(".md") || id.endsWith(".mdx")
+}
 
-  async function scanForSearch(dir: string, section?: string): Promise<void> {
-    try {
-      const entries = await fs.readdir(dir, { withFileTypes: true })
+function hasMetaExport(code: string): boolean {
+  return code.includes("export const meta") || code.includes("export function meta")
+}
 
-      for (const entry of entries) {
-        const fullPath = path.join(dir, entry.name)
+function extractFrontmatterValue(code: string, key: string): string | undefined {
+  const frontmatterStart = code.indexOf("export const frontmatter")
+  if (frontmatterStart === -1) {
+    return undefined
+  }
 
-        if (entry.isDirectory()) {
-          // Use directory name as section for nested content
-          const newSection = section
-            ? `${section} > ${formatTitle(entry.name)}`
-            : formatTitle(entry.name)
-          await scanForSearch(fullPath, newSection)
-        } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
-          const relativePath = path.relative(routesDir, fullPath)
-          const fileContent = await fs.readFile(fullPath, "utf8")
+  const valuePrefix = `${key}: "`
+  const valueStart = code.indexOf(valuePrefix, frontmatterStart)
+  if (valueStart === -1) {
+    return undefined
+  }
 
-          // Extract frontmatter
-          const { data: frontmatter, content: rawContent } = matter(fileContent)
-          const ext = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
-          const title = frontmatter.title || formatTitle(entry.name.replace(ext, ""))
-          let content = rawContent
+  const startIndex = valueStart + valuePrefix.length
+  const endIndex = code.indexOf('"', startIndex)
+  if (endIndex === -1) {
+    return undefined
+  }
 
-          // Clean up content: remove markdown/MDX syntax, keep text
-          content = content
-            .replaceAll(/```[\s\S]*?```/g, "") // Remove code blocks
-            .replaceAll(/`[^`]+`/g, "") // Remove inline code
-            .replaceAll(/import\s+(?:\S.*?)??from\s+["'].*?["']/g, "") // Remove imports
-            .replaceAll(/<[^>]+>/g, "") // Remove JSX tags
-            .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links to text
-            .replaceAll(/[#*>_~]/g, "") // Remove markdown symbols
-            .replaceAll(/\n+/g, " ") // Newlines to spaces
-            .replaceAll(/\s+/g, " ") // Multiple spaces to single
-            .trim()
-            .slice(0, 2000) // Limit content size
+  return code.slice(startIndex, endIndex)
+}
 
-          // Generate path for the route
-          const routePath =
-            entry.name === "index.mdx" || entry.name === "index.md"
-              ? `/${path.dirname(relativePath).replaceAll("\\", "/")}`
-              : `/${relativePath.replace(ext, "").replaceAll("\\", "/")}`
+function resolveTypedocConfig(typedoc: ArdoPluginOptions["typedoc"]): TypeDocConfig | undefined {
+  if (typedoc == null || typedoc === false) {
+    return undefined
+  }
 
-          // Skip root index (use "/" as path)
-          const finalPath = routePath === "/." ? "/" : routePath
+  const packageRoot = findPackageRoot(process.cwd())
+  const defaultEntryPoint = packageRoot != null ? `${packageRoot}/src/index.ts` : "./src/index.ts"
+  const defaultTsconfig = packageRoot != null ? `${packageRoot}/tsconfig.json` : "./tsconfig.json"
+  const defaults: TypeDocConfig = {
+    enabled: true,
+    entryPoints: [defaultEntryPoint],
+    tsconfig: defaultTsconfig,
+    out: "api-reference",
+    excludePrivate: true,
+    excludeInternal: true,
+  }
 
-          docs.push({
-            id: relativePath,
-            title,
-            content,
-            path: finalPath,
-            section,
-          })
+  return typedoc === true ? defaults : { ...defaults, ...typedoc }
+}
+
+function createTypeDocPlugin(typedocConfig: TypeDocConfig, state: PluginState): Plugin {
+  return {
+    name: "ardo:typedoc",
+    async buildStart() {
+      if (!typedocConfig.enabled || typedocGenerated) {
+        return
+      }
+
+      typedocGenerated = true
+      console.log("[ardo] Generating API documentation with TypeDoc...")
+      const startTime = Date.now()
+
+      try {
+        const docs = await generateApiDocs(typedocConfig, state.routesDir)
+        const duration = Date.now() - startTime
+        console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
+      } catch (error) {
+        console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
+        console.warn("[ardo] Check your typedoc.entryPoints configuration.")
+        if (error instanceof Error) {
+          console.warn(`[ardo] Error: ${error.message}`)
         }
       }
-    } catch (error) {
-      console.warn(
-        "[ardo] Failed to scan for search index:",
-        error instanceof Error ? error.message : error
-      )
-    }
+    },
   }
+}
 
-  await scanForSearch(routesDir)
-  return docs
+function resolveRoutesDir(root: string, routesDirOption: string | undefined): string {
+  return routesDirOption ?? path.join(root, "app", "routes")
 }
 
 export default ardoPlugin

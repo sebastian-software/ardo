@@ -25,7 +25,7 @@ export interface TypeDocConfig {
    * Include README in the API docs
    * @default false
    */
-  readme?: "none" | string
+  readme?: string
 
   /**
    * Plugin options passed to TypeDoc
@@ -56,7 +56,7 @@ export interface TypeDocConfig {
   excludeProtected?: boolean
 
   /**
-   * Exclude internal members (marked with @internal)
+   * Exclude internal members (marked with \@internal)
    * @default true
    */
   excludeInternal?: boolean

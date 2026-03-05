@@ -29,65 +29,20 @@ export interface TypeDocPluginOptions extends Partial<TypeDocConfig> {
 
 /**
  * Vite plugin for generating API documentation with TypeDoc.
- *
- * @example
- * ```ts
- * // Minimal config (uses ./src/index.ts as entry point)
- * typedocPlugin()
- *
- * // Custom entry point
- * typedocPlugin({ entryPoints: ['./lib/index.ts'] })
- *
- * // Full config
- * typedocPlugin({
- *   entryPoints: ['./src/index.ts'],
- *   out: 'api-reference',
- *   excludePrivate: true,
- * })
- * ```
  */
 export function typedocPlugin(options: TypeDocPluginOptions = {}): Plugin {
-  const {
-    contentDir = "./content",
-    runOnBuild,
-    runOnStart = true,
-    // TypeDoc config with defaults
-    enabled = true,
-    entryPoints = ["./src/index.ts"],
-    out = "api-reference",
-    excludePrivate = true,
-    excludeInternal = true,
-    ...restConfig
-  } = options
-
-  const config: TypeDocConfig = {
-    enabled,
-    entryPoints,
-    out,
-    excludePrivate,
-    excludeInternal,
-    ...restConfig,
-  }
+  const { contentDir = "./content", runOnBuild, runOnStart = true } = options
+  const typedocConfig = createTypedocConfig(options)
 
   let isBuilding = false
   let hasGenerated = false
-
-  async function generate() {
-    if (!config.enabled) return
-
-    console.log("[ardo] Generating API documentation with TypeDoc...")
-    const startTime = Date.now()
-
-    try {
-      const docs = await generateApiDocs(config, contentDir)
-      const duration = Date.now() - startTime
-      console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
+  const generate = createGenerator({
+    contentDir,
+    onGenerated: () => {
       hasGenerated = true
-    } catch (error) {
-      console.error("[ardo] TypeDoc generation failed:", error)
-      throw error
-    }
-  }
+    },
+    typedocConfig,
+  })
 
   return {
     name: "ardo:typedoc",
@@ -104,13 +59,12 @@ export function typedocPlugin(options: TypeDocPluginOptions = {}): Plugin {
       }
     },
 
-    configResolved(config) {
-      isBuilding = config.command === "build"
+    configResolved(resolvedConfig) {
+      isBuilding = resolvedConfig.command === "build"
     },
 
     async handleHotUpdate({ file }) {
-      // Regenerate on source file changes in watch mode
-      if (config.watch && config.entryPoints.some((ep) => file.includes(ep))) {
+      if (shouldRegenerateForFile(file, typedocConfig)) {
         await generate()
         return []
       }
@@ -118,25 +72,89 @@ export function typedocPlugin(options: TypeDocPluginOptions = {}): Plugin {
   }
 }
 
+function createTypedocConfig(options: TypeDocPluginOptions): TypeDocConfig {
+  const {
+    enabled = true,
+    entryPoints = ["./src/index.ts"],
+    out = "api-reference",
+    excludePrivate = true,
+    excludeInternal = true,
+    ...restConfig
+  } = options
+
+  return {
+    ...restConfig,
+    enabled,
+    entryPoints,
+    excludeInternal,
+    excludePrivate,
+    out,
+  }
+}
+
+function shouldRegenerateForFile(file: string, config: TypeDocConfig): boolean {
+  if (!config.watch) {
+    return false
+  }
+
+  return config.entryPoints.some((entryPoint) => file.includes(entryPoint))
+}
+
+function createGenerator(params: {
+  contentDir: string
+  onGenerated: () => void
+  typedocConfig: TypeDocConfig
+}): () => Promise<void> {
+  const { contentDir, onGenerated, typedocConfig } = params
+
+  return async () => {
+    if (!typedocConfig.enabled) {
+      return
+    }
+
+    console.log("[ardo] Generating API documentation with TypeDoc...")
+    const startTime = Date.now()
+
+    try {
+      const docs = await generateApiDocs(typedocConfig, contentDir)
+      const duration = Date.now() - startTime
+      console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
+      onGenerated()
+    } catch (error) {
+      console.error("[ardo] TypeDoc generation failed:", error)
+      throw error
+    }
+  }
+}
+
 export function createTypedocWatcher(
   config: TypeDocConfig,
   contentDir: string,
   onChange?: () => void
-): { start: () => Promise<void>; stop: () => void } {
+): { start: () => void; stop: () => void } {
   let watcher: FSWatcher | null = null
 
+  async function regenerateForChangedFile(filename: string): Promise<void> {
+    if (!isSupportedTypedocFile(filename)) {
+      return
+    }
+
+    console.log(`[ardo] Source file changed: ${filename}`)
+    await generateApiDocs(config, contentDir)
+    onChange?.()
+  }
+
   return {
-    async start() {
-      if (!config.watch || !config.entryPoints.length) return
+    start() {
+      if (!config.watch || config.entryPoints.length === 0) {
+        return
+      }
 
       const entryDir = path.dirname(config.entryPoints[0])
-
       try {
-        watcher = fsSync.watch(entryDir, { recursive: true }, async (event, filename) => {
-          if (filename?.endsWith(".ts") || filename?.endsWith(".tsx")) {
-            console.log(`[ardo] Source file changed: ${filename}`)
-            await generateApiDocs(config, contentDir)
-            onChange?.()
+        watcher = fsSync.watch(entryDir, { recursive: true }, (_event, filename) => {
+          if (filename != null) {
+            void regenerateForChangedFile(filename)
           }
         })
       } catch {
@@ -145,10 +163,14 @@ export function createTypedocWatcher(
     },
 
     stop() {
-      if (watcher) {
+      if (watcher != null) {
         watcher.close()
         watcher = null
       }
     },
   }
+}
+
+function isSupportedTypedocFile(filename: string): boolean {
+  return filename.endsWith(".ts") || filename.endsWith(".tsx")
 }
