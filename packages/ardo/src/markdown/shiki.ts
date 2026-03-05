@@ -194,7 +194,7 @@ function getTextContent(node: Element | Text): string {
 }
 
 function parseHighlightLines(meta: string): number[] {
-  const match = /{([\d,-]+)}/.exec(meta)
+  const match = /\{([\d,-]+)\}/.exec(meta)
   if (!match) return []
 
   const ranges = match[1].split(",")
@@ -356,7 +356,7 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
       if (title) {
         node.properties["data-title"] = title
       }
-      const labelMatch = /\[([^\]]+)]/.exec(metaRaw)
+      const labelMatch = /\[([^\]]+)\]/.exec(metaRaw)
       if (labelMatch) {
         node.properties["data-label"] = labelMatch[1]
       }

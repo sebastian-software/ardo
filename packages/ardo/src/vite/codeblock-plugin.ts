@@ -167,14 +167,14 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
 
         const codeMatch =
           /\bcode="((?:[^"\\]|\\.)*)"/s.exec(propsStr) ||
-          /\bcode={\s*"((?:[^"\\]|\\.)*)"\s*}/s.exec(propsStr) ||
-          /\bcode={\s*'((?:[^'\\]|\\.)*)'\s*}/s.exec(propsStr)
+          /\bcode=\{\s*"((?:[^"\\]|\\.)*)"\s*\}/s.exec(propsStr) ||
+          /\bcode=\{\s*'((?:[^'\\]|\\.)*)'\s*\}/s.exec(propsStr)
         if (!codeMatch) continue
 
         const langMatch =
           /\blanguage="([^"]*)"/.exec(propsStr) ||
-          /\blanguage={"([^"]*)"}/.exec(propsStr) ||
-          /\blanguage={'([^']*)'}/.exec(propsStr)
+          /\blanguage=\{"([^"]*)"\}/.exec(propsStr) ||
+          /\blanguage=\{'([^']*)'\}/.exec(propsStr)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
@@ -219,14 +219,14 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
 
         const langMatch =
           /\blanguage="([^"]*)"/.exec(propsStr) ||
-          /\blanguage={"([^"]*)"}/.exec(propsStr) ||
-          /\blanguage={'([^']*)'}/.exec(propsStr)
+          /\blanguage=\{"([^"]*)"\}/.exec(propsStr) ||
+          /\blanguage=\{'([^']*)'\}/.exec(propsStr)
         if (!langMatch) continue
 
         if (propsStr.includes("__html")) continue
 
         // Unwrap template literal braces if present: {`...`} → ...
-        const templateMatch = /^\s*{`([\S\s]*)`}\s*$/.exec(rawChildren)
+        const templateMatch = /^\s*\{`([\s\S]*)`\}\s*$/.exec(rawChildren)
         if (templateMatch) {
           rawChildren = templateMatch[1]
         }

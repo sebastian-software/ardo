@@ -605,11 +605,11 @@ async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
 
           // Clean up content: remove markdown/MDX syntax, keep text
           content = content
-            .replaceAll(/```[\S\s]*?```/g, "") // Remove code blocks
+            .replaceAll(/```[\s\S]*?```/g, "") // Remove code blocks
             .replaceAll(/`[^`]+`/g, "") // Remove inline code
             .replaceAll(/import\s+(?:\S.*?)??from\s+["'].*?["']/g, "") // Remove imports
             .replaceAll(/<[^>]+>/g, "") // Remove JSX tags
-            .replaceAll(/\[([^\]]+)]\([^)]+\)/g, "$1") // Links to text
+            .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Links to text
             .replaceAll(/[#*>_~]/g, "") // Remove markdown symbols
             .replaceAll(/\n+/g, " ") // Newlines to spaces
             .replaceAll(/\s+/g, " ") // Multiple spaces to single
