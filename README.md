@@ -35,6 +35,8 @@ Ardo fixes that. Write your docs with the same stack you already use: React 19, 
 
 **Type-safe routes that catch broken links at build time.** React Router 7 gives you typed route paths. A link to a page that doesn't exist? TypeScript catches it before your users do.
 
+**Tailwind CSS v4 out of the box.** Style your own components and pages with utility classes — zero config, zero setup. Tailwind is included in every project by default, ready to use from the first `pnpm dev`.
+
 **Builds that don't waste your time.** Vite 8 with Rolldown. Dev server starts in under a second. Production builds finish while you're still reaching for your coffee.
 
 ## Why Ardo?
@@ -89,10 +91,12 @@ pnpm add -D typescript vite
 ```typescript
 // vite.config.ts
 import { defineConfig } from "vite"
+import tailwindcss from "@tailwindcss/vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     ardo({
       title: "My Documentation",
       description: "Built with Ardo",

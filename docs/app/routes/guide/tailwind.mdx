@@ -1,0 +1,118 @@
+---
+title: Tailwind CSS
+description: Tailwind CSS v4 is included by default — style your components and pages with utility classes, zero setup required.
+order: 6
+---
+
+# Tailwind CSS
+
+Every Ardo project ships with [Tailwind CSS v4](https://tailwindcss.com/) ready to use. No install step, no config files, no decisions to make — just start writing classes.
+
+Ardo handles the framework styles internally with Vanilla Extract. Tailwind is there for _your_ content: custom landing pages, callout boxes, interactive examples, or anything else where you want fast, visual styling without leaving your MDX.
+
+## What's included
+
+The `create-ardo` scaffold sets up three things so you don't have to:
+
+1. **`@tailwindcss/vite`** plugin in `vite.config.ts` (before the `ardo()` plugin)
+2. **`tailwindcss`** as a devDependency
+3. **`app/app.css`** with Tailwind's theme and utility layers
+
+```css title="app/app.css"
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+```
+
+This file is imported in `app/root.tsx` before Ardo's own styles, so the CSS layer order is correct.
+
+## Examples
+
+### Callout box in MDX
+
+Drop this into any `.mdx` file — it works immediately:
+
+```html
+<div
+  className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950"
+>
+  <span className="text-xl">💡</span>
+  <div>
+    <p className="font-semibold text-blue-900 dark:text-blue-100">Good to know</p>
+    <p className="text-sm text-blue-700 dark:text-blue-300">
+      Tailwind classes work in MDX files, TSX components, and anywhere else in your Ardo project.
+    </p>
+  </div>
+</div>
+```
+
+### Custom hero section
+
+Build a landing page header without writing a single line of CSS:
+
+```tsx title="app/routes/home.tsx"
+export default function Home() {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+      <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+        My Project
+      </h1>
+      <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        A short description that tells visitors exactly what this is and why they should care.
+      </p>
+      <div className="flex gap-3">
+        <a
+          href="/guide/getting-started"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Get Started
+        </a>
+        <a
+          href="https://github.com/your/repo"
+          className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  )
+}
+```
+
+### Feature grid
+
+Showcase what your project offers:
+
+```tsx
+function FeatureCard({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="rounded-xl border border-gray-200 p-6 dark:border-gray-700">
+      <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">{title}</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+    </div>
+  )
+}
+
+export function Features() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <FeatureCard title="Fast" description="Built on Vite 8 with Rolldown" />
+      <FeatureCard title="Type-safe" description="Full TypeScript support" />
+      <FeatureCard title="Flexible" description="Your React components, natively" />
+    </div>
+  )
+}
+```
+
+## Why no Preflight?
+
+Ardo provides its own base styles for documentation content — typography, headings, links, lists, and code blocks. Tailwind's Preflight reset would conflict with these styles and break the default look.
+
+If you're building a heavily custom site where you control all styling, you can opt in to Preflight by adding one line to `app/app.css`:
+
+```css title="app/app.css"
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+```

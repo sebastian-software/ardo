@@ -44,7 +44,7 @@ pnpm init
 
 ```bash
 pnpm add ardo react react-dom react-router isbot
-pnpm add -D @react-router/dev typescript vite @types/react @types/react-dom
+pnpm add -D @react-router/dev @tailwindcss/vite tailwindcss typescript vite @types/react @types/react-dom
 ```
 
 ### 3. Create Vite configuration
@@ -53,10 +53,12 @@ The `ardo()` plugin handles build-time configuration. UI configuration (navigati
 
 ```ts
 import { defineConfig } from "vite"
+import tailwindcss from "@tailwindcss/vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     ardo({
       title: "My Documentation",
       description: "My awesome documentation site",
@@ -251,6 +253,7 @@ my-docs/
 Your site is running. Now make it yours:
 
 - Write richer content with [Markdown Features](/guide/markdown)
+- Style your pages with [Tailwind CSS](/guide/tailwind) — included by default, ready to use
 - Customize the look with [Theme Configuration](/guide/theme-config)
 - Style with type-safe tokens using [Vanilla Extract](/guide/custom-theme#vanilla-extract-tokens) — `.css.ts` files work out of the box
 - [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel
