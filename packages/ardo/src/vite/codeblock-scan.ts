@@ -169,7 +169,8 @@ function finalizeOpeningTag(source: string, afterTag: number, endBracketIndex: n
   }
 }
 
-type QuoteChar = "'" | '"' | "`"
+const QUOTE_CHARS = ["'", '"', "`"] as const
+type QuoteChar = (typeof QUOTE_CHARS)[number]
 
 interface OpeningTagScanStep {
   nextBraceDepth: number
@@ -287,7 +288,7 @@ function createScannedBlock(
 }
 
 function isQuote(char: string): char is QuoteChar {
-  return char === '"' || char === "'" || char === "`"
+  return QUOTE_CHARS.includes(char as QuoteChar)
 }
 
 function isWhitespaceChar(char: string | undefined): boolean {

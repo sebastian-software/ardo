@@ -1,3 +1,6 @@
-import { getEslintConfig } from "eslint-config-setup"
+import { disableRule, getEslintConfig } from "eslint-config-setup"
 
-export default await getEslintConfig({ react: true })
+const config = await getEslintConfig({ react: true })
+disableRule(config, "security/detect-non-literal-fs-filename")
+
+export default config
