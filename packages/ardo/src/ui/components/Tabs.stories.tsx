@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "./Tabs"
 
 const meta = {
-  title: "Content/Tabs",
   component: ArdoTabs,
   tags: ["autodocs"],
 } satisfies Meta<typeof ArdoTabs>

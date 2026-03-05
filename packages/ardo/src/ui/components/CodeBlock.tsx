@@ -3,13 +3,30 @@ import { Children, isValidElement, useState } from "react"
 import * as styles from "./CodeBlock.css"
 import { ArdoCopyButton } from "./CopyButton"
 
+const EMPTY_HIGHLIGHT_LINES: number[] = []
+
 /**
  * Strips leading/trailing blank lines and removes common leading whitespace
  * so that template literals in indented JSX render cleanly.
  */
 function outdent(text: string): string {
-  // Remove leading/trailing blank lines
-  const trimmed = text.replace(/^\n+/, "").replace(/\n\s*$/, "")
+  let start = 0
+  while (start < text.length && text[start] === "\n") {
+    start++
+  }
+
+  let end = text.length
+  while (
+    end > start &&
+    (text[end - 1] === "\n" ||
+      text[end - 1] === "\r" ||
+      text[end - 1] === "\t" ||
+      text[end - 1] === " ")
+  ) {
+    end--
+  }
+
+  const trimmed = text.slice(start, end)
   const lines = trimmed.split("\n")
 
   // Find minimum indentation (ignoring empty lines)
@@ -57,16 +74,18 @@ export function ArdoCodeBlock({
   language = "text",
   title,
   lineNumbers = false,
-  highlightLines = [],
+  highlightLines = EMPTY_HIGHLIGHT_LINES,
   children,
   __html,
 }: ArdoCodeBlockProps) {
   const code = codeProp ?? (typeof children === "string" ? outdent(children) : "")
   const hasCustomChildren = children != null && typeof children !== "string"
+  const hasHtml = (__html ?? "") !== ""
+  const hasTitle = (title ?? "") !== ""
   const lines = code.split("\n")
 
   let content: React.ReactNode
-  if (__html) {
+  if (hasHtml) {
     content = <div dangerouslySetInnerHTML={{ __html }} />
   } else if (hasCustomChildren) {
     content = <>{children}</>
@@ -81,7 +100,7 @@ export function ArdoCodeBlock({
             if (isHighlighted) classes.push("highlighted")
 
             return (
-              <span key={index} className={classes.join(" ")}>
+              <span key={`${lineNum}-${line}`} className={classes.join(" ")}>
                 {lineNumbers && <span className={styles.lineNumber}>{lineNum}</span>}
                 <span>{line}</span>
                 {index < lines.length - 1 && "\n"}
@@ -95,7 +114,7 @@ export function ArdoCodeBlock({
 
   return (
     <div className={styles.codeBlock} data-lang={language}>
-      {title && <div className={styles.codeTitle}>{title}</div>}
+      {hasTitle && <div className={styles.codeTitle}>{title}</div>}
       <div className={styles.codeWrapper}>
         {content}
         <ArdoCopyButton code={code} />
@@ -118,10 +137,11 @@ export interface ArdoCodeGroupProps {
  */
 export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProps) {
   const [activeTab, setActiveTab] = useState(0)
+  const hasLabels = (labelsStr ?? "") !== ""
 
   // Filter to only valid React elements (skip whitespace text nodes)
-  const childArray = Children.toArray(children).filter(isValidElement)
-  const labelArray = labelsStr ? labelsStr.split(",") : []
+  const childArray = Children.toArray(children).filter((child) => isValidElement(child))
+  const labelArray = hasLabels ? labelsStr.split(",") : []
   const tabs = childArray.map((child, index) => {
     if (labelArray[index]) return labelArray[index]
     const props = child.props as Record<string, unknown>
@@ -138,7 +158,8 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       <div className={styles.codeGroupTabs}>
         {tabs.map((tab, index) => (
           <button
-            key={index}
+            type="button"
+            key={tab}
             className={[styles.codeGroupTab, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
@@ -153,7 +174,7 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       <div className={styles.codeGroupPanels}>
         {childArray.map((child, index) => (
           <div
-            key={index}
+            key={tabAt(tabs, index)}
             className={[styles.codeGroupPanel, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
@@ -165,4 +186,8 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       </div>
     </div>
   )
+}
+
+function tabAt(tabs: string[], index: number): string {
+  return tabs[index]
 }

@@ -1,4 +1,12 @@
-import { lazy, type MouseEvent, type ReactNode, Suspense, useEffect, useState } from "react"
+import {
+  type KeyboardEvent,
+  lazy,
+  type MouseEvent,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useState,
+} from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
@@ -84,16 +92,19 @@ export function ArdoHeader({
 
   const resolvedLogo = logo
   const resolvedTitle = title ?? config.title
-
-  const hasMobileMenu = Boolean(mobileMenuContent)
+  const hasLogo = resolvedLogo !== undefined
+  const hasTitle = resolvedTitle !== ""
+  const hasNav = nav != null
+  const hasMobileMenu = mobileMenuContent != null
 
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  const handleMobileMenuClick = (event: MouseEvent<HTMLElement>) => {
-    const target = event.target as HTMLElement
-    if (target.closest("a")) {
+  const handleMobileMenuInteraction = (
+    event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>
+  ) => {
+    if (event.target instanceof HTMLElement && event.target.closest("a") !== null) {
       setMobileMenuOpen(false)
     }
   }
@@ -122,19 +133,19 @@ export function ArdoHeader({
           )}
 
           <Link to="/" className={styles.logoLink}>
-            {resolvedLogo && (
+            {hasLogo && (
               <img
                 src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
-                alt={resolvedTitle ?? "Logo"}
+                alt={resolvedTitle}
                 className={styles.logo}
               />
             )}
-            {resolvedTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
+            {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
           </Link>
         </div>
 
         {/* Center: Navigation */}
-        {nav && <div className={styles.desktopNav}>{nav}</div>}
+        {hasNav && <div className={styles.desktopNav}>{nav}</div>}
 
         {/* Right: Search, Theme Toggle, Actions */}
         <div className={styles.headerRight}>
@@ -148,7 +159,7 @@ export function ArdoHeader({
         </div>
       </div>
 
-      {nav && (
+      {hasNav && (
         <div className={styles.mobileTopNav}>
           <div>{nav}</div>
         </div>
@@ -157,14 +168,13 @@ export function ArdoHeader({
       {/* Mobile menu */}
       {mobileMenuOpen && hasMobileMenu && (
         <div className={styles.mobileMenu}>
-          {mobileMenuContent && (
-            <div
-              className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
-              onClick={handleMobileMenuClick}
-            >
-              {mobileMenuContent}
-            </div>
-          )}
+          <div
+            className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
+            onClick={handleMobileMenuInteraction}
+            onKeyDown={handleMobileMenuInteraction}
+          >
+            {mobileMenuContent}
+          </div>
         </div>
       )}
     </header>
@@ -221,7 +231,7 @@ const socialIcons = {
   npm: PackageIcon,
 } as const
 
-function SocialIcon({ icon }: { icon: string }) {
-  const IconComponent = socialIcons[icon as keyof typeof socialIcons] ?? GithubIcon
+function SocialIcon({ icon }: { icon: keyof typeof socialIcons }) {
+  const IconComponent = socialIcons[icon]
   return <IconComponent size={20} />
 }

@@ -76,16 +76,32 @@ export async function loadConfig(root: string): Promise<ResolvedConfig> {
   const configPath = path.resolve(root, "press.config.ts")
 
   try {
-    const configModule = await import(configPath)
-    const config = configModule.default as ArdoConfig
-    return resolveConfig(config, root)
+    const configModule: unknown = await import(configPath)
+    const config =
+      typeof configModule === "object" && configModule !== null && "default" in configModule
+        ? configModule.default
+        : undefined
+
+    if (isArdoConfig(config)) {
+      return resolveConfig(config, root)
+    }
   } catch {
-    return resolveConfig(
-      {
-        title: "Ardo",
-        description: "Documentation powered by Ardo",
-      },
-      root
-    )
+    // Fall through to default config
   }
+
+  return resolveConfig(
+    {
+      title: "Ardo",
+      description: "Documentation powered by Ardo",
+    },
+    root
+  )
+}
+
+function isArdoConfig(value: unknown): value is ArdoConfig {
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+
+  return "title" in value && typeof value.title === "string"
 }

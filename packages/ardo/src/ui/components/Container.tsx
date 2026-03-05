@@ -34,7 +34,7 @@ const icons: Record<ArdoContainerType, ReactNode> = {
  * A styled container for callouts, tips, warnings, etc.
  */
 export function ArdoContainer({ type, title, children }: ArdoContainerProps) {
-  const displayTitle = title || defaultTitles[type]
+  const displayTitle = title ?? defaultTitles[type]
 
   return (
     <div className={styles.container({ type })}>

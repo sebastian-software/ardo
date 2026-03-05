@@ -5,9 +5,11 @@ const __dirname = import.meta.dirname
 const templatesRoot = path.resolve(__dirname, "..", "templates")
 const packageJsonPath = path.resolve(__dirname, "..", "package.json")
 
+type JsonObject = Record<string, unknown>
+
 export function getCliVersion(): string {
-  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
-  return pkg.version
+  const pkg = readJsonObject(packageJsonPath)
+  return typeof pkg?.version === "string" ? pkg.version : "0.0.0"
 }
 
 export const templates = [
@@ -72,7 +74,16 @@ function copyDir(src: string, dest: string, vars: Record<string, string>) {
 }
 
 export function formatTargetDir(targetDir: string | undefined) {
-  return targetDir?.trim().replaceAll(/\/+$/g, "")
+  if (targetDir === undefined) {
+    return
+  }
+
+  let normalized = targetDir.trim()
+  while (normalized.endsWith("/")) {
+    normalized = normalized.slice(0, -1)
+  }
+
+  return normalized
 }
 
 export function isEmpty(dirPath: string) {
@@ -99,13 +110,13 @@ export function isValidTemplate(template: string) {
 export function detectProjectDescription(targetDir: string): string | undefined {
   for (const dir of [path.dirname(targetDir), targetDir]) {
     const pkgPath = path.join(dir, "package.json")
-    try {
-      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
-      if (pkg.description) {
-        return pkg.description
-      }
-    } catch {
-      // package.json doesn't exist or is invalid
+    const pkg = readJsonObject(pkgPath)
+    if (pkg === undefined) {
+      continue
+    }
+
+    if (typeof pkg.description === "string" && pkg.description !== "") {
+      return pkg.description
     }
   }
   return undefined
@@ -122,13 +133,14 @@ export interface UpgradeResult {
 }
 
 export function isArdoProject(dir: string): boolean {
-  try {
-    const pkgPath = path.join(dir, "package.json")
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
-    return Boolean(pkg.dependencies?.ardo)
-  } catch {
+  const pkgPath = path.join(dir, "package.json")
+  const pkg = readJsonObject(pkgPath)
+  if (pkg === undefined) {
     return false
   }
+
+  const dependencies = toStringRecord(pkg.dependencies)
+  return dependencies?.ardo !== undefined
 }
 
 export function upgradeProject(root: string): UpgradeResult {
@@ -159,31 +171,30 @@ export function upgradeProject(root: string): UpgradeResult {
   // 2. Merge package.json
   const userPkgPath = path.join(root, "package.json")
   const templatePkgPath = path.join(templateDir, "package.json")
-  const userPkg = JSON.parse(fs.readFileSync(userPkgPath, "utf8"))
-  const templatePkg = JSON.parse(fs.readFileSync(templatePkgPath, "utf8"))
+  const userPkg = readJsonObject(userPkgPath)
+  const templatePkg = readJsonObject(templatePkgPath)
+  if (userPkg === undefined || templatePkg === undefined) {
+    throw new Error("Could not parse package.json while upgrading project")
+  }
+  const userDependencies = ensureStringRecord(userPkg, "dependencies")
+  const userDevDependencies = ensureStringRecord(userPkg, "devDependencies")
+  const templateDependencies = toStringRecord(templatePkg.dependencies) ?? {}
+  const templateDevDependencies = toStringRecord(templatePkg.devDependencies) ?? {}
 
   // Always update ardo version
-  if (userPkg.dependencies) {
-    userPkg.dependencies.ardo = `^${cliVersion}`
-  }
+  userDependencies.ardo = `^${cliVersion}`
 
   // Add missing dependencies from template (don't overwrite user-pinned versions)
-  for (const [dep, version] of Object.entries(
-    (templatePkg.dependencies || {}) as Record<string, string>
-  )) {
+  for (const [dep, version] of Object.entries(templateDependencies)) {
     if (dep === "ardo") continue
-    if (!userPkg.dependencies?.[dep]) {
-      userPkg.dependencies = userPkg.dependencies || {}
-      userPkg.dependencies[dep] = version
+    if (!(dep in userDependencies)) {
+      userDependencies[dep] = version
     }
   }
 
   // Update pinned devDependencies from template (framework-controlled versions)
-  for (const [dep, version] of Object.entries(
-    (templatePkg.devDependencies || {}) as Record<string, string>
-  )) {
-    userPkg.devDependencies = userPkg.devDependencies || {}
-    userPkg.devDependencies[dep] = version
+  for (const [dep, version] of Object.entries(templateDevDependencies)) {
+    userDevDependencies[dep] = version
   }
 
   fs.writeFileSync(userPkgPath, `${JSON.stringify(userPkg, null, 2)}\n`)
@@ -196,6 +207,48 @@ export function upgradeProject(root: string): UpgradeResult {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)
       result.deleted.push(file)
+    }
+  }
+
+  return result
+}
+
+function ensureStringRecord(object: JsonObject, key: string): Record<string, string> {
+  const existing = toStringRecord(object[key])
+  if (existing !== undefined) {
+    object[key] = existing
+    return existing
+  }
+
+  const created: Record<string, string> = {}
+  object[key] = created
+  return created
+}
+
+function readJsonObject(filePath: string): JsonObject | undefined {
+  try {
+    const raw = fs.readFileSync(filePath, "utf8")
+    const parsed: unknown = JSON.parse(raw)
+    return isJsonObject(parsed) ? parsed : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function isJsonObject(value: unknown): value is JsonObject {
+  return typeof value === "object" && value !== null
+}
+
+function toStringRecord(value: unknown): Record<string, string> | undefined {
+  if (!isJsonObject(value)) {
+    return undefined
+  }
+
+  const entries = Object.entries(value)
+  const result: Record<string, string> = {}
+  for (const [key, entryValue] of entries) {
+    if (typeof entryValue === "string") {
+      result[key] = entryValue
     }
   }
 

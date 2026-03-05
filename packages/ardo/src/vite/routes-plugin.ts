@@ -137,7 +137,7 @@ ${entries.join("\n")}
 
     // Ensure app directory exists
     fsSync.mkdirSync(appDir, { recursive: true })
-    fsSync.writeFileSync(routesFilePath, content, "utf-8")
+    fsSync.writeFileSync(routesFilePath, content, "utf8")
     console.log(`[ardo] Generated routes.ts with ${routes.length} routes`)
   }
 
@@ -163,7 +163,7 @@ ${entries.join("\n")}
 
     // Ensure app directory exists
     await fs.mkdir(appDir, { recursive: true })
-    await fs.writeFile(routesFilePath, content, "utf-8")
+    await fs.writeFile(routesFilePath, content, "utf8")
   }
 
   return {
@@ -171,9 +171,9 @@ ${entries.join("\n")}
     enforce: "pre",
 
     config(userConfig) {
-      const root = userConfig.root || process.cwd()
+      const root = userConfig.root ?? process.cwd()
       appDir = path.join(root, "app")
-      routesDir = options.routesDir || path.join(appDir, "routes")
+      routesDir = options.routesDir ?? path.join(appDir, "routes")
       routesFilePath = path.join(appDir, "routes.ts")
 
       // Generate routes synchronously during config phase
@@ -186,12 +186,10 @@ ${entries.join("\n")}
     },
 
     configResolved(config) {
-      // Update paths if not set in config
-      if (!appDir) {
-        appDir = path.join(config.root, "app")
-        routesDir = options.routesDir || path.join(appDir, "routes")
-        routesFilePath = path.join(appDir, "routes.ts")
-      }
+      // Ensure paths stay aligned with final resolved root
+      appDir = path.join(config.root, "app")
+      routesDir = options.routesDir ?? path.join(appDir, "routes")
+      routesFilePath = path.join(appDir, "routes.ts")
     },
 
     async buildStart() {
@@ -214,8 +212,12 @@ ${entries.join("\n")}
         }
       }
 
-      server.watcher.on("add", handleChange)
-      server.watcher.on("unlink", handleChange)
+      server.watcher.on("add", (changedPath) => {
+        void handleChange(changedPath)
+      })
+      server.watcher.on("unlink", (changedPath) => {
+        void handleChange(changedPath)
+      })
     },
   }
 }

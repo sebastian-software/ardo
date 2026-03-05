@@ -50,14 +50,18 @@ export function ArdoFeatureCard({
   linkText,
   className,
 }: ArdoFeatureCardProps) {
+  const hasIcon = icon != null
+  const hasLink = (link ?? "") !== ""
+  const resolvedLinkText = linkText ?? "Learn more"
+
   return (
     <div className={className ?? styles.feature}>
-      {icon && <div className={styles.featureIcon}>{icon}</div>}
+      {hasIcon && <div className={styles.featureIcon}>{icon}</div>}
       <h3 className={styles.featureTitle}>{title}</h3>
       <p className={styles.featureDetails}>{children}</p>
-      {link && (
-        <Link to={link} className={styles.featureLink}>
-          {linkText || "Learn more"}
+      {hasLink && (
+        <Link to={link ?? ""} className={styles.featureLink}>
+          {resolvedLinkText}
         </Link>
       )}
     </div>
@@ -76,12 +80,16 @@ export function ArdoFeatureCard({
  * ```
  */
 export function ArdoFeatures({ children, title, subtitle, className }: ArdoFeaturesProps) {
+  const hasTitle = (title ?? "") !== ""
+  const hasSubtitle = (subtitle ?? "") !== ""
+  const hasHeader = hasTitle || hasSubtitle
+
   return (
     <section className={className ?? styles.features}>
-      {(title || subtitle) && (
+      {hasHeader && (
         <div className={styles.featuresHeader}>
-          {title && <h2 className={styles.featuresTitle}>{title}</h2>}
-          {subtitle && <p className={styles.featuresSubtitle}>{subtitle}</p>}
+          {hasTitle && <h2 className={styles.featuresTitle}>{title}</h2>}
+          {hasSubtitle && <p className={styles.featuresSubtitle}>{subtitle}</p>}
         </div>
       )}
       <div className={styles.featuresContainer}>{children}</div>

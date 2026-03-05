@@ -32,48 +32,58 @@ export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
 
   const resolvedEditLink = editLink ?? siteConfig.editLink
   const resolvedLastUpdated = lastUpdated ?? siteConfig.lastUpdated
+  const editPattern = resolvedEditLink?.pattern ?? ""
+  const hasEditPattern = editPattern !== ""
+  const pageRelativePath = pageData?.relativePath ?? ""
+  const hasPageData = pageData !== undefined
+  const showEditLink = pageData?.frontmatter.editLink !== false && hasEditPattern && hasPageData
 
-  const showEditLink = pageData?.frontmatter.editLink !== false && resolvedEditLink?.pattern
-
+  const lastUpdatedValue = pageData?.lastUpdated
+  const hasLastUpdatedValue = typeof lastUpdatedValue === "number"
+  const lastUpdatedEnabled = resolvedLastUpdated?.enabled === true
   const showLastUpdated =
-    pageData?.frontmatter.lastUpdated !== false &&
-    resolvedLastUpdated?.enabled &&
-    pageData?.lastUpdated
+    pageData?.frontmatter.lastUpdated !== false && lastUpdatedEnabled && hasLastUpdatedValue
 
-  const editHref = showEditLink
-    ? resolvedEditLink.pattern.replace(":path", pageData?.relativePath || "")
-    : null
-
+  const lastUpdatedFormatOptions = resolvedLastUpdated?.formatOptions ?? {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }
+  const lastUpdatedLabel = resolvedLastUpdated?.text ?? "Last updated"
+  const editHref = showEditLink ? editPattern.replace(":path", pageRelativePath) : undefined
   const lastUpdatedText = showLastUpdated
-    ? new Date(pageData.lastUpdated!).toLocaleDateString(
-        undefined,
-        resolvedLastUpdated?.formatOptions ?? {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }
-      )
-    : null
+    ? new Date(lastUpdatedValue).toLocaleDateString(undefined, lastUpdatedFormatOptions)
+    : undefined
+  const pageTitle = pageData?.frontmatter.title ?? ""
+  const pageDescription = pageData?.frontmatter.description ?? ""
+  const hasPageTitle = pageTitle !== ""
+  const hasPageDescription = pageDescription !== ""
+  const showMeta = showEditLink || showLastUpdated
+  const prevLink = prev?.link ?? ""
+  const nextLink = next?.link ?? ""
+  const prevText = prev?.text ?? ""
+  const nextText = next?.text ?? ""
+  const hasPrev = prev !== undefined && prevLink !== ""
+  const hasNext = next !== undefined && nextLink !== ""
+  const showPrevNext = hasPrev || hasNext
 
   return (
     <article className={docStyles.contentContainer}>
-      {pageData?.frontmatter.title && (
+      {hasPageTitle && (
         <header className={docStyles.contentHeader}>
-          <h1 className={docStyles.contentTitle}>{pageData.frontmatter.title}</h1>
-          {pageData.frontmatter.description && (
-            <p className={docStyles.contentDescription}>{pageData.frontmatter.description}</p>
-          )}
+          <h1 className={docStyles.contentTitle}>{pageTitle}</h1>
+          {hasPageDescription && <p className={docStyles.contentDescription}>{pageDescription}</p>}
         </header>
       )}
 
       <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
 
       <footer className={footerStyles.contentFooter}>
-        {(showEditLink || showLastUpdated) && (
+        {showMeta && (
           <div className={footerStyles.contentMeta}>
             {showEditLink && (
               <a
-                href={editHref!}
+                href={editHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={footerStyles.editLink}
@@ -83,26 +93,26 @@ export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
             )}
             {showLastUpdated && (
               <span>
-                {resolvedLastUpdated?.text ?? "Last updated"}: {lastUpdatedText}
+                {lastUpdatedLabel}: {lastUpdatedText}
               </span>
             )}
           </div>
         )}
 
-        {(prev || next) && (
+        {showPrevNext && (
           <nav className={footerStyles.prevNext} aria-label="Page navigation">
-            {prev ? (
-              <Link to={prev.link!} className={footerStyles.prevLink}>
+            {hasPrev ? (
+              <Link to={prevLink} className={footerStyles.prevLink}>
                 <span className={footerStyles.prevNextLabel}>Previous</span>
-                <span className={footerStyles.prevNextTitle}>{prev.text}</span>
+                <span className={footerStyles.prevNextTitle}>{prevText}</span>
               </Link>
             ) : (
               <div />
             )}
-            {next ? (
-              <Link to={next.link!} className={footerStyles.nextLink}>
+            {hasNext ? (
+              <Link to={nextLink} className={footerStyles.nextLink}>
                 <span className={footerStyles.prevNextLabel}>Next</span>
-                <span className={footerStyles.prevNextTitle}>{next.text}</span>
+                <span className={footerStyles.prevNextTitle}>{nextText}</span>
               </Link>
             ) : (
               <div />

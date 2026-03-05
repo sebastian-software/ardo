@@ -22,19 +22,35 @@ const onCancel = () => {
   throw new Error(`${red("✖")} Operation cancelled`)
 }
 
+interface ProjectNamePromptResponse {
+  projectName: string
+}
+
+interface UpgradePromptResponse {
+  action: "cancel" | "upgrade"
+}
+
+interface NewProjectPromptResponse {
+  overwrite?: "ignore" | "no" | "yes"
+  template?: string
+  siteTitle: string
+  docType: "general" | "library"
+  githubPages?: boolean
+}
+
 async function main() {
   console.log()
   console.log(`  ${cyan("◆")} ${green("create-ardo")}`)
   console.log()
 
-  const argTargetDir = process.argv[2]
-  const argTemplate = process.argv[3]
+  const argTargetDir = process.argv.length > 2 ? process.argv[2] : undefined
+  const argTemplate = process.argv.length > 3 ? process.argv[3] : undefined
 
-  let targetDir = argTargetDir || defaultTargetDir
+  let targetDir = argTargetDir ?? defaultTargetDir
 
   // Step 1: Get project name (if not provided as CLI arg)
-  if (!argTargetDir) {
-    const { projectName } = await prompts(
+  if (argTargetDir === undefined) {
+    const { projectName } = await prompts<ProjectNamePromptResponse>(
       {
         type: "text",
         name: "projectName",
@@ -51,7 +67,8 @@ async function main() {
       },
       { onCancel }
     )
-    targetDir = formatTargetDir(projectName) || defaultTargetDir
+    const resolvedProjectName = typeof projectName === "string" ? projectName : defaultTargetDir
+    targetDir = formatTargetDir(resolvedProjectName) ?? defaultTargetDir
   }
 
   const root = path.join(process.cwd(), targetDir)
@@ -59,7 +76,7 @@ async function main() {
   // Step 2: Check for existing Ardo project → upgrade flow
   if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
     const cliVersion = getCliVersion()
-    const { action } = await prompts(
+    const { action } = await prompts<UpgradePromptResponse>(
       {
         type: "select",
         name: "action",
@@ -101,9 +118,9 @@ async function main() {
   }
 
   // Step 3: New project flow
-  let template = argTemplate
+  let template: string | undefined = argTemplate
 
-  const response = await prompts(
+  const response = (await prompts(
     [
       {
         type: () => (!fs.existsSync(root) || isEmpty(root) ? null : "select"),
@@ -117,8 +134,8 @@ async function main() {
         ],
       },
       {
-        type: (_, { overwrite }: { overwrite?: string }) => {
-          if (overwrite === "no") {
+        type: (_, { overwrite: overwriteChoice }: { overwrite?: string }) => {
+          if (overwriteChoice === "no") {
             throw new Error(`${red("✖")} Operation cancelled`)
           }
           return null
@@ -126,7 +143,7 @@ async function main() {
         name: "overwriteChecker",
       },
       {
-        type: argTemplate && isValidTemplate(argTemplate) ? null : "select",
+        type: argTemplate !== undefined && isValidTemplate(argTemplate) ? null : "select",
         name: "template",
         message: reset("Select a template:"),
         choices: templates.map((t) => ({
@@ -172,11 +189,11 @@ async function main() {
       },
     ],
     { onCancel }
-  )
+  )) as NewProjectPromptResponse
 
   const { overwrite, template: templateChoice, siteTitle, docType, githubPages } = response
 
-  template = templateChoice || template || "minimal"
+  template = templateChoice ?? template ?? "minimal"
 
   if (overwrite === "yes") {
     emptyDir(root)
@@ -189,7 +206,7 @@ async function main() {
   console.log()
 
   // Create project structure
-  const description = detectProjectDescription(root) || "Built with Ardo"
+  const description = detectProjectDescription(root) ?? "Built with Ardo"
   createProjectStructure(root, template, {
     siteTitle,
     projectName: targetDir,
@@ -208,7 +225,10 @@ async function main() {
   console.log()
 }
 
-main().catch((error) => {
-  console.error(error.message)
+try {
+  await main()
+} catch (error: unknown) {
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  console.error(errorMessage)
   process.exit(1)
-})
+}

@@ -30,7 +30,7 @@ export function ArdoThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className={styles.themeToggle} aria-label="Toggle theme">
+      <button type="button" className={styles.themeToggle} aria-label="Toggle theme">
         <span className={styles.themeIcon}>
           <SunIcon size={20} />
         </span>
@@ -40,6 +40,7 @@ export function ArdoThemeToggle() {
 
   return (
     <button
+      type="button"
       className={styles.themeToggle}
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`}

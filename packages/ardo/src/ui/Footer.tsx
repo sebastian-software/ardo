@@ -91,15 +91,23 @@ export function ArdoFooter({
   const resolvedMessage = message
   const resolvedCopyright = copyright
   const resolvedSponsor = sponsor
+  const projectName = resolvedProject?.name ?? ""
+  const projectVersion = resolvedProject?.version ?? ""
+  const projectHomepage = resolvedProject?.homepage ?? ""
+  const sponsorText = resolvedSponsor?.text ?? ""
+  const sponsorLink = resolvedSponsor?.link ?? ""
+  const hasProjectName = projectName !== ""
+  const hasProjectHomepage = projectHomepage !== ""
+  const hasSponsor = sponsorText !== "" && sponsorLink !== ""
+  const hasMessage = (resolvedMessage ?? "") !== ""
+  const hasCopyright = (resolvedCopyright ?? "") !== ""
+  const hasBuildTime = (resolvedBuildTime ?? "") !== ""
+  const hasBuildHash = (resolvedBuildHash ?? "") !== ""
+  const hasCustomChildren = children != null
+  const hasPrimaryLine = hasProjectName || ardoLink || hasSponsor
 
   const hasContent =
-    resolvedMessage ||
-    resolvedCopyright ||
-    children ||
-    resolvedProject ||
-    resolvedSponsor ||
-    resolvedBuildTime ||
-    ardoLink
+    hasMessage || hasCopyright || hasCustomChildren || hasPrimaryLine || hasBuildTime || ardoLink
 
   if (!hasContent) {
     return null
@@ -111,24 +119,24 @@ export function ArdoFooter({
         {children ?? (
           <>
             {/* Primary line: project · ardo · sponsor */}
-            {(resolvedProject || ardoLink || resolvedSponsor) && (
+            {hasPrimaryLine && (
               <p className={styles.footerPrimary}>
-                {resolvedProject?.name && (
+                {hasProjectName && (
                   <>
-                    {resolvedProject.homepage ? (
-                      <a href={resolvedProject.homepage} className={styles.footerLink}>
-                        {resolvedProject.name}
-                        {resolvedProject.version ? ` v${resolvedProject.version}` : ""}
+                    {hasProjectHomepage ? (
+                      <a href={projectHomepage} className={styles.footerLink}>
+                        {projectName}
+                        {projectVersion !== "" ? ` v${projectVersion}` : ""}
                       </a>
                     ) : (
                       <span>
-                        {resolvedProject.name}
-                        {resolvedProject.version ? ` v${resolvedProject.version}` : ""}
+                        {projectName}
+                        {projectVersion !== "" ? ` v${projectVersion}` : ""}
                       </span>
                     )}
                   </>
                 )}
-                {resolvedProject?.name && ardoLink && (
+                {hasProjectName && ardoLink && (
                   <span className={styles.footerSeparator} aria-hidden="true" />
                 )}
                 {ardoLink && (
@@ -136,34 +144,34 @@ export function ArdoFooter({
                     Built with Ardo
                   </a>
                 )}
-                {(resolvedProject?.name || ardoLink) && resolvedSponsor && (
+                {(hasProjectName || ardoLink) && hasSponsor && (
                   <span className={styles.footerSeparator} aria-hidden="true" />
                 )}
-                {resolvedSponsor && (
-                  <a href={resolvedSponsor.link} className={styles.footerLink}>
-                    Sponsored by {resolvedSponsor.text}
+                {hasSponsor && (
+                  <a href={sponsorLink} className={styles.footerLink}>
+                    Sponsored by {sponsorText}
                   </a>
                 )}
               </p>
             )}
             {/* Secondary line: message / copyright */}
-            {resolvedMessage && (
+            {hasMessage && (
               <p
                 className={styles.footerMessage}
-                dangerouslySetInnerHTML={{ __html: resolvedMessage }}
+                dangerouslySetInnerHTML={{ __html: resolvedMessage ?? "" }}
               />
             )}
-            {resolvedCopyright && (
+            {hasCopyright && (
               <p
                 className={styles.footerCopyright}
-                dangerouslySetInnerHTML={{ __html: resolvedCopyright }}
+                dangerouslySetInnerHTML={{ __html: resolvedCopyright ?? "" }}
               />
             )}
             {/* Tertiary line: build timestamp */}
-            {resolvedBuildTime && (
+            {hasBuildTime && (
               <p className={styles.footerBuildTime}>
-                Built on {formatBuildTime(resolvedBuildTime)}
-                {resolvedBuildHash && <> ({resolvedBuildHash})</>}
+                Built on {formatBuildTime(resolvedBuildTime ?? "")}
+                {hasBuildHash && <> ({resolvedBuildHash ?? ""})</>}
               </p>
             )}
           </>

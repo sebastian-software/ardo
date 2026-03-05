@@ -5,6 +5,7 @@ import {
   isValidElement,
   type ReactNode,
   use,
+  useMemo,
   useState,
 } from "react"
 import { NavLink, useLocation } from "react-router"
@@ -83,15 +84,18 @@ export interface ArdoSidebarProps {
 export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
   const contextSidebar = useArdoSidebar()
-  const resolvedItems = items ?? (children ? undefined : contextSidebar)
+  const hasCustomChildren = children != null
+  const resolvedItems = items ?? (hasCustomChildren ? undefined : contextSidebar)
+  const hasResolvedItems = (resolvedItems?.length ?? 0) > 0
+  const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
   return (
-    <SidebarContext value={{ currentPath: pathname }}>
+    <SidebarContext value={contextValue}>
       <aside className={className ?? styles.sidebar}>
         <nav aria-label="Main navigation">
-          {children ? (
+          {hasCustomChildren ? (
             <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
-          ) : resolvedItems?.length ? (
+          ) : hasResolvedItems ? (
             <SidebarItems items={resolvedItems} depth={0} />
           ) : null}
         </nav>
@@ -156,13 +160,15 @@ export function ArdoSidebarGroup({
     .join(" ")
 
   const hasChildren = Children.count(children) > 0
+  const hasTo = (to ?? "") !== ""
+  const canToggle = collapsible && hasChildren
 
   return (
     <li className={className ?? styles.sidebarItem}>
       <div className={styles.sidebarItemHeader}>
-        {to ? (
+        {hasTo ? (
           <NavLink
-            to={to}
+            to={to ?? "/"}
             end
             className={({ isActive }) =>
               [textClassName, isActive && "active"].filter(Boolean).join(" ")
@@ -171,17 +177,23 @@ export function ArdoSidebarGroup({
             {title}
           </NavLink>
         ) : (
-          <span
+          <button
+            type="button"
             className={textClassName}
-            onClick={() => collapsible && hasChildren && setCollapsed(!collapsed)}
-            style={collapsible && hasChildren ? { cursor: "pointer" } : undefined}
+            onClick={() => {
+              if (canToggle) {
+                setCollapsed(!collapsed)
+              }
+            }}
+            style={canToggle ? { cursor: "pointer" } : undefined}
           >
             {title}
-          </span>
+          </button>
         )}
 
-        {collapsible && hasChildren && (
+        {canToggle && (
           <button
+            type="button"
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => {
               setCollapsed(!collapsed)
@@ -251,8 +263,12 @@ function SidebarItems({ items, depth }: SidebarItemsProps) {
     <ul
       className={`${styles.sidebarList} ${depth === 0 ? styles.sidebarList0 : styles.sidebarList1}`}
     >
-      {items.map((item, index) => (
-        <SidebarItemComponent key={index} item={item} depth={depth} />
+      {items.map((item) => (
+        <SidebarItemComponent
+          key={item.link ?? `${item.text}-${String(depth)}`}
+          item={item}
+          depth={depth}
+        />
       ))}
     </ul>
   )
@@ -266,16 +282,18 @@ interface SidebarItemComponentProps {
 function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
   const { currentPath } = useSidebarContext()
   const [collapsed, setCollapsed] = useState(item.collapsed ?? false)
+  const childItems = item.items ?? []
 
-  const hasChildren = item.items && item.items.length > 0
+  const hasChildren = childItems.length > 0
 
   const isChildActive =
     hasChildren &&
-    item.items!.some(
+    childItems.some(
       (child) =>
         child.link === currentPath ||
         child.items?.some((grandchild) => grandchild.link === currentPath)
     )
+  const hasItemLink = (item.link ?? "") !== ""
 
   const linkClassName = [styles.sidebarLink, isChildActive && "child-active"]
     .filter(Boolean)
@@ -288,9 +306,9 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
   return (
     <li className={styles.sidebarItem}>
       <div className={styles.sidebarItemHeader}>
-        {item.link ? (
+        {hasItemLink ? (
           <NavLink
-            to={item.link}
+            to={item.link ?? "/"}
             className={({ isActive }) =>
               [linkClassName, isActive && "active"].filter(Boolean).join(" ")
             }
@@ -298,13 +316,22 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
             {item.text}
           </NavLink>
         ) : (
-          <span className={textClassName} onClick={() => hasChildren && setCollapsed(!collapsed)}>
+          <button
+            type="button"
+            className={textClassName}
+            onClick={() => {
+              if (hasChildren) {
+                setCollapsed(!collapsed)
+              }
+            }}
+          >
             {item.text}
-          </span>
+          </button>
         )}
 
         {hasChildren && (
           <button
+            type="button"
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => {
               setCollapsed(!collapsed)
@@ -316,7 +343,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         )}
       </div>
 
-      {hasChildren && !collapsed && <SidebarItems items={item.items!} depth={depth + 1} />}
+      {hasChildren && !collapsed && <SidebarItems items={childItems} depth={depth + 1} />}
     </li>
   )
 }
@@ -348,7 +375,8 @@ function checkChildrenActive(children: ReactNode, currentPath: string): boolean 
           isActive = true
           return
         }
-        if (groupProps.children && checkChildrenActive(groupProps.children, currentPath)) {
+        const hasGroupChildren = groupProps.children != null
+        if (hasGroupChildren && checkChildrenActive(groupProps.children, currentPath)) {
           isActive = true
         }
       }

@@ -39,10 +39,18 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
       }
     )
 
-    headingElements.forEach((el) => el && observer.observe(el))
+    headingElements.forEach((element) => {
+      if (element !== null) {
+        observer.observe(element)
+      }
+    })
 
     return () => {
-      headingElements.forEach((el) => el && observer.unobserve(el))
+      headingElements.forEach((element) => {
+        if (element !== null) {
+          observer.unobserve(element)
+        }
+      })
     }
   }, [toc])
 

@@ -1,4 +1,4 @@
-import MiniSearch, { type SearchResult } from "minisearch"
+import MiniSearch from "minisearch"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
@@ -14,6 +14,13 @@ interface SearchDoc {
   section?: string
 }
 
+interface SearchMatch {
+  id: string
+  title: string
+  path: string
+  section?: string
+}
+
 export interface ArdoSearchProps {
   /** Placeholder text for the search input (default: "Search...") */
   placeholder?: string
@@ -23,14 +30,14 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<SearchResult[]>([])
+  const [results, setResults] = useState<SearchMatch[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const hasQuery = query.trim().length > 0
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault()
         inputRef.current?.focus()
@@ -42,17 +49,11 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
       }
     }
 
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("keydown", handleGlobalKeyDown)
     return () => {
-      document.removeEventListener("keydown", handleKeyDown)
+      document.removeEventListener("keydown", handleGlobalKeyDown)
     }
   }, [])
-
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [isOpen])
 
   useEffect(() => {
     if (!isOpen) {
@@ -99,7 +100,24 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
     }
 
     const searchResults = searchIndex.search(searchQuery).slice(0, 10)
-    setResults(searchResults)
+    const normalizedResults = searchResults.flatMap((result): SearchMatch[] => {
+      const path = typeof result.path === "string" ? result.path : undefined
+      const title = typeof result.title === "string" ? result.title : undefined
+      if (path === undefined || title === undefined) {
+        return []
+      }
+
+      return [
+        {
+          id: String(result.id),
+          title,
+          path,
+          section: typeof result.section === "string" ? result.section : undefined,
+        },
+      ]
+    })
+
+    setResults(normalizedResults)
     setSelectedIndex(0)
     setIsOpen(true)
   }
@@ -111,11 +129,13 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
     } else if (e.key === "ArrowUp" && results.length > 0) {
       e.preventDefault()
       setSelectedIndex((prev) => Math.max(prev - 1, 0))
-    } else if (e.key === "Enter" && results[selectedIndex]) {
+    } else if (e.key === "Enter" && selectedIndex < results.length) {
       e.preventDefault()
-      const result = results[selectedIndex]
-      navigate(result.path as string)
-      setIsOpen(false)
+      const selectedPath = results[selectedIndex]?.path
+      if (typeof selectedPath === "string") {
+        void navigate(selectedPath)
+        setIsOpen(false)
+      }
     } else if (e.key === "Escape") {
       setIsOpen(false)
       inputRef.current?.blur()
@@ -127,7 +147,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
       className={styles.search}
       ref={containerRef}
       data-expanded={isOpen || hasQuery ? "true" : "false"}
-      onClick={() => inputRef.current?.focus()}
+      onMouseDown={() => inputRef.current?.focus()}
     >
       <div className={styles.searchField}>
         <SearchIcon size={18} />
@@ -146,7 +166,6 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
               setIsOpen(true)
             }
           }}
-          aria-expanded={isOpen}
           aria-label="Search"
         />
         {query && (
@@ -176,7 +195,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
               {results.map((result, index) => (
                 <li key={result.id}>
                   <Link
-                    to={result.path as string}
+                    to={result.path}
                     className={[styles.searchResult, index === selectedIndex && "selected"]
                       .filter(Boolean)
                       .join(" ")}
@@ -184,9 +203,9 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
                       setIsOpen(false)
                     }}
                   >
-                    <span className={styles.searchResultTitle}>{result.title as string}</span>
-                    {result.section && (
-                      <span className={styles.searchResultSection}>{result.section as string}</span>
+                    <span className={styles.searchResultTitle}>{result.title}</span>
+                    {result.section !== undefined && (
+                      <span className={styles.searchResultSection}>{result.section}</span>
                     )}
                   </Link>
                 </li>
@@ -194,7 +213,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
             </ul>
           )}
 
-          {query && results.length === 0 && (
+          {results.length === 0 && (
             <div className={styles.searchNoResults}>No results found for "{query}"</div>
           )}
 

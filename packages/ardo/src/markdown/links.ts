@@ -23,17 +23,21 @@ export function rehypeLinks(options: RehypeLinkOptions) {
     }
 
     visit(tree, "element", (node: Element) => {
-      if (node.tagName === "a") {
-        const href = node.properties?.href
+      if (node.tagName !== "a") {
+        return
+      }
 
-        if (typeof href === "string") {
-          // Only rewrite internal links that start with /
-          // Don't rewrite: external URLs, anchors, relative paths, or already prefixed paths
-          if (href.startsWith("/") && !href.startsWith("//") && !href.startsWith(normalizedBase)) {
-            node.properties = node.properties || {}
-            node.properties.href = normalizedBase + href
-          }
-        }
+      const href = node.properties.href
+
+      // Only rewrite internal links that start with /
+      // Don't rewrite: external URLs, anchors, relative paths, or already prefixed paths
+      if (
+        typeof href === "string" &&
+        href.startsWith("/") &&
+        !href.startsWith("//") &&
+        !href.startsWith(normalizedBase)
+      ) {
+        node.properties.href = normalizedBase + href
       }
     })
   }

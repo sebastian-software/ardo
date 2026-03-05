@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, use } from "react"
+import { createContext, type ReactNode, use, useMemo } from "react"
 
 import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
 
@@ -46,7 +46,11 @@ interface ArdoProviderProps {
 }
 
 export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
-  return <ArdoContext value={{ config, sidebar, currentPage }}>{children}</ArdoContext>
+  const contextValue = useMemo(
+    () => ({ config, sidebar, currentPage }),
+    [config, currentPage, sidebar]
+  )
+  return <ArdoContext value={contextValue}>{children}</ArdoContext>
 }
 
 export { ArdoContext }

@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoTOC } from "./TOC"
 
 const meta = {
-  title: "Layout/TOC",
   component: ArdoTOC,
   tags: ["autodocs"],
 } satisfies Meta<typeof ArdoTOC>

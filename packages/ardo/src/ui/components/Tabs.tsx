@@ -5,6 +5,7 @@ import {
   type ReactNode,
   use,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -63,8 +64,13 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
     }
   }, [defaultValue])
 
+  const contextValue = useMemo(
+    () => ({ activeTab, setActiveTab, getTabValue, getPanelValue }),
+    [activeTab]
+  )
+
   return (
-    <TabsContext value={{ activeTab, setActiveTab, getTabValue, getPanelValue }}>
+    <TabsContext value={contextValue}>
       <div className={styles.tabs}>{children}</div>
     </TabsContext>
   )
@@ -166,7 +172,8 @@ function findFirstTabValue(children: ReactNode): string {
     }
 
     const nestedChildren = (child.props as { children?: ReactNode }).children
-    if (nestedChildren) {
+    const hasNestedChildren = nestedChildren != null
+    if (hasNestedChildren) {
       const nestedValue = findFirstTabValue(nestedChildren)
       if (nestedValue) {
         return nestedValue

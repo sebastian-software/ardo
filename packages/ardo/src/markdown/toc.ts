@@ -28,7 +28,7 @@ export function remarkExtractToc(options: TocOptions) {
 
       const text = getHeadingText(node)
       const slug = slugify(text)
-      const id = slug || `heading-${headingIndex}`
+      const id = slug === "" ? `heading-${headingIndex}` : slug
       headingIndex++
 
       headings.push({
@@ -38,8 +38,8 @@ export function remarkExtractToc(options: TocOptions) {
       })
 
       // Add id to the heading node for anchor links
-      const data = node.data || (node.data = {})
-      const hProperties = (data.hProperties || (data.hProperties = {})) as Record<string, string>
+      const data = node.data ?? (node.data = {})
+      const hProperties = (data.hProperties ?? (data.hProperties = {})) as Record<string, string>
       hProperties.id = id
     })
 
@@ -51,30 +51,47 @@ function getHeadingText(node: Heading): string {
   const textParts: string[] = []
 
   function extractText(child: unknown) {
-    if (!child || typeof child !== "object") return
+    if (typeof child !== "object" || child === null) return
 
     const typedChild = child as { type?: string; value?: string; children?: unknown[] }
 
     if (typedChild.type === "text") {
-      textParts.push(typedChild.value || "")
+      textParts.push(typedChild.value ?? "")
     } else if (typedChild.type === "inlineCode") {
-      textParts.push(typedChild.value || "")
+      textParts.push(typedChild.value ?? "")
     } else if (Array.isArray(typedChild.children)) {
-      typedChild.children.forEach(extractText)
+      typedChild.children.forEach((nestedChild) => {
+        extractText(nestedChild)
+      })
     }
   }
 
-  node.children.forEach(extractText)
+  node.children.forEach((child) => {
+    extractText(child)
+  })
   return textParts.join("")
 }
 
 function slugify(text: string): string {
-  return text
+  let slug = text
     .toLowerCase()
     .trim()
     .replaceAll(/[^\s\w-]/g, "")
-    .replaceAll(/[\s_-]+/g, "-")
-    .replaceAll(/^-+|-+$/g, "")
+    .replaceAll(/[\s_]/g, "-")
+
+  while (slug.includes("--")) {
+    slug = slug.replaceAll("--", "-")
+  }
+
+  if (slug.startsWith("-")) {
+    slug = slug.slice(1)
+  }
+
+  if (slug.endsWith("-")) {
+    slug = slug.slice(0, -1)
+  }
+
+  return slug
 }
 
 function buildTocTree(
@@ -91,18 +108,24 @@ function buildTocTree(
       level: heading.level,
     }
 
-    while (stack.length > 0 && stack.at(-1)!.level >= heading.level) {
+    while (stack.length > 0) {
+      const lastStackEntry = stack.at(-1)
+      if (lastStackEntry === undefined || lastStackEntry.level < heading.level) {
+        break
+      }
       stack.pop()
     }
 
     if (stack.length === 0) {
       result.push(item)
     } else {
-      const parent = stack.at(-1)!.item
-      if (!parent.children) {
-        parent.children = []
+      const parent = stack.at(-1)?.item
+      if (parent === undefined) {
+        result.push(item)
+      } else {
+        parent.children ??= []
+        parent.children.push(item)
       }
-      parent.children.push(item)
     }
 
     stack.push({ item, level: heading.level })
@@ -117,7 +140,7 @@ export function flattenToc(toc: TOCItem[]): TOCItem[] {
   function flatten(items: TOCItem[]) {
     for (const item of items) {
       result.push(item)
-      if (item.children) {
+      if (item.children !== undefined) {
         flatten(item.children)
       }
     }

@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoCodeBlock } from "./CodeBlock"
 
 const meta = {
-  title: "Utilities/CodeBlock",
   component: ArdoCodeBlock,
   tags: ["autodocs"],
 } satisfies Meta<typeof ArdoCodeBlock>

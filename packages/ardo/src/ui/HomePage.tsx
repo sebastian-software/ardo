@@ -26,34 +26,44 @@ export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoH
 
   const hero = pageData?.frontmatter.hero
   const features = pageData?.frontmatter.features
+  const heroImage = hero?.image
+  const heroActions = hero?.actions ?? []
+  const safeFeatures = features ?? []
+  const hasHero = hero !== undefined
+  const hasHeroImage = heroImage !== undefined
+  const heroName = hero?.name ?? ""
+  const heroText = hero?.text ?? ""
+  const heroTagline = hero?.tagline ?? ""
+  const hasHeroActions = heroActions.length > 0
+  const hasFeatures = safeFeatures.length > 0
 
   return (
     <div className={layoutStyles.home}>
       {header ?? <ArdoHeader title={config.title} {...headerProps} />}
 
       <main className={layoutStyles.homeMain}>
-        {hero && (
+        {hasHero && (
           <section className={heroStyles.hero}>
             <div className={heroStyles.heroContainer}>
-              {hero.image && (
+              {hasHeroImage && (
                 <div>
                   <img
-                    src={typeof hero.image === "string" ? hero.image : hero.image.light}
-                    alt={hero.name || config.title}
+                    src={typeof heroImage === "string" ? heroImage : (heroImage?.light ?? "")}
+                    alt={heroName !== "" ? heroName : config.title}
                   />
                 </div>
               )}
 
               <div>
-                {hero.name && <h1 className={heroStyles.heroName}>{hero.name}</h1>}
-                {hero.text && <p className={heroStyles.heroText}>{hero.text}</p>}
-                {hero.tagline && <p className={heroStyles.heroTagline}>{hero.tagline}</p>}
+                {heroName !== "" && <h1 className={heroStyles.heroName}>{heroName}</h1>}
+                {heroText !== "" && <p className={heroStyles.heroText}>{heroText}</p>}
+                {heroTagline !== "" && <p className={heroStyles.heroTagline}>{heroTagline}</p>}
 
-                {hero.actions && hero.actions.length > 0 && (
+                {hasHeroActions && (
                   <div className={heroStyles.heroActions}>
-                    {hero.actions.map((action, index) => (
+                    {heroActions.map((action) => (
                       <Link
-                        key={index}
+                        key={`${action.link}-${action.text}`}
                         to={action.link}
                         className={`${heroStyles.heroAction} ${action.theme === "alt" ? heroStyles.heroActionAlt : heroStyles.heroActionBrand}`}
                       >
@@ -67,11 +77,11 @@ export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoH
           </section>
         )}
 
-        {features && features.length > 0 && (
+        {hasFeatures && (
           <ArdoFeatures>
-            {features.map((feature, index) => (
+            {safeFeatures.map((feature) => (
               <ArdoFeatureCard
-                key={index}
+                key={feature.link ?? feature.title}
                 title={feature.title}
                 icon={feature.icon}
                 link={feature.link}

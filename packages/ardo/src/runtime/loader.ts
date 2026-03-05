@@ -41,7 +41,7 @@ export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | 
     }
   }
 
-  if (!filePath || !fileContent) {
+  if (filePath === null || fileContent === null) {
     return null
   }
 
@@ -91,7 +91,7 @@ export async function loadAllDocs(contentDir: string, config: ResolvedConfig): P
         }
 
         docs.push({
-          title: result.frontmatter.title || formatTitle(entry.name.replace(/\.md$/, "")),
+          title: result.frontmatter.title ?? formatTitle(entry.name.replace(/\.md$/, "")),
           description: result.frontmatter.description,
           frontmatter: result.frontmatter,
           content: result.html,

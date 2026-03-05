@@ -7,7 +7,7 @@ import { flattenToc } from "./toc"
 describe("flattenToc", () => {
   it("returns empty array for empty toc", () => {
     const result = flattenToc([])
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
   it("returns flat array for flat toc", () => {
@@ -68,6 +68,6 @@ describe("flattenToc", () => {
     const result = flattenToc(toc)
 
     expect(result).toHaveLength(3)
-    expect(result.map((item) => item.id)).toEqual(["level1", "level2", "level3"])
+    expect(result.map((item) => item.id)).toStrictEqual(["level1", "level2", "level3"])
   })
 })

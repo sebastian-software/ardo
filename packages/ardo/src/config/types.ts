@@ -81,7 +81,7 @@ export interface TypeDocConfig {
   entryPoints: string[]
   tsconfig?: string
   out?: string
-  readme?: "none" | string
+  readme?: string
   plugin?: string[]
   exclude?: string[]
   excludeExternals?: boolean

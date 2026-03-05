@@ -1,4 +1,4 @@
-import { type ComponentProps, createContext, type ReactNode, use, useState } from "react"
+import { type ComponentProps, createContext, type ReactNode, use, useMemo, useState } from "react"
 import { NavLink as RouterNavLink } from "react-router"
 
 import * as styles from "./Nav.css"
@@ -81,6 +81,8 @@ export function ArdoNavLink({
 }: ArdoNavLinkProps) {
   const navContext = useNavContext()
   const baseClassName = className ?? styles.navLink
+  const hasHref = (href ?? "") !== ""
+  const hasTo = to !== undefined
 
   // Handle click for mobile menu
   const handleClick = () => {
@@ -88,10 +90,10 @@ export function ArdoNavLink({
   }
 
   // External link
-  if (href) {
+  if (hasHref) {
     return (
       <a
-        href={href}
+        href={href ?? ""}
         className={baseClassName}
         target="_blank"
         rel="noopener noreferrer"
@@ -103,7 +105,7 @@ export function ArdoNavLink({
   }
 
   // Internal link
-  if (to) {
+  if (hasTo) {
     return (
       <RouterNavLink
         to={to}
@@ -135,8 +137,9 @@ export interface NavProviderProps {
  */
 export function NavProvider({ children }: NavProviderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const contextValue = useMemo(() => ({ mobileMenuOpen, setMobileMenuOpen }), [mobileMenuOpen])
 
-  return <NavContext value={{ mobileMenuOpen, setMobileMenuOpen }}>{children}</NavContext>
+  return <NavContext value={contextValue}>{children}</NavContext>
 }
 
 // Export context hook for external use

@@ -102,12 +102,15 @@ export function ArdoRoot({
 }: ArdoRootProps) {
   const location = useLocation()
   const isHomePage = location.pathname === "/" || location.pathname === ""
+  const hasCustomHeader = header != null
+  const hasSiteConfig =
+    editLink !== undefined || lastUpdated !== undefined || (tocLabel ?? "") !== ""
 
   const resolvedSidebar = isHomePage
     ? undefined
     : (sidebarContent ?? <ArdoSidebar {...sidebarProps} />)
   const inferredMobileMenuContent = isHomePage ? undefined : resolvedSidebar
-  const resolvedHeader = header ? (
+  const resolvedHeader = hasCustomHeader ? (
     enhanceHeaderWithMobileMenuContent(header, inferredMobileMenuContent)
   ) : (
     <ArdoHeader
@@ -123,8 +126,6 @@ export function ArdoRoot({
     () => ({ editLink, lastUpdated, tocLabel }),
     [editLink, lastUpdated, tocLabel]
   )
-
-  const hasSiteConfig = editLink || lastUpdated || tocLabel
 
   const content = (
     <ArdoProvider config={config} sidebar={sidebar}>

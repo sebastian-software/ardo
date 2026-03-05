@@ -49,7 +49,7 @@ function flattenSidebar(sidebar: SidebarItem[]): SidebarItem[] {
   const result: SidebarItem[] = []
 
   for (const item of sidebar) {
-    if (item.link) {
+    if ((item.link ?? "") !== "") {
       result.push(item)
     }
 

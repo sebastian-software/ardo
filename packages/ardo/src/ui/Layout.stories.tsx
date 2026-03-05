@@ -7,7 +7,6 @@ import { ArdoLayout } from "./Layout"
 import { ArdoSidebar } from "./Sidebar"
 
 const meta = {
-  title: "Layout/Layout",
   component: ArdoLayout,
   tags: ["autodocs"],
   parameters: {

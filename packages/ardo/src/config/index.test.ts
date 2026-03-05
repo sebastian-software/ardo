@@ -11,7 +11,7 @@ describe("defineConfig", () => {
 
     const result = defineConfig(config)
 
-    expect(result).toEqual(config)
+    expect(result).toStrictEqual(config)
   })
 
   it("preserves all config properties", () => {
@@ -79,7 +79,7 @@ describe("resolveConfig", () => {
     const resolved = resolveConfig(config, "/project")
 
     expect(resolved.markdown.lineNumbers).toBe(true)
-    expect(resolved.markdown.theme).toEqual({
+    expect(resolved.markdown.theme).toStrictEqual({
       light: "github-light-default",
       dark: "github-dark-default",
     })
@@ -95,7 +95,7 @@ describe("resolveConfig", () => {
     const resolved = resolveConfig(config, "/project")
 
     expect(resolved.head).toHaveLength(1)
-    expect(resolved.head[0]).toEqual({
+    expect(resolved.head[0]).toStrictEqual({
       tag: "meta",
       attrs: { name: "author", content: "Test Author" },
     })

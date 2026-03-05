@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoNav, ArdoNavLink } from "./Nav"
 
 const meta = {
-  title: "Layout/Nav",
   component: ArdoNav,
   tags: ["autodocs"],
 } satisfies Meta<typeof ArdoNav>

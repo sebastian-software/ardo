@@ -24,8 +24,11 @@ export function ArdoCopyButton({ code }: CopyButtonProps) {
 
   return (
     <button
+      type="button"
       className={styles.copyButton}
-      onClick={handleCopy}
+      onClick={() => {
+        void handleCopy()
+      }}
       aria-label={copied ? "Copied!" : "Copy code"}
     >
       {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}

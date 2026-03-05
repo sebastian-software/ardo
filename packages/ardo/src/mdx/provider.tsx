@@ -21,8 +21,10 @@ function SmartLink({
   className,
   ...props
 }: AnchorHTMLAttributes<HTMLAnchorElement>) {
-  const isExternal = href?.startsWith("http") || href?.startsWith("//")
-  const isAnchor = href?.startsWith("#")
+  const hrefValue = href ?? ""
+  const hasHref = hrefValue !== ""
+  const isExternal = hrefValue.startsWith("http") || hrefValue.startsWith("//")
+  const isAnchor = hrefValue.startsWith("#")
 
   if (isExternal) {
     return (
@@ -32,7 +34,7 @@ function SmartLink({
     )
   }
 
-  if (isAnchor || !href) {
+  if (isAnchor || !hasHref) {
     return (
       <a href={href} className={className} {...props}>
         {children}
@@ -56,12 +58,26 @@ function extractTextContent(children: ReactNode): string {
     return children
   }
   if (Array.isArray(children)) {
-    return children.map(extractTextContent).join("")
+    return children.map((child) => extractTextContent(child)).join("")
   }
-  if (children && typeof children === "object" && "props" in children) {
-    return extractTextContent((children as { props: { children?: ReactNode } }).props.children)
+  if (children != null && typeof children === "object" && "props" in children) {
+    const nestedChildren = (children as { props: { children?: unknown } }).props.children
+    if (isReactNode(nestedChildren)) {
+      return extractTextContent(nestedChildren)
+    }
   }
   return ""
+}
+
+function isReactNode(value: unknown): value is ReactNode {
+  return (
+    value == null ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    Array.isArray(value) ||
+    typeof value === "object"
+  )
 }
 
 /**
@@ -75,10 +91,11 @@ function PreBlock({
   ...props
 }: { "data-title"?: string; "data-label"?: string } & HTMLAttributes<HTMLPreElement>) {
   const code = extractTextContent(children)
+  const hasDataTitle = dataTitle != null && dataTitle !== ""
 
   return (
     <div className={codeStyles.codeBlock} data-label={dataLabel}>
-      {dataTitle && <div className={codeStyles.codeTitle}>{dataTitle}</div>}
+      {hasDataTitle && <div className={codeStyles.codeTitle}>{dataTitle}</div>}
       <div className={codeStyles.codeWrapper}>
         <pre {...props}>{children}</pre>
         <ArdoCopyButton code={code} />
@@ -89,7 +106,7 @@ function PreBlock({
 
 /**
  * Provides MDX components for rendering documentation content.
- * Used as the providerImportSource for @mdx-js/rollup.
+ * Used as the providerImportSource for `@mdx-js/rollup`.
  */
 export function useMDXComponents(): MDXComponents {
   return {

@@ -26,7 +26,7 @@ describe("scaffold integration build", () => {
   let tmpDir: string
   let buildSucceeded = false
 
-  beforeAll(async () => {
+  beforeAll(() => {
     // 1. Create temp directory
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-integration-"))
 

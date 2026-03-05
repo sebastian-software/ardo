@@ -55,7 +55,9 @@ const currentPage: PageData = {
 }
 
 export const withArdoProvider: Decorator = (Story, context) => {
-  const path = context.parameters?.routerPath ?? "/guide/component-playground"
+  const defaultPath = "/guide/component-playground"
+  const parameters = context.parameters as { routerPath?: unknown }
+  const path = typeof parameters.routerPath === "string" ? parameters.routerPath : defaultPath
 
   return (
     <MemoryRouter initialEntries={[path]}>

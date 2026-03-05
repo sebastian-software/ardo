@@ -7,14 +7,11 @@ import * as styles from "./Hero.css"
 /** Internal route path from React Router */
 type RoutePath = ComponentProps<typeof Link>["to"]
 
-/** External URL starting with http:// or https:// */
-type ExternalUrl = `http://${string}` | `https://${string}`
-
 export interface ArdoHeroAction {
   /** Button text */
   text: string
   /** Link destination - internal route path or external URL */
-  link: ExternalUrl | RoutePath
+  link: RoutePath
   /** Visual theme: "brand" for primary, "alt" for secondary */
   theme?: "alt" | "brand"
   /** Optional icon as ReactNode (e.g. Lucide icon component) */
@@ -75,32 +72,39 @@ export function ArdoHero({
   className,
   version,
 }: ArdoHeroProps) {
-  const imageUrl = typeof image === "string" ? image : image?.light
-  const imageAlt = typeof image === "string" ? name : (image?.alt ?? name)
+  const imageUrl = typeof image === "string" ? image : (image?.light ?? "")
+  const imageAlt = typeof image === "string" ? (name ?? "") : (image?.alt ?? name ?? "")
+  const hasImage = imageUrl !== ""
+  const hasVersion = (version ?? "") !== ""
+  const hasName = (name ?? "") !== ""
+  const hasText = (text ?? "") !== ""
+  const hasTagline = (tagline ?? "") !== ""
+  const hasActions = (actions?.length ?? 0) > 0
 
   return (
     <section className={className ?? styles.hero}>
       <div className={`${styles.heroContainer} ${styles.heroAnimate}`}>
-        {image && (
+        {hasImage && (
           <div>
             <img src={imageUrl} alt={imageAlt} />
           </div>
         )}
 
         <div>
-          {version && <span className={styles.heroVersion}>v{version}</span>}
-          {name && <h1 className={styles.heroName}>{name}</h1>}
-          {text && <p className={styles.heroText}>{text}</p>}
-          {tagline && <p className={styles.heroTagline}>{tagline}</p>}
+          {hasVersion && <span className={styles.heroVersion}>v{version}</span>}
+          {hasName && <h1 className={styles.heroName}>{name}</h1>}
+          {hasText && <p className={styles.heroText}>{text}</p>}
+          {hasTagline && <p className={styles.heroTagline}>{tagline}</p>}
 
-          {actions && actions.length > 0 && (
+          {hasActions && (
             <div className={styles.heroActions}>
-              {actions.map((action, index) => {
+              {actions?.map((action) => {
                 const link = action.link
                 const isExternal =
                   typeof link === "string" &&
                   (link.startsWith("http://") || link.startsWith("https://"))
                 const actionClass = `${styles.heroAction} ${action.theme === "alt" ? styles.heroActionAlt : styles.heroActionBrand}`
+                const actionKey = typeof link === "string" ? `${link}-${action.text}` : action.text
 
                 const content = (
                   <>
@@ -112,7 +116,7 @@ export function ArdoHero({
                 if (isExternal) {
                   return (
                     <a
-                      key={index}
+                      key={actionKey}
                       href={link}
                       className={actionClass}
                       target="_blank"
@@ -124,7 +128,7 @@ export function ArdoHero({
                 }
 
                 return (
-                  <Link key={index} to={link} className={actionClass}>
+                  <Link key={actionKey} to={link} className={actionClass}>
                     {content}
                   </Link>
                 )
