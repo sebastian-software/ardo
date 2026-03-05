@@ -1,4 +1,4 @@
-# ADR 0001: Remove Container Directive Syntax
+# ADR 0009: Remove Container Directive Syntax
 
 ## Status
 
@@ -20,7 +20,7 @@ Both approaches produced identical output. The directive syntax existed as a con
 
 ## Decision
 
-Remove the `:::` container directive syntax entirely. JSX components (`<Tip>`, `<Warning>`, etc.) are the single canonical way to create callouts and code groups in Ardo.
+Remove the `:::` container directive syntax entirely. JSX components (`<ArdoTip>`, `<ArdoWarning>`, etc.) are the single canonical way to create callouts and code groups in Ardo.
 
 ## Consequences
 
@@ -32,17 +32,15 @@ Remove the `:::` container directive syntax entirely. JSX components (`<Tip>`, `
 
 ### Migration
 
-The migration is mechanical find-and-replace:
-
-| Before                    | After                                         |
-| ------------------------- | --------------------------------------------- |
-| `:::tip` ... `:::`        | `<Tip>` ... `</Tip>`                          |
-| `:::warning` ... `:::`    | `<Warning>` ... `</Warning>`                  |
-| `:::danger` ... `:::`     | `<Danger>` ... `</Danger>`                    |
-| `:::info` ... `:::`       | `<Info>` ... `</Info>`                        |
-| `:::note` ... `:::`       | `<Note>` ... `</Note>`                        |
-| `:::tip[Custom Title]`    | `<Tip title="Custom Title">`                  |
-| `:::code-group` ... `:::` | `<CodeGroup labels="...">` ... `</CodeGroup>` |
+| Before                    | After                                                 |
+| ------------------------- | ----------------------------------------------------- |
+| `:::tip` ... `:::`        | `<ArdoTip>` ... `</ArdoTip>`                          |
+| `:::warning` ... `:::`    | `<ArdoWarning>` ... `</ArdoWarning>`                  |
+| `:::danger` ... `:::`     | `<ArdoDanger>` ... `</ArdoDanger>`                    |
+| `:::info` ... `:::`       | `<ArdoInfo>` ... `</ArdoInfo>`                        |
+| `:::note` ... `:::`       | `<ArdoNote>` ... `</ArdoNote>`                        |
+| `:::tip[Custom Title]`    | `<ArdoTip title="Custom Title">`                      |
+| `:::code-group` ... `:::` | `<ArdoCodeGroup labels="...">` ... `</ArdoCodeGroup>` |
 
 ### Benefits
 
@@ -50,3 +48,4 @@ The migration is mechanical find-and-replace:
 - Simpler MDX processing pipeline
 - Single documented approach for callouts
 - Less code to maintain (containers plugin + tests deleted)
+- Consistent with the JSX-first design philosophy (see ADR 0007, 0008)
