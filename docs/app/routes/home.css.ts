@@ -107,9 +107,9 @@ export const codeExample = style({
 // Tech grid
 export const techGrid = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-  gap: "20px",
-  maxWidth: "700px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+  gap: "16px",
+  maxWidth: "800px",
   margin: "0 auto",
 })
 
@@ -117,8 +117,8 @@ export const techItem = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: "12px",
-  padding: "24px 16px",
+  gap: "8px",
+  padding: "16px",
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
