@@ -91,14 +91,14 @@ function buildTocTree(
       level: heading.level,
     }
 
-    while (stack.length > 0 && stack.at(-1).level >= heading.level) {
+    while (stack.length > 0 && stack.at(-1)!.level >= heading.level) {
       stack.pop()
     }
 
     if (stack.length === 0) {
       result.push(item)
     } else {
-      const parent = stack.at(-1).item
+      const parent = stack.at(-1)!.item
       if (!parent.children) {
         parent.children = []
       }

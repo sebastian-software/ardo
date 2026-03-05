@@ -1083,7 +1083,7 @@ export class TypeDocGenerator {
       breadcrumbs.push(`[${parts[i]}](${this.basePath}/${currentPath})`)
     }
 
-    breadcrumbs.push(parts.at(-1))
+    breadcrumbs.push(parts.at(-1)!)
 
     return breadcrumbs.join(" / ")
   }
