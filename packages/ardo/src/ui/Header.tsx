@@ -101,18 +101,9 @@ export function ArdoHeader({
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  const handleMobileMenuInteraction = (
-    event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>
-  ) => {
-    if (event.target instanceof HTMLElement && event.target.closest("a") !== null) {
-      setMobileMenuOpen(false)
-    }
-  }
-
   return (
     <header className={className ?? styles.header}>
       <div className={styles.headerContainer}>
-        {/* Left: Mobile menu button + Logo/Title */}
         <div className={styles.headerLeft}>
           {hasMobileMenu && (
             <button
@@ -131,7 +122,6 @@ export function ArdoHeader({
               </span>
             </button>
           )}
-
           <Link to="/" className={styles.logoLink}>
             {hasLogo && (
               <img
@@ -144,10 +134,8 @@ export function ArdoHeader({
           </Link>
         </div>
 
-        {/* Center: Navigation */}
         {hasNav && <div className={styles.desktopNav}>{nav}</div>}
 
-        {/* Right: Search, Theme Toggle, Actions */}
         <div className={styles.headerRight}>
           {search && (
             <Suspense fallback={<span />}>
@@ -165,19 +153,42 @@ export function ArdoHeader({
         </div>
       )}
 
-      {/* Mobile menu */}
-      {mobileMenuOpen && hasMobileMenu && (
-        <div className={styles.mobileMenu}>
-          <div
-            className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
-            onClick={handleMobileMenuInteraction}
-            onKeyDown={handleMobileMenuInteraction}
-          >
-            {mobileMenuContent}
-          </div>
-        </div>
-      )}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        content={mobileMenuContent}
+        onClose={() => {
+          setMobileMenuOpen(false)
+        }}
+      />
     </header>
+  )
+}
+
+function MobileMenu({
+  isOpen,
+  content,
+  onClose,
+}: {
+  isOpen: boolean
+  content: ReactNode
+  onClose: () => void
+}) {
+  if (!isOpen || content == null) return null
+  const handleInteraction = (event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>) => {
+    if (event.target instanceof HTMLElement && event.target.closest("a") !== null) {
+      onClose()
+    }
+  }
+  return (
+    <div className={styles.mobileMenu}>
+      <div
+        className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
+        onClick={handleInteraction}
+        onKeyDown={handleInteraction}
+      >
+        {content}
+      </div>
+    </div>
   )
 }
 
