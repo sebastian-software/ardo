@@ -44,7 +44,7 @@ function SmartLink({
 
   // Internal link - use React Router Link for proper basename handling
   return (
-    <Link to={href} className={className} {...props}>
+    <Link to={hrefValue} className={className} {...props}>
       {children}
     </Link>
   )

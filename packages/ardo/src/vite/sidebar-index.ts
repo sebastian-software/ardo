@@ -97,7 +97,7 @@ async function createMarkdownNode(
 }
 
 function readFrontmatter(fileContent: string): { order?: number; title?: string } {
-  const parsed = matter<{ order?: unknown; title?: unknown }>(fileContent)
+  const parsed = matter(fileContent)
   const title = typeof parsed.data.title === "string" ? parsed.data.title : undefined
   const order = typeof parsed.data.order === "number" ? parsed.data.order : undefined
   return { title, order }

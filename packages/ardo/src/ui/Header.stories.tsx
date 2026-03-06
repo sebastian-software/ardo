@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoHeader } from "./Header"
 import { ArdoNav, ArdoNavLink } from "./Nav"
 
-const meta = {
+const meta: Meta<typeof ArdoHeader> = {
   component: ArdoHeader,
   tags: ["autodocs"],
   decorators: [
@@ -16,7 +16,7 @@ const meta = {
   parameters: {
     layout: "fullscreen",
   },
-} satisfies Meta<typeof ArdoHeader>
+}
 
 export default meta
 

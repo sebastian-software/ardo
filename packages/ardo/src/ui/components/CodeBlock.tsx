@@ -86,7 +86,7 @@ export function ArdoCodeBlock({
 
   let content: React.ReactNode
   if (hasHtml) {
-    content = <div dangerouslySetInnerHTML={{ __html }} />
+    content = <div dangerouslySetInnerHTML={{ __html: __html! }} />
   } else if (hasCustomChildren) {
     content = <>{children}</>
   } else {
@@ -141,7 +141,7 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
 
   // Filter to only valid React elements (skip whitespace text nodes)
   const childArray = Children.toArray(children).filter((child) => isValidElement(child))
-  const labelArray = hasLabels ? labelsStr.split(",") : []
+  const labelArray = hasLabels ? labelsStr!.split(",") : []
   const tabs = childArray.map((child, index) => {
     if (labelArray[index]) return labelArray[index]
     const props = child.props as Record<string, unknown>

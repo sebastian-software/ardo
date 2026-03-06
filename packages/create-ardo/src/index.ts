@@ -22,14 +22,6 @@ const onCancel = () => {
   throw new Error(`${red("✖")} Operation cancelled`)
 }
 
-interface ProjectNamePromptResponse {
-  projectName: string
-}
-
-interface UpgradePromptResponse {
-  action: "cancel" | "upgrade"
-}
-
 interface NewProjectPromptResponse {
   overwrite?: "ignore" | "no" | "yes"
   template?: string
@@ -50,7 +42,7 @@ async function main() {
 
   // Step 1: Get project name (if not provided as CLI arg)
   if (argTargetDir === undefined) {
-    const { projectName } = await prompts<ProjectNamePromptResponse>(
+    const nameResponse = await prompts<"projectName">(
       {
         type: "text",
         name: "projectName",
@@ -67,6 +59,7 @@ async function main() {
       },
       { onCancel }
     )
+    const projectName = nameResponse.projectName as string | undefined
     const resolvedProjectName = typeof projectName === "string" ? projectName : defaultTargetDir
     targetDir = formatTargetDir(resolvedProjectName) ?? defaultTargetDir
   }
@@ -76,7 +69,7 @@ async function main() {
   // Step 2: Check for existing Ardo project → upgrade flow
   if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
     const cliVersion = getCliVersion()
-    const { action } = await prompts<UpgradePromptResponse>(
+    const upgradeResponse = await prompts<"action">(
       {
         type: "select",
         name: "action",
@@ -88,6 +81,8 @@ async function main() {
       },
       { onCancel }
     )
+
+    const action = upgradeResponse.action as string | undefined
 
     if (action === "cancel") {
       throw new Error(`${red("✖")} Operation cancelled`)

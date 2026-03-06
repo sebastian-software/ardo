@@ -79,7 +79,7 @@ async function createSearchDocFromFile(
   context: SearchDocBuildContext
 ): Promise<null | SearchDoc> {
   const fileContent = await fs.readFile(filePath, "utf8")
-  const parsed = matter<{ title?: unknown }>(fileContent)
+  const parsed = matter(fileContent)
   const extension = fileName.endsWith(".mdx") ? ".mdx" : ".md"
   const title =
     typeof parsed.data.title === "string"

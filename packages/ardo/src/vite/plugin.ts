@@ -309,7 +309,7 @@ function extractFrontmatterValue(code: string, key: string): string | undefined 
 }
 
 function resolveTypedocConfig(typedoc: ArdoPluginOptions["typedoc"]): TypeDocConfig | undefined {
-  if (typedoc == null || typedoc === false) {
+  if (typedoc == null) {
     return undefined
   }
 

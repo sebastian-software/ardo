@@ -96,7 +96,7 @@ export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
           {hasCustomChildren ? (
             <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
           ) : hasResolvedItems ? (
-            <SidebarItems items={resolvedItems} depth={0} />
+            <SidebarItems items={resolvedItems!} depth={0} />
           ) : null}
         </nav>
       </aside>
