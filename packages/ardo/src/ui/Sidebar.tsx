@@ -96,7 +96,7 @@ export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
           {hasCustomChildren ? (
             <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
           ) : hasResolvedItems ? (
-            <SidebarItems items={resolvedItems!} depth={0} />
+            <SidebarItems items={resolvedItems ?? []} depth={0} />
           ) : null}
         </nav>
       </aside>
@@ -153,9 +153,9 @@ export function ArdoSidebarGroup({
   const { currentPath } = useSidebarContext()
 
   // Check if any child is active
-  const isChildActive = checkChildrenActive(children, currentPath)
+  const hasActiveChild = checkChildrenActive(children, currentPath)
 
-  const textClassName = [styles.sidebarText, isChildActive && "child-active"]
+  const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
 
@@ -286,7 +286,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 
   const hasChildren = childItems.length > 0
 
-  const isChildActive =
+  const hasActiveChild =
     hasChildren &&
     childItems.some(
       (child) =>
@@ -295,11 +295,11 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
     )
   const hasItemLink = (item.link ?? "") !== ""
 
-  const linkClassName = [styles.sidebarLink, isChildActive && "child-active"]
+  const linkClassName = [styles.sidebarLink, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
 
-  const textClassName = [styles.sidebarText, isChildActive && "child-active"]
+  const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
 
@@ -352,36 +352,22 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 // Utility Functions
 // =============================================================================
 
+function isSidebarChildActive(child: React.ReactElement, currentPath: string): boolean {
+  if (child.type === ArdoSidebarLink) {
+    return (child.props as ArdoSidebarLinkProps).to === currentPath
+  }
+  if (child.type === ArdoSidebarGroup) {
+    const groupProps = child.props as ArdoSidebarGroupProps
+    return (
+      groupProps.to === currentPath ||
+      (groupProps.children != null && checkChildrenActive(groupProps.children, currentPath))
+    )
+  }
+  return false
+}
+
 function checkChildrenActive(children: ReactNode, currentPath: string): boolean {
-  let isActive = false
-
-  Children.forEach(children, (child) => {
-    if (isActive) return
-
-    if (isValidElement(child)) {
-      // Check SidebarLink
-      if (
-        child.type === ArdoSidebarLink &&
-        (child.props as ArdoSidebarLinkProps).to === currentPath
-      ) {
-        isActive = true
-        return
-      }
-
-      // Check nested SidebarGroup
-      if (child.type === ArdoSidebarGroup) {
-        const groupProps = child.props as ArdoSidebarGroupProps
-        if (groupProps.to === currentPath) {
-          isActive = true
-          return
-        }
-        const hasGroupChildren = groupProps.children != null
-        if (hasGroupChildren && checkChildrenActive(groupProps.children, currentPath)) {
-          isActive = true
-        }
-      }
-    }
-  })
-
-  return isActive
+  return Children.toArray(children).some(
+    (child) => isValidElement(child) && isSidebarChildActive(child, currentPath)
+  )
 }

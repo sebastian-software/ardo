@@ -4,7 +4,6 @@ import {
   isValidElement,
   type ReactNode,
   use,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -58,15 +57,11 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
     return value ?? `${AUTO_TAB_PREFIX}${index}`
   }
 
-  useEffect(() => {
-    if (defaultValue !== undefined) {
-      setActiveTab(defaultValue)
-    }
-  }, [defaultValue])
+  const effectiveTab = defaultValue ?? activeTab
 
   const contextValue = useMemo(
-    () => ({ activeTab, setActiveTab, getTabValue, getPanelValue }),
-    [activeTab]
+    () => ({ activeTab: effectiveTab, setActiveTab, getTabValue, getPanelValue }),
+    [effectiveTab]
   )
 
   return (

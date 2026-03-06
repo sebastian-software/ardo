@@ -5,21 +5,21 @@ import * as styles from "./ThemeToggle.css"
 
 type Theme = "dark" | "light" | "system"
 
+const isBrowser = typeof document !== "undefined"
+
+function getInitialTheme(): Theme {
+  if (!isBrowser) return "system"
+  const stored = localStorage.getItem("ardo-theme") as null | Theme
+  return stored ?? "system"
+}
+
 export function ArdoThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("system")
-  const [mounted, setMounted] = useState(false)
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [mounted] = useState(isBrowser)
 
   useEffect(() => {
-    setMounted(true)
-
-    const stored = localStorage.getItem("ardo-theme") as null | Theme
-    if (stored) {
-      setTheme(stored)
-      applyTheme(stored)
-    } else {
-      applyTheme("system")
-    }
-  }, [])
+    applyTheme(theme)
+  }, [theme])
 
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"

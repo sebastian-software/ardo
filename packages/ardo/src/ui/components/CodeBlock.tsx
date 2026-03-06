@@ -57,6 +57,48 @@ export interface ArdoCodeBlockProps {
   __html?: string
 }
 
+function CodeBlockContent({
+  html,
+  hasHtml,
+  hasCustomChildren,
+  language,
+  lines,
+  highlightLines,
+  lineNumbers,
+  children,
+}: {
+  html?: string
+  hasHtml: boolean
+  hasCustomChildren: boolean
+  language: string
+  lines: string[]
+  highlightLines: number[]
+  lineNumbers: boolean
+  children?: React.ReactNode
+}) {
+  if (hasHtml) return <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
+  if (hasCustomChildren) return <>{children}</>
+  return (
+    <pre className={`language-${language}`}>
+      <code>
+        {lines.map((line, index) => {
+          const lineNum = index + 1
+          const cls = highlightLines.includes(lineNum)
+            ? `${styles.codeLine} highlighted`
+            : styles.codeLine
+          return (
+            <span key={`${lineNum}-${line}`} className={cls}>
+              {lineNumbers && <span className={styles.lineNumber}>{lineNum}</span>}
+              <span>{line}</span>
+              {index < lines.length - 1 && "\n"}
+            </span>
+          )
+        })}
+      </code>
+    </pre>
+  )
+}
+
 /**
  * Syntax-highlighted code block with copy button.
  *
@@ -84,39 +126,21 @@ export function ArdoCodeBlock({
   const hasTitle = (title ?? "") !== ""
   const lines = code.split("\n")
 
-  let content: React.ReactNode
-  if (hasHtml) {
-    content = <div dangerouslySetInnerHTML={{ __html: __html! }} />
-  } else if (hasCustomChildren) {
-    content = <>{children}</>
-  } else {
-    content = (
-      <pre className={`language-${language}`}>
-        <code>
-          {lines.map((line, index) => {
-            const lineNum = index + 1
-            const isHighlighted = highlightLines.includes(lineNum)
-            const classes = [styles.codeLine]
-            if (isHighlighted) classes.push("highlighted")
-
-            return (
-              <span key={`${lineNum}-${line}`} className={classes.join(" ")}>
-                {lineNumbers && <span className={styles.lineNumber}>{lineNum}</span>}
-                <span>{line}</span>
-                {index < lines.length - 1 && "\n"}
-              </span>
-            )
-          })}
-        </code>
-      </pre>
-    )
-  }
-
   return (
     <div className={styles.codeBlock} data-lang={language}>
       {hasTitle && <div className={styles.codeTitle}>{title}</div>}
       <div className={styles.codeWrapper}>
-        {content}
+        <CodeBlockContent
+          html={__html}
+          hasHtml={hasHtml}
+          hasCustomChildren={hasCustomChildren}
+          language={language}
+          lines={lines}
+          highlightLines={highlightLines}
+          lineNumbers={lineNumbers}
+        >
+          {children}
+        </CodeBlockContent>
         <ArdoCopyButton code={code} />
       </div>
     </div>
@@ -141,7 +165,7 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
 
   // Filter to only valid React elements (skip whitespace text nodes)
   const childArray = Children.toArray(children).filter((child) => isValidElement(child))
-  const labelArray = hasLabels ? labelsStr!.split(",") : []
+  const labelArray = hasLabels ? (labelsStr ?? "").split(",") : []
   const tabs = childArray.map((child, index) => {
     if (labelArray[index]) return labelArray[index]
     const props = child.props as Record<string, unknown>

@@ -143,12 +143,7 @@ export function isArdoProject(dir: string): boolean {
   return dependencies?.ardo !== undefined
 }
 
-export function upgradeProject(root: string): UpgradeResult {
-  const templateDir = path.join(templatesRoot, "minimal")
-  const cliVersion = getCliVersion()
-  const result: UpgradeResult = { updated: [], deleted: [], skipped: [] }
-
-  // 1. Copy skeleton files directly (no variable substitution)
+function copySkeletonFiles(root: string, templateDir: string, result: UpgradeResult): void {
   const skeletonFiles = [
     "app/entry.client.tsx",
     "app/entry.server.tsx",
@@ -167,48 +162,50 @@ export function upgradeProject(root: string): UpgradeResult {
       result.skipped.push(file)
     }
   }
+}
 
-  // 2. Merge package.json
+function mergePackageJson(root: string, templateDir: string, cliVersion: string): void {
   const userPkgPath = path.join(root, "package.json")
-  const templatePkgPath = path.join(templateDir, "package.json")
   const userPkg = readJsonObject(userPkgPath)
-  const templatePkg = readJsonObject(templatePkgPath)
+  const templatePkg = readJsonObject(path.join(templateDir, "package.json"))
   if (userPkg === undefined || templatePkg === undefined) {
     throw new Error("Could not parse package.json while upgrading project")
   }
-  const userDependencies = ensureStringRecord(userPkg, "dependencies")
-  const userDevDependencies = ensureStringRecord(userPkg, "devDependencies")
-  const templateDependencies = toStringRecord(templatePkg.dependencies) ?? {}
-  const templateDevDependencies = toStringRecord(templatePkg.devDependencies) ?? {}
 
-  // Always update ardo version
-  userDependencies.ardo = `^${cliVersion}`
+  const userDeps = ensureStringRecord(userPkg, "dependencies")
+  const userDevDeps = ensureStringRecord(userPkg, "devDependencies")
+  const templateDeps = toStringRecord(templatePkg.dependencies) ?? {}
+  const templateDevDeps = toStringRecord(templatePkg.devDependencies) ?? {}
 
-  // Add missing dependencies from template (don't overwrite user-pinned versions)
-  for (const [dep, version] of Object.entries(templateDependencies)) {
-    if (dep === "ardo") continue
-    if (!(dep in userDependencies)) {
-      userDependencies[dep] = version
-    }
+  userDeps.ardo = `^${cliVersion}`
+  for (const [dep, version] of Object.entries(templateDeps)) {
+    if (dep !== "ardo" && !(dep in userDeps)) userDeps[dep] = version
   }
-
-  // Update pinned devDependencies from template (framework-controlled versions)
-  for (const [dep, version] of Object.entries(templateDevDependencies)) {
-    userDevDependencies[dep] = version
+  for (const [dep, version] of Object.entries(templateDevDeps)) {
+    userDevDeps[dep] = version
   }
 
   fs.writeFileSync(userPkgPath, `${JSON.stringify(userPkg, null, 2)}\n`)
-  result.updated.push("package.json")
+}
 
-  // 3. Delete obsolete files
-  const obsoleteFiles = ["app/vite-env.d.ts"]
-  for (const file of obsoleteFiles) {
+function deleteObsoleteFiles(root: string, result: UpgradeResult): void {
+  for (const file of ["app/vite-env.d.ts"]) {
     const filePath = path.join(root, file)
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)
       result.deleted.push(file)
     }
   }
+}
+
+export function upgradeProject(root: string): UpgradeResult {
+  const templateDir = path.join(templatesRoot, "minimal")
+  const result: UpgradeResult = { updated: [], deleted: [], skipped: [] }
+
+  copySkeletonFiles(root, templateDir, result)
+  mergePackageJson(root, templateDir, getCliVersion())
+  result.updated.push("package.json")
+  deleteObsoleteFiles(root, result)
 
   return result
 }

@@ -58,26 +58,15 @@ function extractTextContent(children: ReactNode): string {
     return children
   }
   if (Array.isArray(children)) {
-    return children.map((child) => extractTextContent(child)).join("")
+    return children.map((child: ReactNode) => extractTextContent(child)).join("")
   }
   if (children != null && typeof children === "object" && "props" in children) {
-    const nestedChildren = (children as { props: { children?: unknown } }).props.children
-    if (isReactNode(nestedChildren)) {
+    const nestedChildren = (children as { props: { children?: ReactNode } }).props.children
+    if (nestedChildren != null) {
       return extractTextContent(nestedChildren)
     }
   }
   return ""
-}
-
-function isReactNode(value: unknown): value is ReactNode {
-  return (
-    value == null ||
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    Array.isArray(value) ||
-    typeof value === "object"
-  )
 }
 
 /**

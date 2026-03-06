@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite"
 import { ArdoHeader } from "./Header"
 import { ArdoNav, ArdoNavLink } from "./Nav"
 
+// eslint-disable-next-line storybook/meta-satisfies-type -- explicit type annotation needed for TS portability
 const meta: Meta<typeof ArdoHeader> = {
   component: ArdoHeader,
   tags: ["autodocs"],

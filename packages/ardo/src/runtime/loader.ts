@@ -20,49 +20,48 @@ export interface LoadDocResult {
   lastUpdated?: number
 }
 
-export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | null> {
-  const { slug, contentDir, config } = options
-
+async function findFile(
+  contentDir: string,
+  slug: string
+): Promise<{ filePath: string; fileContent: string } | null> {
   const possiblePaths = [
     path.join(contentDir, `${slug}.md`),
     path.join(contentDir, slug, "index.md"),
   ]
 
-  let filePath: null | string = null
-  let fileContent: null | string = null
-
   for (const tryPath of possiblePaths) {
     try {
-      fileContent = await fs.readFile(tryPath, "utf8")
-      filePath = tryPath
-      break
+      const fileContent = await fs.readFile(tryPath, "utf8")
+      return { filePath: tryPath, fileContent }
     } catch {
       continue
     }
   }
+  return null
+}
 
-  if (filePath === null || fileContent === null) {
-    return null
-  }
-
-  const result = await transformMarkdown(fileContent, config.markdown)
-  const relativePath = path.relative(contentDir, filePath)
-
-  let lastUpdated: number | undefined
+async function getLastUpdated(filePath: string): Promise<number | undefined> {
   try {
     const stat = await fs.stat(filePath)
-    lastUpdated = stat.mtimeMs
+    return stat.mtimeMs
   } catch {
-    // Ignore stat errors
+    return undefined
   }
+}
 
+export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | null> {
+  const { slug, contentDir, config } = options
+  const found = await findFile(contentDir, slug)
+  if (found === null) return null
+
+  const result = await transformMarkdown(found.fileContent, config.markdown)
   return {
     content: result.html,
     frontmatter: result.frontmatter,
     toc: result.toc,
-    filePath,
-    relativePath,
-    lastUpdated,
+    filePath: found.filePath,
+    relativePath: path.relative(contentDir, found.filePath),
+    lastUpdated: await getLastUpdated(found.filePath),
   }
 }
 

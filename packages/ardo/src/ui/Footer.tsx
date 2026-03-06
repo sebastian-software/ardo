@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import React, { type ReactNode } from "react"
 
 import type { ProjectMeta, SponsorConfig } from "../config/types"
 
@@ -72,109 +72,126 @@ function formatBuildTime(iso: string): string {
  * </Footer>
  * ```
  */
+function FooterProjectLink({
+  project,
+  config,
+}: {
+  project: ArdoFooterProps["project"]
+  config: ReturnType<typeof useArdoConfig>
+}) {
+  const resolved = project ?? config.project
+  const name = resolved?.name ?? ""
+  const version = resolved?.version ?? ""
+  const homepage = resolved?.homepage ?? ""
+  if (name === "") return null
+  const label = version !== "" ? `${name} v${version}` : name
+  return homepage !== "" ? (
+    <a href={homepage} className={styles.footerLink}>
+      {label}
+    </a>
+  ) : (
+    <span>{label}</span>
+  )
+}
+
+function FooterSponsorLink({ sponsor }: { sponsor: ArdoFooterProps["sponsor"] }) {
+  const text = sponsor?.text ?? ""
+  const link = sponsor?.link ?? ""
+  if (text === "" || link === "") return null
+  return (
+    <a href={link} className={styles.footerLink}>
+      Sponsored by {text}
+    </a>
+  )
+}
+
+function FooterPrimaryLine({
+  project,
+  sponsor,
+  ardoLink,
+  config,
+}: {
+  project: ArdoFooterProps["project"]
+  sponsor: ArdoFooterProps["sponsor"]
+  ardoLink: boolean
+  config: ReturnType<typeof useArdoConfig>
+}) {
+  const items: React.ReactNode[] = []
+  const projectNode = <FooterProjectLink project={project} config={config} />
+  const sponsorNode = <FooterSponsorLink sponsor={sponsor} />
+  const hasProject =
+    (project ?? config.project)?.name !== undefined && (project ?? config.project)?.name !== ""
+  const hasSponsor = (sponsor?.text ?? "") !== "" && (sponsor?.link ?? "") !== ""
+
+  if (hasProject) items.push(projectNode)
+  if (ardoLink)
+    items.push(
+      <a href="https://ardo-docs.dev" className={styles.footerLink}>
+        Built with Ardo
+      </a>
+    )
+  if (hasSponsor) items.push(sponsorNode)
+  if (items.length === 0) return null
+
+  return (
+    <p className={styles.footerPrimary}>
+      {items.map((item, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <React.Fragment key={i}>
+          {i > 0 && <span className={styles.footerSeparator} aria-hidden="true" />}
+          {item}
+        </React.Fragment>
+      ))}
+    </p>
+  )
+}
+
 export function ArdoFooter({
-  message,
-  copyright,
   children,
   className,
+  ardoLink = true,
+  message,
+  copyright,
   project,
   sponsor,
   buildTime,
   buildHash,
-  ardoLink = true,
 }: ArdoFooterProps) {
   const config = useArdoConfig()
-
-  const resolvedProject = project ?? config.project
   const resolvedBuildTime = buildTime ?? config.buildTime
   const resolvedBuildHash = buildHash ?? config.buildHash
-  const resolvedMessage = message
-  const resolvedCopyright = copyright
-  const resolvedSponsor = sponsor
-  const projectName = resolvedProject?.name ?? ""
-  const projectVersion = resolvedProject?.version ?? ""
-  const projectHomepage = resolvedProject?.homepage ?? ""
-  const sponsorText = resolvedSponsor?.text ?? ""
-  const sponsorLink = resolvedSponsor?.link ?? ""
-  const hasProjectName = projectName !== ""
-  const hasProjectHomepage = projectHomepage !== ""
-  const hasSponsor = sponsorText !== "" && sponsorLink !== ""
-  const hasMessage = (resolvedMessage ?? "") !== ""
-  const hasCopyright = (resolvedCopyright ?? "") !== ""
-  const hasBuildTime = (resolvedBuildTime ?? "") !== ""
-  const hasBuildHash = (resolvedBuildHash ?? "") !== ""
-  const hasCustomChildren = children != null
-  const hasPrimaryLine = hasProjectName || ardoLink || hasSponsor
 
-  const hasContent =
-    hasMessage || hasCopyright || hasCustomChildren || hasPrimaryLine || hasBuildTime || ardoLink
-
-  if (!hasContent) {
-    return null
+  if (children != null) {
+    return (
+      <footer className={className ?? styles.footer}>
+        <div className={styles.footerContainer}>{children}</div>
+      </footer>
+    )
   }
 
   return (
     <footer className={className ?? styles.footer}>
       <div className={styles.footerContainer}>
-        {children ?? (
-          <>
-            {/* Primary line: project · ardo · sponsor */}
-            {hasPrimaryLine && (
-              <p className={styles.footerPrimary}>
-                {hasProjectName && (
-                  <>
-                    {hasProjectHomepage ? (
-                      <a href={projectHomepage} className={styles.footerLink}>
-                        {projectName}
-                        {projectVersion !== "" ? ` v${projectVersion}` : ""}
-                      </a>
-                    ) : (
-                      <span>
-                        {projectName}
-                        {projectVersion !== "" ? ` v${projectVersion}` : ""}
-                      </span>
-                    )}
-                  </>
-                )}
-                {hasProjectName && ardoLink && (
-                  <span className={styles.footerSeparator} aria-hidden="true" />
-                )}
-                {ardoLink && (
-                  <a href="https://ardo-docs.dev" className={styles.footerLink}>
-                    Built with Ardo
-                  </a>
-                )}
-                {(hasProjectName || ardoLink) && hasSponsor && (
-                  <span className={styles.footerSeparator} aria-hidden="true" />
-                )}
-                {hasSponsor && (
-                  <a href={sponsorLink} className={styles.footerLink}>
-                    Sponsored by {sponsorText}
-                  </a>
-                )}
-              </p>
-            )}
-            {/* Secondary line: message / copyright */}
-            {hasMessage && (
-              <p
-                className={styles.footerMessage}
-                dangerouslySetInnerHTML={{ __html: resolvedMessage ?? "" }}
-              />
-            )}
-            {hasCopyright && (
-              <p
-                className={styles.footerCopyright}
-                dangerouslySetInnerHTML={{ __html: resolvedCopyright ?? "" }}
-              />
-            )}
-            {/* Tertiary line: build timestamp */}
-            {hasBuildTime && (
-              <p className={styles.footerBuildTime}>
-                Built on {formatBuildTime(resolvedBuildTime ?? "")}
-                {hasBuildHash && <> ({resolvedBuildHash ?? ""})</>}
-              </p>
-            )}
-          </>
+        <FooterPrimaryLine
+          project={project}
+          sponsor={sponsor}
+          ardoLink={ardoLink}
+          config={config}
+        />
+        {(message ?? "") !== "" && (
+          <p className={styles.footerMessage} dangerouslySetInnerHTML={{ __html: message ?? "" }} />
+        )}
+        {(copyright ?? "") !== "" && (
+          <p
+            className={styles.footerCopyright}
+            dangerouslySetInnerHTML={{ __html: copyright ?? "" }}
+          />
+        )}
+        {(resolvedBuildTime ?? "") !== "" && (
+          <p className={styles.footerBuildTime}>
+            Built on {formatBuildTime(resolvedBuildTime ?? "")}
+            {(resolvedBuildHash ?? "") !== "" && <> ({resolvedBuildHash})</>}
+          </p>
         )}
       </div>
     </footer>

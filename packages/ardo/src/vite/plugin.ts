@@ -23,11 +23,13 @@ import { generateSearchIndex } from "./search-index"
 import { generateSidebar } from "./sidebar-index"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
-const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
-const RESOLVED_VIRTUAL_SIDEBAR_ID = `\0${VIRTUAL_SIDEBAR_ID}`
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
-const RESOLVED_VIRTUAL_SEARCH_ID = `\0${VIRTUAL_SEARCH_ID}`
+const RESOLVED_IDS: Record<string, string> = {
+  [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
+  [VIRTUAL_SIDEBAR_ID]: `\0${VIRTUAL_SIDEBAR_ID}`,
+  [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
+}
 
 let typedocGenerated = false
 
@@ -197,10 +199,7 @@ function resolveArdoConfig(
 }
 
 function resolveVirtualModuleId(id: string): string | undefined {
-  if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID
-  if (id === VIRTUAL_SIDEBAR_ID) return RESOLVED_VIRTUAL_SIDEBAR_ID
-  if (id === VIRTUAL_SEARCH_ID) return RESOLVED_VIRTUAL_SEARCH_ID
-  return undefined
+  return RESOLVED_IDS[id]
 }
 
 async function loadVirtualModule(id: string, state: PluginState): Promise<string | undefined> {
@@ -208,7 +207,7 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
     return undefined
   }
 
-  if (id === RESOLVED_VIRTUAL_MODULE_ID) {
+  if (id === RESOLVED_IDS[VIRTUAL_MODULE_ID]) {
     const clientConfig = {
       title: state.resolvedConfig.title,
       description: state.resolvedConfig.description,
@@ -221,12 +220,12 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
     return `export default ${JSON.stringify(clientConfig)}`
   }
 
-  if (id === RESOLVED_VIRTUAL_SIDEBAR_ID) {
+  if (id === RESOLVED_IDS[VIRTUAL_SIDEBAR_ID]) {
     const sidebar = await generateSidebar(state.routesDir)
     return `export default ${JSON.stringify(sidebar)}`
   }
 
-  if (id === RESOLVED_VIRTUAL_SEARCH_ID) {
+  if (id === RESOLVED_IDS[VIRTUAL_SEARCH_ID]) {
     const searchIndex = await generateSearchIndex(state.routesDir)
     return `export default ${JSON.stringify(searchIndex)}`
   }
@@ -358,5 +357,3 @@ function createTypeDocPlugin(typedocConfig: TypeDocConfig, state: PluginState): 
 function resolveRoutesDir(root: string, routesDirOption: string | undefined): string {
   return routesDirOption ?? path.join(root, "app", "routes")
 }
-
-export default ardoPlugin

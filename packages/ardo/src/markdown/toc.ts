@@ -43,7 +43,7 @@ export function remarkExtractToc(options: TocOptions) {
       hProperties.id = id
     })
 
-    tocExtraction.toc = buildTocTree(headings, minLevel)
+    tocExtraction.toc = buildTocTree(headings)
   }
 }
 
@@ -94,40 +94,36 @@ function slugify(text: string): string {
   return slug
 }
 
-function buildTocTree(
-  headings: Array<{ text: string; level: number; id: string }>,
-  _minLevel: number
-): TOCItem[] {
+function popStackUntilParent(stack: Array<{ item: TOCItem; level: number }>, level: number): void {
+  while (stack.length > 0) {
+    const last = stack.at(-1)
+    if (last === undefined || last.level < level) break
+    stack.pop()
+  }
+}
+
+function insertIntoTree(
+  result: TOCItem[],
+  stack: Array<{ item: TOCItem; level: number }>,
+  item: TOCItem
+): void {
+  const parent = stack.at(-1)?.item
+  if (parent === undefined) {
+    result.push(item)
+  } else {
+    parent.children ??= []
+    parent.children.push(item)
+  }
+}
+
+function buildTocTree(headings: Array<{ text: string; level: number; id: string }>): TOCItem[] {
   const result: TOCItem[] = []
   const stack: Array<{ item: TOCItem; level: number }> = []
 
   for (const heading of headings) {
-    const item: TOCItem = {
-      id: heading.id,
-      text: heading.text,
-      level: heading.level,
-    }
-
-    while (stack.length > 0) {
-      const lastStackEntry = stack.at(-1)
-      if (lastStackEntry === undefined || lastStackEntry.level < heading.level) {
-        break
-      }
-      stack.pop()
-    }
-
-    if (stack.length === 0) {
-      result.push(item)
-    } else {
-      const parent = stack.at(-1)?.item
-      if (parent === undefined) {
-        result.push(item)
-      } else {
-        parent.children ??= []
-        parent.children.push(item)
-      }
-    }
-
+    const item: TOCItem = { id: heading.id, text: heading.text, level: heading.level }
+    popStackUntilParent(stack, heading.level)
+    insertIntoTree(result, stack, item)
     stack.push({ item, level: heading.level })
   }
 

@@ -85,6 +85,27 @@ export interface ArdoRootProps {
  * }
  * ```
  */
+function resolveRootHeader(
+  header: ReactNode,
+  headerProps: ArdoHeaderProps | undefined,
+  mobileMenuContent: ReactNode
+): ReactNode {
+  if (header != null) {
+    return enhanceHeaderWithMobileMenuContent(header, mobileMenuContent)
+  }
+  return (
+    <ArdoHeader
+      {...headerProps}
+      mobileMenuContent={headerProps?.mobileMenuContent ?? mobileMenuContent}
+    />
+  )
+}
+
+function resolveLayoutClassName(className: string | undefined, isHomePage: boolean): string {
+  if (className != null) return className
+  return isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout
+}
+
 export function ArdoRoot({
   config,
   sidebar,
@@ -102,25 +123,14 @@ export function ArdoRoot({
 }: ArdoRootProps) {
   const location = useLocation()
   const isHomePage = location.pathname === "/" || location.pathname === ""
-  const hasCustomHeader = header != null
-  const hasSiteConfig =
-    editLink !== undefined || lastUpdated !== undefined || (tocLabel ?? "") !== ""
-
   const resolvedSidebar = isHomePage
     ? undefined
     : (sidebarContent ?? <ArdoSidebar {...sidebarProps} />)
-  const inferredMobileMenuContent = isHomePage ? undefined : resolvedSidebar
-  const resolvedHeader = hasCustomHeader ? (
-    enhanceHeaderWithMobileMenuContent(header, inferredMobileMenuContent)
-  ) : (
-    <ArdoHeader
-      {...headerProps}
-      mobileMenuContent={headerProps?.mobileMenuContent ?? inferredMobileMenuContent}
-    />
+  const resolvedHeader = resolveRootHeader(
+    header,
+    headerProps,
+    isHomePage ? undefined : resolvedSidebar
   )
-  const resolvedFooter = footer ?? <ArdoFooter {...footerProps} />
-  const resolvedClassName =
-    className ?? (isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout)
 
   const siteConfig = useMemo<ArdoSiteConfig>(
     () => ({ editLink, lastUpdated, tocLabel }),
@@ -130,21 +140,23 @@ export function ArdoRoot({
   const content = (
     <ArdoProvider config={config} sidebar={sidebar}>
       <ArdoLayout
-        className={resolvedClassName}
+        className={resolveLayoutClassName(className, isHomePage)}
         header={resolvedHeader}
         sidebar={resolvedSidebar}
-        footer={resolvedFooter}
+        footer={footer ?? <ArdoFooter {...footerProps} />}
       >
         {children ?? <Outlet />}
       </ArdoLayout>
     </ArdoProvider>
   )
 
-  if (hasSiteConfig) {
-    return <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
-  }
-
-  return content
+  const hasSiteConfig =
+    editLink !== undefined || lastUpdated !== undefined || (tocLabel ?? "") !== ""
+  return hasSiteConfig ? (
+    <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
+  ) : (
+    content
+  )
 }
 
 function enhanceHeaderWithMobileMenuContent(

@@ -63,6 +63,38 @@ export interface ArdoHeroProps {
  * />
  * ```
  */
+function HeroActionButton({ action }: { action: ArdoHeroAction }) {
+  const link = action.link
+  const isExternal =
+    typeof link === "string" && (link.startsWith("http://") || link.startsWith("https://"))
+  const cls = `${styles.heroAction} ${action.theme === "alt" ? styles.heroActionAlt : styles.heroActionBrand}`
+  const content = (
+    <>
+      {action.icon}
+      {action.text}
+    </>
+  )
+
+  if (isExternal) {
+    return (
+      <a href={link} className={cls} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    )
+  }
+  return (
+    <Link to={link} className={cls}>
+      {content}
+    </Link>
+  )
+}
+
+function resolveHeroImage(image: ArdoHeroProps["image"], name: string | undefined) {
+  const url = typeof image === "string" ? image : (image?.light ?? "")
+  const alt = typeof image === "string" ? (name ?? "") : (image?.alt ?? name ?? "")
+  return { url, alt }
+}
+
 export function ArdoHero({
   name,
   text,
@@ -72,66 +104,27 @@ export function ArdoHero({
   className,
   version,
 }: ArdoHeroProps) {
-  const imageUrl = typeof image === "string" ? image : (image?.light ?? "")
-  const imageAlt = typeof image === "string" ? (name ?? "") : (image?.alt ?? name ?? "")
-  const hasImage = imageUrl !== ""
-  const hasVersion = (version ?? "") !== ""
-  const hasName = (name ?? "") !== ""
-  const hasText = (text ?? "") !== ""
-  const hasTagline = (tagline ?? "") !== ""
-  const hasActions = (actions?.length ?? 0) > 0
+  const img = resolveHeroImage(image, name)
 
   return (
     <section className={className ?? styles.hero}>
       <div className={`${styles.heroContainer} ${styles.heroAnimate}`}>
-        {hasImage && (
+        {img.url !== "" && (
           <div>
-            <img src={imageUrl} alt={imageAlt} />
+            <img src={img.url} alt={img.alt} />
           </div>
         )}
-
         <div>
-          {hasVersion && <span className={styles.heroVersion}>v{version}</span>}
-          {hasName && <h1 className={styles.heroName}>{name}</h1>}
-          {hasText && <p className={styles.heroText}>{text}</p>}
-          {hasTagline && <p className={styles.heroTagline}>{tagline}</p>}
-
-          {hasActions && (
+          {(version ?? "") !== "" && <span className={styles.heroVersion}>v{version}</span>}
+          {(name ?? "") !== "" && <h1 className={styles.heroName}>{name}</h1>}
+          {(text ?? "") !== "" && <p className={styles.heroText}>{text}</p>}
+          {(tagline ?? "") !== "" && <p className={styles.heroTagline}>{tagline}</p>}
+          {(actions?.length ?? 0) > 0 && (
             <div className={styles.heroActions}>
               {actions?.map((action) => {
-                const link = action.link
-                const isExternal =
-                  typeof link === "string" &&
-                  (link.startsWith("http://") || link.startsWith("https://"))
-                const actionClass = `${styles.heroAction} ${action.theme === "alt" ? styles.heroActionAlt : styles.heroActionBrand}`
-                const actionKey = typeof link === "string" ? `${link}-${action.text}` : action.text
-
-                const content = (
-                  <>
-                    {action.icon}
-                    {action.text}
-                  </>
-                )
-
-                if (isExternal) {
-                  return (
-                    <a
-                      key={actionKey}
-                      href={link}
-                      className={actionClass}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {content}
-                    </a>
-                  )
-                }
-
-                return (
-                  <Link key={actionKey} to={link} className={actionClass}>
-                    {content}
-                  </Link>
-                )
+                const key =
+                  typeof action.link === "string" ? `${action.link}-${action.text}` : action.text
+                return <HeroActionButton key={key} action={action} />
               })}
             </div>
           )}
