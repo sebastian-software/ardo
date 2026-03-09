@@ -41,7 +41,7 @@
     "@types/node": "^25.3.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.0.2",
+    "eslint": "^10.0.3",
     "eslint-config-setup": "^0.3.3",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
