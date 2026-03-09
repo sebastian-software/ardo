@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.1.0...ardo-v3.2.0) (2026-03-09)
+
+
+### Bug Fixes
+
+* auto fix eslint issues ([ac4668d](https://github.com/sebastian-software/ardo/commit/ac4668d85d4d0263cd75dd4c9c2b95ccdc23c0e9))
+* auto fix eslint regex escaping issues ([37695fa](https://github.com/sebastian-software/ardo/commit/37695fa4a49bcd5e57327b911a73e3fd301e9c18))
+* extract MobileMenu component to reduce Header line count ([9bad5ff](https://github.com/sebastian-software/ardo/commit/9bad5ffc23f4e99040ad91e8efa9dfd1bbc84e76))
+* resolve all lint errors across packages ([f3bcafe](https://github.com/sebastian-software/ardo/commit/f3bcafe9fe7a7efc22f12e6e0d1dabc5cbe0af8c))
+* resolve TypeScript strict mode errors ([5ae8a8b](https://github.com/sebastian-software/ardo/commit/5ae8a8bbcd2a41cc5b14e5ffbd3b09217fcdf18a))
+* resolve TypeScript strict mode errors across packages ([967803a](https://github.com/sebastian-software/ardo/commit/967803a7645fdf270d2500f984b330b083bdd171))
+* use ArdoCodeBlock tag name in codeblock highlight plugin ([23c6284](https://github.com/sebastian-software/ardo/commit/23c62848bf7cb9b4d29dcd359d807db75ce0b118))
+
+
+### Code Refactoring
+
+* **ardo:** simplify codeblock and sidebar lint hotspots ([d03fb08](https://github.com/sebastian-software/ardo/commit/d03fb08fc7a43276c921cc156f7321680a70307a))
+* **ardo:** split shiki pipeline and relax fs filename rule ([f12d94b](https://github.com/sebastian-software/ardo/commit/f12d94b379d52017e8e4b537a59d7af43adb571e))
+* **ardo:** split typedoc and vite plugin helpers ([cfba512](https://github.com/sebastian-software/ardo/commit/cfba512b8dbab62c9fc901174498290a85ef45b8))
+* prefix all public components, hooks, and types with Ardo ([73f83a7](https://github.com/sebastian-software/ardo/commit/73f83a793f235d8cf7bee4a04baf3759d027bcaa))
+* remove themeConfig, move UI configuration to JSX props ([613ba58](https://github.com/sebastian-software/ardo/commit/613ba58a5a25d0b2f0c5d91e7e7826f398ae61d3))
+* replace ArdoFeatures items prop with children-based composition ([d6b43cf](https://github.com/sebastian-software/ardo/commit/d6b43cfc0cef070c0e2e349b8510394e9721c91e))
+* replace hardcoded ardo- CSS class names with Vanilla Extract styles ([f5490a4](https://github.com/sebastian-software/ardo/commit/f5490a40f310ce707601830c99a70c86e0e69868))
+* replace shiki per-element class names with structural selectors ([060b2eb](https://github.com/sebastian-software/ardo/commit/060b2ebd688a35175f816503b5d44ffc2cb4fa4e))
+* use short Vanilla Extract class name identifiers ([9a43962](https://github.com/sebastian-software/ardo/commit/9a43962cfcfe484e558fdb8b0b447fc246d56c9f))
+* use Vanilla Extract generated class for shiki container ([5a9bf76](https://github.com/sebastian-software/ardo/commit/5a9bf769e3373c04aff4e33d935f9bd0639cdcee))
+
 ## [3.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.5...ardo-v3.1.0) (2026-03-04)
 
 
