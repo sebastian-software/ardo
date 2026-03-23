@@ -35,21 +35,21 @@
   "author": "Sebastian Software GmbH",
   "license": "MIT",
   "devDependencies": {
-    "@storybook/addon-docs": "^10.2.16",
-    "@storybook/react": "^10.2.16",
-    "@storybook/react-vite": "^10.2.16",
+    "@storybook/addon-docs": "^10.3.1",
+    "@storybook/react": "^10.3.1",
+    "@storybook/react-vite": "^10.3.1",
     "@types/node": "^25.3.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.0.2",
+    "eslint": "^10.1.0",
     "eslint-config-setup": "^0.3.3",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
-    "lint-staged": "^16.3.2",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
-    "storybook": "^10.2.16",
+    "storybook": "^10.3.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=22.0.0",
