@@ -66,9 +66,9 @@
   "dependencies": {
     "@mdx-js/rollup": "^3.1.1",
     "@react-router/dev": "^7.13.1",
-    "@shikijs/rehype": "^4.0.1",
+    "@shikijs/rehype": "^4.0.2",
     "@vanilla-extract/css": "^1.18.0",
-    "@vanilla-extract/esbuild-plugin": "^2.3.21",
+    "@vanilla-extract/esbuild-plugin": "^2.3.22",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "^5.1.4",
     "@vitejs/plugin-react": "^5.1.4",
@@ -86,8 +86,8 @@
     "remark-mdx-frontmatter": "^5.2.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^4.0.1",
-    "tailwindcss": "^4.2.1",
+    "shiki": "^4.0.2",
+    "tailwindcss": "^4.2.2",
     "typedoc": "^0.28.17",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
