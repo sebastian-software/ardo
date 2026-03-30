@@ -35,34 +35,34 @@
   "author": "Sebastian Software GmbH",
   "license": "MIT",
   "devDependencies": {
-    "@storybook/addon-docs": "^10.2.16",
-    "@storybook/react": "^10.2.16",
-    "@storybook/react-vite": "^10.2.16",
-    "@types/node": "^25.3.5",
+    "@storybook/addon-docs": "^10.3.3",
+    "@storybook/react": "^10.3.3",
+    "@storybook/react-vite": "^10.3.3",
+    "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.0.2",
+    "eslint": "^10.1.0",
     "eslint-config-setup": "^0.3.3",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
-    "lint-staged": "^16.3.2",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
-    "storybook": "^10.2.16",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "storybook": "^10.3.3",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
+  "packageManager": "pnpm@10.33.0",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
   },
   "dependencies": {
-    "@vanilla-extract/css": "^1.18.0",
-    "@vanilla-extract/esbuild-plugin": "^2.3.21",
+    "@vanilla-extract/css": "^1.20.1",
+    "@vanilla-extract/esbuild-plugin": "^2.3.22",
     "@vanilla-extract/recipes": "^0.5.7",
-    "@vanilla-extract/vite-plugin": "^5.1.4"
+    "@vanilla-extract/vite-plugin": "^5.2.2"
   }
 }

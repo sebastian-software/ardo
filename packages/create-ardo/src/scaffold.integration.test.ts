@@ -122,10 +122,10 @@ await generateApiDocs({
     )
 
     // 7. Install dependencies
-    execSync("pnpm install --no-lockfile", {
+    execSync("pnpm install --no-lockfile --prefer-offline", {
       cwd: tmpDir,
       stdio: "pipe",
-      timeout: 120_000,
+      timeout: 180_000,
     })
 
     // 8. Generate TypeDoc API docs (before vite build so routes plugin picks them up)
@@ -136,7 +136,7 @@ await generateApiDocs({
     })
 
     // 9. Build with react-router (handles client, server, and prerender)
-    execSync("npx react-router build", {
+    execSync("pnpm exec react-router build", {
       cwd: tmpDir,
       stdio: "pipe",
       timeout: 120_000,
