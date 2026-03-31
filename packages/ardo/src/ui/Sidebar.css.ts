@@ -101,6 +101,18 @@ export const sidebarText = style({
   },
 })
 
+export const sidebarTextButton = style({
+  width: "100%",
+  background: "none",
+  border: "none",
+  appearance: "none",
+  WebkitAppearance: "none",
+  fontFamily: "inherit",
+  lineHeight: "inherit",
+  textAlign: "left",
+  cursor: "pointer",
+})
+
 export const sidebarCollapse = style({
   background: "none",
   border: "none",

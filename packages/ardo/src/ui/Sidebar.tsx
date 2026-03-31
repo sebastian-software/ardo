@@ -158,6 +158,7 @@ export function ArdoSidebarGroup({
   const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
+  const textButtonClassName = [textClassName, styles.sidebarTextButton].join(" ")
 
   const hasChildren = Children.count(children) > 0
   const hasTo = (to ?? "") !== ""
@@ -179,13 +180,12 @@ export function ArdoSidebarGroup({
         ) : (
           <button
             type="button"
-            className={textClassName}
+            className={textButtonClassName}
             onClick={() => {
               if (canToggle) {
                 setCollapsed(!collapsed)
               }
             }}
-            style={canToggle ? { cursor: "pointer" } : undefined}
           >
             {title}
           </button>
@@ -302,6 +302,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
   const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
+  const textButtonClassName = [textClassName, styles.sidebarTextButton].join(" ")
 
   return (
     <li className={styles.sidebarItem}>
@@ -318,7 +319,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         ) : (
           <button
             type="button"
-            className={textClassName}
+            className={textButtonClassName}
             onClick={() => {
               if (hasChildren) {
                 setCollapsed(!collapsed)
