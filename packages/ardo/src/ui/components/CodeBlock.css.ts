@@ -1,7 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
-import { shikiContainerClassName } from "./code-block-classes"
 import { vars } from "../theme/contract.css"
+import { shikiContainerClassName } from "./code-block-classes"
 
 // =============================================================================
 // React CodeBlock component styles (used by ArdoCodeBlock via className props)
