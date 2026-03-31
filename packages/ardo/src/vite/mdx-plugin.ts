@@ -10,7 +10,9 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import type { ArdoConfig } from "../config/types"
 
 import { defaultMarkdownConfig } from "../config/index"
+import { remarkMdxToc } from "../markdown/remark-mdx-toc"
 import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
+import { recmaWrapExport } from "./recma-wrap-export"
 
 export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin {
   const themeConfig = markdownConfig?.theme ?? defaultMarkdownConfig.theme
@@ -33,8 +35,10 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
       [remarkMdxFrontmatter, { name: "frontmatter" }],
       remarkGfm,
       remarkCodeMeta,
+      [remarkMdxToc, { levels: markdownConfig?.toc?.level ?? [2, 3] }],
     ],
     rehypePlugins: [[rehypeShiki, shikiOptions]],
+    recmaPlugins: [recmaWrapExport],
     providerImportSource: "ardo/mdx-provider",
   }) as Plugin
 }

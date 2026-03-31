@@ -10,7 +10,9 @@ import { ArdoCopyButton } from "../ui/components/CopyButton"
 import { ArdoIcon } from "../ui/components/Icon"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
+import { ArdoPageDataProvider } from "../runtime/hooks"
 import { ArdoContent } from "../ui/Content"
+import { ArdoDocContent } from "../ui/DocPage"
 
 /**
  * Smart link component that uses React Router for internal links
@@ -100,8 +102,10 @@ function PreBlock({
  */
 export function useMDXComponents(): MDXComponents {
   return {
-    // Wrapper for the entire MDX content - uses ArdoContent for styling
-    wrapper: ({ children }: { children: ReactNode }) => <ArdoContent>{children}</ArdoContent>,
+    // Wrapper for the entire MDX content - renders content + TOC via DocContent.
+    // The recma-wrap-export plugin wraps this with ArdoPageDataProvider,
+    // which makes frontmatter/toc available to both Content and TOC components.
+    wrapper: ({ children }: { children: ReactNode }) => <ArdoDocContent>{children}</ArdoDocContent>,
 
     // MDX element overrides — styled via tag selectors in content.css.ts
     a: SmartLink,

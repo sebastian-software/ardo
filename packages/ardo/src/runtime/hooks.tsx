@@ -56,6 +56,39 @@ export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoPro
 export { ArdoContext }
 
 // =============================================================================
+// ArdoPageDataProvider — injects page-level data (frontmatter, toc) into context
+// Used by the Vite transform to wrap MDX default exports.
+// =============================================================================
+
+interface ArdoPageDataProviderProps {
+  frontmatter: PageData["frontmatter"]
+  toc: TOCItem[]
+  children: ReactNode
+}
+
+export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDataProviderProps) {
+  const parent = use(ArdoContext)
+  const pageData: PageData = useMemo(
+    () => ({
+      title: (frontmatter?.title as string) ?? "",
+      frontmatter: frontmatter ?? {},
+      toc: toc ?? [],
+      content: "",
+      filePath: "",
+      relativePath: "",
+    }),
+    [frontmatter, toc]
+  )
+  const value = useMemo(
+    () => (parent ? { ...parent, currentPage: pageData } : null),
+    [parent, pageData]
+  )
+
+  if (!value) return <>{children}</>
+  return <ArdoContext value={value}>{children}</ArdoContext>
+}
+
+// =============================================================================
 // ArdoSiteConfig — cross-cutting content settings (editLink, lastUpdated, TOC)
 // =============================================================================
 

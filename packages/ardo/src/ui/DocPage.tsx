@@ -33,8 +33,7 @@ interface DocPageProps {
  */
 export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPageProps) {
   const pageData = useArdoPageData()
-  const showToc =
-    pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
+  const hideToc = pageData?.frontmatter.outline === false
 
   return (
     <ArdoLayout>
@@ -42,7 +41,7 @@ export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPa
         <ArdoContent editLink={editLink} lastUpdated={lastUpdated}>
           {children}
         </ArdoContent>
-        {showToc && <ArdoTOC label={tocLabel} />}
+        {!hideToc && <ArdoTOC label={tocLabel} />}
       </div>
     </ArdoLayout>
   )
@@ -84,15 +83,14 @@ interface DocContentProps {
  */
 export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: DocContentProps) {
   const pageData = useArdoPageData()
-  const showToc =
-    pageData?.frontmatter.outline !== false && pageData?.toc && pageData.toc.length > 0
+  const hideToc = pageData?.frontmatter.outline === false
 
   return (
     <div className={styles.docPage}>
       <ArdoContent editLink={editLink} lastUpdated={lastUpdated}>
         {children}
       </ArdoContent>
-      {showToc && <ArdoTOC label={tocLabel} />}
+      {!hideToc && <ArdoTOC label={tocLabel} />}
     </div>
   )
 }
