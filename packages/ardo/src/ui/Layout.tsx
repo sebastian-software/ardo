@@ -100,9 +100,9 @@ export function ArdoLayout({ header, sidebar, footer, children, className }: Ard
         {sidebar}
         <main id="main-content" className={styles.main}>
           {children}
+          {footer}
         </main>
       </div>
-      {footer}
     </div>
   )
 }

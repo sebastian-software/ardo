@@ -3,41 +3,60 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const layout = style({
-  minHeight: "100vh",
+  height: "100vh",
   display: "flex",
   flexDirection: "column",
+  background: vars.color.sidebarBg,
+  overflow: "hidden",
 })
 
 export const layoutContainer = style({
   display: "flex",
   flex: 1,
   paddingTop: vars.layout.headerHeight,
+  minHeight: 0,
 })
 
 export const main = style({
   flex: 1,
   minWidth: 0,
-  padding: `${vars.space.section} ${vars.space.content}`,
-  marginLeft: vars.layout.sidebarWidth,
+  marginRight: vars.space.sm,
+  marginBottom: vars.space.sm,
+  background: vars.color.bg,
+  borderRadius: vars.radius.lg,
+  border: `1px solid ${vars.color.border}`,
+  // Content scrolls inside the card
+  overflowY: "auto",
+  padding: vars.space.xl,
   "@media": {
     "(max-width: 1024px)": {
-      marginLeft: 0,
+      marginRight: 0,
+      marginBottom: 0,
+      borderRadius: 0,
+      border: "none",
     },
   },
 })
 
 export const home = style({
+  height: "auto",
   minHeight: "100vh",
+  overflow: "visible",
 })
 
 export const homeMain = style({
   paddingTop: vars.layout.headerHeight,
 })
 
-// No sidebar margin and no padding on home page
+// No card styling on home page
 globalStyle(`${home} .${main}`, {
   marginLeft: 0,
   padding: 0,
+  margin: 0,
+  borderRadius: 0,
+  border: "none",
+  background: vars.color.bg,
+  overflow: "visible",
 })
 
 export const skipLink = style({

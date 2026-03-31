@@ -3,20 +3,20 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const sidebar = style({
-  position: "fixed",
-  top: vars.layout.headerHeight,
-  left: 0,
   width: vars.layout.sidebarWidth,
-  height: `calc(100vh - ${vars.layout.headerHeight})`,
-  padding: `1.75rem ${vars.space.md} 1.75rem 1.25rem`,
+  flexShrink: 0,
+  padding: `${vars.space.md} ${vars.space.md} ${vars.space.md} 1.25rem`,
   overflowY: "auto",
-  background: vars.color.sidebarBg,
-  borderRight: `1px solid ${vars.color.sidebarBorder}`,
+  background: "transparent",
   "@media": {
     "(max-width: 1024px)": {
       display: "none",
     },
   },
+})
+
+export const sidebarHeader = style({
+  marginBottom: vars.space.md,
 })
 
 export const sidebarList = style({

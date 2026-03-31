@@ -9,17 +9,8 @@ export const header = style({
   right: 0,
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
-  background: "oklch(1 0 0 / 0.88)",
-  backdropFilter: "blur(16px) saturate(1.8)",
-  WebkitBackdropFilter: "blur(16px) saturate(1.8)",
-  boxShadow: "0 1px 0 oklch(0 0 0 / 0.04)",
+  background: vars.color.sidebarBg,
   zIndex: 100,
-  selectors: {
-    ".dark &": {
-      background: "oklch(0.14 0.01 170 / 0.88)",
-      boxShadow: "0 1px 0 oklch(1 0 0 / 0.06)",
-    },
-  },
 })
 
 export const headerContainer = style({

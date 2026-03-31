@@ -4,6 +4,7 @@ import { Outlet, useLocation } from "react-router"
 import type { ArdoConfig, SidebarItem } from "../config/types"
 
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
+import { ArdoSearch } from "./components/Search"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { ArdoLayout } from "./Layout"
@@ -123,12 +124,16 @@ export function ArdoRoot({
 }: ArdoRootProps) {
   const location = useLocation()
   const isHomePage = location.pathname === "/" || location.pathname === ""
+  const searchPlaceholder = headerProps?.searchPlaceholder
+  const showSearch = headerProps?.search !== false
+  const sidebarSearch =
+    !isHomePage && showSearch ? <ArdoSearch placeholder={searchPlaceholder} /> : undefined
   const resolvedSidebar = isHomePage
     ? undefined
-    : (sidebarContent ?? <ArdoSidebar {...sidebarProps} />)
+    : (sidebarContent ?? <ArdoSidebar {...sidebarProps} header={sidebarSearch} />)
   const resolvedHeader = resolveRootHeader(
     header,
-    headerProps,
+    { ...headerProps, search: false },
     isHomePage ? undefined : resolvedSidebar
   )
 

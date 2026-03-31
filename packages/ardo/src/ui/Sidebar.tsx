@@ -42,6 +42,8 @@ export interface ArdoSidebarProps {
   items?: SidebarItemType[]
   /** Children for JSX composition (SidebarGroup, SidebarLink) */
   children?: ReactNode
+  /** Content rendered above navigation (e.g. search) */
+  header?: ReactNode
   /** Additional CSS classes */
   className?: string
 }
@@ -81,7 +83,7 @@ export interface ArdoSidebarProps {
  * </Sidebar>
  * ```
  */
-export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
+export function ArdoSidebar({ items, children, header, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
   const contextSidebar = useArdoSidebar()
   const hasCustomChildren = children != null
@@ -92,6 +94,7 @@ export function ArdoSidebar({ items, children, className }: ArdoSidebarProps) {
   return (
     <SidebarContext value={contextValue}>
       <aside className={className ?? styles.sidebar}>
+        {header != null && <div className={styles.sidebarHeader}>{header}</div>}
         <nav aria-label="Main navigation">
           {hasCustomChildren ? (
             <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>

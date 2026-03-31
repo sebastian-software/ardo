@@ -4,14 +4,8 @@ import { vars } from "../theme/contract.css"
 
 export const search = style({
   position: "relative",
-  width: "clamp(220px, 30vw, 360px)",
+  width: "100%",
   maxWidth: "100%",
-  transition: `width ${vars.transition.fast}`,
-  "@media": {
-    "(max-width: 768px)": {
-      width: "40px",
-    },
-  },
 })
 
 export const searchField = style({

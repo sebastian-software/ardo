@@ -3,14 +3,9 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const toc = style({
-  position: "fixed",
-  top: vars.layout.headerHeight,
-  right: 0,
   width: vars.layout.tocWidth,
-  height: `calc(100vh - ${vars.layout.headerHeight})`,
-  padding: `${vars.space.xl} 1.25rem ${vars.space.xl} ${vars.space.lg}`,
+  flexShrink: 0,
   overflowY: "auto",
-  borderLeft: `1px solid ${vars.color.borderLight}`,
   "@media": {
     "(max-width: 1280px)": {
       display: "none",
@@ -24,7 +19,7 @@ export const tocTitle = style({
   textTransform: "uppercase",
   letterSpacing: "0.06em",
   color: vars.color.textLight,
-  marginBottom: "1.25rem",
+  marginBottom: vars.space.md,
 })
 
 export const tocList = style({
