@@ -8,8 +8,9 @@ export const toc = style({
   right: 0,
   width: vars.layout.tocWidth,
   height: `calc(100vh - ${vars.layout.headerHeight})`,
-  padding: "24px 20px",
+  padding: `${vars.space.xl} 1.25rem ${vars.space.xl} ${vars.space.lg}`,
   overflowY: "auto",
+  borderLeft: `1px solid ${vars.color.borderLight}`,
   "@media": {
     "(max-width: 1280px)": {
       display: "none",
@@ -18,12 +19,12 @@ export const toc = style({
 })
 
 export const tocTitle = style({
-  fontSize: "11px",
-  fontWeight: 600,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 700,
   textTransform: "uppercase",
-  letterSpacing: "0.08em",
-  color: vars.color.textLighter,
-  marginBottom: "16px",
+  letterSpacing: "0.06em",
+  color: vars.color.textLight,
+  marginBottom: "1.25rem",
 })
 
 export const tocList = style({
@@ -32,30 +33,31 @@ export const tocList = style({
 
 export const tocLink = style({
   display: "block",
-  padding: "5px 0",
-  paddingLeft: "14px",
+  padding: `${vars.space.xs} 0 ${vars.space.xs} ${vars.space.md}`,
   color: vars.color.textLighter,
   textDecoration: "none",
-  fontSize: "13px",
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.5,
+  fontWeight: 400,
   borderLeft: "2px solid transparent",
-  marginLeft: "-14px",
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       color: vars.color.text,
-      borderLeftColor: vars.color.border,
+      borderLeftColor: vars.color.borderLight,
     },
     "&.active": {
       color: vars.color.brand,
       borderLeftColor: vars.color.brand,
+      fontWeight: 500,
     },
   },
 })
 
 export const tocLink3 = style({
-  paddingLeft: "26px",
+  paddingLeft: "1.75rem",
 })
 
 export const tocLink4 = style({
-  paddingLeft: "38px",
+  paddingLeft: "2.5rem",
 })

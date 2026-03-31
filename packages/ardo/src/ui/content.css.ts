@@ -6,45 +6,56 @@ export const ardoContent = style({})
 const c = `.${ardoContent}`
 
 globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
-  fontWeight: 600,
-  lineHeight: 1.3,
-  marginTop: "40px",
-  marginBottom: "16px",
-  letterSpacing: "-0.01em",
+  fontFamily: vars.font.familyHeading,
+  fontWeight: 700,
+  lineHeight: 1.25,
+  marginTop: vars.space.section,
+  marginBottom: vars.space.md,
+  letterSpacing: "-0.02em",
 })
 
-globalStyle(`${c} h1`, { fontSize: "32px" })
+globalStyle(`${c} h1`, {
+  fontSize: `clamp(1.75rem, 4vw, ${vars.fontSize["3xl"]})`,
+})
 
 globalStyle(`${c} h2`, {
-  fontSize: "24px",
-  paddingBottom: "10px",
+  fontSize: `clamp(1.375rem, 3vw, 1.75rem)`,
+  paddingBottom: "0.75rem",
   borderBottom: "none",
   position: "relative",
-  letterSpacing: "-0.02em",
+  letterSpacing: "-0.025em",
 })
 
 globalStyle(`${c} h2::after`, {
   content: '""',
   display: "block",
-  width: "48px",
-  height: "3px",
+  width: "2.5rem",
+  height: "2.5px",
   background: vars.color.brand,
   borderRadius: "2px",
-  marginTop: "10px",
+  marginTop: "0.75rem",
+  opacity: 0.7,
 })
 
-globalStyle(`${c} h3`, { fontSize: "20px" })
-globalStyle(`${c} h4`, { fontSize: "17px" })
+globalStyle(`${c} h3`, {
+  fontSize: `clamp(${vars.fontSize.lg}, 2.5vw, 1.375rem)`,
+})
+
+globalStyle(`${c} h4`, {
+  fontSize: vars.fontSize.lg,
+  fontWeight: 600,
+})
 
 globalStyle(`${c} p`, {
-  marginBottom: "16px",
-  maxWidth: "70ch",
+  marginBottom: vars.space.lg,
+  maxWidth: "68ch",
 })
 
 globalStyle(`${c} a`, {
   color: vars.color.brand,
   textDecoration: "underline",
-  textDecorationColor: "oklch(0.48 0.15 170 / 0.3)",
+  textDecorationColor: "transparent",
+  textDecorationThickness: "1.5px",
   textUnderlineOffset: "3px",
   transition: `text-decoration-color ${vars.transition.fast}`,
 })
@@ -53,18 +64,14 @@ globalStyle(`${c} a:hover`, {
   textDecorationColor: vars.color.brand,
 })
 
-globalStyle(`.dark ${c} a`, {
-  textDecorationColor: "oklch(0.65 0.16 170 / 0.3)",
-})
-
 globalStyle(`${c} ul, ${c} ol`, {
-  marginBottom: "16px",
-  paddingLeft: "24px",
-  maxWidth: "70ch",
+  marginBottom: vars.space.lg,
+  paddingLeft: "1.75rem",
+  maxWidth: "68ch",
 })
 
 globalStyle(`${c} li`, {
-  marginBottom: "8px",
+  marginBottom: vars.space.sm,
 })
 
 globalStyle(`${c} li::marker`, {
@@ -72,62 +79,66 @@ globalStyle(`${c} li::marker`, {
 })
 
 globalStyle(`${c} blockquote`, {
-  margin: "20px 0",
-  padding: "16px 20px",
-  borderLeft: `4px solid oklch(0.48 0.18 170)`,
+  margin: `${vars.space.content} 0`,
+  padding: `1.25rem ${vars.space.lg}`,
+  borderLeft: `3px solid ${vars.color.brand}`,
   background: vars.color.bgSoft,
   borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
-  fontStyle: "italic",
-  color: vars.color.textLight,
+  color: vars.color.text,
+  fontSize: vars.fontSize.base,
 })
 
 globalStyle(`${c} hr`, {
-  margin: "40px 0",
+  margin: `${vars.space.section} 0`,
   border: "none",
   borderTop: `1px solid ${vars.color.border}`,
 })
 
 globalStyle(`${c} table`, {
   width: "100%",
-  margin: "20px 0",
+  margin: `${vars.space.content} 0`,
   borderCollapse: "collapse",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
+  borderRadius: vars.radius.base,
+  overflow: "hidden",
+  border: `1px solid ${vars.color.border}`,
 })
 
 globalStyle(`${c} th, ${c} td`, {
-  padding: "12px 16px",
-  border: `1px solid ${vars.color.border}`,
+  padding: `0.75rem ${vars.space.md}`,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
   textAlign: "left",
 })
 
 globalStyle(`${c} th`, {
   background: vars.color.bgSoft,
   fontWeight: 600,
-  fontSize: "13px",
-})
-
-globalStyle(`${c} tbody tr:nth-child(even)`, {
-  background: vars.color.bgSoft,
+  fontSize: vars.fontSize.xs,
+  textTransform: "uppercase",
+  letterSpacing: "0.04em",
 })
 
 globalStyle(`${c} img`, {
   maxWidth: "100%",
-  borderRadius: vars.radius.base,
+  borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
+  boxShadow: vars.color.shadowSm,
 })
 
 // Inline code
 globalStyle(`${c} code`, {
   fontFamily: vars.font.mono,
-  fontSize: "0.875em",
-  padding: "3px 6px",
-  background: "oklch(0.48 0.15 170 / 0.06)",
+  fontSize: "0.85em",
+  padding: "0.125rem 0.375rem",
+  background: vars.color.brandSubtle,
   borderRadius: vars.radius.sm,
-  border: "1px solid oklch(0.48 0.15 170 / 0.1)",
+  border: `1px solid ${vars.color.borderLight}`,
+  fontWeight: 500,
 })
 
 globalStyle(`${c} pre code`, {
   padding: 0,
   background: "none",
   border: "none",
+  fontWeight: 400,
 })

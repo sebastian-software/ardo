@@ -5,11 +5,11 @@ import { vars } from "../theme/contract.css"
 
 export const container = recipe({
   base: {
-    margin: "16px 0",
-    padding: "12px 16px",
+    margin: `1.25rem 0`,
+    padding: `${vars.space.md} 1.25rem`,
     borderRadius: vars.radius.base,
     border: "1px solid",
-    borderLeft: "4px solid",
+    borderLeft: "3px solid",
   },
   variants: {
     type: {
@@ -46,10 +46,10 @@ export const containerTitle = recipe({
   base: {
     display: "flex",
     alignItems: "center",
-    gap: "8px",
+    gap: vars.space.xs,
     fontWeight: 600,
-    fontSize: "14px",
-    marginBottom: "8px",
+    fontSize: vars.fontSize.sm,
+    marginBottom: vars.space.sm,
   },
   variants: {
     type: {
@@ -63,6 +63,6 @@ export const containerTitle = recipe({
 })
 
 export const containerContent = style({
-  fontSize: "14px",
-  lineHeight: 1.6,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.65,
 })

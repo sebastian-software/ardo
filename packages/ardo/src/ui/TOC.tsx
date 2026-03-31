@@ -34,7 +34,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
         }
       },
       {
-        rootMargin: "-80px 0px -80% 0px",
+        rootMargin: "-96px 0px -65% 0px",
         threshold: 0,
       }
     )

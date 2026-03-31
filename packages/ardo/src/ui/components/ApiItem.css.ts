@@ -4,8 +4,8 @@ import { recipe } from "@vanilla-extract/recipes"
 import { vars } from "../theme/contract.css"
 
 export const apiItem = style({
-  margin: "28px 0",
-  paddingBottom: "28px",
+  margin: `${vars.space.xl} 0`,
+  paddingBottom: vars.space.xl,
   borderBottom: `1px solid ${vars.color.border}`,
   selectors: {
     "&:last-child": {
@@ -17,13 +17,15 @@ export const apiItem = style({
 export const apiItemTitle = style({
   display: "flex",
   alignItems: "center",
-  gap: "12px",
-  marginBottom: "12px",
+  gap: "0.75rem",
+  marginBottom: "0.75rem",
 })
 
 export const apiItemName = style({
   fontFamily: vars.font.mono,
-  fontWeight: 600,
+  fontSize: vars.fontSize.base,
+  fontWeight: 700,
+  letterSpacing: "-0.01em",
 })
 
 export const apiAnchor = style({
@@ -39,16 +41,16 @@ globalStyle(`${apiItemTitle}:hover ${apiAnchor}`, {
 
 export const apiItemDescription = style({
   color: vars.color.textLight,
-  marginBottom: "16px",
+  marginBottom: vars.space.md,
   lineHeight: 1.6,
 })
 
 export const apiBadge = recipe({
   base: {
     display: "inline-flex",
-    padding: "3px 10px",
-    fontSize: "11px",
-    fontWeight: 600,
+    padding: "0.125rem 0.5rem",
+    fontSize: vars.fontSize.xs,
+    fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "0.05em",
     borderRadius: vars.radius.sm,
@@ -57,93 +59,72 @@ export const apiBadge = recipe({
   variants: {
     kind: {
       class: {
-        background: "#eff6ff",
-        borderColor: "#bfdbfe",
-        color: "#1e40af",
-        selectors: {
-          ".dark &": { background: "#1e3a8a", borderColor: "#3b82f6", color: "#93c5fd" },
-        },
+        background: vars.color.badgeBlueBg,
+        borderColor: vars.color.badgeBlueBorder,
+        color: vars.color.badgeBlue,
       },
       interface: {
-        background: "#ecfdf5",
-        borderColor: "#a7f3d0",
-        color: "#065f46",
-        selectors: {
-          ".dark &": { background: "#064e3b", borderColor: "#10b981", color: "#6ee7b7" },
-        },
+        background: vars.color.badgeGreenBg,
+        borderColor: vars.color.badgeGreenBorder,
+        color: vars.color.badgeGreen,
       },
       type: {
-        background: "#fffbeb",
-        borderColor: "#fde68a",
-        color: "#92400e",
-        selectors: {
-          ".dark &": { background: "#78350f", borderColor: "#f59e0b", color: "#fcd34d" },
-        },
+        background: vars.color.badgeAmberBg,
+        borderColor: vars.color.badgeAmberBorder,
+        color: vars.color.badgeAmber,
       },
       enum: {
-        background: "#f5f3ff",
-        borderColor: "#ddd6fe",
-        color: "#5b21b6",
-        selectors: {
-          ".dark &": { background: "#4c1d95", borderColor: "#8b5cf6", color: "#c4b5fd" },
-        },
+        background: vars.color.badgePurpleBg,
+        borderColor: vars.color.badgePurpleBorder,
+        color: vars.color.badgePurple,
       },
       function: {
-        background: "#fdf2f8",
-        borderColor: "#fbcfe8",
-        color: "#9d174d",
-        selectors: {
-          ".dark &": { background: "#831843", borderColor: "#ec4899", color: "#f9a8d4" },
-        },
+        background: vars.color.badgePinkBg,
+        borderColor: vars.color.badgePinkBorder,
+        color: vars.color.badgePink,
       },
       method: {
-        background: "#f0f9ff",
-        borderColor: "#bae6fd",
-        color: "#0369a1",
-        selectors: {
-          ".dark &": { background: "#0c4a6e", borderColor: "#0ea5e9", color: "#7dd3fc" },
-        },
+        background: vars.color.badgeBlueBg,
+        borderColor: vars.color.badgeBlueBorder,
+        color: vars.color.badgeBlue,
       },
       property: {
-        background: "#faf5ff",
-        borderColor: "#e9d5ff",
-        color: "#7c3aed",
-        selectors: {
-          ".dark &": { background: "#581c87", borderColor: "#a855f7", color: "#c4b5fd" },
-        },
+        background: vars.color.badgePurpleBg,
+        borderColor: vars.color.badgePurpleBorder,
+        color: vars.color.badgePurple,
       },
     },
   },
 })
 
 export const apiSignature = style({
-  margin: "16px 0",
+  margin: `${vars.space.md} 0`,
 })
 
 export const apiSignatureCode = style({
-  padding: "16px",
-  background: vars.color.bgSoft,
-  border: `1px solid ${vars.color.border}`,
+  padding: `${vars.space.md} 1.25rem`,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
   borderRadius: vars.radius.base,
   overflowX: "auto",
   fontFamily: vars.font.mono,
-  fontSize: "14px",
-  lineHeight: 1.5,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.6,
 })
 
 export const apiKeyword = style({
-  color: "#cf222e",
-  selectors: { ".dark &": { color: "#ff7b72" } },
+  color: "oklch(0.55 0.2 25)",
+  selectors: { ".dark &": { color: "oklch(0.75 0.15 25)" } },
 })
 
 export const apiFunctionName = style({
-  color: "#8250df",
-  selectors: { ".dark &": { color: "#d2a8ff" } },
+  color: "oklch(0.45 0.18 300)",
+  selectors: { ".dark &": { color: "oklch(0.75 0.14 300)" } },
 })
 
 export const apiTypeParams = style({
-  color: "#0550ae",
-  selectors: { ".dark &": { color: "#79c0ff" } },
+  color: "oklch(0.45 0.14 250)",
+  selectors: { ".dark &": { color: "oklch(0.72 0.12 250)" } },
 })
 
 export const apiParams = style({
@@ -151,81 +132,84 @@ export const apiParams = style({
 })
 
 export const apiReturnType = style({
-  color: "#0550ae",
-  selectors: { ".dark &": { color: "#79c0ff" } },
+  color: "oklch(0.45 0.14 250)",
+  selectors: { ".dark &": { color: "oklch(0.72 0.12 250)" } },
 })
 
 export const apiSectionTitle = style({
-  fontSize: "13px",
-  fontWeight: 600,
+  fontSize: vars.fontSize.sm,
+  fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.05em",
   color: vars.color.textLighter,
-  marginTop: "24px",
-  marginBottom: "12px",
+  marginTop: vars.space.lg,
+  marginBottom: "0.75rem",
 })
 
 export const apiTable = style({
   width: "100%",
-  margin: "12px 0",
+  margin: `0.75rem 0`,
   borderCollapse: "collapse",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
+  borderRadius: vars.radius.base,
+  overflow: "hidden",
+  border: `1px solid ${vars.color.border}`,
 })
 
 globalStyle(`${apiTable} th, ${apiTable} td`, {
-  padding: "12px 14px",
-  border: `1px solid ${vars.color.border}`,
+  padding: `0.75rem ${vars.space.sm}`,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
   textAlign: "left",
 })
 
 globalStyle(`${apiTable} th`, {
   background: vars.color.bgSoft,
   fontWeight: 600,
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   textTransform: "uppercase",
-  letterSpacing: "0.05em",
+  letterSpacing: "0.04em",
   color: vars.color.textLighter,
 })
 
 globalStyle(`${apiTable} code`, {
-  fontSize: "13px",
+  fontSize: vars.fontSize.sm,
 })
 
 export const apiOptional = style({
-  fontSize: "11px",
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
-  marginLeft: "6px",
+  marginLeft: vars.space.xs,
 })
 
 export const apiDefault = style({
   display: "block",
-  marginTop: "4px",
-  fontSize: "12px",
+  marginTop: vars.space.xs,
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
 })
 
 export const apiReturns = style({
-  margin: "16px 0",
+  margin: `${vars.space.md} 0`,
 })
 
 export const apiExamples = style({
-  margin: "16px 0",
+  margin: `${vars.space.md} 0`,
 })
 
 export const apiExample = style({
-  margin: "8px 0",
-  padding: "16px",
-  background: vars.color.bgSoft,
-  border: `1px solid ${vars.color.border}`,
+  margin: `${vars.space.sm} 0`,
+  padding: vars.space.md,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
   borderRadius: vars.radius.base,
   overflowX: "auto",
   fontFamily: vars.font.mono,
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
 })
 
 export const apiSource = style({
-  marginTop: "16px",
-  fontSize: "12px",
+  marginTop: vars.space.md,
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
 })
 
@@ -239,7 +223,7 @@ globalStyle(`${apiSource} a:hover`, {
 })
 
 export const apiHierarchy = style({
-  margin: "16px 0",
+  margin: `${vars.space.md} 0`,
 })
 
 export const apiHierarchyList = style({
@@ -250,22 +234,22 @@ export const apiHierarchyList = style({
 globalStyle(`${apiHierarchyList} li`, {
   display: "flex",
   alignItems: "center",
-  gap: "8px",
-  marginBottom: "6px",
+  gap: vars.space.sm,
+  marginBottom: vars.space.xs,
 })
 
 export const apiHierarchyLabel = style({
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
-  minWidth: "100px",
+  minWidth: "6.25rem",
 })
 
 export const apiChildren = style({
-  marginTop: "24px",
-  paddingLeft: "20px",
+  marginTop: vars.space.lg,
+  paddingLeft: "1.25rem",
   borderLeft: `2px solid ${vars.color.border}`,
 })
 
 export const apiParameters = style({
-  margin: "16px 0",
+  margin: `${vars.space.md} 0`,
 })

@@ -1,15 +1,8 @@
-import {
-  type KeyboardEvent,
-  lazy,
-  type MouseEvent,
-  type ReactNode,
-  Suspense,
-  useEffect,
-  useState,
-} from "react"
+import { type KeyboardEvent, type MouseEvent, type ReactNode, useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
+import { ArdoSearch } from "./components/Search"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import {
@@ -21,10 +14,6 @@ import {
   YoutubeIcon,
 } from "./icons"
 import * as navStyles from "./Nav.css"
-
-const LazySearch = lazy(() =>
-  import("./components/Search").then((m) => ({ default: m.ArdoSearch }))
-)
 
 // =============================================================================
 // Header Component
@@ -137,11 +126,7 @@ export function ArdoHeader({
         {hasNav && <div className={styles.desktopNav}>{nav}</div>}
 
         <div className={styles.headerRight}>
-          {search && (
-            <Suspense fallback={<span />}>
-              <LazySearch placeholder={searchPlaceholder} />
-            </Suspense>
-          )}
+          {search && <ArdoSearch placeholder={searchPlaceholder} />}
           {themeToggle && <ArdoThemeToggle />}
           {actions}
         </div>

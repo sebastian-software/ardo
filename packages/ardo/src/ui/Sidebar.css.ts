@@ -8,15 +8,10 @@ export const sidebar = style({
   left: 0,
   width: vars.layout.sidebarWidth,
   height: `calc(100vh - ${vars.layout.headerHeight})`,
-  padding: "24px 20px",
+  padding: `1.75rem ${vars.space.md} 1.75rem 1.25rem`,
   overflowY: "auto",
-  boxShadow: "1px 0 3px oklch(0 0 0 / 0.03)",
   background: vars.color.sidebarBg,
-  selectors: {
-    ".dark &": {
-      boxShadow: "1px 0 3px oklch(0 0 0 / 0.1)",
-    },
-  },
+  borderRight: `1px solid ${vars.color.sidebarBorder}`,
   "@media": {
     "(max-width: 1024px)": {
       display: "none",
@@ -31,10 +26,10 @@ export const sidebarList = style({
 export const sidebarList0 = style({})
 
 export const sidebarList1 = style({
-  marginLeft: "12px",
-  marginTop: "6px",
-  paddingLeft: "12px",
-  borderLeft: `1px solid ${vars.color.borderLight}`,
+  marginLeft: vars.space.sm,
+  marginTop: vars.space.xs,
+  paddingLeft: "0.75rem",
+  borderLeft: `1.5px solid ${vars.color.borderLight}`,
 })
 
 export const sidebarItem = style({})
@@ -47,11 +42,13 @@ export const sidebarItemHeader = style({
 
 export const sidebarLink = style({
   display: "block",
-  padding: "6px 10px",
-  margin: "2px 0",
+  padding: `${vars.space.sm} 0.75rem`,
+  margin: "1px 0",
   color: vars.color.textLight,
   textDecoration: "none",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
+  fontWeight: 400,
+  letterSpacing: "-0.006em",
   borderRadius: vars.radius.sm,
   transition: `all ${vars.transition.fast}`,
   selectors: {
@@ -63,8 +60,6 @@ export const sidebarLink = style({
       color: vars.color.brand,
       background: vars.color.brandSubtle,
       fontWeight: 500,
-      borderLeft: `3px solid ${vars.color.brand}`,
-      paddingLeft: "7px",
     },
   },
 })
@@ -72,31 +67,26 @@ export const sidebarLink = style({
 export const sidebarText = style({
   display: "flex",
   alignItems: "center",
-  gap: "6px",
-  padding: "6px 10px",
+  gap: vars.space.xs,
+  padding: `${vars.space.sm} 0.75rem ${vars.space.xs}`,
+  marginTop: vars.space.md,
   color: vars.color.textLighter,
   textDecoration: "none",
-  fontWeight: 600,
-  fontSize: "12px",
+  fontWeight: 700,
+  fontSize: vars.fontSize.xs,
   textTransform: "uppercase",
-  letterSpacing: "0.05em",
+  letterSpacing: "0.06em",
   borderRadius: vars.radius.sm,
   transition: `all ${vars.transition.fast}`,
   selectors: {
-    "&::before": {
-      content: '""',
-      width: "5px",
-      height: "5px",
-      borderRadius: "50%",
-      background: vars.color.brand,
-      opacity: 0.5,
-      flexShrink: 0,
-    },
     "&:hover": {
       color: vars.color.text,
     },
     "&.active": {
       color: vars.color.brand,
+    },
+    "li:first-child > div > &": {
+      marginTop: 0,
     },
   },
 })
@@ -117,10 +107,10 @@ export const sidebarCollapse = style({
   background: "none",
   border: "none",
   cursor: "pointer",
-  padding: "6px",
+  padding: vars.space.xs,
   color: vars.color.textLighter,
-  borderRadius: vars.radius.sm,
-  transition: `all ${vars.transition.fast}`,
+  borderRadius: "50%",
+  transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
       background: vars.color.bgMute,
@@ -130,4 +120,20 @@ export const sidebarCollapse = style({
       transform: "rotate(-90deg)",
     },
   },
+})
+
+export const sidebarCollapseWrapper = style({
+  display: "grid",
+  gridTemplateRows: "1fr",
+  transition: `grid-template-rows ${vars.transition.slow}`,
+  selectors: {
+    '&[data-collapsed="true"]': {
+      gridTemplateRows: "0fr",
+    },
+  },
+})
+
+export const sidebarCollapseInner = style({
+  overflow: "hidden",
+  minHeight: 0,
 })

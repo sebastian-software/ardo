@@ -8,23 +8,23 @@ import { shikiContainerClassName } from "./code-block-classes"
 // =============================================================================
 
 export const codeBlock = style({
-  margin: "20px 0",
-  marginLeft: "-16px",
-  borderRadius: vars.radius.base,
+  margin: `${vars.space.content} 0`,
+  borderRadius: vars.radius.lg,
   overflow: "hidden",
   background: vars.color.codeBg,
   border: `1px solid ${vars.color.codeBorder}`,
-  boxShadow: vars.color.codeShadow,
+  boxShadow: "0 2px 0.5rem oklch(0 0 0 / 0.04), 0 0 0 1px oklch(0 0 0 / 0.03)",
 })
 
 export const codeTitle = style({
-  padding: "10px 16px",
-  background: `linear-gradient(90deg, oklch(0.48 0.15 170 / 0.04) 0%, ${vars.color.codeBorder} 100%)`,
-  fontSize: "13px",
+  padding: `${vars.space.sm} ${vars.space.md}`,
+  background: vars.color.bgSoft,
+  fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLight,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
+  letterSpacing: "0.01em",
 })
 
 export const codeWrapper = style({
@@ -33,11 +33,11 @@ export const codeWrapper = style({
 
 globalStyle(`${codeWrapper} pre`, {
   margin: 0,
-  padding: "16px",
+  padding: "1.25rem",
   overflowX: "auto",
   fontFamily: vars.font.mono,
-  fontSize: "14px",
-  lineHeight: 1.65,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.7,
   color: vars.color.text,
   background: "transparent !important",
 })
@@ -57,8 +57,8 @@ globalStyle(`${codeWrapper} pre code .line`, {
 
 export const codeLine = style({
   display: "block",
-  margin: "0 -16px",
-  padding: "0 16px",
+  margin: "0 -1.25rem",
+  padding: "0 1.25rem",
   borderLeft: "3px solid transparent",
   selectors: {
     "&.highlighted": {
@@ -70,10 +70,10 @@ export const codeLine = style({
 
 export const lineNumber = style({
   display: "inline-block",
-  width: "32px",
+  width: "2rem",
   color: vars.color.textLighter,
   textAlign: "right",
-  marginRight: "16px",
+  marginRight: vars.space.md,
   userSelect: "none",
   selectors: {
     ".dark &": {
@@ -84,29 +84,20 @@ export const lineNumber = style({
 
 // =============================================================================
 // Server-rendered shiki code blocks (raw HTML from markdown/shiki.ts)
-//
-// Single scoping class `.ardo-shiki` on the container; children are targeted
-// via tag selectors and data attributes — no per-element class names needed.
-//
-// HTML structure:
-//   .ardo-shiki
-//     [data-title]         — optional title bar
-//     div[data-lang]       — wrapper (position context for copy button)
-//       pre > code > .line — Shiki output
-//       button[data-code]  — copy button
 // =============================================================================
 
 const s = `.${shikiContainerClassName}`
 
 // Title bar
 globalStyle(`${s} > [data-title]`, {
-  padding: "10px 16px",
-  background: `linear-gradient(90deg, oklch(0.48 0.15 170 / 0.04) 0%, ${vars.color.codeBorder} 100%)`,
-  fontSize: "13px",
+  padding: `${vars.space.sm} ${vars.space.md}`,
+  background: vars.color.bgSoft,
+  fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLight,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
+  letterSpacing: "0.01em",
 })
 
 // Wrapper (positioning context for copy button)
@@ -117,11 +108,11 @@ globalStyle(`${s} > [data-lang]`, {
 // Pre element
 globalStyle(`${s} pre`, {
   margin: 0,
-  padding: "16px",
+  padding: "1.25rem",
   overflowX: "auto",
   fontFamily: vars.font.mono,
-  fontSize: "14px",
-  lineHeight: 1.65,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.7,
   color: vars.color.text,
   background: "transparent !important",
 })
@@ -139,8 +130,8 @@ globalStyle(`${s} pre code`, {
 globalStyle(`${s} .line`, {
   display: "block",
   minHeight: "1lh",
-  margin: "0 -16px",
-  padding: "0 16px",
+  margin: "0 -1.25rem",
+  padding: "0 1.25rem",
   borderLeft: "3px solid transparent",
 })
 
@@ -153,10 +144,10 @@ globalStyle(`${s} .line.highlighted`, {
 globalStyle(`${s} .line[data-ln]::before`, {
   content: "attr(data-ln)",
   display: "inline-block",
-  width: "32px",
+  width: "2rem",
   color: vars.color.textLighter,
   textAlign: "right",
-  marginRight: "16px",
+  marginRight: vars.space.md,
   userSelect: "none",
 })
 
@@ -164,24 +155,33 @@ globalStyle(`.dark ${s} .line[data-ln]::before`, {
   color: "#475569",
 })
 
-// Copy button
+// Copy button - hidden by default, shown on hover
 globalStyle(`${s} button[data-code]`, {
   position: "absolute",
-  top: "10px",
-  right: "10px",
+  top: vars.space.sm,
+  right: vars.space.sm,
   display: "flex",
   alignItems: "center",
-  gap: "6px",
-  padding: "6px 10px",
-  background: vars.color.bg,
+  gap: vars.space.xs,
+  padding: `${vars.space.xs} ${vars.space.sm}`,
+  background: "oklch(1 0 0 / 0.8)",
+  backdropFilter: "blur(8px)",
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   cursor: "pointer",
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   fontFamily: vars.font.family,
   color: vars.color.textLight,
-  opacity: 0.6,
+  opacity: 0,
   transition: `all ${vars.transition.base}`,
+})
+
+globalStyle(`.dark ${s} button[data-code]`, {
+  background: "oklch(0.14 0 0 / 0.8)",
+})
+
+globalStyle(`${s}:hover button[data-code]`, {
+  opacity: 1,
 })
 
 globalStyle(`${s} button[data-code]:hover`, {
@@ -212,13 +212,12 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: "20px 0",
-  marginLeft: "-16px",
-  borderRadius: vars.radius.base,
+  margin: `${vars.space.content} 0`,
+  borderRadius: vars.radius.lg,
   overflow: "hidden",
   background: vars.color.codeBg,
   border: `1px solid ${vars.color.codeBorder}`,
-  boxShadow: vars.color.codeShadow,
+  boxShadow: "0 2px 0.5rem oklch(0 0 0 / 0.04), 0 0 0 1px oklch(0 0 0 / 0.03)",
 })
 
 export const codeGroupTabs = style({
@@ -228,11 +227,11 @@ export const codeGroupTabs = style({
 })
 
 export const codeGroupTab = style({
-  padding: "10px 16px",
+  padding: `0.75rem ${vars.space.md}`,
   background: "none",
   border: "none",
   cursor: "pointer",
-  fontSize: "13px",
+  fontSize: vars.fontSize.sm,
   fontFamily: vars.font.mono,
   color: vars.color.textLight,
   borderBottom: "2px solid transparent",

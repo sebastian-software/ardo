@@ -205,8 +205,12 @@ export function ArdoSidebarGroup({
         )}
       </div>
 
-      {hasChildren && !collapsed && (
-        <ul className={`${styles.sidebarList} ${styles.sidebarList1}`}>{children}</ul>
+      {hasChildren && (
+        <div className={styles.sidebarCollapseWrapper} data-collapsed={collapsed}>
+          <div className={styles.sidebarCollapseInner}>
+            <ul className={`${styles.sidebarList} ${styles.sidebarList1}`}>{children}</ul>
+          </div>
+        </div>
       )}
     </li>
   )
@@ -344,7 +348,13 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         )}
       </div>
 
-      {hasChildren && !collapsed && <SidebarItems items={childItems} depth={depth + 1} />}
+      {hasChildren && (
+        <div className={styles.sidebarCollapseWrapper} data-collapsed={collapsed}>
+          <div className={styles.sidebarCollapseInner}>
+            <SidebarItems items={childItems} depth={depth + 1} />
+          </div>
+        </div>
+      )}
     </li>
   )
 }

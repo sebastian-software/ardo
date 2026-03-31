@@ -9,15 +9,15 @@ export const header = style({
   right: 0,
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
-  background: "oklch(1 0 0 / 0.85)",
-  backdropFilter: "blur(12px) saturate(1.5)",
-  WebkitBackdropFilter: "blur(12px) saturate(1.5)",
-  boxShadow: "0 1px 3px oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.02)",
+  background: "oklch(1 0 0 / 0.88)",
+  backdropFilter: "blur(16px) saturate(1.8)",
+  WebkitBackdropFilter: "blur(16px) saturate(1.8)",
+  boxShadow: "0 1px 0 oklch(0 0 0 / 0.04)",
   zIndex: 100,
   selectors: {
     ".dark &": {
-      background: "oklch(0.15 0.02 170 / 0.85)",
-      boxShadow: "0 1px 3px oklch(0 0 0 / 0.15), 0 1px 2px oklch(0 0 0 / 0.1)",
+      background: "oklch(0.14 0.01 170 / 0.88)",
+      boxShadow: "0 1px 0 oklch(1 0 0 / 0.06)",
     },
   },
 })
@@ -27,30 +27,25 @@ export const headerContainer = style({
   alignItems: "center",
   justifyContent: "space-between",
   height: "100%",
-  padding: "0 32px 0 20px",
-  "@media": {
-    "(max-width: 1024px)": {
-      padding: "0 20px",
-    },
-  },
+  padding: `0 ${vars.space.lg}`,
 })
 
 export const headerLeft = style({
   display: "flex",
   alignItems: "center",
-  gap: "24px",
+  gap: vars.space.lg,
 })
 
 export const headerRight = style({
   display: "flex",
   alignItems: "center",
-  gap: "12px",
+  gap: "0.75rem",
 })
 
 export const logoLink = style({
   display: "flex",
   alignItems: "center",
-  gap: "10px",
+  gap: vars.space.sm,
   textDecoration: "none",
   color: vars.color.text,
   transition: `opacity ${vars.transition.fast}`,
@@ -62,13 +57,13 @@ export const logoLink = style({
 })
 
 export const logo = style({
-  height: "36px",
+  height: "2.25rem",
 })
 
 export const siteTitle = style({
-  fontSize: "20px",
+  fontSize: vars.fontSize.lg,
   fontWeight: 700,
-  letterSpacing: "-0.02em",
+  letterSpacing: "-0.025em",
 })
 
 export const mobileMenuButton = style({
@@ -76,7 +71,7 @@ export const mobileMenuButton = style({
   background: "none",
   border: "none",
   cursor: "pointer",
-  padding: "8px",
+  padding: vars.space.sm,
   borderRadius: vars.radius.sm,
   selectors: {
     "&:hover": {
@@ -93,12 +88,12 @@ export const mobileMenuButton = style({
 export const hamburger = style({
   display: "flex",
   flexDirection: "column",
-  gap: "5px",
+  gap: vars.space.xs,
 })
 
 globalStyle(`${hamburger} span`, {
   display: "block",
-  width: "20px",
+  width: "1.25rem",
   height: "2px",
   background: vars.color.text,
   borderRadius: "1px",
@@ -120,10 +115,10 @@ export const mobileMenu = style({
   top: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   left: 0,
   right: 0,
-  padding: "12px 16px 16px",
+  padding: `0.75rem ${vars.space.md} ${vars.space.md}`,
   background: vars.color.bg,
   borderTop: `1px solid ${vars.color.border}`,
-  boxShadow: "0 14px 28px oklch(0 0 0 / 0.08)",
+  boxShadow: vars.color.shadowLg,
   zIndex: 99,
 })
 
@@ -146,7 +141,7 @@ globalStyle(`${mobileNav} nav`, {
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
-  gap: "4px",
+  gap: vars.space.xs,
 })
 
 globalStyle(`${mobileNav} a`, {

@@ -17,7 +17,7 @@ export const layoutContainer = style({
 export const main = style({
   flex: 1,
   minWidth: 0,
-  padding: "40px 32px",
+  padding: `${vars.space.section} ${vars.space.content}`,
   marginLeft: vars.layout.sidebarWidth,
   "@media": {
     "(max-width: 1024px)": {
@@ -43,19 +43,19 @@ globalStyle(`${home} .${main}`, {
 export const skipLink = style({
   position: "absolute",
   top: "-100%",
-  left: "16px",
+  left: vars.space.md,
   zIndex: 200,
-  padding: "12px 24px",
+  padding: `0.75rem ${vars.space.lg}`,
   background: vars.color.brand,
   color: "white",
   fontWeight: 600,
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   textDecoration: "none",
   borderRadius: vars.radius.base,
   boxShadow: vars.color.shadowMd,
   selectors: {
     "&:focus": {
-      top: "16px",
+      top: vars.space.md,
     },
   },
 })

@@ -3,16 +3,10 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
-  padding: "32px 24px",
+  padding: `${vars.space["2xl"]} ${vars.space.content}`,
   textAlign: "center",
-  boxShadow: "0 -1px 3px oklch(0 0 0 / 0.03)",
-  background: `linear-gradient(180deg, ${vars.color.bg} 0%, oklch(0.97 0.01 170) 100%)`,
-  selectors: {
-    ".dark &": {
-      boxShadow: "0 -1px 3px oklch(0 0 0 / 0.1)",
-      background: `linear-gradient(180deg, ${vars.color.bg} 0%, oklch(0.18 0.015 170) 100%)`,
-    },
-  },
+  background: vars.color.bgSoft,
+  borderTop: `1px solid ${vars.color.border}`,
 })
 
 export const footerContainer = style({})
@@ -23,18 +17,18 @@ export const footerPrimary = style({
   justifyContent: "center",
   gap: 0,
   flexWrap: "wrap",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   color: vars.color.textLight,
-  marginBottom: "6px",
+  marginBottom: vars.space.xs,
 })
 
 export const footerSeparator = style({
   display: "inline-block",
-  width: "4px",
-  height: "4px",
+  width: vars.space.xs,
+  height: vars.space.xs,
   borderRadius: "50%",
   background: vars.color.textLighter,
-  margin: "0 12px",
+  margin: `0 0.75rem`,
   verticalAlign: "middle",
 })
 
@@ -50,24 +44,24 @@ export const footerLink = style({
 })
 
 export const footerMessage = style({
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerCopyright = style({
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerBuildTime = style({
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
-  marginTop: "6px",
+  marginTop: vars.space.xs,
 })
 
 export const contentFooter = style({
-  marginTop: "60px",
-  paddingTop: "24px",
+  marginTop: vars.space["4xl"],
+  paddingTop: vars.space.xl,
   borderTop: `1px solid ${vars.color.border}`,
 })
 
@@ -75,8 +69,8 @@ export const contentMeta = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: "24px",
-  fontSize: "14px",
+  marginBottom: vars.space.lg,
+  fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
@@ -95,32 +89,21 @@ export const editLink = style({
 export const prevNext = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: "16px",
+  gap: "1.25rem",
 })
 
 const prevNextLinkBase = style({
   display: "flex",
   flexDirection: "column",
-  padding: "16px 20px",
+  padding: `1.25rem ${vars.space.lg}`,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radius.base,
+  borderRadius: vars.radius.lg,
   textDecoration: "none",
-  boxShadow: vars.color.shadowSm,
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      borderColor: "oklch(0.48 0.15 170 / 0.4)",
+      borderColor: vars.color.brand,
       background: vars.color.brandSubtle,
-      boxShadow: vars.color.shadowMd,
-    },
-  },
-  "@media": {
-    "(hover: hover)": {
-      selectors: {
-        "&:hover": {
-          transform: "translateY(-2px)",
-        },
-      },
     },
   },
 })
@@ -130,12 +113,12 @@ export const prevLink = style([prevNextLinkBase])
 export const nextLink = style([prevNextLinkBase, { textAlign: "right" }])
 
 export const prevNextLabel = style({
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   fontWeight: 500,
   color: vars.color.textLighter,
   textTransform: "uppercase",
   letterSpacing: "0.05em",
-  marginBottom: "4px",
+  marginBottom: vars.space.xs,
 })
 
 export const prevNextTitle = style({
