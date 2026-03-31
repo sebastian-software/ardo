@@ -9,7 +9,7 @@ globalStyle("*", {
 })
 
 globalStyle("html", {
-  scrollPaddingTop: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top) + 24px)`,
+  scrollPaddingTop: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top) + 32px)`,
   "@media": {
     "(prefers-reduced-motion: no-preference)": {
       scrollBehavior: "smooth",
@@ -19,20 +19,17 @@ globalStyle("html", {
 
 globalStyle("body", {
   fontFamily: vars.font.family,
-  fontSize: "16px",
-  lineHeight: 1.7,
+  fontSize: vars.font.size,
+  lineHeight: vars.font.lineHeight,
   color: vars.color.text,
   background: vars.color.bg,
   WebkitFontSmoothing: "antialiased",
   MozOsxFontSmoothing: "grayscale",
+  textRendering: "optimizeLegibility",
 })
 
 globalStyle("::selection", {
-  background: `oklch(0.48 0.15 170 / 0.2)`,
-})
-
-globalStyle(".dark ::selection", {
-  background: `oklch(0.65 0.16 170 / 0.2)`,
+  background: vars.color.brandSubtle,
 })
 
 globalStyle(":focus-visible", {
