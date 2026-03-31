@@ -51,6 +51,7 @@ export {
   ArdoNote,
   ArdoSearch,
   ArdoSidebar,
+  ArdoSteps,
   ArdoTab,
   ArdoTabList,
   ArdoTabPanel,
@@ -64,6 +65,7 @@ export {
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./ui"
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./ui"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./ui"
+export type { ArdoStepsProps } from "./ui"
 export type {
   ArdoContainerProps,
   ArdoContainerType,

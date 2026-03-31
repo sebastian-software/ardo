@@ -19,6 +19,8 @@ export { ArdoIcon, getRegisteredIconNames, registerIcons } from "./Icon"
 export type { ArdoIconProps } from "./Icon"
 export { ArdoSearch } from "./Search"
 export type { ArdoSearchProps } from "./Search"
+export { ArdoSteps } from "./Steps"
+export type { ArdoStepsProps } from "./Steps"
 export { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "./Tabs"
 export type {
   ArdoTabListProps,

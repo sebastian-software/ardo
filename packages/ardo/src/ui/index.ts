@@ -16,6 +16,7 @@ export {
   ArdoInfo,
   ArdoNote,
   ArdoSearch,
+  ArdoSteps,
   ArdoTab,
   ArdoTabList,
   ArdoTabPanel,
@@ -33,6 +34,7 @@ export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./components"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./components"
+export type { ArdoStepsProps } from "./components"
 
 export type {
   ArdoContainerProps,

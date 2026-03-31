@@ -8,6 +8,7 @@ import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
 import { ArdoCopyButton } from "../ui/components/CopyButton"
 import { ArdoIcon } from "../ui/components/Icon"
+import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
 import { ArdoContent } from "../ui/Content"
 
@@ -113,6 +114,7 @@ export function useMDXComponents(): MDXComponents {
     Danger: ArdoDanger,
     Info: ArdoInfo,
     Note: ArdoNote,
+    Steps: ArdoSteps,
     Tabs: ArdoTabs,
     TabList: ArdoTabList,
     Tab: ArdoTab,

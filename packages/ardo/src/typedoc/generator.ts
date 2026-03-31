@@ -74,6 +74,7 @@ export class TypeDocGenerator {
 
   private async writeDocs(outputDir: string, docs: GeneratedApiDoc[]): Promise<void> {
     const apiDirectory = path.join(outputDir, this.config.out)
+    await fs.rm(apiDirectory, { force: true, recursive: true })
     await fs.mkdir(apiDirectory, { recursive: true })
 
     for (const doc of docs) {
