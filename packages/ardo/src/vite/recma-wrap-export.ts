@@ -1,11 +1,9 @@
 /**
- * Recma plugin that wraps the MDX default export with ArdoPageDataProvider.
- *
- * Instead of manipulating the ESTree AST (which is complex and fragile),
- * this plugin operates on the stringified output via the `toJs` hook.
- * It finds `export default function MDXContent` and wraps it.
+ * Recma plugin that wraps the MDX default export with ArdoPageDataProvider
+ * to inject frontmatter + toc into the React context for TOC and content.
  */
 
+// eslint-disable-next-line @cspell/spellchecker
 interface EstreeProgram {
   type: string
   body: EstreeNode[]
@@ -18,127 +16,116 @@ interface EstreeNode {
   [key: string]: unknown
 }
 
+function findDefaultExport(body: EstreeNode[]): { index: number; name: string } {
+  for (let i = 0; i < body.length; i++) {
+    const node = body[i]
+    if (
+      node.type === "ExportDefaultDeclaration" &&
+      node.declaration?.type === "FunctionDeclaration" &&
+      node.declaration.id?.name !== undefined &&
+      node.declaration.id.name !== ""
+    ) {
+      return { index: i, name: node.declaration.id.name }
+    }
+  }
+  return { index: -1, name: "" }
+}
+
+function createImport(imported: string, local: string, source: string): EstreeNode {
+  return {
+    type: "ImportDeclaration",
+    specifiers: [
+      {
+        type: "ImportSpecifier",
+        imported: { type: "Identifier", name: imported },
+        local: { type: "Identifier", name: local },
+      },
+    ],
+    source: { type: "Literal", value: source },
+  }
+}
+
+function createShorthandProp(name: string): EstreeNode {
+  return {
+    type: "Property",
+    key: { type: "Identifier", name },
+    value: { type: "Identifier", name },
+    kind: "init",
+    shorthand: true,
+    computed: false,
+    method: false,
+  }
+}
+
+function createWrapperFunction(fnName: string): EstreeNode {
+  return {
+    type: "FunctionDeclaration",
+    id: { type: "Identifier", name: "_ArdoWrapped" },
+    params: [{ type: "Identifier", name: "props" }],
+    body: {
+      type: "BlockStatement",
+      body: [
+        {
+          type: "ReturnStatement",
+          argument: {
+            type: "CallExpression",
+            callee: { type: "Identifier", name: "_ardoJsx" },
+            arguments: [
+              { type: "Identifier", name: "_ArdoPageDP" },
+              {
+                type: "ObjectExpression",
+                properties: [
+                  createShorthandProp("frontmatter"),
+                  createShorthandProp("toc"),
+                  {
+                    type: "Property",
+                    key: { type: "Identifier", name: "children" },
+                    value: {
+                      type: "CallExpression",
+                      callee: { type: "Identifier", name: "_ardoJsx" },
+                      arguments: [
+                        { type: "Identifier", name: fnName },
+                        { type: "Identifier", name: "props" },
+                      ],
+                      optional: false,
+                    },
+                    kind: "init",
+                    shorthand: false,
+                    computed: false,
+                    method: false,
+                  },
+                ],
+              },
+            ],
+            optional: false,
+          },
+        },
+      ],
+    },
+    generator: false,
+    async: false,
+  }
+}
+
+// eslint-disable-next-line @cspell/spellchecker
 export function recmaWrapExport() {
   return (tree: EstreeProgram) => {
-    // Find the export default declaration index
-    let defaultIdx = -1
-    let fnName = ""
+    const { index, name } = findDefaultExport(tree.body)
+    if (index === -1) return
 
-    for (let i = 0; i < tree.body.length; i++) {
-      const node = tree.body[i]
-      if (
-        node.type === "ExportDefaultDeclaration" &&
-        node.declaration?.type === "FunctionDeclaration" &&
-        node.declaration.id?.name
-      ) {
-        defaultIdx = i
-        fnName = node.declaration.id.name
-        break
-      }
-    }
+    // Remove `export default` — keep just the function declaration
+    const decl = tree.body[index].declaration
+    if (decl == null) return
+    tree.body[index] = decl
 
-    if (defaultIdx === -1) return
-
-    // Remove the `export default` - keep only the function declaration
-    const exportNode = tree.body[defaultIdx]
-    tree.body[defaultIdx] = exportNode.declaration as EstreeNode
-
-    // Add import for ArdoPageDataProvider + jsx runtime
-    const importDP: EstreeNode = {
-      type: "ImportDeclaration",
-      specifiers: [
-        {
-          type: "ImportSpecifier",
-          imported: { type: "Identifier", name: "ArdoPageDataProvider" },
-          local: { type: "Identifier", name: "_ArdoPageDP" },
-        },
-      ],
-      source: { type: "Literal", value: "ardo/runtime" },
-    }
-
-    const importJsx: EstreeNode = {
-      type: "ImportDeclaration",
-      specifiers: [
-        {
-          type: "ImportSpecifier",
-          imported: { type: "Identifier", name: "jsx" },
-          local: { type: "Identifier", name: "_ardoJsx" },
-        },
-      ],
-      source: { type: "Literal", value: "react/jsx-runtime" },
-    }
-
-    // Wrapper function: _ArdoWrapped(props) => jsx(_ArdoPageDP, { frontmatter, toc, children: jsx(fnName, props) })
-    const wrapperFn: EstreeNode = {
-      type: "FunctionDeclaration",
-      id: { type: "Identifier", name: "_ArdoWrapped" },
-      params: [{ type: "Identifier", name: "props" }],
-      body: {
-        type: "BlockStatement",
-        body: [
-          {
-            type: "ReturnStatement",
-            argument: {
-              type: "CallExpression",
-              callee: { type: "Identifier", name: "_ardoJsx" },
-              arguments: [
-                { type: "Identifier", name: "_ArdoPageDP" },
-                {
-                  type: "ObjectExpression",
-                  properties: [
-                    {
-                      type: "Property",
-                      key: { type: "Identifier", name: "frontmatter" },
-                      value: { type: "Identifier", name: "frontmatter" },
-                      kind: "init",
-                      shorthand: true,
-                      computed: false,
-                      method: false,
-                    },
-                    {
-                      type: "Property",
-                      key: { type: "Identifier", name: "toc" },
-                      value: { type: "Identifier", name: "toc" },
-                      kind: "init",
-                      shorthand: true,
-                      computed: false,
-                      method: false,
-                    },
-                    {
-                      type: "Property",
-                      key: { type: "Identifier", name: "children" },
-                      value: {
-                        type: "CallExpression",
-                        callee: { type: "Identifier", name: "_ardoJsx" },
-                        arguments: [
-                          { type: "Identifier", name: fnName },
-                          { type: "Identifier", name: "props" },
-                        ],
-                        optional: false,
-                      },
-                      kind: "init",
-                      shorthand: false,
-                      computed: false,
-                      method: false,
-                    },
-                  ],
-                },
-              ],
-              optional: false,
-            },
-          },
-        ],
-      },
-      generator: false,
-      async: false,
-    }
-
-    const newExport: EstreeNode = {
+    // Add imports, wrapper, and new default export
+    tree.body.unshift(
+      createImport("ArdoPageDataProvider", "_ArdoPageDP", "ardo/runtime"),
+      createImport("jsx", "_ardoJsx", "react/jsx-runtime")
+    )
+    tree.body.push(createWrapperFunction(name), {
       type: "ExportDefaultDeclaration",
       declaration: { type: "Identifier", name: "_ArdoWrapped" },
-    }
-
-    tree.body.unshift(importDP, importJsx)
-    tree.body.push(wrapperFn, newExport)
+    })
   }
 }

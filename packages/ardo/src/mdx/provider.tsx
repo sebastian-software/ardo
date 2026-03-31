@@ -10,8 +10,6 @@ import { ArdoCopyButton } from "../ui/components/CopyButton"
 import { ArdoIcon } from "../ui/components/Icon"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
-import { ArdoPageDataProvider } from "../runtime/hooks"
-import { ArdoContent } from "../ui/Content"
 import { ArdoDocContent } from "../ui/DocPage"
 
 /**

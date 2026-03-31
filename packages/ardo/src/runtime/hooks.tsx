@@ -70,9 +70,9 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
   const parent = use(ArdoContext)
   const pageData: PageData = useMemo(
     () => ({
-      title: (frontmatter?.title as string) ?? "",
-      frontmatter: frontmatter ?? {},
-      toc: toc ?? [],
+      title: typeof frontmatter.title === "string" ? frontmatter.title : "",
+      frontmatter,
+      toc,
       content: "",
       filePath: "",
       relativePath: "",

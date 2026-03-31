@@ -44,7 +44,7 @@ export function remarkMdxToc(options: RemarkMdxTocOptions = {}) {
     })
 
     // Use the same approach as remark-mdx-frontmatter: valueToEstree + define
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
     define(tree, file as any, { [name]: valueToEstree(items) })
   }
 }
@@ -58,11 +58,11 @@ function getHeadingText(node: Heading): string {
     if (typed.type === "text" || typed.type === "inlineCode") {
       parts.push(typed.value ?? "")
     } else if (Array.isArray(typed.children)) {
-      typed.children.forEach(extract)
+      for (const nested of typed.children) extract(nested)
     }
   }
 
-  node.children.forEach(extract)
+  for (const child of node.children) extract(child)
   return parts.join("")
 }
 
@@ -77,5 +77,5 @@ function slugify(text: string): string {
     slug = slug.replaceAll("--", "-")
   }
 
-  return slug.replace(/^-|-$/g, "")
+  return slug.replaceAll(/^-|-$/g, "")
 }
