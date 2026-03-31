@@ -4,27 +4,24 @@ import { vars } from "../theme/contract.css"
 import { shikiContainerClassName } from "./code-block-classes"
 
 // =============================================================================
-// React CodeBlock component styles (used by ArdoCodeBlock via className props)
+// React CodeBlock component styles
 // =============================================================================
 
 export const codeBlock = style({
-  margin: `${vars.space.content} 0`,
-  borderRadius: vars.radius.lg,
+  margin: `${vars.space.md} 0`,
+  maxWidth: "120ch",
+  borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.codeBg,
-  border: `1px solid ${vars.color.codeBorder}`,
-  boxShadow: "0 2px 0.5rem oklch(0 0 0 / 0.04), 0 0 0 1px oklch(0 0 0 / 0.03)",
+  background: vars.color.bgSoft,
 })
 
 export const codeTitle = style({
   padding: `${vars.space.sm} ${vars.space.md}`,
-  background: vars.color.bgSoft,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLight,
-  borderBottom: `1px solid ${vars.color.codeBorder}`,
-  letterSpacing: "0.01em",
+  color: vars.color.textLighter,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
 })
 
 export const codeWrapper = style({
@@ -33,7 +30,7 @@ export const codeWrapper = style({
 
 globalStyle(`${codeWrapper} pre`, {
   margin: 0,
-  padding: "1.25rem",
+  padding: vars.space.md,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
@@ -57,12 +54,12 @@ globalStyle(`${codeWrapper} pre code .line`, {
 
 export const codeLine = style({
   display: "block",
-  margin: "0 -1.25rem",
-  padding: "0 1.25rem",
+  margin: `0 -${vars.space.md}`,
+  padding: `0 ${vars.space.md}`,
   borderLeft: "3px solid transparent",
   selectors: {
     "&.highlighted": {
-      background: "oklch(0.48 0.15 170 / 0.1)",
+      background: "oklch(0.48 0.15 170 / 0.08)",
       borderLeftColor: vars.color.brand,
     },
   },
@@ -83,32 +80,27 @@ export const lineNumber = style({
 })
 
 // =============================================================================
-// Server-rendered shiki code blocks (raw HTML from markdown/shiki.ts)
+// Server-rendered shiki code blocks
 // =============================================================================
 
 const s = `.${shikiContainerClassName}`
 
-// Title bar
 globalStyle(`${s} > [data-title]`, {
   padding: `${vars.space.sm} ${vars.space.md}`,
-  background: vars.color.bgSoft,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLight,
-  borderBottom: `1px solid ${vars.color.codeBorder}`,
-  letterSpacing: "0.01em",
+  color: vars.color.textLighter,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
 })
 
-// Wrapper (positioning context for copy button)
 globalStyle(`${s} > [data-lang]`, {
   position: "relative",
 })
 
-// Pre element
 globalStyle(`${s} pre`, {
   margin: 0,
-  padding: "1.25rem",
+  padding: vars.space.md,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
@@ -126,21 +118,19 @@ globalStyle(`${s} pre code`, {
   flexDirection: "column",
 })
 
-// Lines (Shiki adds .line by default)
 globalStyle(`${s} .line`, {
   display: "block",
   minHeight: "1lh",
-  margin: "0 -1.25rem",
-  padding: "0 1.25rem",
+  margin: `0 -${vars.space.md}`,
+  padding: `0 ${vars.space.md}`,
   borderLeft: "3px solid transparent",
 })
 
 globalStyle(`${s} .line.highlighted`, {
-  background: "oklch(0.48 0.15 170 / 0.1)",
+  background: "oklch(0.48 0.15 170 / 0.08)",
   borderLeftColor: vars.color.brand,
 })
 
-// Line numbers via data attribute
 globalStyle(`${s} .line[data-ln]::before`, {
   content: "attr(data-ln)",
   display: "inline-block",
@@ -164,8 +154,7 @@ globalStyle(`${s} button[data-code]`, {
   alignItems: "center",
   gap: vars.space.xs,
   padding: `${vars.space.xs} ${vars.space.sm}`,
-  background: "oklch(1 0 0 / 0.8)",
-  backdropFilter: "blur(8px)",
+  background: vars.color.bg,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   cursor: "pointer",
@@ -176,23 +165,18 @@ globalStyle(`${s} button[data-code]`, {
   transition: `all ${vars.transition.base}`,
 })
 
-globalStyle(`.dark ${s} button[data-code]`, {
-  background: "oklch(0.14 0 0 / 0.8)",
-})
-
 globalStyle(`${s}:hover button[data-code]`, {
   opacity: 1,
 })
 
 globalStyle(`${s} button[data-code]:hover`, {
   opacity: 1,
-  background: vars.color.bgSoft,
   borderColor: vars.color.brand,
   color: vars.color.brand,
 })
 
 // =============================================================================
-// Shiki theme integration (shared by both paths)
+// Shiki theme integration
 // =============================================================================
 
 globalStyle(".shiki", {
@@ -212,28 +196,26 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: `${vars.space.content} 0`,
-  borderRadius: vars.radius.lg,
+  margin: `${vars.space.md} 0`,
+  maxWidth: "120ch",
+  borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.codeBg,
-  border: `1px solid ${vars.color.codeBorder}`,
-  boxShadow: "0 2px 0.5rem oklch(0 0 0 / 0.04), 0 0 0 1px oklch(0 0 0 / 0.03)",
+  background: vars.color.bgSoft,
 })
 
 export const codeGroupTabs = style({
   display: "flex",
-  background: vars.color.codeBorder,
-  borderBottom: `1px solid ${vars.color.codeBorder}`,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
 })
 
 export const codeGroupTab = style({
-  padding: `0.75rem ${vars.space.md}`,
+  padding: `${vars.space.sm} ${vars.space.md}`,
   background: "none",
   border: "none",
   cursor: "pointer",
   fontSize: vars.fontSize.sm,
   fontFamily: vars.font.mono,
-  color: vars.color.textLight,
+  color: vars.color.textLighter,
   borderBottom: "2px solid transparent",
   marginBottom: "-1px",
   transition: `all ${vars.transition.fast}`,
@@ -244,7 +226,6 @@ export const codeGroupTab = style({
     "&.active": {
       color: vars.color.brand,
       borderBottomColor: vars.color.brand,
-      background: vars.color.codeBg,
     },
   },
 })
@@ -253,7 +234,6 @@ export const codeGroupPanels = style({})
 
 export const codeGroupPanel = style({})
 
-// Strip inner code-block chrome when nested inside a code group
 globalStyle(`${codeGroupPanel} ${codeBlock}`, {
   margin: 0,
   border: "none",

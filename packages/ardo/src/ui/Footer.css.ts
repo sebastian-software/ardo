@@ -3,10 +3,11 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
-  padding: `${vars.space["2xl"]} ${vars.space.content}`,
-  textAlign: "center",
-  background: vars.color.bgSoft,
+  maxWidth: "80rem",
+  padding: `${vars.space["2xl"]} 0`,
+  textAlign: "left",
   borderTop: `1px solid ${vars.color.border}`,
+  marginTop: vars.space["2xl"],
 })
 
 export const footerContainer = style({})
@@ -14,7 +15,6 @@ export const footerContainer = style({})
 export const footerPrimary = style({
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
   gap: 0,
   flexWrap: "wrap",
   fontSize: vars.fontSize.sm,
@@ -60,9 +60,7 @@ export const footerBuildTime = style({
 })
 
 export const contentFooter = style({
-  marginTop: vars.space["4xl"],
-  paddingTop: vars.space.xl,
-  borderTop: `1px solid ${vars.color.border}`,
+  marginTop: vars.space["2xl"],
 })
 
 export const contentMeta = style({
@@ -89,7 +87,8 @@ export const editLink = style({
 export const prevNext = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: "1.25rem",
+  gap: vars.space.md,
+  maxWidth: "80rem",
 })
 
 const prevNextLinkBase = style({

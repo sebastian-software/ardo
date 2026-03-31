@@ -7,47 +7,37 @@ const c = `.${ardoContent}`
 
 globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   fontFamily: vars.font.familyHeading,
-  fontWeight: 700,
-  lineHeight: 1.25,
-  marginTop: vars.space.section,
-  marginBottom: vars.space.md,
+  fontWeight: 600,
+  lineHeight: 1.3,
+  marginTop: vars.space.xl,
+  marginBottom: vars.space.sm,
   letterSpacing: "-0.02em",
 })
 
 globalStyle(`${c} h1`, {
-  fontSize: `clamp(1.75rem, 4vw, ${vars.fontSize["3xl"]})`,
+  fontSize: vars.fontSize["2xl"],
+  fontWeight: 700,
+  marginTop: vars.space["2xl"],
 })
 
 globalStyle(`${c} h2`, {
-  fontSize: `clamp(1.375rem, 3vw, 1.75rem)`,
-  paddingBottom: "0.75rem",
-  borderBottom: "none",
-  position: "relative",
-  letterSpacing: "-0.025em",
-})
-
-globalStyle(`${c} h2::after`, {
-  content: '""',
-  display: "block",
-  width: "2.5rem",
-  height: "2.5px",
-  background: vars.color.brand,
-  borderRadius: "2px",
-  marginTop: "0.75rem",
-  opacity: 0.7,
+  fontSize: vars.fontSize.xl,
+  paddingTop: vars.space.sm,
+  letterSpacing: "-0.015em",
 })
 
 globalStyle(`${c} h3`, {
-  fontSize: `clamp(${vars.fontSize.lg}, 2.5vw, 1.375rem)`,
+  fontSize: vars.fontSize.base,
+  fontWeight: 600,
 })
 
 globalStyle(`${c} h4`, {
-  fontSize: vars.fontSize.lg,
+  fontSize: vars.fontSize.sm,
   fontWeight: 600,
 })
 
 globalStyle(`${c} p`, {
-  marginBottom: vars.space.lg,
+  marginBottom: vars.space.md,
   maxWidth: "68ch",
 })
 
@@ -55,8 +45,8 @@ globalStyle(`${c} a`, {
   color: vars.color.brand,
   textDecoration: "underline",
   textDecorationColor: "transparent",
-  textDecorationThickness: "1.5px",
-  textUnderlineOffset: "3px",
+  textDecorationThickness: "1px",
+  textUnderlineOffset: "2px",
   transition: `text-decoration-color ${vars.transition.fast}`,
 })
 
@@ -65,13 +55,13 @@ globalStyle(`${c} a:hover`, {
 })
 
 globalStyle(`${c} ul, ${c} ol`, {
-  marginBottom: vars.space.lg,
-  paddingLeft: "1.75rem",
+  marginBottom: vars.space.md,
+  paddingLeft: vars.space.lg,
   maxWidth: "68ch",
 })
 
 globalStyle(`${c} li`, {
-  marginBottom: vars.space.sm,
+  marginBottom: vars.space.xs,
 })
 
 globalStyle(`${c} li::marker`, {
@@ -79,8 +69,8 @@ globalStyle(`${c} li::marker`, {
 })
 
 globalStyle(`${c} blockquote`, {
-  margin: `${vars.space.content} 0`,
-  padding: `1.25rem ${vars.space.lg}`,
+  margin: `${vars.space.lg} 0`,
+  padding: `${vars.space.md} ${vars.space.lg}`,
   borderLeft: `3px solid ${vars.color.brand}`,
   background: vars.color.bgSoft,
   borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
@@ -89,14 +79,14 @@ globalStyle(`${c} blockquote`, {
 })
 
 globalStyle(`${c} hr`, {
-  margin: `${vars.space.section} 0`,
+  margin: `${vars.space.xl} 0`,
   border: "none",
   borderTop: `1px solid ${vars.color.border}`,
 })
 
 globalStyle(`${c} table`, {
   width: "100%",
-  margin: `${vars.space.content} 0`,
+  margin: `${vars.space.lg} 0`,
   borderCollapse: "collapse",
   fontSize: vars.fontSize.sm,
   borderRadius: vars.radius.base,
@@ -105,7 +95,7 @@ globalStyle(`${c} table`, {
 })
 
 globalStyle(`${c} th, ${c} td`, {
-  padding: `0.75rem ${vars.space.md}`,
+  padding: `${vars.space.sm} ${vars.space.md}`,
   borderBottom: `1px solid ${vars.color.borderLight}`,
   textAlign: "left",
 })
@@ -120,19 +110,17 @@ globalStyle(`${c} th`, {
 
 globalStyle(`${c} img`, {
   maxWidth: "100%",
-  borderRadius: vars.radius.lg,
+  borderRadius: vars.radius.base,
   border: `1px solid ${vars.color.border}`,
-  boxShadow: vars.color.shadowSm,
 })
 
 // Inline code
 globalStyle(`${c} code`, {
   fontFamily: vars.font.mono,
-  fontSize: "0.85em",
+  fontSize: "0.875em",
   padding: "0.125rem 0.375rem",
-  background: vars.color.brandSubtle,
+  background: vars.color.bgMute,
   borderRadius: vars.radius.sm,
-  border: `1px solid ${vars.color.borderLight}`,
   fontWeight: 500,
 })
 

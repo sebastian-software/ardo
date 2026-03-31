@@ -5,51 +5,49 @@ import { vars } from "../theme/contract.css"
 
 export const container = recipe({
   base: {
-    margin: `1.25rem 0`,
-    padding: `${vars.space.md} 1.25rem`,
-    borderRadius: vars.radius.base,
+    display: "flex",
+    alignItems: "flex-start",
+    gap: vars.space.md,
+    margin: `${vars.space.md} 0`,
+    padding: `${vars.space.md} ${vars.space.lg}`,
+    borderRadius: vars.radius.lg,
     border: "1px solid",
-    borderLeft: "3px solid",
   },
   variants: {
     type: {
       tip: {
         background: vars.color.tipBg,
         borderColor: vars.color.tipBorder,
-        borderLeftColor: vars.color.tip,
+        color: vars.color.tip,
       },
       warning: {
         background: vars.color.warningBg,
         borderColor: vars.color.warningBorder,
-        borderLeftColor: vars.color.warning,
+        color: vars.color.warning,
       },
       danger: {
         background: vars.color.dangerBg,
         borderColor: vars.color.dangerBorder,
-        borderLeftColor: vars.color.danger,
+        color: vars.color.danger,
       },
       info: {
         background: vars.color.infoBg,
         borderColor: vars.color.infoBorder,
-        borderLeftColor: vars.color.info,
+        color: vars.color.info,
       },
       note: {
         background: vars.color.noteBg,
         borderColor: vars.color.noteBorder,
-        borderLeftColor: vars.color.note,
+        color: vars.color.note,
       },
     },
   },
 })
 
-export const containerTitle = recipe({
+export const containerIcon = recipe({
   base: {
-    display: "flex",
-    alignItems: "center",
-    gap: vars.space.xs,
-    fontWeight: 600,
-    fontSize: vars.fontSize.sm,
-    marginBottom: vars.space.sm,
+    flexShrink: 0,
+    marginTop: "0.125rem",
   },
   variants: {
     type: {
@@ -62,7 +60,29 @@ export const containerTitle = recipe({
   },
 })
 
-export const containerContent = style({
+export const containerBody = style({
+  flex: 1,
+  minWidth: 0,
+  color: vars.color.text,
   fontSize: vars.fontSize.sm,
-  lineHeight: 1.65,
+  lineHeight: 1.6,
 })
+
+export const containerTitle = recipe({
+  base: {
+    fontWeight: 600,
+    fontSize: vars.fontSize.sm,
+    marginBottom: vars.space.xs,
+  },
+  variants: {
+    type: {
+      tip: { color: vars.color.tip },
+      warning: { color: vars.color.warning },
+      danger: { color: vars.color.danger },
+      info: { color: vars.color.info },
+      note: { color: vars.color.note },
+    },
+  },
+})
+
+export const containerContent = style({})
