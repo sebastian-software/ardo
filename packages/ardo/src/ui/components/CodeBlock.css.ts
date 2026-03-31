@@ -1,5 +1,6 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { shikiContainerClassName } from "./code-block-classes"
 import { vars } from "../theme/contract.css"
 
 // =============================================================================
@@ -95,17 +96,7 @@ export const lineNumber = style({
 //       button[data-code]  — copy button
 // =============================================================================
 
-export const shikiContainer = style({
-  margin: "20px 0",
-  marginLeft: "-16px",
-  borderRadius: vars.radius.base,
-  overflow: "hidden",
-  background: vars.color.codeBg,
-  border: `1px solid ${vars.color.codeBorder}`,
-  boxShadow: vars.color.codeShadow,
-})
-
-const s = `.${shikiContainer}`
+const s = `.${shikiContainerClassName}`
 
 // Title bar
 globalStyle(`${s} > [data-title]`, {

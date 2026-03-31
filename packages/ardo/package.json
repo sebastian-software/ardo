@@ -36,6 +36,10 @@
       "import": "./dist/typedoc/index.js",
       "types": "./dist/typedoc/index.d.ts"
     },
+    "./typedoc/components": {
+      "import": "./dist/typedoc/components/index.js",
+      "types": "./dist/typedoc/components/index.d.ts"
+    },
     "./mdx-provider": {
       "import": "./dist/mdx/provider.js",
       "types": "./dist/mdx/provider.d.ts"
@@ -59,8 +63,8 @@
     "virtual.d.ts"
   ],
   "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
+    "dev": "tsdown --watch",
+    "build": "tsdown",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -102,12 +106,14 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/mdx": "^2.0.13",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "tsup": "^8.5.1",
+    "@vanilla-extract/rollup-plugin": "^1.5.3",
+    "tsdown": "^0.21.7",
     "typescript": "^6.0.2",
     "vite": "^8.0.3"
   },

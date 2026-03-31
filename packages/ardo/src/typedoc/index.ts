@@ -1,13 +1,3 @@
-// Components
-export {
-  ApiHierarchy,
-  ApiItem,
-  ApiKindBadge,
-  ApiParametersTable,
-  ApiReturns,
-  ApiSignature,
-} from "./components"
-
 // Generator
 export { generateApiDocs, TypeDocGenerator } from "./generator"
 

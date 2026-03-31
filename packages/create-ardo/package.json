@@ -11,8 +11,8 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@types/prompts": "^2.4.9",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.21.7",
     "typescript": "^6.0.2"
   },
   "engines": {

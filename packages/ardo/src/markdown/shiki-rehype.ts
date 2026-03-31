@@ -5,7 +5,7 @@ import { visit } from "unist-util-visit"
 
 import type { MarkdownConfig } from "../config/types"
 
-import { shikiContainer } from "../ui/components/CodeBlock.css"
+import { shikiContainerClassName } from "../ui/components/code-block-classes"
 import { buildCodeBlockHtml } from "./shiki-html"
 import { parseHighlightLines, parseTitle } from "./shiki-meta"
 import { highlightWithTheme, resolveThemeConfig } from "./shiki-theme"
@@ -163,7 +163,7 @@ function replaceNodeWithShikiContainer(
     type: "element",
     tagName: "div",
     properties: {
-      className: [shikiContainer],
+      className: [shikiContainerClassName],
     },
     children: [
       {

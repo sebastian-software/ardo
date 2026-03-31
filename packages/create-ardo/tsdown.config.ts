@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup"
+import { defineConfig } from "tsdown"
 
 export default defineConfig({
   entry: ["src/index.ts"],
@@ -6,6 +6,11 @@ export default defineConfig({
   target: "node18",
   clean: true,
   shims: true,
+  fixedExtension: false,
+  outExtensions: () => ({
+    js: ".js",
+    dts: ".d.ts",
+  }),
   banner: {
     js: "#!/usr/bin/env node",
   },
