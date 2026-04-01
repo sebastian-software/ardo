@@ -1,7 +1,6 @@
 import {
   ArdoRootLayout,
   ArdoRoot,
-  ArdoHeader,
   ArdoNav,
   ArdoNavLink,
   ArdoSidebar,
@@ -38,26 +37,22 @@ export default function Root() {
         enabled: true,
         text: "Last updated",
       }}
-      header={
-        <ArdoHeader
-          logo={logo}
-          searchPlaceholder="Search documentation..."
-          nav={
-            <ArdoNav>
-              <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
-              <ArdoNavLink to="/api-reference">API</ArdoNavLink>
-              <ArdoNavLink to="/showcase">Showcase</ArdoNavLink>
-              <ArdoNavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
-                Changelog
-              </ArdoNavLink>
-              <ArdoNavLink href="https://github.com/sebastian-software/ardo">GitHub</ArdoNavLink>
-            </ArdoNav>
-          }
-          actions={
-            <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />
-          }
-        />
-      }
+      headerProps={{
+        logo,
+        searchPlaceholder: "Search documentation...",
+        nav: (
+          <ArdoNav>
+            <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+            <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+            <ArdoNavLink to="/showcase">Showcase</ArdoNavLink>
+            <ArdoNavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
+              Changelog
+            </ArdoNavLink>
+            <ArdoNavLink href="https://github.com/sebastian-software/ardo">GitHub</ArdoNavLink>
+          </ArdoNav>
+        ),
+        actions: <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />,
+      }}
       sidebarContent={
         <ArdoSidebar>
           <ArdoSidebarGroup title="Introduction">
