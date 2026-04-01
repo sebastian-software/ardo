@@ -1,5 +1,61 @@
 # Changelog
 
+## [3.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.1.0...ardo-v3.2.0) (2026-04-01)
+
+
+### Features
+
+* add breadcrumb navigation for mobile layout ([5fa60b5](https://github.com/sebastian-software/ardo/commit/5fa60b5573f3d89710e7c111eed0924f49d10c5c))
+* implement data-driven TOC pipeline for MDX pages ([b9f6fb2](https://github.com/sebastian-software/ardo/commit/b9f6fb20d35615f80f25b208d7726adcda635d68))
+* **ui:** restore steps component and clean typedoc output ([42f2108](https://github.com/sebastian-software/ardo/commit/42f21080450b7aef80918634138e8bf2061921f4))
+
+
+### Bug Fixes
+
+* auto fix eslint issues ([ac4668d](https://github.com/sebastian-software/ardo/commit/ac4668d85d4d0263cd75dd4c9c2b95ccdc23c0e9))
+* auto fix eslint regex escaping issues ([37695fa](https://github.com/sebastian-software/ardo/commit/37695fa4a49bcd5e57327b911a73e3fd301e9c18))
+* extract MobileMenu component to reduce Header line count ([9bad5ff](https://github.com/sebastian-software/ardo/commit/9bad5ffc23f4e99040ad91e8efa9dfd1bbc84e76))
+* inject search into custom sidebar via cloneElement ([3ddf607](https://github.com/sebastian-software/ardo/commit/3ddf6075b00952feeea40d92c9ecab92fbbad63e))
+* remove search from header (now lives in sidebar) ([d9c08e1](https://github.com/sebastian-software/ardo/commit/d9c08e11978064c4cafe4e98ff04d52bc8badefc))
+* render search popover as portal to escape overflow clipping ([69c7a02](https://github.com/sebastian-software/ardo/commit/69c7a02d6c60e71a240d99782575d2c381472b9b))
+* resolve all lint errors across packages ([f3bcafe](https://github.com/sebastian-software/ardo/commit/f3bcafe9fe7a7efc22f12e6e0d1dabc5cbe0af8c))
+* resolve lint errors across breadcrumb, search, and header ([1eaf273](https://github.com/sebastian-software/ardo/commit/1eaf273da8215165f7d8048e51e2fb11db183525))
+* resolve lint errors in TOC pipeline and MDX provider ([37529ac](https://github.com/sebastian-software/ardo/commit/37529acf2e7846938b834002f1ed3587232cdc37))
+* resolve TypeScript strict mode errors ([5ae8a8b](https://github.com/sebastian-software/ardo/commit/5ae8a8bbcd2a41cc5b14e5ffbd3b09217fcdf18a))
+* resolve TypeScript strict mode errors across packages ([967803a](https://github.com/sebastian-software/ardo/commit/967803a7645fdf270d2500f984b330b083bdd171))
+* search always in sidebar, close button hover, clean up mobile CSS ([8322e17](https://github.com/sebastian-software/ardo/commit/8322e1779b0d2932a13f61cc52c4de326230b669))
+* search popover can extend beyond sidebar width ([4f97920](https://github.com/sebastian-software/ardo/commit/4f979204b229af8b3baf195f82cd8c28ef86743f))
+* search popover clicks work with portal rendering ([43e64ff](https://github.com/sebastian-software/ardo/commit/43e64ff39cab61d2b46d4a20a0a0604d00cd25ed))
+* search popover no longer clipped by sidebar overflow ([69efe48](https://github.com/sebastian-software/ardo/commit/69efe4865d4d71186a5604c55aba37e9210151d8))
+* search popover overflow and focus ring styling ([245d9d2](https://github.com/sebastian-software/ardo/commit/245d9d22f02474e0b5af91fc3c0053e7ee2038ae))
+* search popover width matches sidebar, no horizontal overflow ([bfc75d2](https://github.com/sebastian-software/ardo/commit/bfc75d2dece0d3ac2d10daf0e47ebfa8f382aabe))
+* show sidebar navigation in mobile slide-in panel ([20cf721](https://github.com/sebastian-software/ardo/commit/20cf721b7a0396bac07136d316c567c3401b935e))
+* simplify to clean 3-column layout (sidebar | content | toc) ([b8d698d](https://github.com/sebastian-software/ardo/commit/b8d698df7bcca2d71f303dbd65dbf750f9f7566c))
+* **styles:** sort code block css imports ([ad59072](https://github.com/sebastian-software/ardo/commit/ad59072f029655e5a66dd7e01236111a301c8b83))
+* TOC sticky positioning and accurate scrollspy tracking ([fdd628a](https://github.com/sebastian-software/ardo/commit/fdd628a6b4ce25644abaab541640edf2575b94b4))
+* **ui:** reset sidebar accordion button styles ([9520c09](https://github.com/sebastian-software/ardo/commit/9520c09f5ebc645b8cc6be27f56e0e284a48d2e4))
+* use ArdoCodeBlock tag name in codeblock highlight plugin ([23c6284](https://github.com/sebastian-software/ardo/commit/23c62848bf7cb9b4d29dcd359d807db75ce0b118))
+
+
+### Code Refactoring
+
+* **ardo:** simplify codeblock and sidebar lint hotspots ([d03fb08](https://github.com/sebastian-software/ardo/commit/d03fb08fc7a43276c921cc156f7321680a70307a))
+* **ardo:** split shiki pipeline and relax fs filename rule ([f12d94b](https://github.com/sebastian-software/ardo/commit/f12d94b379d52017e8e4b537a59d7af43adb571e))
+* **ardo:** split typedoc and vite plugin helpers ([cfba512](https://github.com/sebastian-software/ardo/commit/cfba512b8dbab62c9fc901174498290a85ef45b8))
+* extend theme system with fontSize scale, spacing tokens, and badge colors ([6ba5f9f](https://github.com/sebastian-software/ardo/commit/6ba5f9f4bdccdff11cf8aaae8f1e53858ba47aed))
+* Mintlify-style card layout with fixed viewport and sidebar search ([aaf934c](https://github.com/sebastian-software/ardo/commit/aaf934c991b502f6a6f22c8fc42c41c6dc3c6fad))
+* mobile menu as slide-in panel with unified 1024px breakpoint ([2789353](https://github.com/sebastian-software/ardo/commit/2789353999746ad268b802aba51c6f0d9ff1c0b0))
+* polish content spacing, code blocks, and callout containers ([8cf4d58](https://github.com/sebastian-software/ardo/commit/8cf4d583c8085d1749d3005258b4fa018a54c45e))
+* polish sidebar navigation spacing and alignment ([6c1160c](https://github.com/sebastian-software/ardo/commit/6c1160cc54571e66e74402ee87c4d19cc3662d20))
+* prefix all public components, hooks, and types with Ardo ([73f83a7](https://github.com/sebastian-software/ardo/commit/73f83a793f235d8cf7bee4a04baf3759d027bcaa))
+* redesign UI components for editorial refinement ([1cb37b0](https://github.com/sebastian-software/ardo/commit/1cb37b0686299610f4a7f8daf4c2843fb01597fb))
+* remove themeConfig, move UI configuration to JSX props ([613ba58](https://github.com/sebastian-software/ardo/commit/613ba58a5a25d0b2f0c5d91e7e7826f398ae61d3))
+* replace ArdoFeatures items prop with children-based composition ([d6b43cf](https://github.com/sebastian-software/ardo/commit/d6b43cfc0cef070c0e2e349b8510394e9721c91e))
+* replace hardcoded ardo- CSS class names with Vanilla Extract styles ([f5490a4](https://github.com/sebastian-software/ardo/commit/f5490a40f310ce707601830c99a70c86e0e69868))
+* replace shiki per-element class names with structural selectors ([060b2eb](https://github.com/sebastian-software/ardo/commit/060b2ebd688a35175f816503b5d44ffc2cb4fa4e))
+* use short Vanilla Extract class name identifiers ([9a43962](https://github.com/sebastian-software/ardo/commit/9a43962cfcfe484e558fdb8b0b447fc246d56c9f))
+* use Vanilla Extract generated class for shiki container ([5a9bf76](https://github.com/sebastian-software/ardo/commit/5a9bf769e3373c04aff4e33d935f9bd0639cdcee))
+
 ## [3.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.0.5...ardo-v3.1.0) (2026-03-04)
 
 

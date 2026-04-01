@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.1.0...create-ardo-v3.2.0) (2026-04-01)
+
+
+### Features
+
+* add Tailwind CSS v4 to project scaffold ([affd52f](https://github.com/sebastian-software/ardo/commit/affd52fe9c5063637fee671c3042f78b3bb6868f))
+
+
+### Bug Fixes
+
+* auto fix eslint issues ([ac4668d](https://github.com/sebastian-software/ardo/commit/ac4668d85d4d0263cd75dd4c9c2b95ccdc23c0e9))
+* resolve all lint errors across packages ([f3bcafe](https://github.com/sebastian-software/ardo/commit/f3bcafe9fe7a7efc22f12e6e0d1dabc5cbe0af8c))
+* resolve TypeScript strict mode errors across packages ([967803a](https://github.com/sebastian-software/ardo/commit/967803a7645fdf270d2500f984b330b083bdd171))
+
+
+### Code Refactoring
+
+* prefix all public components, hooks, and types with Ardo ([73f83a7](https://github.com/sebastian-software/ardo/commit/73f83a793f235d8cf7bee4a04baf3759d027bcaa))
+* remove themeConfig, move UI configuration to JSX props ([613ba58](https://github.com/sebastian-software/ardo/commit/613ba58a5a25d0b2f0c5d91e7e7826f398ae61d3))
+* replace ArdoFeatures items prop with children-based composition ([d6b43cf](https://github.com/sebastian-software/ardo/commit/d6b43cfc0cef070c0e2e349b8510394e9721c91e))
+
 ## [3.1.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.0.5...create-ardo-v3.1.0) (2026-03-04)
 
 
