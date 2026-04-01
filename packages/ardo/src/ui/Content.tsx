@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
+import { ArdoBreadcrumb } from "./Breadcrumb"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { useBareContent } from "./BareContent"
 import { ardoContent } from "./content.css"
@@ -74,6 +75,7 @@ export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
 
   return (
     <article className={docStyles.contentContainer}>
+      <ArdoBreadcrumb />
       <ContentHeader
         title={pageData?.frontmatter.title ?? ""}
         description={pageData?.frontmatter.description ?? ""}
