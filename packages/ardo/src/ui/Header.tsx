@@ -46,7 +46,7 @@ export function ArdoHeader({
   title,
   nav,
   actions,
-  search = true,
+  search = false,
   searchPlaceholder,
   themeToggle = true,
   mobileMenuContent,
