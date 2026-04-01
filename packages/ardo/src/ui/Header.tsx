@@ -208,8 +208,10 @@ function MobileSlidePanel({
           </div>
         )}
 
-        {/* Sidebar content */}
-        <div onClick={handleLinkClick(onClose)}>{children}</div>
+        {/* Sidebar content - wrapper overrides display:none from sidebar CSS */}
+        <div className={styles.mobilePanelSidebar} onClick={handleLinkClick(onClose)}>
+          {children}
+        </div>
       </div>
     </>
   )

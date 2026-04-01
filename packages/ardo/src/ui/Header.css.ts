@@ -178,6 +178,15 @@ globalStyle(`${mobilePanelNav} a`, {
   fontSize: vars.fontSize.sm,
 })
 
+// Force sidebar visible inside the mobile panel (overrides sidebar's display:none at 1024px)
+export const mobilePanelSidebar = style({})
+
+globalStyle(`${mobilePanelSidebar} > aside`, {
+  display: "block",
+  width: "100%",
+  padding: 0,
+})
+
 // Legacy - keep for backwards compat but unused
 export const mobileMenu = style({ display: "none" })
 export const mobileTopNav = style({ display: "none" })
