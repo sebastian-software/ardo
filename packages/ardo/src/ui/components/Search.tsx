@@ -1,11 +1,11 @@
 import MiniSearch from "minisearch"
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { createPortal } from "react-dom"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
 import { SearchIcon } from "../icons"
 import * as styles from "./Search.css"
+import { SearchPopover } from "./SearchPopover"
 
 interface SearchDoc {
   id: string
@@ -49,19 +49,20 @@ function useGlobalSearchShortcut(
   }, [inputRef, setIsOpen])
 }
 
-function useOutsideClick(
-  containerRef: React.RefObject<HTMLDivElement | null>,
-  popoverClass: string,
-  isOpen: boolean,
+interface OutsideClickOptions {
+  containerRef: React.RefObject<HTMLDivElement | null>
+  popoverClass: string
+  isOpen: boolean
   setIsOpen: (open: boolean) => void
-) {
+}
+
+function useOutsideClick({ containerRef, popoverClass, isOpen, setIsOpen }: OutsideClickOptions) {
   useEffect(() => {
     if (!isOpen) return
     const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Node
-      // Check if click is inside the search container OR the portal popover
+      const target = e.target as Element
       const inContainer = containerRef.current?.contains(target) === true
-      const inPopover = (target as Element).closest?.(`.${popoverClass}`) != null
+      const inPopover = target.closest(`.${popoverClass}`) != null
       if (!inContainer && !inPopover) {
         setIsOpen(false)
       }
@@ -231,43 +232,6 @@ function SearchInput({
   )
 }
 
-function PopoverPortal({
-  anchorRef,
-  children,
-}: {
-  anchorRef: React.RefObject<HTMLElement | null>
-  children: React.ReactNode
-}) {
-  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 })
-
-  useLayoutEffect(() => {
-    const el = anchorRef.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    setPos({
-      top: rect.bottom + 8,
-      left: rect.left,
-      width: Math.max(rect.width, 400),
-    })
-  }, [anchorRef])
-
-  if (typeof document === "undefined") return null
-
-  return createPortal(
-    <div
-      className={styles.searchPopover}
-      style={{
-        top: pos.top,
-        left: pos.left,
-        width: Math.min(pos.width, globalThis.innerWidth - 32),
-      }}
-    >
-      {children}
-    </div>,
-    document.body
-  )
-}
-
 export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -277,7 +241,12 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   const hasQuery = state.query.trim().length > 0
 
   useGlobalSearchShortcut(inputRef, state.setIsOpen)
-  useOutsideClick(containerRef, styles.searchPopover, state.isOpen, state.setIsOpen)
+  useOutsideClick({
+    containerRef,
+    popoverClass: styles.searchPopover,
+    isOpen: state.isOpen,
+    setIsOpen: state.setIsOpen,
+  })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
@@ -328,7 +297,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
         }}
       />
       {state.isOpen && hasQuery && (
-        <PopoverPortal anchorRef={containerRef}>
+        <SearchPopover anchorRef={containerRef}>
           <SearchResults
             results={state.results}
             selectedIndex={state.selectedIndex}
@@ -337,7 +306,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
               state.setIsOpen(false)
             }}
           />
-        </PopoverPortal>
+        </SearchPopover>
       )}
     </div>
   )

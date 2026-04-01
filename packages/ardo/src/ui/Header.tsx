@@ -163,18 +163,8 @@ function MobileSlidePanel({
 }) {
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className={styles.mobileBackdrop}
-        data-open={isOpen}
-        onClick={onClose}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") onClose()
-        }}
-        role="button"
-        tabIndex={-1}
-        aria-label="Close menu"
-      />
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <div className={styles.mobileBackdrop} data-open={isOpen} onClick={onClose} />
 
       {/* Panel */}
       <div className={styles.mobilePanel} data-open={isOpen} aria-hidden={!isOpen}>
@@ -203,13 +193,13 @@ function MobileSlidePanel({
 
         {/* Nav links */}
         {nav != null && (
-          <div className={styles.mobilePanelNav} onClick={handleLinkClick(onClose)}>
+          <div className={styles.mobilePanelNav} onClickCapture={handleLinkClick(onClose)}>
             {nav}
           </div>
         )}
 
         {/* Sidebar content - wrapper overrides display:none from sidebar CSS */}
-        <div className={styles.mobilePanelSidebar} onClick={handleLinkClick(onClose)}>
+        <div className={styles.mobilePanelSidebar} onClickCapture={handleLinkClick(onClose)}>
           {children}
         </div>
       </div>

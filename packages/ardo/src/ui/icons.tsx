@@ -15,7 +15,7 @@ export {
   Search as SearchIcon,
   Sun as SunIcon,
   Twitter as TwitterIcon,
-  X as XIcon,
   CircleX as XCircleIcon,
+  X as XIcon,
   Youtube as YoutubeIcon,
 } from "lucide-react"
