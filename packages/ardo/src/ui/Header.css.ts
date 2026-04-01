@@ -64,14 +64,16 @@ export const mobileMenuButton = style({
   cursor: "pointer",
   padding: vars.space.sm,
   borderRadius: vars.radius.sm,
+  color: vars.color.text,
   selectors: {
     "&:hover": {
       background: vars.color.bgSoft,
     },
   },
   "@media": {
-    "(max-width: 768px)": {
-      display: "block",
+    "(max-width: 1024px)": {
+      display: "flex",
+      alignItems: "center",
     },
   },
 })
@@ -95,46 +97,90 @@ export const desktopNav = style({
   display: "flex",
   alignItems: "center",
   "@media": {
-    "(max-width: 768px)": {
+    "(max-width: 1024px)": {
       display: "none",
     },
   },
 })
 
-export const mobileMenu = style({
-  position: "fixed",
-  top: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
-  left: 0,
-  right: 0,
-  padding: `0.75rem ${vars.space.md} ${vars.space.md}`,
-  background: vars.color.bg,
-  borderTop: `1px solid ${vars.color.border}`,
-  boxShadow: vars.color.shadowLg,
-  zIndex: 99,
-})
+// =============================================================================
+// Mobile slide-in panel
+// =============================================================================
 
-export const mobileTopNav = style({
-  display: "none",
-  "@media": {
-    "(max-width: 768px)": {
-      display: "block",
+export const mobileBackdrop = style({
+  position: "fixed",
+  inset: 0,
+  zIndex: 150,
+  background: "oklch(0 0 0 / 0.3)",
+  transition: `opacity ${vars.transition.base}`,
+  selectors: {
+    '&[data-open="false"]': {
+      opacity: 0,
+      pointerEvents: "none",
     },
   },
 })
 
-export const mobileMenuContent = style({})
+export const mobilePanel = style({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  bottom: 0,
+  width: "min(20rem, 85vw)",
+  zIndex: 151,
+  background: vars.color.bg,
+  overflowY: "auto",
+  padding: `${vars.space.lg} ${vars.space.lg} ${vars.space.xl}`,
+  transform: "translateX(0)",
+  transition: `transform ${vars.transition.slow}`,
+  selectors: {
+    '&[data-open="false"]': {
+      transform: "translateX(-100%)",
+    },
+  },
+})
 
-export const mobileMenuSection = style({})
-
-export const mobileNav = style({})
-
-globalStyle(`${mobileNav} nav`, {
+export const mobilePanelHeader = style({
   display: "flex",
-  flexDirection: "column",
-  alignItems: "stretch",
-  gap: vars.space.xs,
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: vars.space.lg,
 })
 
-globalStyle(`${mobileNav} a`, {
-  width: "100%",
+export const mobilePanelClose = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: vars.space.sm,
+  borderRadius: vars.radius.sm,
+  color: vars.color.textLight,
+  selectors: {
+    "&:hover": {
+      color: vars.color.text,
+    },
+  },
 })
+
+export const mobilePanelNav = style({
+  marginBottom: vars.space.lg,
+  paddingBottom: vars.space.md,
+  borderBottom: `1px solid ${vars.color.border}`,
+})
+
+globalStyle(`${mobilePanelNav} a`, {
+  display: "block",
+  padding: `${vars.space.sm} 0`,
+  color: vars.color.textLight,
+  textDecoration: "none",
+  fontSize: vars.fontSize.sm,
+})
+
+// Legacy - keep for backwards compat but unused
+export const mobileMenu = style({ display: "none" })
+export const mobileTopNav = style({ display: "none" })
+export const mobileMenuContent = style({})
+export const mobileMenuSection = style({})
+export const mobileNav = style({})

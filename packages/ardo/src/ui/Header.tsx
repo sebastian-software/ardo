@@ -1,4 +1,4 @@
-import { type KeyboardEvent, type MouseEvent, type ReactNode, useEffect, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
@@ -11,6 +11,7 @@ import {
   MessageCircleIcon,
   PackageIcon,
   TwitterIcon,
+  XIcon,
   YoutubeIcon,
 } from "./icons"
 import * as navStyles from "./Nav.css"
@@ -40,30 +41,6 @@ export interface ArdoHeaderProps {
   className?: string
 }
 
-/**
- * Header component with explicit slot props.
- *
- * Automatically pulls `title` from config. Props serve as overrides.
- *
- * @example Zero-config
- * ```tsx
- * <Header />
- * ```
- *
- * @example With overrides
- * ```tsx
- * <Header
- *   logo="/logo.svg"
- *   title="Ardo"
- *   nav={
- *     <Nav>
- *       <NavLink to="/guide">Guide</NavLink>
- *       <NavLink to="/api">API</NavLink>
- *     </Nav>
- *   }
- * />
- * ```
- */
 export function ArdoHeader({
   logo,
   title,
@@ -83,98 +60,167 @@ export function ArdoHeader({
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""
-  const hasNav = nav != null
   const hasMobileMenu = mobileMenuContent != null
 
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [mobileMenuOpen])
+
   return (
-    <header className={className ?? styles.header}>
-      <div className={styles.headerContainer}>
-        <div className={styles.headerLeft}>
-          {hasMobileMenu && (
-            <button
-              type="button"
-              className={styles.mobileMenuButton}
-              onClick={() => {
-                setMobileMenuOpen(!mobileMenuOpen)
-              }}
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-            >
-              <span className={styles.hamburger}>
-                <span />
-                <span />
-                <span />
-              </span>
-            </button>
-          )}
-          <Link to="/" className={styles.logoLink}>
-            {hasLogo && (
-              <img
-                src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
-                alt={resolvedTitle}
-                className={styles.logo}
-              />
+    <>
+      <header className={className ?? styles.header}>
+        <div className={styles.headerContainer}>
+          <div className={styles.headerLeft}>
+            {hasMobileMenu && (
+              <button
+                type="button"
+                className={styles.mobileMenuButton}
+                onClick={() => {
+                  setMobileMenuOpen(!mobileMenuOpen)
+                }}
+                aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+              >
+                <span className={styles.hamburger}>
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              </button>
             )}
-            {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
-          </Link>
-        </div>
+            <Link to="/" className={styles.logoLink}>
+              {hasLogo && (
+                <img
+                  src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
+                  alt={resolvedTitle}
+                  className={styles.logo}
+                />
+              )}
+              {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
+            </Link>
+          </div>
 
-        {hasNav && <div className={styles.desktopNav}>{nav}</div>}
+          {nav != null && <div className={styles.desktopNav}>{nav}</div>}
 
-        <div className={styles.headerRight}>
-          {search && <ArdoSearch placeholder={searchPlaceholder} />}
-          {themeToggle && <ArdoThemeToggle />}
-          {actions}
+          <div className={styles.headerRight}>
+            {search && <ArdoSearch placeholder={searchPlaceholder} />}
+            {themeToggle && <ArdoThemeToggle />}
+            {actions}
+          </div>
         </div>
-      </div>
+      </header>
 
-      {hasNav && (
-        <div className={styles.mobileTopNav}>
-          <div>{nav}</div>
-        </div>
+      {hasMobileMenu && (
+        <MobileSlidePanel
+          isOpen={mobileMenuOpen}
+          logo={resolvedLogo}
+          title={resolvedTitle}
+          nav={nav}
+          themeToggle={themeToggle}
+          onClose={() => {
+            setMobileMenuOpen(false)
+          }}
+        >
+          {mobileMenuContent}
+        </MobileSlidePanel>
       )}
-
-      <MobileMenu
-        isOpen={mobileMenuOpen}
-        content={mobileMenuContent}
-        onClose={() => {
-          setMobileMenuOpen(false)
-        }}
-      />
-    </header>
+    </>
   )
 }
 
-function MobileMenu({
+// =============================================================================
+// Mobile Slide-in Panel
+// =============================================================================
+
+function MobileSlidePanel({
   isOpen,
-  content,
+  logo,
+  title,
+  nav,
+  themeToggle,
+  children,
   onClose,
 }: {
   isOpen: boolean
-  content: ReactNode
+  logo?: { light: string; dark: string } | string
+  title: string
+  nav?: ReactNode
+  themeToggle?: boolean
+  children: ReactNode
   onClose: () => void
 }) {
-  if (!isOpen || content == null) return null
-  const handleInteraction = (event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>) => {
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className={styles.mobileBackdrop}
+        data-open={isOpen}
+        onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") onClose()
+        }}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close menu"
+      />
+
+      {/* Panel */}
+      <div className={styles.mobilePanel} data-open={isOpen} aria-hidden={!isOpen}>
+        <div className={styles.mobilePanelHeader}>
+          <Link to="/" className={styles.logoLink} onClick={onClose}>
+            {logo != null && (
+              <img
+                src={typeof logo === "string" ? logo : logo.light}
+                alt={title}
+                className={styles.logo}
+              />
+            )}
+          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            {themeToggle && <ArdoThemeToggle />}
+            <button
+              type="button"
+              className={styles.mobilePanelClose}
+              onClick={onClose}
+              aria-label="Close menu"
+            >
+              <XIcon size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* Nav links */}
+        {nav != null && (
+          <div className={styles.mobilePanelNav} onClick={handleLinkClick(onClose)}>
+            {nav}
+          </div>
+        )}
+
+        {/* Sidebar content */}
+        <div onClick={handleLinkClick(onClose)}>{children}</div>
+      </div>
+    </>
+  )
+}
+
+function handleLinkClick(onClose: () => void) {
+  return (event: React.MouseEvent<HTMLElement>) => {
     if (event.target instanceof HTMLElement && event.target.closest("a") !== null) {
       onClose()
     }
   }
-  return (
-    <div className={styles.mobileMenu}>
-      <div
-        className={`${styles.mobileMenuContent} ${styles.mobileMenuSection}`}
-        onClick={handleInteraction}
-        onKeyDown={handleInteraction}
-      >
-        {content}
-      </div>
-    </div>
-  )
 }
 
 // =============================================================================
@@ -192,14 +238,6 @@ export interface ArdoSocialLinkProps {
   className?: string
 }
 
-/**
- * Social media link with icon.
- *
- * @example
- * ```tsx
- * <SocialLink href="https://github.com/..." icon="github" />
- * ```
- */
 export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialLinkProps) {
   return (
     <a
@@ -213,10 +251,6 @@ export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialL
     </a>
   )
 }
-
-// =============================================================================
-// Social Icon Component (internal)
-// =============================================================================
 
 const socialIcons = {
   github: GithubIcon,
