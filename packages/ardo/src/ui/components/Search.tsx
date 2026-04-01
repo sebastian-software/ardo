@@ -1,5 +1,6 @@
 import MiniSearch from "minisearch"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
@@ -109,7 +110,7 @@ function SearchResults({
   onClose: () => void
 }) {
   return (
-    <div className={styles.searchPopover}>
+    <>
       {results.length > 0 ? (
         <ul className={styles.searchResults}>
           {results.map((result, index) => (
@@ -143,7 +144,7 @@ function SearchResults({
           <kbd>esc</kbd> to close
         </span>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -225,6 +226,43 @@ function SearchInput({
   )
 }
 
+function PopoverPortal({
+  anchorRef,
+  children,
+}: {
+  anchorRef: React.RefObject<HTMLElement | null>
+  children: React.ReactNode
+}) {
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 })
+
+  useLayoutEffect(() => {
+    const el = anchorRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    setPos({
+      top: rect.bottom + 8,
+      left: rect.left,
+      width: Math.max(rect.width, 400),
+    })
+  }, [anchorRef])
+
+  if (typeof document === "undefined") return null
+
+  return createPortal(
+    <div
+      className={styles.searchPopover}
+      style={{
+        top: pos.top,
+        left: pos.left,
+        width: Math.min(pos.width, globalThis.innerWidth - 32),
+      }}
+    >
+      {children}
+    </div>,
+    document.body
+  )
+}
+
 export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -285,14 +323,16 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
         }}
       />
       {state.isOpen && hasQuery && (
-        <SearchResults
-          results={state.results}
-          selectedIndex={state.selectedIndex}
-          query={state.query}
-          onClose={() => {
-            state.setIsOpen(false)
-          }}
-        />
+        <PopoverPortal anchorRef={containerRef}>
+          <SearchResults
+            results={state.results}
+            selectedIndex={state.selectedIndex}
+            query={state.query}
+            onClose={() => {
+              state.setIsOpen(false)
+            }}
+          />
+        </PopoverPortal>
       )}
     </div>
   )

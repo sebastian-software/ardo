@@ -51,12 +51,8 @@ export const searchInput = style({
 })
 
 export const searchPopover = style({
-  position: "absolute",
-  top: "calc(100% + 0.5rem)",
-  left: 0,
-  minWidth: "100%",
-  width: "max-content",
-  maxWidth: "min(28rem, calc(100vw - 2rem))",
+  position: "fixed",
+  width: "min(28rem, calc(100vw - 2rem))",
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
