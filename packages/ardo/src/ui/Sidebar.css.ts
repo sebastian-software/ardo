@@ -8,6 +8,7 @@ export const sidebar = style({
   display: "flex",
   flexDirection: "column",
   padding: `${vars.space.md} ${vars.space.md} ${vars.space.md} 1.25rem`,
+  overflow: "visible",
   background: "transparent",
   "@media": {
     "(max-width: 1024px)": {
