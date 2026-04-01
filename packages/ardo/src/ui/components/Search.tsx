@@ -51,13 +51,18 @@ function useGlobalSearchShortcut(
 
 function useOutsideClick(
   containerRef: React.RefObject<HTMLDivElement | null>,
+  popoverClass: string,
   isOpen: boolean,
   setIsOpen: (open: boolean) => void
 ) {
   useEffect(() => {
     if (!isOpen) return
     const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      // Check if click is inside the search container OR the portal popover
+      const inContainer = containerRef.current?.contains(target) === true
+      const inPopover = (target as Element).closest?.(`.${popoverClass}`) != null
+      if (!inContainer && !inPopover) {
         setIsOpen(false)
       }
     }
@@ -67,7 +72,7 @@ function useOutsideClick(
       document.removeEventListener("mousedown", handleOutsideClick)
       document.removeEventListener("touchstart", handleOutsideClick)
     }
-  }, [containerRef, isOpen, setIsOpen])
+  }, [containerRef, popoverClass, isOpen, setIsOpen])
 }
 
 function useSearchIndex() {
@@ -272,7 +277,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   const hasQuery = state.query.trim().length > 0
 
   useGlobalSearchShortcut(inputRef, state.setIsOpen)
-  useOutsideClick(containerRef, state.isOpen, state.setIsOpen)
+  useOutsideClick(containerRef, styles.searchPopover, state.isOpen, state.setIsOpen)
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
