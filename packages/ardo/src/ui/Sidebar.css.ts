@@ -26,10 +26,8 @@ export const sidebarList = style({
 export const sidebarList0 = style({})
 
 export const sidebarList1 = style({
-  marginLeft: vars.space.sm,
-  marginTop: vars.space.xs,
-  paddingLeft: "0.75rem",
-  borderLeft: `1.5px solid ${vars.color.borderLight}`,
+  marginLeft: "0.75rem",
+  marginTop: "2px",
 })
 
 export const sidebarItem = style({})
@@ -42,19 +40,16 @@ export const sidebarItemHeader = style({
 
 export const sidebarLink = style({
   display: "block",
-  padding: `${vars.space.sm} 0.75rem`,
-  margin: "1px 0",
+  padding: `0.25rem 0.75rem`,
   color: vars.color.textLight,
   textDecoration: "none",
   fontSize: vars.fontSize.sm,
   fontWeight: 400,
-  letterSpacing: "-0.006em",
-  borderRadius: vars.radius.sm,
+  borderRadius: vars.radius.base,
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       color: vars.color.text,
-      background: vars.color.bgMute,
     },
     "&.active": {
       color: vars.color.brand,
@@ -64,19 +59,17 @@ export const sidebarLink = style({
   },
 })
 
+// Section title (top-level group heading like "Get started", "Organize")
 export const sidebarText = style({
   display: "flex",
   alignItems: "center",
-  gap: vars.space.xs,
-  padding: `${vars.space.sm} 0.75rem ${vars.space.xs}`,
-  marginTop: vars.space.md,
-  color: vars.color.textLighter,
+  gap: vars.space.sm,
+  padding: `0.375rem 0`,
+  marginTop: vars.space.lg,
+  color: vars.color.text,
   textDecoration: "none",
-  fontWeight: 700,
-  fontSize: vars.fontSize.xs,
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
-  borderRadius: vars.radius.sm,
+  fontWeight: 600,
+  fontSize: vars.fontSize.sm,
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
@@ -104,6 +97,9 @@ export const sidebarTextButton = style({
 })
 
 export const sidebarCollapse = style({
+  display: "flex",
+  alignItems: "center",
+  alignSelf: "center",
   background: "none",
   border: "none",
   cursor: "pointer",
@@ -113,7 +109,6 @@ export const sidebarCollapse = style({
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      background: vars.color.bgMute,
       color: vars.color.text,
     },
     "&.collapsed": {
