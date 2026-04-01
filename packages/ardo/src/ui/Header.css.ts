@@ -155,11 +155,13 @@ export const mobilePanelClose = style({
   border: "none",
   cursor: "pointer",
   padding: vars.space.sm,
-  borderRadius: vars.radius.sm,
+  borderRadius: vars.radius.base,
   color: vars.color.textLight,
+  transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       color: vars.color.text,
+      background: vars.color.bgMute,
     },
   },
 })

@@ -11,22 +11,15 @@ export const search = style({
 export const searchField = style({
   display: "flex",
   alignItems: "center",
-  gap: "8px",
-  minHeight: "40px",
-  padding: "8px 12px",
+  gap: vars.space.sm,
+  minHeight: "2.5rem",
+  padding: `${vars.space.sm} 0.75rem`,
   background: vars.color.bgSoft,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.base,
   color: vars.color.textLighter,
   cursor: "text",
   transition: `border-color ${vars.transition.fast}, box-shadow ${vars.transition.fast}, color ${vars.transition.fast}`,
-  "@media": {
-    "(max-width: 768px)": {
-      width: "40px",
-      gap: 0,
-      padding: "8px",
-    },
-  },
 })
 
 globalStyle(`${search}:hover ${searchField}, ${search}:focus-within ${searchField}`, {
@@ -40,7 +33,7 @@ export const searchInput = style({
   minWidth: 0,
   border: "none",
   outline: "none",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   background: "none",
   color: vars.color.text,
   "::placeholder": {
@@ -51,44 +44,31 @@ export const searchInput = style({
       outline: "none",
     },
   },
-  "@media": {
-    "(max-width: 768px)": {
-      flex: "0 0 auto",
-      width: 0,
-      opacity: 0,
-      pointerEvents: "none",
-    },
-  },
 })
 
 export const searchPopover = style({
   position: "absolute",
-  top: "calc(100% + 10px)",
+  top: "calc(100% + 0.5rem)",
+  left: 0,
   right: 0,
-  width: "min(560px, calc(100vw - 24px))",
+  minWidth: "20rem",
   background: vars.color.bg,
-  borderRadius: "16px",
+  borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
   boxShadow: vars.color.shadowLg,
   overflow: "hidden",
   zIndex: 210,
-  "@media": {
-    "(max-width: 768px)": {
-      right: 0,
-      width: "min(420px, calc(100vw - 20px))",
-    },
-  },
 })
 
 export const searchResults = style({
   listStyle: "none",
-  maxHeight: "400px",
+  maxHeight: "25rem",
   overflowY: "auto",
 })
 
 export const searchResult = style({
   display: "block",
-  padding: "12px 20px",
+  padding: `0.75rem ${vars.space.md}`,
   textDecoration: "none",
   color: vars.color.text,
   borderBottom: `1px solid ${vars.color.borderLight}`,
@@ -98,7 +78,7 @@ export const searchResult = style({
       borderBottom: "none",
     },
     "&:hover, &.selected": {
-      background: "oklch(0.48 0.15 170 / 0.05)",
+      background: vars.color.brandSubtle,
     },
   },
 })
@@ -111,12 +91,12 @@ export const searchResultTitle = style({
 
 export const searchResultSection = style({
   display: "block",
-  fontSize: "13px",
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
 })
 
 export const searchNoResults = style({
-  padding: "32px 20px",
+  padding: `${vars.space.xl} ${vars.space.md}`,
   textAlign: "center",
   color: vars.color.textLighter,
 })
@@ -124,24 +104,19 @@ export const searchNoResults = style({
 export const searchFooter = style({
   display: "flex",
   justifyContent: "center",
-  gap: "24px",
-  padding: "12px 20px",
+  gap: vars.space.lg,
+  padding: `0.75rem ${vars.space.md}`,
   background: vars.color.bgSoft,
   borderTop: `1px solid ${vars.color.border}`,
-  fontSize: "12px",
+  fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
-  "@media": {
-    "(max-width: 768px)": {
-      display: "none",
-    },
-  },
 })
 
 globalStyle(`${searchFooter} kbd`, {
   padding: "2px 6px",
   background: vars.color.bg,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: "4px",
+  borderRadius: vars.radius.sm,
   marginRight: "4px",
 })
 
@@ -149,15 +124,15 @@ export const searchClear = style({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  width: "24px",
-  height: "24px",
+  width: "1.5rem",
+  height: "1.5rem",
   flexShrink: 0,
   background: "none",
   border: "none",
   cursor: "pointer",
-  fontSize: "18px",
+  fontSize: vars.fontSize.lg,
   color: vars.color.textLighter,
-  padding: "4px",
+  padding: vars.space.xs,
   borderRadius: vars.radius.sm,
   transition: `all ${vars.transition.fast}`,
   selectors: {
@@ -166,75 +141,19 @@ export const searchClear = style({
       color: vars.color.text,
     },
   },
-  "@media": {
-    "(max-width: 768px)": {
-      display: "none",
-    },
-  },
 })
 
 export const searchKbd = style({
-  display: "none",
-  marginLeft: "4px",
-  "@media": {
-    "(min-width: 768px)": {
-      display: "flex",
-      gap: "3px",
-    },
-  },
+  display: "flex",
+  gap: "3px",
+  marginLeft: vars.space.xs,
 })
 
 globalStyle(`${searchKbd} kbd`, {
   padding: "2px 6px",
   background: vars.color.bg,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: "4px",
-  fontSize: "11px",
+  borderRadius: vars.radius.sm,
+  fontSize: vars.fontSize.xs,
   fontFamily: vars.font.family,
 })
-
-// Mobile expanded states
-globalStyle(`${search}[data-expanded="true"], ${search}:focus-within`, {
-  "@media": {
-    "(max-width: 768px)": {
-      width: "min(360px, calc(100vw - 20px))",
-    },
-  },
-})
-
-globalStyle(
-  `${search}[data-expanded="true"] ${searchField}, ${search}:focus-within ${searchField}`,
-  {
-    "@media": {
-      "(max-width: 768px)": {
-        width: "100%",
-        gap: "8px",
-        padding: "8px 12px",
-      },
-    },
-  }
-)
-
-globalStyle(
-  `${search}[data-expanded="true"] ${searchInput}, ${search}:focus-within ${searchInput}`,
-  {
-    "@media": {
-      "(max-width: 768px)": {
-        flex: 1,
-        opacity: 1,
-        pointerEvents: "auto",
-      },
-    },
-  }
-)
-
-globalStyle(
-  `${search}[data-expanded="true"] ${searchClear}, ${search}:focus-within ${searchClear}`,
-  {
-    "@media": {
-      "(max-width: 768px)": {
-        display: "inline-flex",
-      },
-    },
-  }
-)
