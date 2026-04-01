@@ -26,7 +26,9 @@ export const searchField = style({
 globalStyle(`${search}:focus-within ${searchField}`, {
   borderColor: vars.color.brand,
   color: vars.color.textLight,
-  boxShadow: `0 0 0 2px ${vars.color.brandSubtle}`,
+})
+
+globalStyle(`${searchField}:focus-within`, {
   outline: "none",
 })
 
@@ -52,7 +54,7 @@ export const searchPopover = style({
   position: "absolute",
   top: "calc(100% + 0.5rem)",
   left: 0,
-  width: "min(30rem, calc(100vw - 2rem))",
+  width: "min(28rem, calc(100vw - 2rem))",
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,

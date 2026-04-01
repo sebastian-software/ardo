@@ -95,7 +95,7 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
     <SidebarContext value={contextValue}>
       <aside className={className ?? styles.sidebar}>
         {header != null && <div className={styles.sidebarHeader}>{header}</div>}
-        <nav aria-label="Main navigation">
+        <nav aria-label="Main navigation" className={styles.sidebarNav}>
           {hasCustomChildren ? (
             <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
           ) : hasResolvedItems ? (

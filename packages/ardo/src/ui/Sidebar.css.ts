@@ -5,8 +5,9 @@ import { vars } from "./theme/contract.css"
 export const sidebar = style({
   width: vars.layout.sidebarWidth,
   flexShrink: 0,
+  display: "flex",
+  flexDirection: "column",
   padding: `${vars.space.md} ${vars.space.md} ${vars.space.md} 1.25rem`,
-  overflowY: "auto",
   background: "transparent",
   "@media": {
     "(max-width: 1024px)": {
@@ -16,7 +17,15 @@ export const sidebar = style({
 })
 
 export const sidebarHeader = style({
+  flexShrink: 0,
   marginBottom: vars.space.md,
+  position: "relative",
+})
+
+export const sidebarNav = style({
+  flex: 1,
+  overflowY: "auto",
+  minHeight: 0,
 })
 
 export const sidebarList = style({
