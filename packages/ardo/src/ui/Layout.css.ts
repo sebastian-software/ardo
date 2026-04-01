@@ -27,6 +27,7 @@ export const main = style({
   border: `1px solid ${vars.color.border}`,
   // Content scrolls inside the card
   overflowY: "auto",
+  scrollPaddingTop: vars.space.xl,
   padding: vars.space.xl,
   "@media": {
     "(max-width: 1024px)": {

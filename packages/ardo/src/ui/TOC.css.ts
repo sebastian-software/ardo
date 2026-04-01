@@ -5,6 +5,11 @@ import { vars } from "./theme/contract.css"
 export const toc = style({
   width: vars.layout.tocWidth,
   flexShrink: 0,
+  position: "sticky",
+  top: 0,
+  alignSelf: "flex-start",
+  maxHeight: "100%",
+  padding: `${vars.space.xl} 0`,
   overflowY: "auto",
   "@media": {
     "(max-width: 1280px)": {
