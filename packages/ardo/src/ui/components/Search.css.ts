@@ -20,12 +20,14 @@ export const searchField = style({
   color: vars.color.textLighter,
   cursor: "text",
   transition: `border-color ${vars.transition.fast}, box-shadow ${vars.transition.fast}, color ${vars.transition.fast}`,
+  outline: "none",
 })
 
-globalStyle(`${search}:hover ${searchField}, ${search}:focus-within ${searchField}`, {
+globalStyle(`${search}:focus-within ${searchField}`, {
   borderColor: vars.color.brand,
   color: vars.color.textLight,
-  boxShadow: "0 0 0 3px oklch(0.48 0.15 170 / 0.14)",
+  boxShadow: `0 0 0 2px ${vars.color.brandSubtle}`,
+  outline: "none",
 })
 
 export const searchInput = style({
@@ -50,8 +52,7 @@ export const searchPopover = style({
   position: "absolute",
   top: "calc(100% + 0.5rem)",
   left: 0,
-  right: 0,
-  minWidth: "20rem",
+  width: "min(30rem, calc(100vw - 2rem))",
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
