@@ -9,7 +9,7 @@ import {
   GithubIcon,
   LinkedinIcon,
   MessageCircleIcon,
-  PackageIcon,
+  NpmIcon,
   TwitterIcon,
   XIcon,
   YoutubeIcon,
@@ -163,7 +163,7 @@ function MobileSlidePanel({
 }) {
   return (
     <>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
       <div className={styles.mobileBackdrop} data-open={isOpen} onClick={onClose} />
 
       {/* Panel */}
@@ -250,7 +250,7 @@ const socialIcons = {
   discord: MessageCircleIcon,
   linkedin: LinkedinIcon,
   youtube: YoutubeIcon,
-  npm: PackageIcon,
+  npm: NpmIcon,
 } as const
 
 function SocialIcon({ icon }: { icon: keyof typeof socialIcons }) {
