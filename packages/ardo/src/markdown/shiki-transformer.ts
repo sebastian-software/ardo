@@ -81,12 +81,12 @@ export function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): S
         (options.globalLineNumbers ?? false) || metaRaw.includes("showLineNumbers")
     },
     pre(node) {
-      const properties = ensureNodeProperties(node as TransformerNode)
+      const properties = ensureNodeProperties(node)
       applyTitleProperty(properties, state.metaRaw)
       applyLabelProperty(properties, state.metaRaw)
     },
     line(node, line) {
-      const properties = ensureNodeProperties(node as TransformerNode)
+      const properties = ensureNodeProperties(node)
       applyHighlightedLineClass(properties, state.highlightLines, line)
 
       if (state.showLineNumbers) {

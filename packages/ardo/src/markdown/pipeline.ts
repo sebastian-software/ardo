@@ -28,7 +28,8 @@ export async function transformMarkdown(
   config: MarkdownConfig,
   options: TransformOptions = {}
 ): Promise<TransformResult> {
-  const { data: frontmatter, content: markdownContent } = matter(content)
+  const { data, content: markdownContent } = matter(content)
+  const frontmatterData: unknown = data
   const { basePath = "/", highlighter: providedHighlighter } = options
 
   const tocExtraction: TocExtraction = { toc: [] }
@@ -60,7 +61,7 @@ export async function transformMarkdown(
 
   return {
     html: String(result),
-    frontmatter: frontmatter as PageFrontmatter,
+    frontmatter: frontmatterData as PageFrontmatter,
     toc: tocExtraction.toc,
   }
 }

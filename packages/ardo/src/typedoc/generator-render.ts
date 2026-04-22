@@ -7,7 +7,7 @@ import type {
 
 import type { TypeDocRuntimeContext } from "./generator-config"
 
-import { type CommentPart, renderComment, renderCommentShort } from "./generator-shared"
+import { renderComment, renderCommentShort } from "./generator-shared"
 
 export function renderSignature(
   context: TypeDocRuntimeContext,
@@ -82,7 +82,7 @@ function renderSignatureParameterRow(parameter: ParameterReflection): string {
   const optional = parameter.flags.isOptional ? " (optional)" : ""
   const type = parameter.type == null ? "-" : `\`${parameter.type.toString()}\``
   const summary = parameter.comment?.summary
-  const description = summary == null ? "-" : renderCommentShort(summary as CommentPart[])
+  const description = summary == null ? "-" : renderCommentShort(summary)
   return `| ${parameter.name}${optional} | ${type} | ${description} |`
 }
 
@@ -103,7 +103,7 @@ function appendSignatureReturn(lines: string[], signature: SignatureReflection):
   }
 
   lines.push("")
-  lines.push(renderComment(returnTag.content as CommentPart[]))
+  lines.push(renderComment(returnTag.content))
 }
 
 export function renderProperty(property: DeclarationReflection): string {
@@ -144,7 +144,7 @@ function appendPropertyType(lines: string[], property: DeclarationReflection): v
 function appendPropertySummary(lines: string[], property: DeclarationReflection): void {
   const summary = property.comment?.summary
   if (summary != null) {
-    lines.push(renderComment(summary as CommentPart[]))
+    lines.push(renderComment(summary))
   }
 }
 
@@ -179,7 +179,7 @@ function appendMethodSignature(
 ): void {
   const summary = signature.comment?.summary
   if (summary != null) {
-    lines.push(renderComment(summary as CommentPart[]))
+    lines.push(renderComment(summary))
     lines.push("")
   }
 
@@ -204,7 +204,7 @@ function renderTypeParameterRow(typeParameter: TypeParameterReflection): string 
   const defaultValue =
     typeParameter.default == null ? "-" : `\`${typeParameter.default.toString()}\``
   const summary = typeParameter.comment?.summary
-  const description = summary == null ? "-" : renderCommentShort(summary as CommentPart[])
+  const description = summary == null ? "-" : renderCommentShort(summary)
   return `| ${typeParameter.name} | ${constraint} | ${defaultValue} | ${description} |`
 }
 

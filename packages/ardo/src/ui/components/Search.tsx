@@ -83,7 +83,7 @@ function useSearchIndex() {
       storeFields: ["title", "path", "section"],
       searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
     })
-    index.addAll(searchDocs as SearchDoc[])
+    index.addAll(searchDocs)
     return index
   }, [])
 }
@@ -169,7 +169,7 @@ function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
       return
     }
     const rawResults = searchIndex.search(searchQuery).slice(0, 10)
-    setResults(normalizeResults(rawResults as Array<Record<string, unknown>>))
+    setResults(normalizeResults(rawResults))
     setSelectedIndex(0)
     setIsOpen(true)
   }
