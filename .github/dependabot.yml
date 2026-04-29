@@ -1,27 +1,111 @@
+# Managed by Alfred/OpenClaw for sebastian-software.
 version: 2
 updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 10
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
     groups:
-      dev-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
-      prod-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "patch"
-    commit-message:
-      prefix: "chore(deps)"
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/docs"
     schedule:
-      interval: "monthly"
-    commit-message:
-      prefix: "chore(ci)"
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/examples/basic"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/examples/library"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/examples/monorepo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/packages/ardo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/packages/create-ardo"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "npm"
+    directory: "/packages/create-ardo/templates/minimal"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
