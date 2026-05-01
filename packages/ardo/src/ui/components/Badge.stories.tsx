@@ -15,9 +15,9 @@ export const Variants: Story = {
   args: {
     children: "New",
   },
-  render: () => (
+  render: ({ children }) => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-      <ArdoBadge>New</ArdoBadge>
+      <ArdoBadge>{children}</ArdoBadge>
       <ArdoBadge variant="success">Stable</ArdoBadge>
       <ArdoBadge variant="warning">Beta</ArdoBadge>
       <ArdoBadge variant="danger">Deprecated</ArdoBadge>

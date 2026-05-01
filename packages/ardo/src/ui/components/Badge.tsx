@@ -19,7 +19,7 @@ export type ArdoBadgeProps = {
 export function ArdoBadge({ variant = "default", icon, children }: ArdoBadgeProps) {
   return (
     <span className={styles.badge({ variant })}>
-      {icon != null && <span className={styles.icon()}>{icon}</span>}
+      {icon != null && <span className={styles.icon}>{icon}</span>}
       {children}
     </span>
   )

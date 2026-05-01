@@ -1,3 +1,4 @@
+import { style } from "@vanilla-extract/css"
 import { recipe } from "@vanilla-extract/recipes"
 
 import { vars } from "../theme/contract.css"
@@ -50,11 +51,9 @@ export const badge = recipe({
   },
 })
 
-export const icon = recipe({
-  base: {
-    display: "inline-flex",
-    alignItems: "center",
-    flexShrink: 0,
-    lineHeight: 0,
-  },
+export const icon = style({
+  display: "inline-flex",
+  alignItems: "center",
+  flexShrink: 0,
+  lineHeight: 0,
 })
