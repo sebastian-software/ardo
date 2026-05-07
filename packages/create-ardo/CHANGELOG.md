@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.0...create-ardo-v3.2.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* **ardo:** resolve eslint violations ([c74095c](https://github.com/sebastian-software/ardo/commit/c74095ced4c19ce29da1f94994bb93d66b6030e8))
+* **create-ardo:** allow esbuild builds in template ([e9eede0](https://github.com/sebastian-software/ardo/commit/e9eede044e701ae3a3bddfcb7c3833ddaf460a64))
+* updated deps ([744032a](https://github.com/sebastian-software/ardo/commit/744032a0d6151ebd0be07df04c94a8a60914048f))
+
 ## [3.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.1.0...create-ardo-v3.2.0) (2026-04-01)
 
 
