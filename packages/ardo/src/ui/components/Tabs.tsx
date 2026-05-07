@@ -11,7 +11,7 @@ import {
 
 import * as styles from "./Tabs.css"
 
-interface TabsContextValue {
+type TabsContextValue = {
   activeTab: string
   setActiveTab: (tab: string) => void
   getTabValue: (value?: string) => string
@@ -29,7 +29,7 @@ function useTabsContext() {
   return context
 }
 
-export interface ArdoTabsProps {
+export type ArdoTabsProps = {
   /** Default active tab value */
   defaultValue?: string
   /** Tab components (ArdoTabList and ArdoTabPanels) */
@@ -71,7 +71,7 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   )
 }
 
-export interface ArdoTabListProps {
+export type ArdoTabListProps = {
   /** Tab buttons */
   children: ReactNode
 }
@@ -87,7 +87,7 @@ export function ArdoTabList({ children }: ArdoTabListProps) {
   )
 }
 
-export interface ArdoTabProps {
+export type ArdoTabProps = {
   /** Unique value identifying this tab (optional if tab order matches panels) */
   value?: string
   /** Tab button label */
@@ -117,7 +117,7 @@ export function ArdoTab({ value, children }: ArdoTabProps) {
   )
 }
 
-export interface ArdoTabPanelProps {
+export type ArdoTabPanelProps = {
   /** Value matching the corresponding ArdoTab (optional if panel order matches tabs) */
   value?: string
   /** Panel content */
@@ -143,7 +143,7 @@ export function ArdoTabPanel({ value, children }: ArdoTabPanelProps) {
   )
 }
 
-export interface ArdoTabPanelsProps {
+export type ArdoTabPanelsProps = {
   /** ArdoTabPanel components */
   children: ReactNode
 }
@@ -157,24 +157,29 @@ export function ArdoTabPanels({ children }: ArdoTabPanelsProps) {
 
 function findFirstTabValue(children: ReactNode): string {
   for (const child of Children.toArray(children)) {
-    if (!isValidElement(child)) {
-      continue
-    }
-
-    if (child.type === ArdoTab) {
-      const tabValue = (child.props as { value?: string }).value
-      return tabValue ?? `${AUTO_TAB_PREFIX}0`
-    }
-
-    const nestedChildren = (child.props as { children?: ReactNode }).children
-    const hasNestedChildren = nestedChildren != null
-    if (hasNestedChildren) {
-      const nestedValue = findFirstTabValue(nestedChildren)
-      if (nestedValue) {
-        return nestedValue
-      }
+    const tabValue = getFirstTabValueFromChild(child)
+    if (tabValue != null) {
+      return tabValue
     }
   }
 
   return ""
+}
+
+function getFirstTabValueFromChild(child: ReactNode): null | string {
+  if (!isValidElement<{ children?: ReactNode }>(child)) {
+    return null
+  }
+
+  if (isValidElement<ArdoTabProps>(child) && child.type === ArdoTab) {
+    return child.props.value ?? `${AUTO_TAB_PREFIX}0`
+  }
+
+  const nestedChildren = child.props.children
+  if (nestedChildren == null) {
+    return null
+  }
+
+  const nestedValue = findFirstTabValue(nestedChildren)
+  return nestedValue === "" ? null : nestedValue
 }

@@ -1,25 +1,25 @@
 import { type DeclarationReflection, type ProjectReflection, ReflectionKind } from "typedoc"
 
-export interface GroupedReflections {
+export type GroupedReflections = {
   componentItems: DeclarationReflection[]
   functionsByFile: Map<string, DeclarationReflection[]>
   standaloneItems: DeclarationReflection[]
   typesByFile: Map<string, DeclarationReflection[]>
 }
 
-export interface ReflectionNavigation {
+export type ReflectionNavigation = {
   next: DeclarationReflection | null
   prev: DeclarationReflection | null
 }
 
-export interface ComponentProp {
+export type ComponentProp = {
   description: string
   name: string
   optional: boolean
   type: string
 }
 
-export interface CommentPart {
+export type CommentPart = {
   kind: string
   text: string
 }
@@ -196,20 +196,15 @@ export function getKindGroupName(kind: ReflectionKind, name: string): string {
     return "Functions"
   }
 
-  switch (kind) {
-    case ReflectionKind.Interface:
-      return "Interfaces"
-    case ReflectionKind.TypeAlias:
-      return "Types"
-    case ReflectionKind.Class:
-      return "Classes"
-    case ReflectionKind.Variable:
-      return "Variables"
-    case ReflectionKind.Enum:
-      return "Enums"
-    default:
-      return "Other"
+  const groupNames: Partial<Record<ReflectionKind, string>> = {
+    [ReflectionKind.Class]: "Classes",
+    [ReflectionKind.Enum]: "Enums",
+    [ReflectionKind.Interface]: "Interfaces",
+    [ReflectionKind.TypeAlias]: "Types",
+    [ReflectionKind.Variable]: "Variables",
   }
+
+  return groupNames[kind] ?? "Other"
 }
 
 export function isReactComponent(name: string): boolean {

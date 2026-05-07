@@ -4,13 +4,13 @@ import { useArdoPageData } from "../runtime/hooks"
 import { ArdoContent } from "./Content"
 import * as styles from "./DocPage.css"
 import { ArdoLayout } from "./Layout"
-import { ArdoTOC } from "./TOC"
+import { ArdoTOC } from "./Toc"
 
 // =============================================================================
 // DocPage Component (includes Layout - for backwards compatibility)
 // =============================================================================
 
-interface DocPageProps {
+type DocPageProps = {
   children: ReactNode
   /** Edit link configuration (forwarded to Content) */
   editLink?: { pattern: string; text?: string }
@@ -51,7 +51,7 @@ export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPa
 // DocContent Component (without Layout - for use with _layout.tsx)
 // =============================================================================
 
-interface DocContentProps {
+type DocContentProps = {
   children: ReactNode
   /** Edit link configuration (forwarded to Content) */
   editLink?: { pattern: string; text?: string }
@@ -99,7 +99,7 @@ export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: Do
 // DocLayout Component (legacy alias)
 // =============================================================================
 
-interface DocLayoutProps {
+type DocLayoutProps = {
   content: ReactNode
 }
 

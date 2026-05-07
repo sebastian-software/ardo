@@ -4,7 +4,7 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-export interface SearchDoc {
+export type SearchDoc = {
   id: string
   title: string
   content: string
@@ -12,17 +12,17 @@ export interface SearchDoc {
   section?: string
 }
 
-interface SearchScanContext {
+type SearchScanContext = {
   docs: SearchDoc[]
   routesDir: string
 }
 
-interface SearchDocBuildContext {
+type SearchDocBuildContext = {
   routesDir: string
   section?: string
 }
 
-interface SearchEntryContext {
+type SearchEntryContext = {
   dir: string
   section?: string
   scanContext: SearchScanContext

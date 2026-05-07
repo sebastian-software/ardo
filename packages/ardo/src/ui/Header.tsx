@@ -20,7 +20,7 @@ import * as navStyles from "./Nav.css"
 // Header Component
 // =============================================================================
 
-export interface ArdoHeaderProps {
+export type ArdoHeaderProps = {
   /** Logo image URL or light/dark variants */
   logo?: { light: string; dark: string } | string
   /** Site title displayed next to logo */
@@ -219,7 +219,7 @@ function handleLinkClick(onClose: () => void) {
 // SocialLink Component
 // =============================================================================
 
-export interface ArdoSocialLinkProps {
+export type ArdoSocialLinkProps = {
   /** URL to link to */
   href: string
   /** Social icon type */

@@ -3,6 +3,7 @@ import {
   type ComponentProps,
   createContext,
   isValidElement,
+  type ReactElement,
   type ReactNode,
   use,
   useMemo,
@@ -23,7 +24,7 @@ type RoutePath = ComponentProps<typeof NavLink>["to"]
 // Sidebar Context
 // =============================================================================
 
-interface SidebarContextValue {
+type SidebarContextValue = {
   currentPath: string
 }
 
@@ -37,7 +38,7 @@ function useSidebarContext() {
 // Sidebar Component Types
 // =============================================================================
 
-export interface ArdoSidebarProps {
+export type ArdoSidebarProps = {
   /** Sidebar items (for data-driven approach) */
   items?: SidebarItemType[]
   /** Children for JSX composition (SidebarGroup, SidebarLink) */
@@ -111,7 +112,7 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
 // SidebarGroup Component
 // =============================================================================
 
-export interface ArdoSidebarGroupProps {
+export type ArdoSidebarGroupProps = {
   /** Group title */
   title: string
   /** Optional link for the group title */
@@ -223,7 +224,7 @@ export function ArdoSidebarGroup({
 // SidebarLink Component
 // =============================================================================
 
-export interface ArdoSidebarLinkProps {
+export type ArdoSidebarLinkProps = {
   /** Internal route path (type-safe with React Router's registered routes) */
   to: RoutePath
   /** Link text */
@@ -260,7 +261,7 @@ export function ArdoSidebarLink({ to, children, className }: ArdoSidebarLinkProp
 // Internal: Data-driven sidebar rendering
 // =============================================================================
 
-interface SidebarItemsProps {
+type SidebarItemsProps = {
   items: SidebarItemType[]
   depth: number
 }
@@ -281,7 +282,7 @@ function SidebarItems({ items, depth }: SidebarItemsProps) {
   )
 }
 
-interface SidebarItemComponentProps {
+type SidebarItemComponentProps = {
   item: SidebarItemType
   depth: number
 }
@@ -366,12 +367,12 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
 // Utility Functions
 // =============================================================================
 
-function isSidebarChildActive(child: React.ReactElement, currentPath: string): boolean {
-  if (child.type === ArdoSidebarLink) {
-    return (child.props as ArdoSidebarLinkProps).to === currentPath
+function isSidebarChildActive(child: ReactElement, currentPath: string): boolean {
+  if (isSidebarLinkElement(child)) {
+    return child.props.to === currentPath
   }
-  if (child.type === ArdoSidebarGroup) {
-    const groupProps = child.props as ArdoSidebarGroupProps
+  if (isSidebarGroupElement(child)) {
+    const groupProps = child.props
     return (
       groupProps.to === currentPath ||
       (groupProps.children != null && checkChildrenActive(groupProps.children, currentPath))
@@ -384,4 +385,12 @@ function checkChildrenActive(children: ReactNode, currentPath: string): boolean 
   return Children.toArray(children).some(
     (child) => isValidElement(child) && isSidebarChildActive(child, currentPath)
   )
+}
+
+function isSidebarLinkElement(child: ReactElement): child is ReactElement<ArdoSidebarLinkProps> {
+  return child.type === ArdoSidebarLink
+}
+
+function isSidebarGroupElement(child: ReactElement): child is ReactElement<ArdoSidebarGroupProps> {
+  return child.type === ArdoSidebarGroup
 }

@@ -15,7 +15,7 @@ import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
 // ArdoRoot Component
 // =============================================================================
 
-export interface ArdoRootProps {
+export type ArdoRootProps = {
   /** Ardo config (from virtual:ardo/config) */
   config: ArdoConfig
   /** Sidebar data (from virtual:ardo/sidebar) */

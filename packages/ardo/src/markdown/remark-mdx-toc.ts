@@ -12,7 +12,7 @@ import { visit } from "unist-util-visit"
 
 import type { TOCItem } from "../config/types"
 
-interface RemarkMdxTocOptions {
+type RemarkMdxTocOptions = {
   /** Export name (default: "toc") */
   name?: string
   /** Heading levels to include (default: [2, 3]) */
@@ -23,7 +23,7 @@ export function remarkMdxToc(options: RemarkMdxTocOptions = {}) {
   const { name = "toc", levels = [2, 3] } = options
   const [minLevel, maxLevel] = levels
 
-  return function (tree: Root, file: unknown) {
+  return function (tree: Root, file: Parameters<typeof define>[1]) {
     const items: TOCItem[] = []
     let headingIndex = 0
 
@@ -38,14 +38,12 @@ export function remarkMdxToc(options: RemarkMdxTocOptions = {}) {
       items.push({ id, text, level: node.depth })
 
       // Add id to the heading node for anchor links
-      const data = node.data ?? (node.data = {})
-      const hProperties = (data.hProperties ?? (data.hProperties = {})) as Record<string, string>
+      const hProperties = ensureHProperties(node)
       hProperties.id = id
     })
 
     // Use the same approach as remark-mdx-frontmatter: valueToEstree + define
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-    define(tree, file as any, { [name]: valueToEstree(items) })
+    define(tree, file, { [name]: valueToEstree(items) })
   }
 }
 
@@ -53,12 +51,12 @@ function getHeadingText(node: Heading): string {
   const parts: string[] = []
 
   function extract(child: unknown) {
-    if (typeof child !== "object" || child === null) return
-    const typed = child as { type?: string; value?: string; children?: unknown[] }
-    if (typed.type === "text" || typed.type === "inlineCode") {
-      parts.push(typed.value ?? "")
-    } else if (Array.isArray(typed.children)) {
-      for (const nested of typed.children) extract(nested)
+    if (!isRecord(child)) return
+
+    if (child.type === "text" || child.type === "inlineCode") {
+      parts.push(typeof child.value === "string" ? child.value : "")
+    } else if (Array.isArray(child.children)) {
+      for (const nested of child.children) extract(nested)
     }
   }
 
@@ -78,4 +76,23 @@ function slugify(text: string): string {
   }
 
   return slug.replaceAll(/^-|-$/g, "")
+}
+
+type HeadingDataWithHProperties = {
+  hProperties?: Record<string, unknown>
+} & Heading["data"]
+
+function ensureHProperties(node: Heading): Record<string, unknown> {
+  const data: HeadingDataWithHProperties = node.data ?? {}
+  node.data = data
+
+  if (!isRecord(data.hProperties)) {
+    data.hProperties = {}
+  }
+
+  return data.hProperties
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }

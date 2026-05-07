@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 import type { TOCItem } from "../config/types"
 
 import { useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
-import * as styles from "./TOC.css"
+import * as styles from "./Toc.css"
 
-export interface ArdoTOCProps {
+export type ArdoTOCProps = {
   /** Label for the TOC heading (default: "On this page") */
   label?: string
 }
@@ -104,7 +104,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   )
 }
 
-interface TOCItemsProps {
+type TOCItemsProps = {
   items: TOCItem[]
   activeId: string
   onClickItem: (id: string) => void
@@ -120,7 +120,7 @@ function TOCItems({ items, activeId, onClickItem }: TOCItemsProps) {
   )
 }
 
-interface TOCItemComponentProps {
+type TOCItemComponentProps = {
   item: TOCItem
   activeId: string
   onClickItem: (id: string) => void

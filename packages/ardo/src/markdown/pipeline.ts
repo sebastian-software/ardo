@@ -12,13 +12,13 @@ import { rehypeLinks } from "./links"
 import { createShikiHighlighter, rehypeShikiFromHighlighter, type ShikiHighlighter } from "./shiki"
 import { remarkExtractToc, type TocExtraction } from "./toc"
 
-export interface TransformResult {
+export type TransformResult = {
   html: string
   frontmatter: PageFrontmatter
   toc: TOCItem[]
 }
 
-export interface TransformOptions {
+export type TransformOptions = {
   basePath?: string
   highlighter?: ShikiHighlighter
 }
@@ -46,22 +46,18 @@ export async function transformMarkdown(
     .use(rehypeStringify, { allowDangerousHtml: true })
 
   if (config.remarkPlugins) {
-    for (const plugin of config.remarkPlugins) {
-      processor.use(plugin as Parameters<typeof processor.use>[0])
-    }
+    processor.use(config.remarkPlugins)
   }
 
   if (config.rehypePlugins) {
-    for (const plugin of config.rehypePlugins) {
-      processor.use(plugin as Parameters<typeof processor.use>[0])
-    }
+    processor.use(config.rehypePlugins)
   }
 
   const result = await processor.process(markdownContent)
 
   return {
     html: String(result),
-    frontmatter: frontmatterData as PageFrontmatter,
+    frontmatter: readPageFrontmatter(frontmatterData),
     toc: tocExtraction.toc,
   }
 }
@@ -71,4 +67,12 @@ export async function transformMarkdownToReact(
   config: MarkdownConfig
 ): Promise<TransformResult> {
   return transformMarkdown(content, config)
+}
+
+function readPageFrontmatter(data: unknown): PageFrontmatter {
+  return isRecord(data) ? data : {}
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }

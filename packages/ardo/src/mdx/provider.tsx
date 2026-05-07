@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types"
 import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
 
+import { isValidElement } from "react"
 import { Link } from "react-router"
 
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
@@ -61,8 +62,8 @@ function extractTextContent(children: ReactNode): string {
   if (Array.isArray(children)) {
     return children.map((child: ReactNode) => extractTextContent(child)).join("")
   }
-  if (children != null && typeof children === "object" && "props" in children) {
-    const nestedChildren = (children as { props: { children?: ReactNode } }).props.children
+  if (isValidElement<{ children?: ReactNode }>(children)) {
+    const nestedChildren = children.props.children
     if (nestedChildren != null) {
       return extractTextContent(nestedChildren)
     }

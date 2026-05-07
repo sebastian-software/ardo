@@ -7,7 +7,7 @@ import type { TypeDocConfig } from "./types"
 
 import { generateApiDocs } from "./generator"
 
-export interface TypeDocPluginOptions extends Partial<TypeDocConfig> {
+export type TypeDocPluginOptions = {
   /**
    * Content directory where markdown files are stored
    * @default './content'
@@ -25,7 +25,7 @@ export interface TypeDocPluginOptions extends Partial<TypeDocConfig> {
    * @default true
    */
   runOnStart?: boolean
-}
+} & Partial<TypeDocConfig>
 
 /**
  * Vite plugin for generating API documentation with TypeDoc.
@@ -38,7 +38,7 @@ export function typedocPlugin(options: TypeDocPluginOptions = {}): Plugin {
   let hasGenerated = false
   const generate = createGenerator({
     contentDir,
-    onGenerated: () => {
+    onGenerated() {
       hasGenerated = true
     },
     typedocConfig,

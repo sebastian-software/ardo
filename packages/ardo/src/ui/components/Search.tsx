@@ -7,7 +7,7 @@ import { SearchIcon } from "../icons"
 import * as styles from "./Search.css"
 import { SearchPopover } from "./SearchPopover"
 
-interface SearchDoc {
+type SearchDoc = {
   id: string
   title: string
   content: string
@@ -15,14 +15,14 @@ interface SearchDoc {
   section?: string
 }
 
-interface SearchMatch {
+type SearchMatch = {
   id: string
   title: string
   path: string
   section?: string
 }
 
-export interface ArdoSearchProps {
+export type ArdoSearchProps = {
   /** Placeholder text for the search input (default: "Search...") */
   placeholder?: string
 }
@@ -49,7 +49,7 @@ function useGlobalSearchShortcut(
   }, [inputRef, setIsOpen])
 }
 
-interface OutsideClickOptions {
+type OutsideClickOptions = {
   containerRef: React.RefObject<HTMLDivElement | null>
   popoverClass: string
   isOpen: boolean
@@ -60,7 +60,11 @@ function useOutsideClick({ containerRef, popoverClass, isOpen, setIsOpen }: Outs
   useEffect(() => {
     if (!isOpen) return
     const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Element
+      if (!(e.target instanceof Element)) {
+        return
+      }
+
+      const target = e.target
       const inContainer = containerRef.current?.contains(target) === true
       const inPopover = target.closest(`.${popoverClass}`) != null
       if (!inContainer && !inPopover) {
@@ -274,6 +278,8 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
       case "Escape":
         state.setIsOpen(false)
         inputRef.current?.blur()
+        break
+      default:
         break
     }
   }

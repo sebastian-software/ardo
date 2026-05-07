@@ -33,12 +33,12 @@ const RESOLVED_IDS: Record<string, string> = {
 
 let typedocGenerated = false
 
-interface PluginState {
+type PluginState = {
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
 
-interface MainPluginOptions {
+type MainPluginOptions = {
   githubPages: boolean
   pressConfig: PressConfigOptions
   routesDirOption: string | undefined
@@ -49,7 +49,7 @@ type PressConfigOptions = Omit<
   "githubPages" | "routes" | "routesDir" | "typedoc"
 >
 
-export interface ArdoPluginOptions extends Partial<ArdoConfig> {
+export type ArdoPluginOptions = {
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
   /**
@@ -62,7 +62,7 @@ export interface ArdoPluginOptions extends Partial<ArdoConfig> {
    * @default "./app/routes"
    */
   routesDir?: string
-}
+} & Partial<ArdoConfig>
 
 export { detectGitHubBasename }
 

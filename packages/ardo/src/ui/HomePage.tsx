@@ -9,7 +9,7 @@ import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import * as layoutStyles from "./Layout.css"
 
-export interface ArdoHomePageProps {
+export type ArdoHomePageProps = {
   /** Props passed to the Header component */
   headerProps?: ArdoHeaderProps
   /** Props passed to the Footer component */

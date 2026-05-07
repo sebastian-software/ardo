@@ -1,4 +1,4 @@
-export interface ScannedCodeBlock {
+export type ScannedCodeBlock = {
   children: null | string
   end: number
   fullMatch: string
@@ -123,7 +123,7 @@ function scanNextCodeBlock(
   return { block, nextCursor: block.end }
 }
 
-interface OpeningTag {
+type OpeningTag = {
   end: number
   isSelfClosing: boolean
   props: string
@@ -169,17 +169,16 @@ function finalizeOpeningTag(source: string, afterTag: number, endBracketIndex: n
   }
 }
 
-const QUOTE_CHARS = ["'", '"', "`"] as const
-type QuoteChar = (typeof QUOTE_CHARS)[number]
+type QuoteChar = '"' | "'" | "`"
 
-interface OpeningTagScanStep {
+type OpeningTagScanStep = {
   nextBraceDepth: number
   nextIndex: number
   nextQuote: null | QuoteChar
   tagEndIndex: null | number
 }
 
-interface ScanCursorState {
+type ScanCursorState = {
   braceDepth: number
   index: number
   quote: null | QuoteChar
@@ -288,7 +287,7 @@ function createScannedBlock(
 }
 
 function isQuote(char: string): char is QuoteChar {
-  return QUOTE_CHARS.includes(char as QuoteChar)
+  return char === "'" || char === '"' || char === "`"
 }
 
 function isWhitespaceChar(char: string | undefined): boolean {

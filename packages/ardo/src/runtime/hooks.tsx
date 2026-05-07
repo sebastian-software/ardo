@@ -2,7 +2,7 @@ import { createContext, type ReactNode, use, useMemo } from "react"
 
 import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
 
-interface ArdoContextValue {
+type ArdoContextValue = {
   config: ArdoConfig
   sidebar: SidebarItem[]
   currentPage?: PageData
@@ -38,7 +38,7 @@ export function useArdoTOC(): TOCItem[] {
   return currentPage?.toc ?? []
 }
 
-interface ArdoProviderProps {
+type ArdoProviderProps = {
   config: ArdoConfig
   sidebar: SidebarItem[]
   currentPage?: PageData
@@ -60,7 +60,7 @@ export { ArdoContext }
 // Used by the Vite transform to wrap MDX default exports.
 // =============================================================================
 
-interface ArdoPageDataProviderProps {
+type ArdoPageDataProviderProps = {
   frontmatter: PageData["frontmatter"]
   toc: TOCItem[]
   children: ReactNode
@@ -92,7 +92,7 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
 // ArdoSiteConfig — cross-cutting content settings (editLink, lastUpdated, TOC)
 // =============================================================================
 
-export interface ArdoSiteConfig {
+export type ArdoSiteConfig = {
   editLink?: { pattern: string; text?: string }
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   tocLabel?: string
@@ -104,7 +104,7 @@ export function useArdoSiteConfig(): ArdoSiteConfig {
   return use(ArdoSiteConfigContext)
 }
 
-interface ArdoSiteConfigProviderProps {
+type ArdoSiteConfigProviderProps = {
   value: ArdoSiteConfig
   children: ReactNode
 }

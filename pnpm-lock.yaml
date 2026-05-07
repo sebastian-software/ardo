@@ -293,6 +293,12 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
     devDependencies:
+      '@storybook/react':
+        specifier: ^10.3.6
+        version: 10.3.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@10.3.6(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(typescript@6.0.3)
+      '@storybook/react-vite':
+        specifier: ^10.3.6
+        version: 10.3.6(esbuild@0.28.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.60.2)(storybook@10.3.6(@testing-library/dom@10.4.1)(prettier@3.8.3)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(typescript@6.0.3)(vite@8.0.11(@types/node@25.6.1)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -329,6 +335,9 @@ importers:
       vite:
         specifier: ^8.0.11
         version: 8.0.11(@types/node@25.6.1)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4)
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.5(@types/node@25.6.1)(vite@8.0.11(@types/node@25.6.1)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))
 
   packages/create-ardo:
     dependencies:
@@ -351,6 +360,9 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.5(@types/node@25.6.1)(vite@8.0.11(@types/node@25.6.1)(esbuild@0.28.0)(jiti@2.7.0)(yaml@2.8.4))
 
 packages:
 

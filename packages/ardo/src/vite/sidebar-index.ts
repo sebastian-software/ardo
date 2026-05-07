@@ -4,14 +4,14 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-interface SidebarNode {
+type SidebarNode = {
   text: string
   link?: string
   items?: SidebarNode[]
   order?: number
 }
 
-export interface SidebarItem {
+export type SidebarItem = {
   text: string
   link?: string
   items?: SidebarItem[]

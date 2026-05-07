@@ -1,25 +1,24 @@
-import type { DeclarationReflection, SignatureReflection } from "typedoc"
+import { DeclarationReflection, type SignatureReflection } from "typedoc"
 
 import type { TypeDocRuntimeContext } from "./generator-config"
 
 import { buildLink, type ComponentProp, getSlug, renderCommentShort } from "./generator-shared"
 
 export function getTypeName(paramType: unknown): null | string {
-  if (paramType == null || typeof paramType !== "object") {
+  if (!isRecord(paramType)) {
     return null
   }
 
-  const typeRecord = paramType as Record<string, unknown>
-  if (typeof typeRecord.name === "string" && typeRecord.name.length > 0) {
-    return typeRecord.name
+  if (typeof paramType.name === "string" && paramType.name.length > 0) {
+    return paramType.name
   }
 
-  if (typeRecord.type !== "reference") {
+  if (paramType.type !== "reference") {
     return null
   }
 
-  if (typeof typeRecord.qualifiedName === "string" && typeRecord.qualifiedName.length > 0) {
-    return typeRecord.qualifiedName
+  if (typeof paramType.qualifiedName === "string" && paramType.qualifiedName.length > 0) {
+    return paramType.qualifiedName
   }
 
   return null
@@ -48,17 +47,18 @@ export function getPropsFromType(
 }
 
 function getInlineDeclarationProps(paramType: unknown): ComponentProp[] {
-  if (paramType == null || typeof paramType !== "object") {
+  if (!isRecord(paramType)) {
     return []
   }
 
-  const withDeclaration = paramType as { declaration?: DeclarationReflection }
-  const declaration = withDeclaration.declaration
+  const declaration = paramType.declaration
   if (declaration == null) {
     return []
   }
 
-  return extractPropsFromChildren(declaration.children ?? [])
+  return declaration instanceof DeclarationReflection
+    ? extractPropsFromChildren(declaration.children ?? [])
+    : []
 }
 
 function findReflectionByName(
@@ -66,8 +66,8 @@ function findReflectionByName(
   typeName: string
 ): DeclarationReflection | null {
   const direct = context.project.getChildByName(typeName)
-  if (direct != null && "children" in direct) {
-    return direct as DeclarationReflection
+  if (direct instanceof DeclarationReflection) {
+    return direct
   }
 
   const children = context.project.children ?? []
@@ -78,6 +78,10 @@ function findReflectionByName(
   }
 
   return null
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }
 
 function extractPropsFromChildren(children: DeclarationReflection[]): ComponentProp[] {

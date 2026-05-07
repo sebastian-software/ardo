@@ -3,13 +3,12 @@
  * to inject frontmatter + toc into the React context for TOC and content.
  */
 
-// eslint-disable-next-line @cspell/spellchecker
-interface EstreeProgram {
+type EstreeProgram = {
   type: string
   body: EstreeNode[]
 }
 
-interface EstreeNode {
+type EstreeNode = {
   type: string
   declaration?: EstreeNode
   id?: { type?: string; name: string }
@@ -17,8 +16,7 @@ interface EstreeNode {
 }
 
 function findDefaultExport(body: EstreeNode[]): { index: number; name: string } {
-  for (let i = 0; i < body.length; i++) {
-    const node = body[i]
+  for (const [i, node] of body.entries()) {
     if (
       node.type === "ExportDefaultDeclaration" &&
       node.declaration?.type === "FunctionDeclaration" &&

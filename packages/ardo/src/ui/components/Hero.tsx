@@ -7,7 +7,7 @@ import * as styles from "./Hero.css"
 /** Internal route path from React Router */
 type RoutePath = ComponentProps<typeof Link>["to"]
 
-export interface ArdoHeroAction {
+export type ArdoHeroAction = {
   /** Button text */
   text: string
   /** Link destination - internal route path or external URL */
@@ -18,7 +18,7 @@ export interface ArdoHeroAction {
   icon?: ReactNode
 }
 
-export interface ArdoHeroImage {
+export type ArdoHeroImage = {
   /** Image for light mode */
   light: string
   /** Image for dark mode */
@@ -27,7 +27,7 @@ export interface ArdoHeroImage {
   alt?: string
 }
 
-export interface ArdoHeroProps {
+export type ArdoHeroProps = {
   /** Large title displayed prominently */
   name?: string
   /** Secondary text below the name */

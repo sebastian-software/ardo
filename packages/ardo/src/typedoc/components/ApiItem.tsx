@@ -5,13 +5,15 @@ import type { ApiDocItem, ApiDocKind } from "../types"
 import * as styles from "../../ui/components/ApiItem.css"
 import { ApiParametersTable, ApiReturns, ApiSignature } from "./ApiSignature"
 
-interface ApiItemProps {
+const HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"] as const
+
+type ApiItemProps = {
   item: ApiDocItem
   level?: number
 }
 
 export function ApiItem({ item, level = 2 }: ApiItemProps) {
-  const HeadingTag = `h${Math.min(level, 6)}` as keyof JSX.IntrinsicElements
+  const HeadingTag = getHeadingTag(level)
 
   return (
     <div className={styles.apiItem} id={item.id}>
@@ -25,6 +27,11 @@ export function ApiItem({ item, level = 2 }: ApiItemProps) {
       <ApiChildren childItems={item.children} level={level} />
     </div>
   )
+}
+
+function getHeadingTag(level: number): (typeof HEADING_TAGS)[number] {
+  const index = Math.min(Math.max(level, 1), 6) - 1
+  return HEADING_TAGS[index] ?? "h6"
 }
 
 function ApiItemDescription(params: { description: string | undefined }) {
@@ -144,7 +151,7 @@ function ApiChildren(params: { childItems: ApiDocItem["children"]; level: number
   )
 }
 
-interface ApiKindBadgeProps {
+type ApiKindBadgeProps = {
   kind: ApiDocKind
 }
 
@@ -183,11 +190,11 @@ export function ApiKindBadge({ kind }: ApiKindBadgeProps) {
   return <span className={styles.apiBadge({ kind: badgeKinds[kind] })}>{kindLabels[kind]}</span>
 }
 
-interface ApiHierarchyProps {
+type ApiHierarchyProps = {
   hierarchy: ApiDocItem["hierarchy"]
 }
 
-interface HierarchyEntry {
+type HierarchyEntry = {
   label: string
   types: string[]
 }

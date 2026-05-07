@@ -10,7 +10,7 @@ import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
 
-interface ContentProps {
+type ContentProps = {
   children: ReactNode
   /** Edit link configuration (overrides ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
@@ -18,7 +18,7 @@ interface ContentProps {
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
 }
 
-interface ContentMetaInput {
+type ContentMetaInput = {
   pageData: ReturnType<typeof useArdoPageData>
   editLink: ContentProps["editLink"]
   lastUpdated: ContentProps["lastUpdated"]

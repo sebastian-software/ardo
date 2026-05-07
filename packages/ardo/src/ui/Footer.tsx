@@ -9,7 +9,7 @@ import * as styles from "./Footer.css"
 // Footer Component
 // =============================================================================
 
-export interface ArdoFooterProps {
+export type ArdoFooterProps = {
   /** Footer message (supports HTML string) */
   message?: string
   /** Copyright text (supports HTML string) */
@@ -199,12 +199,12 @@ export function ArdoFooter({
 }
 
 // Type exports for compound pattern (kept for backwards compatibility)
-export interface ArdoFooterMessageProps {
+export type ArdoFooterMessageProps = {
   children: ReactNode
   className?: string
 }
 
-export interface ArdoFooterCopyrightProps {
+export type ArdoFooterCopyrightProps = {
   children: ReactNode
   className?: string
 }

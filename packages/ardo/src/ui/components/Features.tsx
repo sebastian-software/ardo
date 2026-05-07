@@ -4,7 +4,7 @@ import { Link } from "react-router"
 
 import * as styles from "./Features.css"
 
-export interface ArdoFeaturesProps {
+export type ArdoFeaturesProps = {
   /** Feature cards as children */
   children: ReactNode
   /** Section title */
@@ -15,7 +15,7 @@ export interface ArdoFeaturesProps {
   className?: string
 }
 
-export interface ArdoFeatureCardProps {
+export type ArdoFeatureCardProps = {
   /** Feature title */
   title: string
   /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */

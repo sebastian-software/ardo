@@ -9,8 +9,8 @@ const isBrowser = typeof document !== "undefined"
 
 function getInitialTheme(): Theme {
   if (!isBrowser) return "system"
-  const stored = localStorage.getItem("ardo-theme") as null | Theme
-  return stored ?? "system"
+  const stored = localStorage.getItem("ardo-theme")
+  return isTheme(stored) ? stored : "system"
 }
 
 export function ArdoThemeToggle() {
@@ -65,4 +65,8 @@ function applyTheme(theme: Theme) {
     root.classList.toggle("dark", theme === "dark")
     root.classList.toggle("light", theme === "light")
   }
+}
+
+function isTheme(value: null | string): value is Theme {
+  return value === "dark" || value === "light" || value === "system"
 }
