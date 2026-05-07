@@ -38,14 +38,14 @@
     "@storybook/addon-docs": "^10.3.6",
     "@storybook/react": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^10.3.0",
     "eslint-config-setup": "^0.4.0",
     "husky": "^9.1.7",
-    "jiti": "^2.6.1",
-    "lint-staged": "^16.4.0",
+    "jiti": "^2.7.0",
+    "lint-staged": "^17.0.2",
     "prettier": "^3.8.3",
     "storybook": "^10.3.6",
     "typescript": "^6.0.3",
@@ -55,7 +55,7 @@
     "node": ">=22.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.0.8+sha512.4c4097e1dd2d42372c4e7fa5a791ff28fc75a484c7ac192e64b1df0fdef17594ba982f9b4fed9adfb3c757846f565b799b2763fb3733d1de1bcb82cf46684912",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
   },
