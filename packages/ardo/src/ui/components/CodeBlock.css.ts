@@ -8,11 +8,13 @@ import { shikiContainerClassName } from "./code-block-classes"
 // =============================================================================
 
 export const codeBlock = style({
-  margin: `${vars.space.md} 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.bgSoft,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 export const codeTitle = style({
@@ -21,7 +23,8 @@ export const codeTitle = style({
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLighter,
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  background: vars.color.bgSoft,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
 export const codeWrapper = style({
@@ -30,7 +33,7 @@ export const codeWrapper = style({
 
 globalStyle(`${codeWrapper} pre`, {
   margin: 0,
-  padding: vars.space.md,
+  padding: `${vars.space.lg} ${vars.space.md}`,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
@@ -59,7 +62,7 @@ export const codeLine = style({
   borderLeft: "3px solid transparent",
   selectors: {
     "&.highlighted": {
-      background: "oklch(0.48 0.15 170 / 0.08)",
+      background: `color-mix(in oklch, ${vars.color.brand} 11%, transparent)`,
       borderLeftColor: vars.color.brand,
     },
   },
@@ -91,7 +94,18 @@ globalStyle(`${s} > [data-title]`, {
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLighter,
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  background: vars.color.bgSoft,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
+})
+
+globalStyle(s, {
+  margin: `${vars.space.lg} 0`,
+  maxWidth: "120ch",
+  borderRadius: vars.radius.base,
+  overflow: "hidden",
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 globalStyle(`${s} > [data-lang]`, {
@@ -100,7 +114,7 @@ globalStyle(`${s} > [data-lang]`, {
 
 globalStyle(`${s} pre`, {
   margin: 0,
-  padding: vars.space.md,
+  padding: `${vars.space.lg} ${vars.space.md}`,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
@@ -127,7 +141,7 @@ globalStyle(`${s} .line`, {
 })
 
 globalStyle(`${s} .line.highlighted`, {
-  background: "oklch(0.48 0.15 170 / 0.08)",
+  background: `color-mix(in oklch, ${vars.color.brand} 11%, transparent)`,
   borderLeftColor: vars.color.brand,
 })
 
@@ -154,14 +168,14 @@ globalStyle(`${s} button[data-code]`, {
   alignItems: "center",
   gap: vars.space.xs,
   padding: `${vars.space.xs} ${vars.space.sm}`,
-  background: vars.color.bg,
-  border: `1px solid ${vars.color.border}`,
+  background: vars.color.bgSoft,
+  border: `1px solid ${vars.color.codeBorder}`,
   borderRadius: vars.radius.sm,
   cursor: "pointer",
   fontSize: vars.fontSize.xs,
   fontFamily: vars.font.family,
   color: vars.color.textLight,
-  opacity: 0,
+  opacity: 0.72,
   transition: `all ${vars.transition.base}`,
 })
 
@@ -196,16 +210,19 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: `${vars.space.md} 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.bgSoft,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 export const codeGroupTabs = style({
   display: "flex",
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  background: vars.color.bgSoft,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
 export const codeGroupTab = style({

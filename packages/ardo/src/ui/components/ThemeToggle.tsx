@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 
 import { MonitorIcon, MoonIcon, SunIcon } from "../icons"
 import * as styles from "./ThemeToggle.css"
@@ -15,11 +15,12 @@ function getInitialTheme(): Theme {
 
 export function ArdoThemeToggle() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
-  const [mounted] = useState(isBrowser)
+  const mounted = useSyncExternalStore(subscribeMounted, getClientMounted, getServerMounted)
 
   useEffect(() => {
+    if (!mounted) return
     applyTheme(theme)
-  }, [theme])
+  }, [mounted, theme])
 
   const toggleTheme = () => {
     const nextTheme: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"
@@ -65,6 +66,22 @@ function applyTheme(theme: Theme) {
     root.classList.toggle("dark", theme === "dark")
     root.classList.toggle("light", theme === "light")
   }
+}
+
+function subscribeMounted() {
+  return noop
+}
+
+function getClientMounted() {
+  return true
+}
+
+function getServerMounted() {
+  return false
+}
+
+function noop() {
+  return undefined
 }
 
 function isTheme(value: null | string): value is Theme {

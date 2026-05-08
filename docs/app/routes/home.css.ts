@@ -1,6 +1,10 @@
 import { style, globalStyle } from "@vanilla-extract/css"
 import { vars } from "ardo/theme"
 
+const brandBorder = `color-mix(in oklch, ${vars.color.brand} 38%, ${vars.color.border})`
+const brandHalo = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
+const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparent)`
+
 export const section = style({
   padding: "80px 24px",
   "@media": {
@@ -127,7 +131,7 @@ export const techItem = style({
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      borderColor: "oklch(0.48 0.15 170 / 0.4)",
+      borderColor: brandBorder,
       boxShadow: vars.color.shadowSm,
     },
   },
@@ -164,16 +168,16 @@ globalStyle(`${comparisonTable} th`, {
 })
 
 export const comparisonHighlight = style({
-  background: "oklch(0.48 0.15 170 / 0.04)",
+  background: vars.color.brandSubtle,
   fontWeight: 500,
 })
 
 globalStyle(`.dark ${comparisonHighlight}`, {
-  background: "oklch(0.65 0.16 170 / 0.08)",
+  background: `color-mix(in oklch, ${vars.color.brand} 14%, transparent)`,
 })
 
 export const check = style({
-  color: "oklch(0.6 0.18 145)",
+  color: vars.color.brand,
   fontWeight: 600,
 })
 
@@ -222,12 +226,12 @@ export const ctaPrimary = style({
   borderRadius: vars.radius.base,
   background: vars.color.brand,
   color: "white",
-  boxShadow: "0 4px 14px oklch(0.48 0.15 170 / 0.3)",
+  boxShadow: `0 4px 14px ${brandHalo}`,
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
       background: vars.color.brandDark,
-      boxShadow: "0 6px 20px oklch(0.48 0.15 170 / 0.4)",
+      boxShadow: `0 6px 20px ${brandHaloStrong}`,
     },
   },
 })

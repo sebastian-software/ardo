@@ -8,10 +8,10 @@ const c = `.${ardoContent}`
 globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   fontFamily: vars.font.familyHeading,
   fontWeight: 600,
-  lineHeight: 1.3,
-  marginTop: vars.space.xl,
-  marginBottom: vars.space.sm,
-  letterSpacing: "-0.02em",
+  lineHeight: 1.22,
+  marginTop: vars.space["2xl"],
+  marginBottom: vars.space.md,
+  letterSpacing: "-0.01em",
 })
 
 globalStyle(`${c} h1`, {
@@ -21,13 +21,12 @@ globalStyle(`${c} h1`, {
 })
 
 globalStyle(`${c} h2`, {
-  fontSize: vars.fontSize.xl,
-  paddingTop: vars.space.sm,
-  letterSpacing: "-0.015em",
+  fontSize: "1.375rem",
+  paddingTop: vars.space.md,
 })
 
 globalStyle(`${c} h3`, {
-  fontSize: vars.fontSize.base,
+  fontSize: vars.fontSize.lg,
   fontWeight: 600,
 })
 
@@ -37,16 +36,19 @@ globalStyle(`${c} h4`, {
 })
 
 globalStyle(`${c} p`, {
-  marginBottom: vars.space.md,
-  maxWidth: "68ch",
+  marginBottom: vars.space.lg,
+  maxWidth: vars.layout.contentMaxWidth,
+  fontSize: vars.fontSize.base,
+  lineHeight: vars.font.lineHeight,
+  overflowWrap: "break-word",
 })
 
 globalStyle(`${c} a`, {
   color: vars.color.brand,
   textDecoration: "underline",
-  textDecorationColor: "transparent",
+  textDecorationColor: `color-mix(in oklch, ${vars.color.brand} 35%, transparent)`,
   textDecorationThickness: "1px",
-  textUnderlineOffset: "2px",
+  textUnderlineOffset: "3px",
   transition: `text-decoration-color ${vars.transition.fast}`,
 })
 
@@ -55,13 +57,15 @@ globalStyle(`${c} a:hover`, {
 })
 
 globalStyle(`${c} ul, ${c} ol`, {
-  marginBottom: vars.space.md,
+  marginBottom: vars.space.lg,
   paddingLeft: vars.space.lg,
-  maxWidth: "68ch",
+  maxWidth: vars.layout.contentMaxWidth,
 })
 
 globalStyle(`${c} li`, {
   marginBottom: vars.space.xs,
+  lineHeight: vars.font.lineHeight,
+  overflowWrap: "break-word",
 })
 
 globalStyle(`${c} li::marker`, {
@@ -72,7 +76,7 @@ globalStyle(`${c} blockquote`, {
   margin: `${vars.space.lg} 0`,
   padding: `${vars.space.md} ${vars.space.lg}`,
   borderLeft: `3px solid ${vars.color.brand}`,
-  background: vars.color.bgSoft,
+  background: vars.color.brandSubtle,
   borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
   color: vars.color.text,
   fontSize: vars.fontSize.base,
@@ -119,7 +123,8 @@ globalStyle(`${c} code`, {
   fontFamily: vars.font.mono,
   fontSize: "0.875em",
   padding: "0.125rem 0.375rem",
-  background: vars.color.bgMute,
+  background: vars.color.bgSoft,
+  border: `1px solid ${vars.color.borderLight}`,
   borderRadius: vars.radius.sm,
   fontWeight: 500,
 })

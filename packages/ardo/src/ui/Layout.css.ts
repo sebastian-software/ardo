@@ -4,6 +4,7 @@ import { vars } from "./theme/contract.css"
 
 export const layout = style({
   height: "100vh",
+  width: "100%",
   display: "flex",
   flexDirection: "column",
   background: vars.color.sidebarBg,
@@ -13,28 +14,27 @@ export const layout = style({
 export const layoutContainer = style({
   display: "flex",
   flex: 1,
+  width: "100%",
   paddingTop: vars.layout.headerHeight,
   minHeight: 0,
+  "@media": {
+    "(max-width: 1024px)": {
+      paddingTop: `calc(${vars.layout.headerHeight} + 2.75rem)`,
+    },
+  },
 })
 
 export const main = style({
   flex: 1,
   minWidth: 0,
-  marginRight: vars.space.sm,
-  marginBottom: vars.space.sm,
+  width: "100%",
   background: vars.color.bg,
-  borderRadius: vars.radius.lg,
-  border: `1px solid ${vars.color.border}`,
-  // Content scrolls inside the card
   overflowY: "auto",
-  scrollPaddingTop: vars.space.xl,
-  padding: vars.space.xl,
+  scrollPaddingTop: vars.space["2xl"],
+  padding: `0 ${vars.space.xl} ${vars.space.xl}`,
   "@media": {
     "(max-width: 1024px)": {
-      marginRight: 0,
-      marginBottom: 0,
-      borderRadius: 0,
-      border: "none",
+      padding: `0 ${vars.space.md} ${vars.space.xl}`,
     },
   },
 })

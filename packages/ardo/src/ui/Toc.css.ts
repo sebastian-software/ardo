@@ -3,19 +3,7 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const toc = style({
-  width: vars.layout.tocWidth,
-  flexShrink: 0,
-  position: "sticky",
-  top: 0,
-  alignSelf: "flex-start",
-  maxHeight: "100%",
-  padding: `${vars.space.xl} 0`,
-  overflowY: "auto",
-  "@media": {
-    "(max-width: 1280px)": {
-      display: "none",
-    },
-  },
+  width: "100%",
 })
 
 export const tocTitle = style({
@@ -24,7 +12,7 @@ export const tocTitle = style({
   textTransform: "uppercase",
   letterSpacing: "0.06em",
   color: vars.color.textLight,
-  marginBottom: vars.space.md,
+  marginBottom: vars.space.sm,
 })
 
 export const tocList = style({
@@ -33,7 +21,7 @@ export const tocList = style({
 
 export const tocLink = style({
   display: "block",
-  padding: `${vars.space.xs} 0 ${vars.space.xs} ${vars.space.md}`,
+  padding: `${vars.space.xs} 0 ${vars.space.xs} ${vars.space.sm}`,
   color: vars.color.textLighter,
   textDecoration: "none",
   fontSize: vars.fontSize.sm,
@@ -44,7 +32,7 @@ export const tocLink = style({
   selectors: {
     "&:hover": {
       color: vars.color.text,
-      borderLeftColor: vars.color.borderLight,
+      borderLeftColor: vars.color.border,
     },
     "&.active": {
       color: vars.color.brand,

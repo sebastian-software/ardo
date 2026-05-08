@@ -26,6 +26,7 @@ globalStyle("body", {
   WebkitFontSmoothing: "antialiased",
   MozOsxFontSmoothing: "grayscale",
   textRendering: "optimizeLegibility",
+  overflowX: "hidden",
 })
 
 globalStyle("::selection", {
