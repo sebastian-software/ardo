@@ -99,6 +99,8 @@ export default defineConfig({
 })
 ```
 
+The plugin generates the lean browser icon set by default: `favicon.ico`, `icon.svg`, and `apple-touch-icon.png`. Pass `icons: { source: "./app/assets/logo.svg" }` to use your own SVG source, or `icons: false` if you manage these files in `public/`.
+
 UI configuration lives in React, where React teams expect it:
 
 ```tsx

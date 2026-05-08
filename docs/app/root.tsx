@@ -21,7 +21,7 @@ export const meta: MetaFunction = () => [
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+  return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
 
 export default function Root() {

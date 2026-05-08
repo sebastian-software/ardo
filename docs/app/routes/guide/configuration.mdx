@@ -188,6 +188,26 @@ ardo({
 })
 ```
 
+### icons
+
+- **Type:** `false | { source?: string }`
+- **Default:** automatic Ardo icon set
+
+Ardo generates a lean favicon set at build time and serves it during development:
+`/favicon.ico`, `/icon.svg`, and `/apple-touch-icon.png`. This matches the modern minimal browser
+set without adding a web app manifest or legacy `apple-touch-icon-precomposed.png` files.
+
+```ts
+ardo({
+  title: "My Docs",
+  icons: {
+    source: "./app/assets/logo.svg",
+  },
+})
+```
+
+Set `icons: false` if you want to manage all root icon files yourself from `public/`.
+
 ### routesDir
 
 - **Type:** `string`
