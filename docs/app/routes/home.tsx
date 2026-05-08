@@ -81,6 +81,7 @@ export default function HomePage() {
 
       {/* Features Grid */}
       <ArdoFeatures
+        className={styles.homeFeatures}
         title="What's in the box"
         subtitle="The defaults you need for serious docs, without taking ownership away from your codebase"
       >
