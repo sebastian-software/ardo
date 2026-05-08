@@ -16,6 +16,8 @@ type ContentProps = {
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (overrides ArdoSiteConfig) */
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** Where to render edit/updated metadata (default: footer) */
+  metaPlacement?: "footer" | "none"
 }
 
 type ContentMetaInput = {
@@ -57,7 +59,12 @@ function resolveLastUpdated(input: ContentMetaInput) {
   }
 }
 
-export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
+export function ArdoContent({
+  children,
+  editLink,
+  lastUpdated,
+  metaPlacement = "footer",
+}: ContentProps) {
   const isBare = useBareContent()
   const pageData = useArdoPageData()
   const siteConfig = useArdoSiteConfig()
@@ -81,7 +88,7 @@ export function ArdoContent({ children, editLink, lastUpdated }: ContentProps) {
         description={pageData?.frontmatter.description ?? ""}
       />
       <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
-      <ContentMeta edit={edit} updated={updated} />
+      {metaPlacement === "footer" && <ContentMeta edit={edit} updated={updated} />}
       <ContentPrevNext prev={prev} next={next} />
     </article>
   )

@@ -3,11 +3,18 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
-  maxWidth: "80rem",
+  width: "min(calc(100% - 3rem), 72rem)",
+  maxWidth: "72rem",
   padding: `${vars.space["2xl"]} 0`,
   textAlign: "left",
   borderTop: `1px solid ${vars.color.border}`,
-  marginTop: vars.space["2xl"],
+  margin: `${vars.space["2xl"]} auto 0`,
+  "@media": {
+    "(max-width: 768px)": {
+      width: "calc(100% - 2rem)",
+      padding: `${vars.space.xl} 0`,
+    },
+  },
 })
 
 export const footerContainer = style({})
@@ -94,15 +101,15 @@ export const prevNext = style({
 const prevNextLinkBase = style({
   display: "flex",
   flexDirection: "column",
-  padding: `1.25rem ${vars.space.lg}`,
+  padding: vars.space.lg,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radius.lg,
+  borderRadius: vars.radius.base,
   textDecoration: "none",
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
       borderColor: vars.color.brand,
-      background: vars.color.brandSubtle,
+      background: vars.color.bgSoft,
     },
   },
 })

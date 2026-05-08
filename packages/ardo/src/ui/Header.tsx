@@ -120,6 +120,7 @@ export function ArdoHeader({
             {actions}
           </div>
         </div>
+        {nav != null && <div className={styles.mobileNavStrip}>{nav}</div>}
       </header>
 
       {hasMobileMenu && (

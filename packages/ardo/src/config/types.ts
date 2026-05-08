@@ -8,6 +8,7 @@ import type { PluggableList } from "unified"
 export type SidebarItem = {
   text: string
   link?: string
+  icon?: "api" | "book" | "box" | "code" | "components" | "docs" | "guide" | "settings" | "tools"
   collapsed?: boolean
   items?: SidebarItem[]
 }

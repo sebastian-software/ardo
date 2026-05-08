@@ -3,6 +3,11 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
+const brandHalo = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
+const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparent)`
+const brandTint = `color-mix(in oklch, ${vars.color.brand} 10%, transparent)`
+const brandTintSoft = `color-mix(in oklch, ${vars.color.brand} 6%, transparent)`
+
 export const hero = style({
   padding: "100px 24px 80px",
   textAlign: "center",
@@ -16,11 +21,11 @@ export const hero = style({
       left: 0,
       right: 0,
       bottom: 0,
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, oklch(0.48 0.15 200 / 0.06) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, oklch(0.48 0.15 170 / 0.12) 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
+      background: `radial-gradient(ellipse 60% 50% at 30% 0%, ${brandTintSoft} 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, ${brandTint} 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
       pointerEvents: "none",
     },
     ".dark &::before": {
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, oklch(0.65 0.16 200 / 0.1) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, oklch(0.65 0.16 170 / 0.2) 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
+      background: `radial-gradient(ellipse 60% 50% at 30% 0%, color-mix(in oklch, ${vars.color.brand} 12%, transparent) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, color-mix(in oklch, ${vars.color.brand} 18%, transparent) 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
     },
   },
   "@media": {
@@ -49,7 +54,7 @@ export const heroAnimate = style({
 globalStyle(`${hero} img`, {
   maxWidth: "180px",
   marginBottom: "40px",
-  filter: "drop-shadow(0 4px 20px oklch(0.48 0.15 170 / 0.15))",
+  filter: "drop-shadow(0 4px 18px oklch(0 0 0 / 0.12))",
 })
 
 export const heroVersion = style({
@@ -59,7 +64,7 @@ export const heroVersion = style({
   fontWeight: 600,
   color: vars.color.brand,
   background: vars.color.brandSubtle,
-  border: "1px solid oklch(0.48 0.15 170 / 0.15)",
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 20%, ${vars.color.border})`,
   borderRadius: "999px",
   marginBottom: "16px",
   letterSpacing: "0.02em",
@@ -132,11 +137,11 @@ export const heroAction = style({
 export const heroActionBrand = style({
   background: vars.color.brand,
   color: "white",
-  boxShadow: "0 4px 14px oklch(0.48 0.15 170 / 0.3)",
+  boxShadow: `0 4px 14px ${brandHalo}`,
   selectors: {
     "&:hover": {
       background: vars.color.brandDark,
-      boxShadow: "0 6px 20px oklch(0.48 0.15 170 / 0.4)",
+      boxShadow: `0 6px 20px ${brandHaloStrong}`,
     },
   },
   "@media": {

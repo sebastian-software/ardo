@@ -14,7 +14,7 @@ export const searchField = style({
   gap: vars.space.sm,
   minHeight: "2.5rem",
   padding: `${vars.space.sm} 0.75rem`,
-  background: vars.color.bgSoft,
+  background: vars.color.bg,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.base,
   color: vars.color.textLighter,
@@ -26,6 +26,7 @@ export const searchField = style({
 globalStyle(`${search}:focus-within ${searchField}`, {
   borderColor: vars.color.brand,
   color: vars.color.textLight,
+  boxShadow: `0 0 0 3px color-mix(in oklch, ${vars.color.brand} 12%, transparent)`,
 })
 
 globalStyle(`${searchField}:focus-within`, {

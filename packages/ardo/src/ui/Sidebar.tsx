@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
   Children,
   type ComponentProps,
@@ -16,6 +17,7 @@ import type { SidebarItem as SidebarItemType } from "../config/types"
 import { useArdoSidebar } from "../runtime/hooks"
 import { ChevronDownIcon } from "./icons"
 import * as styles from "./Sidebar.css"
+import { getDataRailItems, getTextLabel, SidebarRail, type SidebarRailItem } from "./SidebarRail"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -90,19 +92,25 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
   const hasCustomChildren = children != null
   const resolvedItems = items ?? (hasCustomChildren ? undefined : contextSidebar)
   const hasResolvedItems = (resolvedItems?.length ?? 0) > 0
+  const railItems = hasCustomChildren
+    ? getRailItemsFromChildren(children, pathname)
+    : getDataRailItems(resolvedItems ?? [], pathname)
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
   return (
     <SidebarContext value={contextValue}>
       <aside className={className ?? styles.sidebar}>
-        {header != null && <div className={styles.sidebarHeader}>{header}</div>}
-        <nav aria-label="Main navigation" className={styles.sidebarNav}>
-          {hasCustomChildren ? (
-            <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
-          ) : hasResolvedItems ? (
-            <SidebarItems items={resolvedItems ?? []} depth={0} />
-          ) : null}
-        </nav>
+        <SidebarRail items={railItems} />
+        <div className={styles.sidebarPanel}>
+          {header != null && <div className={styles.sidebarHeader}>{header}</div>}
+          <nav aria-label="Main navigation" className={styles.sidebarNav}>
+            {hasCustomChildren ? (
+              <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
+            ) : hasResolvedItems ? (
+              <SidebarItems items={resolvedItems ?? []} depth={0} />
+            ) : null}
+          </nav>
+        </div>
       </aside>
     </SidebarContext>
   )
@@ -115,6 +123,8 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
 export type ArdoSidebarGroupProps = {
   /** Group title */
   title: string
+  /** Optional icon shown in the desktop section rail */
+  icon?: ReactNode
   /** Optional link for the group title */
   to?: string
   /** Initial collapsed state (default: false) */
@@ -361,6 +371,54 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
       )}
     </li>
   )
+}
+
+// =============================================================================
+// Sidebar Rail Data
+// =============================================================================
+
+function getRailItemsFromChildren(children: ReactNode, currentPath: string): SidebarRailItem[] {
+  return Children.toArray(children)
+    .filter(isValidElement)
+    .map((child, index): SidebarRailItem | undefined => {
+      if (isSidebarGroupElement(child)) {
+        const { title, to, icon } = child.props
+        return {
+          key: to ?? title,
+          label: title,
+          to: to ?? findFirstChildLink(child.props.children),
+          icon,
+          active: to === currentPath || checkChildrenActive(child.props.children, currentPath),
+        }
+      }
+
+      if (isSidebarLinkElement(child)) {
+        const label = getTextLabel(child.props.children, `Section ${String(index + 1)}`)
+        return {
+          key: `${label}-${String(index)}`,
+          label,
+          to: child.props.to,
+          active: child.props.to === currentPath,
+        }
+      }
+
+      return undefined
+    })
+    .filter((item): item is SidebarRailItem => item !== undefined)
+}
+
+function findFirstChildLink(children: ReactNode): RoutePath | undefined {
+  for (const child of Children.toArray(children)) {
+    if (!isValidElement(child)) continue
+    if (isSidebarLinkElement(child)) return child.props.to
+    if (isSidebarGroupElement(child)) return findFirstGroupLink(child)
+  }
+  return undefined
+}
+
+function findFirstGroupLink(child: ReactElement<ArdoSidebarGroupProps>): RoutePath | undefined {
+  if ((child.props.to ?? "") !== "") return child.props.to
+  return findFirstChildLink(child.props.children)
 }
 
 // =============================================================================
