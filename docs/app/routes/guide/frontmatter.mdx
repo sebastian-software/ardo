@@ -76,6 +76,41 @@ sidebar: false
 ---
 ```
 
+For generated sidebar data from `virtual:ardo/sidebar`, `sidebar: false` also removes leaf markdown
+pages from the sidebar.
+
+### order
+
+- Type: `number`
+
+Controls the generated sidebar order for pages within the same directory. Items with `order` appear
+before unordered items; unordered items fall back to alphabetical sorting.
+
+```yaml
+---
+title: Getting Started
+order: 1
+---
+```
+
+### Directory index metadata
+
+When a route directory contains `index.md` or `index.mdx`, its frontmatter configures the generated
+directory group in `virtual:ardo/sidebar`.
+
+```yaml
+---
+title: Guide
+order: 10
+collapsed: false
+---
+```
+
+- `title` sets the group label.
+- `order` sorts the group among sibling sections unless `sidebar.sectionOrder` prioritizes the
+  top-level section.
+- `collapsed` sets the initial collapsed state for the group.
+
 ### outline
 
 - Type: `boolean | number | [number, number]`

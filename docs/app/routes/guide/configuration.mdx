@@ -134,6 +134,28 @@ ardo({
 })
 ```
 
+### sidebar.sectionOrder
+
+- **Type:** `string[]`
+- **Default:** `[]`
+
+Controls the order of top-level sections in the generated sidebar from `virtual:ardo/sidebar`.
+Use route directory names, without leading slashes. Sections listed here appear first in the
+configured order. Any section not listed still appears automatically after the configured sections
+using the normal generated order.
+
+```ts
+ardo({
+  title: "Product Docs",
+  sidebar: {
+    sectionOrder: ["guide", "reference", "api", "quality", "architecture", "archive"],
+  },
+})
+```
+
+Child pages inside each section keep their own generated order from frontmatter `order` values and
+alphabetical fallback sorting.
+
 ---
 
 ## Plugin Options

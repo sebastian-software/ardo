@@ -9,6 +9,7 @@ export type {
   PageFrontmatter,
   ProjectMeta,
   ResolvedConfig,
+  SidebarConfig,
   SidebarItem,
   SocialLink,
   TOCItem,

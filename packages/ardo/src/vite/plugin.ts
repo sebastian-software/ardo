@@ -221,7 +221,7 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_SIDEBAR_ID]) {
-    const sidebar = await generateSidebar(state.routesDir)
+    const sidebar = await generateSidebar(state.routesDir, state.resolvedConfig.sidebar)
     return `export default ${JSON.stringify(sidebar)}`
   }
 
