@@ -1,33 +1,12 @@
-import { globalStyle, keyframes, style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 import { vars } from "ardo/theme"
 
 const berryWash = `color-mix(in oklch, ${vars.color.brand} 16%, transparent)`
 const berryWashStrong = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
-const tealWash = "oklch(0.68 0.08 188 / 0.16)"
-const amberWash = "oklch(0.78 0.08 68 / 0.14)"
 const brandBorder = `color-mix(in oklch, ${vars.color.brand} 34%, ${vars.color.border})`
 const brandHalo = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
 const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparent)`
-
-const ambientDrift = keyframes({
-  "0%, 100%": {
-    transform: "translate3d(-1.5%, -1%, 0) rotate(0deg)",
-  },
-  "50%": {
-    transform: "translate3d(1.5%, 1%, 0) rotate(1deg)",
-  },
-})
-
-const revealUp = keyframes({
-  from: {
-    opacity: 0,
-    transform: "translateY(22px)",
-  },
-  to: {
-    opacity: 1,
-    transform: "translateY(0)",
-  },
-})
+const inkOnBrand = "oklch(0.985 0.002 356)"
 
 export const homeHero = style({
   position: "relative",
@@ -36,21 +15,6 @@ export const homeHero = style({
   textAlign: "center",
   background: `linear-gradient(180deg, ${vars.color.bg} 0%, color-mix(in oklch, ${vars.color.brand} 4%, ${vars.color.bgSoft}) 62%, ${vars.color.bg} 100%)`,
   selectors: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      inset: "-18% -10% 8%",
-      background: [
-        `radial-gradient(42rem 24rem at 18% 10%, ${berryWashStrong}, transparent 68%)`,
-        `radial-gradient(34rem 22rem at 78% 4%, ${tealWash}, transparent 70%)`,
-        `radial-gradient(28rem 18rem at 56% 78%, ${amberWash}, transparent 72%)`,
-      ].join(", "),
-      filter: "blur(10px)",
-      opacity: 0.9,
-      pointerEvents: "none",
-      transformOrigin: "50% 28%",
-      animation: `${ambientDrift} 18s ease-in-out infinite`,
-    },
     "&::after": {
       content: '""',
       position: "absolute",
@@ -62,25 +26,10 @@ export const homeHero = style({
     ".dark &": {
       background: `linear-gradient(180deg, ${vars.color.bg} 0%, color-mix(in oklch, ${vars.color.brand} 10%, ${vars.color.bgSoft}) 62%, ${vars.color.bg} 100%)`,
     },
-    ".dark &::before": {
-      opacity: 0.55,
-      background: [
-        `radial-gradient(42rem 24rem at 18% 10%, color-mix(in oklch, ${vars.color.brand} 34%, transparent), transparent 68%)`,
-        "radial-gradient(34rem 22rem at 78% 4%, oklch(0.66 0.08 188 / 0.2), transparent 70%)",
-        "radial-gradient(28rem 18rem at 56% 78%, oklch(0.68 0.07 68 / 0.14), transparent 72%)",
-      ].join(", "),
-    },
   },
   "@media": {
     "(max-width: 768px)": {
       padding: "64px 20px 56px",
-    },
-    "(prefers-reduced-motion: reduce)": {
-      selectors: {
-        "&::before": {
-          animation: "none",
-        },
-      },
     },
   },
 })
@@ -107,10 +56,6 @@ globalStyle(`${homeHero} p:first-of-type`, {
   marginRight: "auto",
 })
 
-globalStyle(`${homeHero} a`, {
-  backdropFilter: "blur(12px)",
-})
-
 globalStyle(`${homeHero} a:first-child`, {
   background: `linear-gradient(135deg, ${vars.color.brand} 0%, color-mix(in oklch, ${vars.color.brand} 80%, oklch(0.58 0.09 24)) 100%)`,
 })
@@ -125,11 +70,6 @@ export const section = style({
   "@media": {
     "(max-width: 768px)": {
       padding: "48px 16px",
-    },
-    "(prefers-reduced-motion: no-preference)": {
-      animation: `${revealUp} 0.72s cubic-bezier(0.22, 1, 0.36, 1) both`,
-      animationTimeline: "view()",
-      animationRange: "entry 0% cover 28%",
     },
   },
 })
@@ -151,19 +91,6 @@ export const quickStartSection = style({
 
 export const mdxSection = style({
   overflow: "hidden",
-  selectors: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      top: "18%",
-      right: "max(24px, calc((100vw - 980px) / 2))",
-      width: "15rem",
-      height: "15rem",
-      borderRadius: "999px",
-      background: `radial-gradient(circle, ${tealWash}, transparent 68%)`,
-      pointerEvents: "none",
-    },
-  },
 })
 
 export const stackSection = style({
@@ -401,16 +328,6 @@ export const ctaSection = style({
   textAlign: "center",
   overflow: "hidden",
   background: `linear-gradient(180deg, ${vars.color.bg} 0%, color-mix(in oklch, ${vars.color.brand} 6%, ${vars.color.bgSoft}) 100%)`,
-  selectors: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      inset: "10% 8% auto",
-      height: "16rem",
-      background: `radial-gradient(ellipse at center, ${berryWashStrong}, transparent 68%)`,
-      pointerEvents: "none",
-    },
-  },
 })
 
 export const ctaButtons = style({
@@ -430,7 +347,7 @@ export const ctaPrimary = style({
   textDecoration: "none",
   borderRadius: vars.radius.base,
   background: `linear-gradient(135deg, ${vars.color.brand} 0%, color-mix(in oklch, ${vars.color.brand} 80%, oklch(0.58 0.09 24)) 100%)`,
-  color: "white",
+  color: inkOnBrand,
   boxShadow: `0 4px 14px ${brandHalo}`,
   transition: `all ${vars.transition.base}`,
   selectors: {

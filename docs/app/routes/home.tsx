@@ -3,7 +3,7 @@ import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [
-  { title: "Ardo — Modern, open documentation for React teams" },
+  { title: "Ardo: Modern, open documentation for React teams" },
   {
     name: "description",
     content:
