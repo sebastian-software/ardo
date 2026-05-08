@@ -12,6 +12,11 @@ export type SidebarItem = {
   items?: SidebarItem[]
 }
 
+export type SidebarConfig = {
+  /** Top-level generated sidebar sections to prioritize by route segment. */
+  sectionOrder?: string[]
+}
+
 // =============================================================================
 // Navigation Types (for data-driven nav)
 // =============================================================================
@@ -162,6 +167,8 @@ export type ArdoConfig = {
   head?: HeadConfig[]
   /** Markdown processing options */
   markdown?: MarkdownConfig
+  /** Generated sidebar options */
+  sidebar?: SidebarConfig
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
@@ -188,6 +195,8 @@ export type ArdoConfig = {
 export type PageFrontmatter = {
   title?: string
   description?: string
+  order?: number
+  collapsed?: boolean
   layout?: "doc" | "home" | "page"
   sidebar?: boolean
   outline?: [number, number] | boolean | number

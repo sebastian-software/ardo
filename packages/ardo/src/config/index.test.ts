@@ -45,6 +45,7 @@ describe("resolveConfig", () => {
     expect(resolved.outDir).toBe("dist")
     expect(resolved.lang).toBe("en")
     expect(resolved.contentDir).toBe("/project/content")
+    expect(resolved.sidebar).toStrictEqual({})
   })
 
   it("uses provided values over defaults", () => {
@@ -66,6 +67,21 @@ describe("resolveConfig", () => {
     expect(resolved.outDir).toBe("build")
     expect(resolved.lang).toBe("de")
     expect(resolved.contentDir).toBe("/project/docs")
+  })
+
+  it("preserves generated sidebar config", () => {
+    const config = {
+      title: "Test",
+      sidebar: {
+        sectionOrder: ["guide", "reference"],
+      },
+    }
+
+    const resolved = resolveConfig(config, "/project")
+
+    expect(resolved.sidebar).toStrictEqual({
+      sectionOrder: ["guide", "reference"],
+    })
   })
 
   it("merges markdown config with defaults", () => {
