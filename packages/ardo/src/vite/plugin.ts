@@ -4,23 +4,19 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import path from "node:path"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
-import type { TypeDocConfig } from "../typedoc/types"
 
 import { resolveConfig } from "../config/index"
-import { generateApiDocs } from "../typedoc/generator"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createFlattenPlugin } from "./flatten-plugin"
-import {
-  detectGitHash,
-  detectGitHubBasename,
-  detectGitHubRepoName,
-  findPackageRoot,
-} from "./git-utils"
+import { detectGitHash, detectGitHubBasename, detectGitHubRepoName } from "./git-utils"
+import { type ArdoIconOptions, createIconsPlugin } from "./icons"
+import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { readProjectMeta } from "./project-meta"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
 import { generateSidebar } from "./sidebar-index"
+import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
@@ -30,8 +26,6 @@ const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_SIDEBAR_ID]: `\0${VIRTUAL_SIDEBAR_ID}`,
   [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
 }
-
-let typedocGenerated = false
 
 type PluginState = {
   resolvedConfig?: ResolvedConfig
@@ -46,12 +40,19 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "githubPages" | "routes" | "routesDir" | "typedoc"
+  "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
 >
 
 export type ArdoPluginOptions = {
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
+  /**
+   * Generate the lean favicon set recommended for modern websites:
+   * /favicon.ico, /icon.svg, and /apple-touch-icon.png.
+   *
+   * @default true
+   */
+  icons?: ArdoIconOptions
   /**
    * Auto-detect GitHub repository and set base path for GitHub Pages.
    * @default true
@@ -68,6 +69,7 @@ export { detectGitHubBasename }
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
+    icons = {},
     routes,
     typedoc,
     githubPages = true,
@@ -78,6 +80,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
   const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  plugins.push(...createIconsPlugin(icons))
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, state)
 
@@ -113,7 +116,7 @@ function addTypeDocPlugin(
 ): void {
   const typedocConfig = resolveTypedocConfig(typedoc)
   if (typedocConfig != null) {
-    plugins.unshift(createTypeDocPlugin(typedocConfig, state))
+    plugins.unshift(createTypeDocPlugin(typedocConfig, state.routesDir))
   }
 }
 
@@ -231,127 +234,6 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
   }
 
   return undefined
-}
-
-function transformMarkdownMeta(
-  code: string,
-  id: string,
-  state: PluginState
-): { code: string; map: null } | undefined {
-  if (!shouldInjectMeta(code, id, state)) {
-    return undefined
-  }
-
-  const pageTitle = extractFrontmatterValue(code, "title")
-  if (pageTitle == null || pageTitle === "") {
-    return undefined
-  }
-
-  const siteTitle = state.resolvedConfig?.title ?? "Ardo"
-  const titleSeparator = state.resolvedConfig?.titleSeparator ?? " | "
-  const description = extractFrontmatterValue(code, "description")
-  const entries = buildMetaEntries({
-    pageTitle,
-    siteTitle,
-    titleSeparator,
-    description,
-  })
-  return { code: `${code}\nexport const meta = () => [${entries.join(", ")}];\n`, map: null }
-}
-
-function shouldInjectMeta(code: string, id: string, state: PluginState): boolean {
-  return isMarkdownFile(id) && id.startsWith(state.routesDir) && !hasMetaExport(code)
-}
-
-function buildMetaEntries(input: {
-  pageTitle: string
-  siteTitle: string
-  titleSeparator: string
-  description?: string
-}): string[] {
-  const fullTitle = `${input.pageTitle}${input.titleSeparator}${input.siteTitle}`
-  const entries = [`{ title: ${JSON.stringify(fullTitle)} }`]
-  if (input.description != null && input.description !== "") {
-    entries.push(`{ name: "description", content: ${JSON.stringify(input.description)} }`)
-  }
-
-  return entries
-}
-
-function isMarkdownFile(id: string): boolean {
-  return id.endsWith(".md") || id.endsWith(".mdx")
-}
-
-function hasMetaExport(code: string): boolean {
-  return code.includes("export const meta") || code.includes("export function meta")
-}
-
-function extractFrontmatterValue(code: string, key: string): string | undefined {
-  const frontmatterStart = code.indexOf("export const frontmatter")
-  if (frontmatterStart === -1) {
-    return undefined
-  }
-
-  const valuePrefix = `${key}: "`
-  const valueStart = code.indexOf(valuePrefix, frontmatterStart)
-  if (valueStart === -1) {
-    return undefined
-  }
-
-  const startIndex = valueStart + valuePrefix.length
-  const endIndex = code.indexOf('"', startIndex)
-  if (endIndex === -1) {
-    return undefined
-  }
-
-  return code.slice(startIndex, endIndex)
-}
-
-function resolveTypedocConfig(typedoc: ArdoPluginOptions["typedoc"]): TypeDocConfig | undefined {
-  if (typedoc == null) {
-    return undefined
-  }
-
-  const packageRoot = findPackageRoot(process.cwd())
-  const defaultEntryPoint = packageRoot != null ? `${packageRoot}/src/index.ts` : "./src/index.ts"
-  const defaultTsconfig = packageRoot != null ? `${packageRoot}/tsconfig.json` : "./tsconfig.json"
-  const defaults: TypeDocConfig = {
-    enabled: true,
-    entryPoints: [defaultEntryPoint],
-    tsconfig: defaultTsconfig,
-    out: "api-reference",
-    excludePrivate: true,
-    excludeInternal: true,
-  }
-
-  return typedoc === true ? defaults : { ...defaults, ...typedoc }
-}
-
-function createTypeDocPlugin(typedocConfig: TypeDocConfig, state: PluginState): Plugin {
-  return {
-    name: "ardo:typedoc",
-    async buildStart() {
-      if (!typedocConfig.enabled || typedocGenerated) {
-        return
-      }
-
-      typedocGenerated = true
-      console.log("[ardo] Generating API documentation with TypeDoc...")
-      const startTime = Date.now()
-
-      try {
-        const docs = await generateApiDocs(typedocConfig, state.routesDir)
-        const duration = Date.now() - startTime
-        console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
-      } catch (error) {
-        console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
-        console.warn("[ardo] Check your typedoc.entryPoints configuration.")
-        if (error instanceof Error) {
-          console.warn(`[ardo] Error: ${error.message}`)
-        }
-      }
-    },
-  }
 }
 
 function resolveRoutesDir(root: string, routesDirOption: string | undefined): string {

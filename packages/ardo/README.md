@@ -48,6 +48,8 @@ export default defineConfig({
 
 The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and component props.
 
+Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and `apple-touch-icon.png`) from the default Ardo mark. Use `icons: { source: "./app/assets/logo.svg" }` to generate those files from your own SVG, or `icons: false` to manage them from `public/`.
+
 ## Root layout
 
 ```tsx
