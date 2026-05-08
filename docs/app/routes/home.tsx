@@ -3,11 +3,11 @@ import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [
-  { title: "Ardo — Documentation for React teams" },
+  { title: "Ardo — Modern, open documentation for React teams" },
   {
     name: "description",
     content:
-      "Build documentation with React 19, React Router 7, and MDX. Drop in your existing components and generate API references straight from TypeScript.",
+      "Build static documentation with React 19, React Router 7, Vite, and MDX. Keep your components, your repo, and your docs pipeline under your control.",
   },
 ]
 import {
@@ -32,9 +32,10 @@ export default function HomePage() {
     <>
       {/* Hero Section */}
       <ArdoHero
+        className={styles.homeHero}
         name="Ardo"
-        text="Documentation for React teams"
-        tagline="Your components. Your stack. Your docs. Build documentation with React 19, React Router 7, and MDX. Drop in your existing components and generate API references straight from TypeScript."
+        text="Modern, open docs for React teams"
+        tagline="VitePress-style simplicity without leaving React. Build static documentation with React Router, Vite, MDX, your own components, and TypeScript API reference generation."
         image={logo}
         actions={[
           { text: "Start your first project", link: "/guide/getting-started", theme: "brand" },
@@ -47,11 +48,12 @@ export default function HomePage() {
       />
 
       {/* Quick Start Section */}
-      <section className={styles.section}>
+      <section className={`${styles.section} ${styles.quickStartSection}`}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>From zero to docs in four lines</h2>
           <p className={styles.sectionSubtitle}>
-            Scaffold a complete documentation site. Add an MDX file, see it in the sidebar.
+            Scaffold a complete static docs site. Add an MDX file, see it in navigation, deploy the
+            output anywhere.
           </p>
 
           <div className={styles.terminal}>
@@ -80,29 +82,29 @@ export default function HomePage() {
       {/* Features Grid */}
       <ArdoFeatures
         title="What's in the box"
-        subtitle="Everything a documentation site needs, nothing it doesn't"
+        subtitle="The defaults you need for serious docs, without taking ownership away from your codebase"
       >
         <ArdoFeatureCard title="React 19, natively" icon={<Atom size={28} strokeWidth={1.5} />}>
-          Not a React compatibility layer on top of something else. Actual React 19 with Server
-          Components, Suspense, and the patterns you already use in your app.
+          Not a compatibility layer on top of another docs framework. Use React components, hooks,
+          providers, and TypeScript the same way you use them in your app.
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Vite 8 with Rolldown" icon={<Zap size={28} strokeWidth={1.5} />}>
-          Dev server starts in under a second. HMR updates hit the browser before you look up from
-          your editor. Production builds are just as fast.
+          Modern Vite tooling keeps local docs work fast and predictable. Production output is
+          static HTML and assets, ready for any host that serves files.
         </ArdoFeatureCard>
         <ArdoFeatureCard
           title="TypeDoc, zero config"
           icon={<BookOpen size={28} strokeWidth={1.5} />}
         >
-          Point Ardo at your TypeScript source and it generates linked API reference pages.
-          Interfaces, types, functions, classes. No plugins to install.
+          Point Ardo at your TypeScript source and generate linked API reference pages during the
+          docs build. Interfaces, types, functions, and classes stay close to the code.
         </ArdoFeatureCard>
         <ArdoFeatureCard
           title="Type-safe routes"
           icon={<ShieldCheck size={28} strokeWidth={1.5} />}
         >
-          React Router 7 gives you typed navigation. Link to a page that doesn't exist? TypeScript
-          tells you at build time, not your users at runtime.
+          React Router 7 gives the docs the same route model React teams already know, with static
+          prerendering and a clean path to typed navigation.
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Light and dark mode" icon={<Moon size={28} strokeWidth={1.5} />}>
           Both themes ship by default. Follows system preferences, togglable by the reader, smooth
@@ -124,21 +126,21 @@ export default function HomePage() {
           icon={<Paintbrush size={28} strokeWidth={1.5} />}
         >
           All styles are type-safe Vanilla Extract. Import design tokens from ardo/theme, write your
-          own .css.ts files, and override any component — with full autocomplete.
+          own .css.ts files, and override any component with full autocomplete.
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Make it yours" icon={<Palette size={28} strokeWidth={1.5} />}>
-          Override CSS variables, swap components, or build an entirely custom theme. Ardo's runtime
-          hooks give you all the data — you decide how to render it.
+          Override CSS variables, swap components, or build an entirely custom theme. Ardo exposes
+          the runtime data; you decide how to render it.
         </ArdoFeatureCard>
       </ArdoFeatures>
 
       {/* Code Example Section */}
-      <section className={`${styles.section} ${styles.sectionAlt}`}>
+      <section className={`${styles.section} ${styles.sectionAlt} ${styles.mdxSection}`}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>Markdown when it's enough, React when it's not</h2>
           <p className={styles.sectionSubtitle}>
-            Plain Markdown for content. Drop in a React component when you need something
-            interactive.
+            Keep prose simple. Drop into real React when a guide needs your design system, a live
+            example, or a custom workflow.
           </p>
 
           <div className={styles.codeExample}>
@@ -154,11 +156,12 @@ export default function HomePage() {
       </section>
 
       {/* Tech Stack Section */}
-      <section className={`${styles.section} ${styles.sectionAlt}`}>
+      <section className={`${styles.section} ${styles.stackSection}`}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>Your stack, not ours</h2>
           <p className={styles.sectionSubtitle}>
-            Ardo is built on the tools React teams already use. Nothing new to learn.
+            Ardo is built on tools React teams already use. No closed platform, no second UI
+            framework, no docs-only component model.
           </p>
 
           <div className={styles.techGrid}>
@@ -209,11 +212,12 @@ export default function HomePage() {
       </section>
 
       {/* Comparison Section */}
-      <section className={styles.section}>
+      <section className={`${styles.section} ${styles.comparisonSection}`}>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>How Ardo compares</h2>
           <p className={styles.sectionSubtitle}>
-            Great tools exist. The question is whether they fit your stack.
+            Great tools exist. The right choice depends on whether your docs should live inside your
+            React stack.
           </p>
 
           <div className={styles.comparison}>
@@ -225,15 +229,25 @@ export default function HomePage() {
                   <th>Docusaurus</th>
                   <th>Starlight</th>
                   <th>VitePress</th>
+                  <th>Fumadocs</th>
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>Best fit</td>
+                  <td className={styles.comparisonHighlight}>React teams, static docs</td>
+                  <td>Mature OSS docs</td>
+                  <td>Content-heavy Astro docs</td>
+                  <td>Vue docs</td>
+                  <td>Composable React docs</td>
+                </tr>
                 <tr>
                   <td>UI framework</td>
                   <td className={styles.comparisonHighlight}>React 19</td>
                   <td>React</td>
                   <td>Astro</td>
                   <td>Vue</td>
+                  <td>React</td>
                 </tr>
                 <tr>
                   <td>Build tool</td>
@@ -241,6 +255,7 @@ export default function HomePage() {
                   <td>Webpack</td>
                   <td>Astro/Vite</td>
                   <td>Vite</td>
+                  <td>Framework-dependent</td>
                 </tr>
                 <tr>
                   <td>Styling</td>
@@ -250,6 +265,7 @@ export default function HomePage() {
                   <td>CSS Modules</td>
                   <td>Tailwind</td>
                   <td>PostCSS</td>
+                  <td>Tailwind / custom</td>
                 </tr>
                 <tr>
                   <td>Your React components</td>
@@ -263,6 +279,9 @@ export default function HomePage() {
                   <td>
                     <span className={styles.x}>No</span>
                   </td>
+                  <td>
+                    <span className={styles.check}>Native</span>
+                  </td>
                 </tr>
                 <tr>
                   <td>TypeDoc built in</td>
@@ -274,20 +293,31 @@ export default function HomePage() {
                   <td>
                     <span className={styles.x}>No</span>
                   </td>
+                  <td>Type tables / OpenAPI</td>
                 </tr>
                 <tr>
-                  <td>First load</td>
-                  <td className={styles.comparisonHighlight}>~111 KB</td>
+                  <td>Measured first page</td>
+                  <td className={styles.comparisonHighlight}>~155 KB gzip</td>
                   <td>~500 KB+</td>
                   <td>~50 KB</td>
                   <td>~50 KB</td>
+                  <td>Depends on framework</td>
                 </tr>
                 <tr>
-                  <td>CO₂ per visit</td>
-                  <td className={styles.comparisonHighlight}>~0.04g (A)</td>
-                  <td>~0.10g (B)</td>
-                  <td>~0.01g (A+)</td>
-                  <td>~0.04g (A)</td>
+                  <td>Ownership model</td>
+                  <td className={styles.comparisonHighlight}>Open source, self-hosted</td>
+                  <td>Open source</td>
+                  <td>Open source</td>
+                  <td>Open source</td>
+                  <td>Open source</td>
+                </tr>
+                <tr>
+                  <td>Core tradeoff</td>
+                  <td className={styles.comparisonHighlight}>React-native over lowest JS</td>
+                  <td>Mature but heavier</td>
+                  <td>Light, Astro-first</td>
+                  <td>Light, Vue-first</td>
+                  <td>Powerful, more composable</td>
                 </tr>
               </tbody>
             </table>
@@ -306,7 +336,8 @@ export default function HomePage() {
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>Ship your docs this week</h2>
           <p className={styles.sectionSubtitle}>
-            Four lines in your terminal. A complete documentation site. What are you waiting for?
+            Start with the default theme, keep your React components, and publish static output from
+            your own repo.
           </p>
 
           <div className={styles.ctaButtons}>

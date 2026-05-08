@@ -80,9 +80,7 @@ export default function Root() {
           <ArdoSidebarGroup title="API Reference" to="/api-reference">
             <ArdoSidebarLink to="/api-reference/components">Components</ArdoSidebarLink>
             <ArdoSidebarLink to="/api-reference/functions">Functions</ArdoSidebarLink>
-            <ArdoSidebarLink to="/api-reference/interfaces">Interfaces</ArdoSidebarLink>
             <ArdoSidebarLink to="/api-reference/types">Types</ArdoSidebarLink>
-            <ArdoSidebarLink to="/api-reference/classes">Classes</ArdoSidebarLink>
           </ArdoSidebarGroup>
         </ArdoSidebar>
       }

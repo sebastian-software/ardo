@@ -1,10 +1,18 @@
 # ardo
 
-React-first Static Documentation Framework built on React Router 7.
+Modern, open documentation for React teams.
 
-## Quick Start
+Ardo is a React-first static documentation framework built on React 19, React Router 7, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
 
-Scaffold a new project with the CLI:
+## Why use it?
+
+- **Use real React components in docs** - import your app components, design system, providers, and examples directly in MDX.
+- **Ship static docs anywhere** - Ardo prerenders HTML and assets that work on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any file server.
+- **Generate API docs from TypeScript** - TypeDoc integration creates linked API reference pages during build.
+- **Start with a complete theme** - responsive layout, sidebar, TOC, search, dark mode, code highlighting, callouts, tabs, Tailwind v4, and typed design tokens.
+- **Keep control** - configuration is code, UI is React, output is static, and the package is open source.
+
+## Quick start
 
 ```bash
 pnpm create ardo@latest my-docs
@@ -13,80 +21,78 @@ pnpm install
 pnpm dev
 ```
 
-## Manual Installation
+## Manual installation
 
 ```bash
-pnpm add ardo react react-dom react-router
-pnpm add -D typescript vite
+pnpm add ardo react react-dom react-router isbot
+pnpm add -D @react-router/dev @tailwindcss/vite tailwindcss typescript vite @types/react @types/react-dom
 ```
 
-## Usage
+## Vite configuration
 
-### Vite Configuration
-
-Create a `vite.config.ts` with your Ardo configuration:
-
-```typescript
+```ts
 import { defineConfig } from "vite"
+import tailwindcss from "@tailwindcss/vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     ardo({
       title: "My Documentation",
-      description: "Built with Ardo",
+      description: "Docs for my React library",
     }),
   ],
 })
 ```
 
-The `ardo()` plugin includes React Router, MDX processing, and all necessary configuration. Navigation, sidebar, footer, and other UI configuration is done via JSX props in your `root.tsx`.
+The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and component props.
 
-### Runtime Hooks
-
-Access configuration and page data in your components:
+## Root layout
 
 ```tsx
-import { useArdoConfig, useArdoSidebar, useArdoPageData, useArdoTOC } from "ardo/runtime"
+import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+import "ardo/ui/styles.css"
 
-function MyComponent() {
-  const config = useArdoConfig()
-  const sidebar = useArdoSidebar()
-  const page = useArdoPageData()
-  const toc = useArdoTOC()
+export function Layout({ children }: { children: React.ReactNode }) {
+  return <ArdoRootLayout>{children}</ArdoRootLayout>
+}
 
-  return <h1>{config.title}</h1>
+export default function Root() {
+  return <ArdoRoot config={config} sidebar={sidebar} />
 }
 ```
 
-### Theme Components
-
-Use pre-built components for your documentation:
+## Runtime hooks
 
 ```tsx
-import { ArdoLayout, ArdoHeader, ArdoSidebar, ArdoFooter } from "ardo/ui"
+import { useArdoConfig, useArdoPageData, useArdoSidebar, useArdoTOC } from "ardo/runtime"
 
-function App() {
-  return (
-    <ArdoLayout header={<ArdoHeader />} sidebar={<ArdoSidebar />} footer={<ArdoFooter />}>
-      <YourContent />
-    </ArdoLayout>
-  )
+function PageTitle() {
+  const config = useArdoConfig()
+  const page = useArdoPageData()
+  const sidebar = useArdoSidebar()
+  const toc = useArdoTOC()
+
+  return <h1>{page?.title ?? config.title}</h1>
 }
 ```
 
 ## Exports
 
-| Export               | Description               |
-| -------------------- | ------------------------- |
-| `ardo/vite`          | Vite plugin (`ardo`)      |
-| `ardo/runtime`       | React hooks and providers |
-| `ardo/ui`            | Pre-built UI components   |
-| `ardo/ui/styles.css` | Default theme styles      |
+| Export               | Description                        |
+| -------------------- | ---------------------------------- |
+| `ardo/vite`          | Vite plugin                        |
+| `ardo/runtime`       | React hooks and providers          |
+| `ardo/ui`            | Default UI components              |
+| `ardo/theme`         | Vanilla Extract tokens and theming |
+| `ardo/ui/styles.css` | Default theme styles               |
 
 ## Documentation
 
-Full documentation available at [ardo-docs.dev](https://ardo-docs.dev)
+Full documentation: [ardo-docs.dev](https://ardo-docs.dev)
 
 LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/llms-full.txt)
 

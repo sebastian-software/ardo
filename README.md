@@ -4,7 +4,7 @@
 
 <img src="./logo.svg" alt="Ardo Logo" width="120" height="120">
 
-**Documentation for React teams. No compromises.**
+**Modern, open documentation for React teams.**
 
 [![Powered by Sebastian Software](https://img.shields.io/badge/Powered%20by-Sebastian%20Software-00718d?style=flat-square)](https://oss.sebastian-software.com)
 [![CI](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastian-software/ardo/actions/workflows/ci.yml)
@@ -16,56 +16,54 @@
 
 [Documentation](https://ardo-docs.dev) ·
 [Getting Started](https://ardo-docs.dev/guide/getting-started) ·
-[API Reference](https://ardo-docs.dev/api/config)
+[API Reference](https://ardo-docs.dev/api-reference)
 
 </div>
 
 ---
 
-## The problem
+## Why Ardo exists
 
-You build your app in React. Your components are React. Your design system is React. Then you need documentation and suddenly you're stuck with a different framework, a different component model, or a different mental model entirely.
+You build your product in React. Your components are React. Your design system, providers, hooks, examples, and internal tools are React.
 
-Ardo fixes that. Write your docs with the same stack you already use: React 19, React Router 7, and Vite 8. Drop your existing components straight into MDX. No wrappers, no adapters, no context switching.
+Then documentation work starts and suddenly the docs stack asks your team to switch mental models: another component system, another router, another theming model, another place where your existing UI does not quite fit.
 
-## What you actually get
+Ardo keeps docs inside the React stack. It is a static documentation framework built on React 19, React Router 7, Vite 8, MDX, TypeScript, and Vanilla Extract. It gives React teams the simplicity people like in VitePress, without leaving React or handing their docs to a closed platform.
 
-**Your React components in your docs.** Not through a compatibility layer. Natively. Import your design system, your interactive examples, your custom widgets. They just work.
+## What you get
 
-**API docs from your TypeScript source.** TypeDoc is built in. Point it at your code and it generates complete, linked API reference pages. No plugins to configure, no separate build step to maintain.
+**Real React components in MDX.** Import your own design system, providers, interactive examples, or playgrounds. No Astro island boundary, no Vue rewrite, no hosted docs runtime.
 
-**Type-safe routes that catch broken links at build time.** React Router 7 gives you typed route paths. A link to a page that doesn't exist? TypeScript catches it before your users do.
+**A modern Vite-powered docs build.** Ardo uses Vite 8 with Rolldown and React Router's static prerendering model. You get fast local iteration, static HTML output, and deployment to any host that can serve files.
 
-**Tailwind CSS v4 out of the box.** Style your own components and pages with utility classes — zero config, zero setup. Tailwind is included in every project by default, ready to use from the first `pnpm dev`.
+**TypeScript API docs from source.** Built-in TypeDoc integration turns your public TypeScript exports into linked API reference pages during the docs build.
 
-**Builds that don't waste your time.** Vite 8 with Rolldown. Dev server starts in under a second. Production builds finish while you're still reaching for your coffee.
+**A polished default theme you can still own.** Light and dark mode, search, sidebar navigation, TOC, code highlighting, tabs, callouts, Tailwind v4, and type-safe Vanilla Extract tokens ship with the default UI.
 
-## Why Ardo?
+**Open and self-hostable.** Ardo is an npm package and Vite plugin. Your content stays in your repo, your build runs in your pipeline, and your output is static.
 
-There are good documentation frameworks out there. The question is whether they fit your stack.
+## How Ardo compares
 
-If your app is React, your components are React, and your team thinks in React — switching to a different framework for docs means maintaining two mental models, two component systems, and two sets of conventions. Ardo lets you skip that entirely.
+Ardo is not trying to be every documentation product. It is built for a specific team: you already use React, you want static docs, and you want the docs code to feel like the rest of your app.
 
-|                           | **Ardo**   | **Docusaurus**  | **Starlight**                 | **VitePress** |
-| ------------------------- | ---------- | --------------- | ----------------------------- | ------------- |
-| UI framework              | React 19   | React           | Astro                         | Vue           |
-| Build tool                | Vite 8     | Webpack         | Astro/Vite                    | Vite          |
-| Use your React components | Native     | Native          | Via islands (adapters needed) | Not supported |
-| TypeDoc built in          | Yes        | Plugin required | Plugin required               | Not available |
-| First load (gzipped)      | ~111 KB    | ~500 KB+        | ~50 KB                        | ~50 KB        |
-| Subsequent navigations    | ~1 KB      | ~1 KB           | Full page reload              | ~1 KB         |
-| CO₂ per visit             | ~0.04g (A) | ~0.10g (B)      | ~0.01g (A+)                   | ~0.04g (A)    |
+|                          | **Ardo**                       | **Docusaurus**      | **Starlight**            | **VitePress**     | **Nextra**   | **Fumadocs**              | **Mintlify**      |
+| ------------------------ | ------------------------------ | ------------------- | ------------------------ | ----------------- | ------------ | ------------------------- | ----------------- |
+| Best fit                 | React teams, static docs       | Mature OSS docs     | Content-heavy Astro docs | Vue docs          | Next.js      | Composable React docs     | Hosted API docs   |
+| UI framework             | React 19                       | React               | Astro                    | Vue               | Next.js      | React                     | Hosted platform   |
+| Build model              | Vite 8 + React Router          | Webpack             | Astro/Vite               | Vite              | Next.js      | React framework dependent | SaaS/Git workflow |
+| React component reuse    | Native                         | Native              | Via islands              | No                | Native       | Native                    | Limited/platform  |
+| TypeScript API reference | TypeDoc built in               | Plugin              | Plugin                   | External          | TSDoc        | Type tables/OpenAPI       | OpenAPI/API tools |
+| Ownership                | Open source, self-hosted files | Open source         | Open source              | Open source       | Open source  | Open source               | Hosted platform   |
+| Measured Ardo first page | ~155 KB gzip including assets  | Heavier React stack | Lighter non-React stack  | Lighter Vue stack | Next runtime | Depends on framework      | Platform hosted   |
 
-**Starlight and VitePress are lighter** — they ship less JavaScript because Astro and Vue have smaller runtimes than React. That's a real tradeoff. If minimal page weight is your top priority and you don't need React components in your docs, those are solid choices.
+The honest tradeoff: Starlight and VitePress can be lighter when your docs are mostly prose and code samples. Docusaurus is more mature for versioning, i18n, and plugins. Fumadocs is more composable if you want to assemble a custom docs framework. Mintlify is stronger when you want a hosted docs product with analytics, AI features, and API playgrounds.
 
-**Docusaurus is React-based** — but it's built on webpack with a heavier architecture. Build times are slower and the runtime is roughly 4x larger.
-
-**Ardo is built for teams already committed to React.** You get your existing components, your existing design system, and your existing knowledge — with a modern Vite-powered build that keeps page weight reasonable despite including the React runtime.
+Ardo's value is narrower and sharper: **React-native static docs with modern Vite tooling and full code ownership.**
 
 <details>
-<summary>Environmental impact methodology</summary>
+<summary>Measurement note</summary>
 
-CO₂ estimates follow the [Website Carbon Calculator](https://www.websitecarbon.com/) methodology (Sustainable Web Design model). Comparison values for Docusaurus, Starlight, and VitePress are sourced from [Starlight's environmental impact page](https://starlight.astro.build/environmental-impact/). Ardo's estimate is calculated from measured build output (~111 KB gzipped transfer size).
+The Ardo first-page estimate comes from `pnpm docs:build` on this repository and includes gzip-compressed JavaScript and CSS referenced by the generated homepage, including logo assets. Use it as a local build snapshot, not a universal benchmark.
 
 </details>
 
@@ -78,18 +76,13 @@ pnpm install
 pnpm dev
 ```
 
-Your site is running at `localhost:5173`. Add an `.mdx` file to `app/routes/` and it shows up in the sidebar.
-
-Or add Ardo to an existing project:
-
-```bash
-pnpm add ardo react react-dom
-pnpm add -D typescript vite
-```
+Open `http://localhost:5173`. Add an `.mdx` file to `app/routes/`, and Ardo adds it to the generated sidebar.
 
 ## Configuration
 
-```typescript
+Build-time configuration lives in the `ardo()` Vite plugin:
+
+```ts
 // vite.config.ts
 import { defineConfig } from "vite"
 import tailwindcss from "@tailwindcss/vite"
@@ -100,47 +93,55 @@ export default defineConfig({
     tailwindcss(),
     ardo({
       title: "My Documentation",
-      description: "Built with Ardo",
-
-      themeConfig: {
-        nav: [
-          { text: "Guide", link: "/guide/getting-started" },
-          { text: "API", link: "/api/reference" },
-        ],
-        sidebar: [
-          {
-            text: "Guide",
-            items: [{ text: "Getting Started", link: "/guide/getting-started" }],
-          },
-        ],
-      },
+      description: "Docs for my React library",
     }),
   ],
 })
 ```
 
+UI configuration lives in React, where React teams expect it:
+
+```tsx
+// app/root.tsx
+import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
+import config from "virtual:ardo/config"
+import sidebar from "virtual:ardo/sidebar"
+import "ardo/ui/styles.css"
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  return <ArdoRootLayout>{children}</ArdoRootLayout>
+}
+
+export default function Root() {
+  return <ArdoRoot config={config} sidebar={sidebar} />
+}
+```
+
+Swap the header, sidebar, footer, search, or content components when you need deeper control. They are React components, not theme-file magic.
+
 ## Project structure
 
-```
+```text
 my-docs/
 ├── app/
-│   ├── routes/            # MDX/MD content
+│   ├── routes/            # MDX, Markdown, and TSX routes
 │   │   ├── guide/
 │   │   │   └── getting-started.mdx
-│   │   └── home.tsx       # Home page
-│   ├── root.tsx           # Root layout
-│   ├── entry.client.tsx   # Client entry
-│   └── entry.server.tsx   # Server entry
+│   │   └── home.tsx
+│   ├── root.tsx           # ArdoRoot + React Router shell
+│   ├── entry.client.tsx
+│   ├── entry.server.tsx
+│   └── app.css            # Tailwind v4 utility layers
 ├── vite.config.ts         # Vite + Ardo configuration
-├── react-router.config.ts # React Router configuration
+├── react-router.config.ts # Static prerender configuration
 └── package.json
 ```
 
 ## Deployment
 
-Ardo builds to static HTML. Deploy it anywhere: Vercel, Netlify, GitHub Pages, Cloudflare Pages, or a plain file server. Projects created with `create-ardo` ship with a GitHub Pages workflow ready to go.
+Ardo builds to static HTML and assets. Deploy it to GitHub Pages, Vercel, Netlify, Cloudflare Pages, or a plain file server. Projects created with `create-ardo` include a GitHub Pages workflow.
 
-See the [Deployment Guide](https://ardo-docs.dev/guide/deployment) for setup details.
+See the [Deployment Guide](https://ardo-docs.dev/guide/deployment) for provider-specific setup.
 
 ## Packages
 

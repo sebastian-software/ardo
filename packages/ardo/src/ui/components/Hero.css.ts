@@ -79,6 +79,7 @@ export const heroName = style({
   backgroundClip: "text",
   letterSpacing: "-0.03em",
   lineHeight: 1.1,
+  textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "40px",
@@ -92,6 +93,7 @@ export const heroText = style({
   marginTop: "8px",
   letterSpacing: "-0.02em",
   lineHeight: 1.15,
+  textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "28px",
@@ -107,6 +109,7 @@ export const heroTagline = style({
   marginLeft: "auto",
   marginRight: "auto",
   lineHeight: 1.65,
+  textWrap: "pretty",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "16px",

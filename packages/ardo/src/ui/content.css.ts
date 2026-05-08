@@ -12,6 +12,8 @@ globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   marginTop: vars.space["2xl"],
   marginBottom: vars.space.md,
   letterSpacing: "-0.01em",
+  maxWidth: vars.layout.contentMaxWidth,
+  textWrap: "balance",
 })
 
 globalStyle(`${c} h1`, {
@@ -41,6 +43,7 @@ globalStyle(`${c} p`, {
   fontSize: vars.fontSize.base,
   lineHeight: vars.font.lineHeight,
   overflowWrap: "break-word",
+  textWrap: "pretty",
 })
 
 globalStyle(`${c} a`, {
@@ -60,12 +63,14 @@ globalStyle(`${c} ul, ${c} ol`, {
   marginBottom: vars.space.lg,
   paddingLeft: vars.space.lg,
   maxWidth: vars.layout.contentMaxWidth,
+  textWrap: "pretty",
 })
 
 globalStyle(`${c} li`, {
   marginBottom: vars.space.xs,
   lineHeight: vars.font.lineHeight,
   overflowWrap: "break-word",
+  textWrap: "pretty",
 })
 
 globalStyle(`${c} li::marker`, {
@@ -80,6 +85,7 @@ globalStyle(`${c} blockquote`, {
   borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
   color: vars.color.text,
   fontSize: vars.fontSize.base,
+  maxWidth: vars.layout.contentMaxWidth,
 })
 
 globalStyle(`${c} hr`, {
@@ -89,13 +95,32 @@ globalStyle(`${c} hr`, {
 })
 
 globalStyle(`${c} table`, {
+  display: "block",
   width: "100%",
+  maxWidth: "100%",
+  overflowX: "auto",
   margin: `${vars.space.lg} 0`,
   borderCollapse: "collapse",
   fontSize: vars.fontSize.sm,
   borderRadius: vars.radius.base,
-  overflow: "hidden",
   border: `1px solid ${vars.color.border}`,
+  background: vars.color.bg,
+})
+
+globalStyle(`${c} tbody, ${c} thead`, {
+  width: "100%",
+})
+
+globalStyle(`${c} tr`, {
+  display: "table-row",
+})
+
+globalStyle(`${c} thead`, {
+  display: "table-header-group",
+})
+
+globalStyle(`${c} tbody`, {
+  display: "table-row-group",
 })
 
 globalStyle(`${c} th, ${c} td`, {

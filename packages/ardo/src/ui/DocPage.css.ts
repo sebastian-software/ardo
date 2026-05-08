@@ -10,16 +10,20 @@ export const docPage = style({
   flex: 1,
   minWidth: 0,
   width: "100%",
-  gridTemplateColumns: `minmax(0, ${vars.layout.contentMaxWidth}) ${vars.layout.tocWidth}`,
-  justifyContent: "center",
-  gap: "clamp(3rem, 6vw, 6rem)",
-  maxWidth: "88rem",
+  gridTemplateColumns: `minmax(0, 72rem) ${vars.layout.tocWidth}`,
+  justifyContent: "start",
+  gap: "clamp(2rem, 4vw, 4rem)",
+  maxWidth: "100rem",
   margin: "0 auto",
   paddingTop: vars.space["2xl"],
   "@media": {
+    "(min-width: 1536px)": {
+      gridTemplateColumns: `minmax(0, 78rem) ${vars.layout.tocWidth}`,
+    },
     "(max-width: 1280px)": {
       gridTemplateColumns: "minmax(0, 1fr)",
-      maxWidth: vars.layout.contentMaxWidth,
+      maxWidth: "min(100%, 72rem)",
+      justifyContent: "center",
     },
     "(max-width: 1024px)": {
       paddingTop: vars.space.xl,
@@ -30,7 +34,7 @@ export const docPage = style({
 export const contentContainer = style({
   minWidth: 0,
   width: "100%",
-  maxWidth: vars.layout.contentMaxWidth,
+  maxWidth: "100%",
 })
 
 export const contentHeader = style({
@@ -47,14 +51,16 @@ export const contentTitle = style({
   letterSpacing: "-0.01em",
   marginBottom: vars.space.sm,
   overflowWrap: "break-word",
+  textWrap: "balance",
 })
 
 export const contentDescription = style({
   fontSize: vars.fontSize.lg,
   color: vars.color.textLight,
   lineHeight: 1.65,
-  maxWidth: "62ch",
+  maxWidth: vars.layout.contentMaxWidth,
   overflowWrap: "break-word",
+  textWrap: "pretty",
 })
 
 export const contentBody = style({
@@ -68,8 +74,19 @@ export const pageRail = style({
   top: vars.space.xl,
   alignSelf: "start",
   maxHeight: `calc(100vh - ${vars.layout.headerHeight} - ${vars.space["2xl"]})`,
-  paddingTop: vars.space.sm,
+  padding: `${vars.space.md} ${vars.space.md} ${vars.space.lg}`,
+  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.bg} 94%, ${vars.color.bgSoft}), ${vars.color.bg})`,
+  border: `1px solid ${vars.color.borderLight}`,
+  borderRadius: vars.radius.lg,
+  boxShadow: `0 16px 42px oklch(0 0 0 / 0.035)`,
   overflowY: "auto",
+  zIndex: 1,
+  selectors: {
+    ".dark &": {
+      background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.bg} 88%, ${vars.color.bgSoft}), ${vars.color.bg})`,
+      boxShadow: "0 18px 46px oklch(0 0 0 / 0.22)",
+    },
+  },
   "@media": {
     "(max-width: 1280px)": {
       display: "none",
@@ -78,7 +95,7 @@ export const pageRail = style({
 })
 
 export const pageRailSection = style({
-  padding: `${vars.space.lg} 0`,
+  padding: `${vars.space.md} 0`,
   borderBottom: `1px solid ${vars.color.borderLight}`,
   selectors: {
     "&:first-child": {

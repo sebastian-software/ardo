@@ -1,12 +1,17 @@
 ---
 title: Configuration
-description: Complete reference for all Ardo configuration options.
+description: Configure Ardo's Vite plugin, generated routes, Markdown pipeline, TypeDoc output, and React UI.
 order: 10
 ---
 
 # Configuration
 
-Ardo is configured through the `ardo()` plugin in your `vite.config.ts`. This page documents every available option.
+Ardo keeps configuration split where React teams expect it:
+
+- **Build behavior** lives in the `ardo()` Vite plugin: site metadata, routes, Markdown, TypeDoc, and deployment helpers.
+- **UI behavior** lives in React: `ArdoRoot`, header/sidebar/footer props, component overrides, and runtime hooks.
+
+This page documents the build-time options first, then points to the React-side UI hooks and components.
 
 ## Basic Setup
 
@@ -97,7 +102,7 @@ ardo({
 - **Type:** `string`
 - **Default:** `"content"`
 
-Content source directory, relative to the project root. This is where Ardo looks for your markdown files when using the config-driven approach.
+Content source directory, relative to the project root. Most React Router projects use `app/routes/` through the route generator. `srcDir` remains available for config-driven content workflows and generated markdown output.
 
 ```ts
 ardo({

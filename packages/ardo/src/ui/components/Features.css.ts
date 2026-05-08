@@ -27,6 +27,7 @@ export const featuresTitle = style({
   fontWeight: 700,
   letterSpacing: "-0.02em",
   marginBottom: "12px",
+  textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "28px",
@@ -39,6 +40,7 @@ export const featuresSubtitle = style({
   color: vars.color.textLight,
   maxWidth: "560px",
   margin: "0 auto",
+  textWrap: "pretty",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "16px",
@@ -119,6 +121,7 @@ export const featureTitle = style({
   fontWeight: 600,
   marginBottom: "10px",
   letterSpacing: "-0.01em",
+  textWrap: "balance",
 })
 
 export const featureDetails = style({
@@ -126,6 +129,7 @@ export const featureDetails = style({
   color: vars.color.textLight,
   lineHeight: 1.6,
   marginBottom: "12px",
+  textWrap: "pretty",
 })
 
 export const featureLink = style({
