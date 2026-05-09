@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.1...create-ardo-v3.3.0) (2026-05-09)
+
+
+### Documentation
+
+* polish positioning and homepage design ([b207e8f](https://github.com/sebastian-software/ardo/commit/b207e8ffc21dcf34dc3b2d1a38c4b035457715fe))
+
 ## [3.2.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.0...create-ardo-v3.2.1) (2026-05-07)
 
 

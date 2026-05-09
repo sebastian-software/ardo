@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.2.1...ardo-v3.3.0) (2026-05-09)
+
+
+### Features
+
+* **ardo:** add lean favicon generation ([e2697df](https://github.com/sebastian-software/ardo/commit/e2697df78e327c66185d812f204b4a53ad084f26))
+* **ardo:** merge default docs redesign ([1a4dea4](https://github.com/sebastian-software/ardo/commit/1a4dea4ebbf29503248c466672104e375858f5cb))
+* **ardo:** redesign default docs UI ([f51712e](https://github.com/sebastian-software/ardo/commit/f51712edda7dd69d10501ae7665aa5e45afe14b0))
+* **ardo:** support generated sidebar section order ([f44fb8e](https://github.com/sebastian-software/ardo/commit/f44fb8ec2a015f3c9fbb2833375aa8983ebdf222))
+* **ardo:** support generated sidebar section order ([5de6dda](https://github.com/sebastian-software/ardo/commit/5de6dda10524996137d60ed4998e1704b81d285b))
+
+
+### Bug Fixes
+
+* **ui:** align sidebar collapse icons ([061e269](https://github.com/sebastian-software/ardo/commit/061e269245bbdef120d6d390298db4b85c3bcd4f))
+* **ui:** widen and wrap footer layout ([1b4a95b](https://github.com/sebastian-software/ardo/commit/1b4a95bb11ec8f2ea350933245a0067db98c4641))
+
+
+### Documentation
+
+* polish positioning and homepage design ([b207e8f](https://github.com/sebastian-software/ardo/commit/b207e8ffc21dcf34dc3b2d1a38c4b035457715fe))
+
 ## [3.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.2.0...ardo-v3.2.1) (2026-05-07)
 
 
