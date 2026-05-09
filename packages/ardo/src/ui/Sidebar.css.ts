@@ -104,6 +104,11 @@ export const sidebarItemHeader = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+  selectors: {
+    "li:not(:first-child) > &": {
+      marginTop: vars.space.lg,
+    },
+  },
 })
 
 export const sidebarLink = style({
@@ -134,7 +139,6 @@ export const sidebarText = style({
   alignItems: "center",
   gap: vars.space.sm,
   padding: `0.5rem 0.75rem 0.375rem`,
-  marginTop: vars.space.lg,
   color: vars.color.textLight,
   textDecoration: "none",
   fontWeight: 600,
@@ -151,9 +155,6 @@ export const sidebarText = style({
     },
     "&.child-active": {
       color: vars.color.text,
-    },
-    "li:first-child > div > &": {
-      marginTop: 0,
     },
   },
 })
