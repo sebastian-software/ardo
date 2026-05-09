@@ -1,23 +1,57 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
+import * as layoutStyles from "./Layout.css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
-  width: "min(calc(100% - 3rem), 72rem)",
-  maxWidth: "72rem",
-  padding: `${vars.space["2xl"]} 0`,
+  width: "100%",
+  padding: `${vars.space["2xl"]} ${vars.space.xl}`,
   textAlign: "left",
-  borderTop: `1px solid ${vars.color.border}`,
-  margin: `${vars.space["2xl"]} auto 0`,
+  background: `color-mix(in oklch, ${vars.color.brand} 6%, ${vars.color.bgMute})`,
+  margin: `${vars.space["2xl"]} 0 0`,
   "@media": {
     "(max-width: 768px)": {
-      width: "calc(100% - 2rem)",
-      padding: `${vars.space.xl} 0`,
+      padding: `${vars.space.xl} ${vars.space.md}`,
     },
   },
 })
 
-export const footerContainer = style({})
+globalStyle(`main > .${footer}`, {
+  width: `calc(100% + (${vars.space.xl} * 2))`,
+  marginRight: `calc(${vars.space.xl} * -1)`,
+  marginBottom: `calc(${vars.space.xl} * -1)`,
+  marginLeft: `calc(${vars.space.xl} * -1)`,
+  "@media": {
+    "(max-width: 1024px)": {
+      width: `calc(100% + (${vars.space.md} * 2))`,
+      marginRight: `calc(${vars.space.md} * -1)`,
+      marginLeft: `calc(${vars.space.md} * -1)`,
+    },
+  },
+})
+
+globalStyle(`.${layoutStyles.home} .${layoutStyles.main} > .${footer}`, {
+  width: "100%",
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+})
+
+export const footerContainer = style({
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) auto",
+  alignItems: "start",
+  gap: `${vars.space.xs} ${vars.space["2xl"]}`,
+  width: "100%",
+  maxWidth: "80rem",
+  margin: "0 auto",
+  "@media": {
+    "(max-width: 768px)": {
+      gridTemplateColumns: "1fr",
+      gap: vars.space.xs,
+    },
+  },
+})
 
 export const footerPrimary = style({
   display: "flex",
@@ -26,7 +60,7 @@ export const footerPrimary = style({
   flexWrap: "wrap",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLight,
-  marginBottom: vars.space.xs,
+  marginBottom: 0,
 })
 
 export const footerSeparator = style({
@@ -51,19 +85,33 @@ export const footerLink = style({
 })
 
 export const footerMessage = style({
+  gridColumn: "1",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerCopyright = style({
+  gridColumn: "1",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerBuildTime = style({
+  gridColumn: "2",
+  gridRow: "1 / span 3",
+  justifySelf: "end",
   fontSize: vars.fontSize.xs,
   color: vars.color.textLighter,
-  marginTop: vars.space.xs,
+  marginTop: "2px",
+  textAlign: "right",
+  "@media": {
+    "(max-width: 768px)": {
+      gridColumn: "1",
+      gridRow: "auto",
+      justifySelf: "start",
+      textAlign: "left",
+    },
+  },
 })
 
 export const contentFooter = style({
