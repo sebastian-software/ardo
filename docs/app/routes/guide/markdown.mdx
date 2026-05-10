@@ -129,6 +129,26 @@ export function greet(name: string) {
 }
 ```
 
+## Badge Component
+
+Use badges for inline status labels, version indicators, and metadata tags. The `Badge` component is auto-registered in MDX files — no import needed.
+
+This feature is <Badge>New</Badge>, available for <Badge variant="info">v2.0+</Badge>, and can mark <Badge variant="warning">Beta</Badge> or <Badge variant="danger">Deprecated</Badge> content.
+
+```mdx
+<Badge>New</Badge>
+<Badge variant="success">Stable</Badge>
+<Badge variant="warning">Beta</Badge>
+<Badge variant="danger">Deprecated</Badge>
+<Badge variant="info">v2.0+</Badge>
+```
+
+Badges also support an optional leading icon:
+
+```mdx
+<Badge icon="✨">New</Badge>
+```
+
 ## Callout Components
 
 Use callout components to highlight important information. These JSX components are auto-registered in MDX files — no import needed.
