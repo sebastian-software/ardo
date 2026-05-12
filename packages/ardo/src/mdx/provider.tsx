@@ -4,6 +4,7 @@ import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
 import { isValidElement } from "react"
 import { Link } from "react-router"
 
+import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
@@ -111,6 +112,8 @@ export function useMDXComponents(): MDXComponents {
     pre: PreBlock,
 
     // Custom Ardo components available in MDX (mapped as short names)
+    Card: ArdoCard,
+    CardGroup: ArdoCardGroup,
     Icon: ArdoIcon,
     Tip: ArdoTip,
     Warning: ArdoWarning,
