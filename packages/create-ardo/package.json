@@ -42,7 +42,7 @@
     "@types/prompts": "^2.4.9",
     "tsdown": "^0.22.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   },
   "engines": {
     "node": ">=18.0.0"
