@@ -69,20 +69,20 @@
   },
   "dependencies": {
     "@mdx-js/rollup": "^3.1.1",
-    "@react-router/dev": "^7.15.0",
+    "@react-router/dev": "^7.15.1",
     "@resvg/resvg-js": "^2.6.2",
     "@shikijs/rehype": "^4.0.2",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/esbuild-plugin": "^2.3.22",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "^5.2.2",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "gray-matter": "^4.0.3",
     "hast-util-to-jsx-runtime": "^2.3.6",
     "minisearch": "^7.2.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router": "^7.15.0",
+    "react-router": "^7.15.1",
     "read-package-up": "^12.0.0",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
@@ -92,7 +92,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "shiki": "^4.0.2",
-    "tailwindcss": "^4.2.4",
+    "tailwindcss": "^4.3.0",
     "typedoc": "^0.28.19",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
@@ -107,8 +107,8 @@
     }
   },
   "devDependencies": {
-    "@storybook/react": "^10.3.6",
-    "@storybook/react-vite": "^10.3.6",
+    "@storybook/react": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/mdx": "^2.0.13",
@@ -120,8 +120,8 @@
     "tsdown": "^0.22.0",
     "typescript": "^6.0.3",
     "unist-util-mdx-define": "^1.1.2",
-    "vite": "^8.0.11",
-    "vitest": "^4.1.5"
+    "vite": "^8.0.13",
+    "vitest": "^4.1.6"
   },
   "keywords": [
     "documentation",
