@@ -118,7 +118,8 @@ export const sidebarLink = style({
   textDecoration: "none",
   fontSize: vars.fontSize.sm,
   fontWeight: 400,
-  borderRadius: vars.radius.base,
+  borderLeft: "2px solid transparent",
+  borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
@@ -128,6 +129,7 @@ export const sidebarLink = style({
     "&.active": {
       color: vars.color.brand,
       background: vars.color.brandSubtle,
+      borderLeftColor: vars.color.brand,
       fontWeight: 500,
     },
   },
@@ -142,9 +144,8 @@ export const sidebarText = style({
   color: vars.color.textLight,
   textDecoration: "none",
   fontWeight: 600,
-  fontSize: vars.fontSize.xs,
-  textTransform: "uppercase",
-  letterSpacing: "0.07em",
+  fontSize: vars.fontSize.sm,
+  letterSpacing: "-0.005em",
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
