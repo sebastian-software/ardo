@@ -129,6 +129,8 @@ globalStyle(`${searchFooter} kbd`, {
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   marginRight: "4px",
+  color: vars.color.accent,
+  fontFamily: vars.font.mono,
 })
 
 export const searchClear = style({
@@ -166,5 +168,6 @@ globalStyle(`${searchKbd} kbd`, {
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   fontSize: vars.fontSize.xs,
-  fontFamily: vars.font.family,
+  fontFamily: vars.font.mono,
+  color: vars.color.accent,
 })

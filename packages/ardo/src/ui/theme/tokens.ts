@@ -65,14 +65,21 @@ const shared = {
   },
 }
 
-function createLightColors(h: number) {
-  const neutralHue = h
+function createLightColors(primary: number, secondary: number) {
+  // Neutrals are tinted with the secondary (cool) hue so the warm primary
+  // pops more strongly against them. Chroma stays very low — these read as
+  // grey, not blue.
+  const neutralHue = secondary
   return {
-    brand: oklch(0.505, 0.085, h),
-    brandLight: oklch(0.63, 0.075, h),
-    brandDark: oklch(0.39, 0.095, h),
-    brandSubtle: oklch(0.965, 0.012, h),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.505, 0.085, h)} 0%, ${oklch(0.61, 0.058, h + 16)} 100%)`,
+    brand: oklch(0.505, 0.085, primary),
+    brandLight: oklch(0.63, 0.075, primary),
+    brandDark: oklch(0.39, 0.095, primary),
+    brandSubtle: oklch(0.965, 0.012, primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.505, 0.085, primary)} 0%, ${oklch(0.61, 0.058, primary + 16)} 100%)`,
+    accent: oklch(0.5, 0.075, secondary),
+    accentLight: oklch(0.62, 0.07, secondary),
+    accentDark: oklch(0.38, 0.085, secondary),
+    accentSubtle: oklch(0.963, 0.012, secondary),
     bg: oklch(0.992, 0.0015, neutralHue),
     bgSoft: oklch(0.975, 0.003, neutralHue),
     bgMute: oklch(0.955, 0.004, neutralHue),
@@ -124,14 +131,19 @@ function createLightColors(h: number) {
   }
 }
 
-function createDarkColors(h: number) {
-  const neutralHue = h
+function createDarkColors(primary: number, secondary: number) {
+  // See note in createLightColors — neutrals follow the secondary hue.
+  const neutralHue = secondary
   return {
-    brand: oklch(0.72, 0.095, h),
-    brandLight: oklch(0.82, 0.085, h),
-    brandDark: oklch(0.61, 0.105, h),
-    brandSubtle: oklch(0.255, 0.03, h),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.72, 0.095, h)} 0%, ${oklch(0.79, 0.068, h + 16)} 100%)`,
+    brand: oklch(0.72, 0.095, primary),
+    brandLight: oklch(0.82, 0.085, primary),
+    brandDark: oklch(0.61, 0.105, primary),
+    brandSubtle: oklch(0.255, 0.03, primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.72, 0.095, primary)} 0%, ${oklch(0.79, 0.068, primary + 16)} 100%)`,
+    accent: oklch(0.74, 0.08, secondary),
+    accentLight: oklch(0.84, 0.07, secondary),
+    accentDark: oklch(0.6, 0.09, secondary),
+    accentSubtle: oklch(0.26, 0.03, secondary),
     bg: oklch(0.155, 0.008, neutralHue),
     bgSoft: oklch(0.195, 0.009, neutralHue),
     bgMute: oklch(0.255, 0.01, neutralHue),
@@ -183,10 +195,30 @@ function createDarkColors(h: number) {
   }
 }
 
-export function createTheme(brandHue: number) {
+/**
+ * Default offset between primary and secondary hue. With the default primary
+ * 356 this lands at 230 (cool slate-blue) — the documented duo-tone. Any
+ * custom primary picks up an approximately complementary secondary.
+ */
+const DEFAULT_SECONDARY_OFFSET = 234
+
+function defaultSecondary(primary: number): number {
+  return (primary + DEFAULT_SECONDARY_OFFSET) % 360
+}
+
+export type ArdoBrandHues = {
+  primary: number
+  secondary?: number
+}
+
+export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
+  const primary = typeof primaryOrHues === "number" ? primaryOrHues : primaryOrHues.primary
+  const explicitSecondary =
+    typeof primaryOrHues === "number" ? secondaryArg : primaryOrHues.secondary
+  const secondary = explicitSecondary ?? defaultSecondary(primary)
   return {
-    light: { color: createLightColors(brandHue), ...shared },
-    dark: { color: createDarkColors(brandHue), ...shared },
+    light: { color: createLightColors(primary, secondary), ...shared },
+    dark: { color: createDarkColors(primary, secondary), ...shared },
   }
 }
 
@@ -194,8 +226,8 @@ const defaultTheme = createTheme(356)
 export const lightTokens = defaultTheme.light
 export const darkTokens = defaultTheme.dark
 
-export function applyBrandTheme(brandHue: number) {
-  const theme = createTheme(brandHue)
+export function applyBrandTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
+  const theme = createTheme(primaryOrHues, secondaryArg)
   createGlobalTheme(":root", vars, theme.light)
   createGlobalTheme(".dark", vars, theme.dark)
 }

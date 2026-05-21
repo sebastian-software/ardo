@@ -74,7 +74,7 @@ export const pageRail = style({
   alignSelf: "start",
   maxHeight: `calc(100vh - ${vars.layout.headerHeight} - ${vars.space["2xl"]})`,
   padding: `${vars.space.md} ${vars.space.md} ${vars.space.lg}`,
-  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.bg} 94%, ${vars.color.bgSoft}), ${vars.color.bg})`,
+  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.accentSubtle} 55%, ${vars.color.bg}), ${vars.color.bg})`,
   border: `1px solid ${vars.color.borderLight}`,
   borderRadius: vars.radius.lg,
   boxShadow: `0 16px 42px oklch(0 0 0 / 0.035)`,
@@ -82,7 +82,7 @@ export const pageRail = style({
   zIndex: 1,
   selectors: {
     ".dark &": {
-      background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.bg} 88%, ${vars.color.bgSoft}), ${vars.color.bg})`,
+      background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.accentSubtle} 45%, ${vars.color.bg}), ${vars.color.bg})`,
       boxShadow: "0 18px 46px oklch(0 0 0 / 0.22)",
     },
   },
@@ -131,7 +131,7 @@ export const pageRailLink = style({
   transition: `color ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
-      color: vars.color.brand,
+      color: vars.color.accent,
     },
   },
 })

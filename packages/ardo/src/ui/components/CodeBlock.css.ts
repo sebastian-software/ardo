@@ -23,8 +23,8 @@ export const codeTitle = style({
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLighter,
-  background: vars.color.bgSoft,
+  color: vars.color.textLight,
+  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
@@ -99,8 +99,8 @@ globalStyle(`${s} > [data-title]`, {
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLighter,
-  background: vars.color.bgSoft,
+  color: vars.color.textLight,
+  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
@@ -246,8 +246,8 @@ export const codeGroupTab = style({
       color: vars.color.text,
     },
     "&.active": {
-      color: vars.color.brand,
-      borderBottomColor: vars.color.brand,
+      color: vars.color.accent,
+      borderBottomColor: vars.color.accent,
     },
   },
 })

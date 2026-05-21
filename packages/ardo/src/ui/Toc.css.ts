@@ -35,8 +35,8 @@ export const tocLink = style({
       borderLeftColor: vars.color.border,
     },
     "&.active": {
-      color: vars.color.brand,
-      borderLeftColor: vars.color.brand,
+      color: vars.color.accent,
+      borderLeftColor: vars.color.accent,
       fontWeight: 500,
     },
   },
