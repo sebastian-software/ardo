@@ -1,4 +1,5 @@
 import {
+  ArdoErrorBoundary,
   ArdoRootLayout,
   ArdoRoot,
   ArdoNav,
@@ -23,6 +24,8 @@ export const meta: MetaFunction = () => [
 export function Layout({ children }: { children: React.ReactNode }) {
   return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
+
+export const ErrorBoundary = ArdoErrorBoundary
 
 export default function Root() {
   return (

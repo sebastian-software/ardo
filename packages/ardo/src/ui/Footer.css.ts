@@ -74,12 +74,38 @@ export const footerSeparator = style({
 })
 
 export const footerLink = style({
+  color: vars.color.accent,
+  textDecoration: "none",
+  transition: `opacity ${vars.transition.fast}`,
+  selectors: {
+    "&:hover": {
+      opacity: 0.8,
+    },
+  },
+})
+
+export const footerArdoLink = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.375rem",
   color: vars.color.brand,
   textDecoration: "none",
   transition: `opacity ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       opacity: 0.8,
+    },
+  },
+})
+
+export const footerOwl = style({
+  color: vars.color.brand,
+  opacity: 0.85,
+  transition: `transform ${vars.transition.base}, opacity ${vars.transition.fast}`,
+  selectors: {
+    [`${footerArdoLink}:hover &`]: {
+      transform: "rotate(-8deg)",
+      opacity: 1,
     },
   },
 })
@@ -101,7 +127,9 @@ export const footerBuildTime = style({
   gridRow: "1 / span 3",
   justifySelf: "end",
   fontSize: vars.fontSize.xs,
-  color: vars.color.textLighter,
+  color: `color-mix(in oklch, ${vars.color.accent} 65%, ${vars.color.textLighter})`,
+  fontFamily: vars.font.mono,
+  letterSpacing: "0.02em",
   marginTop: "2px",
   textAlign: "right",
   "@media": {
@@ -128,7 +156,7 @@ export const contentMeta = style({
 })
 
 export const editLink = style({
-  color: vars.color.brand,
+  color: vars.color.accent,
   textDecoration: "none",
   fontWeight: 500,
   transition: `opacity ${vars.transition.fast}`,
@@ -156,7 +184,7 @@ const prevNextLinkBase = style({
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      borderColor: vars.color.brand,
+      borderColor: vars.color.accent,
       background: vars.color.bgSoft,
     },
   },

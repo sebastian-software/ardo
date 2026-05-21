@@ -35,27 +35,27 @@
   "author": "Sebastian Software GmbH",
   "license": "MIT",
   "devDependencies": {
-    "@storybook/addon-docs": "^10.3.6",
-    "@storybook/react": "^10.3.6",
-    "@storybook/react-vite": "^10.3.6",
-    "@types/node": "^25.6.1",
-    "@types/react": "^19.2.14",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/react": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "eslint-config-setup": "^0.4.0",
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
-    "lint-staged": "^17.0.2",
+    "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
-    "storybook": "^10.3.6",
+    "storybook": "^10.4.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.7"
   },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@11.0.8+sha512.4c4097e1dd2d42372c4e7fa5a791ff28fc75a484c7ac192e64b1df0fdef17594ba982f9b4fed9adfb3c757846f565b799b2763fb3733d1de1bcb82cf46684912",
+  "packageManager": "pnpm@11.2.2+sha512.36e6621fad506178936455e70247b8808ef4ec25797a9f437a93281a020484e2607f6a469a22e982987c3dbb8866e3071514ab10a4a1749e06edcd1ec118436f",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
   },
