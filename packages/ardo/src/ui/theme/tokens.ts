@@ -71,11 +71,11 @@ function createLightColors(primary: number, secondary: number) {
   // grey, not blue.
   const neutralHue = secondary
   return {
-    brand: oklch(0.5, 0.115, primary),
-    brandLight: oklch(0.62, 0.1, primary),
-    brandDark: oklch(0.38, 0.125, primary),
+    brand: oklch(0.5, 0.1, primary),
+    brandLight: oklch(0.62, 0.09, primary),
+    brandDark: oklch(0.39, 0.11, primary),
     brandSubtle: oklch(0.955, 0.025, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.5, 0.115, primary)} 0%, ${oklch(0.6, 0.08, primary + 16)} 100%)`,
+    brandGradient: `linear-gradient(135deg, ${oklch(0.5, 0.1, primary)} 0%, ${oklch(0.6, 0.075, primary + 16)} 100%)`,
     accent: oklch(0.5, 0.075, secondary),
     accentLight: oklch(0.62, 0.07, secondary),
     accentDark: oklch(0.38, 0.085, secondary),
@@ -138,11 +138,11 @@ function createDarkColors(primary: number, secondary: number) {
   // See note in createLightColors — neutrals follow the secondary hue.
   const neutralHue = secondary
   return {
-    brand: oklch(0.74, 0.135, primary),
-    brandLight: oklch(0.84, 0.115, primary),
-    brandDark: oklch(0.62, 0.14, primary),
+    brand: oklch(0.74, 0.115, primary),
+    brandLight: oklch(0.84, 0.1, primary),
+    brandDark: oklch(0.62, 0.125, primary),
     brandSubtle: oklch(0.275, 0.06, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.74, 0.135, primary)} 0%, ${oklch(0.81, 0.09, primary + 16)} 100%)`,
+    brandGradient: `linear-gradient(135deg, ${oklch(0.74, 0.115, primary)} 0%, ${oklch(0.81, 0.08, primary + 16)} 100%)`,
     accent: oklch(0.74, 0.08, secondary),
     accentLight: oklch(0.84, 0.07, secondary),
     accentDark: oklch(0.6, 0.09, secondary),

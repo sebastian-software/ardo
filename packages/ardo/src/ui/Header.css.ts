@@ -9,7 +9,9 @@ export const header = style({
   right: 0,
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
-  background: vars.color.bg,
+  // Brand-tinted chrome: the top bar reads as part of the app's identity
+  // zone, distinct from the neutral content surface.
+  background: `color-mix(in oklch, ${vars.color.brandSubtle} 70%, ${vars.color.bg})`,
   borderBottom: `1px solid ${vars.color.border}`,
   zIndex: 100,
   boxShadow: "0 1px 0 oklch(0 0 0 / 0.02)",
