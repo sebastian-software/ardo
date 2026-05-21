@@ -129,15 +129,23 @@ export const sidebarList1 = style({
 
 export const sidebarItem = style({})
 
+/**
+ * Applied to `<li>` items that contain a collapsible group. Groups get
+ * breathing room above them; plain links sit tight together (their own
+ * padding provides the rhythm).
+ */
+export const sidebarItemGroup = style({
+  selectors: {
+    "&:not(:first-child)": {
+      marginTop: vars.space.lg,
+    },
+  },
+})
+
 export const sidebarItemHeader = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  selectors: {
-    "li:not(:first-child) > &": {
-      marginTop: vars.space.lg,
-    },
-  },
 })
 
 export const sidebarLink = style({

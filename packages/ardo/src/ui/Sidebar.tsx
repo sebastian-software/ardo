@@ -190,8 +190,12 @@ export function ArdoSidebarGroup({
   const hasTo = (to ?? "") !== ""
   const canToggle = collapsible && hasChildren
 
+  const itemClassName =
+    className ??
+    [styles.sidebarItem, hasChildren && styles.sidebarItemGroup].filter(Boolean).join(" ")
+
   return (
-    <li className={className ?? styles.sidebarItem}>
+    <li className={itemClassName}>
       <div className={styles.sidebarItemHeader}>
         {hasTo ? (
           <NavLink
@@ -334,8 +338,12 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
     .join(" ")
   const textButtonClassName = [textClassName, styles.sidebarTextButton].join(" ")
 
+  const itemClassName = [styles.sidebarItem, hasChildren && styles.sidebarItemGroup]
+    .filter(Boolean)
+    .join(" ")
+
   return (
-    <li className={styles.sidebarItem}>
+    <li className={itemClassName}>
       <div className={styles.sidebarItemHeader}>
         {hasItemLink ? (
           <NavLink
