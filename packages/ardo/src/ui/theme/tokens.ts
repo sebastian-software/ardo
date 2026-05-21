@@ -66,10 +66,11 @@ const shared = {
 }
 
 function createLightColors(primary: number, secondary: number) {
-  // Neutrals are tinted with the secondary (cool) hue so the warm primary
-  // pops more strongly against them. Chroma stays very low — these read as
-  // grey, not blue.
-  const neutralHue = secondary
+  // Neutrals carry the *primary* hue at very low chroma — the whole page
+  // reads as faintly warm, never blue or pink. Code surfaces (further down)
+  // explicitly use the secondary hue so they stay visibly cool against this
+  // warm base.
+  const neutralHue = primary
   return {
     brand: oklch(0.5, 0.1, primary),
     brandLight: oklch(0.62, 0.09, primary),
@@ -92,11 +93,10 @@ function createLightColors(primary: number, secondary: number) {
     divider: oklch(0.89, 0.004, neutralHue),
     sidebarBg: oklch(0.965, 0.004, neutralHue),
     sidebarBorder: oklch(0.885, 0.005, neutralHue),
-    // Code blocks get a distinctly cooler tint than the sidebar so the two
-    // surfaces never compete. Higher chroma + slightly higher lightness puts
-    // them clearly into "accent surface" territory.
-    codeBg: oklch(0.965, 0.012, neutralHue),
-    codeBorder: oklch(0.88, 0.016, neutralHue),
+    // Code blocks live on the secondary (cool) hue — a visible step away
+    // from the warm neutrals so the two surfaces never read as the same.
+    codeBg: oklch(0.965, 0.012, secondary),
+    codeBorder: oklch(0.88, 0.016, secondary),
     codeShadow: "0 1px 2px oklch(0 0 0 / 0.025)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.035), 0 1px 3px oklch(0 0 0 / 0.045)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.045), 0 2px 6px oklch(0 0 0 / 0.035)",
@@ -135,8 +135,8 @@ function createLightColors(primary: number, secondary: number) {
 }
 
 function createDarkColors(primary: number, secondary: number) {
-  // See note in createLightColors — neutrals follow the secondary hue.
-  const neutralHue = secondary
+  // See note in createLightColors — neutrals follow the primary hue.
+  const neutralHue = primary
   return {
     brand: oklch(0.74, 0.115, primary),
     brandLight: oklch(0.84, 0.1, primary),
@@ -159,10 +159,9 @@ function createDarkColors(primary: number, secondary: number) {
     divider: oklch(0.29, 0.01, neutralHue),
     sidebarBg: oklch(0.13, 0.008, neutralHue),
     sidebarBorder: oklch(0.265, 0.011, neutralHue),
-    // Mirror of the light-mode treatment: a cooler, more saturated tint
-    // separates code surfaces from the sidebar at a glance.
-    codeBg: oklch(0.21, 0.016, neutralHue),
-    codeBorder: oklch(0.33, 0.024, neutralHue),
+    // Code blocks live on the secondary (cool) hue — same split as light.
+    codeBg: oklch(0.21, 0.016, secondary),
+    codeBorder: oklch(0.33, 0.024, secondary),
     codeShadow: "0 10px 26px oklch(0 0 0 / 0.18)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.14), 0 1px 3px oklch(0 0 0 / 0.18)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.18), 0 2px 6px oklch(0 0 0 / 0.12)",

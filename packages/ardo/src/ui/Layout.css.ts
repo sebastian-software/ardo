@@ -7,9 +7,7 @@ export const layout = style({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-  // Outer chrome shares the header's brand-tint so the whole app frame
-  // reads as the brand zone — content surface stays neutral inside.
-  background: `color-mix(in oklch, ${vars.color.brandSubtle} 60%, ${vars.color.sidebarBg})`,
+  background: vars.color.sidebarBg,
   overflow: "hidden",
 })
 

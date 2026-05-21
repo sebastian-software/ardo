@@ -21,7 +21,7 @@ export const sidebarRail = style({
   flexShrink: 0,
   padding: `${vars.space.md} 0`,
   borderRight: `1px solid ${vars.color.sidebarBorder}`,
-  background: `color-mix(in oklch, ${vars.color.brandSubtle} 75%, ${vars.color.bgSoft})`,
+  background: vars.color.bgSoft,
 })
 
 export const sidebarRailList = style({
