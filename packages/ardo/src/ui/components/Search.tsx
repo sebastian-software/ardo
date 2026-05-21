@@ -1,5 +1,5 @@
 import MiniSearch from "minisearch"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
@@ -27,6 +27,8 @@ type SearchMatch = {
 export type ArdoSearchProps = {
   /** Placeholder text for the search input (default: "Search...") */
   placeholder?: string
+  /** Focus the input on mount (used by the mobile search overlay). */
+  autoFocus?: boolean
 }
 
 function useSearchIndex() {
@@ -188,13 +190,17 @@ function SearchInput({
   )
 }
 
-export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
+export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: ArdoSearchProps) {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchIndex = useSearchIndex()
   const state = useSearch(searchIndex)
   const hasQuery = state.query.trim().length > 0
+
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus()
+  }, [autoFocus])
 
   useGlobalSearchShortcut(inputRef, state.setIsOpen)
   useOutsideClick({

@@ -4,7 +4,6 @@ import { Outlet, useLocation, useMatches } from "react-router"
 import type { ArdoConfig, ArdoContextItem, SidebarItem } from "../config/types"
 
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
-import { ArdoSearch } from "./components/Search"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { ArdoLayout } from "./Layout"
@@ -199,16 +198,11 @@ export function ArdoRoot({
     () => resolveContextSidebar(sidebar, activeContext),
     [sidebar, activeContext]
   )
-  const searchPlaceholder = headerProps?.searchPlaceholder
-  const showSearch = headerProps?.search !== false
-  const sidebarSearch =
-    !isBareLayout && showSearch ? <ArdoSearch placeholder={searchPlaceholder} /> : undefined
-  const resolvedSidebar = isBareLayout
-    ? undefined
-    : wrapSidebarWithSearch(sidebarContent, sidebarProps, sidebarSearch)
+  // Search lives in the header now. The sidebar no longer carries it.
+  const resolvedSidebar = isBareLayout ? undefined : resolveSidebar(sidebarContent, sidebarProps)
   const resolvedHeader = resolveRootHeader(
     header,
-    { ...headerProps, search: false },
+    headerProps,
     isBareLayout ? undefined : resolvedSidebar
   )
 
@@ -245,29 +239,20 @@ export function ArdoRoot({
 }
 
 /**
- * Wraps sidebar content with a search field header.
- * If the user provides custom sidebarContent (which is typically an <ArdoSidebar>),
- * we clone it and inject the search as its `header` prop.
- * Otherwise we create a default <ArdoSidebar> with search.
+ * Resolves the sidebar element. Custom content is passed through as-is;
+ * when none is given, a default data-driven <ArdoSidebar> is created.
  */
-function wrapSidebarWithSearch(
+function resolveSidebar(
   sidebarContent: ReactNode | undefined,
-  sidebarProps: ArdoSidebarProps | undefined,
-  search: ReactNode | undefined
+  sidebarProps: ArdoSidebarProps | undefined
 ): ReactNode {
   if (sidebarContent == null) {
-    return <ArdoSidebar {...sidebarProps} header={search} />
+    return <ArdoSidebar {...sidebarProps} />
   }
-
-  // If sidebarContent is an ArdoSidebar element, clone it with the search header
-  if (isValidElement<ArdoSidebarProps>(sidebarContent) && sidebarContent.type === ArdoSidebar) {
-    return cloneElement(sidebarContent, {
-      header: sidebarContent.props.header ?? search,
-    })
+  if (isValidElement(sidebarContent)) {
+    return sidebarContent
   }
-
-  // Fallback: wrap custom content in an ArdoSidebar with search
-  return <ArdoSidebar header={search}>{sidebarContent}</ArdoSidebar>
+  return <ArdoSidebar>{sidebarContent}</ArdoSidebar>
 }
 
 function enhanceHeaderWithMobileMenuContent(

@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
-import { ArdoSearch } from "./components/Search"
+import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import {
@@ -41,42 +41,47 @@ export type ArdoHeaderProps = {
   className?: string
 }
 
+/**
+ * Mobile menu open state — resets on navigation and locks body scroll
+ * while open.
+ */
+function useMobileMenu(): [boolean, (open: boolean) => void] {
+  const location = useLocation()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [open])
+
+  return [open, setOpen]
+}
+
 export function ArdoHeader({
   logo,
   title,
   nav,
   actions,
-  search = false,
+  search = true,
   searchPlaceholder,
   themeToggle = true,
   mobileMenuContent,
   className,
 }: ArdoHeaderProps) {
-  const location = useLocation()
   const config = useArdoConfig()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
 
   const resolvedLogo = logo
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""
   const hasMobileMenu = mobileMenuContent != null
-
-  useEffect(() => {
-    setMobileMenuOpen(false)
-  }, [location.pathname])
-
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [mobileMenuOpen])
 
   return (
     <>
@@ -112,15 +117,18 @@ export function ArdoHeader({
             </Link>
           </div>
 
-          {nav != null && <div className={styles.desktopNav}>{nav}</div>}
+          {search && (
+            <div className={styles.headerCenter}>
+              <ArdoHeaderSearch placeholder={searchPlaceholder} />
+            </div>
+          )}
 
           <div className={styles.headerRight}>
-            {search && <ArdoSearch placeholder={searchPlaceholder} />}
+            {nav != null && <div className={styles.desktopNav}>{nav}</div>}
             {themeToggle && <ArdoThemeToggle />}
             {actions}
           </div>
         </div>
-        {nav != null && <div className={styles.mobileNavStrip}>{nav}</div>}
       </header>
 
       {hasMobileMenu && (
