@@ -104,6 +104,8 @@ function createFrontmatter(doc: GeneratedApiDoc): string {
 
   if (doc.frontmatter.sidebar === false) {
     lines.push("sidebar: false")
+  } else if (doc.frontmatter.sidebar === "leaf") {
+    lines.push("sidebar: leaf")
   }
 
   lines.push("---", "")
