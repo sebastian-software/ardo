@@ -39,8 +39,7 @@ export const contentContainer = style({
 
 export const contentHeader = style({
   marginBottom: vars.space.xl,
-  paddingBottom: vars.space.lg,
-  borderBottom: `1px solid ${vars.color.border}`,
+  paddingBottom: vars.space.sm,
 })
 
 export const contentTitle = style({
