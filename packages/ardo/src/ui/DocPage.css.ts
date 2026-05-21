@@ -73,19 +73,11 @@ export const pageRail = style({
   top: vars.space.xl,
   alignSelf: "start",
   maxHeight: `calc(100vh - ${vars.layout.headerHeight} - ${vars.space["2xl"]})`,
-  padding: `${vars.space.md} ${vars.space.md} ${vars.space.lg}`,
-  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.accentSubtle} 55%, ${vars.color.bg}), ${vars.color.bg})`,
-  border: `1px solid ${vars.color.borderLight}`,
-  borderRadius: vars.radius.lg,
-  boxShadow: `0 16px 42px oklch(0 0 0 / 0.035)`,
+  padding: `${vars.space.xs} 0 ${vars.space.lg}`,
   overflowY: "auto",
-  zIndex: 1,
-  selectors: {
-    ".dark &": {
-      background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.accentSubtle} 45%, ${vars.color.bg}), ${vars.color.bg})`,
-      boxShadow: "0 18px 46px oklch(0 0 0 / 0.22)",
-    },
-  },
+  // No background, border, radius or shadow — the right column is a column,
+  // not a card. Matches the rail-less pattern of Mintlify, Vercel, React,
+  // Tailwind, VitePress, Stripe, Linear.
   "@media": {
     "(max-width: 1280px)": {
       display: "none",
@@ -95,23 +87,22 @@ export const pageRail = style({
 
 export const pageRailSection = style({
   padding: `${vars.space.md} 0`,
-  borderBottom: `1px solid ${vars.color.borderLight}`,
   selectors: {
     "&:first-child": {
       paddingTop: 0,
     },
-    "&:last-child": {
-      borderBottom: "none",
+    "&:not(:last-child)": {
+      borderBottom: `1px solid ${vars.color.borderLight}`,
     },
   },
 })
 
 export const pageRailTitle = style({
   fontSize: vars.fontSize.xs,
-  fontWeight: 700,
+  fontWeight: 600,
   textTransform: "uppercase",
-  letterSpacing: "0.07em",
-  color: vars.color.textLight,
+  letterSpacing: "0.08em",
+  color: vars.color.textLighter,
   marginBottom: vars.space.sm,
 })
 
