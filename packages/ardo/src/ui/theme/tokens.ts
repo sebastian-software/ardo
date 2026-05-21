@@ -71,11 +71,11 @@ function createLightColors(primary: number, secondary: number) {
   // grey, not blue.
   const neutralHue = secondary
   return {
-    brand: oklch(0.505, 0.085, primary),
-    brandLight: oklch(0.63, 0.075, primary),
-    brandDark: oklch(0.39, 0.095, primary),
-    brandSubtle: oklch(0.965, 0.012, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.505, 0.085, primary)} 0%, ${oklch(0.61, 0.058, primary + 16)} 100%)`,
+    brand: oklch(0.5, 0.115, primary),
+    brandLight: oklch(0.62, 0.1, primary),
+    brandDark: oklch(0.38, 0.125, primary),
+    brandSubtle: oklch(0.955, 0.025, primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.5, 0.115, primary)} 0%, ${oklch(0.6, 0.08, primary + 16)} 100%)`,
     accent: oklch(0.5, 0.075, secondary),
     accentLight: oklch(0.62, 0.07, secondary),
     accentDark: oklch(0.38, 0.085, secondary),
@@ -95,8 +95,8 @@ function createLightColors(primary: number, secondary: number) {
     // Code blocks get a distinctly cooler tint than the sidebar so the two
     // surfaces never compete. Higher chroma + slightly higher lightness puts
     // them clearly into "accent surface" territory.
-    codeBg: oklch(0.97, 0.022, neutralHue),
-    codeBorder: oklch(0.88, 0.028, neutralHue),
+    codeBg: oklch(0.965, 0.012, neutralHue),
+    codeBorder: oklch(0.88, 0.016, neutralHue),
     codeShadow: "0 1px 2px oklch(0 0 0 / 0.025)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.035), 0 1px 3px oklch(0 0 0 / 0.045)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.045), 0 2px 6px oklch(0 0 0 / 0.035)",
@@ -138,11 +138,11 @@ function createDarkColors(primary: number, secondary: number) {
   // See note in createLightColors — neutrals follow the secondary hue.
   const neutralHue = secondary
   return {
-    brand: oklch(0.72, 0.095, primary),
-    brandLight: oklch(0.82, 0.085, primary),
-    brandDark: oklch(0.61, 0.105, primary),
-    brandSubtle: oklch(0.255, 0.03, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.72, 0.095, primary)} 0%, ${oklch(0.79, 0.068, primary + 16)} 100%)`,
+    brand: oklch(0.74, 0.135, primary),
+    brandLight: oklch(0.84, 0.115, primary),
+    brandDark: oklch(0.62, 0.14, primary),
+    brandSubtle: oklch(0.275, 0.06, primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.74, 0.135, primary)} 0%, ${oklch(0.81, 0.09, primary + 16)} 100%)`,
     accent: oklch(0.74, 0.08, secondary),
     accentLight: oklch(0.84, 0.07, secondary),
     accentDark: oklch(0.6, 0.09, secondary),
@@ -161,8 +161,8 @@ function createDarkColors(primary: number, secondary: number) {
     sidebarBorder: oklch(0.265, 0.011, neutralHue),
     // Mirror of the light-mode treatment: a cooler, more saturated tint
     // separates code surfaces from the sidebar at a glance.
-    codeBg: oklch(0.22, 0.028, neutralHue),
-    codeBorder: oklch(0.34, 0.04, neutralHue),
+    codeBg: oklch(0.21, 0.016, neutralHue),
+    codeBorder: oklch(0.33, 0.024, neutralHue),
     codeShadow: "0 10px 26px oklch(0 0 0 / 0.18)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.14), 0 1px 3px oklch(0 0 0 / 0.18)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.18), 0 2px 6px oklch(0 0 0 / 0.12)",
