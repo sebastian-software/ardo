@@ -58,25 +58,28 @@ export function remarkCallouts() {
       }
 
       // Replace the blockquote node with the JSX element.
-      // Cast: mdxJsxFlowElement is not part of the base mdast Root["children"]
+      // mdxJsxFlowElement is not part of the base mdast Root["children"]
       // union, but @mdx-js/mdx adds it via the mdxjs preset.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
       parent.children[index] = replacement as unknown as RootContent
     })
   }
 }
 
 function extractCalloutType(node: Blockquote): string | undefined {
-  const firstChild = node.children[0]
+  // Runtime guards for empty arrays — TS types treat indexed access as
+  // non-undefined here, but a blockquote can legitimately have no children
+  // or an empty paragraph during streaming parsers.
+  const firstChild = node.children[0] as Blockquote["children"][number] | undefined
   if (firstChild?.type !== "paragraph") return undefined
 
-  const firstParaChild = firstChild.children[0]
+  const firstParaChild = firstChild.children[0] as (typeof firstChild.children)[number] | undefined
   if (firstParaChild?.type !== "text") return undefined
 
   const match = ALERT_REGEX.exec(firstParaChild.value)
-  if (match == null) return undefined
+  if (match === null) return undefined
 
   const calloutName = TYPE_MAP[match[1].toUpperCase()]
-  if (calloutName == null) return undefined
 
   // Strip the `[!TYPE]` marker (and its trailing whitespace/newline) from
   // the first text node.

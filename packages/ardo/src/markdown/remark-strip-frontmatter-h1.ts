@@ -13,7 +13,7 @@ import type { Heading, Root, Yaml } from "mdast"
 export function remarkStripFrontmatterH1() {
   return function (tree: Root) {
     const yamlNode = tree.children.find((node): node is Yaml => node.type === "yaml")
-    if (yamlNode == null) return
+    if (yamlNode === undefined) return
 
     const title = extractYamlTitle(yamlNode.value)
     if (title === "") return
@@ -23,7 +23,8 @@ export function remarkStripFrontmatterH1() {
     )
     if (firstH1Index === -1) return
 
-    const h1Node = tree.children[firstH1Index] as Heading
+    const h1Node = tree.children[firstH1Index]
+    if (h1Node.type !== "heading") return
     if (getHeadingText(h1Node).trim() === title) {
       tree.children.splice(firstH1Index, 1)
     }
@@ -31,9 +32,11 @@ export function remarkStripFrontmatterH1() {
 }
 
 function extractYamlTitle(yaml: string): string {
-  const match = /^title:\s*(.+?)\s*$/m.exec(yaml)
-  if (match == null) return ""
-  return match[1].replace(/^["']|["']$/g, "").trim()
+  // `\S` after the whitespace prevents `[ \t]+` and `.+` from being able to
+  // exchange leading whitespace, which keeps the regex linear.
+  const match = /^title:[ \t]+(\S.*)$/m.exec(yaml)
+  if (match === null) return ""
+  return match[1].trim().replaceAll(/^["']|["']$/g, "")
 }
 
 function getHeadingText(node: Heading): string {

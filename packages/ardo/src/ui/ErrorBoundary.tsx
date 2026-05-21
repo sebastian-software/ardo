@@ -74,7 +74,7 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
             <button
               type="button"
               onClick={() => {
-                window.location.reload()
+                globalThis.location.reload()
               }}
               className={styles.secondaryAction}
             >
