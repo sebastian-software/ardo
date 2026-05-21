@@ -2,6 +2,7 @@ import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
 import { shikiContainerClassName } from "./code-block-classes"
+import { copyButton } from "./CopyButton.css"
 
 // =============================================================================
 // React CodeBlock component styles
@@ -29,6 +30,11 @@ export const codeTitle = style({
 
 export const codeWrapper = style({
   position: "relative",
+})
+
+// Reveal the React CopyButton when the code block is hovered or focused.
+globalStyle(`${codeWrapper}:hover .${copyButton}, ${codeWrapper}:focus-within .${copyButton}`, {
+  opacity: 1,
 })
 
 globalStyle(`${codeWrapper} pre`, {
@@ -159,7 +165,7 @@ globalStyle(`.dark ${s} .line[data-ln]::before`, {
   color: "#475569",
 })
 
-// Copy button - hidden by default, shown on hover
+// Copy button - hidden by default, shown when the block is hovered or focused
 globalStyle(`${s} button[data-code]`, {
   position: "absolute",
   top: vars.space.sm,
@@ -168,23 +174,22 @@ globalStyle(`${s} button[data-code]`, {
   alignItems: "center",
   gap: vars.space.xs,
   padding: `${vars.space.xs} ${vars.space.sm}`,
-  background: vars.color.bgSoft,
+  background: vars.color.bg,
   border: `1px solid ${vars.color.codeBorder}`,
   borderRadius: vars.radius.sm,
   cursor: "pointer",
   fontSize: vars.fontSize.xs,
   fontFamily: vars.font.family,
   color: vars.color.textLight,
-  opacity: 0.72,
-  transition: `all ${vars.transition.base}`,
+  opacity: 0,
+  transition: `opacity ${vars.transition.base}, border-color ${vars.transition.fast}, color ${vars.transition.fast}`,
 })
 
-globalStyle(`${s}:hover button[data-code]`, {
+globalStyle(`${s}:hover button[data-code], ${s}:focus-within button[data-code]`, {
   opacity: 1,
 })
 
-globalStyle(`${s} button[data-code]:hover`, {
-  opacity: 1,
+globalStyle(`${s} button[data-code]:hover, ${s} button[data-code]:focus-visible`, {
   borderColor: vars.color.brand,
   color: vars.color.brand,
 })
