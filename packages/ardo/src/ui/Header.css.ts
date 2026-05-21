@@ -13,11 +13,6 @@ export const header = style({
   borderBottom: `1px solid ${vars.color.border}`,
   zIndex: 100,
   boxShadow: "0 1px 0 oklch(0 0 0 / 0.02)",
-  "@media": {
-    "(max-width: 1024px)": {
-      height: `calc(${vars.layout.headerHeight} + 2.75rem + env(safe-area-inset-top))`,
-    },
-  },
 })
 
 export const headerContainer = style({
@@ -37,12 +32,28 @@ export const headerLeft = style({
   display: "flex",
   alignItems: "center",
   gap: vars.space.md,
+  flexShrink: 0,
+})
+
+export const headerCenter = style({
+  display: "flex",
+  flex: 1,
+  justifyContent: "center",
+  minWidth: 0,
+  padding: `0 ${vars.space.lg}`,
+  "@media": {
+    "(max-width: 1024px)": {
+      justifyContent: "flex-end",
+      padding: `0 ${vars.space.sm}`,
+    },
+  },
 })
 
 export const headerRight = style({
   display: "flex",
   alignItems: "center",
   gap: "0.75rem",
+  flexShrink: 0,
 })
 
 export const logoLink = style({
@@ -113,41 +124,6 @@ export const desktopNav = style({
       display: "none",
     },
   },
-})
-
-export const mobileNavStrip = style({
-  display: "none",
-  height: "2.75rem",
-  width: "100%",
-  maxWidth: "100vw",
-  overflowX: "auto",
-  overflowY: "hidden",
-  borderTop: `1px solid ${vars.color.borderLight}`,
-  scrollbarWidth: "none",
-  selectors: {
-    "&::-webkit-scrollbar": {
-      display: "none",
-    },
-  },
-  "@media": {
-    "(max-width: 1024px)": {
-      display: "flex",
-      alignItems: "center",
-      padding: `0 ${vars.space.md}`,
-    },
-  },
-})
-
-globalStyle(`${mobileNavStrip} nav`, {
-  display: "flex",
-  alignItems: "center",
-  gap: vars.space.xs,
-  width: "max-content",
-  flexShrink: 0,
-})
-
-globalStyle(`${mobileNavStrip} a, ${mobileNavStrip} span`, {
-  whiteSpace: "nowrap",
 })
 
 // =============================================================================
