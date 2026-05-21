@@ -14,10 +14,16 @@ import { NavLink, useLocation } from "react-router"
 
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
-import { useArdoSidebar } from "../runtime/hooks"
+import { useArdoContexts, useArdoSidebar } from "../runtime/hooks"
 import { ChevronDownIcon } from "./icons"
 import * as styles from "./Sidebar.css"
-import { getDataRailItems, getTextLabel, SidebarRail, type SidebarRailItem } from "./SidebarRail"
+import {
+  getContextRailItems,
+  getDataRailItems,
+  getTextLabel,
+  SidebarRail,
+  type SidebarRailItem,
+} from "./SidebarRail"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -89,12 +95,18 @@ export type ArdoSidebarProps = {
 export function ArdoSidebar({ items, children, header, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
   const contextSidebar = useArdoSidebar()
+  const { items: contexts, activeId } = useArdoContexts()
   const hasCustomChildren = children != null
   const resolvedItems = items ?? (hasCustomChildren ? undefined : contextSidebar)
   const hasResolvedItems = (resolvedItems?.length ?? 0) > 0
-  const railItems = hasCustomChildren
-    ? getRailItemsFromChildren(children, pathname)
-    : getDataRailItems(resolvedItems ?? [], pathname)
+  // If contexts are configured, the rail is the world-switcher; otherwise
+  // fall back to the legacy "mirror sidebar sections as icons" behaviour.
+  const railItems =
+    contexts.length > 0
+      ? getContextRailItems(contexts, activeId)
+      : hasCustomChildren
+        ? getRailItemsFromChildren(children, pathname)
+        : getDataRailItems(resolvedItems ?? [], pathname)
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
   return (
