@@ -15,15 +15,17 @@ import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { readProjectMeta } from "./project-meta"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
-import { generateSidebar } from "./sidebar-index"
+import { generateContextSidebars, generateSidebar } from "./sidebar-index"
 import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
+const VIRTUAL_SIDEBARS_ID = "virtual:ardo/sidebars"
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
   [VIRTUAL_SIDEBAR_ID]: `\0${VIRTUAL_SIDEBAR_ID}`,
+  [VIRTUAL_SIDEBARS_ID]: `\0${VIRTUAL_SIDEBARS_ID}`,
   [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
 }
 
@@ -226,6 +228,11 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
   if (id === RESOLVED_IDS[VIRTUAL_SIDEBAR_ID]) {
     const sidebar = await generateSidebar(state.routesDir, state.resolvedConfig.sidebar)
     return `export default ${JSON.stringify(sidebar)}`
+  }
+
+  if (id === RESOLVED_IDS[VIRTUAL_SIDEBARS_ID]) {
+    const sidebars = await generateContextSidebars(state.routesDir)
+    return `export default ${JSON.stringify(sidebars)}`
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_SEARCH_ID]) {

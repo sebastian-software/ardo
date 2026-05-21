@@ -10,6 +10,8 @@ export const meta: MetaFunction = () => [
       "Build static documentation with React 19, React Router 7, Vite, and MDX. Keep your components, your repo, and your docs pipeline under your control.",
   },
 ]
+
+export const handle = { layout: "bare" }
 import {
   Atom,
   Zap,
@@ -328,6 +330,65 @@ export default function HomePage() {
             <Link to="/guide/comparison" className={styles.link}>
               Read the full comparison <span aria-hidden="true">&rarr;</span>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Examples Section */}
+      <section className={`${styles.section} ${styles.examplesSection}`}>
+        <div className={styles.sectionContainer}>
+          <h2 className={styles.sectionTitle}>Examples to start from</h2>
+          <p className={styles.sectionSubtitle}>
+            First-party scaffolds for the most common starting points. Open any of them in the repo,
+            copy what you need, ship.
+          </p>
+
+          <div className={styles.examplesGrid}>
+            <a
+              className={styles.exampleCard}
+              href="https://github.com/sebastian-software/ardo/tree/main/examples/basic"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h3 className={styles.exampleTitle}>Basic docs site</h3>
+              <p className={styles.exampleDescription}>
+                A small static documentation site with the default Ardo setup, React Router shell,
+                Tailwind layer, and deploy-ready build output.
+              </p>
+              <span className={styles.exampleLink}>
+                Open example <span aria-hidden="true">→</span>
+              </span>
+            </a>
+            <a
+              className={styles.exampleCard}
+              href="https://github.com/sebastian-software/ardo/tree/main/examples/library"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h3 className={styles.exampleTitle}>Library documentation</h3>
+              <p className={styles.exampleDescription}>
+                A React library docs setup with generated TypeScript API reference pages. Use this
+                shape when your users need both guides and exported types.
+              </p>
+              <span className={styles.exampleLink}>
+                Open example <span aria-hidden="true">→</span>
+              </span>
+            </a>
+            <a
+              className={styles.exampleCard}
+              href="https://github.com/sebastian-software/ardo/tree/main/examples/monorepo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h3 className={styles.exampleTitle}>Monorepo documentation</h3>
+              <p className={styles.exampleDescription}>
+                A workspace-oriented setup for teams that keep packages and docs together. Useful
+                when documentation should build from the same repository as the code.
+              </p>
+              <span className={styles.exampleLink}>
+                Open example <span aria-hidden="true">→</span>
+              </span>
+            </a>
           </div>
         </div>
       </section>

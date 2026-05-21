@@ -18,7 +18,15 @@ type SidebarNode = {
 type SidebarFrontmatter = {
   collapsed?: boolean
   order?: number
-  sidebar?: boolean
+  /**
+   * Sidebar inclusion mode:
+   * - `false` → hide this file/folder entirely
+   * - `"leaf"` (directory index only) → show the folder as a single link,
+   *   without auto-listing its children. The folder's index page is
+   *   expected to render the detail list itself.
+   * - `true` / `undefined` → default tree behaviour
+   */
+  sidebar?: "leaf" | boolean
   title?: string
 }
 
@@ -32,6 +40,37 @@ export async function generateSidebar(
     return nodes.map((node) => stripOrderFromNode(node))
   } catch {
     return []
+  }
+}
+
+/**
+ * Build one sidebar tree per top-level routes folder.
+ *
+ * The flat `generateSidebar` returns a single nested array — fine for sites
+ * where everything lives in one column. For context-driven sites (Guide vs.
+ * API vs. …) each top-level folder gets its own subtree, keyed by folder
+ * name (`guide`, `api-reference`, …). Top-level files like `home.tsx` are
+ * skipped — they belong to a bare layout, not a sidebar context.
+ */
+export async function generateContextSidebars(
+  routesDir: string
+): Promise<Record<string, SidebarItem[]>> {
+  try {
+    const entries = await fs.readdir(routesDir, { withFileTypes: true })
+    const sidebars: Record<string, SidebarItem[]> = {}
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue
+      const subDir = path.join(routesDir, entry.name)
+      // Pass `routesDir` as the root so links remain absolute (`/guide/foo`),
+      // not relative to the sub-folder.
+      const nodes = await scanSidebarDirectory(subDir, routesDir)
+      if (nodes.length > 0) {
+        sidebars[entry.name] = nodes.map((node) => stripOrderFromNode(node))
+      }
+    }
+    return sidebars
+  } catch {
+    return {}
   }
 }
 
@@ -67,13 +106,30 @@ async function createDirectoryNode(
   rootDir: string
 ): Promise<null | SidebarNode> {
   const relativePath = path.relative(rootDir, fullPath)
+  const metadata = await readDirectoryIndexMetadata(fullPath)
+
+  if (metadata?.sidebar === false) {
+    return null
+  }
+
+  const link = metadata == null ? undefined : `/${relativePath.replaceAll("\\", "/")}`
+
+  if (metadata?.sidebar === "leaf") {
+    // Show the folder as a single link without auto-listing its children.
+    // Requires an index page to provide a valid link.
+    if (link === undefined) return null
+    return {
+      text: metadata.title ?? formatTitle(entry.name),
+      link,
+      order: metadata.order,
+      sectionId: entry.name,
+    }
+  }
+
   const children = await scanSidebarDirectory(fullPath, rootDir)
   if (children.length === 0) {
     return null
   }
-
-  const metadata = await readDirectoryIndexMetadata(fullPath)
-  const link = metadata == null ? undefined : `/${relativePath.replaceAll("\\", "/")}`
 
   return {
     text: metadata?.title ?? formatTitle(entry.name),
@@ -137,8 +193,14 @@ function readFrontmatter(fileContent: string): SidebarFrontmatter {
   const title = typeof parsed.data.title === "string" ? parsed.data.title : undefined
   const order = typeof parsed.data.order === "number" ? parsed.data.order : undefined
   const collapsed = typeof parsed.data.collapsed === "boolean" ? parsed.data.collapsed : undefined
-  const sidebar = typeof parsed.data.sidebar === "boolean" ? parsed.data.sidebar : undefined
+  const sidebar = parseSidebarValue(parsed.data.sidebar)
   return { title, order, collapsed, sidebar }
+}
+
+function parseSidebarValue(raw: unknown): SidebarFrontmatter["sidebar"] {
+  if (typeof raw === "boolean") return raw
+  if (raw === "leaf") return "leaf"
+  return undefined
 }
 
 function sortNodes(nodes: SidebarNode[]): void {

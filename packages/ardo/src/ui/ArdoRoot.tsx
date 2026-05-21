@@ -1,7 +1,7 @@
 import { cloneElement, isValidElement, type ReactNode, useMemo } from "react"
-import { Outlet, useLocation } from "react-router"
+import { Outlet, useLocation, useMatches } from "react-router"
 
-import type { ArdoConfig, SidebarItem } from "../config/types"
+import type { ArdoConfig, ArdoContextItem, SidebarItem } from "../config/types"
 
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { ArdoSearch } from "./components/Search"
@@ -18,8 +18,22 @@ import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
 export type ArdoRootProps = {
   /** Ardo config (from virtual:ardo/config) */
   config: ArdoConfig
-  /** Sidebar data (from virtual:ardo/sidebar) */
-  sidebar: SidebarItem[]
+  /**
+   * Sidebar data.
+   *
+   * - `SidebarItem[]` — a single sidebar shown for every non-bare route
+   *   (from `virtual:ardo/sidebar`, back-compat).
+   * - `Record<string, SidebarItem[]>` — a per-context sidebar map
+   *   (from `virtual:ardo/sidebars`). The active context's sidebar is
+   *   shown; the key matches the `id` of the matching `ArdoContextItem`.
+   */
+  sidebar: Record<string, SidebarItem[]> | SidebarItem[]
+  /**
+   * Top-level navigation contexts shown in the sidebar rail. When provided,
+   * the rail renders these as world-switcher items and `sidebar` is treated
+   * as a map keyed by context id.
+   */
+  contexts?: ArdoContextItem[]
   /** Custom header element (overrides auto-generated header) */
   header?: ReactNode
   /** Custom sidebar element (overrides auto-generated sidebar) */
@@ -102,14 +116,63 @@ function resolveRootHeader(
   )
 }
 
-function resolveLayoutClassName(className: string | undefined, isHomePage: boolean): string {
+function resolveLayoutClassName(className: string | undefined, isBareLayout: boolean): string {
   if (className != null) return className
-  return isHomePage ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout
+  return isBareLayout ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout
+}
+
+function readLayoutHandle(handle: unknown): string | undefined {
+  if (typeof handle !== "object" || handle === null) return undefined
+  if (!("layout" in handle)) return undefined
+  const { layout } = handle
+  return typeof layout === "string" ? layout : undefined
+}
+
+/**
+ * Reads the React Router `handle` exports from every active route match and
+ * returns the most specific `layout` value (the deepest match wins). MDX
+ * routes get this export auto-generated from `frontmatter.layout`; .tsx
+ * routes set it directly with `export const handle = { layout: "bare" }`.
+ */
+function useRouteLayout(): string | undefined {
+  const matches = useMatches()
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const layout = readLayoutHandle(matches[i].handle)
+    if (layout !== undefined) return layout
+  }
+  return undefined
+}
+
+function contextMatchesPath(ctx: ArdoContextItem, pathname: string): boolean {
+  if (ctx.match != null) {
+    return typeof ctx.match === "string" ? pathname.startsWith(ctx.match) : ctx.match.test(pathname)
+  }
+  const firstSegment = ctx.href.split("/").find((segment) => segment !== "")
+  if (firstSegment === undefined) return false
+  const root = `/${firstSegment}`
+  return pathname === root || pathname.startsWith(`${root}/`)
+}
+
+function findActiveContext(
+  contexts: ArdoContextItem[] | undefined,
+  pathname: string
+): ArdoContextItem | undefined {
+  return contexts?.find((ctx) => contextMatchesPath(ctx, pathname))
+}
+
+function resolveContextSidebar(
+  sidebar: Record<string, SidebarItem[]> | SidebarItem[],
+  activeContext: ArdoContextItem | undefined
+): SidebarItem[] {
+  if (Array.isArray(sidebar)) return sidebar
+  if (activeContext == null) return []
+  return sidebar[activeContext.id] ?? []
 }
 
 export function ArdoRoot({
   config,
   sidebar,
+  contexts,
   header,
   sidebarContent,
   footer,
@@ -123,18 +186,30 @@ export function ArdoRoot({
   children,
 }: ArdoRootProps) {
   const location = useLocation()
-  const isHomePage = location.pathname === "/" || location.pathname === ""
+  const layout = useRouteLayout()
+  // Bare layout: no sidebar, no rail — used for the home page and any other
+  // marketing-style routes (TSX or MDX). Falls back to the legacy hardcoded
+  // home detection if a route hasn't opted in via `handle.layout`.
+  const isBareLayout = layout === "bare" || location.pathname === "/" || location.pathname === ""
+  const activeContext = useMemo(
+    () => findActiveContext(contexts, location.pathname),
+    [contexts, location.pathname]
+  )
+  const sidebarItems = useMemo(
+    () => resolveContextSidebar(sidebar, activeContext),
+    [sidebar, activeContext]
+  )
   const searchPlaceholder = headerProps?.searchPlaceholder
   const showSearch = headerProps?.search !== false
   const sidebarSearch =
-    !isHomePage && showSearch ? <ArdoSearch placeholder={searchPlaceholder} /> : undefined
-  const resolvedSidebar = isHomePage
+    !isBareLayout && showSearch ? <ArdoSearch placeholder={searchPlaceholder} /> : undefined
+  const resolvedSidebar = isBareLayout
     ? undefined
     : wrapSidebarWithSearch(sidebarContent, sidebarProps, sidebarSearch)
   const resolvedHeader = resolveRootHeader(
     header,
     { ...headerProps, search: false },
-    isHomePage ? undefined : resolvedSidebar
+    isBareLayout ? undefined : resolvedSidebar
   )
 
   const siteConfig = useMemo<ArdoSiteConfig>(
@@ -143,9 +218,14 @@ export function ArdoRoot({
   )
 
   const content = (
-    <ArdoProvider config={config} sidebar={sidebar}>
+    <ArdoProvider
+      config={config}
+      sidebar={sidebarItems}
+      contexts={contexts}
+      activeContextId={activeContext?.id}
+    >
       <ArdoLayout
-        className={resolveLayoutClassName(className, isHomePage)}
+        className={resolveLayoutClassName(className, isBareLayout)}
         header={resolvedHeader}
         sidebar={resolvedSidebar}
         footer={footer ?? <ArdoFooter {...footerProps} />}

@@ -1,17 +1,6 @@
-import {
-  ArdoErrorBoundary,
-  ArdoRootLayout,
-  ArdoRoot,
-  ArdoNav,
-  ArdoNavLink,
-  ArdoSidebar,
-  ArdoSidebarGroup,
-  ArdoSidebarLink,
-  ArdoFooter,
-  ArdoSocialLink,
-} from "ardo/ui"
+import { ArdoErrorBoundary, ArdoRootLayout, ArdoRoot, ArdoFooter, ArdoSocialLink } from "ardo/ui"
 import config from "virtual:ardo/config"
-import sidebar from "virtual:ardo/sidebar"
+import sidebars from "virtual:ardo/sidebars"
 import logo from "./assets/logo.svg"
 import type { MetaFunction } from "react-router"
 import "ardo/ui/styles.css"
@@ -31,7 +20,11 @@ export default function Root() {
   return (
     <ArdoRoot
       config={config}
-      sidebar={sidebar}
+      sidebar={sidebars}
+      contexts={[
+        { id: "guide", label: "Guide", href: "/guide/getting-started" },
+        { id: "api-reference", label: "API", href: "/api-reference" },
+      ]}
       editLink={{
         pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
         text: "Edit this page on GitHub",
@@ -43,50 +36,8 @@ export default function Root() {
       headerProps={{
         logo,
         searchPlaceholder: "Search documentation...",
-        nav: (
-          <ArdoNav>
-            <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
-            <ArdoNavLink to="/api-reference">API</ArdoNavLink>
-            <ArdoNavLink to="/showcase">Showcase</ArdoNavLink>
-            <ArdoNavLink href="https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md">
-              Changelog
-            </ArdoNavLink>
-            <ArdoNavLink href="https://github.com/sebastian-software/ardo">GitHub</ArdoNavLink>
-          </ArdoNav>
-        ),
         actions: <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />,
       }}
-      sidebarContent={
-        <ArdoSidebar>
-          <ArdoSidebarGroup title="Introduction">
-            <ArdoSidebarLink to="/guide/what-is-ardo">What is Ardo?</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/comparison">Comparison</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
-          </ArdoSidebarGroup>
-
-          <ArdoSidebarGroup title="Writing">
-            <ArdoSidebarLink to="/guide/markdown">Markdown Features</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/frontmatter">Frontmatter</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/typedoc">TypeDoc Integration</ArdoSidebarLink>
-          </ArdoSidebarGroup>
-
-          <ArdoSidebarGroup title="Customization">
-            <ArdoSidebarLink to="/guide/configuration">Configuration</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/custom-theme">Custom Theme</ArdoSidebarLink>
-          </ArdoSidebarGroup>
-
-          <ArdoSidebarGroup title="Deploy & Troubleshoot">
-            <ArdoSidebarLink to="/guide/deployment">Deployment</ArdoSidebarLink>
-            <ArdoSidebarLink to="/guide/troubleshooting">Troubleshooting</ArdoSidebarLink>
-          </ArdoSidebarGroup>
-
-          <ArdoSidebarGroup title="API Reference" to="/api-reference">
-            <ArdoSidebarLink to="/api-reference/components">Components</ArdoSidebarLink>
-            <ArdoSidebarLink to="/api-reference/functions">Functions</ArdoSidebarLink>
-            <ArdoSidebarLink to="/api-reference/types">Types</ArdoSidebarLink>
-          </ArdoSidebarGroup>
-        </ArdoSidebar>
-      }
       footer={
         <ArdoFooter
           sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}

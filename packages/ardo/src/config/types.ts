@@ -19,6 +19,25 @@ export type SidebarConfig = {
 }
 
 // =============================================================================
+// Context Types (for the sidebar rail / world switcher)
+// =============================================================================
+
+export type ArdoContextItem = {
+  /**
+   * Stable identifier used to look up the sidebar tree for this context.
+   * Conventionally matches the top-level folder under `app/routes/`
+   * (e.g. `"guide"`, `"api-reference"`).
+   */
+  id: string
+  /** Display label shown in the rail tooltip. */
+  label: string
+  /** Default landing href for the context. */
+  href: string
+  /** Optional route prefix override. Defaults to `href` without trailing segments. */
+  match?: RegExp | string
+}
+
+// =============================================================================
 // Navigation Types (for data-driven nav)
 // =============================================================================
 
