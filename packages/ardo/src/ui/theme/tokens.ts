@@ -92,8 +92,11 @@ function createLightColors(primary: number, secondary: number) {
     divider: oklch(0.89, 0.004, neutralHue),
     sidebarBg: oklch(0.965, 0.004, neutralHue),
     sidebarBorder: oklch(0.885, 0.005, neutralHue),
-    codeBg: oklch(0.955, 0.004, neutralHue),
-    codeBorder: oklch(0.88, 0.005, neutralHue),
+    // Code blocks get a distinctly cooler tint than the sidebar so the two
+    // surfaces never compete. Higher chroma + slightly higher lightness puts
+    // them clearly into "accent surface" territory.
+    codeBg: oklch(0.97, 0.022, neutralHue),
+    codeBorder: oklch(0.88, 0.028, neutralHue),
     codeShadow: "0 1px 2px oklch(0 0 0 / 0.025)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.035), 0 1px 3px oklch(0 0 0 / 0.045)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.045), 0 2px 6px oklch(0 0 0 / 0.035)",
@@ -156,8 +159,10 @@ function createDarkColors(primary: number, secondary: number) {
     divider: oklch(0.29, 0.01, neutralHue),
     sidebarBg: oklch(0.13, 0.008, neutralHue),
     sidebarBorder: oklch(0.265, 0.011, neutralHue),
-    codeBg: oklch(0.19, 0.008, neutralHue),
-    codeBorder: oklch(0.31, 0.01, neutralHue),
+    // Mirror of the light-mode treatment: a cooler, more saturated tint
+    // separates code surfaces from the sidebar at a glance.
+    codeBg: oklch(0.22, 0.028, neutralHue),
+    codeBorder: oklch(0.34, 0.04, neutralHue),
     codeShadow: "0 10px 26px oklch(0 0 0 / 0.18)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.14), 0 1px 3px oklch(0 0 0 / 0.18)",
     shadowMd: "0 8px 18px oklch(0 0 0 / 0.18), 0 2px 6px oklch(0 0 0 / 0.12)",
