@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
 import { SearchIcon } from "../icons"
+import { ArdoOwlMark } from "../OwlMark"
 import * as styles from "./Search.css"
 import { SearchPopover } from "./SearchPopover"
 
@@ -141,7 +142,10 @@ function SearchResults({
           ))}
         </ul>
       ) : (
-        <div className={styles.searchNoResults}>No results found for &quot;{query}&quot;</div>
+        <div className={styles.searchNoResults}>
+          <ArdoOwlMark size={36} className={styles.searchNoResultsOwl} title="" />
+          <span>No results found for &quot;{query}&quot;</span>
+        </div>
       )}
       <div className={styles.searchFooter}>
         <span>

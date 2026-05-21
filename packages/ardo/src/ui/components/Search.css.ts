@@ -98,9 +98,18 @@ export const searchResultSection = style({
 })
 
 export const searchNoResults = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: vars.space.sm,
   padding: `${vars.space.xl} ${vars.space.md}`,
   textAlign: "center",
   color: vars.color.textLighter,
+})
+
+export const searchNoResultsOwl = style({
+  color: vars.color.textLighter,
+  opacity: 0.55,
 })
 
 export const searchFooter = style({

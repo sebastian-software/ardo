@@ -84,6 +84,32 @@ export const footerLink = style({
   },
 })
 
+export const footerArdoLink = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.375rem",
+  color: vars.color.brand,
+  textDecoration: "none",
+  transition: `opacity ${vars.transition.fast}`,
+  selectors: {
+    "&:hover": {
+      opacity: 0.8,
+    },
+  },
+})
+
+export const footerOwl = style({
+  color: vars.color.brand,
+  opacity: 0.85,
+  transition: `transform ${vars.transition.base}, opacity ${vars.transition.fast}`,
+  selectors: {
+    [`${footerArdoLink}:hover &`]: {
+      transform: "rotate(-8deg)",
+      opacity: 1,
+    },
+  },
+})
+
 export const footerMessage = style({
   gridColumn: "1",
   fontSize: vars.fontSize.sm,
