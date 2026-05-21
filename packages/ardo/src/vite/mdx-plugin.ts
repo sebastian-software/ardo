@@ -10,6 +10,7 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import type { ArdoConfig } from "../config/types"
 
 import { defaultMarkdownConfig } from "../config/index"
+import { remarkCallouts } from "../markdown/remark-callouts"
 import { remarkMdxToc } from "../markdown/remark-mdx-toc"
 import { remarkStripFrontmatterH1 } from "../markdown/remark-strip-frontmatter-h1"
 import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
@@ -36,6 +37,7 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
       remarkStripFrontmatterH1,
       [remarkMdxFrontmatter, { name: "frontmatter" }],
       remarkGfm,
+      remarkCallouts,
       remarkCodeMeta,
       [remarkMdxToc, { levels: markdownConfig?.toc?.level ?? [2, 3] }],
     ],

@@ -131,7 +131,49 @@ export function greet(name: string) {
 
 ## Callout Components
 
-Use callout components to highlight important information. These JSX components are auto-registered in MDX files — no import needed.
+Use callouts to highlight important information. Ardo accepts two equivalent syntaxes — pick whichever reads better in your file.
+
+### GitHub-style alerts
+
+Plain Markdown, no imports. Ardo recognises GFM alert syntax and maps each type to the matching callout.
+
+```md
+> [!NOTE]
+> Useful information that users should know.
+
+> [!TIP]
+> Helpful advice for doing things better.
+
+> [!IMPORTANT]
+> Key information users need to know.
+
+> [!WARNING]
+> Urgent info that needs immediate attention.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+```
+
+Renders as:
+
+> [!NOTE]
+> Useful information that users should know.
+
+> [!TIP]
+> Helpful advice for doing things better.
+
+> [!IMPORTANT]
+> Key information users need to know.
+
+> [!WARNING]
+> Urgent info that needs immediate attention.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
+### JSX components
+
+When you need a custom title or full control, the same callouts are also available as JSX. These components are auto-registered in MDX files — no import needed.
 
 <Tip>This is a helpful tip for readers.</Tip>
 
@@ -143,7 +185,7 @@ Use callout components to highlight important information. These JSX components 
 
 <Note>This is a note for reference.</Note>
 
-### Custom Titles
+#### Custom titles
 
 You can customize the callout title:
 
