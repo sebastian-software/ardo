@@ -371,8 +371,8 @@ export const examplesGrid = style({
 export const exampleCard = style({
   display: "flex",
   flexDirection: "column",
-  gap: "10px",
-  padding: "24px",
+  gap: vars.space.smd,
+  padding: vars.space.lg,
   background: softSurface,
   border: `1px solid ${vars.color.borderLight}`,
   borderRadius: vars.radius.lg,

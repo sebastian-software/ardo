@@ -93,6 +93,7 @@ export const vars = createGlobalThemeContract(
     space: {
       xs: null,
       sm: null,
+      smd: null,
       md: null,
       lg: null,
       xl: null,
