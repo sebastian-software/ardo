@@ -19,7 +19,7 @@ export const codeBlock = style({
 })
 
 export const codeTitle = style({
-  padding: `${vars.space.sm} ${vars.space.md}`,
+  padding: `${vars.space.smd} ${vars.space.md}`,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
@@ -39,7 +39,7 @@ globalStyle(`${codeWrapper}:hover .${copyButton}, ${codeWrapper}:focus-within .$
 
 globalStyle(`${codeWrapper} pre`, {
   margin: 0,
-  padding: `${vars.space.lg} ${vars.space.md}`,
+  padding: vars.space.md,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
@@ -95,7 +95,7 @@ export const lineNumber = style({
 const s = `.${shikiContainerClassName}`
 
 globalStyle(`${s} > [data-title]`, {
-  padding: `${vars.space.sm} ${vars.space.md}`,
+  padding: `${vars.space.smd} ${vars.space.md}`,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
@@ -120,7 +120,7 @@ globalStyle(`${s} > [data-lang]`, {
 
 globalStyle(`${s} pre`, {
   margin: 0,
-  padding: `${vars.space.lg} ${vars.space.md}`,
+  padding: vars.space.md,
   overflowX: "auto",
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.sm,
