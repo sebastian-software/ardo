@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.4.0...ardo-v3.5.0) (2026-05-22)
+
+
+### Features
+
+* spacing polish for heading rhythm, code and card padding ([7ce4f6e](https://github.com/sebastian-software/ardo/commit/7ce4f6ee79b9d242dc3f5a46808d544a6966c089))
+
 ## [3.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.3.0...ardo-v3.4.0) (2026-05-21)
 
 
