@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.3.0...create-ardo-v3.4.0) (2026-05-21)
+
+
+### Features
+
+* duo-tone color system with warm chrome and cool code surfaces ([99a895d](https://github.com/sebastian-software/ardo/commit/99a895d15c1e5594080656f1581f0af066630d75))
+
 ## [3.3.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.1...create-ardo-v3.3.0) (2026-05-09)
 
 
