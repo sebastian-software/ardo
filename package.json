@@ -35,9 +35,9 @@
   "author": "Sebastian Software GmbH",
   "license": "MIT",
   "devDependencies": {
-    "@storybook/addon-docs": "^10.4.0",
-    "@storybook/react": "^10.4.0",
-    "@storybook/react-vite": "^10.4.0",
+    "@storybook/addon-docs": "^10.4.1",
+    "@storybook/react": "^10.4.1",
+    "@storybook/react-vite": "^10.4.1",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
@@ -47,7 +47,7 @@
     "jiti": "^2.7.0",
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
-    "storybook": "^10.4.0",
+    "storybook": "^10.4.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.7"
   },
