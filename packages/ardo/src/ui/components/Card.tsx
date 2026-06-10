@@ -66,10 +66,9 @@ function CardContent({
  * Cards can be static content blocks or clickable navigation items when `href` is provided.
  */
 export function ArdoCard({ title, icon, children, href, className }: ArdoCardProps) {
-  const hasHref = (href ?? "") !== ""
   const cardClassName = className == null ? styles.card : `${styles.card} ${className}`
 
-  if (!hasHref) {
+  if (href == null || href === "") {
     return (
       <div className={cardClassName}>
         <CardContent title={title} icon={icon}>
@@ -79,11 +78,9 @@ export function ArdoCard({ title, icon, children, href, className }: ArdoCardPro
     )
   }
 
-  const hrefValue = href ?? ""
-
-  if (isExternalHref(hrefValue)) {
+  if (isExternalHref(href)) {
     return (
-      <a className={cardClassName} href={hrefValue} target="_blank" rel="noopener noreferrer">
+      <a className={cardClassName} href={href} target="_blank" rel="noopener noreferrer">
         <CardContent title={title} icon={icon}>
           {children}
         </CardContent>
@@ -92,7 +89,7 @@ export function ArdoCard({ title, icon, children, href, className }: ArdoCardPro
   }
 
   return (
-    <Link className={cardClassName} to={hrefValue}>
+    <Link className={cardClassName} to={href}>
       <CardContent title={title} icon={icon}>
         {children}
       </CardContent>
