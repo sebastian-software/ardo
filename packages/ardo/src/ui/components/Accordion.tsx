@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { createContext, use, useEffect, useId, useMemo, useState } from "react"
+import { createContext, use, useId, useLayoutEffect, useMemo, useState } from "react"
 
 import * as styles from "./Accordion.css"
 import { ArdoIcon } from "./Icon"
@@ -91,7 +91,7 @@ export function ArdoAccordion({
   const triggerId = `${generatedId}-trigger`
   const hasIcon = icon != null
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (context?.onlyOneOpen === true && defaultOpen && context.openItem == null) {
       context.setOpenItem(resolvedValue)
     }
@@ -128,6 +128,7 @@ export function ArdoAccordion({
         aria-labelledby={triggerId}
         className={styles.content}
         aria-hidden={!open}
+        inert={!open || undefined}
       >
         <div className={styles.contentInner}>{children}</div>
       </div>
