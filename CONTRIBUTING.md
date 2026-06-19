@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- Node.js >= 22.0.0
+- Node.js >= 22.22.0
 - pnpm >= 9.0.0
 
 ### Development Setup

@@ -1,8 +1,8 @@
 # Ardo — React-first Static Documentation Framework
 
-> Build beautiful documentation sites with React 19, React Router 7, and Vite.
+> Build beautiful documentation sites with React 19, React Router 8, and Vite.
 
-Ardo combines the developer experience of VitePress with the power of the React ecosystem. It uses React Router 7 for file-based routing with pre-rendering, Vite for fast builds, and supports Markdown/MDX with React components.
+Ardo combines the developer experience of VitePress with the power of the React ecosystem. It uses React Router 8 for file-based routing with pre-rendering, Vite for fast builds, and supports Markdown/MDX with React components.
 
 ---
 
@@ -23,7 +23,7 @@ Ardo combines the developer experience of VitePress with the power of the React 
 
 ## What is Ardo?
 
-Ardo is a **React-first Static Documentation Framework** built on [React Router 7](https://reactrouter.com/) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
+Ardo is a **React-first Static Documentation Framework** built on [React Router 8](https://reactrouter.com/) and inspired by [VitePress](https://vitepress.dev) and [Starlight](https://starlight.astro.build).
 
 ### Why Ardo?
 
@@ -34,7 +34,7 @@ Ardo is a **React-first Static Documentation Framework** built on [React Router 
 - Full TypeScript support out of the box
 - Seamless integration with the React ecosystem
 
-**Powered by React Router 7** — Ardo leverages React Router 7 for:
+**Powered by React Router 8** — Ardo leverages React Router 8 for:
 
 - File-based routing with automatic route generation
 - Static pre-rendering for fast page loads
@@ -60,7 +60,7 @@ Ardo is a **React-first Static Documentation Framework** built on [React Router 
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) version 22 or higher
+- [Node.js](https://nodejs.org/) version 22.22.0 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
 ### Quick Start

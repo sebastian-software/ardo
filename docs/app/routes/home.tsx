@@ -7,7 +7,7 @@ export const meta: MetaFunction = () => [
   {
     name: "description",
     content:
-      "Build static documentation with React 19, React Router 7, Vite, and MDX. Keep your components, your repo, and your docs pipeline under your control.",
+      "Build static documentation with React 19, React Router 8, Vite, and MDX. Keep your components, your repo, and your docs pipeline under your control.",
   },
 ]
 
@@ -106,7 +106,7 @@ export default function HomePage() {
           title="Type-safe routes"
           icon={<ShieldCheck size={28} strokeWidth={1.5} />}
         >
-          React Router 7 gives the docs the same route model React teams already know, with static
+          React Router 8 gives the docs the same route model React teams already know, with static
           prerendering and a clean path to typed navigation.
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Light and dark mode" icon={<Moon size={28} strokeWidth={1.5} />}>
@@ -190,7 +190,7 @@ export default function HomePage() {
               <div className={styles.techIcon}>
                 <Rocket size={32} />
               </div>
-              <span>React Router 7</span>
+              <span>React Router 8</span>
             </div>
             <div className={styles.techItem}>
               <div className={styles.techIcon}>
