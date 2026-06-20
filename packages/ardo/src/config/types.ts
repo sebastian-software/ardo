@@ -177,6 +177,8 @@ export type ArdoConfig = {
   titleSeparator?: string
   /** Base URL path */
   base?: string
+  /** Absolute site URL used for canonical and social metadata URLs */
+  siteUrl?: string
   /** Content source directory (default: 'content') */
   srcDir?: string
   /** Build output directory (default: 'dist') */
@@ -189,6 +191,8 @@ export type ArdoConfig = {
   markdown?: MarkdownConfig
   /** Generated sidebar options */
   sidebar?: SidebarConfig
+  /** Site-level social metadata defaults */
+  metadata?: MetadataConfig
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
@@ -208,6 +212,13 @@ export type ArdoConfig = {
   buildHash?: string
 }
 
+export type MetadataConfig = {
+  image?: string
+  ogType?: string
+  twitterCard?: "summary_large_image" | "summary"
+  twitterSite?: string
+}
+
 // =============================================================================
 // Page Types
 // =============================================================================
@@ -215,6 +226,15 @@ export type ArdoConfig = {
 export type PageFrontmatter = {
   title?: string
   description?: string
+  canonical?: string
+  ogDescription?: string
+  ogImage?: string
+  ogTitle?: string
+  ogType?: string
+  twitterCard?: "summary_large_image" | "summary"
+  twitterDescription?: string
+  twitterImage?: string
+  twitterTitle?: string
   order?: number
   collapsed?: boolean
   layout?: "doc" | "home" | "page"
