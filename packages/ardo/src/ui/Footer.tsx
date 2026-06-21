@@ -11,10 +11,14 @@ import { ArdoOwlMark } from "./OwlMark"
 // =============================================================================
 
 export type ArdoFooterProps = {
-  /** Footer message (supports HTML string) */
-  message?: string
-  /** Copyright text (supports HTML string) */
-  copyright?: string
+  /** Footer message rendered as React content. Strings are escaped. */
+  message?: ReactNode
+  /** Trusted footer message HTML. Use only for markup you fully control. */
+  trustedMessageHtml?: string
+  /** Copyright text rendered as React content. Strings are escaped. */
+  copyright?: ReactNode
+  /** Trusted copyright HTML. Use only for markup you fully control. */
+  trustedCopyrightHtml?: string
   /** Custom content (overrides all automatic rendering) */
   children?: ReactNode
   /** Additional CSS classes */
@@ -64,6 +68,11 @@ function formatBuildTime(iso: string): string {
  *   message="Released under the MIT License."
  *   copyright="Copyright 2026 Sebastian Software GmbH"
  * />
+ * ```
+ *
+ * @example Trusted HTML opt-in
+ * ```tsx
+ * <Footer trustedMessageHtml={'Released under the <a href="/license">MIT License</a>.'} />
  * ```
  *
  * @example Custom content
@@ -148,12 +157,46 @@ function FooterPrimaryLine({
   )
 }
 
+function hasFooterContent(value: ReactNode): boolean {
+  return value != null && value !== false && value !== ""
+}
+
+function FooterTextLine({
+  children,
+  className,
+  trustedHtml,
+}: {
+  children?: ReactNode
+  className: string
+  trustedHtml?: string
+}) {
+  const hasTrustedHtml = (trustedHtml ?? "") !== ""
+  if (hasTrustedHtml) {
+    return (
+      <p
+        className={className}
+        // The prop name marks this as caller-trusted HTML. Plain message/copyright props render escaped React content.
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: trustedHtml ?? "" }}
+      />
+    )
+  }
+
+  if (!hasFooterContent(children)) {
+    return null
+  }
+
+  return <p className={className}>{children}</p>
+}
+
 export function ArdoFooter({
   children,
   className,
   ardoLink = true,
   message,
+  trustedMessageHtml,
   copyright,
+  trustedCopyrightHtml,
   project,
   sponsor,
   buildTime,
@@ -180,15 +223,12 @@ export function ArdoFooter({
           ardoLink={ardoLink}
           config={config}
         />
-        {(message ?? "") !== "" && (
-          <p className={styles.footerMessage} dangerouslySetInnerHTML={{ __html: message ?? "" }} />
-        )}
-        {(copyright ?? "") !== "" && (
-          <p
-            className={styles.footerCopyright}
-            dangerouslySetInnerHTML={{ __html: copyright ?? "" }}
-          />
-        )}
+        <FooterTextLine className={styles.footerMessage} trustedHtml={trustedMessageHtml}>
+          {message}
+        </FooterTextLine>
+        <FooterTextLine className={styles.footerCopyright} trustedHtml={trustedCopyrightHtml}>
+          {copyright}
+        </FooterTextLine>
         {(resolvedBuildTime ?? "") !== "" && (
           <p className={styles.footerBuildTime}>
             Built on {formatBuildTime(resolvedBuildTime ?? "")}
