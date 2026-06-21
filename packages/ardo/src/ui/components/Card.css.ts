@@ -54,35 +54,46 @@ export const card = style({
   color: vars.color.text,
   textDecoration: "none",
   transition: `border-color ${vars.transition.base}, box-shadow ${vars.transition.base}, transform ${vars.transition.base}`,
-  selectors: {
-    "&:hover": {
-      borderColor: brandBorder,
-      boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
-      textDecoration: "none",
-    },
-    "&:focus-visible": {
-      outline: `2px solid ${vars.color.brand}`,
-      outlineOffset: "2px",
-    },
-  },
   "@media": {
-    "(hover: hover)": {
-      selectors: {
-        "&:hover": {
-          transform: "translateY(-2px)",
-        },
-      },
-    },
     "(prefers-reduced-motion: reduce)": {
       transition: "none",
-      selectors: {
-        "&:hover": {
-          transform: "none",
-        },
-      },
     },
   },
 })
+
+export const cardLink = style([
+  card,
+  {
+    selectors: {
+      "&:hover": {
+        borderColor: brandBorder,
+        boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
+        textDecoration: "none",
+      },
+      "&:focus-visible": {
+        outline: `2px solid ${vars.color.brand}`,
+        outlineOffset: "2px",
+      },
+    },
+    "@media": {
+      "(hover: hover)": {
+        selectors: {
+          "&:hover": {
+            transform: "translateY(-2px)",
+          },
+        },
+      },
+      "(prefers-reduced-motion: reduce)": {
+        transition: "none",
+        selectors: {
+          "&:hover": {
+            transform: "none",
+          },
+        },
+      },
+    },
+  },
+])
 
 export const cardHeader = style({
   display: "flex",
@@ -104,6 +115,7 @@ export const cardIcon = style({
 })
 
 export const cardTitle = style({
+  margin: 0,
   fontSize: "16px",
   fontWeight: 600,
   letterSpacing: "-0.01em",

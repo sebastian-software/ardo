@@ -51,10 +51,10 @@ function CardContent({
 
   return (
     <>
-      <span className={styles.cardHeader}>
+      <div className={styles.cardHeader}>
         {hasIcon && <CardIcon icon={icon} />}
-        <span className={styles.cardTitle}>{title}</span>
-      </span>
+        <h3 className={styles.cardTitle}>{title}</h3>
+      </div>
       {hasChildren && <span className={styles.cardBody}>{children}</span>}
     </>
   )
@@ -67,6 +67,7 @@ function CardContent({
  */
 export function ArdoCard({ title, icon, children, href, className }: ArdoCardProps) {
   const cardClassName = className == null ? styles.card : `${styles.card} ${className}`
+  const cardLinkClassName = className == null ? styles.cardLink : `${styles.cardLink} ${className}`
 
   if (href == null || href === "") {
     return (
@@ -80,7 +81,7 @@ export function ArdoCard({ title, icon, children, href, className }: ArdoCardPro
 
   if (isExternalHref(href)) {
     return (
-      <a className={cardClassName} href={href} target="_blank" rel="noopener noreferrer">
+      <a className={cardLinkClassName} href={href} target="_blank" rel="noopener noreferrer">
         <CardContent title={title} icon={icon}>
           {children}
         </CardContent>
@@ -89,7 +90,7 @@ export function ArdoCard({ title, icon, children, href, className }: ArdoCardPro
   }
 
   return (
-    <Link className={cardClassName} to={href}>
+    <Link className={cardLinkClassName} to={href}>
       <CardContent title={title} icon={icon}>
         {children}
       </CardContent>
