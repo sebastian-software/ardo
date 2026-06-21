@@ -76,7 +76,7 @@ typedoc: {
 - Type: `string`
 - Default: `'api-reference'`
 
-Output directory for generated markdown files (relative to `srcDir`).
+Output route directory for generated markdown files, relative to the configured routes directory. In the default scaffold, `out: "api"` writes API pages under `app/routes/api`.
 
 ```ts
 typedoc: {
@@ -276,7 +276,7 @@ const docs = await generateApiDocs(
     entryPoints: ["./src/index.ts"],
     tsconfig: "./tsconfig.json",
   },
-  "./docs/content"
+  "./app/routes/api"
 )
 
 console.log(`Generated ${docs.length} documentation pages`)

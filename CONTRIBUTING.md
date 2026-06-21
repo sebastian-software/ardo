@@ -40,13 +40,15 @@ ardo/
 │       │   ├── config/      # Configuration utilities
 │       │   ├── markdown/    # Markdown processing pipeline
 │       │   ├── runtime/     # React hooks and providers
-│       │   ├── theme/       # UI components
+│       │   ├── ui/          # React UI components and styles
+│       │   ├── theme/       # Theme token helpers
 │       │   ├── typedoc/     # TypeDoc integration
 │       │   └── vite/        # Vite plugin
 │       └── package.json
 ├── docs/              # Documentation site (dogfooding)
-│   ├── content/       # Markdown content
-│   └── src/           # Documentation app
+│   ├── app/           # React Router app and markdown routes
+│   │   └── routes/    # Documentation pages and generated API routes
+│   └── public/        # Static assets and generated text outputs
 └── package.json       # Monorepo root
 ```
 
@@ -93,7 +95,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for commit m
 **Format:**
 
 ```
-<type>(<scope>): <description>
+<type>: <description>
 
 [optional body]
 
@@ -114,8 +116,8 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for commit m
 **Examples:**
 
 ```
-feat(markdown): add support for custom containers
-fix(theme): correct dark mode toggle behavior
+feat: add support for custom containers
+fix: correct dark mode toggle behavior
 docs: update getting started guide
 ```
 
@@ -146,7 +148,7 @@ Git hooks (via Husky) will automatically:
 Use the same format as commit messages:
 
 ```
-feat(scope): add new feature
+feat: add new feature
 ```
 
 ### PR Description
