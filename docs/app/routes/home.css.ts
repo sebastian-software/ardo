@@ -357,6 +357,63 @@ export const link = style({
   },
 })
 
+// Examples section
+export const examplesSection = style({
+  background: pageSurface,
+})
+
+export const examplesGrid = style({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "16px",
+})
+
+export const exampleCard = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.space.smd,
+  padding: vars.space.lg,
+  background: softSurface,
+  border: `1px solid ${vars.color.borderLight}`,
+  borderRadius: vars.radius.lg,
+  textDecoration: "none",
+  color: vars.color.text,
+  transition: `border-color ${vars.transition.base}, transform ${vars.transition.base}, box-shadow ${vars.transition.base}`,
+  selectors: {
+    "&:hover": {
+      borderColor: brandBorder,
+      boxShadow: `${vars.color.shadowSm}, 0 14px 36px ${brandWash}`,
+      transform: "translateY(-2px)",
+    },
+  },
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+    },
+  },
+})
+
+export const exampleTitle = style({
+  fontSize: "18px",
+  fontWeight: 700,
+  margin: 0,
+  letterSpacing: "-0.01em",
+})
+
+export const exampleDescription = style({
+  fontSize: "14px",
+  lineHeight: 1.55,
+  color: vars.color.textLight,
+  margin: 0,
+})
+
+export const exampleLink = style({
+  marginTop: "auto",
+  fontSize: "14px",
+  fontWeight: 600,
+  color: vars.color.brand,
+})
+
 // CTA section
 export const ctaSection = style({
   textAlign: "center",

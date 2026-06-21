@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 import { recipe } from "@vanilla-extract/recipes"
 
 import { vars } from "../theme/contract.css"
@@ -86,3 +86,15 @@ export const containerTitle = recipe({
 })
 
 export const containerContent = style({})
+
+// GFM-alert callouts wrap their text in an MDX <p>, which inherits the
+// global content paragraph margin. Collapse the outer margins so the
+// callout's own padding sets the box height; inner gaps between multiple
+// paragraphs are kept.
+globalStyle(`${containerContent} > :first-child`, {
+  marginTop: 0,
+})
+
+globalStyle(`${containerContent} > :last-child`, {
+  marginBottom: 0,
+})

@@ -6,6 +6,11 @@ import path from "node:path"
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
+import {
+  checkInternalLinks,
+  createBuildOutputAssets,
+  formatLinkCheckDiagnostics,
+} from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createFlattenPlugin } from "./flatten-plugin"
 import { detectGitHash, detectGitHubBasename, detectGitHubRepoName } from "./git-utils"
@@ -13,21 +18,25 @@ import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { readProjectMeta } from "./project-meta"
+import { scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
-import { generateSidebar } from "./sidebar-index"
+import { generateContextSidebars, generateSidebar } from "./sidebar-index"
 import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const VIRTUAL_SIDEBAR_ID = "virtual:ardo/sidebar"
+const VIRTUAL_SIDEBARS_ID = "virtual:ardo/sidebars"
 const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
   [VIRTUAL_SIDEBAR_ID]: `\0${VIRTUAL_SIDEBAR_ID}`,
+  [VIRTUAL_SIDEBARS_ID]: `\0${VIRTUAL_SIDEBARS_ID}`,
   [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
 }
 
 type PluginState = {
+  isSsrBuild?: boolean
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -133,6 +142,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
     configResolved(config) {
+      state.isSsrBuild = config.build.ssr !== false
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
       state.resolvedConfig = resolveArdoConfig(config.root, state.routesDir, options.pressConfig)
     },
@@ -145,6 +155,39 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     transform(code, id) {
       return transformMarkdownMeta(code, id, state)
     },
+    async generateBundle(outputOptions) {
+      if (state.isSsrBuild || isServerOutput(outputOptions.dir) || state.resolvedConfig == null) {
+        return
+      }
+
+      const manifest = await scanRouteManifest(state.routesDir)
+      reportLinkDiagnostics(this, manifest, state.resolvedConfig)
+      for (const asset of createBuildOutputAssets(manifest, state.resolvedConfig)) {
+        this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
+      }
+    },
+  }
+}
+
+function isServerOutput(outputDir: string | undefined) {
+  return outputDir?.replaceAll("\\", "/").endsWith("/server") === true
+}
+
+function reportLinkDiagnostics(
+  context: { error: (message: string) => never; warn: (message: string) => void },
+  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
+  config: ResolvedConfig
+) {
+  const diagnostics = checkInternalLinks(manifest, config)
+  if (diagnostics.length === 0) {
+    return
+  }
+
+  const message = `[ardo] Broken internal links found:\n${formatLinkCheckDiagnostics(diagnostics)}`
+  if (config.linkCheck.level === "error") {
+    context.error(message)
+  } else {
+    context.warn(message)
   }
 }
 
@@ -226,6 +269,11 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
   if (id === RESOLVED_IDS[VIRTUAL_SIDEBAR_ID]) {
     const sidebar = await generateSidebar(state.routesDir, state.resolvedConfig.sidebar)
     return `export default ${JSON.stringify(sidebar)}`
+  }
+
+  if (id === RESOLVED_IDS[VIRTUAL_SIDEBARS_ID]) {
+    const sidebars = await generateContextSidebars(state.routesDir)
+    return `export default ${JSON.stringify(sidebars)}`
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_SEARCH_ID]) {

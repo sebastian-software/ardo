@@ -9,7 +9,6 @@ globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   fontFamily: vars.font.familyHeading,
   fontWeight: 600,
   lineHeight: 1.22,
-  marginTop: vars.space["2xl"],
   marginBottom: vars.space.md,
   letterSpacing: "-0.01em",
   maxWidth: vars.layout.contentMaxWidth,
@@ -22,19 +21,37 @@ globalStyle(`${c} h1`, {
   marginTop: vars.space["2xl"],
 })
 
+// h2 opens a major section — generous separation above.
 globalStyle(`${c} h2`, {
   fontSize: "1.375rem",
-  paddingTop: vars.space.md,
+  marginTop: vars.space["2xl"],
 })
 
+// h3/h4 are subsections — they live inside a section, so they sit closer.
 globalStyle(`${c} h3`, {
   fontSize: vars.fontSize.lg,
   fontWeight: 600,
+  marginTop: vars.space.xl,
 })
 
 globalStyle(`${c} h4`, {
   fontSize: vars.fontSize.sm,
   fontWeight: 600,
+  marginTop: vars.space.lg,
+})
+
+globalStyle(`${c} h5, ${c} h6`, {
+  marginTop: vars.space.lg,
+})
+
+// A heading directly after another heading is part of the same group —
+// drop the section gap so they read as one unit, not two sections.
+globalStyle(`${c} :is(h1,h2,h3,h4,h5,h6) + :is(h2,h3,h4,h5,h6)`, { marginTop: vars.space.sm })
+
+// The first block in the content body sits right under the page title —
+// no leading gap of its own.
+globalStyle(`${c} > :first-child`, {
+  marginTop: 0,
 })
 
 globalStyle(`${c} p`, {

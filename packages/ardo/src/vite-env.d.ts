@@ -16,6 +16,13 @@ declare module "virtual:ardo/sidebar" {
   export default sidebar
 }
 
+declare module "virtual:ardo/sidebars" {
+  import type { SidebarItem } from "./config/types"
+
+  const sidebars: Record<string, SidebarItem[]>
+  export default sidebars
+}
+
 declare module "virtual:ardo/search-index" {
   interface SearchDoc {
     id: string

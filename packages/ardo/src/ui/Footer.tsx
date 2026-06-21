@@ -4,6 +4,7 @@ import type { ProjectMeta, SponsorConfig } from "../config/types"
 
 import { useArdoConfig } from "../runtime/hooks"
 import * as styles from "./Footer.css"
+import { ArdoOwlMark } from "./OwlMark"
 
 // =============================================================================
 // Footer Component
@@ -126,7 +127,8 @@ function FooterPrimaryLine({
   if (hasProject) items.push(projectNode)
   if (ardoLink)
     items.push(
-      <a href="https://ardo-docs.dev" className={styles.footerLink}>
+      <a href="https://ardo-docs.dev" className={styles.footerArdoLink}>
+        <ArdoOwlMark size={16} className={styles.footerOwl} title="" />
         Built with Ardo
       </a>
     )

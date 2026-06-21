@@ -17,11 +17,6 @@ export const layoutContainer = style({
   width: "100%",
   paddingTop: vars.layout.headerHeight,
   minHeight: 0,
-  "@media": {
-    "(max-width: 1024px)": {
-      paddingTop: `calc(${vars.layout.headerHeight} + 2.75rem)`,
-    },
-  },
 })
 
 export const main = style({

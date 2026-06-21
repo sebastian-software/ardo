@@ -1,5 +1,7 @@
 export { ArdoAccordion, ArdoAccordionGroup } from "./Accordion"
 export type { ArdoAccordionGroupProps, ArdoAccordionProps } from "./Accordion"
+export { ArdoBadge } from "./Badge"
+export type { ArdoBadgeProps, ArdoBadgeVariant } from "./Badge"
 export { ArdoCodeBlock, ArdoCodeGroup } from "./CodeBlock"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./CodeBlock"
 export { ArdoContainer, ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "./Container"

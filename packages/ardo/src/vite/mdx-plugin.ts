@@ -10,7 +10,10 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter"
 import type { ArdoConfig } from "../config/types"
 
 import { defaultMarkdownConfig } from "../config/index"
+import { remarkCallouts } from "../markdown/remark-callouts"
+import { remarkMdxHandle } from "../markdown/remark-mdx-handle"
 import { remarkMdxToc } from "../markdown/remark-mdx-toc"
+import { remarkStripFrontmatterH1 } from "../markdown/remark-strip-frontmatter-h1"
 import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
 import { recmaWrapExport } from "./recma-wrap-export"
 
@@ -32,8 +35,11 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
     include: /\.(md|mdx)$/,
     remarkPlugins: [
       remarkFrontmatter,
+      remarkStripFrontmatterH1,
       [remarkMdxFrontmatter, { name: "frontmatter" }],
+      remarkMdxHandle,
       remarkGfm,
+      remarkCallouts,
       remarkCodeMeta,
       [remarkMdxToc, { levels: markdownConfig?.toc?.level ?? [2, 3] }],
     ],

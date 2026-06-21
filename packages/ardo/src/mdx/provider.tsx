@@ -5,6 +5,7 @@ import { isValidElement } from "react"
 import { Link } from "react-router"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
+import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
@@ -114,6 +115,7 @@ export function useMDXComponents(): MDXComponents {
     // Custom Ardo components available in MDX (mapped as short names)
     Accordion: ArdoAccordion,
     AccordionGroup: ArdoAccordionGroup,
+    Badge: ArdoBadge,
     Icon: ArdoIcon,
     Tip: ArdoTip,
     Warning: ArdoWarning,

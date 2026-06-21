@@ -57,7 +57,7 @@ export const featuresContainer = style({
 })
 
 export const feature = style({
-  padding: "28px",
+  padding: vars.space.lg,
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
