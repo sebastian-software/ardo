@@ -46,6 +46,31 @@ description: Learn how to get started with Ardo
 ---
 ```
 
+### Social metadata
+
+Markdown routes without their own `meta` export get generated browser, canonical, Open Graph, and Twitter metadata from frontmatter and site config.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+canonical: https://example.com/guide/getting-started
+ogTitle: Start building with Ardo
+ogDescription: A focused guide to Ardo projects
+ogImage: /social/getting-started.png
+ogType: article
+twitterCard: summary_large_image
+twitterDescription: A focused guide to Ardo projects
+twitterImage: /social/getting-started-twitter.png
+twitterTitle: Start building with Ardo
+---
+```
+
+- `canonical` overrides the generated canonical URL and `og:url`.
+- `ogTitle`, `ogDescription`, `ogImage`, and `ogType` control Open Graph tags.
+- `twitterTitle`, `twitterDescription`, `twitterImage`, and `twitterCard` control Twitter Card tags.
+- Relative canonical and image values are made absolute with `siteUrl`; without `siteUrl`, relative URL tags are omitted.
+
 ### layout
 
 - Type: `'doc' | 'home' | 'page'`

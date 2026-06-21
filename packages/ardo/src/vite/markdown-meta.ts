@@ -1,4 +1,4 @@
-import type { ResolvedConfig } from "../config/types"
+import type { MetadataConfig, ResolvedConfig } from "../config/types"
 
 type MarkdownMetaState = {
   resolvedConfig?: ResolvedConfig
@@ -9,12 +9,7 @@ type MetaInput = {
   canonical?: string
   pageTitle: string
   routePath: string
-  siteMetadata: {
-    image?: string
-    ogType?: string
-    twitterCard?: string
-    twitterSite?: string
-  }
+  siteMetadata: MetadataConfig
   siteUrl: string
   siteTitle: string
   titleSeparator: string
@@ -44,6 +39,16 @@ type ResolvedSocialMeta = {
   twitterTitle: string
 }
 
+type FrontmatterReadResult =
+  | {
+      found: false
+      nextIndex: number
+    }
+  | {
+      found: true
+      value: string | undefined
+    }
+
 export function transformMarkdownMeta(
   code: string,
   id: string,
@@ -65,7 +70,7 @@ export function transformMarkdownMeta(
   const entries = buildMetaEntries({
     canonical: extractFrontmatterValue(code, "canonical"),
     pageTitle,
-    routePath: getRoutePathFromId(id, state.routesDir),
+    routePath: getRoutePathFromId(id, state.routesDir, state.resolvedConfig?.base ?? "/"),
     siteMetadata: state.resolvedConfig?.metadata ?? {},
     siteUrl: state.resolvedConfig?.siteUrl ?? "",
     siteTitle,
@@ -181,47 +186,149 @@ function extractFrontmatterValue(code: string, key: string): string | undefined 
     return undefined
   }
 
-  const valuePrefix = `${key}: "`
-  const valueStart = code.indexOf(valuePrefix, frontmatterStart)
-  if (valueStart === -1) {
-    return undefined
-  }
-
-  const startIndex = valueStart + valuePrefix.length
-  const endIndex = code.indexOf('"', startIndex)
-  if (endIndex === -1) {
-    return undefined
-  }
-
-  return code.slice(startIndex, endIndex)
+  const frontmatterCode = code.slice(frontmatterStart)
+  return findFrontmatterStringValue(frontmatterCode, key)
 }
 
-function getRoutePathFromId(id: string, routesDir: string) {
+function findFrontmatterStringValue(code: string, key: string): string | undefined {
+  const keyPrefix = `${key}:`
+  let searchIndex = 0
+
+  while (searchIndex < code.length) {
+    const keyIndex = code.indexOf(keyPrefix, searchIndex)
+    if (keyIndex === -1) {
+      return undefined
+    }
+
+    const result = readFrontmatterStringAtKey(code, keyIndex, keyPrefix)
+    if (result.found) {
+      return result.value
+    }
+
+    searchIndex = result.nextIndex
+  }
+
+  return undefined
+}
+
+function readFrontmatterStringAtKey(
+  code: string,
+  keyIndex: number,
+  keyPrefix: string
+): FrontmatterReadResult {
+  if (!hasFrontmatterKeyBoundary(code, keyIndex)) {
+    return { found: false, nextIndex: keyIndex + keyPrefix.length }
+  }
+
+  const valueIndex = skipWhitespace(code, keyIndex + keyPrefix.length)
+  if (code[valueIndex] !== '"') {
+    return { found: false, nextIndex: valueIndex + 1 }
+  }
+
+  return { found: true, value: parseQuotedFrontmatterString(code, valueIndex) }
+}
+
+function hasFrontmatterKeyBoundary(code: string, keyIndex: number): boolean {
+  if (keyIndex === 0) {
+    return true
+  }
+
+  const previous = code[keyIndex - 1]
+  return previous === "{" || previous === "," || isWhitespace(previous)
+}
+
+function isWhitespace(value: string | undefined): boolean {
+  return value === " " || value === "\n" || value === "\r" || value === "\t"
+}
+
+function skipWhitespace(code: string, startIndex: number): number {
+  let index = startIndex
+  while (isWhitespace(code[index])) {
+    index += 1
+  }
+  return index
+}
+
+function parseQuotedFrontmatterString(code: string, quoteIndex: number): string | undefined {
+  let index = quoteIndex + 1
+  let escaped = false
+
+  while (index < code.length) {
+    const char = code[index]
+    if (char === '"' && !escaped) {
+      return parseJsonString(code.slice(quoteIndex, index + 1))
+    }
+
+    escaped = char === "\\" && !escaped
+    if (char !== "\\") {
+      escaped = false
+    }
+    index += 1
+  }
+
+  return undefined
+}
+
+function parseJsonString(value: string): string | undefined {
+  try {
+    const parsedValue: unknown = JSON.parse(value)
+    return typeof parsedValue === "string" ? parsedValue : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function getRoutePathFromId(id: string, routesDir: string, base: string) {
   const relativePath = id.slice(routesDir.length).replaceAll("\\", "/").replace(/^\//u, "")
   const withoutExtension = relativePath.replace(/\.(?:md|mdx)$/u, "")
-  if (withoutExtension === "index" || withoutExtension === "home") return "/"
+  if (withoutExtension === "index" || withoutExtension === "home") return joinBasePath(base, "/")
   if (withoutExtension.endsWith("/index") || withoutExtension.endsWith("/home")) {
-    return `/${withoutExtension.slice(0, withoutExtension.lastIndexOf("/"))}`
+    return joinBasePath(base, `/${withoutExtension.slice(0, withoutExtension.lastIndexOf("/"))}`)
   }
-  return `/${withoutExtension}`
+  return joinBasePath(base, `/${withoutExtension}`)
+}
+
+function joinBasePath(base: string, routePath: string): string {
+  const trimmedBase = base.trim()
+  if (trimmedBase === "" || trimmedBase === "/") {
+    return routePath
+  }
+
+  const baseWithLeadingSlash = trimmedBase.startsWith("/") ? trimmedBase : `/${trimmedBase}`
+  const normalizedBase = trimTrailingSlashes(baseWithLeadingSlash)
+  const normalizedRoutePath = routePath.startsWith("/") ? routePath : `/${routePath}`
+  return `${normalizedBase}${normalizedRoutePath}`
 }
 
 function toAbsoluteUrl(value: string | undefined, siteUrl: string): string | undefined {
-  if (value == null || value === "") {
+  const trimmedValue = value?.trim()
+  if (trimmedValue == null || trimmedValue === "") {
     return
   }
 
-  if (value.startsWith("http://") || value.startsWith("https://")) {
-    return value
+  if (
+    trimmedValue.startsWith("http://") ||
+    trimmedValue.startsWith("https://") ||
+    trimmedValue.startsWith("//")
+  ) {
+    return trimmedValue
   }
 
-  if (siteUrl === "") {
-    return value
+  const normalizedSiteUrl = trimTrailingSlashes(siteUrl.trim())
+  if (normalizedSiteUrl === "") {
+    return
   }
 
-  const normalizedSiteUrl = siteUrl.replace(/\/$/u, "")
-  const normalizedPath = value.startsWith("/") ? value : `/${value}`
+  const normalizedPath = trimmedValue.startsWith("/") ? trimmedValue : `/${trimmedValue}`
   return `${normalizedSiteUrl}${normalizedPath}`
+}
+
+function trimTrailingSlashes(value: string): string {
+  let end = value.length
+  while (end > 0 && value[end - 1] === "/") {
+    end -= 1
+  }
+  return value.slice(0, end)
 }
 
 function defaultTwitterCard(image: string | undefined) {

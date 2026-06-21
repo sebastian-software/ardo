@@ -97,6 +97,42 @@ ardo({
   you. See the `githubPages` plugin option below.
 </Tip>
 
+### siteUrl
+
+- **Type:** `string`
+- **Default:** `""`
+
+Absolute public URL for the site. Ardo uses it to generate canonical URLs, `og:url`, and absolute social image URLs for Markdown routes.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+})
+```
+
+If your docs are served from a subpath, configure `base` separately. Ardo combines `siteUrl`, `base`, and the route path for generated canonical URLs.
+
+### metadata
+
+- **Type:** `{ image?: string; ogType?: string; twitterCard?: "summary_large_image" | "summary"; twitterSite?: string }`
+- **Default:** `{}`
+
+Site-level defaults for generated Markdown metadata. Page frontmatter can override these values per route.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  metadata: {
+    image: "/social.png",
+    ogType: "website",
+    twitterCard: "summary_large_image",
+    twitterSite: "@example",
+  },
+})
+```
+
 ### srcDir
 
 - **Type:** `string`
