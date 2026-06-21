@@ -6,6 +6,11 @@ import path from "node:path"
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
+import {
+  checkInternalLinks,
+  createBuildOutputAssets,
+  formatLinkCheckDiagnostics,
+} from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createFlattenPlugin } from "./flatten-plugin"
 import { detectGitHash, detectGitHubBasename, detectGitHubRepoName } from "./git-utils"
@@ -13,6 +18,7 @@ import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { readProjectMeta } from "./project-meta"
+import { scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
 import { generateContextSidebars, generateSidebar } from "./sidebar-index"
@@ -30,6 +36,7 @@ const RESOLVED_IDS: Record<string, string> = {
 }
 
 type PluginState = {
+  isSsrBuild?: boolean
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -135,6 +142,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
     configResolved(config) {
+      state.isSsrBuild = config.build.ssr !== false
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
       state.resolvedConfig = resolveArdoConfig(config.root, state.routesDir, options.pressConfig)
     },
@@ -147,6 +155,39 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     transform(code, id) {
       return transformMarkdownMeta(code, id, state)
     },
+    async generateBundle(outputOptions) {
+      if (state.isSsrBuild || isServerOutput(outputOptions.dir) || state.resolvedConfig == null) {
+        return
+      }
+
+      const manifest = await scanRouteManifest(state.routesDir)
+      reportLinkDiagnostics(this, manifest, state.resolvedConfig)
+      for (const asset of createBuildOutputAssets(manifest, state.resolvedConfig)) {
+        this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
+      }
+    },
+  }
+}
+
+function isServerOutput(outputDir: string | undefined) {
+  return outputDir?.replaceAll("\\", "/").endsWith("/server") === true
+}
+
+function reportLinkDiagnostics(
+  context: { error: (message: string) => never; warn: (message: string) => void },
+  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
+  config: ResolvedConfig
+) {
+  const diagnostics = checkInternalLinks(manifest, config)
+  if (diagnostics.length === 0) {
+    return
+  }
+
+  const message = `[ardo] Broken internal links found:\n${formatLinkCheckDiagnostics(diagnostics)}`
+  if (config.linkCheck.level === "error") {
+    context.error(message)
+  } else {
+    context.warn(message)
   }
 }
 
