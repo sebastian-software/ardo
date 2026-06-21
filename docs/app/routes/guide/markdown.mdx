@@ -206,7 +206,7 @@ If the `language` prop is dynamic (from a variable), build-time highlighting is 
 
 Ardo uses standard MDX modules, so reusable content snippets work without a custom syntax or plugin. Put shared fragments in a `snippets/` directory and import them wherever you need the same content.
 
-For example, define a shared prerequisite note in `app/snippets/prerequisites.mdx`:
+For example, define a shared prerequisite note in `app/snippets/prerequisites.mdx`. Snippet files do not need frontmatter when they are rendered inside another page:
 
 ```mdx
 <Tip title="Before you start">
@@ -215,17 +215,20 @@ For example, define a shared prerequisite note in `app/snippets/prerequisites.md
 </Tip>
 ```
 
-Then import and render it from any MDX page:
+Then import and render it from any MDX page inside `ArdoBareContent` so the snippet does not bring its own page wrapper:
 
 ```mdx
+import { ArdoBareContent } from "ardo/ui"
 import Prerequisites from "../../snippets/prerequisites.mdx"
 
 # Getting Started
 
-<Prerequisites runtime="Node.js 22+" packageManager="pnpm" />
+<ArdoBareContent>
+  <Prerequisites runtime="Node.js 22+" packageManager="pnpm" />
+</ArdoBareContent>
 ```
 
-Snippets can receive props in normal MDX expressions, compose Ardo components, and live alongside the rest of your application code. Because they are just MDX modules, Vite handles hot reloads and TypeScript-aware imports the same way as other route dependencies.
+Snippets can receive props in normal MDX expressions, compose Ardo components, and live alongside the rest of your application code. Because they are just MDX modules, Vite handles hot reloads and imports the same way as other route dependencies.
 
 <Note>
   Use a relative import that matches your route depth. For example, a page in `app/routes/guide/`
