@@ -7,9 +7,15 @@ import { createGlobalTheme } from "@vanilla-extract/css"
 
 import { vars } from "./contract.css"
 
+type HueValue = number | string
+
 // eslint-disable-next-line max-params -- mirrors CSS oklch() syntax
-const oklch = (l: number, c: number, h: number, alpha?: number) =>
+const oklch = (l: number, c: number, h: HueValue, alpha?: number) =>
   alpha !== undefined ? `oklch(${l} ${c} ${h} / ${alpha})` : `oklch(${l} ${c} ${h})`
+
+function hueOffset(hue: HueValue, offset: number): HueValue {
+  return typeof hue === "number" ? hue + offset : `calc(${hue} + ${offset})`
+}
 
 const fontFamily =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
@@ -66,36 +72,32 @@ const shared = {
   },
 }
 
-function createLightColors(primary: number, secondary: number) {
-  // Neutrals carry the *primary* hue at very low chroma — the whole page
-  // reads as faintly warm, never blue or pink. Code surfaces (further down)
-  // explicitly use the secondary hue so they stay visibly cool against this
-  // warm base.
-  const neutralHue = primary
+function createLightColors() {
+  const primary = vars.hue.brand
+  const secondary = vars.hue.accent
+  const neutral = vars.hue.neutral
   return {
     brand: oklch(0.5, 0.1, primary),
     brandLight: oklch(0.62, 0.09, primary),
     brandDark: oklch(0.39, 0.11, primary),
     brandSubtle: oklch(0.955, 0.025, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.5, 0.1, primary)} 0%, ${oklch(0.6, 0.075, primary + 16)} 100%)`,
+    brandGradient: `linear-gradient(135deg, ${oklch(0.5, 0.1, primary)} 0%, ${oklch(0.6, 0.075, hueOffset(primary, 16))} 100%)`,
     accent: oklch(0.5, 0.075, secondary),
     accentLight: oklch(0.62, 0.07, secondary),
     accentDark: oklch(0.38, 0.085, secondary),
     accentSubtle: oklch(0.963, 0.012, secondary),
-    bg: oklch(0.992, 0.0015, neutralHue),
-    bgSoft: oklch(0.975, 0.003, neutralHue),
-    bgMute: oklch(0.955, 0.004, neutralHue),
-    bgAlt: oklch(0.935, 0.005, neutralHue),
-    text: oklch(0.17, 0.008, neutralHue),
-    textLight: oklch(0.4, 0.007, neutralHue),
-    textLighter: oklch(0.56, 0.005, neutralHue),
-    border: oklch(0.88, 0.005, neutralHue),
-    borderLight: oklch(0.925, 0.003, neutralHue),
-    divider: oklch(0.89, 0.004, neutralHue),
-    sidebarBg: oklch(0.965, 0.004, neutralHue),
-    sidebarBorder: oklch(0.885, 0.005, neutralHue),
-    // Code blocks live on the secondary (cool) hue — a visible step away
-    // from the warm neutrals so the two surfaces never read as the same.
+    bg: oklch(0.992, 0.0015, neutral),
+    bgSoft: oklch(0.975, 0.003, neutral),
+    bgMute: oklch(0.955, 0.004, neutral),
+    bgAlt: oklch(0.935, 0.005, neutral),
+    text: oklch(0.17, 0.008, neutral),
+    textLight: oklch(0.4, 0.007, neutral),
+    textLighter: oklch(0.56, 0.005, neutral),
+    border: oklch(0.88, 0.005, neutral),
+    borderLight: oklch(0.925, 0.003, neutral),
+    divider: oklch(0.89, 0.004, neutral),
+    sidebarBg: oklch(0.965, 0.004, neutral),
+    sidebarBorder: oklch(0.885, 0.005, neutral),
     codeBg: oklch(0.965, 0.012, secondary),
     codeBorder: oklch(0.88, 0.016, secondary),
     codeShadow: "0 1px 2px oklch(0 0 0 / 0.025)",
@@ -138,32 +140,32 @@ function createLightColors(primary: number, secondary: number) {
   }
 }
 
-function createDarkColors(primary: number, secondary: number) {
-  // See note in createLightColors — neutrals follow the primary hue.
-  const neutralHue = primary
+function createDarkColors() {
+  const primary = vars.hue.brand
+  const secondary = vars.hue.accent
+  const neutral = vars.hue.neutral
   return {
     brand: oklch(0.74, 0.115, primary),
     brandLight: oklch(0.84, 0.1, primary),
     brandDark: oklch(0.62, 0.125, primary),
     brandSubtle: oklch(0.275, 0.06, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.74, 0.115, primary)} 0%, ${oklch(0.81, 0.08, primary + 16)} 100%)`,
+    brandGradient: `linear-gradient(135deg, ${oklch(0.74, 0.115, primary)} 0%, ${oklch(0.81, 0.08, hueOffset(primary, 16))} 100%)`,
     accent: oklch(0.74, 0.08, secondary),
     accentLight: oklch(0.84, 0.07, secondary),
     accentDark: oklch(0.6, 0.09, secondary),
     accentSubtle: oklch(0.26, 0.03, secondary),
-    bg: oklch(0.155, 0.008, neutralHue),
-    bgSoft: oklch(0.195, 0.009, neutralHue),
-    bgMute: oklch(0.255, 0.01, neutralHue),
-    bgAlt: oklch(0.33, 0.01, neutralHue),
-    text: oklch(0.94, 0.004, neutralHue),
-    textLight: oklch(0.72, 0.007, neutralHue),
-    textLighter: oklch(0.55, 0.007, neutralHue),
-    border: oklch(0.285, 0.011, neutralHue),
-    borderLight: oklch(0.35, 0.01, neutralHue),
-    divider: oklch(0.29, 0.01, neutralHue),
-    sidebarBg: oklch(0.13, 0.008, neutralHue),
-    sidebarBorder: oklch(0.265, 0.011, neutralHue),
-    // Code blocks live on the secondary (cool) hue — same split as light.
+    bg: oklch(0.155, 0.008, neutral),
+    bgSoft: oklch(0.195, 0.009, neutral),
+    bgMute: oklch(0.255, 0.01, neutral),
+    bgAlt: oklch(0.33, 0.01, neutral),
+    text: oklch(0.94, 0.004, neutral),
+    textLight: oklch(0.72, 0.007, neutral),
+    textLighter: oklch(0.55, 0.007, neutral),
+    border: oklch(0.285, 0.011, neutral),
+    borderLight: oklch(0.35, 0.01, neutral),
+    divider: oklch(0.29, 0.01, neutral),
+    sidebarBg: oklch(0.13, 0.008, neutral),
+    sidebarBorder: oklch(0.265, 0.011, neutral),
     codeBg: oklch(0.21, 0.016, secondary),
     codeBorder: oklch(0.33, 0.024, secondary),
     codeShadow: "0 10px 26px oklch(0 0 0 / 0.18)",
@@ -218,8 +220,12 @@ function defaultSecondary(primary: number): number {
 }
 
 export type ArdoBrandHues = {
+  /** Main brand hue used by primary accents and calls to action. */
   primary: number
+  /** Accent hue used by secondary accents and code surfaces. Defaults from the primary hue. */
   secondary?: number
+  /** Neutral chrome hue used by backgrounds, borders, text, header, and sidebar. Defaults to primary. */
+  neutral?: number
 }
 
 export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
@@ -227,9 +233,26 @@ export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?
   const explicitSecondary =
     typeof primaryOrHues === "number" ? secondaryArg : primaryOrHues.secondary
   const secondary = explicitSecondary ?? defaultSecondary(primary)
+  const neutral = typeof primaryOrHues === "number" ? primary : (primaryOrHues.neutral ?? primary)
   return {
-    light: { color: createLightColors(primary, secondary), ...shared },
-    dark: { color: createDarkColors(primary, secondary), ...shared },
+    light: {
+      hue: {
+        brand: String(primary),
+        accent: String(secondary),
+        neutral: String(neutral),
+      },
+      color: createLightColors(),
+      ...shared,
+    },
+    dark: {
+      hue: {
+        brand: String(primary),
+        accent: String(secondary),
+        neutral: String(neutral),
+      },
+      color: createDarkColors(),
+      ...shared,
+    },
   }
 }
 
