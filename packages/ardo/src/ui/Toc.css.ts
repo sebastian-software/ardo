@@ -8,10 +8,10 @@ export const toc = style({
 
 export const tocTitle = style({
   fontSize: vars.fontSize.xs,
-  fontWeight: 700,
+  fontWeight: 600,
   textTransform: "uppercase",
-  letterSpacing: "0.06em",
-  color: vars.color.textLight,
+  letterSpacing: "0.08em",
+  color: vars.color.textLighter,
   marginBottom: vars.space.sm,
 })
 
@@ -35,8 +35,8 @@ export const tocLink = style({
       borderLeftColor: vars.color.border,
     },
     "&.active": {
-      color: vars.color.brand,
-      borderLeftColor: vars.color.brand,
+      color: vars.color.accent,
+      borderLeftColor: vars.color.accent,
       fontWeight: 500,
     },
   },

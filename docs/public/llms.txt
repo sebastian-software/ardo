@@ -1,6 +1,6 @@
 # Ardo
 
-> React-first Static Documentation Framework built on React 19, React Router 7, and Vite.
+> React-first Static Documentation Framework built on React 19, React Router 8, and Vite.
 
 Ardo combines the developer experience of VitePress with the power of the React ecosystem. Write documentation in Markdown, use React components, and deploy as a static site.
 
@@ -41,7 +41,7 @@ pnpm add -D typescript vite @types/react @types/react-dom
 - Build-time config (title, description, markdown, typedoc) is passed to `ardo()`
 - UI configuration (nav, sidebar, footer, editLink) is done via JSX props in `root.tsx`
 - Content lives in `app/routes/` as MDX/MD files
-- Uses React Router 7 for file-based routing and pre-rendering
+- Uses React Router 8 for file-based routing and pre-rendering
 - JSX-first architecture: theme components accept explicit props
 - Built-in full-text search via MiniSearch
 - Dark mode via CSS custom properties

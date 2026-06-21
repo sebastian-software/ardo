@@ -3,7 +3,7 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { generateSidebar } from "./sidebar-index"
+import { generateContextSidebars, generateSidebar } from "./sidebar-index"
 
 let routesDir: string
 
@@ -160,6 +160,50 @@ sidebar: false
       {
         text: "Guide",
         items: [{ text: "Visible", link: "/guide/visible" }],
+      },
+    ])
+  })
+
+  it("groups sidebars by top-level folder for context-driven sites", async () => {
+    await writeRoute("guide/getting-started.mdx", "---\ntitle: Getting Started\n---\n")
+    await writeRoute("guide/advanced.mdx", "---\ntitle: Advanced\n---\n")
+    await writeRoute(
+      "api-reference/components/index.md",
+      "---\ntitle: Components\nsidebar: leaf\n---\n"
+    )
+    await writeRoute("api-reference/components/foo.md", "---\ntitle: Foo\n---\n")
+    await writeRoute("home.tsx", "// not a markdown file, ignored\n")
+
+    expect(toVirtualSidebar(await generateContextSidebars(routesDir))).toStrictEqual({
+      guide: [
+        { text: "Advanced", link: "/guide/advanced" },
+        { text: "Getting Started", link: "/guide/getting-started" },
+      ],
+      "api-reference": [{ text: "Components", link: "/api-reference/components" }],
+    })
+  })
+
+  it("renders a folder as a leaf link when its index sets sidebar: leaf", async () => {
+    await writeRoute(
+      "api/index.md",
+      `---
+title: API Reference
+sidebar: leaf
+---
+`
+    )
+    await writeRoute("api/foo.md", "---\ntitle: Foo\n---\n")
+    await writeRoute("api/bar.md", "---\ntitle: Bar\n---\n")
+    await writeRoute("guide/intro.mdx", "---\ntitle: Intro\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "API Reference",
+        link: "/api",
+      },
+      {
+        text: "Guide",
+        items: [{ text: "Intro", link: "/guide/intro" }],
       },
     ])
   })

@@ -2,7 +2,7 @@
 
 Modern, open documentation for React teams.
 
-Ardo is a React-first static documentation framework built on React 19, React Router 7, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
+Ardo is a React-first static documentation framework built on React 19, React Router 8, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
 
 ## Why use it?
 

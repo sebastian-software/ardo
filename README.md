@@ -28,7 +28,7 @@ You build your product in React. Your components are React. Your design system, 
 
 Then documentation work starts and suddenly the docs stack asks your team to switch mental models: another component system, another router, another theming model, another place where your existing UI does not quite fit.
 
-Ardo keeps docs inside the React stack. It is a static documentation framework built on React 19, React Router 7, Vite 8, MDX, TypeScript, and Vanilla Extract. It gives React teams the simplicity people like in VitePress, without leaving React or handing their docs to a closed platform.
+Ardo keeps docs inside the React stack. It is a static documentation framework built on React 19, React Router 8, Vite 8, MDX, TypeScript, and Vanilla Extract. It gives React teams the simplicity people like in VitePress, without leaving React or handing their docs to a closed platform.
 
 ## What you get
 

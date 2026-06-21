@@ -24,6 +24,35 @@ export const sidebarRail = style({
   background: vars.color.bgSoft,
 })
 
+export const sidebarRailItem = style({
+  position: "relative",
+})
+
+export const sidebarRailLabel = style({
+  position: "absolute",
+  left: "calc(100% + 0.75rem)",
+  top: "50%",
+  transform: "translateY(-50%) translateX(-4px)",
+  padding: "0.375rem 0.625rem",
+  background: vars.color.text,
+  color: vars.color.bg,
+  fontSize: vars.fontSize.xs,
+  fontWeight: 500,
+  borderRadius: vars.radius.sm,
+  whiteSpace: "nowrap",
+  pointerEvents: "none",
+  opacity: 0,
+  transition: `opacity ${vars.transition.fast}, transform ${vars.transition.fast}`,
+  selectors: {
+    [`${sidebarRailItem}:hover &`]: {
+      opacity: 1,
+      transform: "translateY(-50%) translateX(0)",
+      transitionDelay: "200ms",
+    },
+  },
+  zIndex: 50,
+})
+
 export const sidebarRailList = style({
   display: "flex",
   flexDirection: "column",
@@ -100,15 +129,23 @@ export const sidebarList1 = style({
 
 export const sidebarItem = style({})
 
+/**
+ * Applied to `<li>` items that contain a collapsible group. Groups get
+ * breathing room above them; plain links sit tight together (their own
+ * padding provides the rhythm).
+ */
+export const sidebarItemGroup = style({
+  selectors: {
+    "&:not(:first-child)": {
+      marginTop: vars.space.lg,
+    },
+  },
+})
+
 export const sidebarItemHeader = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  selectors: {
-    "li:not(:first-child) > &": {
-      marginTop: vars.space.lg,
-    },
-  },
 })
 
 export const sidebarLink = style({
@@ -118,7 +155,8 @@ export const sidebarLink = style({
   textDecoration: "none",
   fontSize: vars.fontSize.sm,
   fontWeight: 400,
-  borderRadius: vars.radius.base,
+  borderLeft: "2px solid transparent",
+  borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
@@ -128,6 +166,7 @@ export const sidebarLink = style({
     "&.active": {
       color: vars.color.brand,
       background: vars.color.brandSubtle,
+      borderLeftColor: vars.color.brand,
       fontWeight: 500,
     },
   },
@@ -142,9 +181,8 @@ export const sidebarText = style({
   color: vars.color.textLight,
   textDecoration: "none",
   fontWeight: 600,
-  fontSize: vars.fontSize.xs,
-  textTransform: "uppercase",
-  letterSpacing: "0.07em",
+  fontSize: vars.fontSize.sm,
+  letterSpacing: "-0.005em",
   transition: `all ${vars.transition.fast}`,
   selectors: {
     "&:hover": {

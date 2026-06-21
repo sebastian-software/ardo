@@ -226,6 +226,6 @@ export type GeneratedApiDoc = {
     title: string
     description?: string
     sidebar_position?: number
-    sidebar?: boolean
+    sidebar?: "leaf" | boolean
   }
 }

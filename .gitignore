@@ -6,6 +6,7 @@ dist
 build
 .output
 .vinxi
+storybook-static
 
 # Generated files
 **/routeTree.gen.ts
@@ -14,6 +15,7 @@ build
 # IDE
 .idea
 .vscode
+.claude
 *.swp
 *.swo
 

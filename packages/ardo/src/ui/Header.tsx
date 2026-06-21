@@ -1,8 +1,8 @@
-import { type ReactNode, useEffect, useState } from "react"
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
-import { ArdoSearch } from "./components/Search"
+import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import {
@@ -11,9 +11,9 @@ import {
   MessageCircleIcon,
   NpmIcon,
   TwitterIcon,
-  XIcon,
   YoutubeIcon,
 } from "./icons"
+import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
 
 // =============================================================================
@@ -41,42 +41,51 @@ export type ArdoHeaderProps = {
   className?: string
 }
 
+/**
+ * Mobile menu open state — resets on navigation and locks body scroll
+ * while open.
+ */
+function useMobileMenu(): [boolean, (open: boolean) => void] {
+  const location = useLocation()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [open])
+
+  return [open, setOpen]
+}
+
 export function ArdoHeader({
   logo,
   title,
   nav,
   actions,
-  search = false,
+  search = true,
   searchPlaceholder,
   themeToggle = true,
   mobileMenuContent,
   className,
 }: ArdoHeaderProps) {
-  const location = useLocation()
   const config = useArdoConfig()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
 
   const resolvedLogo = logo
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""
   const hasMobileMenu = mobileMenuContent != null
-
-  useEffect(() => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
-  }, [location.pathname])
-
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [mobileMenuOpen])
+  }, [setMobileMenuOpen])
 
   return (
     <>
@@ -85,6 +94,7 @@ export function ArdoHeader({
           <div className={styles.headerLeft}>
             {hasMobileMenu && (
               <button
+                ref={mobileMenuButtonRef}
                 type="button"
                 className={styles.mobileMenuButton}
                 onClick={() => {
@@ -112,108 +122,34 @@ export function ArdoHeader({
             </Link>
           </div>
 
-          {nav != null && <div className={styles.desktopNav}>{nav}</div>}
+          {search && (
+            <div className={styles.headerCenter}>
+              <ArdoHeaderSearch placeholder={searchPlaceholder} />
+            </div>
+          )}
 
           <div className={styles.headerRight}>
-            {search && <ArdoSearch placeholder={searchPlaceholder} />}
+            {nav != null && <div className={styles.desktopNav}>{nav}</div>}
             {themeToggle && <ArdoThemeToggle />}
             {actions}
           </div>
         </div>
-        {nav != null && <div className={styles.mobileNavStrip}>{nav}</div>}
       </header>
 
-      {hasMobileMenu && (
+      {hasMobileMenu && mobileMenuOpen && (
         <MobileSlidePanel
-          isOpen={mobileMenuOpen}
           logo={resolvedLogo}
           title={resolvedTitle}
           nav={nav}
           themeToggle={themeToggle}
-          onClose={() => {
-            setMobileMenuOpen(false)
-          }}
+          triggerRef={mobileMenuButtonRef}
+          onClose={closeMobileMenu}
         >
           {mobileMenuContent}
         </MobileSlidePanel>
       )}
     </>
   )
-}
-
-// =============================================================================
-// Mobile Slide-in Panel
-// =============================================================================
-
-function MobileSlidePanel({
-  isOpen,
-  logo,
-  title,
-  nav,
-  themeToggle,
-  children,
-  onClose,
-}: {
-  isOpen: boolean
-  logo?: { light: string; dark: string } | string
-  title: string
-  nav?: ReactNode
-  themeToggle?: boolean
-  children: ReactNode
-  onClose: () => void
-}) {
-  return (
-    <>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-      <div className={styles.mobileBackdrop} data-open={isOpen} onClick={onClose} />
-
-      {/* Panel */}
-      <div className={styles.mobilePanel} data-open={isOpen} aria-hidden={!isOpen}>
-        <div className={styles.mobilePanelHeader}>
-          <Link to="/" className={styles.logoLink} onClick={onClose}>
-            {logo != null && (
-              <img
-                src={typeof logo === "string" ? logo : logo.light}
-                alt={title}
-                className={styles.logo}
-              />
-            )}
-          </Link>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            {themeToggle && <ArdoThemeToggle />}
-            <button
-              type="button"
-              className={styles.mobilePanelClose}
-              onClick={onClose}
-              aria-label="Close menu"
-            >
-              <XIcon size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* Nav links */}
-        {nav != null && (
-          <div className={styles.mobilePanelNav} onClickCapture={handleLinkClick(onClose)}>
-            {nav}
-          </div>
-        )}
-
-        {/* Sidebar content - wrapper overrides display:none from sidebar CSS */}
-        <div className={styles.mobilePanelSidebar} onClickCapture={handleLinkClick(onClose)}>
-          {children}
-        </div>
-      </div>
-    </>
-  )
-}
-
-function handleLinkClick(onClose: () => void) {
-  return (event: React.MouseEvent<HTMLElement>) => {
-    if (event.target instanceof HTMLElement && event.target.closest("a") !== null) {
-      onClose()
-    }
-  }
 }
 
 // =============================================================================

@@ -3,9 +3,20 @@ packages:
   - docs
   - examples/*
 
+overrides:
+  eslint-plugin-oxlint: 1.70.0
+  oxlint: 1.70.0
+
+peerDependencyRules:
+  allowedVersions:
+    "eslint-plugin-jsx-a11y>eslint": "^10.0.0"
+
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - vite@8.0.16
 
 onlyBuiltDependencies:
   - esbuild

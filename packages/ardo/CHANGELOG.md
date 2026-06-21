@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.4.0...ardo-v3.5.0) (2026-05-22)
+
+
+### Features
+
+* spacing polish for heading rhythm, code and card padding ([7ce4f6e](https://github.com/sebastian-software/ardo/commit/7ce4f6ee79b9d242dc3f5a46808d544a6966c089))
+
+## [3.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.3.0...ardo-v3.4.0) (2026-05-21)
+
+
+### Features
+
+* context-aware sidebar rail with auto sidebars and bare layouts ([f7f2a69](https://github.com/sebastian-software/ardo/commit/f7f2a698046b78a8ab55a2549008934302cc87d2))
+* duo-tone color system with warm chrome and cool code surfaces ([99a895d](https://github.com/sebastian-software/ardo/commit/99a895d15c1e5594080656f1581f0af066630d75))
+* move search into the header with a mobile overlay ([b5025d7](https://github.com/sebastian-software/ardo/commit/b5025d7cc5438d34672e92c27c1314ae9adc6856))
+
 ## [3.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.2.1...ardo-v3.3.0) (2026-05-09)
 
 

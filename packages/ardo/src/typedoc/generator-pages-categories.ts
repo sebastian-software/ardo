@@ -48,7 +48,7 @@ function createComponentsIndexPage(
       items: components,
       title: "Components",
     }),
-    frontmatter: { sidebar: false, title: "Components" },
+    frontmatter: { sidebar: "leaf", title: "Components" },
     path: "components/index.md",
   }
 }
@@ -69,7 +69,7 @@ function createInterfacesIndexPage(
       items: interfaces,
       title: "Interfaces",
     }),
-    frontmatter: { sidebar: false, title: "Interfaces" },
+    frontmatter: { sidebar: "leaf", title: "Interfaces" },
     path: "interfaces/index.md",
   }
 }
@@ -90,7 +90,7 @@ function createClassesIndexPage(
       items: classes,
       title: "Classes",
     }),
-    frontmatter: { sidebar: false, title: "Classes" },
+    frontmatter: { sidebar: "leaf", title: "Classes" },
     path: "classes/index.md",
   }
 }
@@ -131,7 +131,7 @@ function createFunctionsIndexPage(
       packageNameCache: context.packageNameCache,
       title: "Functions",
     }),
-    frontmatter: { sidebar: false, title: "Functions" },
+    frontmatter: { sidebar: "leaf", title: "Functions" },
     path: "functions/index.md",
   }
 }
@@ -152,7 +152,7 @@ function createTypesIndexPage(
       packageNameCache: context.packageNameCache,
       title: "Types",
     }),
-    frontmatter: { sidebar: false, title: "Types" },
+    frontmatter: { sidebar: "leaf", title: "Types" },
     path: "types/index.md",
   }
 }
