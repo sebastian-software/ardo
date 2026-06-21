@@ -193,6 +193,12 @@ export type ArdoConfig = {
   sidebar?: SidebarConfig
   /** Site-level social metadata defaults */
   metadata?: MetadataConfig
+  /** Sitemap and robots.txt generation */
+  seo?: SeoConfig
+  /** Build-time internal link checking */
+  linkCheck?: LinkCheckConfig
+  /** Static redirect generation */
+  redirects?: RedirectConfig[]
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
@@ -219,6 +225,42 @@ export type MetadataConfig = {
   twitterSite?: string
 }
 
+export type SeoConfig = {
+  sitemap?: boolean | SitemapConfig
+  robots?: boolean | RobotsConfig
+}
+
+export type SitemapConfig = {
+  changefreq?: SitemapChangefreq
+  priority?: number
+}
+
+export type SitemapChangefreq =
+  | "always"
+  | "daily"
+  | "hourly"
+  | "monthly"
+  | "never"
+  | "weekly"
+  | "yearly"
+
+export type RobotsConfig = {
+  allow?: string[]
+  disallow?: string[]
+}
+
+export type LinkCheckConfig = {
+  checkAnchors?: boolean
+  enabled?: boolean
+  exclude?: string[]
+  level?: "error" | "warn"
+}
+
+export type RedirectConfig = {
+  from: string
+  to: string
+}
+
 // =============================================================================
 // Page Types
 // =============================================================================
@@ -242,6 +284,8 @@ export type PageFrontmatter = {
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
+  sitemap?: boolean
+  redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string
   next?: { text: string; link: string } | false | string
   hero?: {
