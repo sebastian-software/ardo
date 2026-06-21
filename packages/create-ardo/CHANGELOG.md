@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.6.0...create-ardo-v3.6.1) (2026-06-21)
+
+
+### Documentation
+
+* refresh stale setup references ([#191](https://github.com/sebastian-software/ardo/issues/191)) ([a91c73a](https://github.com/sebastian-software/ardo/commit/a91c73a7fabc6e52d0174e3f7e0d6cd3bdf9d513))
+
 ## [3.6.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.5.0...create-ardo-v3.6.0) (2026-06-21)
 
 
