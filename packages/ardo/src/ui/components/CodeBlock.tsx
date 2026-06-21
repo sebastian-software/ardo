@@ -76,6 +76,7 @@ function CodeBlockContent({
   lineNumbers: boolean
   children?: React.ReactNode
 }) {
+  // The Ardo build plugin injects Shiki-generated HTML here. Runtime code samples and custom children render through React instead.
   if (hasHtml) return <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
   if (hasCustomChildren) return <>{children}</>
   return (

@@ -188,6 +188,10 @@ export function Layout({ children }) {
 }
 ```
 
+Footer `message` and `copyright` props render as React content, so plain strings are escaped. If you
+need footer markup from a trusted source, use `trustedMessageHtml` or `trustedCopyrightHtml`; do not
+pass user- or CMS-provided content to those props.
+
 ## Runtime Hooks
 
 When building custom components, you'll need access to site configuration, sidebar data, and page metadata. Ardo provides React hooks for all of it:
