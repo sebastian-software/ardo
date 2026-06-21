@@ -9,11 +9,15 @@ export type RouteManifestEntry = {
   content: string
   filePath: string
   frontmatter: {
+    description?: string
+    llms?: boolean
     redirectFrom?: string[]
     sitemap?: boolean
+    title?: string
   }
   lastmod: Date
   path: string
+  source: "markdown" | "tsx"
 }
 
 export async function scanRouteManifest(routesDir: string): Promise<RouteManifestEntry[]> {
@@ -68,11 +72,15 @@ async function createManifestEntry(
     content: parsed.content,
     filePath,
     frontmatter: {
+      description: typeof data.description === "string" ? data.description : undefined,
+      llms: typeof data.llms === "boolean" ? data.llms : undefined,
       redirectFrom: parseRedirectFrom(data.redirectFrom),
       sitemap: typeof data.sitemap === "boolean" ? data.sitemap : undefined,
+      title: typeof data.title === "string" ? data.title : undefined,
     },
     lastmod: stat.mtime,
     path: toRoutePath(relativePath, extension),
+    source: extension === ".tsx" ? "tsx" : "markdown",
   }
 }
 

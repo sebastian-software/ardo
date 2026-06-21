@@ -6,6 +6,7 @@ export default defineConfig({
     ardo({
       title: "Ardo",
       description: "React-first Static Documentation Framework",
+      siteUrl: "https://ardo-docs.dev",
       githubPages: false,
 
       // TypeDoc API documentation

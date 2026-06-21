@@ -3,6 +3,7 @@ export { defineConfig, loadConfig, resolveConfig } from "./config"
 export type {
   ArdoConfig,
   HeadConfig,
+  LlmsConfig,
   MarkdownConfig,
   NavItem,
   PageData,

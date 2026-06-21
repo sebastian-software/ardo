@@ -135,6 +135,36 @@ ardo({
 })
 ```
 
+### seo.llms
+
+- **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
+- **Default:** `true`
+
+Generates LLM-friendly text artifacts alongside the other build outputs:
+
+- `/llms.txt` is a concise Markdown index with links to Markdown and MDX routes.
+- `/llms-full.txt` is the same documentation content as one Markdown file.
+
+Ardo uses page frontmatter titles and descriptions when available, skips TSX routes, and strips MDX
+imports, exports, and JSX component tags from the full export. Set `llms: false` in page
+frontmatter to exclude a Markdown page from both files.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    llms: {
+      title: "My Docs",
+      description: "Developer documentation for my package.",
+      includeFull: true,
+    },
+  },
+})
+```
+
+Set `seo.llms: false` if you want to manage these files yourself from `public/`.
+
 ### srcDir
 
 - **Type:** `string`
