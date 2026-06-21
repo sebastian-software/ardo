@@ -1,3 +1,5 @@
+export { ArdoAccordion, ArdoAccordionGroup } from "./Accordion"
+export type { ArdoAccordionGroupProps, ArdoAccordionProps } from "./Accordion"
 export { ArdoBadge } from "./Badge"
 export type { ArdoBadgeProps, ArdoBadgeVariant } from "./Badge"
 export { ArdoCard, ArdoCardGroup } from "./Card"

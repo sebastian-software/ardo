@@ -211,6 +211,32 @@ You can customize the callout title:
 
 <Tip title="Pro Tip">This is a pro tip with a custom title.</Tip>
 
+## Accordions
+
+Use `Accordion` and `AccordionGroup` for collapsible FAQ items, optional explanations, and compact reference sections. Add `onlyOneOpen` to the group when only one item should stay open at a time.
+
+```mdx
+<AccordionGroup onlyOneOpen>
+  <Accordion title="How do I install Ardo?" defaultOpen>
+    Run `pnpm create ardo` to scaffold a new project.
+  </Accordion>
+  <Accordion title="Can I use it with existing projects?">
+    Yes, Ardo can be added to an existing React Router project.
+  </Accordion>
+</AccordionGroup>
+```
+
+<AccordionGroup onlyOneOpen>
+  <Accordion title="How do I install Ardo?" defaultOpen>
+    Run `pnpm create ardo` to scaffold a new project.
+  </Accordion>
+  <Accordion title="Can I use it with existing projects?">
+    Yes, Ardo can be added to an existing React Router project.
+  </Accordion>
+</AccordionGroup>
+
+Each accordion also supports an optional `icon` and can be used standalone without a group.
+
 ## Code Groups
 
 Display multiple code variants in tabs:

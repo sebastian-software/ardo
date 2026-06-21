@@ -17,6 +17,7 @@ import "./Footer.css"
 import "./DocPage.css"
 import "./content.css"
 // Components
+import "./components/Accordion.css"
 import "./components/Card.css"
 import "./components/CodeBlock.css"
 import "./components/Container.css"

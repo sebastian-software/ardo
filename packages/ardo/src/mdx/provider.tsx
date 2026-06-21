@@ -4,6 +4,7 @@ import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
 import { isValidElement } from "react"
 import { Link } from "react-router"
 
+import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
 import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
@@ -113,6 +114,8 @@ export function useMDXComponents(): MDXComponents {
     pre: PreBlock,
 
     // Custom Ardo components available in MDX (mapped as short names)
+    Accordion: ArdoAccordion,
+    AccordionGroup: ArdoAccordionGroup,
     Badge: ArdoBadge,
     Card: ArdoCard,
     CardGroup: ArdoCardGroup,

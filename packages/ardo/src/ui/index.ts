@@ -4,6 +4,8 @@ export type { ArdoRootProps } from "./ArdoRoot"
 export { ArdoBareContent } from "./BareContent"
 // UI components
 export {
+  ArdoAccordion,
+  ArdoAccordionGroup,
   ArdoBadge,
   ArdoCard,
   ArdoCardGroup,
@@ -33,6 +35,8 @@ export {
 } from "./components"
 
 export type {
+  ArdoAccordionGroupProps,
+  ArdoAccordionProps,
   ArdoBadgeProps,
   ArdoBadgeVariant,
   ArdoCardGroupColumns,
