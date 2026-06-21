@@ -177,6 +177,8 @@ export type ArdoConfig = {
   titleSeparator?: string
   /** Base URL path */
   base?: string
+  /** Absolute site URL used for canonical and social metadata URLs */
+  siteUrl?: string
   /** Content source directory (default: 'content') */
   srcDir?: string
   /** Build output directory (default: 'dist') */
@@ -189,8 +191,8 @@ export type ArdoConfig = {
   markdown?: MarkdownConfig
   /** Generated sidebar options */
   sidebar?: SidebarConfig
-  /** Absolute site URL used for generated SEO files and canonical metadata */
-  siteUrl?: string
+  /** Site-level social metadata defaults */
+  metadata?: MetadataConfig
   /** Sitemap and robots.txt generation */
   seo?: SeoConfig
   /** Build-time internal link checking */
@@ -214,6 +216,13 @@ export type ArdoConfig = {
   buildTime?: string
   /** Git commit hash (set automatically by the Vite plugin) */
   buildHash?: string
+}
+
+export type MetadataConfig = {
+  image?: string
+  ogType?: string
+  twitterCard?: "summary_large_image" | "summary"
+  twitterSite?: string
 }
 
 export type SeoConfig = {
@@ -259,6 +268,15 @@ export type RedirectConfig = {
 export type PageFrontmatter = {
   title?: string
   description?: string
+  canonical?: string
+  ogDescription?: string
+  ogImage?: string
+  ogTitle?: string
+  ogType?: string
+  twitterCard?: "summary_large_image" | "summary"
+  twitterDescription?: string
+  twitterImage?: string
+  twitterTitle?: string
   order?: number
   collapsed?: boolean
   layout?: "doc" | "home" | "page"
