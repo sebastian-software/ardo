@@ -21,13 +21,13 @@ export const Group: Story = {
   },
   render: () => (
     <ArdoAccordionGroup onlyOneOpen>
-      <ArdoAccordion title="How do I install Ardo?" icon="⚡" defaultOpen>
+      <ArdoAccordion title="How do I install Ardo?" icon={<span>⚡</span>} defaultOpen>
         Run <code>pnpm create ardo</code> to scaffold a new project.
       </ArdoAccordion>
-      <ArdoAccordion title="Can I use it with existing projects?" icon="🧩">
+      <ArdoAccordion title="Can I use it with existing projects?" icon={<span>🧩</span>}>
         Yes, Ardo can be added to an existing React Router project.
       </ArdoAccordion>
-      <ArdoAccordion title="Does it support MDX?" icon="📝">
+      <ArdoAccordion title="Does it support MDX?" icon={<span>📝</span>}>
         Ardo renders Markdown and MDX content through the built-in MDX provider.
       </ArdoAccordion>
     </ArdoAccordionGroup>

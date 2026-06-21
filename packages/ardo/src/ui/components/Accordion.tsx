@@ -1,6 +1,15 @@
-import type { ReactNode } from "react"
+import type { ElementType, ReactNode } from "react"
 
-import { createContext, use, useId, useLayoutEffect, useMemo, useState } from "react"
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  use,
+  useId,
+  useMemo,
+  useState,
+} from "react"
 
 import * as styles from "./Accordion.css"
 import { ArdoIcon } from "./Icon"
@@ -12,6 +21,8 @@ type AccordionGroupContextValue = {
 }
 
 const AccordionGroupContext = createContext<AccordionGroupContextValue | null>(null)
+
+export type ArdoAccordionHeadingLevel = 2 | 3 | 4 | 5 | 6
 
 export type ArdoAccordionGroupProps = {
   /** Accordion items to display. */
@@ -31,6 +42,8 @@ export type ArdoAccordionProps = {
   defaultOpen?: boolean
   /** Optional registered icon name or custom React node shown before the title. */
   icon?: ReactNode | string
+  /** Heading level used for the accordion trigger. */
+  headingLevel?: ArdoAccordionHeadingLevel
   /** Stable item value used by AccordionGroup only-one-open mode. */
   value?: string
   /** Additional CSS class. */
@@ -45,6 +58,35 @@ function AccordionIcon({ icon }: { icon: ReactNode | string }) {
   )
 }
 
+function fallbackValue(index: number): string {
+  return `ardo-accordion-${index}`
+}
+
+function resolveAccordionGroupChildren(children: ReactNode): {
+  defaultOpenValue: string | undefined
+  normalizedChildren: ReactNode
+} {
+  let accordionIndex = 0
+  let defaultOpenValue: string | undefined
+
+  const normalizedChildren = Children.map(children, (child): ReactNode => {
+    if (!isValidElement<ArdoAccordionProps>(child) || child.type !== ArdoAccordion) {
+      return child
+    }
+
+    const value = child.props.value ?? fallbackValue(accordionIndex)
+    accordionIndex += 1
+
+    if (defaultOpenValue == null && child.props.defaultOpen === true) {
+      defaultOpenValue = value
+    }
+
+    return child.props.value == null ? cloneElement(child, { value }) : child
+  })
+
+  return { defaultOpenValue, normalizedChildren }
+}
+
 /**
  * Group container for accordion items.
  */
@@ -53,7 +95,13 @@ export function ArdoAccordionGroup({
   onlyOneOpen = false,
   className,
 }: ArdoAccordionGroupProps) {
-  const [openItem, setOpenItem] = useState<string | undefined>()
+  const { defaultOpenValue, normalizedChildren } = useMemo(
+    () => resolveAccordionGroupChildren(children),
+    [children]
+  )
+  const [openItem, setOpenItem] = useState<string | undefined>(() =>
+    onlyOneOpen ? defaultOpenValue : undefined
+  )
   const contextValue = useMemo(
     () => ({ onlyOneOpen, openItem, setOpenItem }),
     [onlyOneOpen, openItem]
@@ -63,7 +111,7 @@ export function ArdoAccordionGroup({
 
   return (
     <AccordionGroupContext value={contextValue}>
-      <div className={groupClassName}>{children}</div>
+      <div className={groupClassName}>{normalizedChildren}</div>
     </AccordionGroupContext>
   )
 }
@@ -76,6 +124,7 @@ export function ArdoAccordion({
   children,
   defaultOpen = false,
   icon,
+  headingLevel = 3,
   value,
   className,
 }: ArdoAccordionProps) {
@@ -90,12 +139,7 @@ export function ArdoAccordion({
   const contentId = `${generatedId}-content`
   const triggerId = `${generatedId}-trigger`
   const hasIcon = icon != null
-
-  useLayoutEffect(() => {
-    if (context?.onlyOneOpen === true && defaultOpen && context.openItem == null) {
-      context.setOpenItem(resolvedValue)
-    }
-  }, [context, defaultOpen, resolvedValue])
+  const Heading = `h${headingLevel}` as ElementType
 
   const toggleOpen = () => {
     if (context?.onlyOneOpen === true) {
@@ -108,7 +152,7 @@ export function ArdoAccordion({
 
   return (
     <section className={accordionClassName} data-open={open ? "true" : "false"}>
-      <h3 className={styles.heading}>
+      <Heading className={styles.heading}>
         <button
           id={triggerId}
           type="button"
@@ -121,7 +165,7 @@ export function ArdoAccordion({
           <span className={styles.title}>{title}</span>
           <span className={styles.chevron} aria-hidden="true" />
         </button>
-      </h3>
+      </Heading>
       <div
         id={contentId}
         role="region"
