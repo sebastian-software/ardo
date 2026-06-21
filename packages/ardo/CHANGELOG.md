@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.0...ardo-v3.6.1) (2026-06-21)
+
+
+### Bug Fixes
+
+* harden footer HTML rendering ([#190](https://github.com/sebastian-software/ardo/issues/190)) ([b1f5b47](https://github.com/sebastian-software/ardo/commit/b1f5b47ca4c4323e945e400957184e17ac37db01))
+
 ## [3.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.5.0...ardo-v3.6.0) (2026-06-21)
 
 
