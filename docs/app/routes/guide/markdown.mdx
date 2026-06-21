@@ -290,9 +290,42 @@ The `code` prop and template literal children are also supported:
 
 If the `language` prop is dynamic (from a variable), build-time highlighting is skipped and the code renders as plain text.
 
+## Reusable MDX Snippets
+
+Ardo uses standard MDX modules, so reusable content snippets work without a custom syntax or plugin. Put shared fragments in a `snippets/` directory and import them wherever you need the same content.
+
+For example, define a shared prerequisite note in `app/snippets/prerequisites.mdx`. Snippet files do not need frontmatter when they are rendered inside another page:
+
+```mdx
+<Tip title="Before you start">
+  This guide assumes you have {props.runtime} installed and can run packages with{" "}
+  {props.packageManager}.
+</Tip>
+```
+
+Then import and render it from any MDX page inside `ArdoBareContent` so the snippet does not bring its own page wrapper:
+
+```mdx
+import { ArdoBareContent } from "ardo/ui"
+import Prerequisites from "../../snippets/prerequisites.mdx"
+
+# Getting Started
+
+<ArdoBareContent>
+  <Prerequisites runtime="Node.js 22+" packageManager="pnpm" />
+</ArdoBareContent>
+```
+
+Snippets can receive props in normal MDX expressions, compose Ardo components, and live alongside the rest of your application code. Because they are just MDX modules, Vite handles hot reloads and imports the same way as other route dependencies.
+
+<Note>
+  Use a relative import that matches your route depth. For example, a page in `app/routes/guide/`
+  usually imports `../../snippets/prerequisites.mdx`.
+</Note>
+
 ## Embedding MDX Snippets with ArdoBareContent
 
-When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). To embed it as a plain content snippet, wrap it in `ArdoBareContent`:
+When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). This is useful for full pages, but snippets usually need to render without that page chrome. To embed an imported MDX file as a plain content snippet in TSX, wrap it in `ArdoBareContent`:
 
 ```tsx
 import { ArdoBareContent } from "ardo/ui"

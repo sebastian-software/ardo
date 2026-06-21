@@ -6,6 +6,7 @@ import { Link } from "react-router"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
 import { ArdoBadge } from "../ui/components/Badge"
+import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
@@ -116,6 +117,8 @@ export function useMDXComponents(): MDXComponents {
     Accordion: ArdoAccordion,
     AccordionGroup: ArdoAccordionGroup,
     Badge: ArdoBadge,
+    Card: ArdoCard,
+    CardGroup: ArdoCardGroup,
     Icon: ArdoIcon,
     Tip: ArdoTip,
     Warning: ArdoWarning,

@@ -7,6 +7,8 @@ export {
   ArdoAccordion,
   ArdoAccordionGroup,
   ArdoBadge,
+  ArdoCard,
+  ArdoCardGroup,
   ArdoCodeBlock,
   ArdoCodeGroup,
   ArdoContainer,
@@ -37,6 +39,9 @@ export type {
   ArdoAccordionProps,
   ArdoBadgeProps,
   ArdoBadgeVariant,
+  ArdoCardGroupColumns,
+  ArdoCardGroupProps,
+  ArdoCardProps,
   ArdoIconProps,
 } from "./components"
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
