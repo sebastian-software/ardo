@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.5.0...ardo-v3.6.0) (2026-06-21)
+
+
+### Features
+
+* add Accordion components ([#141](https://github.com/sebastian-software/ardo/issues/141)) ([5ed5ee6](https://github.com/sebastian-software/ardo/commit/5ed5ee641d58b01ef1e5c75b9ba8ffe563cf8215))
+* add Badge component ([#124](https://github.com/sebastian-software/ardo/issues/124)) ([09f2a59](https://github.com/sebastian-software/ardo/commit/09f2a598836fafb5af7a51c2de42d80096605d45))
+* add build-time SEO and link outputs ([#185](https://github.com/sebastian-software/ardo/issues/185)) ([b82fdd2](https://github.com/sebastian-software/ardo/commit/b82fdd2428ce587159db553fa129afc690121d38))
+* add Card and CardGroup components ([#140](https://github.com/sebastian-software/ardo/issues/140)) ([2e7156c](https://github.com/sebastian-software/ardo/commit/2e7156c57c2248d85f39d5a379285eb3d2a81828))
+* add social metadata generation ([#186](https://github.com/sebastian-software/ardo/issues/186)) ([7544490](https://github.com/sebastian-software/ardo/commit/7544490ea719e3486619b06efd4db30588c37659))
+
+
+### Bug Fixes
+
+* expose search as accessible combobox ([#183](https://github.com/sebastian-software/ardo/issues/183)) ([a9d0dcb](https://github.com/sebastian-software/ardo/commit/a9d0dcb0d678fd6185854b2ac3853555e627b32e))
+* make mobile drawer modal-safe ([#184](https://github.com/sebastian-software/ardo/issues/184)) ([0f68fab](https://github.com/sebastian-software/ardo/commit/0f68fab82a99e4557f670fa85fd0ce6cdaa83263))
+* make tabs accessible ([#182](https://github.com/sebastian-software/ardo/issues/182)) ([3fc2eac](https://github.com/sebastian-software/ardo/commit/3fc2eac14cefce798afcbb8082dce03c7a1e75db))
+
 ## [3.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.4.0...ardo-v3.5.0) (2026-05-22)
 
 
