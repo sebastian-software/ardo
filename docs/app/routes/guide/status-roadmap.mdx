@@ -1,0 +1,76 @@
+---
+title: Feature Status
+description: See which Ardo capabilities are shipped, experimental, planned, or currently not planned.
+order: 12
+---
+
+# Feature Status
+
+Ardo is moving quickly, so this page keeps product claims grounded. It separates what is ready to use
+today from larger roadmap areas that still need design work.
+
+## Shipped
+
+These capabilities are available in the current package line.
+
+| Area                    | Status  | Notes                                                                                                                  |
+| ----------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| React Router docs shell | Shipped | React Router 8 app shell, static prerendering, and file-based routes.                                                  |
+| Markdown and MDX routes | Shipped | Markdown, MDX, GFM, frontmatter, TOC extraction, and built-in MDX component mapping.                                   |
+| Syntax highlighting     | Shipped | Build-time Shiki highlighting for Markdown code fences and static `CodeBlock` usage.                                   |
+| Search                  | Shipped | Generated search data with a built-in search UI.                                                                       |
+| TypeDoc API reference   | Shipped | Built into the `ardo()` plugin for TypeScript library APIs.                                                            |
+| Social metadata         | Shipped | Generated canonical, Open Graph, and Twitter metadata for Markdown routes.                                             |
+| SEO build outputs       | Shipped | Sitemap, robots output, link checking, and static redirects are supported.                                             |
+| Core content components | Shipped | `Badge`, `Card`, `CardGroup`, `Tabs`, `Accordion`, `AccordionGroup`, callouts, steps, code blocks, hero, and features. |
+| Storybook playground    | Shipped | Default UI components have a local and static Storybook workflow.                                                      |
+
+## Experimental
+
+These areas work, but the API or maintenance story may still evolve.
+
+| Area                  | Status       | Notes                                                                                                                                                                 |
+| --------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeDoc customization | Experimental | Useful today, but richer category, grouping, and rendering controls may still change.                                                                                 |
+| Theme token overrides | Experimental | CSS variables and Vanilla Extract tokens are public, but easier neutral/chrome retinting is tracked in [#171](https://github.com/sebastian-software/ardo/issues/171). |
+| LLM text artifacts    | Experimental | The Ardo docs publish `llms.txt` files, while reusable automatic generation is tracked in [#70](https://github.com/sebastian-software/ardo/issues/70).                |
+
+## Planned
+
+These are useful, but not part of the shipped core yet.
+
+| Area                      | Tracking issue                                                | Notes                                                                                             |
+| ------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Documentation versioning  | [#78](https://github.com/sebastian-software/ardo/issues/78)   | Needs a narrower first slice around directory-based versions, shared content, and aliases.        |
+| Internationalization      | [#79](https://github.com/sebastian-software/ardo/issues/79)   | Needs decisions around route trees, search, sidebar behavior, RTL, fallbacks, and per-locale SEO. |
+| OpenAPI documentation     | [#69](https://github.com/sebastian-software/ardo/issues/69)   | The first slice should likely be static reference generation before an interactive playground.    |
+| Mermaid diagrams          | [#67](https://github.com/sebastian-software/ardo/issues/67)   | Needs a rendering strategy that works reliably with static builds and light/dark themes.          |
+| Migration guides          | [#134](https://github.com/sebastian-software/ardo/issues/134) | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed.                      |
+| Build performance budgets | [#178](https://github.com/sebastian-software/ardo/issues/178) | CI should eventually catch build-time, plugin-time, bundle-size, and search-index regressions.    |
+| Lint warning budget       | [#179](https://github.com/sebastian-software/ardo/issues/179) | Known warnings need to become an explicit quality budget.                                         |
+
+## Nice To Have
+
+These are useful for some teams but are not central to the first documentation framework surface.
+
+| Area                      | Tracking issue                                              | Notes                                                                                              |
+| ------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Tooltip component         | [#81](https://github.com/sebastian-software/ardo/issues/81) | Needs careful accessibility and mobile interaction design.                                         |
+| Page feedback widget      | [#74](https://github.com/sebastian-software/ardo/issues/74) | The UI is small; the harder part is deciding where feedback data goes.                             |
+| Math notation             | [#68](https://github.com/sebastian-software/ardo/issues/68) | Browser-native MathML may keep this lightweight if the markdown pipeline integration stays simple. |
+| Custom font configuration | [#77](https://github.com/sebastian-software/ardo/issues/77) | Most teams can already handle this through CSS and app-level head customization.                   |
+
+## Not Planned
+
+Ardo is intentionally not trying to become every kind of documentation product.
+
+| Area                         | Reason                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Hosted editing workflow      | Ardo is repository-native and self-hosted. Teams that want hosted collaboration should use a hosted docs platform. |
+| Built-in analytics product   | Static deployments can integrate analytics providers directly; Ardo does not need to own event storage.            |
+| Lowest-JavaScript prose site | Ardo prioritizes React-native reuse. Astro, VitePress, or Starlight can be better for prose-only sites.            |
+
+## Maintenance
+
+Update this page when a feature PR lands, when an issue is closed as not planned, or when a roadmap
+item gets split into a smaller first slice.
