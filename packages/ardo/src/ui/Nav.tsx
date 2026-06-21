@@ -7,7 +7,7 @@ import * as styles from "./Nav.css"
 type RoutePath = ComponentProps<typeof RouterNavLink>["to"]
 
 // Nav context for shared state
-interface NavContextValue {
+type NavContextValue = {
   mobileMenuOpen: boolean
   setMobileMenuOpen: (open: boolean) => void
 }
@@ -22,7 +22,7 @@ function useNavContext() {
 // Nav Component
 // =============================================================================
 
-export interface ArdoNavProps {
+export type ArdoNavProps = {
   children?: ReactNode
   className?: string
 }
@@ -47,7 +47,7 @@ export function ArdoNav({ children, className }: ArdoNavProps) {
 // NavLink Component
 // =============================================================================
 
-export interface ArdoNavLinkProps {
+export type ArdoNavLinkProps = {
   /** Internal route path (type-safe with React Router's registered routes) */
   to?: RoutePath
   /** External URL (uses anchor tag) */
@@ -127,7 +127,7 @@ export function ArdoNavLink({
 // NavProvider Component
 // =============================================================================
 
-export interface NavProviderProps {
+export type NavProviderProps = {
   children: ReactNode
 }
 

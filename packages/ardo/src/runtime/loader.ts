@@ -5,13 +5,13 @@ import type { PageData, PageFrontmatter, ResolvedConfig, TOCItem } from "../conf
 
 import { transformMarkdown } from "../markdown/pipeline"
 
-export interface LoadDocOptions {
+export type LoadDocOptions = {
   slug: string
   contentDir: string
   config: ResolvedConfig
 }
 
-export interface LoadDocResult {
+export type LoadDocResult = {
   content: string
   frontmatter: PageFrontmatter
   toc: TOCItem[]

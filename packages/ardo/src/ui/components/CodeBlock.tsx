@@ -40,7 +40,7 @@ function outdent(text: string): string {
   return lines.map((line) => line.slice(indent)).join("\n")
 }
 
-export interface ArdoCodeBlockProps {
+export type ArdoCodeBlockProps = {
   /** The code to display (as prop or as children string) */
   code?: string
   /** Programming language for syntax highlighting */
@@ -147,7 +147,7 @@ export function ArdoCodeBlock({
   )
 }
 
-export interface ArdoCodeGroupProps {
+export type ArdoCodeGroupProps = {
   /** CodeBlock components to display as tabs */
   children: React.ReactNode
   /** Comma-separated tab labels */
@@ -167,12 +167,15 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
   const childArray = Children.toArray(children).filter((child) => isValidElement(child))
   const labelArray = hasLabels ? (labelsStr ?? "").split(",") : []
   const tabs = childArray.map((child, index) => {
-    if (labelArray[index]) return labelArray[index]
-    const props = child.props as Record<string, unknown>
+    if (index < labelArray.length) {
+      const explicitLabel = labelArray[index]
+      if (explicitLabel !== "") return explicitLabel
+    }
+
     return (
-      (props["data-label"] as string) ||
-      (props.title as string) ||
-      (props.language as string) ||
+      readStringProp(child.props, "data-label") ??
+      readStringProp(child.props, "title") ??
+      readStringProp(child.props, "language") ??
       `Tab ${index + 1}`
     )
   })
@@ -210,6 +213,19 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       </div>
     </div>
   )
+}
+
+function readStringProp(props: unknown, name: string): string | undefined {
+  if (!isRecord(props)) {
+    return undefined
+  }
+
+  const value = props[name]
+  return typeof value === "string" && value !== "" ? value : undefined
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }
 
 function tabAt(tabs: string[], index: number): string {

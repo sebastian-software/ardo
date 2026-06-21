@@ -5,7 +5,7 @@ import type { SidebarItem } from "../config/types"
 import { useArdoSidebar } from "../runtime/hooks"
 import * as styles from "./Breadcrumb.css"
 
-interface BreadcrumbResult {
+type BreadcrumbResult = {
   section?: string
   page?: string
 }

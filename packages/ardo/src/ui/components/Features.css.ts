@@ -3,6 +3,9 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
+const brandBorder = `color-mix(in oklch, ${vars.color.brand} 38%, ${vars.color.border})`
+const brandRing = `color-mix(in oklch, ${vars.color.brand} 12%, transparent)`
+
 export const features = style({
   padding: "80px 24px",
   background: vars.color.bgSoft,
@@ -24,6 +27,7 @@ export const featuresTitle = style({
   fontWeight: 700,
   letterSpacing: "-0.02em",
   marginBottom: "12px",
+  textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "28px",
@@ -36,6 +40,7 @@ export const featuresSubtitle = style({
   color: vars.color.textLight,
   maxWidth: "560px",
   margin: "0 auto",
+  textWrap: "pretty",
   "@media": {
     "(max-width: 768px)": {
       fontSize: "16px",
@@ -52,7 +57,7 @@ export const featuresContainer = style({
 })
 
 export const feature = style({
-  padding: "28px",
+  padding: vars.space.lg,
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
@@ -61,8 +66,8 @@ export const feature = style({
   animation: `${fadeInUp} 0.5s ease both`,
   selectors: {
     "&:hover": {
-      borderColor: "oklch(0.48 0.15 170 / 0.4)",
-      boxShadow: `${vars.color.shadowMd}, 0 0 0 1px oklch(0.48 0.15 170 / 0.1)`,
+      borderColor: brandBorder,
+      boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
     },
   },
   "@media": {
@@ -99,7 +104,7 @@ export const featureIcon = style({
   height: "48px",
   marginBottom: "16px",
   background: vars.color.brandSubtle,
-  border: "1px solid oklch(0.48 0.15 170 / 0.12)",
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 16%, ${vars.color.border})`,
   borderRadius: "50%",
   color: vars.color.brand,
   transition: `all ${vars.transition.base}`,
@@ -116,6 +121,7 @@ export const featureTitle = style({
   fontWeight: 600,
   marginBottom: "10px",
   letterSpacing: "-0.01em",
+  textWrap: "balance",
 })
 
 export const featureDetails = style({
@@ -123,6 +129,7 @@ export const featureDetails = style({
   color: vars.color.textLight,
   lineHeight: 1.6,
   marginBottom: "12px",
+  textWrap: "pretty",
 })
 
 export const featureLink = style({

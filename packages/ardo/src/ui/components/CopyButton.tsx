@@ -3,7 +3,7 @@ import { useState } from "react"
 import { CheckIcon, CopyIcon } from "../icons"
 import * as styles from "./CopyButton.css"
 
-interface CopyButtonProps {
+type CopyButtonProps = {
   code: string
 }
 

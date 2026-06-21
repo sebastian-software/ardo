@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { ArdoTOC } from "./TOC"
+import { ArdoTOC } from "./Toc"
 
 const meta = {
   component: ArdoTOC,

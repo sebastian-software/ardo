@@ -1,16 +1,16 @@
 ---
 title: What is Ardo?
-description: A React-first documentation framework that lets you use the skills you already have.
+description: A modern, open documentation framework for React teams that want static docs without leaving React.
 order: 1
 ---
 
 # What is Ardo?
 
-You know React. You've built components, wired up state, wrestled with TypeScript generics. Then you need to write documentation — and suddenly you're learning a completely different system with its own component model, its own templating quirks, and its own way of doing things you already know how to do.
+You know React. You have components, providers, styling conventions, examples, and TypeScript types that already explain how your product works. Then documentation starts, and too often the docs stack asks you to learn a different component model before you can ship a useful guide.
 
 **Ardo exists so you don't have to start over.**
 
-It's a static documentation framework built entirely on [React](https://react.dev/), [React Router 7](https://reactrouter.com/), and [Vite](https://vite.dev/) — the same tools you use to build your apps. No proprietary abstractions. No unfamiliar templating languages. Just React.
+It is a static documentation framework built on [React](https://react.dev/), [React Router 8](https://reactrouter.com/), and [Vite](https://vite.dev/). It gives React teams a simple docs workflow without a closed platform, a second UI framework, or a docs-only component model.
 
 ## The Problem with Documentation Frameworks
 
@@ -30,13 +30,13 @@ Every component in Ardo is a React component. Your documentation layout, your cu
 
 There's nothing new to learn before you're productive.
 
-### Built on React Router 7
+### Built on React Router 8
 
-Ardo doesn't reinvent routing. It uses [React Router 7](https://reactrouter.com/) — the same router that powers production React apps. This gives you file-based routing, static pre-rendering for fast page loads, type-safe navigation, and all the patterns from React 19.
+Ardo doesn't reinvent routing. It uses [React Router 8](https://reactrouter.com/) — the same router that powers production React apps. This gives you file-based routing, static pre-rendering for fast page loads, type-safe navigation, and all the patterns from React 19.
 
 ### Powered by Vite
 
-Your dev server starts instantly. Hot module replacement is near-instantaneous. Production builds are optimized out of the box. And the full Vite plugin ecosystem is available if you need it.
+Vite keeps the local editing loop fast, production builds optimized, and the plugin ecosystem open. Ardo adds documentation-specific processing on top of that instead of hiding Vite behind a separate platform.
 
 ## What You Get
 
@@ -84,7 +84,18 @@ The `ardo()` Vite plugin automatically includes the Vanilla Extract plugin, so y
 
 ### Fully Customizable
 
-When you're ready to make it yours, everything is accessible. Theme colors, layout components, Markdown processing, and the build pipeline — it's all standard React and Vite, so customization works the way you'd expect.
+When you're ready to make it yours, everything is accessible. Theme colors, layout components, Markdown processing, and the build pipeline are standard React and Vite pieces, so customization works the way your team already works.
+
+## Where Ardo Fits
+
+Ardo is strongest when documentation should live next to a React codebase:
+
+- component libraries that need live examples and API reference pages;
+- product teams with an existing React design system;
+- open-source projects that want static docs without a hosted platform;
+- teams that like VitePress-style simplicity but do not want Vue or Astro as their docs runtime.
+
+It is not trying to replace every docs tool. If you need mature versioning/i18n today, Docusaurus may fit better. If your docs are mostly prose and the smallest possible payload matters most, Starlight or VitePress may be better. If you want hosted analytics, AI features, and API playground management, Mintlify is a different category.
 
 ## Getting Started
 

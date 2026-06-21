@@ -1,2 +1,2 @@
 export { vars } from "./contract.css"
-export { applyBrandTheme, createTheme } from "./tokens"
+export { applyBrandTheme, type ArdoBrandHues, createTheme } from "./tokens"

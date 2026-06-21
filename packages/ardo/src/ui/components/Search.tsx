@@ -1,13 +1,16 @@
 import MiniSearch from "minisearch"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useNavigate } from "react-router"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
+import { useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
 import { SearchIcon } from "../icons"
+import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
+import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
 import * as styles from "./Search.css"
 import { SearchPopover } from "./SearchPopover"
+import { type SearchMatch, SearchResults } from "./SearchResults"
 
-interface SearchDoc {
+type SearchDoc = {
   id: string
   title: string
   content: string
@@ -15,65 +18,11 @@ interface SearchDoc {
   section?: string
 }
 
-interface SearchMatch {
-  id: string
-  title: string
-  path: string
-  section?: string
-}
-
-export interface ArdoSearchProps {
+export type ArdoSearchProps = {
   /** Placeholder text for the search input (default: "Search...") */
   placeholder?: string
-}
-
-function useGlobalSearchShortcut(
-  inputRef: React.RefObject<HTMLInputElement | null>,
-  setIsOpen: (open: boolean) => void
-) {
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault()
-        inputRef.current?.focus()
-        setIsOpen(true)
-      }
-      if (e.key === "Escape") {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener("keydown", handleGlobalKeyDown)
-    return () => {
-      document.removeEventListener("keydown", handleGlobalKeyDown)
-    }
-  }, [inputRef, setIsOpen])
-}
-
-interface OutsideClickOptions {
-  containerRef: React.RefObject<HTMLDivElement | null>
-  popoverClass: string
-  isOpen: boolean
-  setIsOpen: (open: boolean) => void
-}
-
-function useOutsideClick({ containerRef, popoverClass, isOpen, setIsOpen }: OutsideClickOptions) {
-  useEffect(() => {
-    if (!isOpen) return
-    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Element
-      const inContainer = containerRef.current?.contains(target) === true
-      const inPopover = target.closest(`.${popoverClass}`) != null
-      if (!inContainer && !inPopover) {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleOutsideClick)
-    document.addEventListener("touchstart", handleOutsideClick)
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick)
-      document.removeEventListener("touchstart", handleOutsideClick)
-    }
-  }, [containerRef, popoverClass, isOpen, setIsOpen])
+  /** Focus the input on mount (used by the mobile search overlay). */
+  autoFocus?: boolean
 }
 
 function useSearchIndex() {
@@ -102,56 +51,6 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
       },
     ]
   })
-}
-
-function SearchResults({
-  results,
-  selectedIndex,
-  query,
-  onClose,
-}: {
-  results: SearchMatch[]
-  selectedIndex: number
-  query: string
-  onClose: () => void
-}) {
-  return (
-    <>
-      {results.length > 0 ? (
-        <ul className={styles.searchResults}>
-          {results.map((result, index) => (
-            <li key={result.id}>
-              <Link
-                to={result.path}
-                className={[styles.searchResult, index === selectedIndex && "selected"]
-                  .filter(Boolean)
-                  .join(" ")}
-                onClick={onClose}
-              >
-                <span className={styles.searchResultTitle}>{result.title}</span>
-                {result.section !== undefined && (
-                  <span className={styles.searchResultSection}>{result.section}</span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className={styles.searchNoResults}>No results found for &quot;{query}&quot;</div>
-      )}
-      <div className={styles.searchFooter}>
-        <span>
-          <kbd>↑</kbd> <kbd>↓</kbd> to navigate
-        </span>
-        <span>
-          <kbd>↵</kbd> to select
-        </span>
-        <span>
-          <kbd>esc</kbd> to close
-        </span>
-      </div>
-    </>
-  )
 }
 
 function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
@@ -185,6 +84,9 @@ function SearchInput({
   onSearch,
   onKeyDown,
   onFocus,
+  activeOptionId,
+  expanded,
+  listboxId,
 }: {
   inputRef: React.RefObject<HTMLInputElement | null>
   placeholder: string
@@ -193,6 +95,9 @@ function SearchInput({
   onSearch: (q: string) => void
   onKeyDown: (e: React.KeyboardEvent) => void
   onFocus: () => void
+  activeOptionId?: string
+  expanded: boolean
+  listboxId: string
 }) {
   return (
     <div className={styles.searchField}>
@@ -209,6 +114,12 @@ function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={onFocus}
         aria-label="Search"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={expanded}
+        aria-controls={listboxId}
+        aria-activedescendant={activeOptionId}
+        aria-haspopup="listbox"
       />
       {hasQuery && (
         <button
@@ -232,13 +143,46 @@ function SearchInput({
   )
 }
 
-export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
+function useSearchA11y({
+  expanded,
+  results,
+  selectedIndex,
+}: {
+  expanded: boolean
+  results: SearchMatch[]
+  selectedIndex: number
+}) {
+  const searchId = useId()
+  const listboxId = `${searchId}-results`
+  const getOptionId = (resultId: string, index: number) =>
+    getSearchOptionId(listboxId, resultId, index)
+  const activeOptionId = getActiveSearchOptionId({
+    getOptionId,
+    isOpen: expanded,
+    results,
+    selectedIndex,
+  })
+
+  return { activeOptionId, getOptionId, listboxId }
+}
+
+export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: ArdoSearchProps) {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchIndex = useSearchIndex()
   const state = useSearch(searchIndex)
   const hasQuery = state.query.trim().length > 0
+  const expanded = state.isOpen && hasQuery
+  const searchA11y = useSearchA11y({
+    expanded,
+    results: state.results,
+    selectedIndex: state.selectedIndex,
+  })
+
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus()
+  }, [autoFocus])
 
   useGlobalSearchShortcut(inputRef, state.setIsOpen)
   useOutsideClick({
@@ -249,31 +193,29 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
   })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case "ArrowDown":
-        if (state.results.length > 0) {
+    const action = getSearchKeyboardAction({
+      key: e.key,
+      results: state.results,
+      selectedIndex: state.selectedIndex,
+    })
+
+    switch (action.type) {
+      case "select-index":
+        if (state.isOpen) {
           e.preventDefault()
-          state.setSelectedIndex((p) => Math.min(p + 1, state.results.length - 1))
+          state.setSelectedIndex(action.index)
         }
         break
-      case "ArrowUp":
-        if (state.results.length > 0) {
-          e.preventDefault()
-          state.setSelectedIndex((p) => Math.max(p - 1, 0))
-        }
+      case "navigate":
+        e.preventDefault()
+        void navigate(action.path)
+        state.setIsOpen(false)
         break
-      case "Enter": {
-        const p = state.results[state.selectedIndex]?.path
-        if (typeof p === "string") {
-          e.preventDefault()
-          void navigate(p)
-          state.setIsOpen(false)
-        }
-        break
-      }
-      case "Escape":
+      case "close":
         state.setIsOpen(false)
         inputRef.current?.blur()
+        break
+      case "none":
         break
     }
   }
@@ -282,7 +224,7 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
     <div
       className={styles.search}
       ref={containerRef}
-      data-expanded={state.isOpen || hasQuery ? "true" : "false"}
+      data-expanded={expanded ? "true" : "false"}
       onMouseDown={() => inputRef.current?.focus()}
     >
       <SearchInput
@@ -295,10 +237,15 @@ export function ArdoSearch({ placeholder = "Search..." }: ArdoSearchProps) {
         onFocus={() => {
           if (hasQuery) state.setIsOpen(true)
         }}
+        activeOptionId={searchA11y.activeOptionId}
+        expanded={expanded}
+        listboxId={searchA11y.listboxId}
       />
-      {state.isOpen && hasQuery && (
+      {expanded && (
         <SearchPopover anchorRef={containerRef}>
           <SearchResults
+            getOptionId={searchA11y.getOptionId}
+            listboxId={searchA11y.listboxId}
             results={state.results}
             selectedIndex={state.selectedIndex}
             query={state.query}

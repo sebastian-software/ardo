@@ -20,7 +20,7 @@ export const templates = [
   },
 ]
 
-export interface ScaffoldOptions {
+export type ScaffoldOptions = {
   siteTitle: string
   projectName: string
   typedoc: boolean
@@ -126,7 +126,7 @@ export function detectProjectDescription(targetDir: string): string | undefined 
 // Upgrade Detection & Execution
 // =============================================================================
 
-export interface UpgradeResult {
+export type UpgradeResult = {
   updated: string[]
   deleted: string[]
   skipped: string[]

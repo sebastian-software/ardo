@@ -1,5 +1,51 @@
 # Changelog
 
+## [3.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.4.0...ardo-v3.5.0) (2026-05-22)
+
+
+### Features
+
+* spacing polish for heading rhythm, code and card padding ([7ce4f6e](https://github.com/sebastian-software/ardo/commit/7ce4f6ee79b9d242dc3f5a46808d544a6966c089))
+
+## [3.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.3.0...ardo-v3.4.0) (2026-05-21)
+
+
+### Features
+
+* context-aware sidebar rail with auto sidebars and bare layouts ([f7f2a69](https://github.com/sebastian-software/ardo/commit/f7f2a698046b78a8ab55a2549008934302cc87d2))
+* duo-tone color system with warm chrome and cool code surfaces ([99a895d](https://github.com/sebastian-software/ardo/commit/99a895d15c1e5594080656f1581f0af066630d75))
+* move search into the header with a mobile overlay ([b5025d7](https://github.com/sebastian-software/ardo/commit/b5025d7cc5438d34672e92c27c1314ae9adc6856))
+
+## [3.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.2.1...ardo-v3.3.0) (2026-05-09)
+
+
+### Features
+
+* **ardo:** add lean favicon generation ([e2697df](https://github.com/sebastian-software/ardo/commit/e2697df78e327c66185d812f204b4a53ad084f26))
+* **ardo:** merge default docs redesign ([1a4dea4](https://github.com/sebastian-software/ardo/commit/1a4dea4ebbf29503248c466672104e375858f5cb))
+* **ardo:** redesign default docs UI ([f51712e](https://github.com/sebastian-software/ardo/commit/f51712edda7dd69d10501ae7665aa5e45afe14b0))
+* **ardo:** support generated sidebar section order ([f44fb8e](https://github.com/sebastian-software/ardo/commit/f44fb8ec2a015f3c9fbb2833375aa8983ebdf222))
+* **ardo:** support generated sidebar section order ([5de6dda](https://github.com/sebastian-software/ardo/commit/5de6dda10524996137d60ed4998e1704b81d285b))
+
+
+### Bug Fixes
+
+* **ui:** align sidebar collapse icons ([061e269](https://github.com/sebastian-software/ardo/commit/061e269245bbdef120d6d390298db4b85c3bcd4f))
+* **ui:** widen and wrap footer layout ([1b4a95b](https://github.com/sebastian-software/ardo/commit/1b4a95bb11ec8f2ea350933245a0067db98c4641))
+
+
+### Documentation
+
+* polish positioning and homepage design ([b207e8f](https://github.com/sebastian-software/ardo/commit/b207e8ffc21dcf34dc3b2d1a38c4b035457715fe))
+
+## [3.2.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.2.0...ardo-v3.2.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* **ardo:** resolve eslint violations ([c74095c](https://github.com/sebastian-software/ardo/commit/c74095ced4c19ce29da1f94994bb93d66b6030e8))
+* updated deps ([744032a](https://github.com/sebastian-software/ardo/commit/744032a0d6151ebd0be07df04c94a8a60914048f))
+
 ## [3.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.1.0...ardo-v3.2.0) (2026-04-01)
 
 

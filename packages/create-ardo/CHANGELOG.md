@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.5.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.4.0...create-ardo-v3.5.0) (2026-05-22)
+
+
+### Miscellaneous
+
+* **create-ardo:** Synchronize ardo versions
+
+## [3.4.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.3.0...create-ardo-v3.4.0) (2026-05-21)
+
+
+### Features
+
+* duo-tone color system with warm chrome and cool code surfaces ([99a895d](https://github.com/sebastian-software/ardo/commit/99a895d15c1e5594080656f1581f0af066630d75))
+
+## [3.3.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.1...create-ardo-v3.3.0) (2026-05-09)
+
+
+### Documentation
+
+* polish positioning and homepage design ([b207e8f](https://github.com/sebastian-software/ardo/commit/b207e8ffc21dcf34dc3b2d1a38c4b035457715fe))
+
+## [3.2.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.2.0...create-ardo-v3.2.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* **ardo:** resolve eslint violations ([c74095c](https://github.com/sebastian-software/ardo/commit/c74095ced4c19ce29da1f94994bb93d66b6030e8))
+* **create-ardo:** allow esbuild builds in template ([e9eede0](https://github.com/sebastian-software/ardo/commit/e9eede044e701ae3a3bddfcb7c3833ddaf460a64))
+* updated deps ([744032a](https://github.com/sebastian-software/ardo/commit/744032a0d6151ebd0be07df04c94a8a60914048f))
+
 ## [3.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.1.0...create-ardo-v3.2.0) (2026-04-01)
 
 

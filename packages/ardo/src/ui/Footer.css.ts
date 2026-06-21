@@ -1,16 +1,57 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
+import * as layoutStyles from "./Layout.css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
-  maxWidth: "80rem",
-  padding: `${vars.space["2xl"]} 0`,
+  width: "100%",
+  padding: `${vars.space["2xl"]} ${vars.space.xl}`,
   textAlign: "left",
-  borderTop: `1px solid ${vars.color.border}`,
-  marginTop: vars.space["2xl"],
+  background: `color-mix(in oklch, ${vars.color.brand} 6%, ${vars.color.bgMute})`,
+  margin: `${vars.space["2xl"]} 0 0`,
+  "@media": {
+    "(max-width: 768px)": {
+      padding: `${vars.space.xl} ${vars.space.md}`,
+    },
+  },
 })
 
-export const footerContainer = style({})
+globalStyle(`main > .${footer}`, {
+  width: `calc(100% + (${vars.space.xl} * 2))`,
+  marginRight: `calc(${vars.space.xl} * -1)`,
+  marginBottom: `calc(${vars.space.xl} * -1)`,
+  marginLeft: `calc(${vars.space.xl} * -1)`,
+  "@media": {
+    "(max-width: 1024px)": {
+      width: `calc(100% + (${vars.space.md} * 2))`,
+      marginRight: `calc(${vars.space.md} * -1)`,
+      marginLeft: `calc(${vars.space.md} * -1)`,
+    },
+  },
+})
+
+globalStyle(`.${layoutStyles.home} .${layoutStyles.main} > .${footer}`, {
+  width: "100%",
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+})
+
+export const footerContainer = style({
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) auto",
+  alignItems: "start",
+  gap: `${vars.space.xs} ${vars.space["2xl"]}`,
+  width: "100%",
+  maxWidth: "80rem",
+  margin: "0 auto",
+  "@media": {
+    "(max-width: 768px)": {
+      gridTemplateColumns: "1fr",
+      gap: vars.space.xs,
+    },
+  },
+})
 
 export const footerPrimary = style({
   display: "flex",
@@ -19,7 +60,7 @@ export const footerPrimary = style({
   flexWrap: "wrap",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLight,
-  marginBottom: vars.space.xs,
+  marginBottom: 0,
 })
 
 export const footerSeparator = style({
@@ -33,6 +74,20 @@ export const footerSeparator = style({
 })
 
 export const footerLink = style({
+  color: vars.color.accent,
+  textDecoration: "none",
+  transition: `opacity ${vars.transition.fast}`,
+  selectors: {
+    "&:hover": {
+      opacity: 0.8,
+    },
+  },
+})
+
+export const footerArdoLink = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.375rem",
   color: vars.color.brand,
   textDecoration: "none",
   transition: `opacity ${vars.transition.fast}`,
@@ -43,20 +98,48 @@ export const footerLink = style({
   },
 })
 
+export const footerOwl = style({
+  color: vars.color.brand,
+  opacity: 0.85,
+  transition: `transform ${vars.transition.base}, opacity ${vars.transition.fast}`,
+  selectors: {
+    [`${footerArdoLink}:hover &`]: {
+      transform: "rotate(-8deg)",
+      opacity: 1,
+    },
+  },
+})
+
 export const footerMessage = style({
+  gridColumn: "1",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerCopyright = style({
+  gridColumn: "1",
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerBuildTime = style({
+  gridColumn: "2",
+  gridRow: "1 / span 3",
+  justifySelf: "end",
   fontSize: vars.fontSize.xs,
-  color: vars.color.textLighter,
-  marginTop: vars.space.xs,
+  color: `color-mix(in oklch, ${vars.color.accent} 65%, ${vars.color.textLighter})`,
+  fontFamily: vars.font.mono,
+  letterSpacing: "0.02em",
+  marginTop: "2px",
+  textAlign: "right",
+  "@media": {
+    "(max-width: 768px)": {
+      gridColumn: "1",
+      gridRow: "auto",
+      justifySelf: "start",
+      textAlign: "left",
+    },
+  },
 })
 
 export const contentFooter = style({
@@ -73,7 +156,7 @@ export const contentMeta = style({
 })
 
 export const editLink = style({
-  color: vars.color.brand,
+  color: vars.color.accent,
   textDecoration: "none",
   fontWeight: 500,
   transition: `opacity ${vars.transition.fast}`,
@@ -94,15 +177,15 @@ export const prevNext = style({
 const prevNextLinkBase = style({
   display: "flex",
   flexDirection: "column",
-  padding: `1.25rem ${vars.space.lg}`,
+  padding: vars.space.lg,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radius.lg,
+  borderRadius: vars.radius.base,
   textDecoration: "none",
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      borderColor: vars.color.brand,
-      background: vars.color.brandSubtle,
+      borderColor: vars.color.accent,
+      background: vars.color.bgSoft,
     },
   },
 })

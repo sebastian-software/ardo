@@ -1,12 +1,12 @@
 ---
 title: Frontmatter
-description: Configure page-specific options using frontmatter.
+description: Control page metadata, navigation, layout, and home-page content from the file itself.
 order: 4
 ---
 
 # Frontmatter
 
-Frontmatter is YAML metadata at the top of your markdown files that controls page-specific settings.
+Frontmatter keeps page-specific decisions close to the page. Use it for titles, descriptions, sidebar order, layout choices, table-of-contents behavior, edit links, and homepage content.
 
 ## Basic Usage
 
@@ -75,6 +75,41 @@ Whether to show the sidebar on this page.
 sidebar: false
 ---
 ```
+
+For generated sidebar data from `virtual:ardo/sidebar`, `sidebar: false` also removes leaf markdown
+pages from the sidebar.
+
+### order
+
+- Type: `number`
+
+Controls the generated sidebar order for pages within the same directory. Items with `order` appear
+before unordered items; unordered items fall back to alphabetical sorting.
+
+```yaml
+---
+title: Getting Started
+order: 1
+---
+```
+
+### Directory index metadata
+
+When a route directory contains `index.md` or `index.mdx`, its frontmatter configures the generated
+directory group in `virtual:ardo/sidebar`.
+
+```yaml
+---
+title: Guide
+order: 10
+collapsed: false
+---
+```
+
+- `title` sets the group label.
+- `order` sorts the group among sibling sections unless `sidebar.sectionOrder` prioritizes the
+  top-level section.
+- `collapsed` sets the initial collapsed state for the group.
 
 ### outline
 

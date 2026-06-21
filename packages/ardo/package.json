@@ -1,6 +1,6 @@
 {
   "name": "ardo",
-  "version": "3.2.0",
+  "version": "3.5.0",
   "description": "React-first Static Documentation Framework",
   "type": "module",
   "main": "./dist/index.js",
@@ -69,19 +69,20 @@
   },
   "dependencies": {
     "@mdx-js/rollup": "^3.1.1",
-    "@react-router/dev": "^7.14.2",
-    "@shikijs/rehype": "^4.0.2",
+    "@react-router/dev": "^8.0.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@shikijs/rehype": "^4.1.0",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/esbuild-plugin": "^2.3.22",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "^5.2.2",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "gray-matter": "^4.0.3",
     "hast-util-to-jsx-runtime": "^2.3.6",
     "minisearch": "^7.2.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-router": "^7.14.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.0.1",
     "read-package-up": "^12.0.0",
     "rehype-parse": "^9.0.1",
     "rehype-stringify": "^10.0.1",
@@ -90,15 +91,15 @@
     "remark-mdx-frontmatter": "^5.2.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^4.0.2",
-    "tailwindcss": "^4.2.4",
+    "shiki": "^4.1.0",
+    "tailwindcss": "^4.3.1",
     "typedoc": "^0.28.19",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0"
   },
   "peerDependencies": {
     "lucide-react": ">=0.400.0 <2.0.0",
-    "vite": "^6.0.0 || ^7.0.0 || ^8.0.0-beta.0"
+    "vite": "^7.0.0 || ^8.0.0"
   },
   "peerDependenciesMeta": {
     "lucide-react": {
@@ -106,18 +107,21 @@
     }
   },
   "devDependencies": {
+    "@storybook/react": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
-    "@types/mdx": "^2.0.13",
-    "@types/node": "^25.6.0",
-    "@types/react": "^19.2.14",
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vanilla-extract/rollup-plugin": "^1.5.3",
     "estree-util-value-to-estree": "^3.5.0",
-    "tsdown": "^0.21.10",
+    "tsdown": "^0.22.3",
     "typescript": "^6.0.3",
     "unist-util-mdx-define": "^1.1.2",
-    "vite": "^8.0.10"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.9"
   },
   "keywords": [
     "documentation",

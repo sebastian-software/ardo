@@ -4,12 +4,12 @@ import path from "node:path"
 
 import { writeRoutesFile, writeRoutesFileSync } from "./routes-core"
 
-export interface ArdoRoutesPluginOptions {
+export type ArdoRoutesPluginOptions = {
   /** Directory where routes are located (default: "./app/routes") */
   routesDir?: string
 }
 
-interface ResolvedRoutePaths {
+type ResolvedRoutePaths = {
   appDir: string
   routesDir: string
   routesFilePath: string

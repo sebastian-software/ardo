@@ -9,28 +9,51 @@ export const header = style({
   right: 0,
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
-  background: vars.color.sidebarBg,
+  background: vars.color.bg,
+  borderBottom: `1px solid ${vars.color.border}`,
   zIndex: 100,
+  boxShadow: "0 1px 0 oklch(0 0 0 / 0.02)",
 })
 
 export const headerContainer = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  height: "100%",
+  height: vars.layout.headerHeight,
   padding: `0 ${vars.space.lg}`,
+  "@media": {
+    "(max-width: 640px)": {
+      padding: `0 ${vars.space.md}`,
+    },
+  },
 })
 
 export const headerLeft = style({
   display: "flex",
   alignItems: "center",
-  gap: vars.space.lg,
+  gap: vars.space.md,
+  flexShrink: 0,
+})
+
+export const headerCenter = style({
+  display: "flex",
+  flex: 1,
+  justifyContent: "center",
+  minWidth: 0,
+  padding: `0 ${vars.space.lg}`,
+  "@media": {
+    "(max-width: 1024px)": {
+      justifyContent: "flex-end",
+      padding: `0 ${vars.space.sm}`,
+    },
+  },
 })
 
 export const headerRight = style({
   display: "flex",
   alignItems: "center",
   gap: "0.75rem",
+  flexShrink: 0,
 })
 
 export const logoLink = style({
@@ -48,7 +71,7 @@ export const logoLink = style({
 })
 
 export const logo = style({
-  height: "2.25rem",
+  height: "2rem",
 })
 
 export const siteTitle = style({
@@ -126,11 +149,13 @@ export const mobilePanel = style({
   top: 0,
   left: 0,
   bottom: 0,
-  width: "min(20rem, 85vw)",
+  width: "min(22rem, 88vw)",
   zIndex: 151,
   background: vars.color.bg,
   overflowY: "auto",
   padding: `${vars.space.lg} ${vars.space.lg} ${vars.space.xl}`,
+  borderRight: `1px solid ${vars.color.border}`,
+  boxShadow: vars.color.shadowLg,
   transform: "translateX(0)",
   transition: `transform ${vars.transition.slow}`,
   selectors: {
@@ -187,6 +212,11 @@ globalStyle(`${mobilePanelSidebar} > aside`, {
   display: "block",
   width: "100%",
   padding: 0,
+  borderRight: "none",
+})
+
+globalStyle(`${mobilePanelSidebar} nav[aria-label="Documentation sections"]`, {
+  display: "none",
 })
 
 // Legacy - keep for backwards compat but unused

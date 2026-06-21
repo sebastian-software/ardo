@@ -22,7 +22,7 @@ const onCancel = () => {
   throw new Error(`${red("✖")} Operation cancelled`)
 }
 
-interface NewProjectPromptResponse {
+type NewProjectPromptResponse = {
   overwrite?: "ignore" | "no" | "yes"
   template?: string
   siteTitle: string
@@ -37,7 +37,7 @@ async function promptProjectName(): Promise<string> {
       name: "projectName",
       message: reset("Project name:"),
       initial: defaultTargetDir,
-      validate: (value: string) => {
+      validate(value: string) {
         const name = value.trim()
         if (!name) return "Project name is required"
         if (/^[.-]/.test(name)) return "Project name cannot start with a dot or hyphen"
@@ -48,7 +48,7 @@ async function promptProjectName(): Promise<string> {
     },
     { onCancel }
   )
-  const projectName = nameResponse.projectName as string | undefined
+  const projectName: unknown = nameResponse.projectName
   return (
     formatTargetDir(typeof projectName === "string" ? projectName : defaultTargetDir) ??
     defaultTargetDir
@@ -100,7 +100,7 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       ],
     },
     {
-      type: (_: unknown, { overwrite }: { overwrite?: string }) => {
+      type(_: unknown, { overwrite }: { overwrite?: string }) {
         if (overwrite === "no") throw new Error(`${red("✖")} Operation cancelled`)
         return null
       },
@@ -148,7 +148,8 @@ async function runNewProjectFlow(
   argTemplate: string | undefined
 ): Promise<void> {
   const questions = getNewProjectPrompts(targetDir, root, argTemplate)
-  const response = (await prompts(questions, { onCancel })) as NewProjectPromptResponse
+  const responseData: unknown = await prompts(questions, { onCancel })
+  const response = readNewProjectPromptResponse(responseData)
 
   const template = response.template ?? argTemplate ?? "minimal"
 
@@ -171,6 +172,31 @@ async function runNewProjectFlow(
   if (root !== process.cwd()) console.log(`  ${blue("cd")} ${targetDir}`)
   console.log(`  ${blue("pnpm install")}`)
   console.log(`  ${blue("pnpm dev")}\n`)
+}
+
+function readNewProjectPromptResponse(data: unknown): NewProjectPromptResponse {
+  if (!isRecord(data)) {
+    return {
+      docType: "general",
+      siteTitle: "My Documentation",
+    }
+  }
+
+  return {
+    docType: data.docType === "library" ? "library" : "general",
+    githubPages: typeof data.githubPages === "boolean" ? data.githubPages : undefined,
+    overwrite: readOverwrite(data.overwrite),
+    siteTitle: typeof data.siteTitle === "string" ? data.siteTitle : "My Documentation",
+    template: typeof data.template === "string" ? data.template : undefined,
+  }
+}
+
+function readOverwrite(value: unknown): NewProjectPromptResponse["overwrite"] {
+  return value === "ignore" || value === "no" || value === "yes" ? value : undefined
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }
 
 async function main() {

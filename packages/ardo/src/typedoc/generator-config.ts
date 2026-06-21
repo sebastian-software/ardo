@@ -2,7 +2,7 @@ import type { ProjectReflection } from "typedoc"
 
 import type { TypeDocConfig } from "./types"
 
-export interface ResolvedTypeDocConfig extends Omit<TypeDocConfig, "markdown" | "out" | "sidebar"> {
+export type ResolvedTypeDocConfig = {
   out: string
   sidebar: {
     title: string
@@ -16,9 +16,9 @@ export interface ResolvedTypeDocConfig extends Omit<TypeDocConfig, "markdown" | 
     codeBlocks: boolean
     sourceBaseUrl?: string
   }
-}
+} & Omit<TypeDocConfig, "markdown" | "out" | "sidebar">
 
-export interface TypeDocRuntimeContext {
+export type TypeDocRuntimeContext = {
   basePath: string
   config: ResolvedTypeDocConfig
   packageNameCache: Map<string, string | undefined>

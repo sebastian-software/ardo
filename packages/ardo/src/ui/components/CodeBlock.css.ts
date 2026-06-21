@@ -2,30 +2,39 @@ import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
 import { shikiContainerClassName } from "./code-block-classes"
+import { copyButton } from "./CopyButton.css"
 
 // =============================================================================
 // React CodeBlock component styles
 // =============================================================================
 
 export const codeBlock = style({
-  margin: `${vars.space.md} 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.bgSoft,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 export const codeTitle = style({
-  padding: `${vars.space.sm} ${vars.space.md}`,
+  padding: `${vars.space.smd} ${vars.space.md}`,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLighter,
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  color: vars.color.textLight,
+  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
 export const codeWrapper = style({
   position: "relative",
+})
+
+// Reveal the React CopyButton when the code block is hovered or focused.
+globalStyle(`${codeWrapper}:hover .${copyButton}, ${codeWrapper}:focus-within .${copyButton}`, {
+  opacity: 1,
 })
 
 globalStyle(`${codeWrapper} pre`, {
@@ -59,7 +68,7 @@ export const codeLine = style({
   borderLeft: "3px solid transparent",
   selectors: {
     "&.highlighted": {
-      background: "oklch(0.48 0.15 170 / 0.08)",
+      background: `color-mix(in oklch, ${vars.color.brand} 11%, transparent)`,
       borderLeftColor: vars.color.brand,
     },
   },
@@ -86,12 +95,23 @@ export const lineNumber = style({
 const s = `.${shikiContainerClassName}`
 
 globalStyle(`${s} > [data-title]`, {
-  padding: `${vars.space.sm} ${vars.space.md}`,
+  padding: `${vars.space.smd} ${vars.space.md}`,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   fontFamily: vars.font.mono,
-  color: vars.color.textLighter,
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  color: vars.color.textLight,
+  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
+})
+
+globalStyle(s, {
+  margin: `${vars.space.lg} 0`,
+  maxWidth: "120ch",
+  borderRadius: vars.radius.base,
+  overflow: "hidden",
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 globalStyle(`${s} > [data-lang]`, {
@@ -127,7 +147,7 @@ globalStyle(`${s} .line`, {
 })
 
 globalStyle(`${s} .line.highlighted`, {
-  background: "oklch(0.48 0.15 170 / 0.08)",
+  background: `color-mix(in oklch, ${vars.color.brand} 11%, transparent)`,
   borderLeftColor: vars.color.brand,
 })
 
@@ -145,7 +165,7 @@ globalStyle(`.dark ${s} .line[data-ln]::before`, {
   color: "#475569",
 })
 
-// Copy button - hidden by default, shown on hover
+// Copy button - hidden by default, shown when the block is hovered or focused
 globalStyle(`${s} button[data-code]`, {
   position: "absolute",
   top: vars.space.sm,
@@ -155,22 +175,21 @@ globalStyle(`${s} button[data-code]`, {
   gap: vars.space.xs,
   padding: `${vars.space.xs} ${vars.space.sm}`,
   background: vars.color.bg,
-  border: `1px solid ${vars.color.border}`,
+  border: `1px solid ${vars.color.codeBorder}`,
   borderRadius: vars.radius.sm,
   cursor: "pointer",
   fontSize: vars.fontSize.xs,
   fontFamily: vars.font.family,
   color: vars.color.textLight,
   opacity: 0,
-  transition: `all ${vars.transition.base}`,
+  transition: `opacity ${vars.transition.base}, border-color ${vars.transition.fast}, color ${vars.transition.fast}`,
 })
 
-globalStyle(`${s}:hover button[data-code]`, {
+globalStyle(`${s}:hover button[data-code], ${s}:focus-within button[data-code]`, {
   opacity: 1,
 })
 
-globalStyle(`${s} button[data-code]:hover`, {
-  opacity: 1,
+globalStyle(`${s} button[data-code]:hover, ${s} button[data-code]:focus-visible`, {
   borderColor: vars.color.brand,
   color: vars.color.brand,
 })
@@ -196,16 +215,19 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: `${vars.space.md} 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.base,
   overflow: "hidden",
-  background: vars.color.bgSoft,
+  background: vars.color.codeBg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  boxShadow: vars.color.codeShadow,
 })
 
 export const codeGroupTabs = style({
   display: "flex",
-  borderBottom: `1px solid ${vars.color.borderLight}`,
+  background: vars.color.bgSoft,
+  borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
 export const codeGroupTab = style({
@@ -224,8 +246,8 @@ export const codeGroupTab = style({
       color: vars.color.text,
     },
     "&.active": {
-      color: vars.color.brand,
-      borderBottomColor: vars.color.brand,
+      color: vars.color.accent,
+      borderBottomColor: vars.color.accent,
     },
   },
 })

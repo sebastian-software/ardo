@@ -5,7 +5,7 @@ import * as styles from "./Container.css"
 
 export type ArdoContainerType = "danger" | "info" | "note" | "tip" | "warning"
 
-export interface ArdoContainerProps {
+export type ArdoContainerProps = {
   /** Container type determining the style */
   type: ArdoContainerType
   /** Optional custom title */
@@ -47,7 +47,7 @@ export function ArdoContainer({ type, title, children }: ArdoContainerProps) {
   )
 }
 
-export interface ArdoTipProps {
+export type ArdoTipProps = {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -65,7 +65,7 @@ export function ArdoTip({ title, children }: ArdoTipProps) {
   )
 }
 
-export interface ArdoWarningProps {
+export type ArdoWarningProps = {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -83,7 +83,7 @@ export function ArdoWarning({ title, children }: ArdoWarningProps) {
   )
 }
 
-export interface ArdoDangerProps {
+export type ArdoDangerProps = {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -101,7 +101,7 @@ export function ArdoDanger({ title, children }: ArdoDangerProps) {
   )
 }
 
-export interface ArdoInfoProps {
+export type ArdoInfoProps = {
   /** Optional custom title */
   title?: string
   /** Content to display */
@@ -119,7 +119,7 @@ export function ArdoInfo({ title, children }: ArdoInfoProps) {
   )
 }
 
-export interface ArdoNoteProps {
+export type ArdoNoteProps = {
   /** Optional custom title */
   title?: string
   /** Content to display */

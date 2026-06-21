@@ -1,4 +1,4 @@
-export interface TypeDocConfig {
+export type TypeDocConfig = {
   /**
    * Enable TypeDoc API documentation generation
    * @default false
@@ -148,7 +148,7 @@ export interface TypeDocConfig {
   }
 }
 
-export interface ApiDocItem {
+export type ApiDocItem = {
   id: string
   name: string
   kind: ApiDocKind
@@ -181,7 +181,7 @@ export type ApiDocKind =
   | "typeParameter"
   | "variable"
 
-export interface ApiDocParameter {
+export type ApiDocParameter = {
   name: string
   type: string
   description?: string
@@ -189,43 +189,43 @@ export interface ApiDocParameter {
   defaultValue?: string
 }
 
-export interface ApiDocReturn {
+export type ApiDocReturn = {
   type: string
   description?: string
 }
 
-export interface ApiDocTag {
+export type ApiDocTag = {
   name: string
   value?: string
 }
 
-export interface ApiDocSource {
+export type ApiDocSource = {
   file: string
   line: number
   url?: string
 }
 
-export interface ApiDocTypeParameter {
+export type ApiDocTypeParameter = {
   name: string
   constraint?: string
   default?: string
   description?: string
 }
 
-export interface ApiDocHierarchy {
+export type ApiDocHierarchy = {
   extends?: string[]
   implements?: string[]
   extendedBy?: string[]
   implementedBy?: string[]
 }
 
-export interface GeneratedApiDoc {
+export type GeneratedApiDoc = {
   path: string
   content: string
   frontmatter: {
     title: string
     description?: string
     sidebar_position?: number
-    sidebar?: boolean
+    sidebar?: "leaf" | boolean
   }
 }

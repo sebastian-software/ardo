@@ -1,6 +1,6 @@
 {
   "name": "create-ardo",
-  "version": "3.2.0",
+  "version": "3.5.0",
   "description": "Scaffolding tool for Ardo documentation projects",
   "type": "module",
   "bin": {
@@ -38,10 +38,11 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.3",
     "@types/prompts": "^2.4.9",
-    "tsdown": "^0.21.10",
-    "typescript": "^6.0.3"
+    "tsdown": "^0.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=18.0.0"

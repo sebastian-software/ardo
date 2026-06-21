@@ -2,7 +2,7 @@ import fsSync from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-export interface RouteInfo {
+export type RouteInfo = {
   /** File path relative to app directory (e.g., "routes/guide/getting-started.mdx") */
   file: string
   /** True if this is an index route */

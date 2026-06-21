@@ -1,12 +1,12 @@
 ---
 title: Markdown Features
-description: Learn about the markdown features available in Ardo.
+description: Write Markdown and MDX that can stay simple until a page needs real React.
 order: 3
 ---
 
 # Markdown Features
 
-Ardo supports all standard Markdown syntax plus some powerful extensions.
+Ardo is Markdown-first, but it does not trap you in Markdown. Start with plain prose and code blocks; when a page needs a live React example, a custom component, or a design-system callout, switch to MDX without changing tools.
 
 ## Basic Syntax
 
@@ -129,9 +129,71 @@ export function greet(name: string) {
 }
 ```
 
+## Badge Component
+
+Use badges for inline status labels, version indicators, and metadata tags. The `Badge` component is auto-registered in MDX files — no import needed.
+
+This feature is <Badge>New</Badge>, available for <Badge variant="info">v2.0+</Badge>, and can mark <Badge variant="warning">Beta</Badge> or <Badge variant="danger">Deprecated</Badge> content.
+
+```mdx
+<Badge>New</Badge>
+<Badge variant="success">Stable</Badge>
+<Badge variant="warning">Beta</Badge>
+<Badge variant="danger">Deprecated</Badge>
+<Badge variant="info">v2.0+</Badge>
+```
+
+Badges also support an optional leading icon:
+
+```mdx
+<Badge icon="✨">New</Badge>
+```
+
 ## Callout Components
 
-Use callout components to highlight important information. These JSX components are auto-registered in MDX files — no import needed.
+Use callouts to highlight important information. Ardo accepts two equivalent syntaxes — pick whichever reads better in your file.
+
+### GitHub-style alerts
+
+Plain Markdown, no imports. Ardo recognises GFM alert syntax and maps each type to the matching callout.
+
+```md
+> [!NOTE]
+> Useful information that users should know.
+
+> [!TIP]
+> Helpful advice for doing things better.
+
+> [!IMPORTANT]
+> Key information users need to know.
+
+> [!WARNING]
+> Urgent info that needs immediate attention.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+```
+
+Renders as:
+
+> [!NOTE]
+> Useful information that users should know.
+
+> [!TIP]
+> Helpful advice for doing things better.
+
+> [!IMPORTANT]
+> Key information users need to know.
+
+> [!WARNING]
+> Urgent info that needs immediate attention.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
+### JSX components
+
+When you need a custom title or full control, the same callouts are also available as JSX. These components are auto-registered in MDX files — no import needed.
 
 <Tip>This is a helpful tip for readers.</Tip>
 
@@ -143,7 +205,7 @@ Use callout components to highlight important information. These JSX components 
 
 <Note>This is a note for reference.</Note>
 
-### Custom Titles
+#### Custom titles
 
 You can customize the callout title:
 

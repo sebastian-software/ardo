@@ -1,10 +1,12 @@
 import { createContext, type ReactNode, use, useMemo } from "react"
 
-import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
+import type { ArdoConfig, ArdoContextItem, PageData, SidebarItem, TOCItem } from "../config/types"
 
-interface ArdoContextValue {
+type ArdoContextValue = {
   config: ArdoConfig
   sidebar: SidebarItem[]
+  contexts?: ArdoContextItem[]
+  activeContextId?: string
   currentPage?: PageData
 }
 
@@ -28,6 +30,14 @@ export function useArdoSidebar(): SidebarItem[] {
   return sidebar
 }
 
+export function useArdoContexts(): {
+  activeId: string | undefined
+  items: ArdoContextItem[]
+} {
+  const { contexts, activeContextId } = useArdoContext()
+  return { items: contexts ?? [], activeId: activeContextId }
+}
+
 export function useArdoPageData(): PageData | undefined {
   const { currentPage } = useArdoContext()
   return currentPage
@@ -38,17 +48,26 @@ export function useArdoTOC(): TOCItem[] {
   return currentPage?.toc ?? []
 }
 
-interface ArdoProviderProps {
+type ArdoProviderProps = {
   config: ArdoConfig
   sidebar: SidebarItem[]
+  contexts?: ArdoContextItem[]
+  activeContextId?: string
   currentPage?: PageData
   children: ReactNode
 }
 
-export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
+export function ArdoProvider({
+  config,
+  sidebar,
+  contexts,
+  activeContextId,
+  currentPage,
+  children,
+}: ArdoProviderProps) {
   const contextValue = useMemo(
-    () => ({ config, sidebar, currentPage }),
-    [config, currentPage, sidebar]
+    () => ({ config, sidebar, contexts, activeContextId, currentPage }),
+    [config, currentPage, sidebar, contexts, activeContextId]
   )
   return <ArdoContext value={contextValue}>{children}</ArdoContext>
 }
@@ -60,7 +79,7 @@ export { ArdoContext }
 // Used by the Vite transform to wrap MDX default exports.
 // =============================================================================
 
-interface ArdoPageDataProviderProps {
+type ArdoPageDataProviderProps = {
   frontmatter: PageData["frontmatter"]
   toc: TOCItem[]
   children: ReactNode
@@ -92,7 +111,7 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
 // ArdoSiteConfig — cross-cutting content settings (editLink, lastUpdated, TOC)
 // =============================================================================
 
-export interface ArdoSiteConfig {
+export type ArdoSiteConfig = {
   editLink?: { pattern: string; text?: string }
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   tocLabel?: string
@@ -104,7 +123,7 @@ export function useArdoSiteConfig(): ArdoSiteConfig {
   return use(ArdoSiteConfigContext)
 }
 
-interface ArdoSiteConfigProviderProps {
+type ArdoSiteConfigProviderProps = {
   value: ArdoSiteConfig
   children: ReactNode
 }

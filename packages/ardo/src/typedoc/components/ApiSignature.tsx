@@ -2,7 +2,7 @@ import type { ApiDocParameter, ApiDocReturn, ApiDocTypeParameter } from "../type
 
 import * as styles from "../../ui/components/ApiItem.css"
 
-interface ApiSignatureProps {
+type ApiSignatureProps = {
   name: string
   typeParameters?: ApiDocTypeParameter[]
   parameters?: ApiDocParameter[]
@@ -67,7 +67,7 @@ function getReturnText(returns: ApiDocReturn | undefined): string {
   return `: ${returns.type}`
 }
 
-interface ApiParametersTableProps {
+type ApiParametersTableProps = {
   parameters: ApiDocParameter[]
 }
 
@@ -116,7 +116,7 @@ export function ApiParametersTable({ parameters }: ApiParametersTableProps) {
   )
 }
 
-interface ApiReturnsProps {
+type ApiReturnsProps = {
   returns: ApiDocReturn
 }
 

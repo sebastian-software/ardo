@@ -46,17 +46,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value != null && typeof value === "object"
 }
 
-interface ArdoLineTransformerOptions {
+type ArdoLineTransformerOptions = {
   globalLineNumbers?: boolean
 }
 
-interface LineTransformerState {
+type LineTransformerState = {
   highlightLines: number[]
   metaRaw: string
   showLineNumbers: boolean
 }
 
-interface TransformerNode {
+type TransformerNode = {
   properties?: Record<string, unknown>
 }
 

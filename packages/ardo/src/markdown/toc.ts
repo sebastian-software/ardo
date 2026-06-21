@@ -4,11 +4,11 @@ import { visit } from "unist-util-visit"
 
 import type { TOCItem } from "../config/types"
 
-export interface TocExtraction {
+export type TocExtraction = {
   toc: TOCItem[]
 }
 
-interface TocOptions {
+type TocOptions = {
   tocExtraction: TocExtraction
   levels: [number, number]
 }
@@ -38,8 +38,7 @@ export function remarkExtractToc(options: TocOptions) {
       })
 
       // Add id to the heading node for anchor links
-      const data = node.data ?? (node.data = {})
-      const hProperties = (data.hProperties ?? (data.hProperties = {})) as Record<string, string>
+      const hProperties = ensureHProperties(node)
       hProperties.id = id
     })
 
@@ -51,16 +50,14 @@ function getHeadingText(node: Heading): string {
   const textParts: string[] = []
 
   function extractText(child: unknown) {
-    if (typeof child !== "object" || child === null) return
+    if (!isRecord(child)) return
 
-    const typedChild = child as { type?: string; value?: string; children?: unknown[] }
-
-    if (typedChild.type === "text") {
-      textParts.push(typedChild.value ?? "")
-    } else if (typedChild.type === "inlineCode") {
-      textParts.push(typedChild.value ?? "")
-    } else if (Array.isArray(typedChild.children)) {
-      typedChild.children.forEach((nestedChild) => {
+    if (child.type === "text") {
+      textParts.push(typeof child.value === "string" ? child.value : "")
+    } else if (child.type === "inlineCode") {
+      textParts.push(typeof child.value === "string" ? child.value : "")
+    } else if (Array.isArray(child.children)) {
+      child.children.forEach((nestedChild) => {
         extractText(nestedChild)
       })
     }
@@ -128,6 +125,25 @@ function buildTocTree(headings: Array<{ text: string; level: number; id: string 
   }
 
   return result
+}
+
+type HeadingDataWithHProperties = {
+  hProperties?: Record<string, unknown>
+} & Heading["data"]
+
+function ensureHProperties(node: Heading): Record<string, unknown> {
+  const data: HeadingDataWithHProperties = node.data ?? {}
+  node.data = data
+
+  if (!isRecord(data.hProperties)) {
+    data.hProperties = {}
+  }
+
+  return data.hProperties
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }
 
 export function flattenToc(toc: TOCItem[]): TOCItem[] {

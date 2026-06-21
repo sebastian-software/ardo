@@ -1,21 +1,21 @@
 ---
 title: Getting Started
-description: From zero to a running documentation site in under a minute.
+description: Create a static React documentation site with Ardo's scaffolded Vite and React Router setup.
 order: 2
 ---
 
 # Getting Started
 
-Four commands. That's how long it takes to go from nothing to a running documentation site with navigation, search, dark mode, and syntax highlighting. Let's get there.
+The fastest way to evaluate Ardo is to scaffold a real docs site, run it locally, and add one MDX page. The scaffold gives you the full React Router shell, Tailwind v4, Ardo's default UI, and static build settings so you can focus on content first.
 
 ## Prerequisites
 
 You'll need:
 
-- [Node.js](https://nodejs.org/) version 22 or higher
+- [Node.js](https://nodejs.org/) version 22.22.0 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
-## Quick Start
+## Fast Path
 
 The fastest path is the `create-ardo` CLI. It scaffolds a complete project — configuration, example content, and a GitHub Pages deployment workflow — so you can focus on writing.
 
@@ -26,11 +26,11 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:5173` and you'll see your site. Add an MDX file to `app/routes/`, and it appears in the sidebar automatically.
+Open `http://localhost:5173` and you'll see your site. Add an MDX file to `app/routes/`, and Ardo includes it in the generated navigation.
 
 ## Manual Installation
 
-If you'd rather set things up yourself, here's the full walkthrough. This is also helpful for understanding what `create-ardo` does under the hood.
+If you want to add Ardo to an existing workspace or understand the scaffold, follow the manual setup. The split is simple: Vite handles build-time configuration, React handles UI configuration.
 
 ### 1. Create a new project
 
@@ -69,7 +69,7 @@ export default defineConfig({
 
 ### 4. Create React Router configuration
 
-Ardo uses React Router 7 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
+Ardo uses React Router 8 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
 
 ```ts
 import type { Config } from "@react-router/dev/config"
@@ -82,48 +82,22 @@ export default {
 
 ### 5. Create app files
 
-These are standard React Router entry files. If you've worked with React Router before, they'll look familiar.
+These are standard React Router entry files plus Ardo's root component. If you've worked with React Router before, the shape should feel familiar.
 
 **`app/root.tsx`**:
 
 ```tsx
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
-import { ArdoLayout, ArdoHeader, ArdoSidebar, ArdoFooter } from "ardo/ui"
-import { ArdoProvider } from "ardo/runtime"
+import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
 import "ardo/ui/styles.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  )
+  return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
 
 export default function Root() {
-  return (
-    <ArdoProvider config={config} sidebar={sidebar}>
-      <ArdoLayout
-        header={<ArdoHeader title="My Docs" />}
-        sidebar={<ArdoSidebar />}
-        footer={<ArdoFooter />}
-      >
-        <Outlet />
-      </ArdoLayout>
-    </ArdoProvider>
-  )
+  return <ArdoRoot config={config} sidebar={sidebar} />
 }
 ```
 
@@ -212,7 +186,7 @@ Start the development server:
 pnpm dev
 ```
 
-Your site will be running at `http://localhost:5173`. Changes to your MDX files show up instantly thanks to Vite's hot module replacement.
+Your site will be running at `http://localhost:5173`. Changes to MDX and TSX routes flow through Vite's development server.
 
 ## Production Build
 
@@ -255,7 +229,7 @@ Your site is running. Now make it yours:
 
 - Write richer content with [Markdown Features](/guide/markdown)
 - Style your pages with [Tailwind CSS](/guide/tailwind) — included by default, ready to use
-- Customize the look with [Theme Configuration](/guide/theme-config)
+- Customize the look with [Custom Theme](/guide/custom-theme)
 - Style with type-safe tokens using [Vanilla Extract](/guide/custom-theme#vanilla-extract-tokens) — `.css.ts` files work out of the box
 - [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel
 - Explore the [API Reference](/api-reference)

@@ -10,12 +10,12 @@ import { buildCodeBlockHtml } from "./shiki-html"
 import { parseHighlightLines, parseTitle } from "./shiki-meta"
 import { highlightWithTheme, resolveThemeConfig } from "./shiki-theme"
 
-interface RehypeShikiOptions {
+type RehypeShikiOptions = {
   config: MarkdownConfig
   highlighter: Highlighter
 }
 
-interface TransformCodeNodeContext {
+type TransformCodeNodeContext = {
   config: MarkdownConfig
   highlighter: Highlighter
   index: number | undefined
@@ -169,9 +169,9 @@ function replaceNodeWithShikiContainer(
       {
         type: "raw",
         value: innerHtml,
-      } as unknown as Element,
+      },
     ],
-  } satisfies Element
+  }
 }
 
 function hasChildrenArray(value: unknown): value is { children: unknown[] } {

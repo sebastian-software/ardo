@@ -3,7 +3,7 @@ import path from "node:path"
 
 import type { ProjectMeta } from "../config/types"
 
-interface PackageJsonShape {
+type PackageJsonShape = {
   author?: { name?: string } | string
   homepage?: string
   license?: string

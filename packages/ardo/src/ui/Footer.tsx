@@ -4,12 +4,13 @@ import type { ProjectMeta, SponsorConfig } from "../config/types"
 
 import { useArdoConfig } from "../runtime/hooks"
 import * as styles from "./Footer.css"
+import { ArdoOwlMark } from "./OwlMark"
 
 // =============================================================================
 // Footer Component
 // =============================================================================
 
-export interface ArdoFooterProps {
+export type ArdoFooterProps = {
   /** Footer message (supports HTML string) */
   message?: string
   /** Copyright text (supports HTML string) */
@@ -126,7 +127,8 @@ function FooterPrimaryLine({
   if (hasProject) items.push(projectNode)
   if (ardoLink)
     items.push(
-      <a href="https://ardo-docs.dev" className={styles.footerLink}>
+      <a href="https://ardo-docs.dev" className={styles.footerArdoLink}>
+        <ArdoOwlMark size={16} className={styles.footerOwl} title="" />
         Built with Ardo
       </a>
     )
@@ -199,12 +201,12 @@ export function ArdoFooter({
 }
 
 // Type exports for compound pattern (kept for backwards compatibility)
-export interface ArdoFooterMessageProps {
+export type ArdoFooterMessageProps = {
   children: ReactNode
   className?: string
 }
 
-export interface ArdoFooterCopyrightProps {
+export type ArdoFooterCopyrightProps = {
   children: ReactNode
   className?: string
 }

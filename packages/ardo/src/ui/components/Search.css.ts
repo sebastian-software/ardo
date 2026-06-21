@@ -14,7 +14,7 @@ export const searchField = style({
   gap: vars.space.sm,
   minHeight: "2.5rem",
   padding: `${vars.space.sm} 0.75rem`,
-  background: vars.color.bgSoft,
+  background: vars.color.bg,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.base,
   color: vars.color.textLighter,
@@ -26,6 +26,7 @@ export const searchField = style({
 globalStyle(`${search}:focus-within ${searchField}`, {
   borderColor: vars.color.brand,
   color: vars.color.textLight,
+  boxShadow: `0 0 0 3px color-mix(in oklch, ${vars.color.brand} 12%, transparent)`,
 })
 
 globalStyle(`${searchField}:focus-within`, {
@@ -97,9 +98,18 @@ export const searchResultSection = style({
 })
 
 export const searchNoResults = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: vars.space.sm,
   padding: `${vars.space.xl} ${vars.space.md}`,
   textAlign: "center",
   color: vars.color.textLighter,
+})
+
+export const searchNoResultsOwl = style({
+  color: vars.color.textLighter,
+  opacity: 0.55,
 })
 
 export const searchFooter = style({
@@ -119,6 +129,8 @@ globalStyle(`${searchFooter} kbd`, {
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   marginRight: "4px",
+  color: vars.color.accent,
+  fontFamily: vars.font.mono,
 })
 
 export const searchClear = style({
@@ -156,5 +168,6 @@ globalStyle(`${searchKbd} kbd`, {
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   fontSize: vars.fontSize.xs,
-  fontFamily: vars.font.family,
+  fontFamily: vars.font.mono,
+  color: vars.color.accent,
 })

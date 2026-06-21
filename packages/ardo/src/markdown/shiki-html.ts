@@ -1,4 +1,4 @@
-interface CodeBlockOptions {
+type CodeBlockOptions = {
   highlightLines: number[]
   lang: string
   lineNumbers: boolean

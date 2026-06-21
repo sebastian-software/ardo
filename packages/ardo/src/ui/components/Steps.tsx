@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 import * as styles from "./Steps.css"
 
-export interface ArdoStepsProps {
+export type ArdoStepsProps = {
   /** Content to display, typically an ordered list (`<ol>`) */
   children: ReactNode
 }

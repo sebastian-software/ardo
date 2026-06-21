@@ -1,8 +1,10 @@
 import type { MDXComponents } from "mdx/types"
 import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
 
+import { isValidElement } from "react"
 import { Link } from "react-router"
 
+import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
@@ -61,8 +63,8 @@ function extractTextContent(children: ReactNode): string {
   if (Array.isArray(children)) {
     return children.map((child: ReactNode) => extractTextContent(child)).join("")
   }
-  if (children != null && typeof children === "object" && "props" in children) {
-    const nestedChildren = (children as { props: { children?: ReactNode } }).props.children
+  if (isValidElement<{ children?: ReactNode }>(children)) {
+    const nestedChildren = children.props.children
     if (nestedChildren != null) {
       return extractTextContent(nestedChildren)
     }
@@ -110,6 +112,7 @@ export function useMDXComponents(): MDXComponents {
     pre: PreBlock,
 
     // Custom Ardo components available in MDX (mapped as short names)
+    Badge: ArdoBadge,
     Icon: ArdoIcon,
     Tip: ArdoTip,
     Warning: ArdoWarning,

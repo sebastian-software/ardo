@@ -2,12 +2,12 @@ import type { ComponentType, ReactNode, SVGAttributes } from "react"
 
 type IconComponent = ComponentType<{ size?: number } & SVGAttributes<SVGSVGElement>>
 
-export interface ArdoIconProps extends SVGAttributes<SVGSVGElement> {
+export type ArdoIconProps = {
   /** Name of the registered icon */
   name: string
   /** Icon size */
   size?: number
-}
+} & SVGAttributes<SVGSVGElement>
 
 // Icon registry - users register only the icons they need
 const iconRegistry = new Map<string, IconComponent>()

@@ -1,21 +1,47 @@
 import type { BundledTheme } from "shiki"
+import type { PluggableList } from "unified"
 
 // =============================================================================
 // Sidebar Types (for data-driven sidebar)
 // =============================================================================
 
-export interface SidebarItem {
+export type SidebarItem = {
   text: string
   link?: string
+  icon?: "api" | "book" | "box" | "code" | "components" | "docs" | "guide" | "settings" | "tools"
   collapsed?: boolean
   items?: SidebarItem[]
+}
+
+export type SidebarConfig = {
+  /** Top-level generated sidebar sections to prioritize by route segment. */
+  sectionOrder?: string[]
+}
+
+// =============================================================================
+// Context Types (for the sidebar rail / world switcher)
+// =============================================================================
+
+export type ArdoContextItem = {
+  /**
+   * Stable identifier used to look up the sidebar tree for this context.
+   * Conventionally matches the top-level folder under `app/routes/`
+   * (e.g. `"guide"`, `"api-reference"`).
+   */
+  id: string
+  /** Display label shown in the rail tooltip. */
+  label: string
+  /** Default landing href for the context. */
+  href: string
+  /** Optional route prefix override. Defaults to `href` without trailing segments. */
+  match?: RegExp | string
 }
 
 // =============================================================================
 // Navigation Types (for data-driven nav)
 // =============================================================================
 
-export interface NavItem {
+export type NavItem = {
   text: string
   link?: string
   items?: NavItem[]
@@ -26,7 +52,7 @@ export interface NavItem {
 // Sponsor Types
 // =============================================================================
 
-export interface SponsorConfig {
+export type SponsorConfig = {
   text: string
   link: string
 }
@@ -35,7 +61,7 @@ export interface SponsorConfig {
 // Social Link Types
 // =============================================================================
 
-export interface SocialLink {
+export type SocialLink = {
   icon: "discord" | "github" | "linkedin" | "npm" | "twitter" | "youtube"
   link: string
   ariaLabel?: string
@@ -45,7 +71,7 @@ export interface SocialLink {
 // Markdown Config
 // =============================================================================
 
-export interface MarkdownConfig {
+export type MarkdownConfig = {
   /** Syntax highlighting theme */
   theme?: { light: BundledTheme; dark: BundledTheme } | BundledTheme
   /** Show line numbers in code blocks */
@@ -57,16 +83,16 @@ export interface MarkdownConfig {
     level?: [number, number]
   }
   /** Remark plugins */
-  remarkPlugins?: unknown[]
+  remarkPlugins?: PluggableList
   /** Rehype plugins */
-  rehypePlugins?: unknown[]
+  rehypePlugins?: PluggableList
 }
 
 // =============================================================================
 // Head Config
 // =============================================================================
 
-export interface HeadConfig {
+export type HeadConfig = {
   tag: string
   attrs?: Record<string, boolean | string>
   children?: string
@@ -76,7 +102,7 @@ export interface HeadConfig {
 // TypeDoc Config
 // =============================================================================
 
-export interface TypeDocConfig {
+export type TypeDocConfig = {
   enabled?: boolean
   entryPoints: string[]
   tsconfig?: string
@@ -117,7 +143,7 @@ export interface TypeDocConfig {
 // Project Metadata (auto-detected from package.json)
 // =============================================================================
 
-export interface ProjectMeta {
+export type ProjectMeta = {
   /** Package name from package.json */
   name?: string
   /** Homepage URL from package.json */
@@ -142,7 +168,7 @@ export interface ProjectMeta {
  * In JSX-first architecture, only build-time options are needed here.
  * Runtime UI configuration (header, sidebar, footer) is done in JSX.
  */
-export interface ArdoConfig {
+export type ArdoConfig = {
   /** Site title (used for default meta tags) */
   title: string
   /** Site description (used for default meta tags) */
@@ -161,6 +187,16 @@ export interface ArdoConfig {
   head?: HeadConfig[]
   /** Markdown processing options */
   markdown?: MarkdownConfig
+  /** Generated sidebar options */
+  sidebar?: SidebarConfig
+  /** Absolute site URL used for generated SEO files and canonical metadata */
+  siteUrl?: string
+  /** Sitemap and robots.txt generation */
+  seo?: SeoConfig
+  /** Build-time internal link checking */
+  linkCheck?: LinkCheckConfig
+  /** Static redirect generation */
+  redirects?: RedirectConfig[]
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
@@ -180,18 +216,58 @@ export interface ArdoConfig {
   buildHash?: string
 }
 
+export type SeoConfig = {
+  sitemap?: boolean | SitemapConfig
+  robots?: boolean | RobotsConfig
+}
+
+export type SitemapConfig = {
+  changefreq?: SitemapChangefreq
+  priority?: number
+}
+
+export type SitemapChangefreq =
+  | "always"
+  | "daily"
+  | "hourly"
+  | "monthly"
+  | "never"
+  | "weekly"
+  | "yearly"
+
+export type RobotsConfig = {
+  allow?: string[]
+  disallow?: string[]
+}
+
+export type LinkCheckConfig = {
+  checkAnchors?: boolean
+  enabled?: boolean
+  exclude?: string[]
+  level?: "error" | "warn"
+}
+
+export type RedirectConfig = {
+  from: string
+  to: string
+}
+
 // =============================================================================
 // Page Types
 // =============================================================================
 
-export interface PageFrontmatter {
+export type PageFrontmatter = {
   title?: string
   description?: string
+  order?: number
+  collapsed?: boolean
   layout?: "doc" | "home" | "page"
   sidebar?: boolean
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
+  sitemap?: boolean
+  redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string
   next?: { text: string; link: string } | false | string
   hero?: {
@@ -212,16 +288,16 @@ export interface PageFrontmatter {
     link?: string
     linkText?: string
   }>
-}
+} & Record<string, unknown>
 
-export interface TOCItem {
+export type TOCItem = {
   id: string
   text: string
   level: number
   children?: TOCItem[]
 }
 
-export interface PageData {
+export type PageData = {
   title: string
   description?: string
   frontmatter: PageFrontmatter
@@ -236,12 +312,10 @@ export interface PageData {
 // Resolved Config (Internal)
 // =============================================================================
 
-export interface ResolvedConfig extends Required<
-  Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "vite">
-> {
+export type ResolvedConfig = {
   project: ProjectMeta
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig
   root: string
   contentDir: string
-}
+} & Required<Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "vite">>

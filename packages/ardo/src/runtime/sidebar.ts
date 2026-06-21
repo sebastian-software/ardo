@@ -6,17 +6,17 @@ import path from "node:path"
 
 import type { ResolvedConfig, SidebarItem } from "../config/types"
 
-export interface SidebarGenerationOptions {
+export type SidebarGenerationOptions = {
   basePath: string
   config: ResolvedConfig
   contentDir: string
 }
 
-interface SidebarItemWithOrder extends SidebarItem {
+type SidebarItemWithOrder = {
   order?: number
-}
+} & SidebarItem
 
-interface SidebarFrontmatter {
+type SidebarFrontmatter = {
   order?: number
   sidebar?: boolean
   title?: string
