@@ -5,6 +5,8 @@ export { ArdoBareContent } from "./BareContent"
 // UI components
 export {
   ArdoBadge,
+  ArdoCard,
+  ArdoCardGroup,
   ArdoCodeBlock,
   ArdoCodeGroup,
   ArdoContainer,
@@ -30,8 +32,14 @@ export {
   registerIcons,
 } from "./components"
 
-export type { ArdoBadgeProps, ArdoBadgeVariant } from "./components"
-export type { ArdoIconProps } from "./components"
+export type {
+  ArdoBadgeProps,
+  ArdoBadgeVariant,
+  ArdoCardGroupColumns,
+  ArdoCardGroupProps,
+  ArdoCardProps,
+  ArdoIconProps,
+} from "./components"
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./components"

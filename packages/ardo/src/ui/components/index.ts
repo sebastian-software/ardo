@@ -1,5 +1,7 @@
 export { ArdoBadge } from "./Badge"
 export type { ArdoBadgeProps, ArdoBadgeVariant } from "./Badge"
+export { ArdoCard, ArdoCardGroup } from "./Card"
+export type { ArdoCardGroupColumns, ArdoCardGroupProps, ArdoCardProps } from "./Card"
 export { ArdoCodeBlock, ArdoCodeGroup } from "./CodeBlock"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./CodeBlock"
 export { ArdoContainer, ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "./Container"
