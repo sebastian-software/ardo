@@ -226,8 +226,22 @@ export type MetadataConfig = {
 }
 
 export type SeoConfig = {
+  llms?: boolean | LlmsConfig
   sitemap?: boolean | SitemapConfig
   robots?: boolean | RobotsConfig
+}
+
+export type LlmsConfig = {
+  /** File name for the concise LLM documentation index. */
+  indexFileName?: string
+  /** File name for the full LLM documentation export. */
+  fullFileName?: string
+  /** Generate the full documentation export next to the concise index. */
+  includeFull?: boolean
+  /** Override the generated document title. Defaults to the site title. */
+  title?: string
+  /** Override the generated document summary. Defaults to the site description. */
+  description?: string
 }
 
 export type SitemapConfig = {
@@ -285,6 +299,7 @@ export type PageFrontmatter = {
   editLink?: boolean
   lastUpdated?: boolean
   sitemap?: boolean
+  llms?: boolean
   redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string
   next?: { text: string; link: string } | false | string

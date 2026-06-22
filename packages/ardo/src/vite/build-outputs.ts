@@ -1,6 +1,8 @@
 import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
+import { createLlmsTextAssets } from "./llms-text"
+
 type LinkCheckDiagnostic = {
   filePath: string
   href: string
@@ -142,13 +144,26 @@ export function createBuildOutputAssets(
     assets.push({ fileName: "robots.txt", source: generateRobots(config) })
   }
 
+  if (shouldEmitLlms(config)) {
+    assets.push(...createLlmsTextAssets(entries, config))
+  }
+
   const redirects = collectRedirects(entries, config)
   if (redirects.length === 0) {
     return assets
   }
 
-  assets.push({ fileName: "_redirects", source: generateNetlifyRedirects(redirects) })
-  assets.push({ fileName: "vercel.json", source: generateVercelRedirects(redirects) })
+  assets.push(...createRedirectAssets(redirects))
+
+  return assets
+}
+
+function createRedirectAssets(redirects: Array<{ from: string; to: string }>): BuildOutputAsset[] {
+  const assets: BuildOutputAsset[] = [
+    { fileName: "_redirects", source: generateNetlifyRedirects(redirects) },
+    { fileName: "vercel.json", source: generateVercelRedirects(redirects) },
+  ]
+
   for (const redirect of redirects) {
     assets.push({
       fileName: toRedirectAssetName(redirect.from),
@@ -169,6 +184,10 @@ export function shouldEmitSitemap(config: ResolvedConfig) {
 
 export function shouldEmitRobots(config: ResolvedConfig) {
   return config.seo.robots !== false
+}
+
+export function shouldEmitLlms(config: ResolvedConfig) {
+  return config.seo.llms !== false
 }
 
 function extractInternalLinks(content: string) {

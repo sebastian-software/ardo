@@ -10,7 +10,7 @@ Documentation existed only in HTML/web format. LLMs needed to crawl and parse th
 
 ## Decision
 
-Provide two static text files optimized for LLM consumption, served from the docs site root:
+Provide two generated text files optimized for LLM consumption, served from the docs site root:
 
 - **`llms.txt`** — Concise index with links to major documentation sections and key concepts.
 - **`llms-full.txt`** — Complete documentation as a single markdown file with full content and runnable examples.
@@ -19,8 +19,8 @@ Provide two static text files optimized for LLM consumption, served from the doc
 
 ### Files
 
-- `/docs/public/llms.txt` (~3KB) — Navigation index with quick concepts
-- `/docs/public/llms-full.txt` (~13KB) — Complete documentation in markdown
+- `/llms.txt` — Generated navigation index with links and page descriptions
+- `/llms-full.txt` — Generated complete documentation in markdown
 
 ### Benefits
 
@@ -32,5 +32,5 @@ Provide two static text files optimized for LLM consumption, served from the doc
 
 ### Trade-offs
 
-- Files must be kept in sync with the actual documentation manually
-- Additional maintenance burden when docs change significantly
+- Generated output may need project-specific exclusions for content that is useful in HTML but noisy
+  in LLM context

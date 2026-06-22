@@ -6,6 +6,7 @@ import { resolveConfig } from "../config"
 import {
   checkInternalLinks,
   collectRedirects,
+  createBuildOutputAssets,
   generateNetlifyRedirects,
   generateRobots,
   generateSitemap,
@@ -24,11 +25,17 @@ const baseConfig = resolveConfig(
 const entries: RouteManifestEntry[] = [
   {
     anchors: ["overview"],
-    content: "[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)",
+    content:
+      "# Guide\n\nimport Demo from './demo'\n\n[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)\n\n<Tip>\nKeep this text.\n</Tip>\n\nWrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry.\n\n```tsx\n<Demo />\nexport const value = true\n```",
     filePath: "/site/app/routes/guide.mdx",
-    frontmatter: { redirectFrom: ["/old-guide"] },
+    frontmatter: {
+      description: "Guide description",
+      redirectFrom: ["/old-guide"],
+      title: "Guide",
+    },
     lastmod: new Date("2026-01-02T03:04:05.000Z"),
     path: "/guide",
+    source: "markdown",
   },
   {
     anchors: [],
@@ -37,6 +44,16 @@ const entries: RouteManifestEntry[] = [
     frontmatter: { sitemap: false },
     lastmod: new Date("2026-01-03T03:04:05.000Z"),
     path: "/hidden",
+    source: "markdown",
+  },
+  {
+    anchors: [],
+    content: "export default function Home() { return <Home /> }",
+    filePath: "/site/app/routes/home.tsx",
+    frontmatter: {},
+    lastmod: new Date("2026-01-04T03:04:05.000Z"),
+    path: "/",
+    source: "tsx",
   },
 ]
 
@@ -76,5 +93,53 @@ describe("build outputs", () => {
         message: 'Missing anchor "nope" on /guide',
       },
     ])
+  })
+
+  it("emits generated llms text assets from markdown route entries", () => {
+    const assets = createBuildOutputAssets(entries, baseConfig)
+    const llms = assets.find((asset) => asset.fileName === "llms.txt")
+    const llmsFull = assets.find((asset) => asset.fileName === "llms-full.txt")
+
+    expect(llms?.source).toContain("# Docs")
+    expect(llms?.source).toContain("- [Guide](https://example.com/docs/guide): Guide description")
+    expect(llms?.source).toContain("- [Full documentation](https://example.com/docs/llms-full.txt)")
+    expect(llmsFull?.source).toContain("## Guide")
+    expect(llmsFull?.source).toContain("Source: https://example.com/docs/guide")
+    expect(llmsFull?.source).toContain("Keep this text.")
+    expect(llmsFull?.source).toContain(
+      "Wrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry."
+    )
+    expect(llmsFull?.source).toContain("<Demo />")
+    expect(llmsFull?.source).toContain("export const value = true")
+    expect(llmsFull?.source).not.toContain("import Demo")
+    expect(llmsFull?.source).not.toContain("<Tip>")
+    expect(llmsFull?.source).not.toContain("export default function Home")
+  })
+
+  it("allows llms generation to be disabled or customized", () => {
+    expect(
+      createBuildOutputAssets(entries, {
+        ...baseConfig,
+        seo: { llms: false },
+      }).some((asset) => asset.fileName === "llms.txt")
+    ).toBe(false)
+
+    const customAssets = createBuildOutputAssets(entries, {
+      ...baseConfig,
+      seo: {
+        llms: {
+          fullFileName: "context.md",
+          includeFull: false,
+          indexFileName: "ai.txt",
+          title: "AI Context",
+        },
+      },
+    })
+
+    expect(customAssets.some((asset) => asset.fileName === "ai.txt")).toBe(true)
+    expect(customAssets.some((asset) => asset.fileName === "context.md")).toBe(false)
+    expect(customAssets.find((asset) => asset.fileName === "ai.txt")?.source).toContain(
+      "# AI Context"
+    )
   })
 })
