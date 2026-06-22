@@ -26,7 +26,7 @@ const entries: RouteManifestEntry[] = [
   {
     anchors: ["overview"],
     content:
-      "# Guide\n\nimport Demo from './demo'\n\n[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)\n\n<Tip>\nKeep this text.\n</Tip>\n\n```tsx\n<Demo />\nexport const value = true\n```",
+      "# Guide\n\nimport Demo from './demo'\n\n[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)\n\n<Tip>\nKeep this text.\n</Tip>\n\nWrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry.\n\n```tsx\n<Demo />\nexport const value = true\n```",
     filePath: "/site/app/routes/guide.mdx",
     frontmatter: {
       description: "Guide description",
@@ -106,6 +106,9 @@ describe("build outputs", () => {
     expect(llmsFull?.source).toContain("## Guide")
     expect(llmsFull?.source).toContain("Source: https://example.com/docs/guide")
     expect(llmsFull?.source).toContain("Keep this text.")
+    expect(llmsFull?.source).toContain(
+      "Wrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry."
+    )
     expect(llmsFull?.source).toContain("<Demo />")
     expect(llmsFull?.source).toContain("export const value = true")
     expect(llmsFull?.source).not.toContain("import Demo")
