@@ -4,6 +4,11 @@ const prefix = (value: string) => `ardo-${value}`
 
 export const vars = createGlobalThemeContract(
   {
+    hue: {
+      brand: null,
+      accent: null,
+      neutral: null,
+    },
     color: {
       brand: null,
       brandLight: null,
