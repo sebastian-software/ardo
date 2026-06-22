@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.1...ardo-v3.7.0) (2026-06-22)
+
+
+### Features
+
+* add neutral theme hue ([#193](https://github.com/sebastian-software/ardo/issues/193)) ([642c568](https://github.com/sebastian-software/ardo/commit/642c5687152e8be101f67ce48048a6bc9c6db86f))
+* generate llms text artifacts ([#194](https://github.com/sebastian-software/ardo/issues/194)) ([a6203db](https://github.com/sebastian-software/ardo/commit/a6203db6cd2afbf06f9c796e1ce05b2a567c76d9))
+
 ## [3.6.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.0...ardo-v3.6.1) (2026-06-21)
 
 
