@@ -5,8 +5,9 @@ import { vars } from "../theme/contract.css"
 
 const brandHalo = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
 const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparent)`
-const brandTint = `color-mix(in oklch, ${vars.color.brand} 10%, transparent)`
-const brandTintSoft = `color-mix(in oklch, ${vars.color.brand} 6%, transparent)`
+const brandPanel = `color-mix(in oklch, ${vars.color.brand} 7%, ${vars.color.bgSoft})`
+const brandRule = `color-mix(in oklch, ${vars.color.brand} 18%, ${vars.color.border})`
+const brandRuleStrong = `color-mix(in oklch, ${vars.color.brand} 32%, ${vars.color.border})`
 
 export const hero = style({
   padding: "100px 24px 80px",
@@ -21,11 +22,19 @@ export const hero = style({
       left: 0,
       right: 0,
       bottom: 0,
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, ${brandTintSoft} 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, ${brandTint} 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
+      background: `linear-gradient(180deg, ${vars.color.bg} 0%, ${brandPanel} 100%)`,
+      pointerEvents: "none",
+    },
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      inset: "28px clamp(20px, 6vw, 88px) auto",
+      height: "1px",
+      background: `linear-gradient(90deg, transparent, ${brandRuleStrong}, transparent)`,
       pointerEvents: "none",
     },
     ".dark &::before": {
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, color-mix(in oklch, ${vars.color.brand} 12%, transparent) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, color-mix(in oklch, ${vars.color.brand} 18%, transparent) 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
+      background: `linear-gradient(180deg, ${vars.color.bg} 0%, color-mix(in oklch, ${vars.color.brand} 10%, ${vars.color.bgSoft}) 100%)`,
     },
   },
   "@media": {
@@ -71,15 +80,30 @@ export const heroVersion = style({
 })
 
 export const heroName = style({
+  position: "relative",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "0 0.08em 0.08em",
   fontSize: "64px",
-  fontWeight: 800,
-  background: vars.color.brandGradient,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  letterSpacing: "-0.03em",
-  lineHeight: 1.1,
+  fontWeight: 820,
+  color: vars.color.brand,
+  letterSpacing: "-0.035em",
+  lineHeight: 1.05,
   textWrap: "balance",
+  selectors: {
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: "0.12em",
+      right: "0.12em",
+      bottom: 0,
+      height: "0.12em",
+      borderRadius: "999px",
+      background: brandRule,
+      zIndex: -1,
+    },
+  },
   "@media": {
     "(max-width: 768px)": {
       fontSize: "40px",
@@ -89,10 +113,10 @@ export const heroName = style({
 
 export const heroText = style({
   fontSize: "48px",
-  fontWeight: 700,
-  marginTop: "8px",
-  letterSpacing: "-0.02em",
-  lineHeight: 1.15,
+  fontWeight: 720,
+  marginTop: "12px",
+  letterSpacing: "-0.025em",
+  lineHeight: 1.12,
   textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
