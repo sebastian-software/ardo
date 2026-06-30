@@ -5,6 +5,8 @@ import { vars } from "../theme/contract.css"
 
 const brandBorder = `color-mix(in oklch, ${vars.color.brand} 38%, ${vars.color.border})`
 const brandRing = `color-mix(in oklch, ${vars.color.brand} 12%, transparent)`
+const brandPanel = `color-mix(in oklch, ${vars.color.brand} 5%, ${vars.color.bg})`
+const brandRail = `color-mix(in oklch, ${vars.color.brand} 42%, ${vars.color.border})`
 
 export const features = style({
   padding: "80px 24px",
@@ -50,27 +52,50 @@ export const featuresSubtitle = style({
 
 export const featuresContainer = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: "20px",
+  gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
+  gap: "18px",
   maxWidth: "1100px",
   margin: "0 auto",
+  "@media": {
+    "(max-width: 900px)": {
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    },
+    "(max-width: 640px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
 })
 
 export const feature = style({
+  position: "relative",
+  gridColumn: "span 2",
+  minHeight: "100%",
   padding: vars.space.lg,
-  background: vars.color.bg,
+  background: `linear-gradient(180deg, ${vars.color.bg} 0%, ${brandPanel} 100%)`,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
   boxShadow: vars.color.shadowSm,
   transition: `all ${vars.transition.base}`,
   animation: `${fadeInUp} 0.5s ease both`,
   selectors: {
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: "18px auto 18px 0",
+      width: "3px",
+      borderRadius: "999px",
+      background: brandRail,
+      opacity: 0.7,
+    },
     "&:hover": {
       borderColor: brandBorder,
       boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
     },
   },
   "@media": {
+    "(max-width: 900px)": {
+      gridColumn: "span 1",
+    },
     "(hover: hover)": {
       selectors: {
         "&:hover": {
@@ -89,6 +114,32 @@ export const feature = style({
   },
 })
 
+globalStyle(
+  `${featuresContainer} ${feature}:nth-child(1), ${featuresContainer} ${feature}:nth-child(2)`,
+  {
+    gridColumn: "span 3",
+  }
+)
+
+globalStyle(`${featuresContainer} ${feature}:nth-child(5n + 4)`, {
+  background: vars.color.bg,
+})
+
+globalStyle(`${featuresContainer} ${feature}:nth-child(5n)`, {
+  background: `linear-gradient(180deg, ${brandPanel} 0%, ${vars.color.bg} 100%)`,
+})
+
+globalStyle(
+  `${featuresContainer} ${feature}:nth-child(1), ${featuresContainer} ${feature}:nth-child(2)`,
+  {
+    "@media": {
+      "(max-width: 900px)": {
+        gridColumn: "span 1",
+      },
+    },
+  }
+)
+
 // Stagger animation delays
 for (let i = 1; i <= 6; i++) {
   globalStyle(`${featuresContainer} ${feature}:nth-child(${i})`, {
@@ -105,7 +156,7 @@ export const featureIcon = style({
   marginBottom: "16px",
   background: vars.color.brandSubtle,
   border: `1px solid color-mix(in oklch, ${vars.color.brand} 16%, ${vars.color.border})`,
-  borderRadius: "50%",
+  borderRadius: vars.radius.base,
   color: vars.color.brand,
   transition: `all ${vars.transition.base}`,
 })
