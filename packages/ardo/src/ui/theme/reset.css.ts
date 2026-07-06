@@ -2,10 +2,8 @@ import { globalStyle } from "@vanilla-extract/css"
 
 import { vars } from "./contract.css"
 
-globalStyle("*", {
+globalStyle("*, *::before, *::after", {
   boxSizing: "border-box",
-  margin: 0,
-  padding: 0,
 })
 
 globalStyle("html", {

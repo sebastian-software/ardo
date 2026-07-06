@@ -1,6 +1,7 @@
 import { type ComponentProps, createContext, type ReactNode, use, useMemo, useState } from "react"
 import { NavLink as RouterNavLink, useLocation } from "react-router"
 
+import { joinClassNames } from "./classnames"
 import * as styles from "./Nav.css"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
@@ -40,7 +41,7 @@ export type ArdoNavProps = {
  * ```
  */
 export function ArdoNav({ children, className }: ArdoNavProps) {
-  return <nav className={className ?? styles.nav}>{children}</nav>
+  return <nav className={joinClassNames("ardo-nav", className ?? styles.nav)}>{children}</nav>
 }
 
 // =============================================================================

@@ -76,11 +76,32 @@ globalStyle(`${c} a:hover`, {
   textDecorationColor: vars.color.brand,
 })
 
-globalStyle(`${c} ul, ${c} ol`, {
+globalStyle(`${c} ul`, {
+  listStyle: "disc",
   marginBottom: vars.space.lg,
   paddingLeft: vars.space.lg,
   maxWidth: vars.layout.contentMaxWidth,
   textWrap: "pretty",
+})
+
+globalStyle(`${c} ol`, {
+  listStyle: "decimal",
+  marginBottom: vars.space.lg,
+  paddingLeft: vars.space.lg,
+  maxWidth: vars.layout.contentMaxWidth,
+  textWrap: "pretty",
+})
+
+globalStyle(`${c} ul ul, ${c} ol ul`, {
+  listStyle: "circle",
+})
+
+globalStyle(`${c} ul ul ul, ${c} ol ul ul`, {
+  listStyle: "square",
+})
+
+globalStyle(`${c} ul ol, ${c} ol ol`, {
+  listStyle: "lower-alpha",
 })
 
 globalStyle(`${c} li`, {

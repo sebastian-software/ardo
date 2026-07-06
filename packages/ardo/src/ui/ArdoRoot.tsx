@@ -104,7 +104,7 @@ function resolveRootHeader(
   headerProps: ArdoHeaderProps | undefined,
   mobileMenuContent: ReactNode
 ): ReactNode {
-  if (header != null) {
+  if (header !== undefined) {
     return enhanceHeaderWithMobileMenuContent(header, mobileMenuContent)
   }
   return (
@@ -127,6 +127,13 @@ function readLayoutHandle(handle: unknown): string | undefined {
   return typeof layout === "string" ? layout : undefined
 }
 
+function readChromeHandle(handle: unknown): boolean | undefined {
+  if (typeof handle !== "object" || handle === null) return undefined
+  if (!("chrome" in handle)) return undefined
+  const { chrome } = handle
+  return typeof chrome === "boolean" ? chrome : undefined
+}
+
 /**
  * Reads the React Router `handle` exports from every active route match and
  * returns the most specific `layout` value (the deepest match wins). MDX
@@ -138,6 +145,15 @@ function useRouteLayout(): string | undefined {
   for (let i = matches.length - 1; i >= 0; i--) {
     const layout = readLayoutHandle(matches[i].handle)
     if (layout !== undefined) return layout
+  }
+  return undefined
+}
+
+function useRouteChrome(): boolean | undefined {
+  const matches = useMatches()
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const chrome = readChromeHandle(matches[i].handle)
+    if (chrome !== undefined) return chrome
   }
   return undefined
 }
@@ -186,6 +202,8 @@ export function ArdoRoot({
 }: ArdoRootProps) {
   const location = useLocation()
   const layout = useRouteLayout()
+  const routeChrome = useRouteChrome()
+  const showChrome = routeChrome !== false
   // Bare layout: no sidebar, no rail — used for the home page and any other
   // marketing-style routes (TSX or MDX). Falls back to the legacy hardcoded
   // home detection if a route hasn't opted in via `handle.layout`.
@@ -200,11 +218,16 @@ export function ArdoRoot({
   )
   // Search lives in the header now. The sidebar no longer carries it.
   const resolvedSidebar = isBareLayout ? undefined : resolveSidebar(sidebarContent, sidebarProps)
-  const resolvedHeader = resolveRootHeader(
-    header,
-    headerProps,
-    isBareLayout ? undefined : resolvedSidebar
-  )
+  const resolvedHeader = showChrome
+    ? resolveRootHeader(header, headerProps, isBareLayout ? undefined : resolvedSidebar)
+    : null
+  const resolvedFooter = showChrome ? (
+    footer === undefined ? (
+      <ArdoFooter {...footerProps} />
+    ) : (
+      footer
+    )
+  ) : null
 
   const siteConfig = useMemo<ArdoSiteConfig>(
     () => ({ editLink, lastUpdated, tocLabel }),
@@ -222,7 +245,7 @@ export function ArdoRoot({
         className={resolveLayoutClassName(className, isBareLayout)}
         header={resolvedHeader}
         sidebar={resolvedSidebar}
-        footer={footer ?? <ArdoFooter {...footerProps} />}
+        footer={resolvedFooter}
       >
         {children ?? <Outlet />}
       </ArdoLayout>

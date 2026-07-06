@@ -171,6 +171,23 @@ globalStyle(".ardo-content a", {
 })
 ```
 
+### Stable override hooks
+
+Ardo's generated Vanilla Extract class names are implementation details. Use the stable hook classes
+for narrowly scoped overrides:
+
+| Class                | Landmark                      |
+| -------------------- | ----------------------------- |
+| `.ardo-header`       | Default header shell          |
+| `.ardo-nav`          | Default navigation container  |
+| `.ardo-mobile-panel` | Mobile navigation dialog      |
+| `.ardo-sidebar`      | Sidebar shell                 |
+| `.ardo-footer`       | Default footer shell          |
+| `.ardo-content`      | Rendered Markdown/MDX content |
+
+These classes are override anchors, not a replacement styling API. Prefer tokens and component props
+first, then use the hooks for project-specific adjustments that need a stable selector.
+
 ### Available token categories
 
 The `vars` object provides tokens for:

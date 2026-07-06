@@ -95,12 +95,12 @@ export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoH
 
   return (
     <div className={layoutStyles.home}>
-      {header ?? <ArdoHeader title={config.title} {...headerProps} />}
+      {header === undefined ? <ArdoHeader title={config.title} {...headerProps} /> : header}
       <main className={layoutStyles.homeMain}>
         <HomeHeroSection hero={pageData?.frontmatter.hero} fallbackTitle={config.title} />
         <HomeFeaturesSection features={pageData?.frontmatter.features} />
       </main>
-      {footer ?? <ArdoFooter {...footerProps} />}
+      {footer === undefined ? <ArdoFooter {...footerProps} /> : footer}
     </div>
   )
 }

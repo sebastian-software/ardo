@@ -2,6 +2,7 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig } from "../runtime/hooks"
+import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
@@ -83,14 +84,14 @@ export function ArdoHeader({
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""
-  const hasMobileMenu = mobileMenuContent != null
+  const hasMobileMenu = mobileMenuContent != null || nav != null
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
   }, [setMobileMenuOpen])
 
   return (
     <>
-      <header className={className ?? styles.header}>
+      <header className={joinClassNames("ardo-header", className ?? styles.header)}>
         <div className={styles.headerContainer}>
           <div className={styles.headerLeft}>
             {hasMobileMenu && (

@@ -95,7 +95,17 @@ export default function Root() {
 | `mobileMenuContent` | Additional content for the mobile menu. `ArdoRoot` supplies the sidebar. |
 | `className`         | Replace the default header class.                                        |
 
-Pass `header` instead of `headerProps` when your design needs a fully custom header element.
+Pass `header` instead of `headerProps` when your design needs a fully custom header element. Pass
+`header={null}` when a root layout should intentionally render no header.
+
+For route-level chrome suppression, export a `handle` from the route:
+
+```tsx title="app/routes/landing.tsx"
+export const handle = { layout: "bare", chrome: false }
+```
+
+`chrome: false` removes the default header and footer for that route. `layout: "bare"` still controls
+sidebar and rail rendering.
 
 ## Footer
 
@@ -135,6 +145,8 @@ export default function Root() {
 | `ardoLink`             | Set to `false` to hide the "Built with Ardo" link.                      |
 | `children`             | Full custom footer content. Skips automatic footer rendering.           |
 | `className`            | Replace the default footer class.                                       |
+
+Pass `footer={null}` when a root layout should intentionally render no footer.
 
 ## Edit Links and Last Updated
 

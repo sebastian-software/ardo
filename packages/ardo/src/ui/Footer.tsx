@@ -3,6 +3,7 @@ import React, { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
 
 import { useArdoConfig } from "../runtime/hooks"
+import { joinClassNames } from "./classnames"
 import * as styles from "./Footer.css"
 import { ArdoOwlMark } from "./OwlMark"
 
@@ -208,14 +209,14 @@ export function ArdoFooter({
 
   if (children != null) {
     return (
-      <footer className={className ?? styles.footer}>
+      <footer className={joinClassNames("ardo-footer", className ?? styles.footer)}>
         <div className={styles.footerContainer}>{children}</div>
       </footer>
     )
   }
 
   return (
-    <footer className={className ?? styles.footer}>
+    <footer className={joinClassNames("ardo-footer", className ?? styles.footer)}>
       <div className={styles.footerContainer}>
         <FooterPrimaryLine
           project={project}
