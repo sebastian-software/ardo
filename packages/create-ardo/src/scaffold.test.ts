@@ -36,6 +36,21 @@ describe("createProjectStructure", () => {
     expect(packageJson.name).toBe("test-project")
   })
 
+  it("does not recursively expand template placeholders from prompt values", () => {
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "{{ARDO_VERSION}}",
+      projectName: "test-project",
+      typedoc: false,
+      githubPages: false,
+      description: "{{PROJECT_NAME}}",
+    })
+
+    const viteConfig = fs.readFileSync(path.join(tmpDir, "vite.config.ts"), "utf8")
+
+    expect(viteConfig).toContain(`title: '{{ARDO_VERSION}}'`)
+    expect(viteConfig).toContain(`description: '{{PROJECT_NAME}}'`)
+  })
+
   it("does not overwrite existing files when overwriteExisting is false", () => {
     fs.mkdirSync(path.join(tmpDir, "app"), { recursive: true })
     fs.writeFileSync(path.join(tmpDir, "package.json"), '{"name":"keep-me"}\n')

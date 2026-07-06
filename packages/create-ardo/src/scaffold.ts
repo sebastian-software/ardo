@@ -111,10 +111,9 @@ function copyEntry(input: CopyEntryInput, context: CopyContext): void {
 }
 
 function writeTemplateFile(srcPath: string, destPath: string, vars: Record<string, string>): void {
-  let content = fs.readFileSync(srcPath, "utf8")
-  for (const [key, value] of Object.entries(vars)) {
-    content = content.replaceAll(`{{${key}}}`, value)
-  }
+  const content = fs
+    .readFileSync(srcPath, "utf8")
+    .replaceAll(/\{\{([A-Z0-9_]+)\}\}/g, (placeholder, key: string) => vars[key] ?? placeholder)
   fs.writeFileSync(destPath, content)
 }
 
