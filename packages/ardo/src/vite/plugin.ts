@@ -1,7 +1,6 @@
-import type { Plugin, UserConfig } from "vite"
+import type { Plugin, UserConfig, ViteDevServer } from "vite"
 
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
-import path from "node:path"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
@@ -17,6 +16,7 @@ import { detectGitHash, detectGitHubBasename, detectGitHubRepoName } from "./git
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
+import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
@@ -155,6 +155,9 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     transform(code, id) {
       return transformMarkdownMeta(code, id, state)
     },
+    configureServer(server) {
+      configureVirtualModuleInvalidation(server, state)
+    },
     async generateBundle(outputOptions) {
       if (state.isSsrBuild || isServerOutput(outputOptions.dir) || state.resolvedConfig == null) {
         return
@@ -284,6 +287,42 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
   return undefined
 }
 
-function resolveRoutesDir(root: string, routesDirOption: string | undefined): string {
-  return routesDirOption ?? path.join(root, "app", "routes")
+function configureVirtualModuleInvalidation(server: ViteDevServer, state: PluginState): void {
+  server.watcher.add(state.routesDir)
+
+  const handleRouteContentChange = (changedPath: string) => {
+    if (!shouldInvalidateRouteVirtualModules(changedPath, state.routesDir)) {
+      return
+    }
+
+    invalidateVirtualModules(server)
+    server.ws.send({ type: "full-reload" })
+  }
+
+  server.watcher.on("add", handleRouteContentChange)
+  server.watcher.on("change", handleRouteContentChange)
+  server.watcher.on("unlink", handleRouteContentChange)
+}
+
+function shouldInvalidateRouteVirtualModules(changedPath: string, routesDir: string): boolean {
+  const normalizedPath = normalizePath(changedPath)
+  return (
+    isPathInsideDirectory(normalizedPath, routesDir) &&
+    (normalizedPath.endsWith(".md") || normalizedPath.endsWith(".mdx"))
+  )
+}
+
+function invalidateVirtualModules(server: ViteDevServer): void {
+  const virtualIds = [
+    RESOLVED_IDS[VIRTUAL_SIDEBAR_ID],
+    RESOLVED_IDS[VIRTUAL_SIDEBARS_ID],
+    RESOLVED_IDS[VIRTUAL_SEARCH_ID],
+  ]
+
+  for (const id of virtualIds) {
+    const module = server.moduleGraph.getModuleById(id)
+    if (module != null) {
+      server.moduleGraph.invalidateModule(module)
+    }
+  }
 }

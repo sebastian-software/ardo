@@ -135,4 +135,27 @@ describe("transformMarkdownMeta", () => {
 
     expect(result?.code).toContain('{ title: "He said \\"hi\\" | Docs" }')
   })
+
+  it("injects metadata when Vite ids use slashes and routesDir uses Windows separators", () => {
+    const result = transformMarkdownMeta(
+      'export const frontmatter = { title: "Windows" }\n',
+      "C:/site/app/routes/guide/index.mdx",
+      { routesDir: "C:\\site\\app\\routes", resolvedConfig: config }
+    )
+
+    expect(result?.code).toContain('{ title: "Windows | Docs" }')
+    expect(result?.code).toContain(
+      '{ tagName: "link", rel: "canonical", href: "https://example.com/docs/guide" }'
+    )
+  })
+
+  it("does not inject metadata for sibling directories with the same prefix", () => {
+    const result = transformMarkdownMeta(
+      'export const frontmatter = { title: "Old" }\n',
+      "/site/app/routes-old/guide/index.mdx",
+      { routesDir, resolvedConfig: config }
+    )
+
+    expect(result).toBeUndefined()
+  })
 })

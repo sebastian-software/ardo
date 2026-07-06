@@ -2,6 +2,7 @@ import type { Plugin } from "vite"
 
 import path from "node:path"
 
+import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { writeRoutesFile, writeRoutesFileSync } from "./routes-core"
 
 export type ArdoRoutesPluginOptions = {
@@ -60,16 +61,21 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
 }
 
 function createDefaultPaths(root: string, options: ArdoRoutesPluginOptions): ResolvedRoutePaths {
-  const appDir = path.join(root, "app")
-  const routesDir = options.routesDir ?? path.join(appDir, "routes")
+  const appDir = path.resolve(root, "app")
+  const routesDir = resolveRoutesDir(root, options.routesDir)
   const routesFilePath = path.join(appDir, "routes.ts")
   return { appDir, routesDir, routesFilePath }
 }
 
 function shouldHandleRouteChange(changedPath: string, routesDir: string): boolean {
-  if (!changedPath.startsWith(routesDir)) {
+  const normalizedPath = normalizePath(changedPath)
+  if (!isPathInsideDirectory(normalizedPath, routesDir)) {
     return false
   }
 
-  return changedPath.endsWith(".md") || changedPath.endsWith(".mdx") || changedPath.endsWith(".tsx")
+  return (
+    normalizedPath.endsWith(".md") ||
+    normalizedPath.endsWith(".mdx") ||
+    normalizedPath.endsWith(".tsx")
+  )
 }
