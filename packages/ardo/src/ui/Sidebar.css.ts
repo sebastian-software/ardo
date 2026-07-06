@@ -58,6 +58,8 @@ export const sidebarRailList = style({
   flexDirection: "column",
   alignItems: "center",
   gap: vars.space.xs,
+  margin: 0,
+  padding: 0,
   listStyle: "none",
 })
 
@@ -105,6 +107,8 @@ export const sidebarNav = style({
 })
 
 export const sidebarList = style({
+  margin: 0,
+  padding: 0,
   listStyle: "none",
 })
 

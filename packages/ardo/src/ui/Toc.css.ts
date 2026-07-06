@@ -16,6 +16,8 @@ export const tocTitle = style({
 })
 
 export const tocList = style({
+  margin: 0,
+  padding: 0,
   listStyle: "none",
 })
 
