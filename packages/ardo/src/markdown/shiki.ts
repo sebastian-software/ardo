@@ -1,4 +1,4 @@
-import { createHighlighter, type Highlighter } from "shiki"
+import { type BundledLanguage, bundledLanguages, createHighlighter, type Highlighter } from "shiki"
 
 import type { MarkdownConfig } from "../config/types"
 
@@ -9,7 +9,8 @@ export { ardoLineTransformer, remarkCodeMeta } from "./shiki-transformer"
 
 export type ShikiHighlighter = Highlighter
 
-let cachedHighlighterPromise: Promise<ShikiHighlighter> | undefined
+const allBundledLanguages = Object.keys(bundledLanguages).filter(isBundledLanguage)
+const cachedHighlighterPromises = new Map<string, Promise<ShikiHighlighter>>()
 
 /**
  * Highlights code using Shiki with Ardo's default themes.
@@ -34,14 +35,19 @@ export async function highlightCode(
 async function getCachedHighlighter(
   themeConfig: MarkdownConfig["theme"]
 ): Promise<ShikiHighlighter> {
-  cachedHighlighterPromise ??= createShikiHighlighter({
-    anchor: false,
-    lineNumbers: false,
-    theme: themeConfig,
-    toc: { level: [2, 3] },
-  })
+  const cacheKey = getThemeCacheKey(themeConfig)
+  let highlighterPromise = cachedHighlighterPromises.get(cacheKey)
+  if (highlighterPromise == null) {
+    highlighterPromise = createShikiHighlighter({
+      anchor: false,
+      lineNumbers: false,
+      theme: themeConfig,
+      toc: { level: [2, 3] },
+    })
+    cachedHighlighterPromises.set(cacheKey, highlighterPromise)
+  }
 
-  return cachedHighlighterPromise
+  return highlighterPromise
 }
 
 export async function createShikiHighlighter(config: MarkdownConfig): Promise<ShikiHighlighter> {
@@ -49,39 +55,20 @@ export async function createShikiHighlighter(config: MarkdownConfig): Promise<Sh
 
   return createHighlighter({
     themes: getBundledThemes(themeConfig),
-    langs: [
-      // Web fundamentals
-      "javascript",
-      "typescript",
-      "jsx",
-      "tsx",
-      "html",
-      "css",
-      "scss",
-
-      // Data & config formats
-      "json",
-      "jsonc",
-      "yaml",
-      "toml",
-      "xml",
-      "graphql",
-
-      // Markdown & docs
-      "markdown",
-      "mdx",
-
-      // Shell & DevOps
-      "bash",
-      "shell",
-      "dockerfile",
-
-      // General purpose
-      "python",
-      "rust",
-      "go",
-      "sql",
-      "diff",
-    ],
+    langs: allBundledLanguages,
   })
+}
+
+function getThemeCacheKey(themeConfig: MarkdownConfig["theme"]): string {
+  if (themeConfig == null) {
+    return "default"
+  }
+
+  return typeof themeConfig === "string"
+    ? `theme:${themeConfig}`
+    : `themes:${themeConfig.light}\0${themeConfig.dark}`
+}
+
+function isBundledLanguage(language: string): language is BundledLanguage {
+  return language in bundledLanguages
 }

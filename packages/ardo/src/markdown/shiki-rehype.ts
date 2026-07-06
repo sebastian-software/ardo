@@ -9,6 +9,7 @@ import { shikiContainerClassName } from "../ui/components/code-block-classes"
 import { buildCodeBlockHtml } from "./shiki-html"
 import { parseHighlightLines, parseTitle } from "./shiki-meta"
 import { highlightWithTheme, resolveThemeConfig } from "./shiki-theme"
+import { warnHighlightFailure } from "./shiki-warnings"
 
 type RehypeShikiOptions = {
   config: MarkdownConfig
@@ -88,7 +89,8 @@ function tryRenderHighlightedHtml(params: {
       lineNumbers: (context.config.lineNumbers ?? false) || metaString.includes("showLineNumbers"),
       title: parseTitle(metaString),
     })
-  } catch {
+  } catch (error) {
+    warnHighlightFailure({ error, language })
     return null
   }
 }

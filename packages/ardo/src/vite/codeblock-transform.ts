@@ -1,18 +1,31 @@
 import type { MarkdownConfig } from "../config/types"
 
 import { highlightCode } from "../markdown/shiki"
+import { warnHighlightFailure } from "../markdown/shiki-warnings"
 import { outdent, scanArdoCodeBlocks, type ScannedCodeBlock } from "./codeblock-scan"
+
+type TransformArdoCodeBlocksOptions = {
+  sourcePath?: string
+}
+
+type HighlightCodeRequest = {
+  codeContent: string
+  language: string
+  markdownConfig: MarkdownConfig | undefined
+  options: TransformArdoCodeBlocksOptions
+}
 
 export async function transformArdoCodeBlocks(
   source: string,
-  markdownConfig?: MarkdownConfig
+  markdownConfig?: MarkdownConfig,
+  options: TransformArdoCodeBlocksOptions = {}
 ): Promise<string> {
   let result = source
   let offset = 0
   const blocks = scanArdoCodeBlocks(source)
 
   for (const block of blocks) {
-    const replacement = await createReplacement(block, markdownConfig)
+    const replacement = await createReplacement(block, markdownConfig, options)
     if (replacement == null) {
       continue
     }
@@ -28,22 +41,24 @@ export async function transformArdoCodeBlocks(
 
 async function createReplacement(
   block: ScannedCodeBlock,
-  markdownConfig?: MarkdownConfig
+  markdownConfig: MarkdownConfig | undefined,
+  options: TransformArdoCodeBlocksOptions
 ): Promise<null | string> {
   if (block.props.includes("__html")) {
     return null
   }
 
   if (block.children == null) {
-    return createSelfClosingReplacement(block, markdownConfig)
+    return createSelfClosingReplacement(block, markdownConfig, options)
   }
 
-  return createChildrenReplacement(block, markdownConfig)
+  return createChildrenReplacement(block, markdownConfig, options)
 }
 
 async function createSelfClosingReplacement(
   block: ScannedCodeBlock,
-  markdownConfig?: MarkdownConfig
+  markdownConfig: MarkdownConfig | undefined,
+  options: TransformArdoCodeBlocksOptions
 ): Promise<null | string> {
   const codeValue = extractCodeValue(block.props)
   const language = extractPropValue(block.props, "language")
@@ -51,7 +66,12 @@ async function createSelfClosingReplacement(
     return null
   }
 
-  const html = await safeHighlightCode(codeValue, language, markdownConfig)
+  const html = await safeHighlightCode({
+    codeContent: codeValue,
+    language,
+    markdownConfig,
+    options,
+  })
   if (html == null) {
     return null
   }
@@ -63,7 +83,8 @@ async function createSelfClosingReplacement(
 
 async function createChildrenReplacement(
   block: ScannedCodeBlock,
-  markdownConfig?: MarkdownConfig
+  markdownConfig: MarkdownConfig | undefined,
+  options: TransformArdoCodeBlocksOptions
 ): Promise<null | string> {
   const language = extractPropValue(block.props, "language")
   if (language == null || block.children == null) {
@@ -72,7 +93,12 @@ async function createChildrenReplacement(
 
   const rawChildren = unwrapTemplateChildren(block.children)
   const codeContent = outdent(rawChildren)
-  const html = await safeHighlightCode(codeContent, language, markdownConfig)
+  const html = await safeHighlightCode({
+    codeContent,
+    language,
+    markdownConfig,
+    options,
+  })
   if (html == null) {
     return null
   }
@@ -125,16 +151,14 @@ function getPropPatterns(propName: string): RegExp[] {
   ]
 }
 
-async function safeHighlightCode(
-  codeContent: string,
-  language: string,
-  markdownConfig?: MarkdownConfig
-): Promise<null | string> {
+async function safeHighlightCode(request: HighlightCodeRequest): Promise<null | string> {
+  const { codeContent, language, markdownConfig, options } = request
   try {
     return await highlightCode(codeContent, language, {
       theme: markdownConfig?.theme,
     })
-  } catch {
+  } catch (error) {
+    warnHighlightFailure({ error, language, sourcePath: options.sourcePath })
     return null
   }
 }
