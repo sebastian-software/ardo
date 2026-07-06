@@ -17,6 +17,10 @@ export function normalizePath(filePath: string): string {
   return filePath.replaceAll("\\", "/")
 }
 
+export function stripPathSuffix(value: string, suffix: string): string {
+  return value.endsWith(suffix) ? value.slice(0, -suffix.length) : value
+}
+
 function trimTrailingSlashes(value: string): string {
   let end = value.length
   while (end > 0 && value[end - 1] === "/") {

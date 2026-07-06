@@ -239,6 +239,22 @@ sidebar: leaf
       },
     ])
   })
+
+  it("strips only the final markdown extension from generated links", async () => {
+    await writeRoute("v1.md/changelog.md", "---\ntitle: Changelog\n---\n")
+    await writeRoute("guide/changelog.md.mdx", "---\ntitle: Changelog MDX\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "Guide",
+        items: [{ text: "Changelog MDX", link: "/guide/changelog.md" }],
+      },
+      {
+        text: "V1.Md",
+        items: [{ text: "Changelog", link: "/v1.md/changelog" }],
+      },
+    ])
+  })
 })
 
 async function writeRoute(relativePath: string, content: string): Promise<void> {

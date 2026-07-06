@@ -2,6 +2,8 @@ import fsSync from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import { stripPathSuffix } from "./path-utils"
+
 export type RouteInfo = {
   /** File path relative to app directory (e.g., "routes/guide/getting-started.mdx") */
   file: string
@@ -57,7 +59,7 @@ function createRouteInfo(params: {
   }
 
   const relativePath = path.relative(rootDir, fullPath)
-  const baseName = entryName.replace(extension, "")
+  const baseName = stripPathSuffix(entryName, extension)
   const urlPath = toRoutePath({
     baseName,
     extension,
@@ -108,7 +110,7 @@ function toRoutePath(params: {
     return applyDynamicSegments(`/${normalizedParent}`)
   }
 
-  const withoutExtension = relativePath.replace(extension, "")
+  const withoutExtension = stripPathSuffix(relativePath, extension)
   return applyDynamicSegments(`/${withoutExtension.replaceAll("\\", "/")}`)
 }
 

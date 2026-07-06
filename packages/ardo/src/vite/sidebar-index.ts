@@ -6,6 +6,8 @@ import path from "node:path"
 
 import type { SidebarConfig, SidebarItem } from "../config/types"
 
+import { stripPathSuffix } from "./path-utils"
+
 type SidebarNode = {
   text: string
   link?: string
@@ -161,14 +163,14 @@ async function createMarkdownNode(
     return null
   }
 
-  const title = frontmatter.title ?? formatTitle(entry.name.replace(extension, ""))
-  const link = `/${relativePath.replace(extension, "").replaceAll("\\", "/")}`
+  const title = frontmatter.title ?? formatTitle(stripPathSuffix(entry.name, extension))
+  const link = `/${stripPathSuffix(relativePath, extension).replaceAll("\\", "/")}`
 
   return {
     text: title,
     link,
     order: frontmatter.order,
-    sectionId: entry.name.replace(extension, ""),
+    sectionId: stripPathSuffix(entry.name, extension),
   }
 }
 
