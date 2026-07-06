@@ -65,6 +65,41 @@ The default hue is `356` (a muted berry tone). Some starting points:
 
 For full control over individual tokens, use `createTheme()` instead — it returns the complete `{ light, dark }` token sets for a given hue set, which you can modify before passing to `createGlobalTheme`.
 
+You can also pass token overrides directly. Shared overrides apply to both light and dark themes;
+`light` and `dark` override one mode only:
+
+```ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  color: {
+    bg: "#fbfbf8",
+    text: "#101010",
+    brand: "#0038ff",
+    brandGradient: "#0038ff",
+    shadowSm: "0 0 0 0 transparent",
+    shadowMd: "0 0 0 0 transparent",
+    shadowLg: "0 0 0 0 transparent",
+  },
+  radius: {
+    sm: "0px",
+    base: "0px",
+    lg: "0px",
+  },
+  dark: {
+    color: {
+      bg: "#101010",
+      text: "#fbfbf8",
+    },
+  },
+})
+```
+
+`shadowSm`, `shadowMd`, `shadowLg`, and `codeShadow` are full `box-shadow` values. Use
+`0 0 0 0 transparent` when a brand wants no shadow; `none` can invalidate declarations that combine
+multiple shadow layers. `brandGradient` also accepts a plain color when gradients are not part of
+your design system.
+
 ## CSS Variables
 
 The fastest way to make the theme yours. Override a few CSS custom properties and the entire site updates:
@@ -90,6 +125,10 @@ Import it in your app:
 import "ardo/ui/styles.css"
 import "./styles/custom.css"
 ```
+
+The `--ardo-*` variables are public override anchors. Ardo ships defaults on `:root` and dark-mode
+values on `.dark`; app CSS can override either selector and those raw variable overrides remain
+supported even when the higher-level theme helpers evolve.
 
 ### Available Variables
 

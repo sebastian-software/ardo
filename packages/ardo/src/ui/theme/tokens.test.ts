@@ -29,4 +29,64 @@ describe("createTheme", () => {
     expect(theme.light.color.border).toBe("oklch(0.88 0.005 var(--ardo-hue-neutral))")
     expect(theme.dark.color.text).toBe("oklch(0.94 0.004 var(--ardo-hue-neutral))")
   })
+
+  it("merges shared token overrides into light and dark themes", () => {
+    const theme = createTheme({
+      color: {
+        bg: "#fbfbf8",
+        brand: "#0038ff",
+        brandGradient: "#0038ff",
+        shadowSm: "0 0 0 0 transparent",
+      },
+      radius: {
+        base: "0px",
+        lg: "0px",
+        sm: "0px",
+      },
+    })
+
+    expect(theme.light.hue).toStrictEqual({
+      brand: "356",
+      accent: "230",
+      neutral: "356",
+    })
+    expect(theme.light.color.bg).toBe("#fbfbf8")
+    expect(theme.dark.color.bg).toBe("#fbfbf8")
+    expect(theme.light.color.brandGradient).toBe("#0038ff")
+    expect(theme.dark.color.shadowSm).toBe("0 0 0 0 transparent")
+    expect(theme.light.radius).toStrictEqual({
+      base: "0px",
+      lg: "0px",
+      sm: "0px",
+    })
+  })
+
+  it("supports light and dark specific token overrides", () => {
+    const theme = createTheme({
+      primary: 210,
+      color: {
+        brand: "#0038ff",
+      },
+      dark: {
+        color: {
+          bg: "#101010",
+          text: "#fbfbf8",
+        },
+      },
+      light: {
+        color: {
+          bg: "#fbfbf8",
+          text: "#101010",
+        },
+      },
+    })
+
+    expect(theme.light.hue.brand).toBe("210")
+    expect(theme.light.color.brand).toBe("#0038ff")
+    expect(theme.dark.color.brand).toBe("#0038ff")
+    expect(theme.light.color.bg).toBe("#fbfbf8")
+    expect(theme.light.color.text).toBe("#101010")
+    expect(theme.dark.color.bg).toBe("#101010")
+    expect(theme.dark.color.text).toBe("#fbfbf8")
+  })
 })
