@@ -20,7 +20,24 @@ describe("transformArdoCodeBlocks", () => {
   beforeEach(() => {
     mocks.highlightCode.mockReset()
     mocks.warnHighlightFailure.mockReset()
-    mocks.highlightCode.mockResolvedValue("<pre>highlighted</pre>")
+    mocks.highlightCode.mockResolvedValue("<pre>$&</pre>")
+  })
+
+  it("does not expand replacement-pattern tokens when injecting highlighted props", async () => {
+    const source = '<ArdoCodeBlock code="console.log(1)" language="tsx" />'
+
+    const result = await transformArdoCodeBlocks(source)
+
+    expect(result).toContain('__html={"<pre>$&</pre>"}')
+    expect(result).not.toContain('{"<pre>code=')
+  })
+
+  it("decodes escaped newlines without corrupting literal backslash-n content", async () => {
+    await transformArdoCodeBlocks(String.raw`<ArdoCodeBlock code="\n" language="tsx" />`)
+    expect(mocks.highlightCode).toHaveBeenLastCalledWith("\n", "tsx", expect.any(Object))
+
+    await transformArdoCodeBlocks(String.raw`<ArdoCodeBlock code="\\n" language="tsx" />`)
+    expect(mocks.highlightCode).toHaveBeenLastCalledWith("\\n", "tsx", expect.any(Object))
   })
 
   it("warns once and leaves the source unchanged when highlighting fails", async () => {

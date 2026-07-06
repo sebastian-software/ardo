@@ -78,7 +78,7 @@ async function createSelfClosingReplacement(
 
   const escapedHtml = JSON.stringify(html)
   const newProps = `__html={${escapedHtml}} ${block.props}`
-  return block.fullMatch.replace(block.props, newProps)
+  return block.fullMatch.replace(block.props, () => newProps)
 }
 
 async function createChildrenReplacement(
@@ -127,7 +127,18 @@ function extractCodeValue(props: string): null | string {
 }
 
 function decodeEscapedString(value: string): string {
-  return value.replaceAll("\\n", "\n").replaceAll('\\"', '"').replaceAll("\\\\", "\\")
+  return value.replaceAll(/\\(["\\nrt])/gu, (_match, escaped: string) => {
+    switch (escaped) {
+      case "n":
+        return "\n"
+      case "r":
+        return "\r"
+      case "t":
+        return "\t"
+      default:
+        return escaped
+    }
+  })
 }
 
 function extractPropValue(props: string, propName: string): null | string {
