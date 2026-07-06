@@ -30,11 +30,11 @@ describe("scaffold integration build", () => {
     // 1. Create temp directory
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-integration-"))
 
-    // 2. Scaffold project (typedoc: false because we run it separately before build)
+    // 2. Scaffold project with the real library-docs TypeDoc path enabled.
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Integration Test Docs",
       projectName: "test-project",
-      typedoc: false,
+      typedoc: true,
       githubPages: false,
       description: "Built with Ardo",
     })
@@ -79,63 +79,20 @@ export function greet(name: string, config?: GreeterConfig): string {
 `
     )
 
-    // 4. Add tsconfig for the API source (separate from main tsconfig to avoid route compilation errors)
-    fs.writeFileSync(
-      path.join(tmpDir, "tsconfig.api.json"),
-      JSON.stringify(
-        {
-          compilerOptions: {
-            target: "ES2022",
-            module: "ESNext",
-            moduleResolution: "bundler",
-            strict: true,
-            noEmit: true,
-            esModuleInterop: true,
-            skipLibCheck: true,
-          },
-          include: ["src/index.ts"],
-        },
-        null,
-        2
-      )
-    )
-
-    // 5. Patch package.json — use local ardo (wildcard deps resolve via ardo)
+    // 4. Patch package.json — use local ardo (wildcard deps resolve via ardo)
     const pkgPath = path.join(tmpDir, "package.json")
     const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
     pkg.dependencies.ardo = `file:${ardoPackageDir}`
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
-    // 6. Write prebuild script — generates TypeDoc API docs before vite build
-    // Note: TypeDoc must run BEFORE vite build so React Router can discover the routes
-    fs.writeFileSync(
-      path.join(tmpDir, "prebuild.mjs"),
-      `import { generateApiDocs } from 'ardo/typedoc'
-
-await generateApiDocs({
-  enabled: true,
-  entryPoints: ['./src/index.ts'],
-  tsconfig: './tsconfig.api.json',
-  out: 'api-reference',
-}, './app/routes')
-`
-    )
-
-    // 7. Install dependencies
+    // 5. Install dependencies
     execSync("pnpm install --no-lockfile --prefer-offline", {
       cwd: tmpDir,
       stdio: "pipe",
       timeout: 180_000,
     })
 
-    // 8. Generate TypeDoc API docs (before vite build so routes plugin picks them up)
-    execSync("node prebuild.mjs", {
-      cwd: tmpDir,
-      stdio: "pipe",
-      timeout: 60_000,
-    })
-
-    // 9. Build with react-router (handles client, server, and prerender)
+    // 6. Build with react-router (handles client, server, and prerender)
     execSync("pnpm exec react-router build", {
       cwd: tmpDir,
       stdio: "pipe",
