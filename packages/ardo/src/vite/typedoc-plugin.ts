@@ -67,6 +67,9 @@ export function createTypeDocPlugin(
     async buildStart() {
       await generateTypeDocOnce()
     },
+    buildEnd() {
+      typedocGenerated = false
+    },
   }
 }
 
