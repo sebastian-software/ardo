@@ -3,17 +3,17 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
-const brandHalo = `color-mix(in oklch, ${vars.color.brand} 26%, transparent)`
-const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparent)`
-const brandTint = `color-mix(in oklch, ${vars.color.brand} 10%, transparent)`
-const brandTintSoft = `color-mix(in oklch, ${vars.color.brand} 6%, transparent)`
+const buttonShadow = `0 1px 2px oklch(0 0 0 / 0.08)`
+const buttonShadowHover = `0 4px 12px oklch(0 0 0 / 0.12)`
 
 export const hero = style({
-  padding: "100px 24px 80px",
+  padding: "104px 24px 72px",
   textAlign: "center",
   position: "relative",
   overflow: "hidden",
   selectors: {
+    // A single, quiet vertical wash — no brand glow. Reads as a calm
+    // documentation surface rather than a marketing splash.
     "&::before": {
       content: '""',
       position: "absolute",
@@ -21,16 +21,13 @@ export const hero = style({
       left: 0,
       right: 0,
       bottom: 0,
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, ${brandTintSoft} 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, ${brandTint} 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
+      background: `linear-gradient(180deg, ${vars.color.bgSoft} 0%, ${vars.color.bg} 100%)`,
       pointerEvents: "none",
-    },
-    ".dark &::before": {
-      background: `radial-gradient(ellipse 60% 50% at 30% 0%, color-mix(in oklch, ${vars.color.brand} 12%, transparent) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 70% -10%, color-mix(in oklch, ${vars.color.brand} 18%, transparent) 0%, transparent 70%), linear-gradient(180deg, ${vars.color.bg} 0%, ${vars.color.bgSoft} 100%)`,
     },
   },
   "@media": {
     "(max-width: 768px)": {
-      padding: "60px 20px",
+      padding: "64px 20px 48px",
     },
   },
 })
@@ -52,9 +49,9 @@ export const heroAnimate = style({
 })
 
 globalStyle(`${hero} img`, {
-  maxWidth: "180px",
-  marginBottom: "40px",
-  filter: "drop-shadow(0 4px 18px oklch(0 0 0 / 0.12))",
+  maxWidth: "148px",
+  marginBottom: "36px",
+  filter: "drop-shadow(0 2px 10px oklch(0 0 0 / 0.08))",
 })
 
 export const heroVersion = style({
@@ -71,32 +68,30 @@ export const heroVersion = style({
 })
 
 export const heroName = style({
-  fontSize: "64px",
+  fontSize: "58px",
   fontWeight: 800,
-  background: vars.color.brandGradient,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  letterSpacing: "-0.03em",
+  color: vars.color.text,
+  letterSpacing: "-0.035em",
   lineHeight: 1.1,
   textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
-      fontSize: "40px",
+      fontSize: "38px",
     },
   },
 })
 
 export const heroText = style({
-  fontSize: "48px",
-  fontWeight: 700,
-  marginTop: "8px",
+  fontSize: "40px",
+  fontWeight: 600,
+  color: vars.color.textLight,
+  marginTop: "10px",
   letterSpacing: "-0.02em",
-  lineHeight: 1.15,
+  lineHeight: 1.18,
   textWrap: "balance",
   "@media": {
     "(max-width: 768px)": {
-      fontSize: "28px",
+      fontSize: "26px",
     },
   },
 })
@@ -140,11 +135,11 @@ export const heroAction = style({
 export const heroActionBrand = style({
   background: vars.color.brand,
   color: "white",
-  boxShadow: `0 4px 14px ${brandHalo}`,
+  boxShadow: buttonShadow,
   selectors: {
     "&:hover": {
       background: vars.color.brandDark,
-      boxShadow: `0 6px 20px ${brandHaloStrong}`,
+      boxShadow: buttonShadowHover,
     },
   },
   "@media": {
