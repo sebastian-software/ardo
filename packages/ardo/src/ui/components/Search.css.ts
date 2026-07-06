@@ -68,6 +68,18 @@ export const searchResults = style({
   overflowY: "auto",
 })
 
+export const searchStatus = style({
+  position: "absolute",
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0 0 0 0)",
+  whiteSpace: "nowrap",
+  border: 0,
+})
+
 export const searchResult = style({
   display: "block",
   padding: `0.75rem ${vars.space.md}`,
