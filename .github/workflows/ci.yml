@@ -46,6 +46,14 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Build docs site
+        if: matrix.node-version == '22'
+        run: pnpm docs:build
+
+      - name: Build examples
+        if: matrix.node-version == '22'
+        run: pnpm --filter './examples/*' build
+
       - name: Build Storybook
         if: matrix.node-version == '22'
         run: pnpm storybook:build

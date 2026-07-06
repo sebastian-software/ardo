@@ -1,12 +1,14 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
 
 jobs:
   deploy:
     name: Deploy ${{ matrix.site }}
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -25,6 +27,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
