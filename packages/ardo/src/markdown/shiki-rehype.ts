@@ -7,6 +7,7 @@ import type { MarkdownConfig } from "../config/types"
 
 import { shikiContainerClassName } from "../ui/components/code-block-classes"
 import { buildCodeBlockHtml } from "./shiki-html"
+import { resolveHighlightLanguage, warnHighlightFailure } from "./shiki-language"
 import { parseHighlightLines, parseTitle } from "./shiki-meta"
 import { highlightWithTheme, resolveThemeConfig } from "./shiki-theme"
 
@@ -27,21 +28,27 @@ type TransformCodeNodeContext = {
 export function rehypeShikiFromHighlighter(options: RehypeShikiOptions) {
   const themeConfig = resolveThemeConfig(options.config.theme)
 
-  return function (tree: Root): void {
+  return async function (tree: Root): Promise<void> {
+    const pendingTransforms: Array<Promise<void>> = []
+
     visit(tree, "element", (node: Element, index, parent) => {
-      transformCodeNode({
-        config: options.config,
-        highlighter: options.highlighter,
-        index,
-        node,
-        parent,
-        themeConfig,
-      })
+      pendingTransforms.push(
+        transformCodeNode({
+          config: options.config,
+          highlighter: options.highlighter,
+          index,
+          node,
+          parent,
+          themeConfig,
+        })
+      )
     })
+
+    await Promise.all(pendingTransforms)
   }
 }
 
-function transformCodeNode(context: TransformCodeNodeContext): void {
+async function transformCodeNode(context: TransformCodeNodeContext): Promise<void> {
   const codeNode = getCodeNode(context.node)
   if (codeNode == null) {
     return
@@ -54,7 +61,7 @@ function transformCodeNode(context: TransformCodeNodeContext): void {
 
   const metaString = getMetaString(codeNode)
   const language = getLanguage(codeNode)
-  const innerHtml = tryRenderHighlightedHtml({
+  const innerHtml = await tryRenderHighlightedHtml({
     codeContent,
     context,
     language,
@@ -67,29 +74,65 @@ function transformCodeNode(context: TransformCodeNodeContext): void {
   replaceNodeWithShikiContainer(context.parent, context.index, innerHtml)
 }
 
-function tryRenderHighlightedHtml(params: {
+async function tryRenderHighlightedHtml(params: {
   codeContent: string
   context: TransformCodeNodeContext
   language: string
   metaString: string
-}): null | string {
+}): Promise<null | string> {
   const { codeContent, context, language, metaString } = params
   try {
-    const html = highlightWithTheme({
-      code: codeContent,
+    const highlightLanguage = await resolveHighlightLanguage({
       highlighter: context.highlighter,
       language,
+    })
+    const html = renderHighlightedHtml({
+      code: codeContent,
+      highlighter: context.highlighter,
+      language: highlightLanguage,
+      originalLanguage: language,
       themeConfig: context.themeConfig,
     })
 
     return buildCodeBlockHtml(html, {
       highlightLines: parseHighlightLines(metaString),
-      lang: language,
+      lang: highlightLanguage,
       lineNumbers: (context.config.lineNumbers ?? false) || metaString.includes("showLineNumbers"),
       title: parseTitle(metaString),
     })
-  } catch {
+  } catch (error) {
+    warnHighlightFailure({
+      error,
+      key: `rehype:${language}`,
+      language,
+      message: "highlighting failed",
+    })
     return null
+  }
+}
+
+function renderHighlightedHtml(params: {
+  code: string
+  highlighter: Highlighter
+  language: string
+  originalLanguage: string
+  themeConfig: MarkdownConfig["theme"]
+}): string {
+  try {
+    return highlightWithTheme(params)
+  } catch (error) {
+    warnHighlightFailure({
+      error,
+      key: `rehype-render:${params.originalLanguage}`,
+      language: params.originalLanguage,
+      message: "highlighting failed",
+    })
+
+    if (params.language === "text") {
+      throw error
+    }
+
+    return highlightWithTheme({ ...params, language: "text" })
   }
 }
 
