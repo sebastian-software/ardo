@@ -8,7 +8,7 @@ const __dirname = dirname(__filename)
 
 const config: StorybookConfig = {
   stories: ["../packages/ardo/src/ui/**/*.stories.@(ts|tsx)"],
-  addons: ["@storybook/addon-docs"],
+  addons: ["@storybook/addon-docs", "@storybook/addon-a11y"],
 
   framework: {
     name: "@storybook/react-vite",
