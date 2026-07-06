@@ -33,6 +33,18 @@ export default function Root() {
 `ArdoRootLayout` owns the document-level theme bootstrap and global shell setup. `ArdoRoot` owns the
 React Router outlet, Ardo providers, default header, sidebar, and footer.
 
+Set `theme` on `ArdoRootLayout` when the site should force one mode instead of honoring stored user
+preferences:
+
+```tsx
+export function Layout({ children }: { children: React.ReactNode }) {
+  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+}
+```
+
+`theme="system"` is the default and keeps the theme toggle/storage behavior. `theme="light"` and
+`theme="dark"` apply before first paint and clear stale `ardo-theme` values from local storage.
+
 ## ArdoRoot Props
 
 | Prop             | Type                                                                               | Purpose                                                                        |

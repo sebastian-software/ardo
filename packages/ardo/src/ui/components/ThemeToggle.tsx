@@ -4,6 +4,7 @@ import { MonitorIcon, MoonIcon, SunIcon } from "../icons"
 import {
   applyThemeMode,
   type ArdoThemeMode,
+  getConfiguredThemeMode,
   getInitialThemeMode,
   storeThemeMode,
   subscribeSystemThemeChanges,
@@ -13,6 +14,7 @@ import * as styles from "./ThemeToggle.css"
 export function ArdoThemeToggle() {
   const [theme, setTheme] = useState<ArdoThemeMode>(getInitialThemeMode)
   const mounted = useSyncExternalStore(subscribeMounted, getClientMounted, getServerMounted)
+  const configuredTheme = mounted ? getConfiguredThemeMode() : "system"
 
   useEffect(() => {
     if (!mounted) return
@@ -26,6 +28,10 @@ export function ArdoThemeToggle() {
     setTheme(nextTheme)
     storeThemeMode(nextTheme)
     applyThemeMode(nextTheme)
+  }
+
+  if (mounted && configuredTheme !== "system") {
+    return null
   }
 
   if (!mounted) {

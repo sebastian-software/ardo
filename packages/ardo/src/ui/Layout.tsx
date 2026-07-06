@@ -4,7 +4,7 @@ import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
 import { ArdoContext } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
 import * as styles from "./Layout.css"
-import { ARDO_THEME_BOOTSTRAP_SCRIPT } from "./theme-mode"
+import { type ArdoThemeMode, createThemeBootstrapScript } from "./theme-mode"
 
 // =============================================================================
 // RootLayout Component (html/head/body shell)
@@ -21,6 +21,8 @@ export type ArdoRootLayoutProps = {
   iconBasePath?: false | string
   /** Language attribute for <html> (default: from config or "en") */
   lang?: string
+  /** Theme policy applied before first paint. Defaults to stored/system preference. */
+  theme?: ArdoThemeMode
 }
 
 /**
@@ -44,6 +46,7 @@ export function ArdoRootLayout({
   favicon,
   iconBasePath = "/",
   lang,
+  theme = "system",
 }: ArdoRootLayoutProps) {
   // Use optional context (RootLayout renders before ArdoProvider is available)
   const context = use(ArdoContext)
@@ -51,11 +54,11 @@ export function ArdoRootLayout({
   const iconBaseUrl = iconBasePath === false ? undefined : normalizeIconBasePath(iconBasePath)
 
   return (
-    <html lang={resolvedLang} suppressHydrationWarning>
+    <html lang={resolvedLang} data-ardo-theme={theme} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script dangerouslySetInnerHTML={{ __html: ARDO_THEME_BOOTSTRAP_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: createThemeBootstrapScript(theme) }} />
         {iconBaseUrl == null ? (
           <link rel="icon" type="image/svg+xml" href={favicon ?? ARDO_FAVICON_DATA_URL} />
         ) : (
