@@ -1,25 +1,64 @@
-import { mkdtemp, rm, writeFile } from "node:fs/promises"
+import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
 import { scanRouteManifest } from "./route-manifest"
 
-describe("scanRouteManifest", () => {
+let tempDir: string
+
+beforeEach(async () => {
+  tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-manifest-"))
+})
+
+afterEach(async () => {
+  await fs.rm(tempDir, { force: true, recursive: true })
+})
+
+describe("route-manifest", () => {
   it("extracts unicode and deduplicated heading anchors", async () => {
-    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "ardo-routes-"))
-    try {
-      await writeFile(
-        path.join(tmpDir, "guide.mdx"),
-        ["# Guide", "## Über uns", "## Über uns", "## `API` & Usage"].join("\n"),
-        "utf8"
-      )
+    await fs.writeFile(
+      path.join(tempDir, "guide.mdx"),
+      ["# Guide", "## Über uns", "## Über uns", "## `API` & Usage"].join("\n"),
+      "utf8"
+    )
 
-      const [entry] = await scanRouteManifest(tmpDir)
+    const [entry] = await scanRouteManifest(tempDir)
 
-      expect(entry.anchors).toStrictEqual(["guide", "über-uns", "über-uns-1", "api-usage"])
-    } finally {
-      await rm(tmpDir, { force: true, recursive: true })
-    }
+    expect(entry.anchors).toStrictEqual(["guide", "über-uns", "über-uns-1", "api-usage"])
+  })
+
+  it("extracts route metadata, anchors, redirects, and dynamic paths", async () => {
+    const guideDir = path.join(tempDir, "guide")
+    await fs.mkdir(guideDir, { recursive: true })
+    await fs.writeFile(
+      path.join(guideDir, "$slug.mdx"),
+      `---
+title: Café Guide
+description: Accent-aware page
+redirectFrom:
+  - /old-guide
+  - 123
+---
+
+## Café <span>Déjà</span> vu!
+`,
+      "utf8"
+    )
+    await fs.writeFile(path.join(tempDir, "root.tsx"), "export default function Root() {}", "utf8")
+
+    const entries = await scanRouteManifest(tempDir)
+
+    expect(entries).toHaveLength(1)
+    expect(entries[0]).toMatchObject({
+      anchors: ["café-déjà-vu"],
+      frontmatter: {
+        description: "Accent-aware page",
+        redirectFrom: ["/old-guide"],
+        title: "Café Guide",
+      },
+      path: "/guide/:slug",
+      source: "markdown",
+    })
   })
 })

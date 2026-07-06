@@ -43,8 +43,11 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run unit tests with coverage
+        run: pnpm test:coverage
+
+      - name: Run integration tests
+        run: pnpm test:integration
 
       - name: Build docs site
         if: matrix.node-version == '22.22.1'
@@ -54,6 +57,22 @@ jobs:
         if: matrix.node-version == '22.22.1'
         run: pnpm --filter './examples/*' build
 
+      - name: Install Playwright browsers
+        if: matrix.node-version == '22'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser tests
+        if: matrix.node-version == '22'
+        run: pnpm test:e2e
+
       - name: Build Storybook
         if: matrix.node-version == '22.22.1'
         run: pnpm storybook:build
+
+      - name: Run Storybook interaction tests
+        if: matrix.node-version == '22'
+        run: |
+          pnpm storybook:build:test
+          pnpm storybook:serve &
+          pnpm exec wait-on http://localhost:6006
+          pnpm storybook:test

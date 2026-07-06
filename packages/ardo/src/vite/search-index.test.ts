@@ -26,6 +26,46 @@ describe("generateSearchIndex", () => {
       })
     )
   })
+
+  it("builds sectioned docs from markdown and removes non-searchable syntax", async () => {
+    await writeRoute(
+      "guide/getting-started.mdx",
+      `---
+title: Getting Started
+---
+import { Demo } from "./Demo"
+
+# Getting Started
+
+Install **Ardo** from npm.
+
+\`\`\`ts
+const secret = "do not index code"
+\`\`\`
+`
+    )
+
+    const docs = await generateSearchIndex(routesDir)
+
+    expect(docs).toStrictEqual([
+      {
+        id: "guide/getting-started.mdx",
+        title: "Getting Started",
+        content: "Getting Started Install Ardo from npm.",
+        path: "/guide/getting-started",
+        section: "Guide",
+      },
+    ])
+  })
+
+  it("limits indexed content length", async () => {
+    await writeRoute("long.md", `# Long\n\n${"word ".repeat(600)}`)
+
+    const [doc] = await generateSearchIndex(routesDir)
+
+    expect(doc).toBeDefined()
+    expect(doc.content.length).toBeLessThanOrEqual(2000)
+  })
 })
 
 async function writeRoute(relativePath: string, content: string): Promise<void> {
