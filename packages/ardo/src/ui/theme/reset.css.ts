@@ -16,6 +16,7 @@ globalStyle("html", {
 })
 
 globalStyle("body", {
+  margin: 0,
   fontFamily: vars.font.family,
   fontSize: vars.font.size,
   lineHeight: vars.font.lineHeight,
