@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { Link, useLocation } from "react-router"
 
-import { useArdoConfig } from "../runtime/hooks"
+import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
@@ -77,6 +77,7 @@ export function ArdoHeader({
   className,
 }: ArdoHeaderProps) {
   const config = useArdoConfig()
+  const labels = useArdoLabels()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -102,7 +103,7 @@ export function ArdoHeader({
                 onClick={() => {
                   setMobileMenuOpen(!mobileMenuOpen)
                 }}
-                aria-label="Toggle menu"
+                aria-label={labels.header.toggleMenu}
                 aria-expanded={mobileMenuOpen}
               >
                 <span className={styles.hamburger}>

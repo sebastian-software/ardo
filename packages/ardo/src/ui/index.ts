@@ -79,6 +79,7 @@ export { ArdoHeader, ArdoSocialLink } from "./Header"
 export type { ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
 export { ArdoHomePage } from "./HomePage"
 export type { ArdoHomePageProps } from "./HomePage"
+export type { ArdoContainerLabels, ArdoLabels, ArdoLabelsInput } from "./labels"
 // Layout components
 export { ArdoLayout, ArdoRootLayout } from "./Layout"
 

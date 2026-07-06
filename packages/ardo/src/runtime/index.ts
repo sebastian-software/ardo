@@ -11,6 +11,7 @@ export {
   ArdoSiteConfigProvider,
   useArdoConfig,
   useArdoContext,
+  useArdoLabels,
   useArdoPageData,
   useArdoSidebar,
   useArdoSiteConfig,

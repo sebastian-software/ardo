@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router"
 
+import { useArdoLabels } from "../../runtime/hooks"
 import { SearchIcon, XIcon } from "../icons"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
@@ -12,6 +13,7 @@ import { ArdoSearch, type ArdoSearchProps } from "./Search"
  * search overlay.
  */
 export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
+  const labels = useArdoLabels()
   const [overlayOpen, setOverlayOpen] = useState(false)
   const location = useLocation()
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -42,7 +44,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
         ref={triggerRef}
         type="button"
         className={styles.trigger}
-        aria-label="Search"
+        aria-label={labels.search.label}
         aria-expanded={overlayOpen}
         onClick={() => {
           setOverlayOpen(true)
@@ -67,7 +69,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
             <button
               type="button"
               className={styles.overlayClose}
-              aria-label="Close search"
+              aria-label={labels.search.closeOverlay}
               onClick={closeOverlay}
             >
               <XIcon size={20} />

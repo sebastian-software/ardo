@@ -70,6 +70,7 @@ mode visitors do not see a light-mode flash.
 | `footerProps`    | `ArdoFooterProps`                                                                  | Configure the default footer. Ignored when `footer` is provided.               |
 | `editLink`       | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                |
 | `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                       |
+| `labels`         | `ArdoLabelsInput`                                                                  | Override default UI chrome strings and aria labels.                            |
 | `tocLabel`       | `string`                                                                           | Label for the generated table-of-contents panel.                               |
 | `className`      | `string`                                                                           | Replace the default layout class.                                              |
 | `children`       | `ReactNode`                                                                        | Replace the default React Router `<Outlet />` content.                         |
@@ -128,6 +129,44 @@ export const handle = { layout: "bare", chrome: false }
 
 `chrome: false` removes the default header and footer for that route. `layout: "bare"` still controls
 sidebar and rail rendering.
+
+## Labels
+
+Use `labels` for single-language sites that need non-English UI chrome without replacing every
+default component. Ardo merges your overrides with English defaults, so you can set only the strings
+you need.
+
+```tsx
+<ArdoRoot
+  config={{ ...config, lang: "de-DE" }}
+  sidebar={sidebar}
+  labels={{
+    layout: {
+      skipToContent: "Zum Inhalt springen",
+    },
+    search: {
+      placeholder: "Suchen...",
+      label: "Suche",
+      clear: "Suche leeren",
+      noResults: (query) => `Keine Treffer fur "${query}"`,
+      resultCount: (count) => `${count} ${count === 1 ? "Treffer" : "Treffer"}`,
+    },
+    toc: {
+      label: "Auf dieser Seite",
+      navLabel: "Inhaltsverzeichnis",
+    },
+    footer: {
+      builtOn: "Erstellt am",
+      builtWithArdo: "Erstellt mit Ardo",
+    },
+  }}
+/>
+```
+
+The label object covers search, sidebar collapse buttons, mobile menu buttons, breadcrumbs, footer
+prefixes, copy buttons, callout title defaults, the skip link, and table-of-contents labels. Existing
+single-purpose props still work: `headerProps.searchPlaceholder` overrides `labels.search.placeholder`,
+and `tocLabel` overrides `labels.toc.label`.
 
 ## Footer
 

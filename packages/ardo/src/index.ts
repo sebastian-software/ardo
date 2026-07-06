@@ -25,6 +25,7 @@ export {
   getPrevNextLinks,
   useArdoConfig,
   useArdoContext,
+  useArdoLabels,
   useArdoPageData,
   useArdoSidebar,
   useArdoSiteConfig,

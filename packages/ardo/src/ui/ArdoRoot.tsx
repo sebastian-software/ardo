@@ -6,6 +6,7 @@ import type { ArdoConfig, ArdoContextItem, SidebarItem } from "../config/types"
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import { type ArdoLabelsInput, resolveArdoLabels } from "./labels"
 import { ArdoLayout } from "./Layout"
 import * as layoutStyles from "./Layout.css"
 import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
@@ -49,6 +50,8 @@ export type ArdoRootProps = {
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** UI chrome labels and aria text, merged with English defaults. */
+  labels?: ArdoLabelsInput
   /** TOC label (applied site-wide via ArdoSiteConfig) */
   tocLabel?: string
   /** Additional CSS classes for the layout */
@@ -196,6 +199,7 @@ export function ArdoRoot({
   footerProps,
   editLink,
   lastUpdated,
+  labels,
   tocLabel,
   className,
   children,
@@ -230,8 +234,8 @@ export function ArdoRoot({
   ) : null
 
   const siteConfig = useMemo<ArdoSiteConfig>(
-    () => ({ editLink, lastUpdated, tocLabel }),
-    [editLink, lastUpdated, tocLabel]
+    () => ({ editLink, labels: resolveArdoLabels(labels), lastUpdated, tocLabel }),
+    [editLink, labels, lastUpdated, tocLabel]
   )
 
   const content = (
@@ -253,7 +257,10 @@ export function ArdoRoot({
   )
 
   const hasSiteConfig =
-    editLink !== undefined || lastUpdated !== undefined || (tocLabel ?? "") !== ""
+    editLink !== undefined ||
+    labels !== undefined ||
+    lastUpdated !== undefined ||
+    (tocLabel ?? "") !== ""
   return hasSiteConfig ? (
     <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
   ) : (
