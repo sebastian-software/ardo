@@ -46,6 +46,24 @@ description: Learn how to get started with Ardo
 ---
 ```
 
+Ardo also renders `description` as the visible lede under the page title. If the first body
+paragraph has the same normalized text, Ardo skips the lede to avoid showing the sentence twice.
+
+### lede
+
+- Type: `boolean`
+- Default: `true`
+
+Set `lede: false` when `description` should be metadata-only.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+lede: false
+---
+```
+
 ### Social metadata
 
 Markdown routes without their own `meta` export get generated browser, canonical, Open Graph, and Twitter metadata from frontmatter and site config.
