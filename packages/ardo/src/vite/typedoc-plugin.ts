@@ -1,11 +1,13 @@
 import type { Plugin } from "vite"
 
+import path from "node:path"
+
 import type { TypeDocConfig } from "../typedoc/types"
 
 import { generateApiDocs } from "../typedoc/generator"
 import { findPackageRoot } from "./git-utils"
-
-let typedocGenerated = false
+import { resolveRoutesDir } from "./path-utils"
+import { writeRoutesFileSync } from "./routes-core"
 
 export function resolveTypedocConfig(
   typedoc: true | TypeDocConfig | undefined
@@ -29,29 +31,74 @@ export function resolveTypedocConfig(
   return typedoc === true ? defaults : { ...defaults, ...typedoc }
 }
 
-export function createTypeDocPlugin(typedocConfig: TypeDocConfig, routesDir: string): Plugin {
+export function createTypeDocPlugin(
+  typedocConfig: TypeDocConfig,
+  routesDirOption: string | undefined
+): Plugin {
+  let routesDir = resolveRoutesDir(process.cwd(), routesDirOption)
+  let root = process.cwd()
+  let typedocGenerated = false
+
+  async function generateTypeDocOnce(): Promise<void> {
+    if (!typedocConfig.enabled || typedocGenerated) {
+      return
+    }
+
+    typedocGenerated = true
+    console.log("[ardo] Generating API documentation with TypeDoc...")
+    const startTime = Date.now()
+
+    try {
+      const docs = await generateApiDocs(typedocConfig, routesDir)
+      writeGeneratedRoutesFile(root, routesDir)
+      logTypeDocSuccess(docs.length, startTime)
+    } catch (error) {
+      handleTypeDocError(error)
+    }
+  }
+
   return {
     name: "ardo:typedoc",
+    async config(userConfig) {
+      root = userConfig.root ?? process.cwd()
+      routesDir = resolveRoutesDir(root, routesDirOption)
+      await generateTypeDocOnce()
+    },
     async buildStart() {
-      if (!typedocConfig.enabled || typedocGenerated) {
-        return
-      }
-
-      typedocGenerated = true
-      console.log("[ardo] Generating API documentation with TypeDoc...")
-      const startTime = Date.now()
-
-      try {
-        const docs = await generateApiDocs(typedocConfig, routesDir)
-        const duration = Date.now() - startTime
-        console.log(`[ardo] Generated ${docs.length} API documentation pages in ${duration}ms`)
-      } catch (error) {
-        console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
-        console.warn("[ardo] Check your typedoc.entryPoints configuration.")
-        if (error instanceof Error) {
-          console.warn(`[ardo] Error: ${error.message}`)
-        }
-      }
+      await generateTypeDocOnce()
     },
   }
+}
+
+function writeGeneratedRoutesFile(root: string, routesDir: string): void {
+  const appDir = path.resolve(root, "app")
+  writeRoutesFileSync({
+    appDir,
+    routesDir,
+    routesFilePath: path.join(appDir, "routes.ts"),
+  })
+}
+
+function logTypeDocSuccess(pageCount: number, startTime: number): void {
+  const duration = Date.now() - startTime
+  console.log(`[ardo] Generated ${pageCount} API documentation pages in ${duration}ms`)
+}
+
+function handleTypeDocError(error: unknown): void {
+  if (isTypeDocSafetyError(error)) {
+    throw error
+  }
+
+  console.warn("[ardo] TypeDoc generation failed. API documentation will not be available.")
+  console.warn("[ardo] Check your typedoc.entryPoints configuration.")
+  if (error instanceof Error) {
+    console.warn(`[ardo] Error: ${error.message}`)
+  }
+}
+
+function isTypeDocSafetyError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.message.includes("typedoc.out") || error.message.includes("Refusing to delete"))
+  )
 }

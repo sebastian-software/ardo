@@ -91,7 +91,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
   plugins.push(...createIconsPlugin(icons))
   addRoutesPlugin(plugins, routes, routesDirOption)
-  addTypeDocPlugin(plugins, typedoc, state)
+  addTypeDocPlugin(plugins, typedoc, routesDirOption)
 
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
   plugins.push(createMdxPlugin(pressConfig.markdown))
@@ -121,11 +121,11 @@ function addRoutesPlugin(
 function addTypeDocPlugin(
   plugins: Plugin[],
   typedoc: ArdoPluginOptions["typedoc"],
-  state: PluginState
+  routesDirOption: string | undefined
 ): void {
   const typedocConfig = resolveTypedocConfig(typedoc)
   if (typedocConfig != null) {
-    plugins.unshift(createTypeDocPlugin(typedocConfig, state.routesDir))
+    plugins.unshift(createTypeDocPlugin(typedocConfig, routesDirOption))
   }
 }
 
