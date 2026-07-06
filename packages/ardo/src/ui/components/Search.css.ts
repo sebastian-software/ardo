@@ -63,6 +63,8 @@ export const searchPopover = style({
 })
 
 export const searchResults = style({
+  margin: 0,
+  padding: 0,
   listStyle: "none",
   maxHeight: "25rem",
   overflowY: "auto",
