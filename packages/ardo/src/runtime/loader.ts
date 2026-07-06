@@ -3,7 +3,9 @@ import path from "node:path"
 
 import type { PageData, PageFrontmatter, ResolvedConfig, TOCItem } from "../config/types"
 
-import { transformMarkdown } from "../markdown/pipeline"
+import { transformMarkdown, type TransformOptions } from "../markdown/pipeline"
+import { createShikiHighlighter } from "../markdown/shiki"
+import { stripTrailingExtension } from "../vite/path-utils"
 
 export type LoadDocOptions = {
   slug: string
@@ -25,7 +27,9 @@ async function findFile(
   slug: string
 ): Promise<{ filePath: string; fileContent: string } | null> {
   const possiblePaths = [
+    path.join(contentDir, `${slug}.mdx`),
     path.join(contentDir, `${slug}.md`),
+    path.join(contentDir, slug, "index.mdx"),
     path.join(contentDir, slug, "index.md"),
   ]
 
@@ -67,6 +71,8 @@ export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | 
 
 export async function loadAllDocs(contentDir: string, config: ResolvedConfig): Promise<PageData[]> {
   const docs: PageData[] = []
+  const highlighter = await createShikiHighlighter(config.markdown)
+  const transformOptions: TransformOptions = { highlighter }
 
   async function scanDir(dir: string) {
     const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -76,29 +82,15 @@ export async function loadAllDocs(contentDir: string, config: ResolvedConfig): P
 
       if (entry.isDirectory()) {
         await scanDir(fullPath)
-      } else if (entry.name.endsWith(".md")) {
-        const fileContent = await fs.readFile(fullPath, "utf8")
-        const result = await transformMarkdown(fileContent, config.markdown)
-        const relativePath = path.relative(contentDir, fullPath)
-
-        let lastUpdated: number | undefined
-        try {
-          const stat = await fs.stat(fullPath)
-          lastUpdated = stat.mtimeMs
-        } catch {
-          // Ignore stat errors
-        }
-
-        docs.push({
-          title: result.frontmatter.title ?? formatTitle(entry.name.replace(/\.md$/, "")),
-          description: result.frontmatter.description,
-          frontmatter: result.frontmatter,
-          content: result.html,
-          toc: result.toc,
+      } else if (isMarkdownFile(entry.name)) {
+        const pageData = await createPageDataFromFile({
+          config,
+          contentDir,
+          entryName: entry.name,
           filePath: fullPath,
-          relativePath,
-          lastUpdated,
+          transformOptions,
         })
+        docs.push(pageData)
       }
     }
   }
@@ -107,15 +99,44 @@ export async function loadAllDocs(contentDir: string, config: ResolvedConfig): P
   return docs
 }
 
+async function createPageDataFromFile(params: {
+  config: ResolvedConfig
+  contentDir: string
+  entryName: string
+  filePath: string
+  transformOptions: TransformOptions
+}): Promise<PageData> {
+  const extension = getMarkdownExtension(params.entryName) ?? ".md"
+  const fileContent = await fs.readFile(params.filePath, "utf8")
+  const result = await transformMarkdown(
+    fileContent,
+    params.config.markdown,
+    params.transformOptions
+  )
+  const relativePath = path.relative(params.contentDir, params.filePath)
+
+  return {
+    title:
+      result.frontmatter.title ?? formatTitle(stripTrailingExtension(params.entryName, extension)),
+    description: result.frontmatter.description,
+    frontmatter: result.frontmatter,
+    content: result.html,
+    toc: result.toc,
+    filePath: params.filePath,
+    relativePath,
+    lastUpdated: await getLastUpdated(params.filePath),
+  }
+}
+
 function formatTitle(name: string): string {
   return name.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export function getSlugFromPath(relativePath: string): string {
-  return relativePath
-    .replace(/\.md$/, "")
-    .replace(/\/index$/, "")
-    .replaceAll("\\", "/")
+  const extension = getMarkdownExtension(relativePath)
+  const withoutExtension =
+    extension == null ? relativePath : stripTrailingExtension(relativePath, extension)
+  return withoutExtension.replace(/\/index$/, "").replaceAll("\\", "/")
 }
 
 export function getPageDataForRoute(docs: PageData[], slug: string): PageData | undefined {
@@ -123,4 +144,20 @@ export function getPageDataForRoute(docs: PageData[], slug: string): PageData | 
     const docSlug = getSlugFromPath(doc.relativePath)
     return docSlug === slug || docSlug === `${slug}/index`
   })
+}
+
+function isMarkdownFile(fileName: string): boolean {
+  return getMarkdownExtension(fileName) != null
+}
+
+function getMarkdownExtension(fileName: string): ".md" | ".mdx" | null {
+  if (fileName.endsWith(".mdx")) {
+    return ".mdx"
+  }
+
+  if (fileName.endsWith(".md")) {
+    return ".md"
+  }
+
+  return null
 }
