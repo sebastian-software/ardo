@@ -53,6 +53,27 @@ describe("runtime loader", () => {
     expect(doc?.frontmatter.title).toBe("Loaded")
   })
 
+  it("reuses a provided highlighter when loading one document", async () => {
+    await writeContent("guide/intro.md", "# Intro")
+    const config = resolveConfig({ title: "Docs" }, contentDir)
+    const highlighter = await createShikiHighlighter(config.markdown)
+    mockedCreateShikiHighlighter.mockClear()
+
+    await loadDoc({
+      config,
+      contentDir,
+      slug: "guide/intro",
+      transformOptions: { highlighter },
+    })
+
+    expect(mockedCreateShikiHighlighter).not.toHaveBeenCalled()
+    expect(mockedTransformMarkdown).toHaveBeenCalledWith(
+      "# Intro",
+      config.markdown,
+      expect.objectContaining({ highlighter })
+    )
+  })
+
   it("loads all markdown documents with one shared highlighter", async () => {
     await writeContent("guide/intro.mdx", "# Intro")
     await writeContent("guide/usage.md", "# Usage")

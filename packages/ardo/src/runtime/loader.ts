@@ -11,6 +11,7 @@ export type LoadDocOptions = {
   slug: string
   contentDir: string
   config: ResolvedConfig
+  transformOptions?: TransformOptions
 }
 
 export type LoadDocResult = {
@@ -54,11 +55,11 @@ async function getLastUpdated(filePath: string): Promise<number | undefined> {
 }
 
 export async function loadDoc(options: LoadDocOptions): Promise<LoadDocResult | null> {
-  const { slug, contentDir, config } = options
+  const { slug, contentDir, config, transformOptions } = options
   const found = await findFile(contentDir, slug)
   if (found === null) return null
 
-  const result = await transformMarkdown(found.fileContent, config.markdown)
+  const result = await transformMarkdown(found.fileContent, config.markdown, transformOptions)
   return {
     content: result.html,
     frontmatter: result.frontmatter,
