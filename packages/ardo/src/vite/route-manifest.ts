@@ -4,6 +4,8 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import { createHeadingSlugger } from "../markdown/heading-slug"
+
 export type RouteManifestEntry = {
   anchors: string[]
   content: string
@@ -123,12 +125,13 @@ function parseRedirectFrom(value: unknown): string[] | undefined {
 }
 
 function extractAnchors(content: string): string[] {
-  const anchors = new Set<string>()
+  const anchors: string[] = []
+  const slugger = createHeadingSlugger()
   for (const line of content.split("\n")) {
     const headingText = getMarkdownHeadingText(line)
-    if (headingText != null) anchors.add(slugifyHeading(headingText))
+    if (headingText != null) anchors.push(slugger.slug(headingText))
   }
-  return [...anchors]
+  return anchors
 }
 
 function getMarkdownHeadingText(line: string): null | string {
@@ -144,34 +147,6 @@ function getMarkdownHeadingText(line: string): null | string {
   }
 
   return trimmed.slice(level + 1)
-}
-
-function slugifyHeading(value: string) {
-  return stripHtmlTags(value)
-    .replaceAll(/[`*_~[\]()]/gu, "")
-    .trim()
-    .toLowerCase()
-    .replaceAll(/[^\d\p{Letter}\s-]/gu, "")
-    .replaceAll(/\s+/gu, "-")
-}
-
-function stripHtmlTags(value: string) {
-  let result = ""
-  let isInsideTag = false
-  for (const character of value) {
-    if (character === "<") {
-      isInsideTag = true
-      continue
-    }
-
-    if (character === ">") {
-      isInsideTag = false
-      continue
-    }
-
-    if (!isInsideTag) result += character
-  }
-  return result
 }
 
 function toRecord(value: unknown): Record<string, unknown> {

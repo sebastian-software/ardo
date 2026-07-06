@@ -4,22 +4,25 @@ import { visit } from "unist-util-visit"
 
 import type { TOCItem } from "../config/types"
 
+import { createHeadingSlugger } from "./heading-slug"
+
 export type TocExtraction = {
   toc: TOCItem[]
 }
 
 type TocOptions = {
+  anchor?: boolean
   tocExtraction: TocExtraction
   levels: [number, number]
 }
 
 export function remarkExtractToc(options: TocOptions) {
-  const { tocExtraction, levels } = options
+  const { anchor = true, tocExtraction, levels } = options
   const [minLevel, maxLevel] = levels
 
   return function (tree: Root) {
     const headings: Array<{ text: string; level: number; id: string }> = []
-    let headingIndex = 0
+    const slugger = createHeadingSlugger()
 
     visit(tree, "heading", (node: Heading) => {
       if (node.depth < minLevel || node.depth > maxLevel) {
@@ -27,9 +30,7 @@ export function remarkExtractToc(options: TocOptions) {
       }
 
       const text = getHeadingText(node)
-      const slug = slugify(text)
-      const id = slug === "" ? `heading-${headingIndex}` : slug
-      headingIndex++
+      const id = slugger.slug(text)
 
       headings.push({
         text,
@@ -37,9 +38,11 @@ export function remarkExtractToc(options: TocOptions) {
         id,
       })
 
-      // Add id to the heading node for anchor links
-      const hProperties = ensureHProperties(node)
-      hProperties.id = id
+      if (anchor) {
+        // Add id to the heading node for anchor links
+        const hProperties = ensureHProperties(node)
+        hProperties.id = id
+      }
     })
 
     tocExtraction.toc = buildTocTree(headings)
@@ -67,28 +70,6 @@ function getHeadingText(node: Heading): string {
     extractText(child)
   })
   return textParts.join("")
-}
-
-function slugify(text: string): string {
-  let slug = text
-    .toLowerCase()
-    .trim()
-    .replaceAll(/[^\s\w-]/g, "")
-    .replaceAll(/[\s_]/g, "-")
-
-  while (slug.includes("--")) {
-    slug = slug.replaceAll("--", "-")
-  }
-
-  if (slug.startsWith("-")) {
-    slug = slug.slice(1)
-  }
-
-  if (slug.endsWith("-")) {
-    slug = slug.slice(0, -1)
-  }
-
-  return slug
 }
 
 function popStackUntilParent(stack: Array<{ item: TOCItem; level: number }>, level: number): void {

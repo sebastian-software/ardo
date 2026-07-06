@@ -1,10 +1,10 @@
-import type { Plugin, UserConfig, ViteDevServer } from "vite"
-
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
+import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
+import { normalizeViteBaseForArdo } from "./base"
 import {
   checkInternalLinks,
   createBuildOutputAssets,
@@ -12,7 +12,12 @@ import {
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createFlattenPlugin } from "./flatten-plugin"
-import { detectGitHash, detectGitHubBasename, detectGitHubRepoName } from "./git-utils"
+import {
+  detectGitHash,
+  detectGitHubBasename,
+  detectGitHubRepoName,
+  getGitHubPagesBase,
+} from "./git-utils"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
@@ -138,13 +143,14 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         userConfig,
         command: env.command,
         githubPages: options.githubPages,
+        pressConfig: options.pressConfig,
         routesDirOption: options.routesDirOption,
       })
     },
     configResolved(config) {
       state.isSsrBuild = config.build.ssr !== false
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
-      state.resolvedConfig = resolveArdoConfig(config.root, state.routesDir, options.pressConfig)
+      state.resolvedConfig = resolveArdoConfig(config.root, options.pressConfig, config.base)
     },
     resolveId(id) {
       return resolveVirtualModuleId(id)
@@ -199,11 +205,12 @@ function createMainConfig(
   input: {
     command: string
     githubPages: boolean
+    pressConfig: PressConfigOptions
     routesDirOption: string | undefined
     userConfig: UserConfig
   }
 ): UserConfig {
-  const { command, githubPages, routesDirOption, userConfig } = input
+  const { command, githubPages, pressConfig, routesDirOption, userConfig } = input
   const root = userConfig.root ?? process.cwd()
   state.routesDir = resolveRoutesDir(root, routesDirOption)
 
@@ -216,18 +223,22 @@ function createMainConfig(
   if (githubPages && command === "build" && userConfig.base == null) {
     const repoName = detectGitHubRepoName(root)
     if (repoName != null) {
-      config.base = `/${repoName}/`
+      config.base = getGitHubPagesBase(repoName)
       console.log(`[ardo] GitHub Pages detected, using base: ${config.base}`)
     }
   }
 
-  return config
+  if (pressConfig.outDir != null) {
+    config.build = { ...config.build, outDir: pressConfig.outDir }
+  }
+
+  return mergeArdoViteConfig(pressConfig.vite, config)
 }
 
 function resolveArdoConfig(
   root: string,
-  routesDir: string,
-  pressConfig: PressConfigOptions
+  pressConfig: PressConfigOptions,
+  viteBase: string
 ): ResolvedConfig {
   const detectedProject = readProjectMeta(root)
   const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
@@ -240,11 +251,22 @@ function resolveArdoConfig(
     {
       ...configWithDefaults,
       ...pressConfig,
+      base: pressConfig.base ?? normalizeViteBaseForArdo(viteBase),
       project,
-      srcDir: routesDir,
     },
     root
   )
+}
+
+function mergeArdoViteConfig(
+  viteConfig: Record<string, unknown> | undefined,
+  ardoConfig: UserConfig
+): UserConfig {
+  if (viteConfig == null) {
+    return ardoConfig
+  }
+
+  return mergeConfig(ardoConfig, viteConfig as UserConfig)
 }
 
 function resolveVirtualModuleId(id: string): string | undefined {

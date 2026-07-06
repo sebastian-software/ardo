@@ -39,7 +39,11 @@ export async function transformMarkdown(
     .use(remarkParse)
     .use(remarkFrontmatter, ["yaml"])
     .use(remarkGfm)
-    .use(remarkExtractToc, { tocExtraction, levels: config.toc?.level ?? [2, 3] })
+    .use(remarkExtractToc, {
+      anchor: config.anchor,
+      tocExtraction,
+      levels: config.toc?.level ?? [2, 3],
+    })
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeShikiFromHighlighter, { highlighter, config })
     .use(rehypeLinks, { basePath })

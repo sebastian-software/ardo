@@ -116,4 +116,26 @@ describe("resolveConfig", () => {
       attrs: { name: "author", content: "Test Author" },
     })
   })
+
+  it("rejects base paths without leading and trailing slashes", () => {
+    expect(() => resolveConfig({ title: "Test", base: "docs" }, "/project")).toThrow(
+      "base must start and end"
+    )
+
+    expect(() => resolveConfig({ title: "Test", base: "/docs" }, "/project")).toThrow(
+      "base must start and end"
+    )
+  })
+
+  it("rejects invalid site URLs", () => {
+    expect(() => resolveConfig({ title: "Test", siteUrl: "not a url" }, "/project")).toThrow(
+      "siteUrl must be an absolute URL"
+    )
+  })
+
+  it("rejects sitemap priorities outside the sitemap range", () => {
+    expect(() =>
+      resolveConfig({ title: "Test", seo: { sitemap: { priority: 2 } } }, "/project")
+    ).toThrow("seo.sitemap.priority must be between 0 and 1")
+  })
 })

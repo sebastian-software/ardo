@@ -12,7 +12,11 @@ import { visit } from "unist-util-visit"
 
 import type { TOCItem } from "../config/types"
 
+import { createHeadingSlugger } from "./heading-slug"
+
 type RemarkMdxTocOptions = {
+  /** Add heading ids for anchor links (default: true) */
+  anchor?: boolean
   /** Export name (default: "toc") */
   name?: string
   /** Heading levels to include (default: [2, 3]) */
@@ -20,26 +24,26 @@ type RemarkMdxTocOptions = {
 }
 
 export function remarkMdxToc(options: RemarkMdxTocOptions = {}) {
-  const { name = "toc", levels = [2, 3] } = options
+  const { anchor = true, name = "toc", levels = [2, 3] } = options
   const [minLevel, maxLevel] = levels
 
   return function (tree: Root, file: Parameters<typeof define>[1]) {
     const items: TOCItem[] = []
-    let headingIndex = 0
+    const slugger = createHeadingSlugger()
 
     visit(tree, "heading", (node: Heading) => {
       if (node.depth < minLevel || node.depth > maxLevel) return
 
       const text = getHeadingText(node)
-      const slug = slugify(text)
-      const id = slug === "" ? `heading-${String(headingIndex)}` : slug
-      headingIndex++
+      const id = slugger.slug(text)
 
       items.push({ id, text, level: node.depth })
 
-      // Add id to the heading node for anchor links
-      const hProperties = ensureHProperties(node)
-      hProperties.id = id
+      if (anchor) {
+        // Add id to the heading node for anchor links
+        const hProperties = ensureHProperties(node)
+        hProperties.id = id
+      }
     })
 
     // Use the same approach as remark-mdx-frontmatter: valueToEstree + define
@@ -62,20 +66,6 @@ function getHeadingText(node: Heading): string {
 
   for (const child of node.children) extract(child)
   return parts.join("")
-}
-
-function slugify(text: string): string {
-  let slug = text
-    .toLowerCase()
-    .trim()
-    .replaceAll(/[^\s\w-]/g, "")
-    .replaceAll(/[\s_]/g, "-")
-
-  while (slug.includes("--")) {
-    slug = slug.replaceAll("--", "-")
-  }
-
-  return slug.replaceAll(/^-|-$/g, "")
 }
 
 type HeadingDataWithHProperties = {
