@@ -19,7 +19,11 @@ export function generateIndexPage(
   context: TypeDocRuntimeContext,
   grouped: GroupedReflections
 ): GeneratedApiDoc {
-  const lines: string[] = [`# ${context.config.sidebar.title}`, "", getProjectSummary(context), ""]
+  const lines: string[] = [`# ${context.config.sidebar.title}`, ""]
+  const projectSummary = getProjectSummary(context)
+  if (projectSummary != null) {
+    lines.push(projectSummary, "")
+  }
 
   appendComponentSection(lines, context, grouped.componentItems)
   appendFunctionsSection(lines, context, grouped.functionsByFile)
@@ -37,10 +41,10 @@ export function generateIndexPage(
   }
 }
 
-function getProjectSummary(context: TypeDocRuntimeContext): string {
+function getProjectSummary(context: TypeDocRuntimeContext): null | string {
   const summary = context.project.comment?.summary
   if (summary == null) {
-    return "Auto-generated API documentation."
+    return null
   }
   return renderComment(summary)
 }

@@ -225,6 +225,7 @@ export type GeneratedApiDoc = {
   frontmatter: {
     title: string
     description?: string
+    lede?: boolean
     sidebar_position?: number
     sidebar?: "leaf" | boolean
   }

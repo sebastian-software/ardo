@@ -298,6 +298,7 @@ export type PageFrontmatter = {
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
+  lede?: boolean
   sitemap?: boolean
   llms?: boolean
   redirectFrom?: string | string[]

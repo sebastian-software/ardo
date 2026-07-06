@@ -46,6 +46,17 @@ description: Learn how to get started with Ardo
 ---
 ```
 
+By default, Ardo also renders `description` as the visible lede below the page title. Set
+`lede: false` when the description is metadata-only or when the first body paragraph already says
+the same thing.
+
+```yaml
+---
+description: Learn how to get started with Ardo
+lede: false
+---
+```
+
 ### Social metadata
 
 Markdown routes without their own `meta` export get generated browser, canonical, Open Graph, and Twitter metadata from frontmatter and site config.

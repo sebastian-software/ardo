@@ -1,9 +1,13 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
+import { FileRegistry, ProjectReflection } from "typedoc"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
+import type { TypeDocRuntimeContext } from "./generator-config"
+
 import { prepareGeneratedDocsDirectory, resolveGeneratedDocsDirectory } from "./generator"
+import { generateIndexPage } from "./generator-pages-index"
 
 let routesDir: string
 
@@ -54,3 +58,46 @@ describe("prepareGeneratedDocsDirectory", () => {
     await expect(fs.access(apiDirectory)).rejects.toThrow("ENOENT")
   })
 })
+
+describe("generateIndexPage", () => {
+  it("does not duplicate the default API description in the body", () => {
+    const doc = generateIndexPage(createTypeDocContext(), {
+      componentItems: [],
+      functionsByFile: new Map(),
+      standaloneItems: [],
+      typesByFile: new Map(),
+    })
+
+    expect(doc.frontmatter.description).toBe("Auto-generated API documentation")
+    expect(doc.content).toBe("# API Reference\n")
+    expect(doc.content).not.toContain("Auto-generated API documentation")
+  })
+})
+
+function createTypeDocContext(): TypeDocRuntimeContext {
+  return {
+    basePath: "/api-reference",
+    config: {
+      entryPoints: ["src/index.ts"],
+      excludeExternals: true,
+      excludeInternal: true,
+      excludePrivate: true,
+      excludeProtected: false,
+      markdown: {
+        breadcrumbs: true,
+        codeBlocks: true,
+        hierarchy: true,
+        sourceLinks: true,
+      },
+      out: "api-reference",
+      sidebar: {
+        collapsed: false,
+        position: 100,
+        title: "API Reference",
+      },
+      sort: ["source-order"],
+    },
+    packageNameCache: new Map(),
+    project: new ProjectReflection("ardo", new FileRegistry()),
+  }
+}

@@ -86,6 +86,7 @@ export function ArdoContent({
       <ContentHeader
         title={pageData?.frontmatter.title ?? ""}
         description={pageData?.frontmatter.description ?? ""}
+        lede={pageData?.frontmatter.lede !== false}
       />
       <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
       {metaPlacement === "footer" && <ContentMeta edit={edit} updated={updated} />}
@@ -94,12 +95,20 @@ export function ArdoContent({
   )
 }
 
-function ContentHeader({ title, description }: { title: string; description: string }) {
+function ContentHeader({
+  title,
+  description,
+  lede,
+}: {
+  description: string
+  lede: boolean
+  title: string
+}) {
   if (title === "") return null
   return (
     <header className={docStyles.contentHeader}>
       <h1 className={docStyles.contentTitle}>{title}</h1>
-      {description !== "" && <p className={docStyles.contentDescription}>{description}</p>}
+      {lede && description !== "" && <p className={docStyles.contentDescription}>{description}</p>}
     </header>
   )
 }

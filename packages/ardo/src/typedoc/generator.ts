@@ -101,6 +101,10 @@ function createFrontmatter(doc: GeneratedApiDoc): string {
     lines.push(`description: ${doc.frontmatter.description}`)
   }
 
+  if (doc.frontmatter.lede === false) {
+    lines.push("lede: false")
+  }
+
   if (doc.frontmatter.sidebar_position != null) {
     lines.push(`sidebar_position: ${doc.frontmatter.sidebar_position}`)
   }
