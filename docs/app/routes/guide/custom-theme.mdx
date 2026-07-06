@@ -63,7 +63,41 @@ The default hue is `356` (a muted berry tone). Some starting points:
 | `45`  | Orange          |
 | `130` | Green           |
 
-For full control over individual tokens, use `createTheme()` instead — it returns the complete `{ light, dark }` token sets for a given hue set, which you can modify before passing to `createGlobalTheme`.
+For full control over individual tokens, pass token overrides directly. Shared overrides apply to
+both light and dark themes; `light` and `dark` override only one side.
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  color: {
+    bg: "#fbfbf8",
+    brand: "#0038ff",
+    brandGradient: "#0038ff",
+    shadowSm: "0 0 0 0 transparent",
+    shadowMd: "0 0 0 0 transparent",
+    shadowLg: "0 0 0 0 transparent",
+  },
+  radius: {
+    sm: "0px",
+    base: "0px",
+    lg: "0px",
+  },
+  dark: {
+    color: {
+      bg: "#101010",
+      text: "#fbfbf8",
+    },
+  },
+})
+```
+
+Use `0 0 0 0 transparent` for empty shadows. `none` is valid CSS on its own, but it can break
+component rules that combine the shadow token with an additional ring shadow.
+
+`createTheme()` returns the complete `{ light, dark }` token sets for a hue set plus overrides when
+you need to inspect or pass the values manually to Vanilla Extract's `createGlobalTheme`.
 
 ## CSS Variables
 

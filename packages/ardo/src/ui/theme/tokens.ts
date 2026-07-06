@@ -6,6 +6,7 @@
 import { createGlobalTheme } from "@vanilla-extract/css"
 
 import { vars } from "./contract.css"
+import { type DeepPartial, mergeThemeTokens } from "./merge"
 
 type HueValue = number | string
 
@@ -228,13 +229,42 @@ export type ArdoBrandHues = {
   neutral?: number
 }
 
-export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
-  const primary = typeof primaryOrHues === "number" ? primaryOrHues : primaryOrHues.primary
-  const explicitSecondary =
-    typeof primaryOrHues === "number" ? secondaryArg : primaryOrHues.secondary
+type ArdoThemeHueTokens = {
+  brand: string
+  accent: string
+  neutral: string
+}
+
+export type ArdoThemeTokens = {
+  color: ReturnType<typeof createLightColors>
+  hue: ArdoThemeHueTokens
+} & typeof shared
+
+export type ArdoTheme = {
+  dark: ArdoThemeTokens
+  light: ArdoThemeTokens
+}
+
+export type ArdoThemeTokenOverrides = DeepPartial<ArdoThemeTokens>
+
+export type ArdoThemeOptions = {
+  /** Overrides applied only to the generated dark token set. */
+  dark?: ArdoThemeTokenOverrides
+  /** Overrides applied only to the generated light token set. */
+  light?: ArdoThemeTokenOverrides
+} & ArdoThemeTokenOverrides &
+  Partial<ArdoBrandHues>
+
+export type ArdoThemeInput = ArdoThemeOptions | number
+
+export function createTheme(primaryOrHues: ArdoThemeInput = 356, secondaryArg?: number): ArdoTheme {
+  const isNumberInput = typeof primaryOrHues === "number"
+  const input: ArdoThemeOptions | undefined = isNumberInput ? undefined : primaryOrHues
+  const primary = isNumberInput ? primaryOrHues : (input?.primary ?? 356)
+  const explicitSecondary = isNumberInput ? secondaryArg : input?.secondary
   const secondary = explicitSecondary ?? defaultSecondary(primary)
-  const neutral = typeof primaryOrHues === "number" ? primary : (primaryOrHues.neutral ?? primary)
-  return {
+  const neutral = isNumberInput ? primary : (input?.neutral ?? primary)
+  const baseTheme: ArdoTheme = {
     light: {
       hue: {
         brand: String(primary),
@@ -254,13 +284,31 @@ export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?
       ...shared,
     },
   }
+
+  if (input == null) {
+    return baseTheme
+  }
+
+  const {
+    dark,
+    light,
+    neutral: _neutral,
+    primary: _primary,
+    secondary: _secondary,
+    ...sharedOverrides
+  } = input
+
+  return {
+    light: mergeThemeTokens(baseTheme.light, sharedOverrides, light),
+    dark: mergeThemeTokens(baseTheme.dark, sharedOverrides, dark),
+  }
 }
 
 const defaultTheme = createTheme(356)
 export const lightTokens = defaultTheme.light
 export const darkTokens = defaultTheme.dark
 
-export function applyBrandTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
+export function applyBrandTheme(primaryOrHues: ArdoThemeInput = 356, secondaryArg?: number) {
   const theme = createTheme(primaryOrHues, secondaryArg)
   createGlobalTheme(":root", vars, theme.light)
   createGlobalTheme(".dark", vars, theme.dark)
