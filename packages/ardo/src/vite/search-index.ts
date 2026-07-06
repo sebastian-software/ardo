@@ -4,6 +4,8 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import { stripTrailingExtension } from "./path-utils"
+
 export type SearchDoc = {
   id: string
   title: string
@@ -84,7 +86,7 @@ async function createSearchDocFromFile(
   const title =
     typeof parsed.data.title === "string"
       ? parsed.data.title
-      : formatTitle(fileName.replace(extension, ""))
+      : formatTitle(stripTrailingExtension(fileName, extension))
 
   const relativePath = path.relative(context.routesDir, filePath)
   const routePath = buildRoutePath(relativePath, fileName, extension)
@@ -176,7 +178,7 @@ function buildRoutePath(relativePath: string, fileName: string, extension: strin
     return directoryPath === "." ? "/" : `/${directoryPath}`
   }
 
-  return `/${relativePath.replace(extension, "").replaceAll("\\", "/")}`
+  return `/${stripTrailingExtension(relativePath, extension).replaceAll("\\", "/")}`
 }
 
 function createNestedSection(section: string | undefined, directoryName: string): string {

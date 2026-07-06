@@ -20,7 +20,7 @@ export function ardoCodeBlockPlugin(markdownConfig?: MarkdownConfig): Plugin {
         return
       }
 
-      const transformed = await transformArdoCodeBlocks(code, markdownConfig)
+      const transformed = await transformArdoCodeBlocks(code, markdownConfig, { sourcePath: id })
       if (transformed === code) {
         return
       }

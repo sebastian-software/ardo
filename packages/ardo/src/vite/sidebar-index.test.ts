@@ -239,6 +239,17 @@ sidebar: leaf
       },
     ])
   })
+
+  it("only strips markdown extensions from the end of sidebar paths", async () => {
+    await writeRoute("v1.md/changelog.md", "---\ntitle: Changelog\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "V1.Md",
+        items: [{ text: "Changelog", link: "/v1.md/changelog" }],
+      },
+    ])
+  })
 })
 
 async function writeRoute(relativePath: string, content: string): Promise<void> {
