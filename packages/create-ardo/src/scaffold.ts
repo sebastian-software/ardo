@@ -26,13 +26,25 @@ export type ScaffoldOptions = {
   typedoc: boolean
   githubPages: boolean
   description: string
+  overwriteExisting?: boolean
+}
+
+type CopyContext = {
+  overwriteExisting: boolean
+  vars: Record<string, string>
+}
+
+type CopyEntryInput = {
+  dest: string
+  entry: fs.Dirent
+  src: string
 }
 
 export function createProjectStructure(root: string, template: string, options: ScaffoldOptions) {
   const templateDir = path.join(templatesRoot, template)
   const vars: Record<string, string> = {
-    SITE_TITLE: options.siteTitle,
-    PROJECT_NAME: options.projectName,
+    SITE_TITLE: escapeTemplateValue(options.siteTitle),
+    PROJECT_NAME: escapeTemplateValue(options.projectName),
     ARDO_VERSION: getCliVersion(),
     TYPEDOC_CONFIG: options.typedoc
       ? "typedoc: true,"
@@ -46,31 +58,49 @@ export function createProjectStructure(root: string, template: string, options: 
     GITHUB_PAGES_BASENAME: options.githubPages
       ? "basename: detectGitHubBasename(),"
       : "// basename: detectGitHubBasename(), // Uncomment for GitHub Pages",
-    DESCRIPTION: options.description,
+    DESCRIPTION: escapeTemplateValue(options.description),
   }
 
-  copyDir(templateDir, root, vars)
+  copyDir(templateDir, root, { vars, overwriteExisting: options.overwriteExisting ?? true })
 }
 
-function copyDir(src: string, dest: string, vars: Record<string, string>) {
+function copyDir(src: string, dest: string, context: CopyContext) {
   fs.mkdirSync(dest, { recursive: true })
 
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    const srcPath = path.join(src, entry.name)
-    // Rename _gitignore → .gitignore (npm strips .gitignore during pack)
-    const destName = entry.name === "_gitignore" ? ".gitignore" : entry.name
-    const destPath = path.join(dest, destName)
-
-    if (entry.isDirectory()) {
-      copyDir(srcPath, destPath, vars)
-    } else {
-      let content = fs.readFileSync(srcPath, "utf8")
-      for (const [key, value] of Object.entries(vars)) {
-        content = content.replaceAll(`{{${key}}}`, value)
-      }
-      fs.writeFileSync(destPath, content)
-    }
+    copyEntry({ src, dest, entry }, context)
   }
+}
+
+function copyEntry(input: CopyEntryInput, context: CopyContext): void {
+  const { src, dest, entry } = input
+  const srcPath = path.join(src, entry.name)
+  // Rename _gitignore -> .gitignore (npm strips .gitignore during pack)
+  const destName = entry.name === "_gitignore" ? ".gitignore" : entry.name
+  const destPath = path.join(dest, destName)
+
+  if (entry.isDirectory()) {
+    copyDir(srcPath, destPath, context)
+    return
+  }
+
+  if (!context.overwriteExisting && fs.existsSync(destPath)) {
+    return
+  }
+
+  writeTemplateFile(srcPath, destPath, context.vars)
+}
+
+function writeTemplateFile(srcPath: string, destPath: string, vars: Record<string, string>): void {
+  let content = fs.readFileSync(srcPath, "utf8")
+  for (const [key, value] of Object.entries(vars)) {
+    content = content.replaceAll(`{{${key}}}`, value)
+  }
+  fs.writeFileSync(destPath, content)
+}
+
+function escapeTemplateValue(value: string): string {
+  return JSON.stringify(value).slice(1, -1).replaceAll("'", "\\'")
 }
 
 export function formatTargetDir(targetDir: string | undefined) {
@@ -156,8 +186,12 @@ function copySkeletonFiles(root: string, templateDir: string, result: UpgradeRes
     const dest = path.join(root, file)
     if (fs.existsSync(src)) {
       fs.mkdirSync(path.dirname(dest), { recursive: true })
-      fs.copyFileSync(src, dest)
-      result.updated.push(file)
+      if (fs.existsSync(dest) && fs.readFileSync(dest, "utf8") !== fs.readFileSync(src, "utf8")) {
+        result.skipped.push(`${file} (customized)`)
+      } else {
+        fs.copyFileSync(src, dest)
+        result.updated.push(file)
+      }
     } else {
       result.skipped.push(file)
     }

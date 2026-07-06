@@ -166,6 +166,7 @@ async function runNewProjectFlow(
     typedoc: response.docType === "library",
     githubPages: response.githubPages ?? true,
     description: detectProjectDescription(root) ?? "Built with Ardo",
+    overwriteExisting: response.overwrite !== "ignore",
   })
 
   console.log(`  ${green("Done!")} Now run:\n`)
