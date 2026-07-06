@@ -74,6 +74,23 @@ export const logo = style({
   height: "2rem",
 })
 
+export const logoLight = style({
+  selectors: {
+    ".dark &": {
+      display: "none",
+    },
+  },
+})
+
+export const logoDark = style({
+  display: "none",
+  selectors: {
+    ".dark &": {
+      display: "block",
+    },
+  },
+})
+
 export const siteTitle = style({
   fontSize: vars.fontSize.lg,
   fontWeight: 700,

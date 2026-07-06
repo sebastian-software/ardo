@@ -3,17 +3,9 @@ import { Link } from "react-router"
 
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
+import { type ArdoLogo, HeaderLogo } from "./HeaderLogo"
 import { XIcon } from "./icons"
-import { getTrappedFocusTarget } from "./mobile-drawer-a11y"
-
-const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "button:not([disabled])",
-  "input:not([disabled])",
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  '[tabindex]:not([tabindex="-1"])',
-].join(",")
+import { focusInitialElement, trapFocus } from "./mobile-drawer-a11y"
 
 export function MobileSlidePanel({
   logo,
@@ -24,7 +16,7 @@ export function MobileSlidePanel({
   children,
   onClose,
 }: {
-  logo?: { light: string; dark: string } | string
+  logo?: ArdoLogo
   title: string
   nav?: ReactNode
   themeToggle?: boolean
@@ -52,13 +44,7 @@ export function MobileSlidePanel({
       >
         <div className={styles.mobilePanelHeader}>
           <Link to="/" className={styles.logoLink} onClick={onClose}>
-            {logo != null && (
-              <img
-                src={typeof logo === "string" ? logo : logo.light}
-                alt={title}
-                className={styles.logo}
-              />
-            )}
+            {logo != null && <HeaderLogo logo={logo} alt={title} />}
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             {themeToggle && <ArdoThemeToggle />}
@@ -103,7 +89,7 @@ function useMobilePanelFocus({
     }
     const triggerElement = triggerRef.current
 
-    focusInitialPanelElement(panel)
+    focusInitialElement(panel)
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -113,7 +99,7 @@ function useMobilePanelFocus({
       }
 
       if (event.key === "Tab") {
-        trapPanelFocus(event, panel)
+        trapFocus(event, panel)
       }
     }
 
@@ -123,36 +109,6 @@ function useMobilePanelFocus({
       triggerElement?.focus()
     }
   }, [onClose, panelRef, triggerRef])
-}
-
-function focusInitialPanelElement(panel: HTMLDivElement) {
-  const focusableElements = getFocusablePanelElements(panel)
-  const initialFocusTarget = focusableElements[0] ?? panel
-  initialFocusTarget.focus()
-}
-
-function trapPanelFocus(event: KeyboardEvent, panel: HTMLDivElement) {
-  const focusableElements = getFocusablePanelElements(panel)
-  const activeElement =
-    document.activeElement instanceof HTMLElement ? document.activeElement : null
-  const target = getTrappedFocusTarget({
-    activeElement,
-    focusableElements,
-    shiftKey: event.shiftKey,
-  })
-
-  if (target == null) {
-    return
-  }
-
-  event.preventDefault()
-  target.focus()
-}
-
-function getFocusablePanelElements(panel: HTMLDivElement) {
-  return [...panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter(
-    (element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true"
-  )
 }
 
 function handleLinkClick(onClose: () => void) {

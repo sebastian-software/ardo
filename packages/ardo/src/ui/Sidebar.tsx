@@ -7,6 +7,7 @@ import {
   type ReactElement,
   type ReactNode,
   use,
+  useId,
   useMemo,
   useState,
 } from "react"
@@ -177,6 +178,7 @@ export function ArdoSidebarGroup({
 }: ArdoSidebarGroupProps) {
   const [collapsed, setCollapsed] = useState(initialCollapsed)
   const { currentPath } = useSidebarContext()
+  const contentId = useId()
 
   // Check if any child is active
   const hasActiveChild = checkChildrenActive(children, currentPath)
@@ -189,6 +191,7 @@ export function ArdoSidebarGroup({
   const hasChildren = Children.count(children) > 0
   const hasTo = (to ?? "") !== ""
   const canToggle = collapsible && hasChildren
+  const toggleLabel = `${collapsed ? "Expand" : "Collapse"} ${title}`
 
   const itemClassName =
     className ??
@@ -207,28 +210,34 @@ export function ArdoSidebarGroup({
           >
             {title}
           </NavLink>
-        ) : (
+        ) : canToggle ? (
           <button
             type="button"
             className={textButtonClassName}
             onClick={() => {
-              if (canToggle) {
-                setCollapsed(!collapsed)
-              }
+              setCollapsed(!collapsed)
             }}
+            aria-expanded={!collapsed}
+            aria-controls={contentId}
+            aria-label={toggleLabel}
           >
-            {title}
+            <span>{title}</span>
+            <CollapseChevron collapsed={collapsed} />
           </button>
+        ) : (
+          <span className={textClassName}>{title}</span>
         )}
 
-        {canToggle && (
+        {canToggle && hasTo && (
           <button
             type="button"
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => {
               setCollapsed(!collapsed)
             }}
-            aria-label={collapsed ? "Expand" : "Collapse"}
+            aria-label={toggleLabel}
+            aria-expanded={!collapsed}
+            aria-controls={contentId}
           >
             <ChevronDownIcon size={16} />
           </button>
@@ -236,7 +245,13 @@ export function ArdoSidebarGroup({
       </div>
 
       {hasChildren && (
-        <div className={styles.sidebarCollapseWrapper} data-collapsed={collapsed}>
+        <div
+          id={contentId}
+          className={styles.sidebarCollapseWrapper}
+          data-collapsed={collapsed}
+          aria-hidden={collapsed}
+          inert={collapsed}
+        >
           <div className={styles.sidebarCollapseInner}>
             <ul className={`${styles.sidebarList} ${styles.sidebarList1}`}>{children}</ul>
           </div>
@@ -316,6 +331,7 @@ type SidebarItemComponentProps = {
 function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
   const { currentPath } = useSidebarContext()
   const [collapsed, setCollapsed] = useState(item.collapsed ?? false)
+  const contentId = useId()
   const childItems = item.items ?? []
 
   const hasChildren = childItems.length > 0
@@ -337,6 +353,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
     .filter(Boolean)
     .join(" ")
   const textButtonClassName = [textClassName, styles.sidebarTextButton].join(" ")
+  const toggleLabel = `${collapsed ? "Expand" : "Collapse"} ${item.text}`
 
   const itemClassName = [styles.sidebarItem, hasChildren && styles.sidebarItemGroup]
     .filter(Boolean)
@@ -354,28 +371,34 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
           >
             {item.text}
           </NavLink>
-        ) : (
+        ) : hasChildren ? (
           <button
             type="button"
             className={textButtonClassName}
             onClick={() => {
-              if (hasChildren) {
-                setCollapsed(!collapsed)
-              }
+              setCollapsed(!collapsed)
             }}
+            aria-expanded={!collapsed}
+            aria-controls={contentId}
+            aria-label={toggleLabel}
           >
-            {item.text}
+            <span>{item.text}</span>
+            <CollapseChevron collapsed={collapsed} />
           </button>
+        ) : (
+          <span className={textClassName}>{item.text}</span>
         )}
 
-        {hasChildren && (
+        {hasChildren && hasItemLink && (
           <button
             type="button"
             className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
             onClick={() => {
               setCollapsed(!collapsed)
             }}
-            aria-label={collapsed ? "Expand" : "Collapse"}
+            aria-label={toggleLabel}
+            aria-expanded={!collapsed}
+            aria-controls={contentId}
           >
             <ChevronDownIcon size={16} />
           </button>
@@ -383,13 +406,30 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
       </div>
 
       {hasChildren && (
-        <div className={styles.sidebarCollapseWrapper} data-collapsed={collapsed}>
+        <div
+          id={contentId}
+          className={styles.sidebarCollapseWrapper}
+          data-collapsed={collapsed}
+          aria-hidden={collapsed}
+          inert={collapsed}
+        >
           <div className={styles.sidebarCollapseInner}>
             <SidebarItems items={childItems} depth={depth + 1} />
           </div>
         </div>
       )}
     </li>
+  )
+}
+
+function CollapseChevron({ collapsed }: { collapsed: boolean }) {
+  return (
+    <span
+      className={[styles.sidebarToggleChevron, collapsed && "collapsed"].filter(Boolean).join(" ")}
+      aria-hidden="true"
+    >
+      <ChevronDownIcon size={16} />
+    </span>
   )
 }
 

@@ -5,6 +5,7 @@ import { useArdoConfig } from "../runtime/hooks"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
+import { type ArdoLogo, HeaderLogo } from "./HeaderLogo"
 import {
   GithubIcon,
   LinkedinIcon,
@@ -22,7 +23,7 @@ import * as navStyles from "./Nav.css"
 
 export type ArdoHeaderProps = {
   /** Logo image URL or light/dark variants */
-  logo?: { light: string; dark: string } | string
+  logo?: ArdoLogo
   /** Site title displayed next to logo */
   title?: string
   /** Navigation content (Nav component or custom) */
@@ -111,13 +112,7 @@ export function ArdoHeader({
               </button>
             )}
             <Link to="/" className={styles.logoLink}>
-              {hasLogo && (
-                <img
-                  src={typeof resolvedLogo === "string" ? resolvedLogo : resolvedLogo.light}
-                  alt={resolvedTitle}
-                  className={styles.logo}
-                />
-              )}
+              {hasLogo && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
               {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
             </Link>
           </div>
