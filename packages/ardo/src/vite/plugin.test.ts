@@ -1,0 +1,67 @@
+import type { Plugin, UserConfig } from "vite"
+
+import { describe, expect, it } from "vitest"
+
+import { ardoPlugin } from "./plugin"
+
+type ArdoPluginHooks = {
+  config: (config: UserConfig, env: { command: "build" | "serve"; mode: string }) => UserConfig
+  configResolved: (config: { base: string; build: { ssr: boolean }; root: string }) => void
+  load: (id: string) => Promise<string | undefined>
+}
+
+function getMainPlugin(options: Parameters<typeof ardoPlugin>[0]): ArdoPluginHooks {
+  const plugin = ardoPlugin(options).find((entry) => entry.name === "ardo")
+  if (plugin == null || !hasArdoPluginHooks(plugin)) {
+    throw new Error("Main Ardo plugin not found")
+  }
+  return plugin
+}
+
+function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin {
+  return (
+    typeof plugin.config === "function" &&
+    typeof plugin.configResolved === "function" &&
+    typeof plugin.load === "function"
+  )
+}
+
+describe("ardoPlugin", () => {
+  it("merges the public vite config option into the returned Vite config", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      vite: { define: { __CUSTOM__: JSON.stringify(true) }, server: { port: 4455 } },
+    })
+
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+
+    expect(config.server?.port).toBe(4455)
+    expect(config.define).toMatchObject({
+      __BUILD_TIME__: expect.any(String),
+      __CUSTOM__: "true",
+    })
+  })
+
+  it("maps outDir to Vite build.outDir", () => {
+    const plugin = getMainPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" })
+
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+
+    expect(config.build?.outDir).toBe("custom-build")
+  })
+
+  it("uses resolved Vite base in the virtual Ardo config", async () => {
+    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+
+    plugin.configResolved({
+      base: "/docs/",
+      build: { ssr: false },
+      root: "/project",
+    })
+
+    const code = await plugin.load("\0virtual:ardo/config")
+
+    expect(String(code)).toContain('"base":"/docs/"')
+  })
+})

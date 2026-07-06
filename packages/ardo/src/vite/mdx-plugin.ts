@@ -41,7 +41,10 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
       remarkGfm,
       remarkCallouts,
       remarkCodeMeta,
-      [remarkMdxToc, { levels: markdownConfig?.toc?.level ?? [2, 3] }],
+      [
+        remarkMdxToc,
+        { anchor: markdownConfig?.anchor, levels: markdownConfig?.toc?.level ?? [2, 3] },
+      ],
     ],
     rehypePlugins: [[rehypeShiki, shikiOptions]],
     recmaPlugins: [recmaWrapExport],

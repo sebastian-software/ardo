@@ -55,7 +55,11 @@ export function detectGitHubBasename(cwd?: string): string {
   }
 
   const repoName = detectGitHubRepoName(cwd ?? process.cwd())
-  return repoName != null ? `/${repoName}/` : "/"
+  return repoName != null ? getGitHubPagesBase(repoName) : "/"
+}
+
+export function getGitHubPagesBase(repoName: string): string {
+  return repoName.endsWith(".github.io") ? "/" : `/${repoName}/`
 }
 
 /**

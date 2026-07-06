@@ -1,5 +1,5 @@
 import { type ComponentProps, createContext, type ReactNode, use, useMemo, useState } from "react"
-import { NavLink as RouterNavLink } from "react-router"
+import { NavLink as RouterNavLink, useLocation } from "react-router"
 
 import * as styles from "./Nav.css"
 
@@ -72,14 +72,9 @@ export type ArdoNavLinkProps = {
  * <NavLink href="https://github.com/...">GitHub</NavLink>
  * ```
  */
-export function ArdoNavLink({
-  to,
-  href,
-  children,
-  className,
-  activeMatch: _activeMatch,
-}: ArdoNavLinkProps) {
+export function ArdoNavLink({ to, href, children, className, activeMatch }: ArdoNavLinkProps) {
   const navContext = useNavContext()
+  const { pathname } = useLocation()
   const baseClassName = className ?? styles.navLink
   const hasHref = (href ?? "") !== ""
   const hasTo = to !== undefined
@@ -110,7 +105,9 @@ export function ArdoNavLink({
       <RouterNavLink
         to={to}
         className={({ isActive }: { isActive: boolean }) =>
-          [baseClassName, isActive && "active"].filter(Boolean).join(" ")
+          [baseClassName, (isActive || matchesActiveMatch(pathname, activeMatch)) && "active"]
+            .filter(Boolean)
+            .join(" ")
         }
         onClick={handleClick}
       >
@@ -121,6 +118,18 @@ export function ArdoNavLink({
 
   // Text-only (no link)
   return <span className={baseClassName}>{children}</span>
+}
+
+function matchesActiveMatch(pathname: string, activeMatch: string | undefined): boolean {
+  if (activeMatch == null || activeMatch === "") {
+    return false
+  }
+
+  try {
+    return new RegExp(activeMatch, "u").test(pathname)
+  } catch {
+    return pathname.startsWith(activeMatch)
+  }
 }
 
 // =============================================================================
