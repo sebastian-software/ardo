@@ -47,7 +47,33 @@ pnpm add ardo react react-dom react-router isbot
 pnpm add -D @react-router/dev @tailwindcss/vite tailwindcss typescript vite @types/react @types/react-dom
 ```
 
-### 3. Create Vite configuration
+### 3. Add package scripts
+
+React Router owns the dev server, production build, and local preview commands:
+
+```json
+{
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "preview": "vite preview"
+  }
+}
+```
+
+When you use pnpm, add the same build-script allowlist that the scaffold ships so esbuild can
+prepare Vite's native dependency:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "."
+
+allowBuilds:
+  esbuild: true
+```
+
+### 4. Create Vite configuration
 
 The `ardo()` plugin handles build-time configuration. UI configuration (navigation, sidebar, footer) is done via JSX props in `root.tsx`:
 
@@ -67,7 +93,7 @@ export default defineConfig({
 })
 ```
 
-### 4. Create React Router configuration
+### 5. Create React Router configuration
 
 Ardo uses React Router 8 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
 
@@ -80,7 +106,7 @@ export default {
 } satisfies Config
 ```
 
-### 5. Create app files
+### 6. Create app files
 
 These are standard React Router entry files plus Ardo's root component. If you've worked with React Router before, the shape should feel familiar.
 
@@ -90,6 +116,7 @@ These are standard React Router entry files plus Ardo's root component. If you'v
 import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
 import config from "virtual:ardo/config"
 import sidebar from "virtual:ardo/sidebar"
+import "./app.css"
 import "ardo/ui/styles.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -99,6 +126,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
   return <ArdoRoot config={config} sidebar={sidebar} />
 }
+```
+
+**`app/app.css`**:
+
+```css
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 ```
 
 **`app/entry.client.tsx`**:
@@ -157,7 +192,7 @@ export default async function handleRequest(
 }
 ```
 
-### 6. Create your first document
+### 7. Create your first document
 
 Create `app/routes/guide/getting-started.mdx`:
 
@@ -213,15 +248,21 @@ my-docs/
 │   │   ├── guide/
 │   │   │   └── getting-started.mdx
 │   │   └── home.tsx             # Home page
-│   ├── snippets/                # Optional reusable MDX fragments
 │   ├── root.tsx                 # Root layout
 │   ├── entry.client.tsx         # Client entry
-│   └── entry.server.tsx         # Server entry
+│   ├── entry.server.tsx         # Server entry
+│   └── app.css                  # Tailwind v4 utility layers
 ├── vite.config.ts               # Vite + Ardo configuration
 ├── react-router.config.ts       # React Router configuration
+├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
 ├── tsconfig.json
 └── package.json
 ```
+
+The repository also includes runnable examples for common layouts:
+[basic](https://github.com/sebastian-software/ardo/tree/main/examples/basic),
+[library](https://github.com/sebastian-software/ardo/tree/main/examples/library), and
+[monorepo](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo).
 
 ## Next Steps
 

@@ -98,6 +98,10 @@ Full documentation: [ardo-docs.dev](https://ardo-docs.dev)
 
 LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/llms-full.txt)
 
+Changelog: [CHANGELOG.md](./CHANGELOG.md)
+
+Examples: [basic](../../examples/basic), [library](../../examples/library), [monorepo](../../examples/monorepo)
+
 ## License
 
 [MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de)

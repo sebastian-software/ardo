@@ -16,7 +16,8 @@
 
 [Documentation](https://ardo-docs.dev) ·
 [Getting Started](https://ardo-docs.dev/guide/getting-started) ·
-[API Reference](https://ardo-docs.dev/api-reference)
+[API Reference](https://ardo-docs.dev/api-reference) ·
+[Examples](https://github.com/sebastian-software/ardo/tree/main/examples)
 
 </div>
 
@@ -144,6 +145,24 @@ my-docs/
 Ardo builds to static HTML and assets. Deploy it to GitHub Pages, Vercel, Netlify, Cloudflare Pages, or a plain file server. Projects created with `create-ardo` include a GitHub Pages workflow.
 
 See the [Deployment Guide](https://ardo-docs.dev/guide/deployment) for provider-specific setup.
+
+## Examples
+
+Runnable examples live in this repository:
+
+- [Basic docs site](./examples/basic) - minimal React Router + Ardo project.
+- [Library docs](./examples/library) - TypeDoc for a single package.
+- [Monorepo docs](./examples/monorepo) - TypeDoc across multiple workspace packages.
+
+## Versioning and browser support
+
+The `ardo` and `create-ardo` packages are released together with linked versions. Release history is
+kept in [packages/ardo/CHANGELOG.md](./packages/ardo/CHANGELOG.md) and
+[packages/create-ardo/CHANGELOG.md](./packages/create-ardo/CHANGELOG.md).
+
+Ardo targets modern evergreen browsers supported by React 19 and Vite 8. The default UI uses modern
+CSS including OKLCH color and custom properties; test your built docs site against any stricter
+internal browser matrix.
 
 ## Packages
 

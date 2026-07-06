@@ -36,6 +36,11 @@ export default defineConfig({
 
 The TypeDoc plugin is automatically included when `typedoc` config is provided.
 
+This quick start uses `../src/index.ts` because many docs apps live beside the package they
+document. See the [library example](https://github.com/sebastian-software/ardo/tree/main/examples/library)
+and [monorepo example](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo) for
+runnable setups with relative entry points.
+
 ### 2. Run the Build
 
 The API documentation will be automatically generated when you build your site:
@@ -84,6 +89,30 @@ typedoc: {
 }
 ```
 
+### readme
+
+- Type: `string`
+
+Use a README file as the generated API reference overview:
+
+```ts
+typedoc: {
+  readme: "../README.md",
+}
+```
+
+### plugin
+
+- Type: `string[]`
+
+Load additional TypeDoc plugins by package name:
+
+```ts
+typedoc: {
+  plugin: ["typedoc-plugin-mdn-links"],
+}
+```
+
 ### Filtering Options
 
 Control what gets documented:
@@ -106,6 +135,16 @@ Control the order of documented members:
 typedoc: {
   sort: ['source-order'],
   // Or: ['alphabetical', 'required-first', 'visibility']
+}
+```
+
+Use `categoryOrder` and `groupOrder` when your source uses TypeDoc categories or you want groups to
+appear in a deliberate order:
+
+```ts
+typedoc: {
+  categoryOrder: ["Components", "Hooks", "Utilities"],
+  groupOrder: ["Functions", "Classes", "Interfaces", "Type Aliases"],
 }
 ```
 
