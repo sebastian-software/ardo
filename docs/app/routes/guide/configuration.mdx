@@ -165,6 +165,98 @@ ardo({
 
 Set `seo.llms: false` if you want to manage these files yourself from `public/`.
 
+### seo.sitemap
+
+- **Type:** `boolean | { changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never"; priority?: number }`
+- **Default:** `true`
+
+Generates `/sitemap.xml` from Markdown and MDX routes. Ardo combines `siteUrl`, `base`, and each
+route path so subpath deployments still produce absolute URLs.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  base: "/docs/",
+  seo: {
+    sitemap: {
+      changefreq: "weekly",
+      priority: 0.7,
+    },
+  },
+})
+```
+
+Set `seo.sitemap: false` to skip sitemap generation. Set `sitemap: false` in page frontmatter to
+exclude a single Markdown route.
+
+### seo.robots
+
+- **Type:** `boolean | { allow?: string[]; disallow?: string[] }`
+- **Default:** `true`
+
+Generates `/robots.txt`. By default Ardo allows all crawlers and points them at the generated
+sitemap when `siteUrl` is configured.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    robots: {
+      allow: ["/"],
+      disallow: ["/drafts/"],
+    },
+  },
+})
+```
+
+Set `seo.robots: false` if you want to provide your own `robots.txt` from `public/`.
+
+### linkCheck
+
+- **Type:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
+- **Default:** `{ enabled: true, checkAnchors: true, level: "warn" }`
+
+Checks internal links in Markdown and MDX content at build time. Ardo reports missing routes and,
+unless disabled, missing heading anchors.
+
+```ts
+ardo({
+  title: "My Docs",
+  linkCheck: {
+    level: "error",
+    exclude: ["/storybook/*", "/generated/*"],
+  },
+})
+```
+
+Use `checkAnchors: false` when another tool rewrites heading ids after Ardo has read the route
+manifest. Use `enabled: false` only when another link checker owns the build gate.
+
+### redirects
+
+- **Type:** `Array<{ from: string; to: string }>`
+- **Default:** `[]`
+
+Generates static redirect assets for configured legacy paths:
+
+- `_redirects` for Netlify-style hosts
+- `vercel.json` redirect entries
+- HTML redirect files for static hosts that only serve files
+
+```ts
+ardo({
+  title: "My Docs",
+  redirects: [
+    { from: "/old-guide", to: "/guide/getting-started" },
+    { from: "/v1/config", to: "/guide/configuration" },
+  ],
+})
+```
+
+Use frontmatter `redirectFrom` when a redirect belongs to one page instead of the whole site.
+
 ### srcDir
 
 - **Type:** `string`

@@ -175,6 +175,57 @@ lastUpdated: false
 ---
 ```
 
+## Build Output Options
+
+### sitemap
+
+- Type: `boolean`
+- Default: `true`
+
+Exclude a Markdown route from the generated sitemap without hiding it from navigation.
+
+```yaml
+---
+title: Internal Migration Notes
+sitemap: false
+---
+```
+
+### llms
+
+- Type: `boolean`
+- Default: `true`
+
+Exclude a Markdown route from `/llms.txt` and `/llms-full.txt`. This is useful for pages that are
+valid docs for humans but noisy in a single-file model context, such as generated changelogs or
+large fixture references.
+
+```yaml
+---
+title: Fixture Catalog
+llms: false
+---
+```
+
+### redirectFrom
+
+- Type: `string | string[]`
+
+Generate static redirects from old paths to this page. Use a string for one legacy path or an array
+for several old locations.
+
+```yaml
+---
+title: Configuration
+redirectFrom:
+  - /config
+  - /guide/options
+---
+```
+
+Ardo combines page-level redirects with the global `redirects` array from `ardo()` config and emits
+host-friendly redirect assets during production builds.
+
 ### prev / next
 
 - Type: `string | { text: string; link: string } | false`
