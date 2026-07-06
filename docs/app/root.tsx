@@ -1,9 +1,19 @@
-import { ArdoErrorBoundary, ArdoRootLayout, ArdoRoot, ArdoFooter, ArdoSocialLink } from "ardo/ui"
+import {
+  ArdoErrorBoundary,
+  ArdoRootLayout,
+  ArdoRoot,
+  ArdoFooter,
+  ArdoSocialLink,
+  registerIcons,
+} from "ardo/ui"
+import { Code2, Rocket, Zap } from "lucide-react"
 import config from "virtual:ardo/config"
 import sidebars from "virtual:ardo/sidebars"
 import logo from "./assets/logo.svg"
 import type { MetaFunction } from "react-router"
 import "ardo/ui/styles.css"
+
+registerIcons({ Code2, Rocket, Zap })
 
 export const meta: MetaFunction = () => [
   { title: "Ardo" },
