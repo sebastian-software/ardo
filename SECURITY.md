@@ -2,10 +2,9 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x     | :white_check_mark: |
-| < 1.0   | :x:                |
+We support the latest minor release of the latest major version. Older major versions and prerelease
+builds do not receive security fixes unless a maintainer announces an exception in the release
+notes.
 
 ## Reporting a Vulnerability
 
