@@ -3,9 +3,6 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
-const brandBorder = `color-mix(in oklch, ${vars.color.brand} 38%, ${vars.color.border})`
-const brandRing = `color-mix(in oklch, ${vars.color.brand} 12%, transparent)`
-
 export const features = style({
   padding: "80px 24px",
   background: vars.color.bgSoft,
@@ -61,20 +58,19 @@ export const feature = style({
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
-  boxShadow: vars.color.shadowSm,
-  transition: `all ${vars.transition.base}`,
+  transition: `border-color ${vars.transition.base}, box-shadow ${vars.transition.base}, transform ${vars.transition.base}`,
   animation: `${fadeInUp} 0.5s ease both`,
   selectors: {
     "&:hover": {
-      borderColor: brandBorder,
-      boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
+      borderColor: `color-mix(in oklch, ${vars.color.brand} 22%, ${vars.color.border})`,
+      boxShadow: vars.color.shadowMd,
     },
   },
   "@media": {
     "(hover: hover)": {
       selectors: {
         "&:hover": {
-          transform: "translateY(-3px)",
+          transform: "translateY(-2px)",
         },
       },
     },
@@ -100,20 +96,12 @@ export const featureIcon = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: "48px",
-  height: "48px",
-  marginBottom: "16px",
+  width: "40px",
+  height: "40px",
+  marginBottom: "18px",
   background: vars.color.brandSubtle,
-  border: `1px solid color-mix(in oklch, ${vars.color.brand} 16%, ${vars.color.border})`,
-  borderRadius: "50%",
+  borderRadius: vars.radius.base,
   color: vars.color.brand,
-  transition: `all ${vars.transition.base}`,
-})
-
-globalStyle(`${feature}:hover ${featureIcon}`, {
-  background: vars.color.brand,
-  color: "white",
-  borderColor: "transparent",
 })
 
 export const featureTitle = style({

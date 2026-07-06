@@ -21,7 +21,7 @@ export const sidebarRail = style({
   flexShrink: 0,
   padding: `${vars.space.md} 0`,
   borderRight: `1px solid ${vars.color.sidebarBorder}`,
-  background: vars.color.bgSoft,
+  background: "transparent",
 })
 
 export const sidebarRailItem = style({
@@ -68,27 +68,25 @@ export const sidebarRailLink = style({
   justifyContent: "center",
   width: "2.5rem",
   height: "2.5rem",
-  color: vars.color.textLight,
+  color: vars.color.textLighter,
   borderRadius: vars.radius.base,
   textDecoration: "none",
-  transition: `background ${vars.transition.fast}, color ${vars.transition.fast}, box-shadow ${vars.transition.fast}`,
+  transition: `background ${vars.transition.fast}, color ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       color: vars.color.text,
-      background: vars.color.bg,
-      boxShadow: vars.color.shadowSm,
+      background: vars.color.bgMute,
     },
     "&.active": {
       color: vars.color.brand,
-      background: vars.color.brandSubtle,
-      boxShadow: `inset 0 0 0 1px ${vars.color.borderLight}`,
+      background: vars.color.bgMute,
     },
     "&.active::before": {
       content: '""',
       position: "absolute",
       left: "-0.75rem",
-      top: "0.75rem",
-      bottom: "0.75rem",
+      top: "0.6rem",
+      bottom: "0.6rem",
       width: "2px",
       borderRadius: "999px",
       background: vars.color.brand,
@@ -123,8 +121,10 @@ export const sidebarList = style({
 export const sidebarList0 = style({})
 
 export const sidebarList1 = style({
-  marginLeft: "0.75rem",
+  marginLeft: "0.5rem",
   marginTop: "2px",
+  paddingLeft: "0.75rem",
+  borderLeft: `1px solid ${vars.color.divider}`,
 })
 
 export const sidebarItem = style({})
@@ -150,23 +150,21 @@ export const sidebarItemHeader = style({
 
 export const sidebarLink = style({
   display: "block",
-  padding: `0.375rem 0.75rem`,
+  padding: `0.375rem 0.625rem`,
   color: vars.color.textLight,
   textDecoration: "none",
   fontSize: vars.fontSize.sm,
   fontWeight: 400,
-  borderLeft: "2px solid transparent",
-  borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
-  transition: `all ${vars.transition.fast}`,
+  borderRadius: vars.radius.base,
+  transition: `color ${vars.transition.fast}, background ${vars.transition.fast}`,
   selectors: {
     "&:hover": {
       color: vars.color.text,
-      background: vars.color.bgSoft,
+      background: vars.color.bgMute,
     },
     "&.active": {
       color: vars.color.brand,
-      background: vars.color.brandSubtle,
-      borderLeftColor: vars.color.brand,
+      background: `color-mix(in oklch, ${vars.color.brand} 9%, transparent)`,
       fontWeight: 500,
     },
   },
@@ -177,8 +175,8 @@ export const sidebarText = style({
   display: "flex",
   alignItems: "center",
   gap: vars.space.sm,
-  padding: `0.5rem 0.75rem 0.375rem`,
-  color: vars.color.textLight,
+  padding: `0.5rem 0.625rem 0.375rem`,
+  color: vars.color.text,
   textDecoration: "none",
   fontWeight: 600,
   fontSize: vars.fontSize.sm,
