@@ -31,14 +31,17 @@ describe("ardoPlugin", () => {
     const plugin = getMainPlugin({
       githubPages: false,
       title: "Docs",
-      vite: { define: { __CUSTOM__: JSON.stringify(true) }, server: { port: 4455 } },
+      vite: {
+        define: { __BUILD_TIME__: JSON.stringify("custom"), __CUSTOM__: JSON.stringify(true) },
+        server: { port: 4455 },
+      },
     })
 
     const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
 
     expect(config.server?.port).toBe(4455)
     expect(config.define).toMatchObject({
-      __BUILD_TIME__: expect.any(String),
+      __BUILD_TIME__: '"custom"',
       __CUSTOM__: "true",
     })
   })
@@ -63,5 +66,33 @@ describe("ardoPlugin", () => {
     const code = await plugin.load("\0virtual:ardo/config")
 
     expect(String(code)).toContain('"base":"/docs/"')
+  })
+
+  it("normalizes absolute Vite bases before exposing the virtual Ardo config", async () => {
+    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+
+    plugin.configResolved({
+      base: "https://cdn.example.com/assets/docs/",
+      build: { ssr: false },
+      root: "/project",
+    })
+
+    const code = await plugin.load("\0virtual:ardo/config")
+
+    expect(String(code)).toContain('"base":"/assets/docs/"')
+  })
+
+  it("normalizes relative Vite bases before exposing the virtual Ardo config", async () => {
+    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+
+    plugin.configResolved({
+      base: "./",
+      build: { ssr: false },
+      root: "/project",
+    })
+
+    const code = await plugin.load("\0virtual:ardo/config")
+
+    expect(String(code)).toContain('"base":"/"')
   })
 })

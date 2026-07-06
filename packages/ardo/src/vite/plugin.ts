@@ -4,6 +4,7 @@ import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "v
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
+import { normalizeViteBaseForArdo } from "./base"
 import {
   checkInternalLinks,
   createBuildOutputAssets,
@@ -250,7 +251,7 @@ function resolveArdoConfig(
     {
       ...configWithDefaults,
       ...pressConfig,
-      base: pressConfig.base ?? viteBase,
+      base: pressConfig.base ?? normalizeViteBaseForArdo(viteBase),
       project,
     },
     root
@@ -265,7 +266,7 @@ function mergeArdoViteConfig(
     return ardoConfig
   }
 
-  return mergeConfig(viteConfig as UserConfig, ardoConfig)
+  return mergeConfig(ardoConfig, viteConfig as UserConfig)
 }
 
 function resolveVirtualModuleId(id: string): string | undefined {
