@@ -1,6 +1,7 @@
 import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } from "react"
 import { Link } from "react-router"
 
+import { joinClassNames } from "./classnames"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import { XIcon } from "./icons"
@@ -43,7 +44,7 @@ export function MobileSlidePanel({
 
       <div
         ref={panelRef}
-        className={styles.mobilePanel}
+        className={joinClassNames("ardo-mobile-panel", styles.mobilePanel)}
         data-open="true"
         role="dialog"
         aria-modal="true"

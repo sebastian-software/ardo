@@ -15,6 +15,7 @@ import { NavLink, useLocation } from "react-router"
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
 import { useArdoContexts, useArdoSidebar } from "../runtime/hooks"
+import { joinClassNames } from "./classnames"
 import { ChevronDownIcon } from "./icons"
 import * as styles from "./Sidebar.css"
 import {
@@ -111,7 +112,7 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
 
   return (
     <SidebarContext value={contextValue}>
-      <aside className={className ?? styles.sidebar}>
+      <aside className={joinClassNames("ardo-sidebar", className ?? styles.sidebar)}>
         <SidebarRail items={railItems} />
         <div className={styles.sidebarPanel}>
           {header != null && <div className={styles.sidebarHeader}>{header}</div>}
