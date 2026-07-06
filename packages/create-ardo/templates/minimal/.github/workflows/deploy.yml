@@ -21,23 +21,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+{{WORKFLOW_PACKAGE_MANAGER_SETUP}}
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '22'
-          cache: 'pnpm'
+{{WORKFLOW_SETUP_NODE_CACHE}}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: {{WORKFLOW_INSTALL_COMMAND}}
 
       - name: Build
-        run: pnpm build
+        run: {{WORKFLOW_BUILD_COMMAND}}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

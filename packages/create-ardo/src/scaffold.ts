@@ -1,6 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
 
+import { getPackageManagerCommands, type PackageManager } from "./package-manager"
+
 const __dirname = import.meta.dirname
 const templatesRoot = path.resolve(__dirname, "..", "templates")
 const packageJsonPath = path.resolve(__dirname, "..", "package.json")
@@ -26,11 +28,13 @@ export type ScaffoldOptions = {
   typedoc: boolean
   githubPages: boolean
   description: string
+  packageManager?: PackageManager
   overwriteExisting?: boolean
 }
 
 type CopyContext = {
   overwriteExisting: boolean
+  packageManager: PackageManager
   vars: Record<string, string>
 }
 
@@ -42,10 +46,20 @@ type CopyEntryInput = {
 
 export function createProjectStructure(root: string, template: string, options: ScaffoldOptions) {
   const templateDir = path.join(templatesRoot, template)
+  const packageManager = options.packageManager ?? "pnpm"
+  const commands = getPackageManagerCommands(packageManager)
   const vars: Record<string, string> = {
     SITE_TITLE: escapeTemplateValue(options.siteTitle),
     PROJECT_NAME: escapeTemplateValue(options.projectName),
     ARDO_VERSION: getCliVersion(),
+    PACKAGE_MANAGER_BUILD: commands.build,
+    PACKAGE_MANAGER_DEV: commands.dev,
+    PACKAGE_MANAGER_INSTALL: commands.install,
+    PACKAGE_MANAGER_PREVIEW: commands.preview,
+    WORKFLOW_BUILD_COMMAND: commands.workflowBuild,
+    WORKFLOW_INSTALL_COMMAND: commands.workflowInstall,
+    WORKFLOW_PACKAGE_MANAGER_SETUP: commands.workflowSetup,
+    WORKFLOW_SETUP_NODE_CACHE: commands.workflowSetupNodeCache,
     TYPEDOC_CONFIG: options.typedoc
       ? "typedoc: true,"
       : "// typedoc: true, // Uncomment to enable API docs",
@@ -61,7 +75,11 @@ export function createProjectStructure(root: string, template: string, options: 
     DESCRIPTION: escapeTemplateValue(options.description),
   }
 
-  copyDir(templateDir, root, { vars, overwriteExisting: options.overwriteExisting ?? true })
+  copyDir(templateDir, root, {
+    packageManager,
+    vars,
+    overwriteExisting: options.overwriteExisting ?? true,
+  })
 }
 
 function copyDir(src: string, dest: string, context: CopyContext) {
@@ -74,6 +92,10 @@ function copyDir(src: string, dest: string, context: CopyContext) {
 
 function copyEntry(input: CopyEntryInput, context: CopyContext): void {
   const { src, dest, entry } = input
+  if (context.packageManager !== "pnpm" && entry.name === "pnpm-workspace.yaml") {
+    return
+  }
+
   const srcPath = path.join(src, entry.name)
   // Rename _gitignore -> .gitignore (npm strips .gitignore during pack)
   const destName = entry.name === "_gitignore" ? ".gitignore" : entry.name
@@ -114,6 +136,35 @@ export function formatTargetDir(targetDir: string | undefined) {
   }
 
   return normalized
+}
+
+export function validateTargetDir(targetDir: string | undefined): string | true {
+  const normalized = formatTargetDir(targetDir)
+  if (normalized == null || normalized === "") {
+    return "Project name is required"
+  }
+
+  if (normalized !== "." && /^[.-]/.test(path.basename(normalized))) {
+    return "Project name cannot start with a dot or hyphen"
+  }
+
+  if (normalized.includes("\0")) {
+    return "Project name cannot contain null bytes"
+  }
+
+  return true
+}
+
+export function derivePackageName(targetDir: string, root = path.resolve(targetDir)): string {
+  const baseName = targetDir === "." ? path.basename(root) : path.basename(targetDir)
+  const packageName = baseName
+    .trim()
+    .toLowerCase()
+    .replaceAll(/[\s_]+/g, "-")
+    .replaceAll(/[^a-z0-9-]/g, "")
+    .replaceAll(/^-+/g, "")
+
+  return packageName === "" ? "my-docs" : packageName
 }
 
 export function isEmpty(dirPath: string) {

@@ -2,6 +2,8 @@
 title: Getting Started
 ---
 
+import { ArdoNote } from "ardo/ui"
+
 # Getting Started
 
 Welcome to your new documentation site!
@@ -10,27 +12,32 @@ Welcome to your new documentation site!
 
 ```bash
 # Start development server
-pnpm dev
+{{PACKAGE_MANAGER_DEV}}
 
 # Build for production
-pnpm build
+{{PACKAGE_MANAGER_BUILD}}
 
 # Preview production build
-pnpm preview
+{{PACKAGE_MANAGER_PREVIEW}}
 ```
 
 ## Adding Content
 
 Create `.md` or `.mdx` files in the `app/routes/` directory. They will automatically become pages.
 
+<ArdoNote title="MDX components">
+  You can import React components directly in `.mdx` files and compose them with Markdown.
+</ArdoNote>
+
 ## Configuration
 
-Edit `vite.config.ts` to customize your site:
+Edit `vite.config.ts` for build-time site metadata:
 
-- Navigation links
-- Sidebar structure
 - Site title and description
-- Theme options
+- TypeDoc API pages
+- GitHub Pages deployment settings
+
+Edit `app/root.tsx` to customize UI chrome such as navigation, sidebar items, and theme options.
 
 ## Learn More
 

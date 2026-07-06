@@ -29,8 +29,17 @@ pnpm create ardo@latest my-docs
 ### Non-interactive
 
 ```bash
-pnpm create ardo@latest my-docs minimal
+pnpm create ardo@latest my-docs minimal --yes --title "My Documentation" --no-github-pages
 ```
+
+Available flags:
+
+- `--yes` uses defaults without prompting.
+- `--title <title>` sets the site title.
+- `--typedoc` / `--no-typedoc` toggles TypeDoc API page generation.
+- `--github-pages` / `--no-github-pages` toggles the generated GitHub Pages config.
+
+When stdin is not a TTY, `create-ardo` automatically uses non-interactive defaults.
 
 ## What gets created
 
@@ -51,7 +60,7 @@ my-docs/
 ├── react-router.config.ts      # Static prerender config
 ├── tsconfig.json
 ├── package.json
-└── pnpm-workspace.yaml
+└── pnpm-workspace.yaml        # pnpm only
 ```
 
 ## After creation
@@ -61,6 +70,8 @@ cd my-docs
 pnpm install
 pnpm dev
 ```
+
+If you scaffold through `npm create`, `yarn create`, or `bun create`, the generated next steps and GitHub Pages workflow use that package manager instead.
 
 Open `http://localhost:5173`, add MDX files under `app/routes/`, and Ardo will include them in the generated docs navigation.
 

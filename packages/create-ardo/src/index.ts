@@ -3,8 +3,11 @@ import fs from "node:fs"
 import path from "node:path"
 import prompts from "prompts"
 
+import { type CliOptions, getHelpText, parseCliArgs } from "./cli-options"
+import { detectPackageManager, getPackageManagerCommands } from "./package-manager"
 import {
   createProjectStructure,
+  derivePackageName,
   detectProjectDescription,
   emptyDir,
   formatTargetDir,
@@ -14,6 +17,7 @@ import {
   isValidTemplate,
   templates,
   upgradeProject,
+  validateTargetDir,
 } from "./scaffold"
 
 const defaultTargetDir = "my-docs"
@@ -30,6 +34,28 @@ type NewProjectPromptResponse = {
   githubPages?: boolean
 }
 
+type NewProjectPromptContext = {
+  argTemplate: string | undefined
+  cliOptions: CliOptions
+  root: string
+  targetDir: string
+}
+
+type NewProjectFlowContext = {
+  cliOptions: CliOptions
+  nonInteractive: boolean
+  root: string
+  targetDir: string
+}
+
+type NewProjectSettings = {
+  githubPages: boolean
+  packageManager: ReturnType<typeof detectPackageManager>
+  siteTitle: string
+  template: string
+  typedoc: boolean
+}
+
 async function promptProjectName(): Promise<string> {
   const nameResponse = await prompts<"projectName">(
     {
@@ -38,12 +64,7 @@ async function promptProjectName(): Promise<string> {
       message: reset("Project name:"),
       initial: defaultTargetDir,
       validate(value: string) {
-        const name = value.trim()
-        if (!name) return "Project name is required"
-        if (/^[.-]/.test(name)) return "Project name cannot start with a dot or hyphen"
-        if (!/^[\da-z-]+$/.test(name))
-          return "Project name may only contain lowercase letters, digits, and hyphens"
-        return true
+        return validateTargetDir(value)
       },
     },
     { onCancel }
@@ -86,7 +107,8 @@ async function runUpgradeFlow(root: string): Promise<void> {
   console.log(`  ${blue("pnpm install")}\n`)
 }
 
-function getNewProjectPrompts(targetDir: string, root: string, argTemplate: string | undefined) {
+function getNewProjectPrompts(context: NewProjectPromptContext) {
+  const { argTemplate, cliOptions, root, targetDir } = context
   return [
     {
       type: (): "select" | null => (!fs.existsSync(root) || isEmpty(root) ? null : "select"),
@@ -116,13 +138,13 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       })),
     },
     {
-      type: "text" as const,
+      type: cliOptions.siteTitle === undefined ? ("text" as const) : null,
       name: "siteTitle",
       message: reset("Site title:"),
       initial: "My Documentation",
     },
     {
-      type: "select" as const,
+      type: cliOptions.typedoc === undefined ? ("select" as const) : null,
       name: "docType",
       message: reset("What are you documenting?"),
       choices: [
@@ -131,7 +153,7 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       ],
     },
     {
-      type: "select" as const,
+      type: cliOptions.githubPages === undefined ? ("select" as const) : null,
       name: "githubPages",
       message: reset("Deploy to GitHub Pages?"),
       choices: [
@@ -142,37 +164,75 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
   ]
 }
 
-async function runNewProjectFlow(
-  targetDir: string,
-  root: string,
-  argTemplate: string | undefined
-): Promise<void> {
-  const questions = getNewProjectPrompts(targetDir, root, argTemplate)
-  const responseData: unknown = await prompts(questions, { onCancel })
+async function runNewProjectFlow(context: NewProjectFlowContext): Promise<void> {
+  const { cliOptions, nonInteractive, root, targetDir } = context
+  const argTemplate = cliOptions.template
+  validateNewProjectStart(context, argTemplate)
+  const questions = getNewProjectPrompts({ argTemplate, cliOptions, root, targetDir })
+  const responseData: unknown = nonInteractive ? {} : await prompts(questions, { onCancel })
   const response = readNewProjectPromptResponse(responseData)
+  const settings = resolveNewProjectSettings(cliOptions, response)
 
-  const template = response.template ?? argTemplate ?? "minimal"
+  prepareTargetDirectory(root, response)
 
+  console.log(`\n  ${cyan("Scaffolding project in")} ${root}...\n`)
+  createProjectStructure(root, settings.template, {
+    siteTitle: settings.siteTitle,
+    projectName: derivePackageName(targetDir, root),
+    typedoc: settings.typedoc,
+    githubPages: settings.githubPages,
+    description: detectProjectDescription(root) ?? "Built with Ardo",
+    packageManager: settings.packageManager,
+    overwriteExisting: response.overwrite !== "ignore",
+  })
+
+  printNextSteps(targetDir, root, settings.packageManager)
+}
+
+function validateNewProjectStart(
+  { nonInteractive, root, targetDir }: NewProjectFlowContext,
+  argTemplate: string | undefined
+): void {
+  if (argTemplate !== undefined && !isValidTemplate(argTemplate) && nonInteractive) {
+    throw new Error(`${red("✖")} Unknown template: ${argTemplate}`)
+  }
+
+  if (nonInteractive && fs.existsSync(root) && !isEmpty(root)) {
+    throw new Error(`${red("✖")} Target directory is not empty: ${targetDir}`)
+  }
+}
+
+function resolveNewProjectSettings(
+  cliOptions: CliOptions,
+  response: NewProjectPromptResponse
+): NewProjectSettings {
+  return {
+    githubPages: cliOptions.githubPages ?? response.githubPages ?? true,
+    packageManager: detectPackageManager(),
+    siteTitle: cliOptions.siteTitle ?? response.siteTitle,
+    template: response.template ?? cliOptions.template ?? "minimal",
+    typedoc: cliOptions.typedoc ?? response.docType === "library",
+  }
+}
+
+function prepareTargetDirectory(root: string, response: NewProjectPromptResponse): void {
   if (response.overwrite === "yes") {
     emptyDir(root)
   } else if (!fs.existsSync(root)) {
     fs.mkdirSync(root, { recursive: true })
   }
+}
 
-  console.log(`\n  ${cyan("Scaffolding project in")} ${root}...\n`)
-  createProjectStructure(root, template, {
-    siteTitle: response.siteTitle,
-    projectName: targetDir,
-    typedoc: response.docType === "library",
-    githubPages: response.githubPages ?? true,
-    description: detectProjectDescription(root) ?? "Built with Ardo",
-    overwriteExisting: response.overwrite !== "ignore",
-  })
-
+function printNextSteps(
+  targetDir: string,
+  root: string,
+  packageManager: NewProjectSettings["packageManager"]
+): void {
   console.log(`  ${green("Done!")} Now run:\n`)
   if (root !== process.cwd()) console.log(`  ${blue("cd")} ${targetDir}`)
-  console.log(`  ${blue("pnpm install")}`)
-  console.log(`  ${blue("pnpm dev")}\n`)
+  const commands = getPackageManagerCommands(packageManager)
+  console.log(`  ${blue(commands.install)}`)
+  console.log(`  ${blue(commands.dev)}\n`)
 }
 
 function readNewProjectPromptResponse(data: unknown): NewProjectPromptResponse {
@@ -201,11 +261,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 async function main() {
+  const cliOptions = parseCliArgs(process.argv.slice(2))
+  if (cliOptions.help) {
+    console.log(getHelpText())
+    return
+  }
+
   console.log(`\n  ${cyan("◆")} ${green("create-ardo")}\n`)
 
-  const argTargetDir = process.argv.length > 2 ? process.argv[2] : undefined
-  const argTemplate = process.argv.length > 3 ? process.argv[3] : undefined
-  const targetDir = argTargetDir ?? (await promptProjectName())
+  const nonInteractive = cliOptions.yes || !process.stdin.isTTY
+  const targetDir = await resolveTargetDir(cliOptions, nonInteractive)
   const root = path.join(process.cwd(), targetDir)
 
   if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
@@ -213,7 +278,17 @@ async function main() {
     return
   }
 
-  await runNewProjectFlow(targetDir, root, argTemplate)
+  await runNewProjectFlow({ cliOptions, nonInteractive, root, targetDir })
+}
+
+async function resolveTargetDir(cliOptions: CliOptions, nonInteractive: boolean): Promise<string> {
+  const argTargetDir = formatTargetDir(cliOptions.targetDir)
+  const targetDir = argTargetDir ?? (nonInteractive ? defaultTargetDir : await promptProjectName())
+  const targetDirValidation = validateTargetDir(targetDir)
+  if (targetDirValidation !== true) {
+    throw new Error(`${red("✖")} ${targetDirValidation}`)
+  }
+  return targetDir
 }
 
 try {

@@ -3,7 +3,7 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { createProjectStructure, upgradeProject } from "./scaffold"
+import { createProjectStructure, derivePackageName, upgradeProject } from "./scaffold"
 
 let tmpDir: string
 
@@ -52,6 +52,38 @@ describe("createProjectStructure", () => {
     expect(fs.readFileSync(path.join(tmpDir, "package.json"), "utf8")).toBe('{"name":"keep-me"}\n')
     expect(fs.readFileSync(path.join(tmpDir, "app", "root.tsx"), "utf8")).toBe("// customized\n")
     expect(fs.existsSync(path.join(tmpDir, "vite.config.ts"))).toBe(true)
+  })
+
+  it("derives a valid package name from the target directory basename", () => {
+    expect(derivePackageName("My Docs/")).toBe("my-docs")
+    expect(derivePackageName("docs/site")).toBe("site")
+    expect(derivePackageName("---")).toBe("my-docs")
+  })
+
+  it("adapts generated workflow and files to the selected package manager", () => {
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "Docs",
+      projectName: "docs-site",
+      typedoc: false,
+      githubPages: true,
+      description: "Built with Ardo",
+      packageManager: "npm",
+    })
+
+    const workflow = fs.readFileSync(
+      path.join(tmpDir, ".github", "workflows", "deploy.yml"),
+      "utf8"
+    )
+    const gettingStarted = fs.readFileSync(
+      path.join(tmpDir, "app", "routes", "guide", "getting-started.mdx"),
+      "utf8"
+    )
+
+    expect(fs.existsSync(path.join(tmpDir, "pnpm-workspace.yaml"))).toBe(false)
+    expect(workflow).toContain("cache: 'npm'")
+    expect(workflow).toContain("run: npm ci")
+    expect(workflow).toContain("run: npm run build")
+    expect(gettingStarted).toContain("npm run dev")
   })
 })
 
