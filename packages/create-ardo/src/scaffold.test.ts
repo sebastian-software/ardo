@@ -120,6 +120,7 @@ describe("target directory helpers", () => {
 
   it("derives a safe package name from the target directory basename", () => {
     expect(toPackageName("Docs Site")).toBe("docs-site")
+    expect(toPackageName("Docs~Site")).toBe("docs-site")
     expect(toPackageName("docs/site")).toBe("site")
     expect(toPackageName(".bad")).toBe("bad")
   })

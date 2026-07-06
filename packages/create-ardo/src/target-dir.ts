@@ -54,7 +54,7 @@ export function toPackageName(targetDir: string, root = path.resolve(targetDir))
   let name = rawName
     .trim()
     .toLowerCase()
-    .replaceAll(/[^a-z0-9._~-]+/g, "-")
+    .replaceAll(/[^a-z0-9._-]+/g, "-")
 
   while (/^[._-]/.test(name)) {
     name = name.slice(1)
