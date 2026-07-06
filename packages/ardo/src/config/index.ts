@@ -1,4 +1,6 @@
+import fs from "node:fs"
 import path from "node:path"
+import { URL } from "node:url"
 
 import type {
   ArdoConfig,
@@ -24,6 +26,10 @@ import type {
   TOCItem,
   TypeDocConfig,
 } from "./types"
+
+type ConfigModule = {
+  default?: unknown
+}
 
 export type {
   ArdoConfig,
@@ -67,6 +73,8 @@ export const defaultMarkdownConfig: MarkdownConfig = {
 }
 
 export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig {
+  validateConfig(config)
+
   const srcDir = config.srcDir ?? "content"
   const contentDir = path.resolve(root, srcDir)
 
@@ -98,21 +106,43 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
 
 export async function loadConfig(root: string): Promise<ResolvedConfig> {
   const configPath = path.resolve(root, "press.config.ts")
-
-  try {
-    const configModule: unknown = await import(configPath)
-    const config =
-      typeof configModule === "object" && configModule !== null && "default" in configModule
-        ? configModule.default
-        : undefined
-
-    if (isArdoConfig(config)) {
-      return resolveConfig(config, root)
-    }
-  } catch {
-    // Fall through to default config
+  if (!fs.existsSync(configPath)) {
+    return resolveDefaultConfig(root)
   }
 
+  const configModule = await importConfigModule(configPath)
+  if (configModule == null) {
+    return resolveDefaultConfig(root)
+  }
+
+  const config = configModule.default
+
+  if (isArdoConfig(config)) {
+    return resolveConfig(config, root)
+  }
+
+  console.warn(`[ardo] Config at ${configPath} does not export a valid Ardo config.`)
+  console.warn("[ardo] Falling back to defaults.")
+  return resolveDefaultConfig(root)
+}
+
+async function importConfigModule(configPath: string): Promise<ConfigModule | undefined> {
+  try {
+    const configModule: unknown = await import(configPath)
+    if (typeof configModule === "object" && configModule !== null && "default" in configModule) {
+      return configModule
+    }
+    return {}
+  } catch (error) {
+    console.warn(`[ardo] Failed to load config at ${configPath}. Falling back to defaults.`)
+    if (error instanceof Error) {
+      console.warn(`[ardo] ${error.message}`)
+    }
+    return undefined
+  }
+}
+
+function resolveDefaultConfig(root: string): ResolvedConfig {
   return resolveConfig(
     {
       title: "Ardo",
@@ -120,6 +150,44 @@ export async function loadConfig(root: string): Promise<ResolvedConfig> {
     },
     root
   )
+}
+
+function validateConfig(config: ArdoConfig): void {
+  const errors: string[] = []
+
+  if (config.base !== undefined && !isValidBasePath(config.base)) {
+    errors.push('base must start and end with "/" (for example "/docs/").')
+  }
+
+  if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl)) {
+    errors.push("siteUrl must be an absolute URL.")
+  }
+
+  const sitemapPriority =
+    typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
+  if (
+    sitemapPriority !== undefined &&
+    (!Number.isFinite(sitemapPriority) || sitemapPriority < 0 || sitemapPriority > 1)
+  ) {
+    errors.push("seo.sitemap.priority must be between 0 and 1.")
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
+  }
+}
+
+function isValidBasePath(value: string): boolean {
+  return value === "/" || (value.startsWith("/") && value.endsWith("/"))
+}
+
+function isValidUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+  } catch {
+    return false
+  }
 }
 
 function isArdoConfig(value: unknown): value is ArdoConfig {
