@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url"
 import prompts from "prompts"
 
 import { type CreateArdoArgs, parseCreateArdoArgs } from "./cli-options"
+import { assertSupportedNodeVersion } from "./node-version"
 import { getPackageManagerCommands } from "./package-manager"
 import {
   createProjectStructure,
@@ -298,6 +299,7 @@ export async function main(
   }
 ) {
   console.log(`\n  ${cyan("◆")} ${green("create-ardo")}\n`)
+  assertSupportedNodeVersion()
 
   const options = parseCreateArdoArgs(args, context.env)
   const nonInteractive = options.yes || !context.stdinIsTTY
