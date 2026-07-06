@@ -1,3 +1,12 @@
+export const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",")
+
 export function getTrappedFocusTarget<T>({
   activeElement,
   focusableElements,
@@ -21,4 +30,34 @@ export function getTrappedFocusTarget<T>({
   if (!shiftKey && activeElement === lastElement) {
     return firstElement
   }
+}
+
+export function getFocusableElements(container: ParentNode): HTMLElement[] {
+  return [...container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter(
+    (element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true"
+  )
+}
+
+export function focusInitialElement(container: HTMLElement): void {
+  const focusableElements = getFocusableElements(container)
+  const initialFocusTarget = focusableElements[0] ?? container
+  initialFocusTarget.focus()
+}
+
+export function trapFocus(event: KeyboardEvent, container: HTMLElement): void {
+  const focusableElements = getFocusableElements(container)
+  const activeElement =
+    document.activeElement instanceof HTMLElement ? document.activeElement : null
+  const target = getTrappedFocusTarget({
+    activeElement,
+    focusableElements,
+    shiftKey: event.shiftKey,
+  })
+
+  if (target == null) {
+    return
+  }
+
+  event.preventDefault()
+  target.focus()
 }

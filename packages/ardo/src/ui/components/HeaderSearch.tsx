@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router"
 
 import { SearchIcon, XIcon } from "../icons"
+import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch, type ArdoSearchProps } from "./Search"
 
@@ -13,22 +14,23 @@ import { ArdoSearch, type ArdoSearchProps } from "./Search"
 export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
   const [overlayOpen, setOverlayOpen] = useState(false)
   const location = useLocation()
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const closeOverlay = useCallback(() => {
+    setOverlayOpen(false)
+  }, [])
 
-  // Close the overlay on navigation and on Escape.
+  // Close the overlay on navigation.
   useEffect(() => {
     setOverlayOpen(false)
   }, [location.pathname])
 
-  useEffect(() => {
-    if (!overlayOpen) return
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOverlayOpen(false)
-    }
-    document.addEventListener("keydown", handleKey)
-    return () => {
-      document.removeEventListener("keydown", handleKey)
-    }
-  }, [overlayOpen])
+  useSearchOverlayFocus({
+    onClose: closeOverlay,
+    open: overlayOpen,
+    overlayRef,
+    triggerRef,
+  })
 
   return (
     <>
@@ -37,9 +39,11 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
       </div>
 
       <button
+        ref={triggerRef}
         type="button"
         className={styles.trigger}
         aria-label="Search"
+        aria-expanded={overlayOpen}
         onClick={() => {
           setOverlayOpen(true)
         }}
@@ -48,7 +52,14 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
       </button>
 
       {overlayOpen && (
-        <div className={styles.overlay}>
+        <div
+          ref={overlayRef}
+          className={styles.overlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search"
+          tabIndex={-1}
+        >
           <div className={styles.overlayBar}>
             <div className={styles.overlaySearch}>
               <ArdoSearch placeholder={placeholder} autoFocus />
@@ -57,9 +68,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
               type="button"
               className={styles.overlayClose}
               aria-label="Close search"
-              onClick={() => {
-                setOverlayOpen(false)
-              }}
+              onClick={closeOverlay}
             >
               <XIcon size={20} />
             </button>
@@ -68,4 +77,49 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
       )}
     </>
   )
+}
+
+function useSearchOverlayFocus({
+  onClose,
+  open,
+  overlayRef,
+  triggerRef,
+}: {
+  onClose: () => void
+  open: boolean
+  overlayRef: React.RefObject<HTMLDivElement | null>
+  triggerRef: React.RefObject<HTMLButtonElement | null>
+}) {
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const overlay = overlayRef.current
+    const triggerElement = triggerRef.current
+    document.body.style.overflow = "hidden"
+
+    if (overlay != null) {
+      focusInitialElement(overlay)
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        onClose()
+        return
+      }
+
+      if (event.key === "Tab" && overlay != null) {
+        trapFocus(event, overlay)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.body.style.overflow = ""
+      document.removeEventListener("keydown", handleKeyDown)
+      triggerElement?.focus()
+    }
+  }, [onClose, open, overlayRef, triggerRef])
 }

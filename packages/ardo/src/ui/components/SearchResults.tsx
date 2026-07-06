@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { Link } from "react-router"
 
 import { ArdoOwlMark } from "../OwlMark"
@@ -25,10 +26,18 @@ export function SearchResults({
   query: string
   onClose: () => void
 }) {
+  const resultsRef = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    const selectedOption = resultsRef.current?.querySelector<HTMLElement>('[aria-selected="true"]')
+    selectedOption?.scrollIntoView({ block: "nearest" })
+  }, [selectedIndex])
+
   return (
     <>
       {results.length > 0 ? (
         <ul
+          ref={resultsRef}
           id={listboxId}
           className={styles.searchResults}
           role="listbox"
