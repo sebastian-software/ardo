@@ -1,6 +1,7 @@
 import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } from "react"
 import { Link } from "react-router"
 
+import { useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
@@ -25,6 +26,7 @@ export function MobileSlidePanel({
   children: ReactNode
   onClose: () => void
 }) {
+  const labels = useArdoLabels()
   const panelRef = useRef<HTMLDivElement>(null)
 
   useMobilePanelFocus({ onClose, panelRef, triggerRef })
@@ -40,7 +42,11 @@ export function MobileSlidePanel({
         data-open="true"
         role="dialog"
         aria-modal="true"
-        aria-label={title === "" ? "Navigation menu" : `${title} navigation menu`}
+        aria-label={
+          title === ""
+            ? labels.mobilePanel.navigationMenu
+            : labels.mobilePanel.titledNavigationMenu(title)
+        }
         tabIndex={-1}
       >
         <div className={styles.mobilePanelHeader}>
@@ -53,7 +59,7 @@ export function MobileSlidePanel({
               type="button"
               className={styles.mobilePanelClose}
               onClick={onClose}
-              aria-label="Close menu"
+              aria-label={labels.mobilePanel.closeMenu}
             >
               <XIcon size={20} />
             </button>

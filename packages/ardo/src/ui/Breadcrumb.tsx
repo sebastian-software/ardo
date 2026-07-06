@@ -2,7 +2,7 @@ import { useLocation } from "react-router"
 
 import type { SidebarItem } from "../config/types"
 
-import { useArdoSidebar } from "../runtime/hooks"
+import { useArdoLabels, useArdoSidebar } from "../runtime/hooks"
 import * as styles from "./Breadcrumb.css"
 
 type BreadcrumbResult = {
@@ -38,13 +38,14 @@ function findBreadcrumb(sidebar: SidebarItem[], currentPath: string): Breadcrumb
 
 export function ArdoBreadcrumb() {
   const sidebar = useArdoSidebar()
+  const labels = useArdoLabels()
   const location = useLocation()
   const { section, page } = findBreadcrumb(sidebar, location.pathname)
 
   if (page == null || page === "") return null
 
   return (
-    <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+    <nav className={styles.breadcrumb} aria-label={labels.breadcrumb.label}>
       {section != null && section !== "" && (
         <>
           <span>{section}</span>

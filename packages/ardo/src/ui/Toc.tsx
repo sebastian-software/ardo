@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import type { TOCItem } from "../config/types"
 
-import { useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
+import { useArdoLabels, useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
 import * as styles from "./Toc.css"
 
 export type ArdoTOCProps = {
@@ -10,14 +10,24 @@ export type ArdoTOCProps = {
   label?: string
 }
 
+export function getTocScrollBehavior(isReducedMotion: boolean): ScrollBehavior {
+  return isReducedMotion ? "auto" : "smooth"
+}
+
+function hasReducedMotionPreference(): boolean {
+  if (typeof globalThis.matchMedia !== "function") return false
+  return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches
+}
+
 export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   const toc = useArdoTOC()
   const siteConfig = useArdoSiteConfig()
+  const labels = useArdoLabels()
   const [activeId, setActiveId] = useState<string>("")
   const scrollContainerRef = useRef<HTMLElement | null>(null)
   const isClickScrolling = useRef(false)
 
-  const label = labelProp ?? siteConfig.tocLabel ?? "On this page"
+  const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
 
   useEffect(() => {
     scrollContainerRef.current = document.getElementById("main-content")
@@ -69,7 +79,10 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     const element = document.getElementById(id)
     const container = scrollContainerRef.current
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.scrollIntoView({
+        behavior: getTocScrollBehavior(hasReducedMotionPreference()),
+        block: "start",
+      })
       globalThis.history.pushState(null, "", `#${id}`)
     }
     // Re-enable observer after scroll finishes
@@ -96,7 +109,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     <aside className={styles.toc}>
       <div>
         <h3 className={styles.tocTitle}>{label}</h3>
-        <nav aria-label="Table of contents">
+        <nav aria-label={labels.toc.navLabel}>
           <TOCItems items={toc} activeId={activeId} onClickItem={handleClickItem} />
         </nav>
       </div>

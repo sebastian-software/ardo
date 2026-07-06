@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react"
 import { Link } from "react-router"
 
+import type { ArdoLabels } from "../labels"
+
 import { ArdoOwlMark } from "../OwlMark"
 import * as styles from "./Search.css"
 
@@ -17,6 +19,7 @@ export function SearchResults({
   results,
   selectedIndex,
   query,
+  labels,
   onClose,
 }: {
   getOptionId: (resultId: string, index: number) => string
@@ -24,6 +27,7 @@ export function SearchResults({
   results: SearchMatch[]
   selectedIndex: number
   query: string
+  labels: ArdoLabels["search"]
   onClose: () => void
 }) {
   const resultsRef = useRef<HTMLUListElement>(null)
@@ -35,13 +39,16 @@ export function SearchResults({
 
   return (
     <>
+      <div className={styles.searchStatus} role="status" aria-live="polite" aria-atomic="true">
+        {results.length > 0 ? labels.resultCount(results.length) : labels.noResults(query)}
+      </div>
       {results.length > 0 ? (
         <ul
           ref={resultsRef}
           id={listboxId}
           className={styles.searchResults}
           role="listbox"
-          aria-label="Search results"
+          aria-label={labels.results}
         >
           {results.map((result, index) => (
             <li key={result.id} role="presentation">
@@ -64,22 +71,28 @@ export function SearchResults({
           ))}
         </ul>
       ) : (
-        <div id={listboxId} role="listbox" aria-label="Search results">
-          <div className={styles.searchNoResults} role="status" aria-live="polite">
+        <div>
+          <ul
+            id={listboxId}
+            className={styles.searchResults}
+            role="listbox"
+            aria-label={labels.results}
+          />
+          <div className={styles.searchNoResults}>
             <ArdoOwlMark size={36} className={styles.searchNoResultsOwl} title="" />
-            <span>No results found for &quot;{query}&quot;</span>
+            <span>{labels.noResults(query)}</span>
           </div>
         </div>
       )}
       <div className={styles.searchFooter}>
         <span>
-          <kbd>↑</kbd> <kbd>↓</kbd> to navigate
+          <kbd>↑</kbd> <kbd>↓</kbd> {labels.navigate}
         </span>
         <span>
-          <kbd>↵</kbd> to select
+          <kbd>↵</kbd> {labels.select}
         </span>
         <span>
-          <kbd>esc</kbd> to close
+          <kbd>esc</kbd> {labels.close}
         </span>
       </div>
     </>

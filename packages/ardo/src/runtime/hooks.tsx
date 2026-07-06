@@ -1,6 +1,9 @@
 import { createContext, type ReactNode, use, useMemo } from "react"
 
 import type { ArdoConfig, ArdoContextItem, PageData, SidebarItem, TOCItem } from "../config/types"
+import type { ArdoLabels } from "../ui/labels"
+
+import { defaultArdoLabels } from "../ui/labels"
 
 type ArdoContextValue = {
   config: ArdoConfig
@@ -113,6 +116,7 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
 
 export type ArdoSiteConfig = {
   editLink?: { pattern: string; text?: string }
+  labels?: ArdoLabels
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   tocLabel?: string
 }
@@ -121,6 +125,10 @@ const ArdoSiteConfigContext = createContext<ArdoSiteConfig>({})
 
 export function useArdoSiteConfig(): ArdoSiteConfig {
   return use(ArdoSiteConfigContext)
+}
+
+export function useArdoLabels(): ArdoLabels {
+  return useArdoSiteConfig().labels ?? defaultArdoLabels
 }
 
 type ArdoSiteConfigProviderProps = {

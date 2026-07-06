@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 
+import { useArdoLabels } from "../../runtime/hooks"
 import { AlertTriangleIcon, FileTextIcon, InfoIcon, LightbulbIcon, XCircleIcon } from "../icons"
 import * as styles from "./Container.css"
 
@@ -14,14 +15,6 @@ export type ArdoContainerProps = {
   children: ReactNode
 }
 
-const defaultTitles: Record<ArdoContainerType, string> = {
-  tip: "TIP",
-  warning: "WARNING",
-  danger: "DANGER",
-  info: "INFO",
-  note: "NOTE",
-}
-
 const icons: Record<ArdoContainerType, ReactNode> = {
   tip: <LightbulbIcon size={18} />,
   warning: <AlertTriangleIcon size={18} />,
@@ -34,7 +27,8 @@ const icons: Record<ArdoContainerType, ReactNode> = {
  * A styled container for callouts, tips, warnings, etc.
  */
 export function ArdoContainer({ type, title, children }: ArdoContainerProps) {
-  const hasCustomTitle = title != null && title !== "" && title !== defaultTitles[type]
+  const labels = useArdoLabels()
+  const hasCustomTitle = title != null && title !== "" && title !== labels.container[type]
 
   return (
     <div className={styles.container({ type })}>

@@ -1,7 +1,7 @@
 import { type ReactNode, use } from "react"
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
 
-import { ArdoContext } from "../runtime/hooks"
+import { ArdoContext, useArdoLabels } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
 import * as styles from "./Layout.css"
 import { type ArdoThemePreference, getArdoThemeBootstrapScript } from "./theme-mode"
@@ -128,10 +128,11 @@ export type ArdoLayoutProps = {
  * ```
  */
 export function ArdoLayout({ header, sidebar, footer, children, className }: ArdoLayoutProps) {
+  const labels = useArdoLabels()
   return (
     <div className={className ?? styles.layout}>
       <a href="#main-content" className={styles.skipLink}>
-        Skip to content
+        {labels.layout.skipToContent}
       </a>
       {header}
       <div className={styles.layoutContainer}>

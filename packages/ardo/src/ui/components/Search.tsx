@@ -3,6 +3,9 @@ import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
+import type { ArdoLabels } from "../labels"
+
+import { useArdoLabels } from "../../runtime/hooks"
 import { SearchIcon } from "../icons"
 import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
 import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
@@ -87,6 +90,7 @@ function SearchInput({
   activeOptionId,
   expanded,
   listboxId,
+  labels,
 }: {
   inputRef: React.RefObject<HTMLInputElement | null>
   placeholder: string
@@ -98,6 +102,7 @@ function SearchInput({
   activeOptionId?: string
   expanded: boolean
   listboxId: string
+  labels: ArdoLabels["search"]
 }) {
   return (
     <div className={styles.searchField}>
@@ -113,7 +118,7 @@ function SearchInput({
         }}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
-        aria-label="Search"
+        aria-label={labels.label}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={expanded}
@@ -130,17 +135,22 @@ function SearchInput({
             onSearch("")
             inputRef.current?.focus()
           }}
-          aria-label="Clear search"
+          aria-label={labels.clear}
         >
           ×
         </button>
       )}
       <span className={styles.searchKbd}>
-        <kbd>⌘</kbd>
+        <kbd suppressHydrationWarning>{getShortcutModifierLabel()}</kbd>
         <kbd>K</kbd>
       </span>
     </div>
   )
+}
+
+function getShortcutModifierLabel(): string {
+  if (typeof navigator === "undefined") return "⌘"
+  return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl"
 }
 
 function useSearchA11y({
@@ -166,8 +176,9 @@ function useSearchA11y({
   return { activeOptionId, getOptionId, listboxId }
 }
 
-export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: ArdoSearchProps) {
+export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) {
   const navigate = useNavigate()
+  const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchIndex = useSearchIndex()
@@ -229,7 +240,7 @@ export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: Ard
     >
       <SearchInput
         inputRef={inputRef}
-        placeholder={placeholder}
+        placeholder={placeholder ?? labels.search.placeholder}
         query={state.query}
         hasQuery={hasQuery}
         onSearch={state.search}
@@ -240,6 +251,7 @@ export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: Ard
         activeOptionId={searchA11y.activeOptionId}
         expanded={expanded}
         listboxId={searchA11y.listboxId}
+        labels={labels.search}
       />
       {expanded && (
         <SearchPopover anchorRef={containerRef}>
@@ -249,6 +261,7 @@ export function ArdoSearch({ placeholder = "Search...", autoFocus = false }: Ard
             results={state.results}
             selectedIndex={state.selectedIndex}
             query={state.query}
+            labels={labels.search}
             onClose={() => {
               state.setIsOpen(false)
             }}

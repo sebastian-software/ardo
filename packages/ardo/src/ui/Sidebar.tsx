@@ -15,7 +15,7 @@ import { NavLink, useLocation } from "react-router"
 
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
-import { useArdoContexts, useArdoSidebar } from "../runtime/hooks"
+import { useArdoContexts, useArdoLabels, useArdoSidebar } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import { ChevronDownIcon } from "./icons"
 import * as styles from "./Sidebar.css"
@@ -96,6 +96,7 @@ export type ArdoSidebarProps = {
  */
 export function ArdoSidebar({ items, children, header, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
+  const labels = useArdoLabels()
   const contextSidebar = useArdoSidebar()
   const { items: contexts, activeId } = useArdoContexts()
   const hasCustomChildren = children != null
@@ -117,7 +118,7 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
         <SidebarRail items={railItems} />
         <div className={styles.sidebarPanel}>
           {header != null && <div className={styles.sidebarHeader}>{header}</div>}
-          <nav aria-label="Main navigation" className={styles.sidebarNav}>
+          <nav aria-label={labels.sidebar.mainNavigation} className={styles.sidebarNav}>
             {hasCustomChildren ? (
               <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
             ) : hasResolvedItems ? (
@@ -178,6 +179,7 @@ export function ArdoSidebarGroup({
   className,
 }: ArdoSidebarGroupProps) {
   const [collapsed, setCollapsed] = useState(initialCollapsed)
+  const labels = useArdoLabels()
   const { currentPath } = useSidebarContext()
   const contentId = useId()
 
@@ -236,7 +238,7 @@ export function ArdoSidebarGroup({
             onClick={() => {
               setCollapsed(!collapsed)
             }}
-            aria-label={toggleLabel}
+            aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${title}`}
             aria-expanded={!collapsed}
             aria-controls={contentId}
           >
@@ -331,6 +333,7 @@ type SidebarItemComponentProps = {
 
 function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
   const { currentPath } = useSidebarContext()
+  const labels = useArdoLabels()
   const [collapsed, setCollapsed] = useState(item.collapsed ?? false)
   const contentId = useId()
   const childItems = item.items ?? []
@@ -397,7 +400,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
             onClick={() => {
               setCollapsed(!collapsed)
             }}
-            aria-label={toggleLabel}
+            aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${item.text}`}
             aria-expanded={!collapsed}
             aria-controls={contentId}
           >

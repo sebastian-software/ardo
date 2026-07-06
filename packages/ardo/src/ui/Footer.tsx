@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react"
 
 import type { ProjectMeta, SponsorConfig } from "../config/types"
 
-import { useArdoConfig } from "../runtime/hooks"
+import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import * as styles from "./Footer.css"
 import { ArdoOwlMark } from "./OwlMark"
@@ -36,17 +36,16 @@ export type ArdoFooterProps = {
   ardoLink?: boolean
 }
 
-function formatBuildTime(iso: string): string {
-  try {
-    const date = new Date(iso)
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    })
-  } catch {
+function formatBuildTime(iso: string, locale: string): string {
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) {
     return iso
   }
+  return date.toLocaleDateString(locale, {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })
 }
 
 /**
@@ -105,13 +104,19 @@ function FooterProjectLink({
   )
 }
 
-function FooterSponsorLink({ sponsor }: { sponsor: ArdoFooterProps["sponsor"] }) {
+function FooterSponsorLink({
+  label,
+  sponsor,
+}: {
+  label: string
+  sponsor: ArdoFooterProps["sponsor"]
+}) {
   const text = sponsor?.text ?? ""
   const link = sponsor?.link ?? ""
   if (text === "" || link === "") return null
   return (
     <a href={link} className={styles.footerLink}>
-      Sponsored by {text}
+      {label} {text}
     </a>
   )
 }
@@ -121,15 +126,19 @@ function FooterPrimaryLine({
   sponsor,
   ardoLink,
   config,
+  sponsoredByLabel,
+  builtWithArdoLabel,
 }: {
   project: ArdoFooterProps["project"]
   sponsor: ArdoFooterProps["sponsor"]
   ardoLink: boolean
   config: ReturnType<typeof useArdoConfig>
+  sponsoredByLabel: string
+  builtWithArdoLabel: string
 }) {
   const items: React.ReactNode[] = []
   const projectNode = <FooterProjectLink project={project} config={config} />
-  const sponsorNode = <FooterSponsorLink sponsor={sponsor} />
+  const sponsorNode = <FooterSponsorLink label={sponsoredByLabel} sponsor={sponsor} />
   const hasProject =
     (project ?? config.project)?.name !== undefined && (project ?? config.project)?.name !== ""
   const hasSponsor = (sponsor?.text ?? "") !== "" && (sponsor?.link ?? "") !== ""
@@ -139,7 +148,7 @@ function FooterPrimaryLine({
     items.push(
       <a href="https://ardo-docs.dev" className={styles.footerArdoLink}>
         <ArdoOwlMark size={16} className={styles.footerOwl} title="" />
-        Built with Ardo
+        {builtWithArdoLabel}
       </a>
     )
   if (hasSponsor) items.push(sponsorNode)
@@ -204,6 +213,7 @@ export function ArdoFooter({
   buildHash,
 }: ArdoFooterProps) {
   const config = useArdoConfig()
+  const labels = useArdoLabels()
   const resolvedBuildTime = buildTime ?? config.buildTime
   const resolvedBuildHash = buildHash ?? config.buildHash
 
@@ -223,6 +233,8 @@ export function ArdoFooter({
           sponsor={sponsor}
           ardoLink={ardoLink}
           config={config}
+          sponsoredByLabel={labels.footer.sponsoredBy}
+          builtWithArdoLabel={labels.footer.builtWithArdo}
         />
         <FooterTextLine className={styles.footerMessage} trustedHtml={trustedMessageHtml}>
           {message}
@@ -232,7 +244,7 @@ export function ArdoFooter({
         </FooterTextLine>
         {(resolvedBuildTime ?? "") !== "" && (
           <p className={styles.footerBuildTime}>
-            Built on {formatBuildTime(resolvedBuildTime ?? "")}
+            {labels.footer.builtOn} {formatBuildTime(resolvedBuildTime ?? "", config.lang ?? "en")}
             {(resolvedBuildHash ?? "") !== "" && <> ({resolvedBuildHash})</>}
           </p>
         )}
