@@ -58,6 +58,7 @@ export const feature = style({
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
+  boxShadow: vars.color.shadowSm,
   transition: `border-color ${vars.transition.base}, box-shadow ${vars.transition.base}, transform ${vars.transition.base}`,
   animation: `${fadeInUp} 0.5s ease both`,
   selectors: {

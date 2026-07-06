@@ -3,9 +3,6 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
-const buttonShadow = `0 1px 2px oklch(0 0 0 / 0.08)`
-const buttonShadowHover = `0 4px 12px oklch(0 0 0 / 0.12)`
-
 export const hero = style({
   padding: "104px 24px 72px",
   textAlign: "center",
@@ -135,11 +132,11 @@ export const heroAction = style({
 export const heroActionBrand = style({
   background: vars.color.brand,
   color: "white",
-  boxShadow: buttonShadow,
+  boxShadow: vars.color.shadowSm,
   selectors: {
     "&:hover": {
       background: vars.color.brandDark,
-      boxShadow: buttonShadowHover,
+      boxShadow: vars.color.shadowMd,
     },
   },
   "@media": {
