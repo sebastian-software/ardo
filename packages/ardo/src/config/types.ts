@@ -299,6 +299,8 @@ export type PageFrontmatter = {
   editLink?: boolean
   lastUpdated?: boolean
   sitemap?: boolean
+  /** Set to false to use description only as metadata, not as visible page lede. */
+  lede?: boolean
   llms?: boolean
   redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string

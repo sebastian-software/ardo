@@ -1,5 +1,4 @@
-import type { ReactNode } from "react"
-
+import { Children, Fragment, isValidElement, type ReactNode } from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
@@ -86,6 +85,11 @@ export function ArdoContent({
       <ContentHeader
         title={pageData?.frontmatter.title ?? ""}
         description={pageData?.frontmatter.description ?? ""}
+        showDescription={shouldShowDescription(
+          pageData?.frontmatter.description ?? "",
+          pageData?.frontmatter.lede,
+          children
+        )}
       />
       <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
       {metaPlacement === "footer" && <ContentMeta edit={edit} updated={updated} />}
@@ -94,14 +98,84 @@ export function ArdoContent({
   )
 }
 
-function ContentHeader({ title, description }: { title: string; description: string }) {
+function ContentHeader({
+  description,
+  showDescription,
+  title,
+}: {
+  description: string
+  showDescription: boolean
+  title: string
+}) {
   if (title === "") return null
   return (
     <header className={docStyles.contentHeader}>
       <h1 className={docStyles.contentTitle}>{title}</h1>
-      {description !== "" && <p className={docStyles.contentDescription}>{description}</p>}
+      {showDescription && <p className={docStyles.contentDescription}>{description}</p>}
     </header>
   )
+}
+
+function shouldShowDescription(description: string, lede: unknown, children: ReactNode): boolean {
+  if (description === "" || lede === false) return false
+
+  const firstParagraphText = getFirstParagraphText(children)
+  if (firstParagraphText == null) return true
+
+  return normalizeText(firstParagraphText) !== normalizeText(description)
+}
+
+function getFirstParagraphText(children: ReactNode): string | undefined {
+  for (const child of Children.toArray(children)) {
+    const result = readFirstParagraphCandidate(child)
+    if (result.action === "continue") {
+      continue
+    }
+    return result.text
+  }
+
+  return undefined
+}
+
+type ParagraphCandidate = { action: "continue" } | { action: "return"; text: string | undefined }
+
+function readFirstParagraphCandidate(child: ReactNode): ParagraphCandidate {
+  if (!isValidElement<{ children?: ReactNode }>(child)) {
+    return typeof child === "string" && child.trim() === ""
+      ? { action: "continue" }
+      : { action: "return", text: undefined }
+  }
+
+  if (child.type === Fragment) {
+    const nested = getFirstParagraphText(child.props.children)
+    return nested == null ? { action: "continue" } : { action: "return", text: nested }
+  }
+
+  if (child.type !== "p") {
+    return { action: "return", text: undefined }
+  }
+
+  return { action: "return", text: getNodeText(child.props.children) }
+}
+
+function getNodeText(children: ReactNode): string {
+  return Children.toArray(children)
+    .map((child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        return String(child)
+      }
+
+      if (isValidElement<{ children?: ReactNode }>(child)) {
+        return getNodeText(child.props.children)
+      }
+
+      return ""
+    })
+    .join("")
+}
+
+function normalizeText(value: string): string {
+  return value.replaceAll(/\s+/g, " ").trim()
 }
 
 function ContentMeta({

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- This file intentionally keeps the generated token table together. */
 /**
  * Pre-computed OKLCH color values for both light and dark themes.
  * No more `calc(var(...))` chains — all values are resolved here.
@@ -8,6 +9,10 @@ import { createGlobalTheme } from "@vanilla-extract/css"
 import { vars } from "./contract.css"
 
 type HueValue = number | string
+type PrimitiveToken = number | string
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends PrimitiveToken ? T[K] : DeepPartial<T[K]>
+}
 
 // eslint-disable-next-line max-params -- mirrors CSS oklch() syntax
 const oklch = (l: number, c: number, h: HueValue, alpha?: number) =>
@@ -214,6 +219,7 @@ function createDarkColors() {
  * custom primary picks up an approximately complementary secondary.
  */
 const DEFAULT_SECONDARY_OFFSET = 234
+const DEFAULT_PRIMARY_HUE = 356
 
 function defaultSecondary(primary: number): number {
   return (primary + DEFAULT_SECONDARY_OFFSET) % 360
@@ -228,31 +234,127 @@ export type ArdoBrandHues = {
   neutral?: number
 }
 
-export function createTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
-  const primary = typeof primaryOrHues === "number" ? primaryOrHues : primaryOrHues.primary
-  const explicitSecondary =
-    typeof primaryOrHues === "number" ? secondaryArg : primaryOrHues.secondary
-  const secondary = explicitSecondary ?? defaultSecondary(primary)
-  const neutral = typeof primaryOrHues === "number" ? primary : (primaryOrHues.neutral ?? primary)
+type ThemeBase = typeof shared
+type ThemeColors = ReturnType<typeof createLightColors>
+type ThemeHueTokens = {
+  brand: string
+  accent: string
+  neutral: string
+}
+
+export type ArdoThemeTokens = {
+  hue: ThemeHueTokens
+  color: ThemeColors
+} & ThemeBase
+
+export type ArdoThemeOverrides = DeepPartial<ArdoThemeTokens>
+
+export type ArdoThemeOptions = {
+  /** Overrides applied only to the generated dark token set. */
+  dark?: ArdoThemeOverrides
+  /** Overrides applied only to the generated light token set. */
+  light?: ArdoThemeOverrides
+} & ArdoThemeOverrides &
+  Partial<ArdoBrandHues>
+
+function createBaseTheme(primary: number, secondary: number, neutral: number) {
+  const hue = {
+    brand: String(primary),
+    accent: String(secondary),
+    neutral: String(neutral),
+  }
+
   return {
     light: {
-      hue: {
-        brand: String(primary),
-        accent: String(secondary),
-        neutral: String(neutral),
-      },
+      hue,
       color: createLightColors(),
       ...shared,
     },
     dark: {
-      hue: {
-        brand: String(primary),
-        accent: String(secondary),
-        neutral: String(neutral),
-      },
+      hue,
       color: createDarkColors(),
       ...shared,
     },
+  }
+}
+
+function resolveThemeHues(
+  primaryOrOptions: ArdoThemeOptions | number | undefined,
+  secondaryArg?: number
+): Required<ArdoBrandHues> {
+  const primary =
+    typeof primaryOrOptions === "number"
+      ? primaryOrOptions
+      : (primaryOrOptions?.primary ?? DEFAULT_PRIMARY_HUE)
+  const explicitSecondary =
+    typeof primaryOrOptions === "number" ? secondaryArg : primaryOrOptions?.secondary
+  const secondary = explicitSecondary ?? defaultSecondary(primary)
+  const neutral =
+    typeof primaryOrOptions === "number" ? primary : (primaryOrOptions?.neutral ?? primary)
+
+  return { neutral, primary, secondary }
+}
+
+function getSharedThemeOverrides(options: ArdoThemeOptions | undefined): ArdoThemeOverrides {
+  if (options == null) {
+    return {}
+  }
+
+  const {
+    dark: _dark,
+    light: _light,
+    neutral: _neutral,
+    primary: _primary,
+    secondary: _secondary,
+    ...overrides
+  } = options
+  return overrides
+}
+
+function mergeThemeTokens(base: ArdoThemeTokens, override: ArdoThemeOverrides): ArdoThemeTokens {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Merging over a complete token object preserves the full token shape.
+  return mergeRecords(base, override) as ArdoThemeTokens
+}
+
+function mergeRecords(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>
+): Record<string, unknown> {
+  const merged: Record<string, unknown> = { ...base }
+
+  for (const key of Object.keys(override)) {
+    const value = override[key]
+    if (value === undefined) {
+      continue
+    }
+
+    const baseValue = base[key]
+    merged[key] =
+      isPlainObject(baseValue) && isPlainObject(value) ? mergeRecords(baseValue, value) : value
+  }
+
+  return merged
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+export function createTheme(
+  primaryOrOptions?: ArdoThemeOptions | number,
+  secondaryArg?: number
+): { dark: ArdoThemeTokens; light: ArdoThemeTokens } {
+  const { neutral, primary, secondary } = resolveThemeHues(primaryOrOptions, secondaryArg)
+  const baseTheme = createBaseTheme(primary, secondary, neutral)
+  const options = typeof primaryOrOptions === "object" ? primaryOrOptions : undefined
+  const sharedOverrides = getSharedThemeOverrides(options)
+
+  return {
+    light: mergeThemeTokens(
+      mergeThemeTokens(baseTheme.light, sharedOverrides),
+      options?.light ?? {}
+    ),
+    dark: mergeThemeTokens(mergeThemeTokens(baseTheme.dark, sharedOverrides), options?.dark ?? {}),
   }
 }
 
@@ -260,8 +362,11 @@ const defaultTheme = createTheme(356)
 export const lightTokens = defaultTheme.light
 export const darkTokens = defaultTheme.dark
 
-export function applyBrandTheme(primaryOrHues: ArdoBrandHues | number, secondaryArg?: number) {
-  const theme = createTheme(primaryOrHues, secondaryArg)
+export function applyBrandTheme(
+  primaryOrOptions?: ArdoThemeOptions | number,
+  secondaryArg?: number
+) {
+  const theme = createTheme(primaryOrOptions, secondaryArg)
   createGlobalTheme(":root", vars, theme.light)
   createGlobalTheme(".dark", vars, theme.dark)
 }
