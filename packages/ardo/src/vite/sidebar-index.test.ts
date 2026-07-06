@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { generateContextSidebars, generateSidebar } from "./sidebar-index"
 
@@ -162,6 +162,38 @@ sidebar: false
         items: [{ text: "Visible", link: "/guide/visible" }],
       },
     ])
+  })
+
+  it("skips malformed leaf frontmatter without dropping the rest of the sidebar", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    await writeRoute("guide/visible.mdx", "---\ntitle: Visible\n---\n")
+    await writeRoute("guide/broken.mdx", "---\n: bad\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "Guide",
+        items: [{ text: "Visible", link: "/guide/visible" }],
+      },
+    ])
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(path.join(routesDir, "guide", "broken.mdx"))
+    )
+    warn.mockRestore()
+  })
+
+  it("keeps child pages when directory index metadata is malformed", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    await writeRoute("guide/index.mdx", "---\n: bad\n---\n")
+    await writeRoute("guide/intro.mdx", "---\ntitle: Intro\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "Guide",
+        link: "/guide",
+        items: [{ text: "Intro", link: "/guide/intro" }],
+      },
+    ])
+    warn.mockRestore()
   })
 
   it("groups sidebars by top-level folder for context-driven sites", async () => {

@@ -152,7 +152,11 @@ async function createMarkdownNode(
 
   const extension = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
   const fileContent = await fs.readFile(fullPath, "utf8")
-  const frontmatter = readFrontmatter(fileContent)
+  const frontmatter = readFrontmatterSafely(fullPath, fileContent)
+  if (frontmatter == null) {
+    return null
+  }
+
   if (frontmatter.sidebar === false) {
     return null
   }
@@ -182,8 +186,20 @@ async function readDirectoryIndexMetadata(fullPath: string): Promise<null | Side
 async function readFrontmatterFile(filePath: string): Promise<null | SidebarFrontmatter> {
   try {
     const fileContent = await fs.readFile(filePath, "utf8")
+    return readFrontmatterSafely(filePath, fileContent)
+  } catch (error) {
+    if (!isFileNotFoundError(error)) {
+      warnFrontmatterReadFailure(filePath, error)
+    }
+    return null
+  }
+}
+
+function readFrontmatterSafely(filePath: string, fileContent: string): null | SidebarFrontmatter {
+  try {
     return readFrontmatter(fileContent)
-  } catch {
+  } catch (error) {
+    warnFrontmatterReadFailure(filePath, error)
     return null
   }
 }
@@ -201,6 +217,23 @@ function parseSidebarValue(raw: unknown): SidebarFrontmatter["sidebar"] {
   if (typeof raw === "boolean") return raw
   if (raw === "leaf") return "leaf"
   return undefined
+}
+
+function warnFrontmatterReadFailure(filePath: string, error: unknown): void {
+  console.warn(`[ardo] Skipping sidebar metadata for ${filePath}: ${formatErrorMessage(error)}`)
+}
+
+function formatErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function isFileNotFoundError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === "ENOENT"
+  )
 }
 
 function sortNodes(nodes: SidebarNode[]): void {
