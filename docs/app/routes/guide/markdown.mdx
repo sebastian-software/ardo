@@ -237,6 +237,185 @@ Use `Accordion` and `AccordionGroup` for collapsible FAQ items, optional explana
 
 Each accordion also supports an optional `icon` and can be used standalone without a group.
 
+## Cards
+
+Use `Card` and `CardGroup` for compact navigation, feature summaries, and reference lists. They are
+auto-registered in MDX files, so no import is needed.
+
+<CardGroup cols={3}>
+  <Card title="Configuration" href="/guide/configuration">
+    Build-time options for routes, Markdown, TypeDoc, SEO outputs, and deployment helpers.
+  </Card>
+  <Card title="Site UI" href="/guide/site-ui">
+    React-side props for the header, sidebar, footer, edit links, and context navigation.
+  </Card>
+  <Card title="Frontmatter" href="/guide/frontmatter">
+    Page-level metadata, navigation controls, and build-output overrides.
+  </Card>
+</CardGroup>
+
+```mdx
+<CardGroup cols={3}>
+  <Card title="Configuration" href="/guide/configuration">
+    Build-time options for routes, Markdown, TypeDoc, SEO outputs, and deployment helpers.
+  </Card>
+  <Card title="Site UI" href="/guide/site-ui">
+    React-side props for the header, sidebar, footer, edit links, and context navigation.
+  </Card>
+  <Card title="Frontmatter" href="/guide/frontmatter">
+    Page-level metadata, navigation controls, and build-output overrides.
+  </Card>
+</CardGroup>
+```
+
+| Component   | Prop        | Type                  | Purpose                                                              |
+| ----------- | ----------- | --------------------- | -------------------------------------------------------------------- |
+| `CardGroup` | `cols`      | `1 \| 2 \| 3 \| 4`    | Preferred number of columns on wide screens. Defaults to `2`.        |
+| `CardGroup` | `children`  | `ReactNode`           | Cards to render in the responsive grid.                              |
+| `Card`      | `title`     | `string`              | Required card heading.                                               |
+| `Card`      | `href`      | `string`              | Optional internal or external destination. Makes the card clickable. |
+| `Card`      | `icon`      | `string \| ReactNode` | Registered icon name or custom React node.                           |
+| `Card`      | `children`  | `ReactNode`           | Body content.                                                        |
+| `Card`      | `className` | `string`              | Additional CSS class.                                                |
+
+## Tabs
+
+Use `Tabs` when readers need to switch between equivalent variants, such as package managers,
+framework integrations, or deployment providers.
+
+<Tabs defaultValue="pnpm">
+  <TabList>
+    <Tab value="pnpm">pnpm</Tab>
+    <Tab value="npm">npm</Tab>
+    <Tab value="yarn">Yarn</Tab>
+  </TabList>
+  <TabPanels>
+    <TabPanel value="pnpm">
+
+```bash
+pnpm create ardo my-docs
+```
+
+    </TabPanel>
+    <TabPanel value="npm">
+
+```bash
+npm create ardo@latest my-docs
+```
+
+    </TabPanel>
+    <TabPanel value="yarn">
+
+```bash
+yarn create ardo my-docs
+```
+
+    </TabPanel>
+
+  </TabPanels>
+</Tabs>
+
+````mdx
+<Tabs defaultValue="pnpm">
+  <TabList>
+    <Tab value="pnpm">pnpm</Tab>
+    <Tab value="npm">npm</Tab>
+  </TabList>
+  <TabPanels>
+    <TabPanel value="pnpm">
+
+```bash
+pnpm create ardo my-docs
+```
+
+    </TabPanel>
+    <TabPanel value="npm">
+
+```bash
+npm create ardo@latest my-docs
+```
+
+    </TabPanel>
+
+  </TabPanels>
+</Tabs>
+````
+
+| Component  | Prop           | Type        | Purpose                                                                |
+| ---------- | -------------- | ----------- | ---------------------------------------------------------------------- |
+| `Tabs`     | `defaultValue` | `string`    | Initial active tab value. Defaults to the first tab.                   |
+| `Tabs`     | `children`     | `ReactNode` | A `TabList` and matching `TabPanels`.                                  |
+| `Tab`      | `value`        | `string`    | Stable value that matches a `TabPanel`. Optional when order is stable. |
+| `Tab`      | `children`     | `ReactNode` | Tab label.                                                             |
+| `TabPanel` | `value`        | `string`    | Matching value for the tab content. Optional when order matches tabs.  |
+| `TabPanel` | `children`     | `ReactNode` | Panel content.                                                         |
+
+## Steps
+
+Use `Steps` for ordered setup or migration instructions. The component expects an ordered list as
+its child and styles it as a step-by-step sequence.
+
+<Steps>
+  <ol>
+    <li>Create a route file in `app/routes/guide`.</li>
+    <li>Add frontmatter with a `title`, `description`, and `order`.</li>
+    <li>Run the docs build to validate links and generated output.</li>
+  </ol>
+</Steps>
+
+```mdx
+<Steps>
+  <ol>
+    <li>Create a route file in `app/routes/guide`.</li>
+    <li>Add frontmatter with a `title`, `description`, and `order`.</li>
+    <li>Run the docs build to validate links and generated output.</li>
+  </ol>
+</Steps>
+```
+
+| Component | Prop       | Type        | Purpose                                     |
+| --------- | ---------- | ----------- | ------------------------------------------- |
+| `Steps`   | `children` | `ReactNode` | Usually an `<ol>` with one `<li>` per step. |
+
+## Icons
+
+Use `Icon` when MDX content needs a registered SVG icon by name. Icons are opt-in: register only the
+icons your site uses, usually in `root.tsx` or another file that runs before MDX pages render.
+
+```tsx
+import { registerIcons } from "ardo/ui"
+import { Code2, Rocket, Zap } from "lucide-react"
+
+registerIcons({ Code2, Rocket, Zap })
+```
+
+Once registered, the same names are available in MDX:
+
+<CardGroup cols={3}>
+  <Card title="Fast authoring" icon="Zap">
+    Use Markdown until a page needs richer React components.
+  </Card>
+  <Card title="API-ready" icon="Code2">
+    Combine written guides with generated API reference pages.
+  </Card>
+  <Card title="Launchable" icon="Rocket">
+    Ship sitemap, robots, redirects, and LLM text artifacts from one build.
+  </Card>
+</CardGroup>
+
+```mdx
+<Icon name="Zap" size={20} />
+<Card title="Fast authoring" icon="Zap">
+  Use Markdown until a page needs richer React components.
+</Card>
+```
+
+| Component | Prop      | Type                           | Purpose                                 |
+| --------- | --------- | ------------------------------ | --------------------------------------- |
+| `Icon`    | `name`    | `string`                       | Registered icon name.                   |
+| `Icon`    | `size`    | `number`                       | Optional rendered icon size.            |
+| `Icon`    | SVG props | `SVGAttributes<SVGSVGElement>` | Passed to the registered SVG component. |
+
 ## Code Groups
 
 Display multiple code variants in tabs:
