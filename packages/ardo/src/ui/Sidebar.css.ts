@@ -207,6 +207,19 @@ export const sidebarTextButton = style({
   lineHeight: "inherit",
   textAlign: "left",
   cursor: "pointer",
+  justifyContent: "space-between",
+})
+
+export const sidebarToggleChevron = style({
+  display: "flex",
+  alignItems: "center",
+  color: vars.color.textLighter,
+  transition: `all ${vars.transition.base}`,
+  selectors: {
+    "&.collapsed": {
+      transform: "rotate(-90deg)",
+    },
+  },
 })
 
 export const sidebarCollapse = style({
