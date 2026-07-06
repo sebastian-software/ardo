@@ -1,5 +1,5 @@
 import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
-import { Zap, Sparkles, Palette, ArrowRight, Github } from "ardo/icons"
+import { Zap, Sparkles, Palette, ArrowRight } from "ardo/icons"
 import type { MetaFunction } from "react-router"
 
 export const meta: MetaFunction = () => [
@@ -19,12 +19,6 @@ export default function HomePage() {
             link: "/guide/getting-started",
             theme: "brand",
             icon: <ArrowRight size={16} />,
-          },
-          {
-            text: "GitHub",
-            link: "https://github.com",
-            theme: "alt",
-            icon: <Github size={16} />,
           },
         ]}
       />
