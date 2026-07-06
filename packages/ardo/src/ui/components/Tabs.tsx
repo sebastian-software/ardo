@@ -63,7 +63,6 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
     return value ?? `${AUTO_TAB_PREFIX}${index}`
   }, [])
 
-  const effectiveTab = defaultValue ?? activeTab
   const getTabId = useCallback(
     (value: string) => `${tabsId}-tab-${toDomIdSegment(value)}`,
     [tabsId]
@@ -75,14 +74,14 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
 
   const contextValue = useMemo(
     () => ({
-      activeTab: effectiveTab,
+      activeTab,
       setActiveTab,
       getPanelId,
       getPanelValue,
       getTabId,
       getTabValue,
     }),
-    [effectiveTab, getPanelId, getPanelValue, getTabId, getTabValue]
+    [activeTab, getPanelId, getPanelValue, getTabId, getTabValue]
   )
 
   return (
