@@ -75,24 +75,31 @@ async function promptProjectName(): Promise<string> {
   )
 }
 
-async function runUpgradeFlow(root: string, options: CreateArdoArgs): Promise<void> {
+async function runUpgradeFlow(
+  root: string,
+  options: CreateArdoArgs,
+  nonInteractive: boolean
+): Promise<void> {
   const cliVersion = getCliVersion()
   const commands = getPackageManagerCommands(options.packageManager)
-  const upgradeResponse = await prompts<"action">(
-    {
-      type: "select",
-      name: "action",
-      message: `Existing Ardo project detected. Upgrade to v${cliVersion}?`,
-      choices: [
-        { title: "Upgrade framework files", value: "upgrade" },
-        { title: "Cancel", value: "cancel" },
-      ],
-    },
-    { onCancel }
-  )
 
-  if (upgradeResponse.action === "cancel") {
-    throw new Error(`${red("✖")} Operation cancelled`)
+  if (!nonInteractive) {
+    const upgradeResponse = await prompts<"action">(
+      {
+        type: "select",
+        name: "action",
+        message: `Existing Ardo project detected. Upgrade to v${cliVersion}?`,
+        choices: [
+          { title: "Upgrade framework files", value: "upgrade" },
+          { title: "Cancel", value: "cancel" },
+        ],
+      },
+      { onCancel }
+    )
+
+    if (upgradeResponse.action === "cancel") {
+      throw new Error(`${red("✖")} Operation cancelled`)
+    }
   }
 
   console.log(`\n  ${cyan("Upgrading project in")} ${root}...\n`)
@@ -300,7 +307,7 @@ export async function main(
   const root = path.resolve(context.cwd, targetDir)
 
   if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
-    await runUpgradeFlow(root, options)
+    await runUpgradeFlow(root, options, nonInteractive)
     return
   }
 

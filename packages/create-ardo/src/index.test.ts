@@ -39,4 +39,24 @@ describe("main", () => {
     expect(viteConfig).toContain("githubPages: false")
     expect(gettingStarted).toContain("npm run dev")
   })
+
+  it("upgrades existing projects without prompts in non-interactive mode", async () => {
+    const root = path.join(tmpDir, "existing-docs")
+    fs.mkdirSync(root, { recursive: true })
+    fs.writeFileSync(
+      path.join(root, "package.json"),
+      JSON.stringify({ dependencies: { ardo: "^0.1.0" } }, null, 2)
+    )
+
+    await main(["existing-docs", "--yes"], {
+      cwd: tmpDir,
+      env: { npm_config_user_agent: "yarn/4.12.0 npm/11" },
+      stdinIsTTY: false,
+    })
+
+    const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"))
+
+    expect(pkg.dependencies.ardo).toMatch(/^\^\d+\.\d+\.\d+/)
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("yarn install"))
+  })
 })
