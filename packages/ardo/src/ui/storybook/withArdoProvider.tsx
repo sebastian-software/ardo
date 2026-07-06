@@ -55,8 +55,12 @@ const currentPage: PageData = {
 }
 
 export const withArdoProvider: Decorator = (Story, context) => {
+  const parameters = context.parameters as { ardoProvider?: unknown; routerPath?: unknown }
+  if (parameters.ardoProvider === false) {
+    return <Story />
+  }
+
   const defaultPath = "/guide/component-playground"
-  const parameters = context.parameters as { routerPath?: unknown }
   const path = typeof parameters.routerPath === "string" ? parameters.routerPath : defaultPath
 
   return (
