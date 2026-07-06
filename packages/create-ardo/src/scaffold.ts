@@ -1,6 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
 
+import { getPackageManagerCommands, type PackageManager } from "./package-manager"
+
 const __dirname = import.meta.dirname
 const templatesRoot = path.resolve(__dirname, "..", "templates")
 const packageJsonPath = path.resolve(__dirname, "..", "package.json")
@@ -27,10 +29,12 @@ export type ScaffoldOptions = {
   githubPages: boolean
   description: string
   overwriteExisting?: boolean
+  packageManager?: PackageManager
 }
 
 type CopyContext = {
   overwriteExisting: boolean
+  packageManager: PackageManager
   vars: Record<string, string>
 }
 
@@ -42,10 +46,17 @@ type CopyEntryInput = {
 
 export function createProjectStructure(root: string, template: string, options: ScaffoldOptions) {
   const templateDir = path.join(templatesRoot, template)
+  const packageManager = options.packageManager ?? "pnpm"
+  const commands = getPackageManagerCommands(packageManager)
   const vars: Record<string, string> = {
     SITE_TITLE: escapeTemplateValue(options.siteTitle),
     PROJECT_NAME: escapeTemplateValue(options.projectName),
     ARDO_VERSION: getCliVersion(),
+    PACKAGE_MANAGER: packageManager,
+    PM_BUILD_COMMAND: commands.build,
+    PM_DEV_COMMAND: commands.dev,
+    PM_INSTALL_COMMAND: commands.install,
+    PM_PREVIEW_COMMAND: commands.preview,
     TYPEDOC_CONFIG: options.typedoc
       ? "typedoc: true,"
       : "// typedoc: true, // Uncomment to enable API docs",
@@ -61,7 +72,11 @@ export function createProjectStructure(root: string, template: string, options: 
     DESCRIPTION: escapeTemplateValue(options.description),
   }
 
-  copyDir(templateDir, root, { vars, overwriteExisting: options.overwriteExisting ?? true })
+  copyDir(templateDir, root, {
+    packageManager,
+    vars,
+    overwriteExisting: options.overwriteExisting ?? true,
+  })
 }
 
 function copyDir(src: string, dest: string, context: CopyContext) {
@@ -79,6 +94,10 @@ function copyEntry(input: CopyEntryInput, context: CopyContext): void {
   const destName = entry.name === "_gitignore" ? ".gitignore" : entry.name
   const destPath = path.join(dest, destName)
 
+  if (entry.name === "pnpm-workspace.yaml" && context.packageManager !== "pnpm") {
+    return
+  }
+
   if (entry.isDirectory()) {
     copyDir(srcPath, destPath, context)
     return
@@ -92,28 +111,14 @@ function copyEntry(input: CopyEntryInput, context: CopyContext): void {
 }
 
 function writeTemplateFile(srcPath: string, destPath: string, vars: Record<string, string>): void {
-  let content = fs.readFileSync(srcPath, "utf8")
-  for (const [key, value] of Object.entries(vars)) {
-    content = content.replaceAll(`{{${key}}}`, value)
-  }
+  const content = fs
+    .readFileSync(srcPath, "utf8")
+    .replaceAll(/\{\{([A-Z0-9_]+)\}\}/g, (placeholder, key: string) => vars[key] ?? placeholder)
   fs.writeFileSync(destPath, content)
 }
 
 function escapeTemplateValue(value: string): string {
   return JSON.stringify(value).slice(1, -1).replaceAll("'", "\\'")
-}
-
-export function formatTargetDir(targetDir: string | undefined) {
-  if (targetDir === undefined) {
-    return
-  }
-
-  let normalized = targetDir.trim()
-  while (normalized.endsWith("/")) {
-    normalized = normalized.slice(0, -1)
-  }
-
-  return normalized
 }
 
 export function isEmpty(dirPath: string) {

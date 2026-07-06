@@ -1,13 +1,15 @@
 import { blue, cyan, dim, green, red, reset, yellow } from "kolorist"
 import fs from "node:fs"
 import path from "node:path"
+import { pathToFileURL } from "node:url"
 import prompts from "prompts"
 
+import { type CreateArdoArgs, parseCreateArdoArgs } from "./cli-options"
+import { getPackageManagerCommands } from "./package-manager"
 import {
   createProjectStructure,
   detectProjectDescription,
   emptyDir,
-  formatTargetDir,
   getCliVersion,
   isArdoProject,
   isEmpty,
@@ -15,6 +17,7 @@ import {
   templates,
   upgradeProject,
 } from "./scaffold"
+import { formatTargetDir, normalizeTargetDir, toPackageName, validateTargetDir } from "./target-dir"
 
 const defaultTargetDir = "my-docs"
 
@@ -25,9 +28,31 @@ const onCancel = () => {
 type NewProjectPromptResponse = {
   overwrite?: "ignore" | "no" | "yes"
   template?: string
+  siteTitle?: string
+  docType?: "general" | "library"
+  githubPages?: boolean
+}
+
+type MainContext = {
+  cwd: string
+  env: NodeJS.ProcessEnv
+  stdinIsTTY: boolean
+}
+
+type NewProjectResponse = {
+  overwrite?: "ignore" | "no" | "yes"
+  template: string
   siteTitle: string
   docType: "general" | "library"
-  githubPages?: boolean
+  githubPages: boolean
+}
+
+type NewProjectFlowInput = {
+  cwd: string
+  nonInteractive: boolean
+  options: CreateArdoArgs
+  root: string
+  targetDir: string
 }
 
 async function promptProjectName(): Promise<string> {
@@ -38,12 +63,7 @@ async function promptProjectName(): Promise<string> {
       message: reset("Project name:"),
       initial: defaultTargetDir,
       validate(value: string) {
-        const name = value.trim()
-        if (!name) return "Project name is required"
-        if (/^[.-]/.test(name)) return "Project name cannot start with a dot or hyphen"
-        if (!/^[\da-z-]+$/.test(name))
-          return "Project name may only contain lowercase letters, digits, and hyphens"
-        return true
+        return validateTargetDir(value)
       },
     },
     { onCancel }
@@ -55,23 +75,31 @@ async function promptProjectName(): Promise<string> {
   )
 }
 
-async function runUpgradeFlow(root: string): Promise<void> {
+async function runUpgradeFlow(
+  root: string,
+  options: CreateArdoArgs,
+  nonInteractive: boolean
+): Promise<void> {
   const cliVersion = getCliVersion()
-  const upgradeResponse = await prompts<"action">(
-    {
-      type: "select",
-      name: "action",
-      message: `Existing Ardo project detected. Upgrade to v${cliVersion}?`,
-      choices: [
-        { title: "Upgrade framework files", value: "upgrade" },
-        { title: "Cancel", value: "cancel" },
-      ],
-    },
-    { onCancel }
-  )
+  const commands = getPackageManagerCommands(options.packageManager)
 
-  if (upgradeResponse.action === "cancel") {
-    throw new Error(`${red("✖")} Operation cancelled`)
+  if (!nonInteractive) {
+    const upgradeResponse = await prompts<"action">(
+      {
+        type: "select",
+        name: "action",
+        message: `Existing Ardo project detected. Upgrade to v${cliVersion}?`,
+        choices: [
+          { title: "Upgrade framework files", value: "upgrade" },
+          { title: "Cancel", value: "cancel" },
+        ],
+      },
+      { onCancel }
+    )
+
+    if (upgradeResponse.action === "cancel") {
+      throw new Error(`${red("✖")} Operation cancelled`)
+    }
   }
 
   console.log(`\n  ${cyan("Upgrading project in")} ${root}...\n`)
@@ -83,10 +111,10 @@ async function runUpgradeFlow(root: string): Promise<void> {
     console.log(`  ${dim("○")} ${file} ${dim("(not found, skipped)")}`)
 
   console.log(`\n  ${green("Done!")} Now run:\n`)
-  console.log(`  ${blue("pnpm install")}\n`)
+  console.log(`  ${blue(commands.install)}\n`)
 }
 
-function getNewProjectPrompts(targetDir: string, root: string, argTemplate: string | undefined) {
+function getNewProjectPrompts(targetDir: string, root: string, options: CreateArdoArgs) {
   return [
     {
       type: (): "select" | null => (!fs.existsSync(root) || isEmpty(root) ? null : "select"),
@@ -107,7 +135,10 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       name: "overwriteChecker",
     },
     {
-      type: argTemplate !== undefined && isValidTemplate(argTemplate) ? null : ("select" as const),
+      type:
+        options.template !== undefined && isValidTemplate(options.template)
+          ? null
+          : ("select" as const),
       name: "template",
       message: reset("Select a template:"),
       choices: templates.map((t) => ({
@@ -116,13 +147,13 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       })),
     },
     {
-      type: "text" as const,
+      type: options.siteTitle === undefined ? ("text" as const) : null,
       name: "siteTitle",
       message: reset("Site title:"),
-      initial: "My Documentation",
+      initial: options.siteTitle ?? "My Documentation",
     },
     {
-      type: "select" as const,
+      type: options.docType === undefined ? ("select" as const) : null,
       name: "docType",
       message: reset("What are you documenting?"),
       choices: [
@@ -131,7 +162,7 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
       ],
     },
     {
-      type: "select" as const,
+      type: options.githubPages === undefined ? ("select" as const) : null,
       name: "githubPages",
       message: reset("Deploy to GitHub Pages?"),
       choices: [
@@ -142,52 +173,75 @@ function getNewProjectPrompts(targetDir: string, root: string, argTemplate: stri
   ]
 }
 
-async function runNewProjectFlow(
-  targetDir: string,
-  root: string,
-  argTemplate: string | undefined
-): Promise<void> {
-  const questions = getNewProjectPrompts(targetDir, root, argTemplate)
-  const responseData: unknown = await prompts(questions, { onCancel })
-  const response = readNewProjectPromptResponse(responseData)
-
-  const template = response.template ?? argTemplate ?? "minimal"
-
-  if (response.overwrite === "yes") {
-    emptyDir(root)
-  } else if (!fs.existsSync(root)) {
-    fs.mkdirSync(root, { recursive: true })
+async function runNewProjectFlow(input: NewProjectFlowInput): Promise<void> {
+  const { cwd, nonInteractive, options, root, targetDir } = input
+  const defaultResponse = getDefaultProjectResponse(options)
+  if (nonInteractive) {
+    validateNonInteractiveProject(root, options)
   }
 
-  console.log(`\n  ${cyan("Scaffolding project in")} ${root}...\n`)
-  createProjectStructure(root, template, {
-    siteTitle: response.siteTitle,
-    projectName: targetDir,
-    typedoc: response.docType === "library",
-    githubPages: response.githubPages ?? true,
-    description: detectProjectDescription(root) ?? "Built with Ardo",
-    overwriteExisting: response.overwrite !== "ignore",
-  })
+  const questions = nonInteractive ? [] : getNewProjectPrompts(targetDir, root, options)
+  const responseData: unknown = nonInteractive ? {} : await prompts(questions, { onCancel })
+  const response = mergeProjectResponse(defaultResponse, readNewProjectPromptResponse(responseData))
 
+  const template = response.template
+  if (!isValidTemplate(template)) {
+    throw new Error(`${red("✖")} Unknown template "${template}"`)
+  }
+
+  ensureProjectDirectory(root, response)
+
+  console.log(`\n  ${cyan("Scaffolding project in")} ${root}...\n`)
+  createProjectStructure(root, template, createScaffoldOptions(input, response))
+  printNextSteps({ cwd, options, root, targetDir })
+}
+
+function ensureProjectDirectory(root: string, response: NewProjectResponse): void {
+  if (response.overwrite === "yes") {
+    emptyDir(root)
+    return
+  }
+
+  if (!fs.existsSync(root)) {
+    fs.mkdirSync(root, { recursive: true })
+  }
+}
+
+function createScaffoldOptions(input: NewProjectFlowInput, response: NewProjectResponse) {
+  return {
+    siteTitle: response.siteTitle,
+    projectName: toPackageName(input.targetDir, input.root),
+    typedoc: response.docType === "library",
+    githubPages: response.githubPages,
+    description: detectProjectDescription(input.root) ?? "Built with Ardo",
+    overwriteExisting: response.overwrite !== "ignore",
+    packageManager: input.options.packageManager,
+  }
+}
+
+function printNextSteps({
+  cwd,
+  options,
+  root,
+  targetDir,
+}: Pick<NewProjectFlowInput, "cwd" | "options" | "root" | "targetDir">): void {
+  const commands = getPackageManagerCommands(options.packageManager)
   console.log(`  ${green("Done!")} Now run:\n`)
-  if (root !== process.cwd()) console.log(`  ${blue("cd")} ${targetDir}`)
-  console.log(`  ${blue("pnpm install")}`)
-  console.log(`  ${blue("pnpm dev")}\n`)
+  if (root !== cwd) console.log(`  ${blue("cd")} ${targetDir}`)
+  console.log(`  ${blue(commands.install)}`)
+  console.log(`  ${blue(commands.dev)}\n`)
 }
 
 function readNewProjectPromptResponse(data: unknown): NewProjectPromptResponse {
   if (!isRecord(data)) {
-    return {
-      docType: "general",
-      siteTitle: "My Documentation",
-    }
+    return {}
   }
 
   return {
-    docType: data.docType === "library" ? "library" : "general",
+    docType: data.docType === "library" || data.docType === "general" ? data.docType : undefined,
     githubPages: typeof data.githubPages === "boolean" ? data.githubPages : undefined,
     overwrite: readOverwrite(data.overwrite),
-    siteTitle: typeof data.siteTitle === "string" ? data.siteTitle : "My Documentation",
+    siteTitle: typeof data.siteTitle === "string" ? data.siteTitle : undefined,
     template: typeof data.template === "string" ? data.template : undefined,
   }
 }
@@ -196,30 +250,81 @@ function readOverwrite(value: unknown): NewProjectPromptResponse["overwrite"] {
   return value === "ignore" || value === "no" || value === "yes" ? value : undefined
 }
 
+function getDefaultProjectResponse(options: CreateArdoArgs): NewProjectResponse {
+  return {
+    docType: options.docType ?? "general",
+    githubPages: options.githubPages ?? true,
+    overwrite: undefined,
+    siteTitle: options.siteTitle ?? "My Documentation",
+    template: options.template ?? "minimal",
+  }
+}
+
+function mergeProjectResponse(
+  defaults: NewProjectResponse,
+  overrides: NewProjectPromptResponse
+): NewProjectResponse {
+  return {
+    docType: overrides.docType ?? defaults.docType,
+    githubPages: overrides.githubPages ?? defaults.githubPages,
+    overwrite: overrides.overwrite ?? defaults.overwrite,
+    siteTitle: overrides.siteTitle ?? defaults.siteTitle,
+    template: overrides.template ?? defaults.template,
+  }
+}
+
+function validateNonInteractiveProject(root: string, options: CreateArdoArgs): void {
+  if (options.template !== undefined && !isValidTemplate(options.template)) {
+    throw new Error(`${red("✖")} Unknown template "${options.template}"`)
+  }
+
+  if (fs.existsSync(root) && !isEmpty(root)) {
+    throw new Error(
+      `${red("✖")} Target directory is not empty. Choose an empty directory or run interactively.`
+    )
+  }
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value != null && typeof value === "object"
 }
 
-async function main() {
+export async function main(
+  args = process.argv.slice(2),
+  context: MainContext = {
+    cwd: process.cwd(),
+    env: process.env,
+    stdinIsTTY: process.stdin.isTTY,
+  }
+) {
   console.log(`\n  ${cyan("◆")} ${green("create-ardo")}\n`)
 
-  const argTargetDir = process.argv.length > 2 ? process.argv[2] : undefined
-  const argTemplate = process.argv.length > 3 ? process.argv[3] : undefined
-  const targetDir = argTargetDir ?? (await promptProjectName())
-  const root = path.join(process.cwd(), targetDir)
+  const options = parseCreateArdoArgs(args, context.env)
+  const nonInteractive = options.yes || !context.stdinIsTTY
+  const targetDir = normalizeTargetDir(
+    options.targetDir ?? (nonInteractive ? defaultTargetDir : await promptProjectName())
+  )
+  const root = path.resolve(context.cwd, targetDir)
 
   if (fs.existsSync(root) && !isEmpty(root) && isArdoProject(root)) {
-    await runUpgradeFlow(root)
+    await runUpgradeFlow(root, options, nonInteractive)
     return
   }
 
-  await runNewProjectFlow(targetDir, root, argTemplate)
+  await runNewProjectFlow({ cwd: context.cwd, nonInteractive, options, root, targetDir })
 }
 
-try {
-  await main()
-} catch (error: unknown) {
-  const errorMessage = error instanceof Error ? error.message : String(error)
-  console.error(errorMessage)
-  process.exit(1)
+if (isDirectInvocation()) {
+  try {
+    await main()
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error(errorMessage)
+    process.exit(1)
+  }
+}
+
+function isDirectInvocation(): boolean {
+  const entry = process.argv[1]
+  return import.meta.url === pathToFileURL(entry).href
 }
