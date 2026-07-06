@@ -205,7 +205,7 @@ export function MyHeader() {
 Then use it in your layout. Mix your custom components with Ardo's defaults — replace the pieces you want, keep the rest:
 
 ```tsx
-// routes/__root.tsx
+// app/root.tsx
 import { MyHeader } from "../components/MyHeader"
 import { ArdoSidebar, ArdoFooter } from "ardo/ui"
 
@@ -297,6 +297,82 @@ function MyTOC() {
   )
 }
 ```
+
+### useArdoContext
+
+Use the full runtime context when a custom component needs several pieces of Ardo state at once:
+
+```tsx
+import { useArdoContext } from "ardo/runtime"
+
+function CurrentRouteDebug() {
+  const { config, currentPage, activeContextId } = useArdoContext()
+  return (
+    <pre>{JSON.stringify({ site: config.title, page: currentPage?.title, activeContextId })}</pre>
+  )
+}
+```
+
+### findCurrentSidebarItem and getPrevNextLinks
+
+These helpers are useful when you replace the default document footer or sidebar behavior:
+
+```tsx
+import {
+  findCurrentSidebarItem,
+  getPrevNextLinks,
+  useArdoPageData,
+  useArdoSidebar,
+} from "ardo/runtime"
+import { useLocation } from "react-router"
+
+function MyPrevNext() {
+  const location = useLocation()
+  const page = useArdoPageData()
+  const sidebar = useArdoSidebar()
+  if (!page) return null
+
+  const current = findCurrentSidebarItem(sidebar, location.pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
+
+  return (
+    <nav>
+      <span>{current?.text}</span>
+      {prev && <a href={prev.link}>{prev.text}</a>}
+      {next && <a href={next.link}>{next.text}</a>}
+    </nav>
+  )
+}
+```
+
+### ArdoProvider and ArdoSiteConfigProvider
+
+Most apps get these providers through `<ArdoRoot>`. Import them directly only when you are building a
+fully custom root layout or an isolated component preview.
+
+## Icon Registration
+
+MDX content and UI components can refer to registered icon names. Register icons once in
+`app/root.tsx`, then use the names through `ArdoIcon`, component `icon` props, or the MDX `<Icon />`
+component:
+
+```tsx
+import { ArdoIcon, registerIcons } from "ardo/ui"
+import { Code2, Rocket } from "lucide-react"
+
+registerIcons({ Code2, Rocket })
+
+export function LaunchLink() {
+  return (
+    <a href="/guide/getting-started">
+      <ArdoIcon name="Rocket" aria-hidden /> Get started
+    </a>
+  )
+}
+```
+
+`getRegisteredIconNames()` returns the current registry keys when you need to validate user-facing
+configuration.
 
 ## Full Custom Theme
 

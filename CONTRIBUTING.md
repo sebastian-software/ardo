@@ -35,22 +35,35 @@ pnpm docs:dev
 ```
 ardo/
 ├── packages/
-│   └── ardo/          # Main package (published to npm)
-│       ├── src/
-│       │   ├── config/      # Configuration utilities
-│       │   ├── markdown/    # Markdown processing pipeline
-│       │   ├── runtime/     # React hooks and providers
-│       │   ├── ui/          # React UI components and styles
-│       │   ├── theme/       # Theme token helpers
-│       │   ├── typedoc/     # TypeDoc integration
-│       │   └── vite/        # Vite plugin
-│       └── package.json
+│   ├── ardo/          # Main framework package (published to npm)
+│   │   ├── src/
+│   │   │   ├── config/      # Configuration utilities
+│   │   │   ├── icons/       # Built-in icon assets and helpers
+│   │   │   ├── markdown/    # Markdown processing pipeline
+│   │   │   ├── mdx/         # MDX provider and auto-registered components
+│   │   │   ├── runtime/     # React hooks and providers
+│   │   │   ├── ui/          # React UI components and styles
+│   │   │   │   └── theme/   # Theme token helpers
+│   │   │   ├── typedoc/     # TypeDoc integration
+│   │   │   └── vite/        # Vite plugin
+│   │   └── package.json
+│   └── create-ardo/   # Scaffolding CLI and project template
+│       ├── src/       # CLI, prompts, upgrade, and scaffold logic
+│       └── templates/ # Generated project files
 ├── docs/              # Documentation site (dogfooding)
 │   ├── app/           # React Router app and markdown routes
 │   │   └── routes/    # Documentation pages and generated API routes
 │   └── public/        # Static assets and generated text outputs
+├── examples/          # Runnable example projects used by tests/docs
 └── package.json       # Monorepo root
 ```
+
+### Architecture
+
+The architecture decision records in [`docs/adr/`](./docs/adr/) explain the major framework
+decisions: React Router migration, static prerendering, TypeDoc integration, Vanilla Extract,
+context-aware UI, public API naming, Storybook, Tailwind in the scaffold, and release conventions.
+Read them before changing routing, public exports, theming, build output, or release behavior.
 
 ## Development Workflow
 

@@ -119,7 +119,9 @@ Netlify requires no workflow file. Connect your Git repository in the Netlify da
 
 Netlify automatically detects the Node.js version from your `package.json` engines field or an `.nvmrc` file.
 
-For subdirectory deployments, set `base` in `vite.config.ts` as described above.
+For subdirectory deployments, set `base` in `vite.config.ts` only when your Netlify site is served
+from a subpath. The GitHub Pages auto-detection above is specific to GitHub remotes and is not
+needed for the default Netlify root deployment.
 
 ## Vercel
 

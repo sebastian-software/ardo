@@ -28,7 +28,8 @@ feat(scaffold): ...  # Don't do this
 
 ## Commands
 
-- `pnpm dev` - Start docs dev server
+- `pnpm dev` - Start the `ardo` package dev/watch process
+- `pnpm docs:dev` - Start docs dev server
 - `pnpm build` - Build all packages
 - `pnpm test` - Run tests
 - `pnpm typecheck` - TypeScript check

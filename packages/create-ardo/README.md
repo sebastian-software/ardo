@@ -72,6 +72,10 @@ project tree matches a running scaffolded project. When you run the scaffolder t
 bun, the printed install/dev commands match that package manager and pnpm-only workspace metadata is
 not emitted.
 
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
+
 ## License
 
 [MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de)
