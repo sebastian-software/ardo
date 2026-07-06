@@ -42,9 +42,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Vercel CLI
-        run: pnpm add -g vercel
-
       - name: Build ardo package
         run: pnpm build
 
@@ -77,6 +74,6 @@ jobs:
           echo '{"version":3}' > .vercel/output/config.json
 
       - name: Deploy to Vercel
-        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: pnpm exec vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
