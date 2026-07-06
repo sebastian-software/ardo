@@ -1,5 +1,7 @@
 import type { MetadataConfig, ResolvedConfig } from "../config/types"
 
+import { isPathInsideDirectory, normalizePath } from "./path-utils"
+
 type MarkdownMetaState = {
   resolvedConfig?: ResolvedConfig
   routesDir: string
@@ -89,7 +91,7 @@ export function transformMarkdownMeta(
 }
 
 function shouldInjectMeta(code: string, id: string, state: MarkdownMetaState): boolean {
-  return isMarkdownFile(id) && id.startsWith(state.routesDir) && !hasMetaExport(code)
+  return isMarkdownFile(id) && isPathInsideDirectory(id, state.routesDir) && !hasMetaExport(code)
 }
 
 function buildMetaEntries(input: MetaInput): string[] {
@@ -279,7 +281,9 @@ function parseJsonString(value: string): string | undefined {
 }
 
 function getRoutePathFromId(id: string, routesDir: string, base: string) {
-  const relativePath = id.slice(routesDir.length).replaceAll("\\", "/").replace(/^\//u, "")
+  const normalizedId = normalizePath(id)
+  const normalizedRoutesDir = normalizePath(routesDir)
+  const relativePath = normalizedId.slice(normalizedRoutesDir.length).replace(/^\//u, "")
   const withoutExtension = relativePath.replace(/\.(?:md|mdx)$/u, "")
   if (withoutExtension === "index" || withoutExtension === "home") return joinBasePath(base, "/")
   if (withoutExtension.endsWith("/index") || withoutExtension.endsWith("/home")) {
