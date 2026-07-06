@@ -81,16 +81,6 @@ export const sidebarRailLink = style({
       color: vars.color.brand,
       background: vars.color.bgMute,
     },
-    "&.active::before": {
-      content: '""',
-      position: "absolute",
-      left: "-0.75rem",
-      top: "0.6rem",
-      bottom: "0.6rem",
-      width: "2px",
-      borderRadius: "999px",
-      background: vars.color.brand,
-    },
   },
 })
 
