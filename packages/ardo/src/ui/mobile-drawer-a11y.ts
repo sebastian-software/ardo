@@ -7,6 +7,12 @@ export const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",")
 
+export type FocusableElementCandidate = {
+  closest: (selectors: string) => unknown
+  getAttribute: (qualifiedName: string) => null | string
+  hasAttribute: (qualifiedName: string) => boolean
+}
+
 export function getTrappedFocusTarget<T>({
   activeElement,
   focusableElements,
@@ -32,9 +38,17 @@ export function getTrappedFocusTarget<T>({
   }
 }
 
+export function isFocusableElement(element: FocusableElementCandidate): boolean {
+  return (
+    !element.hasAttribute("disabled") &&
+    element.getAttribute("aria-hidden") !== "true" &&
+    element.closest("[inert]") == null
+  )
+}
+
 export function getFocusableElements(container: ParentNode): HTMLElement[] {
-  return [...container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter(
-    (element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true"
+  return [...container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter((element) =>
+    isFocusableElement(element)
   )
 }
 
