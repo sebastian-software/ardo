@@ -9,7 +9,7 @@ import { copyButton } from "./CopyButton.css"
 // =============================================================================
 
 export const codeBlock = style({
-  margin: ` 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.lg,
   overflow: "hidden",
@@ -105,7 +105,7 @@ globalStyle(`${s} > [data-title]`, {
 })
 
 globalStyle(s, {
-  margin: ` 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.lg,
   overflow: "hidden",
@@ -215,7 +215,7 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: ` 0`,
+  margin: `${vars.space.lg} 0`,
   maxWidth: "120ch",
   borderRadius: vars.radius.lg,
   overflow: "hidden",
