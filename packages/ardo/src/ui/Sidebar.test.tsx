@@ -59,8 +59,15 @@ describe("ArdoSidebar", () => {
       },
     ]
 
-    const parentLinkClass = (view: string) =>
-      /<a [^>]*class="([^"]*sidebarLink[^"]*)"[^>]*href="\/adr"/.exec(view)?.[1] ?? ""
+    // Locate the panel link to `/adr` regardless of attribute order (React
+    // Router may serialize `href` before or after the computed `class`), then
+    // read its class list. Filtering on `sidebarLink` skips the rail link.
+    const parentLinkClass = (view: string) => {
+      const anchor = (view.match(/<a [^>]*>/g) ?? []).find(
+        (tag) => tag.includes('href="/adr"') && tag.includes("sidebarLink")
+      )
+      return /class="([^"]*)"/.exec(anchor ?? "")?.[1] ?? ""
+    }
 
     const onOverview = parentLinkClass(renderSidebar(items, "/adr"))
     expect(onOverview.split(/\s+/)).toContain("active")
