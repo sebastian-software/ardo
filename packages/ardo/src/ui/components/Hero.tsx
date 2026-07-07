@@ -1,5 +1,4 @@
-import type { ComponentProps, ReactNode } from "react"
-
+import { type ComponentProps, isValidElement, type ReactElement, type ReactNode } from "react"
 import { Link } from "react-router"
 
 import * as styles from "./Hero.css"
@@ -34,8 +33,12 @@ export type ArdoHeroProps = {
   text?: string
   /** Descriptive tagline */
   tagline?: string
-  /** Hero image - can be a string URL or an object with light/dark variants */
-  image?: ArdoHeroImage | string
+  /**
+   * Hero image. A string URL or a light/dark object renders an `<img>`; a
+   * React element (e.g. an inline SVG mark) is rendered as-is so it can be
+   * tinted with currentColor and scale crisply.
+   */
+  image?: ArdoHeroImage | ReactElement | string
   /** Call-to-action buttons */
   actions?: ArdoHeroAction[]
   /** Additional CSS class */
@@ -90,9 +93,13 @@ function HeroActionButton({ action }: { action: ArdoHeroAction }) {
 }
 
 function resolveHeroImage(image: ArdoHeroProps["image"], name: string | undefined) {
-  const url = typeof image === "string" ? image : (image?.light ?? "")
-  const alt = typeof image === "string" ? (name ?? "") : (image?.alt ?? name ?? "")
-  return { url, alt }
+  if (typeof image === "string") {
+    return { url: image, alt: name ?? "" }
+  }
+  if (image == null || isValidElement(image)) {
+    return { url: "", alt: "" }
+  }
+  return { url: image.light, alt: image.alt ?? name ?? "" }
 }
 
 export function ArdoHero({
@@ -104,11 +111,13 @@ export function ArdoHero({
   className,
   version,
 }: ArdoHeroProps) {
-  const img = resolveHeroImage(image, name)
+  const imageElement = isValidElement(image) ? image : undefined
+  const img = imageElement === undefined ? resolveHeroImage(image, name) : { url: "", alt: "" }
 
   return (
     <section className={className ?? styles.hero}>
       <div className={`${styles.heroContainer} ${styles.heroAnimate}`}>
+        {imageElement !== undefined && <div>{imageElement}</div>}
         {img.url !== "" && (
           <div>
             <img src={img.url} alt={img.alt} />

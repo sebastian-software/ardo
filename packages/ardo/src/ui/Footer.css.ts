@@ -7,8 +7,9 @@ export const footer = style({
   width: "100%",
   padding: `${vars.space["2xl"]} ${vars.space.xl}`,
   textAlign: "left",
-  background: `color-mix(in oklch, ${vars.color.brand} 6%, ${vars.color.bgMute})`,
-  margin: `${vars.space["2xl"]} 0 0`,
+  background: `color-mix(in oklch, ${vars.color.brand} 5%, ${vars.color.bgSoft})`,
+  borderTop: `1px solid ${vars.color.border}`,
+  margin: 0,
   "@media": {
     "(max-width: 768px)": {
       padding: `${vars.space.xl} ${vars.space.md}`,
@@ -38,19 +39,12 @@ globalStyle(`.${layoutStyles.home} .${layoutStyles.main} > .${footer}`, {
 })
 
 export const footerContainer = style({
-  display: "grid",
-  gridTemplateColumns: "minmax(0, 1fr) auto",
-  alignItems: "start",
-  gap: `${vars.space.xs} ${vars.space["2xl"]}`,
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.space.xs,
   width: "100%",
-  maxWidth: "80rem",
+  maxWidth: "64rem",
   margin: "0 auto",
-  "@media": {
-    "(max-width: 768px)": {
-      gridTemplateColumns: "1fr",
-      gap: vars.space.xs,
-    },
-  },
 })
 
 export const footerPrimary = style({
@@ -59,8 +53,12 @@ export const footerPrimary = style({
   gap: 0,
   flexWrap: "wrap",
   fontSize: vars.fontSize.sm,
-  color: vars.color.textLight,
-  marginBottom: 0,
+  fontWeight: 500,
+  color: vars.color.text,
+  margin: 0,
+  paddingBottom: vars.space.md,
+  marginBottom: vars.space.md,
+  borderBottom: `1px solid ${vars.color.border}`,
 })
 
 export const footerSeparator = style({
@@ -111,35 +109,23 @@ export const footerOwl = style({
 })
 
 export const footerMessage = style({
-  gridColumn: "1",
+  margin: 0,
   fontSize: vars.fontSize.sm,
-  color: vars.color.textLighter,
+  color: vars.color.textLight,
 })
 
 export const footerCopyright = style({
-  gridColumn: "1",
+  margin: 0,
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
 })
 
 export const footerBuildTime = style({
-  gridColumn: "2",
-  gridRow: "1 / span 3",
-  justifySelf: "end",
+  margin: `${vars.space.sm} 0 0`,
   fontSize: vars.fontSize.xs,
-  color: `color-mix(in oklch, ${vars.color.accent} 65%, ${vars.color.textLighter})`,
+  color: `color-mix(in oklch, ${vars.color.accent} 55%, ${vars.color.textLighter})`,
   fontFamily: vars.font.mono,
   letterSpacing: "0.02em",
-  marginTop: "2px",
-  textAlign: "right",
-  "@media": {
-    "(max-width: 768px)": {
-      gridColumn: "1",
-      gridRow: "auto",
-      justifySelf: "start",
-      textAlign: "left",
-    },
-  },
 })
 
 export const contentFooter = style({

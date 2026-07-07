@@ -32,6 +32,13 @@ globalStyle("h1, h2, h3, h4, h5, h6", {
   textWrap: "balance",
 })
 
+// The UA stylesheet sets `font-family: monospace` on these elements, which
+// beats any inherited stack and renders as Courier. Apply the theme mono
+// stack directly.
+globalStyle("code, kbd, samp, pre", {
+  fontFamily: vars.font.mono,
+})
+
 globalStyle("::selection", {
   background: vars.color.brandSubtle,
 })

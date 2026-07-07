@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures, ArdoFeatureCard, ArdoCodeBlock } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard, ArdoCodeBlock, ArdoOwlMark } from "ardo/ui"
 import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
@@ -26,7 +26,6 @@ import {
   Terminal,
   Github,
 } from "ardo/icons"
-import logo from "../assets/logo.svg"
 import * as styles from "./home.css"
 
 export default function HomePage() {
@@ -36,9 +35,9 @@ export default function HomePage() {
       <ArdoHero
         className={styles.homeHero}
         name="Ardo"
-        text="Modern, open docs for React teams"
-        tagline="VitePress-style simplicity without leaving React. Build static documentation with React Router, Vite, MDX, your own components, and TypeScript API reference generation."
-        image={logo}
+        text="Docs that live in your React stack"
+        tagline="Static documentation built on React Router, Vite, and MDX. Write guides with your own components, generate API reference from your TypeScript source, and deploy plain files anywhere."
+        image={<ArdoOwlMark className={styles.heroOwl} title="Ardo" />}
         actions={[
           { text: "Start your first project", link: "/guide/getting-started", theme: "brand" },
           {
@@ -77,6 +76,44 @@ export default function HomePage() {
                 <span className={styles.terminalLink}>http://localhost:5173</span>
               </code>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Ardo exists */}
+      <section className={styles.storySection}>
+        <div className={styles.storyGrid}>
+          <div>
+            <blockquote className={styles.storyQuote}>
+              &ldquo;I went looking for a modern, lightweight docs framework that was simply React.
+              <em> It didn&rsquo;t exist.</em> So I built it.&rdquo;
+            </blockquote>
+            <div className={styles.storyAttribution}>
+              <span className={styles.storyAvatar} aria-hidden="true">
+                SW
+              </span>
+              <div>
+                <div className={styles.storyName}>Sebastian Werner</div>
+                <div className={styles.storyRole}>Creator and maintainer of Ardo</div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.storyBody}>
+            <p>
+              Every option asked for a trade. <strong>VitePress</strong> is excellent, but
+              it&rsquo;s Vue. <strong>Starlight</strong> is fast, but React components live behind
+              Astro islands. <strong>Docusaurus</strong> is React, but carries years of webpack-era
+              weight. Great tools, wrong fit for a team that already lives in React.
+            </p>
+            <p>
+              Ardo is the tool I wanted that week: <strong>React Router and Vite</strong> doing what
+              they already do best, MDX for writing, TypeDoc for API pages, and static files at the
+              end. No second component model, no cloud platform, no sales call.
+            </p>
+            <p>
+              It&rsquo;s open source and self-hosted. If your team builds in React, your docs can be
+              part of the codebase instead of a separate product.
+            </p>
           </div>
         </div>
       </section>
@@ -124,16 +161,9 @@ export default function HomePage() {
           Write Markdown, import React components where you need them. Code blocks are
           syntax-highlighted at build time with Shiki. No client-side JS for highlighting.
         </ArdoFeatureCard>
-        <ArdoFeatureCard
-          title="Vanilla Extract styling"
-          icon={<Paintbrush size={28} strokeWidth={1.5} />}
-        >
-          All styles are type-safe Vanilla Extract. Import design tokens from ardo/theme, write your
-          own .css.ts files, and override any component with full autocomplete.
-        </ArdoFeatureCard>
         <ArdoFeatureCard title="Make it yours" icon={<Palette size={28} strokeWidth={1.5} />}>
-          Override CSS variables, swap components, or build an entirely custom theme. Ardo exposes
-          the runtime data; you decide how to render it.
+          Type-safe theming with Vanilla Extract: set your brand hues in one line, override any
+          token, swap components, or build a fully custom theme with autocomplete all the way.
         </ArdoFeatureCard>
       </ArdoFeatures>
 
@@ -217,114 +247,59 @@ export default function HomePage() {
       {/* Comparison Section */}
       <section className={`${styles.section} ${styles.comparisonSection}`}>
         <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>How Ardo compares</h2>
+          <h2 className={styles.sectionTitle}>Where Ardo fits</h2>
           <p className={styles.sectionSubtitle}>
-            Great tools exist. The right choice depends on whether your docs should live inside your
-            React stack.
+            Every one of these is a good tool. The only question is whether your docs belong inside
+            your React stack.
           </p>
 
-          <div className={styles.comparison}>
-            <table className={styles.comparisonTable}>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className={styles.comparisonHighlight}>Ardo</th>
-                  <th>Docusaurus</th>
-                  <th>Starlight</th>
-                  <th>VitePress</th>
-                  <th>Fumadocs</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Best fit</td>
-                  <td className={styles.comparisonHighlight}>React teams, static docs</td>
-                  <td>Mature OSS docs</td>
-                  <td>Content-heavy Astro docs</td>
-                  <td>Vue docs</td>
-                  <td>Composable React docs</td>
-                </tr>
-                <tr>
-                  <td>UI framework</td>
-                  <td className={styles.comparisonHighlight}>React 19</td>
-                  <td>React</td>
-                  <td>Astro</td>
-                  <td>Vue</td>
-                  <td>React</td>
-                </tr>
-                <tr>
-                  <td>Build tool</td>
-                  <td className={styles.comparisonHighlight}>Vite 8</td>
-                  <td>Webpack</td>
-                  <td>Astro/Vite</td>
-                  <td>Vite</td>
-                  <td>Framework-dependent</td>
-                </tr>
-                <tr>
-                  <td>Styling</td>
-                  <td className={styles.comparisonHighlight}>
-                    <span className={styles.check}>Vanilla Extract</span>
-                  </td>
-                  <td>CSS Modules</td>
-                  <td>Tailwind</td>
-                  <td>PostCSS</td>
-                  <td>Tailwind / custom</td>
-                </tr>
-                <tr>
-                  <td>Your React components</td>
-                  <td className={styles.comparisonHighlight}>
-                    <span className={styles.check}>Native</span>
-                  </td>
-                  <td>
-                    <span className={styles.check}>Native</span>
-                  </td>
-                  <td>Via islands</td>
-                  <td>
-                    <span className={styles.x}>No</span>
-                  </td>
-                  <td>
-                    <span className={styles.check}>Native</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>TypeDoc built in</td>
-                  <td className={styles.comparisonHighlight}>
-                    <span className={styles.check}>Yes</span>
-                  </td>
-                  <td>Plugin</td>
-                  <td>Plugin</td>
-                  <td>
-                    <span className={styles.x}>No</span>
-                  </td>
-                  <td>Type tables / OpenAPI</td>
-                </tr>
-                <tr>
-                  <td>Measured first page</td>
-                  <td className={styles.comparisonHighlight}>~155 KB gzip</td>
-                  <td>~500 KB+</td>
-                  <td>~50 KB</td>
-                  <td>~50 KB</td>
-                  <td>Depends on framework</td>
-                </tr>
-                <tr>
-                  <td>Ownership model</td>
-                  <td className={styles.comparisonHighlight}>Open source, self-hosted</td>
-                  <td>Open source</td>
-                  <td>Open source</td>
-                  <td>Open source</td>
-                  <td>Open source</td>
-                </tr>
-                <tr>
-                  <td>Core tradeoff</td>
-                  <td className={styles.comparisonHighlight}>React-native over lowest JS</td>
-                  <td>Mature but heavier</td>
-                  <td>Light, Astro-first</td>
-                  <td>Light, Vue-first</td>
-                  <td>Powerful, more composable</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ul className={styles.compareList}>
+            <li className={`${styles.compareRow} ${styles.compareRowSelf}`}>
+              <div className={styles.compareName}>
+                Ardo <span className={styles.compareTag}>React + Vite</span>
+              </div>
+              <p className={styles.compareNote}>
+                Your React components, TypeDoc API pages, and static output, at about 155 KB gzip
+                for the first page. No platform, no second UI model.
+              </p>
+            </li>
+            <li className={styles.compareRow}>
+              <div className={styles.compareName}>
+                VitePress <span className={styles.compareTag}>Vue</span>
+              </div>
+              <p className={styles.compareNote}>
+                Light and excellent for Markdown docs. The moment you want an interactive example,
+                the component layer is Vue.
+              </p>
+            </li>
+            <li className={styles.compareRow}>
+              <div className={styles.compareName}>
+                Starlight <span className={styles.compareTag}>Astro</span>
+              </div>
+              <p className={styles.compareNote}>
+                Fast and content-first. React works, but only through Astro islands rather than as
+                the native model.
+              </p>
+            </li>
+            <li className={styles.compareRow}>
+              <div className={styles.compareName}>
+                Docusaurus <span className={styles.compareTag}>React</span>
+              </div>
+              <p className={styles.compareNote}>
+                The mature, batteries-included choice, and genuinely React, but it carries years of
+                webpack-era weight.
+              </p>
+            </li>
+            <li className={styles.compareRow}>
+              <div className={styles.compareName}>
+                Fumadocs <span className={styles.compareTag}>React</span>
+              </div>
+              <p className={styles.compareNote}>
+                The closest in spirit: powerful and composable. It leans on Next.js, where Ardo
+                stays on plain React Router and Vite.
+              </p>
+            </li>
+          </ul>
 
           <div className={styles.comparisonCta}>
             <Link to="/guide/comparison" className={styles.link}>

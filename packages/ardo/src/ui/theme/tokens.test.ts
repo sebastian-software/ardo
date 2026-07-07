@@ -12,7 +12,7 @@ describe("createTheme", () => {
       neutral: "130",
     })
     expect(theme.dark.hue).toStrictEqual(theme.light.hue)
-    expect(theme.light.color.brand).toBe("oklch(0.5 0.1 var(--ardo-hue-brand))")
+    expect(theme.light.color.brand).toBe("oklch(0.53 0.185 var(--ardo-hue-brand))")
     expect(theme.light.color.bg).toBe("oklch(0.992 0.0015 var(--ardo-hue-neutral))")
     expect(theme.dark.color.sidebarBg).toBe("oklch(0.13 0.008 var(--ardo-hue-neutral))")
   })
@@ -58,6 +58,8 @@ describe("createTheme", () => {
       base: "0px",
       lg: "0px",
       sm: "0px",
+      xl: "1rem",
+      full: "999px",
     })
   })
 

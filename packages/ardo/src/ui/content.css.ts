@@ -16,15 +16,26 @@ globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
 })
 
 globalStyle(`${c} h1`, {
-  fontSize: vars.fontSize["2xl"],
+  fontSize: vars.fontSize["3xl"],
   fontWeight: 700,
+  letterSpacing: "-0.02em",
   marginTop: vars.space["2xl"],
 })
 
-// h2 opens a major section — generous separation above.
+// h2 opens a major section — generous separation above plus a hairline rule
+// so long pages get visible structure while scanning.
 globalStyle(`${c} h2`, {
   fontSize: "1.375rem",
   marginTop: vars.space["2xl"],
+  paddingTop: vars.space.lg,
+  borderTop: `1px solid ${vars.color.divider}`,
+})
+
+// No rule when the h2 directly follows the page title or another heading —
+// it would read as a stray line inside one heading group.
+globalStyle(`${c} :is(h1,h2,h3,h4,h5,h6) + h2, ${c} > h2:first-child`, {
+  paddingTop: 0,
+  borderTop: "none",
 })
 
 // h3/h4 are subsections — they live inside a section, so they sit closer.
@@ -118,9 +129,10 @@ globalStyle(`${c} li::marker`, {
 globalStyle(`${c} blockquote`, {
   margin: `${vars.space.lg} 0`,
   padding: `${vars.space.md} ${vars.space.lg}`,
-  borderLeft: `3px solid ${vars.color.brand}`,
-  background: vars.color.brandSubtle,
-  borderRadius: `0 ${vars.radius.base} ${vars.radius.base} 0`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 16%, ${vars.color.border})`,
+  background: `color-mix(in oklch, ${vars.color.brandSubtle} 55%, ${vars.color.bg})`,
+  borderRadius: vars.radius.base,
+  boxShadow: vars.color.surfaceInset,
   color: vars.color.text,
   fontSize: vars.fontSize.base,
   maxWidth: vars.layout.contentMaxWidth,
@@ -129,7 +141,8 @@ globalStyle(`${c} blockquote`, {
 globalStyle(`${c} hr`, {
   margin: `${vars.space.xl} 0`,
   border: "none",
-  borderTop: `1px solid ${vars.color.border}`,
+  height: "1px",
+  background: `linear-gradient(90deg, ${vars.color.border} 0%, transparent 100%)`,
 })
 
 globalStyle(`${c} table`, {
@@ -179,6 +192,7 @@ globalStyle(`${c} img`, {
   maxWidth: "100%",
   borderRadius: vars.radius.base,
   border: `1px solid ${vars.color.border}`,
+  boxShadow: vars.color.shadowSm,
 })
 
 // Inline code

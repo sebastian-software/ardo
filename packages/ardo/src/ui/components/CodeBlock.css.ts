@@ -9,9 +9,9 @@ import { copyButton } from "./CopyButton.css"
 // =============================================================================
 
 export const codeBlock = style({
-  margin: `${vars.space.lg} 0`,
+  margin: ` 0`,
   maxWidth: "120ch",
-  borderRadius: vars.radius.base,
+  borderRadius: vars.radius.lg,
   overflow: "hidden",
   background: vars.color.codeBg,
   border: `1px solid ${vars.color.codeBorder}`,
@@ -105,9 +105,9 @@ globalStyle(`${s} > [data-title]`, {
 })
 
 globalStyle(s, {
-  margin: `${vars.space.lg} 0`,
+  margin: ` 0`,
   maxWidth: "120ch",
-  borderRadius: vars.radius.base,
+  borderRadius: vars.radius.lg,
   overflow: "hidden",
   background: vars.color.codeBg,
   border: `1px solid ${vars.color.codeBorder}`,
@@ -215,9 +215,9 @@ globalStyle(".dark .shiki span", {
 // =============================================================================
 
 export const codeGroup = style({
-  margin: `${vars.space.lg} 0`,
+  margin: ` 0`,
   maxWidth: "120ch",
-  borderRadius: vars.radius.base,
+  borderRadius: vars.radius.lg,
   overflow: "hidden",
   background: vars.color.codeBg,
   border: `1px solid ${vars.color.codeBorder}`,

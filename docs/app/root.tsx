@@ -3,15 +3,21 @@ import {
   ArdoRootLayout,
   ArdoRoot,
   ArdoFooter,
+  ArdoOwlMark,
   ArdoSocialLink,
   registerIcons,
 } from "ardo/ui"
 import { Code2, Rocket, Zap } from "lucide-react"
 import config from "virtual:ardo/config"
 import sidebars from "virtual:ardo/sidebars"
-import logo from "./assets/logo.svg"
 import type { MetaFunction } from "react-router"
 import "ardo/ui/styles.css"
+
+// Brand-tinted owl mark. It draws in currentColor, so it follows the live
+// --ardo-color-brand across light/dark themes and any custom brand hue.
+const brandLogo = (
+  <ArdoOwlMark size={30} title="Ardo" style={{ color: "var(--ardo-color-brand)" }} />
+)
 
 registerIcons({ Code2, Rocket, Zap })
 
@@ -44,7 +50,7 @@ export default function Root() {
         text: "Last updated",
       }}
       headerProps={{
-        logo,
+        logo: brandLogo,
         searchPlaceholder: "Search documentation...",
         actions: <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />,
       }}

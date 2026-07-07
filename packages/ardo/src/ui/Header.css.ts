@@ -9,10 +9,17 @@ export const header = style({
   right: 0,
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
-  background: vars.color.bg,
+  background: vars.color.headerBg,
+  backdropFilter: "blur(12px) saturate(1.6)",
+  WebkitBackdropFilter: "blur(12px) saturate(1.6)",
   borderBottom: `1px solid ${vars.color.border}`,
   zIndex: 100,
   boxShadow: "0 1px 0 oklch(0 0 0 / 0.02)",
+  "@supports": {
+    "not (backdrop-filter: blur(12px))": {
+      background: vars.color.bg,
+    },
+  },
 })
 
 export const headerContainer = style({

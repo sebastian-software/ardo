@@ -14,9 +14,28 @@ const inkOnBrand = "oklch(0.985 0.002 356)"
 export const homeHero = style({
   position: "relative",
   overflow: "hidden",
-  padding: "112px 24px 88px",
+  padding: "116px 24px 96px",
   textAlign: "center",
   background: pageSurface,
+  selectors: {
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      background: vars.color.heroWash,
+      pointerEvents: "none",
+    },
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      backgroundImage: vars.color.heroGrid,
+      backgroundSize: "22px 22px",
+      maskImage: "linear-gradient(180deg, oklch(0 0 0 / 0.9) 0%, transparent 68%)",
+      WebkitMaskImage: "linear-gradient(180deg, oklch(0 0 0 / 0.9) 0%, transparent 68%)",
+      pointerEvents: "none",
+    },
+  },
   "@media": {
     "(max-width: 768px)": {
       padding: "64px 20px 56px",
@@ -26,30 +45,42 @@ export const homeHero = style({
 
 globalStyle(`${homeHero} > div`, {
   maxWidth: "860px",
+  position: "relative",
+  zIndex: 1,
 })
 
-globalStyle(`${homeHero} img`, {
+// The hero owl is an inline SVG mark (ArdoOwlMark) drawn in currentColor, so
+// it follows the live brand color across themes and custom hues.
+export const heroOwl = style({
   width: "clamp(128px, 16vw, 190px)",
+  height: "auto",
   marginBottom: "36px",
-  filter: `drop-shadow(0 22px 34px color-mix(in oklch, ${vars.color.brand} 22%, transparent))`,
+  color: vars.color.brand,
+  filter: `drop-shadow(0 22px 34px color-mix(in oklch, ${vars.color.brand} 26%, transparent))`,
 })
 
 globalStyle(`${homeHero} h1`, {
   color: vars.color.brand,
   background: "none",
   WebkitTextFillColor: "currentColor",
-  fontSize: "clamp(56px, 10vw, 92px)",
+  margin: 0,
+  // Display ceiling capped at 6rem (96px): loud wordmark, not shouting.
+  fontSize: "clamp(58px, 9vw, 96px)",
   fontWeight: "850",
-  lineHeight: 0.95,
+  lineHeight: "1",
+  letterSpacing: "-0.035em",
 })
 
+// Subtitle sits in a tight lockup under the wordmark and is clearly
+// secondary — the size jump (roughly 2.6x) carries the hierarchy.
 globalStyle(`${homeHero} p:first-of-type`, {
-  maxWidth: "780px",
-  marginLeft: "auto",
-  marginRight: "auto",
-  fontSize: "clamp(32px, 5vw, 58px)",
-  fontWeight: "760",
-  lineHeight: 1.02,
+  maxWidth: "680px",
+  margin: "16px auto 0",
+  color: vars.color.text,
+  fontSize: "clamp(23px, 3.2vw, 37px)",
+  fontWeight: "600",
+  lineHeight: "1.14",
+  letterSpacing: "-0.02em",
 })
 
 globalStyle(`${homeHero} a:first-child`, {
@@ -158,6 +189,102 @@ export const sectionSubtitle = style({
   },
 })
 
+// Why-story section — the one deliberately asymmetric, personal moment on the
+// page. Left column carries the founder quote, right column the reasoning.
+export const storySection = style({
+  position: "relative",
+  padding: "96px 24px",
+  background: softSurface,
+  borderTop: `1px solid ${sectionRule}`,
+  "@media": {
+    "(max-width: 768px)": {
+      padding: "56px 20px",
+    },
+  },
+})
+
+export const storyGrid = style({
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 5fr) minmax(0, 6fr)",
+  gap: "clamp(40px, 6vw, 88px)",
+  maxWidth: "980px",
+  margin: "0 auto",
+  alignItems: "start",
+  "@media": {
+    "(max-width: 860px)": {
+      gridTemplateColumns: "1fr",
+      gap: "32px",
+    },
+  },
+})
+
+export const storyQuote = style({
+  margin: 0,
+  fontSize: "clamp(24px, 3.4vw, 34px)",
+  fontWeight: 700,
+  lineHeight: 1.28,
+  letterSpacing: "-0.02em",
+  color: vars.color.text,
+  textWrap: "balance",
+})
+
+globalStyle(`${storyQuote} em`, {
+  fontStyle: "normal",
+  color: vars.color.brand,
+})
+
+export const storyAttribution = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  marginTop: "28px",
+})
+
+export const storyAvatar = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "44px",
+  height: "44px",
+  borderRadius: vars.radius.full,
+  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.brandSubtle} 55%, ${vars.color.bg}) 0%, ${vars.color.brandSubtle} 100%)`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 24%, ${vars.color.border})`,
+  color: vars.color.brand,
+  flexShrink: 0,
+})
+
+export const storyName = style({
+  fontSize: "15px",
+  fontWeight: 650,
+  lineHeight: 1.3,
+})
+
+export const storyRole = style({
+  fontSize: "13px",
+  color: vars.color.textLight,
+  lineHeight: 1.3,
+})
+
+export const storyBody = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: "18px",
+  paddingTop: "6px",
+})
+
+globalStyle(`${storyBody} p`, {
+  margin: 0,
+  fontSize: "16.5px",
+  lineHeight: 1.72,
+  color: vars.color.textLight,
+  textWrap: "pretty",
+})
+
+globalStyle(`${storyBody} p strong`, {
+  color: vars.color.text,
+  fontWeight: 650,
+})
+
 // Terminal mock
 export const terminal = style({
   borderRadius: vars.radius.lg,
@@ -218,6 +345,12 @@ export const terminalBody = style({
   fontFamily: vars.font.mono,
   fontSize: "14px",
   lineHeight: 1.8,
+})
+
+// The UA stylesheet forces `font-family: monospace` (Courier) on <code>;
+// re-apply the theme's mono stack.
+globalStyle(`${terminalBody} code`, {
+  fontFamily: vars.font.mono,
 })
 
 export const terminalPrompt = style({
@@ -287,62 +420,108 @@ export const techIcon = style({
   color: vars.color.brand,
 })
 
-// Comparison table
-export const comparison = style({
-  overflowX: "auto",
+// Comparison — an editorial, curated list rather than a wide spec matrix.
+// Each row names a tool and one honest sentence; Ardo's row is highlighted.
+export const compareList = style({
+  listStyle: "none",
   margin: "0 auto",
-  maxWidth: "800px",
-  border: `1px solid color-mix(in oklch, ${vars.color.brand} 18%, ${vars.color.border})`,
+  padding: 0,
+  maxWidth: "760px",
+  display: "flex",
+  flexDirection: "column",
+})
+
+export const compareRow = style({
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 190px) minmax(0, 1fr)",
+  gap: "clamp(16px, 3vw, 40px)",
+  alignItems: "baseline",
+  padding: "20px 4px",
+  borderBottom: `1px solid ${vars.color.divider}`,
+  selectors: {
+    "&:first-child": {
+      borderTop: `1px solid ${vars.color.divider}`,
+    },
+  },
+  "@media": {
+    "(max-width: 620px)": {
+      gridTemplateColumns: "1fr",
+      gap: "6px",
+      padding: "16px 4px",
+    },
+  },
+})
+
+export const compareRowSelf = style({
+  padding: "22px 20px",
+  margin: "0 -20px",
   borderRadius: vars.radius.lg,
-  boxShadow: `${vars.color.shadowMd}, inset 0 1px 0 color-mix(in oklch, ${vars.color.bg} 84%, transparent)`,
-  WebkitOverflowScrolling: "touch",
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 30%, ${vars.color.border})`,
+  background: `color-mix(in oklch, ${vars.color.brandSubtle} 70%, ${vars.color.bg})`,
+  boxShadow: `${vars.color.shadowSm}, ${vars.color.surfaceInset}`,
+  selectors: {
+    "&:first-child": {
+      borderTop: `1px solid color-mix(in oklch, ${vars.color.brand} 30%, ${vars.color.border})`,
+    },
+  },
+  "@media": {
+    "(max-width: 620px)": {
+      padding: "18px 16px",
+      margin: "0",
+    },
+  },
 })
 
-export const comparisonTable = style({
-  width: "100%",
-  minWidth: "720px",
-  borderCollapse: "collapse",
-  fontSize: "14px",
-  textAlign: "left",
-})
-
-globalStyle(`${comparisonTable} th, ${comparisonTable} td`, {
-  padding: "12px 16px",
-  borderBottom: `1px solid ${vars.color.border}`,
-})
-
-globalStyle(`${comparisonTable} th`, {
+export const compareName = style({
+  display: "flex",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: "8px",
+  fontSize: "17px",
   fontWeight: 700,
-  fontSize: "13px",
-  color: vars.color.textLight,
-  background: `linear-gradient(180deg, ${vars.color.bgSoft}, color-mix(in oklch, ${vars.color.brand} 4%, ${vars.color.bgSoft}))`,
+  letterSpacing: "-0.01em",
+  color: vars.color.text,
 })
 
-globalStyle(`${comparisonTable} tr:last-child td`, {
-  borderBottom: "0",
-})
-
-export const comparisonHighlight = style({
-  background: `color-mix(in oklch, ${vars.color.brandSubtle} 80%, ${vars.color.bg})`,
-  fontWeight: 650,
-})
-
-globalStyle(`.dark ${comparisonHighlight}`, {
-  background: `color-mix(in oklch, ${vars.color.brand} 14%, transparent)`,
-})
-
-export const check = style({
+globalStyle(`${compareRowSelf} ${compareName}`, {
   color: vars.color.brand,
-  fontWeight: 600,
 })
 
-export const x = style({
-  color: vars.color.textLighter,
+export const compareTag = style({
+  display: "inline-flex",
+  alignItems: "center",
+  padding: "2px 9px",
+  fontSize: "11px",
+  fontWeight: 600,
+  letterSpacing: "0.03em",
+  textTransform: "uppercase",
+  color: vars.color.textLight,
+  background: vars.color.bgMute,
+  border: `1px solid ${vars.color.borderLight}`,
+  borderRadius: vars.radius.full,
+})
+
+globalStyle(`${compareRowSelf} ${compareTag}`, {
+  color: vars.color.brand,
+  background: `color-mix(in oklch, ${vars.color.brand} 12%, transparent)`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 28%, ${vars.color.border})`,
+})
+
+export const compareNote = style({
+  margin: 0,
+  fontSize: "15px",
+  lineHeight: 1.6,
+  color: vars.color.textLight,
+  textWrap: "pretty",
+})
+
+globalStyle(`${compareRowSelf} ${compareNote}`, {
+  color: vars.color.text,
 })
 
 export const comparisonCta = style({
   textAlign: "center",
-  marginTop: "32px",
+  marginTop: "36px",
 })
 
 export const link = style({

@@ -23,6 +23,10 @@ export const main = style({
   flex: 1,
   minWidth: 0,
   width: "100%",
+  // Flex column so the content region (docPage has flex: 1) grows to fill
+  // short pages and the footer is pushed to the bottom of the scroll area.
+  display: "flex",
+  flexDirection: "column",
   background: vars.color.bg,
   overflowY: "auto",
   scrollPaddingTop: vars.space["2xl"],
