@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.7.0...ardo-v3.8.0) (2026-07-07)
+
+
+### Features
+
+* rework the sidebar navigation ([1332464](https://github.com/sebastian-software/ardo/commit/1332464108ffead5199689ae7566fb50505ae694))
+
+
+### Bug Fixes
+
+* mark linked sidebar parent active only on its own page ([36d592e](https://github.com/sebastian-software/ardo/commit/36d592e57ec519b4c63478dc124611398a0bc3f1)), closes [#277](https://github.com/sebastian-software/ardo/issues/277)
+
+
+### Tests
+
+* make parent-link class lookup attribute-order agnostic ([eeccac7](https://github.com/sebastian-software/ardo/commit/eeccac71c82e73c36c7a23064339e566a0d8af98))
+
 ## [3.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.1...ardo-v3.7.0) (2026-07-07)
 
 
