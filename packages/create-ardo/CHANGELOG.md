@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.7.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.6.1...create-ardo-v3.7.0) (2026-07-07)
+
+
+### Features
+
+* improve create-ardo scripted scaffolding ([6e2370e](https://github.com/sebastian-software/ardo/commit/6e2370e47bb256474ecb16a1f36462053bf98bed))
+
+
+### Bug Fixes
+
+* make create-ardo scaffolds non-destructive ([7a01290](https://github.com/sebastian-software/ardo/commit/7a01290f442532cc8fe9cde9918fe2f157075803))
+* protect typedoc output and cold builds ([4fe4867](https://github.com/sebastian-software/ardo/commit/4fe4867ad24c1ad27906c833e3bbe5821cd7a35d))
+
+
+### Documentation
+
+* refresh guide and contributor references ([c36ab85](https://github.com/sebastian-software/ardo/commit/c36ab852ecc0347dd5a33ac80edc5ae626b22bd8))
+
+
+### CI/CD
+
+* test the Node 22 line instead of a pinned patch ([353c191](https://github.com/sebastian-software/ardo/commit/353c1917efda971657c135a2a0dfb3ac35a09403))
+
 ## [3.6.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.6.0...create-ardo-v3.6.1) (2026-06-21)
 
 
