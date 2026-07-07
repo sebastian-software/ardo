@@ -5,6 +5,8 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import type { GeneratedApiDoc } from "../typedoc/types"
+
 import { ardoPlugin } from "./plugin"
 
 vi.mock("../typedoc/generator", async () => {
@@ -17,7 +19,14 @@ vi.mock("../typedoc/generator", async () => {
       await nodeFs.mkdir(nodePath.join(apiDir, "functions"), { recursive: true })
       await nodeFs.writeFile(nodePath.join(apiDir, "index.md"), "# API\n", "utf8")
       await nodeFs.writeFile(nodePath.join(apiDir, "functions", "read.md"), "# read\n", "utf8")
-      return [{ title: "API" }, { title: "read" }]
+      return [
+        { path: "index.md", content: "# API\n", frontmatter: { title: "API" } },
+        {
+          path: "functions/read.md",
+          content: "# read\n",
+          frontmatter: { title: "read" },
+        },
+      ] satisfies GeneratedApiDoc[]
     }),
   }
 })
@@ -54,7 +63,10 @@ describe("TypeDoc route generation order", () => {
     expect(typedocPluginIndex).toBeLessThan(routesPluginIndex)
     expect(routesPluginIndex).toBeLessThan(reactRouterPluginIndex)
 
-    await runConfigHooks(plugins.slice(0, routesPluginIndex + 1), { root: tempDir })
+    const messages = await runConfigHooks(plugins.slice(0, routesPluginIndex + 1), {
+      root: tempDir,
+    })
+    expect(messages).toStrictEqual([])
 
     const routesFile = await fs.readFile(path.join(tempDir, "app", "routes.ts"), "utf8")
     expect(routesFile).toContain('route("api-reference", "routes/api-reference/index.md"),')
@@ -76,7 +88,7 @@ function pluginNameIndex(plugins: Plugin[], namePart: string): number {
   return index
 }
 
-async function runConfigHooks(plugins: Plugin[], userConfig: UserConfig): Promise<void> {
+async function runConfigHooks(plugins: Plugin[], userConfig: UserConfig): Promise<unknown[]> {
   const messages: unknown[] = []
   const context: ConfigPluginContext = {
     debug(message) {
@@ -102,10 +114,25 @@ async function runConfigHooks(plugins: Plugin[], userConfig: UserConfig): Promis
   }
 
   for (const plugin of plugins) {
-    if (typeof plugin.config === "function") {
-      await plugin.config.call(context, userConfig, env)
+    const configHook = getConfigHook(plugin)
+    if (configHook != null) {
+      await configHook.call(context, userConfig, env)
     }
   }
 
-  expect(messages).toStrictEqual([])
+  return messages
 }
+
+function getConfigHook(plugin: Plugin): PluginConfigHook | undefined {
+  if (plugin.config == null) {
+    return undefined
+  }
+
+  if (typeof plugin.config === "function") {
+    return plugin.config
+  }
+
+  return plugin.config.handler
+}
+
+type PluginConfigHook = Exclude<Plugin["config"], { handler: unknown } | undefined>
