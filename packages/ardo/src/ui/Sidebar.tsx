@@ -17,15 +17,9 @@ import type { SidebarItem as SidebarItemType } from "../config/types"
 
 import { useArdoContexts, useArdoLabels, useArdoSidebar } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
-import { ChevronDownIcon } from "./icons"
+import { ChevronDownIcon, FileTextIcon, FolderIcon } from "./icons"
 import * as styles from "./Sidebar.css"
-import {
-  getContextRailItems,
-  getDataRailItems,
-  getTextLabel,
-  SidebarRail,
-  type SidebarRailItem,
-} from "./SidebarRail"
+import { getContextRailItems, SidebarRail } from "./SidebarRail"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -102,14 +96,11 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
   const hasCustomChildren = children != null
   const resolvedItems = items ?? (hasCustomChildren ? undefined : contextSidebar)
   const hasResolvedItems = (resolvedItems?.length ?? 0) > 0
-  // If contexts are configured, the rail is the world-switcher; otherwise
-  // fall back to the legacy "mirror sidebar sections as icons" behaviour.
-  const railItems =
-    contexts.length > 0
-      ? getContextRailItems(contexts, activeId)
-      : hasCustomChildren
-        ? getRailItemsFromChildren(children, pathname)
-        : getDataRailItems(resolvedItems ?? [], pathname)
+  // The rail is exclusively a high-level context switcher, and a switcher only
+  // makes sense with more than one destination. With zero or one context it
+  // carries no icons (`SidebarRail` still renders its empty surface); sidebar
+  // sections are never mirrored, so no duplicate links appear.
+  const railItems = contexts.length > 1 ? getContextRailItems(contexts, activeId) : []
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
   return (
@@ -138,8 +129,6 @@ export function ArdoSidebar({ items, children, header, className }: ArdoSidebarP
 export type ArdoSidebarGroupProps = {
   /** Group title */
   title: string
-  /** Optional icon shown in the desktop section rail */
-  icon?: ReactNode
   /** Optional link for the group title */
   to?: string
   /** Initial collapsed state (default: false) */
@@ -311,15 +300,22 @@ type SidebarItemsProps = {
 }
 
 function SidebarItems({ items, depth }: SidebarItemsProps) {
+  // The tree treatment (icon-circle nodes threaded on a trunk line) only kicks
+  // in for top-level lists that actually contain groups. Flat lists of single
+  // links stay plain — the circles are a group marker, not a per-link bullet.
+  const treeMode = depth === 0 && items.some((item) => (item.items?.length ?? 0) > 0)
+  const depthClass = depth === 0 ? styles.sidebarList0 : styles.sidebarList1
+  const listClassName = [styles.sidebarList, depthClass, treeMode && styles.sidebarTrunk]
+    .filter(Boolean)
+    .join(" ")
   return (
-    <ul
-      className={`${styles.sidebarList} ${depth === 0 ? styles.sidebarList0 : styles.sidebarList1}`}
-    >
+    <ul className={listClassName}>
       {items.map((item) => (
         <SidebarItemComponent
           key={item.link ?? `${item.text}-${String(depth)}`}
           item={item}
           depth={depth}
+          treeMode={treeMode}
         />
       ))}
     </ul>
@@ -329,17 +325,34 @@ function SidebarItems({ items, depth }: SidebarItemsProps) {
 type SidebarItemComponentProps = {
   item: SidebarItemType
   depth: number
+  treeMode?: boolean
 }
 
-function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
+function SidebarItemComponent({ item, depth, treeMode = false }: SidebarItemComponentProps) {
+  return depth === 0 && treeMode ? (
+    <SidebarGroupNode item={item} depth={depth} />
+  ) : (
+    <SidebarLeafItem item={item} depth={depth} />
+  )
+}
+
+type SidebarItemState = {
+  collapsed: boolean
+  toggle: () => void
+  contentId: string
+  childItems: SidebarItemType[]
+  hasChildren: boolean
+  hasActiveChild: boolean
+  hasItemLink: boolean
+  isSelfActive: boolean
+}
+
+function useSidebarItem(item: SidebarItemType): SidebarItemState {
   const { currentPath } = useSidebarContext()
-  const labels = useArdoLabels()
   const [collapsed, setCollapsed] = useState(item.collapsed ?? false)
   const contentId = useId()
   const childItems = item.items ?? []
-
   const hasChildren = childItems.length > 0
-
   const hasActiveChild =
     hasChildren &&
     childItems.some(
@@ -348,23 +361,140 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         child.items?.some((grandchild) => grandchild.link === currentPath)
     )
   const hasItemLink = (item.link ?? "") !== ""
+  return {
+    collapsed,
+    toggle() {
+      setCollapsed(!collapsed)
+    },
+    contentId,
+    childItems,
+    hasChildren,
+    hasActiveChild,
+    hasItemLink,
+    isSelfActive: hasItemLink && item.link === currentPath,
+  }
+}
 
+type ItemProps = {
+  item: SidebarItemType
+  depth: number
+}
+
+function sidebarItemClass(hasChildren: boolean) {
+  return [styles.sidebarItem, hasChildren && styles.sidebarItemGroup].filter(Boolean).join(" ")
+}
+
+function toggleAria(collapsed: boolean, text: string) {
+  return `${collapsed ? "Expand" : "Collapse"} ${text}`
+}
+
+/** Standalone chevron button shown alongside a linked (navigable) group title. */
+function CollapseButton({
+  item,
+  state,
+}: {
+  item: SidebarItemType
+  state: Pick<SidebarItemState, "collapsed" | "contentId" | "toggle">
+}) {
+  const labels = useArdoLabels()
+  const { collapsed, toggle, contentId } = state
+  return (
+    <button
+      type="button"
+      className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
+      onClick={toggle}
+      aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${item.text}`}
+      aria-expanded={!collapsed}
+      aria-controls={contentId}
+    >
+      <ChevronDownIcon size={16} />
+    </button>
+  )
+}
+
+function SidebarItemChildren({
+  state,
+  depth,
+}: {
+  state: Pick<SidebarItemState, "childItems" | "collapsed" | "contentId">
+  depth: number
+}) {
+  return (
+    <div
+      id={state.contentId}
+      className={styles.sidebarCollapseWrapper}
+      data-collapsed={state.collapsed}
+      aria-hidden={state.collapsed}
+      inert={state.collapsed}
+    >
+      <div className={styles.sidebarCollapseInner}>
+        <SidebarItems items={state.childItems} depth={depth + 1} />
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Top-level entry in tree mode: an icon circle plus title, wrapped in a capsule
+ * that highlights when the section (or one of its children) is active.
+ */
+function SidebarGroupNode({ item, depth }: ItemProps) {
+  const state = useSidebarItem(item)
+  const { collapsed, toggle, contentId, hasChildren, hasActiveChild, hasItemLink, isSelfActive } =
+    state
+  const NodeIcon = hasChildren ? FolderIcon : FileTextIcon
+  const capsuleState = isSelfActive ? "active" : hasActiveChild ? "child-active" : ""
+  const headerClassName = [styles.sidebarNodeHeader, capsuleState].filter(Boolean).join(" ")
+
+  return (
+    <li className={sidebarItemClass(hasChildren)}>
+      <div className={headerClassName}>
+        <span className={styles.sidebarNode} aria-hidden="true">
+          <NodeIcon size={15} strokeWidth={1.8} />
+        </span>
+        {hasItemLink ? (
+          <NavLink to={item.link ?? "/"} end className={styles.sidebarNodeTitle}>
+            {item.text}
+          </NavLink>
+        ) : hasChildren ? (
+          <button
+            type="button"
+            className={styles.sidebarNodeTitle}
+            onClick={toggle}
+            aria-expanded={!collapsed}
+            aria-controls={contentId}
+            aria-label={toggleAria(collapsed, item.text)}
+          >
+            {item.text}
+          </button>
+        ) : (
+          <span className={styles.sidebarNodeTitle}>{item.text}</span>
+        )}
+        {hasChildren &&
+          (hasItemLink ? (
+            <CollapseButton item={item} state={state} />
+          ) : (
+            <CollapseChevron collapsed={collapsed} />
+          ))}
+      </div>
+      {hasChildren && <SidebarItemChildren state={state} depth={depth} />}
+    </li>
+  )
+}
+
+/** Plain link/section used for nested entries and flat (non-tree) top-level lists. */
+function SidebarLeafItem({ item, depth }: ItemProps) {
+  const state = useSidebarItem(item)
+  const { collapsed, toggle, contentId, hasChildren, hasActiveChild, hasItemLink } = state
   const linkClassName = [styles.sidebarLink, hasActiveChild && "child-active"]
     .filter(Boolean)
     .join(" ")
-
   const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
-    .filter(Boolean)
-    .join(" ")
-  const textButtonClassName = [textClassName, styles.sidebarTextButton].join(" ")
-  const toggleLabel = `${collapsed ? "Expand" : "Collapse"} ${item.text}`
-
-  const itemClassName = [styles.sidebarItem, hasChildren && styles.sidebarItemGroup]
     .filter(Boolean)
     .join(" ")
 
   return (
-    <li className={itemClassName}>
+    <li className={sidebarItemClass(hasChildren)}>
       <div className={styles.sidebarItemHeader}>
         {hasItemLink ? (
           <NavLink
@@ -379,13 +509,11 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         ) : hasChildren ? (
           <button
             type="button"
-            className={textButtonClassName}
-            onClick={() => {
-              setCollapsed(!collapsed)
-            }}
+            className={[textClassName, styles.sidebarTextButton].join(" ")}
+            onClick={toggle}
             aria-expanded={!collapsed}
             aria-controls={contentId}
-            aria-label={toggleLabel}
+            aria-label={toggleAria(collapsed, item.text)}
           >
             <span>{item.text}</span>
             <CollapseChevron collapsed={collapsed} />
@@ -393,36 +521,9 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         ) : (
           <span className={textClassName}>{item.text}</span>
         )}
-
-        {hasChildren && hasItemLink && (
-          <button
-            type="button"
-            className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
-            onClick={() => {
-              setCollapsed(!collapsed)
-            }}
-            aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${item.text}`}
-            aria-expanded={!collapsed}
-            aria-controls={contentId}
-          >
-            <ChevronDownIcon size={16} />
-          </button>
-        )}
+        {hasChildren && hasItemLink && <CollapseButton item={item} state={state} />}
       </div>
-
-      {hasChildren && (
-        <div
-          id={contentId}
-          className={styles.sidebarCollapseWrapper}
-          data-collapsed={collapsed}
-          aria-hidden={collapsed}
-          inert={collapsed}
-        >
-          <div className={styles.sidebarCollapseInner}>
-            <SidebarItems items={childItems} depth={depth + 1} />
-          </div>
-        </div>
-      )}
+      {hasChildren && <SidebarItemChildren state={state} depth={depth} />}
     </li>
   )
 }
@@ -436,54 +537,6 @@ function CollapseChevron({ collapsed }: { collapsed: boolean }) {
       <ChevronDownIcon size={16} />
     </span>
   )
-}
-
-// =============================================================================
-// Sidebar Rail Data
-// =============================================================================
-
-function getRailItemsFromChildren(children: ReactNode, currentPath: string): SidebarRailItem[] {
-  return Children.toArray(children)
-    .filter(isValidElement)
-    .map((child, index): SidebarRailItem | undefined => {
-      if (isSidebarGroupElement(child)) {
-        const { title, to, icon } = child.props
-        return {
-          key: to ?? title,
-          label: title,
-          to: to ?? findFirstChildLink(child.props.children),
-          icon,
-          active: to === currentPath || checkChildrenActive(child.props.children, currentPath),
-        }
-      }
-
-      if (isSidebarLinkElement(child)) {
-        const label = getTextLabel(child.props.children, `Section ${String(index + 1)}`)
-        return {
-          key: `${label}-${String(index)}`,
-          label,
-          to: child.props.to,
-          active: child.props.to === currentPath,
-        }
-      }
-
-      return undefined
-    })
-    .filter((item): item is SidebarRailItem => item !== undefined)
-}
-
-function findFirstChildLink(children: ReactNode): RoutePath | undefined {
-  for (const child of Children.toArray(children)) {
-    if (!isValidElement(child)) continue
-    if (isSidebarLinkElement(child)) return child.props.to
-    if (isSidebarGroupElement(child)) return findFirstGroupLink(child)
-  }
-  return undefined
-}
-
-function findFirstGroupLink(child: ReactElement<ArdoSidebarGroupProps>): RoutePath | undefined {
-  if ((child.props.to ?? "") !== "") return child.props.to
-  return findFirstChildLink(child.props.children)
 }
 
 // =============================================================================

@@ -10,6 +10,7 @@ export {
   Copy as CopyIcon,
   FileCode2 as FileCodeIcon,
   FileText as FileTextIcon,
+  Folder as FolderIcon,
   Info as InfoIcon,
   Layers as LayersIcon,
   Lightbulb as LightbulbIcon,

@@ -32,6 +32,7 @@ export const vars = createGlobalThemeContract(
       borderLight: null,
       divider: null,
       sidebarBg: null,
+      sidebarRailBg: null,
       sidebarBorder: null,
       codeBg: null,
       codeBorder: null,
