@@ -1,5 +1,58 @@
 # Changelog
 
+## [3.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.1...ardo-v3.7.0) (2026-07-07)
+
+
+### Features
+
+* add neutral theme hue ([#193](https://github.com/sebastian-software/ardo/issues/193)) ([642c568](https://github.com/sebastian-software/ardo/commit/642c5687152e8be101f67ce48048a6bc9c6db86f))
+* add theme policy and token override APIs ([7b9221a](https://github.com/sebastian-software/ardo/commit/7b9221a23fc407211a54c49862e258990347f63f))
+* add UI chrome labels and accessibility polish ([830a381](https://github.com/sebastian-software/ardo/commit/830a3813cba23f047db349138c0eb427f252e967))
+* elevate the default theme with hue-derived depth and a tintable logo ([b1a719a](https://github.com/sebastian-software/ardo/commit/b1a719a6eb19c0588a6196f082015f7feca1c161))
+* generate llms text artifacts ([#194](https://github.com/sebastian-software/ardo/issues/194)) ([a6203db](https://github.com/sebastian-software/ardo/commit/a6203db6cd2afbf06f9c796e1ce05b2a567c76d9))
+* refine default UI to a calmer, more sophisticated baseline ([de87843](https://github.com/sebastian-software/ardo/commit/de8784397e2a4a3e179c013d78e9539a63879852))
+
+
+### Bug Fixes
+
+* allow default tabs to switch ([8f681c1](https://github.com/sebastian-software/ardo/commit/8f681c1f4613e78fe1190abc41219dcad1800fcc))
+* apply configured mdx plugins ([a28532b](https://github.com/sebastian-software/ardo/commit/a28532b4f56da95d93cab6a825cfa73e042ce4d5))
+* apply theme before hydration ([37df01d](https://github.com/sebastian-software/ardo/commit/37df01de90a77020ea999e32f4d1d9792e2f3958))
+* correct full-bleed layout seams and orphaned sidebar rail indicator ([65d080d](https://github.com/sebastian-software/ardo/commit/65d080d33b042e4943074fb627dd80f5d221815e))
+* correct P2 config and build core behavior ([823c034](https://github.com/sebastian-software/ardo/commit/823c034b928613c5f0b9688b3c247300abf5c51e))
+* declare app runtime packages as peers ([17da14f](https://github.com/sebastian-software/ardo/commit/17da14f07e632cb663547c256cf09c929689e7a3))
+* harden code highlighting and runtime helpers ([efebaa9](https://github.com/sebastian-software/ardo/commit/efebaa9d515a6d38b637131088893a582f953384))
+* harden UI shell CSS and mobile chrome ([7076b86](https://github.com/sebastian-software/ardo/commit/7076b860999ac867e8b5a9fca3ea1255e40963dc))
+* improve UI accessibility behavior ([d1c10bd](https://github.com/sebastian-software/ardo/commit/d1c10bd54822301bca3033b50df8fe0ea8fa378a))
+* keep sidebar when frontmatter is malformed ([d7d0b80](https://github.com/sebastian-software/ardo/commit/d7d0b80b7d69f580c3fb16eb3555a8a824f0c575))
+* protect typedoc output and cold builds ([4fe4867](https://github.com/sebastian-software/ardo/commit/4fe4867ad24c1ad27906c833e3bbe5821cd7a35d))
+* refresh route virtual modules in dev ([09b04d3](https://github.com/sebastian-software/ardo/commit/09b04d395c44013369f87665eddf92f628d8baf9))
+* reset default list padding/margin on sidebar, TOC, rail, and search ([bb2106c](https://github.com/sebastian-software/ardo/commit/bb2106cc921c88ee8e9f03803f9132f385028b1a))
+
+
+### Code Refactoring
+
+* restore intended code block vertical margin ([673b74e](https://github.com/sebastian-software/ardo/commit/673b74e0419c3c3fa8ce5e4a0bb332b9606b7316))
+* use shadow tokens for hero button and feature card ([b120dca](https://github.com/sebastian-software/ardo/commit/b120dca555627403762b0a46d6c3c206c58b8f71))
+
+
+### Documentation
+
+* refresh guide and contributor references ([c36ab85](https://github.com/sebastian-software/ardo/commit/c36ab852ecc0347dd5a33ac80edc5ae626b22bd8))
+
+
+### CI/CD
+
+* test the Node 22 line instead of a pinned patch ([353c191](https://github.com/sebastian-software/ardo/commit/353c1917efda971657c135a2a0dfb3ac35a09403))
+
+
+### Tests
+
+* add browser and core coverage gates ([fe82169](https://github.com/sebastian-software/ardo/commit/fe821692fed357a9f16c21b4aa0ac2a3c22b76e9))
+* address typedoc route review feedback ([540950f](https://github.com/sebastian-software/ardo/commit/540950f9028391593a7f957345cb8bdac6cdda6a))
+* cover mdx built-in plugin defaults ([2fe4153](https://github.com/sebastian-software/ardo/commit/2fe41538b109f9c9ebce1447ddb0a382f3cade07))
+* cover typedoc route ordering ([f8cbefd](https://github.com/sebastian-software/ardo/commit/f8cbefd063218f8972a66288bfe5e5209b59c06f))
+
 ## [3.6.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.6.0...ardo-v3.6.1) (2026-06-21)
 
 
