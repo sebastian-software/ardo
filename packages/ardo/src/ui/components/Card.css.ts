@@ -49,8 +49,8 @@ export const card = style({
   padding: "18px",
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.lg,
-  background: vars.color.bg,
-  boxShadow: vars.color.shadowSm,
+  background: vars.color.surfaceCard,
+  boxShadow: `${vars.color.shadowSm}, ${vars.color.surfaceInset}`,
   color: vars.color.text,
   textDecoration: "none",
   transition: `border-color ${vars.transition.base}, box-shadow ${vars.transition.base}, transform ${vars.transition.base}`,
@@ -67,12 +67,12 @@ export const cardLink = style([
     selectors: {
       "&:hover": {
         borderColor: brandBorder,
-        boxShadow: `${vars.color.shadowMd}, 0 0 0 1px ${brandRing}`,
+        boxShadow: `${vars.color.shadowMd}, ${vars.color.surfaceInset}, 0 0 0 1px ${brandRing}`,
         textDecoration: "none",
       },
       "&:focus-visible": {
-        outline: `2px solid ${vars.color.brand}`,
-        outlineOffset: "2px",
+        outline: "none",
+        boxShadow: `0 0 0 3px ${vars.color.ring}`,
       },
     },
     "@media": {
@@ -110,7 +110,8 @@ export const cardIcon = style({
   width: "32px",
   height: "32px",
   borderRadius: vars.radius.base,
-  background: vars.color.brandSubtle,
+  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.brandSubtle} 60%, ${vars.color.bg}) 0%, ${vars.color.brandSubtle} 100%)`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 16%, ${vars.color.border})`,
   color: vars.color.brand,
 })
 

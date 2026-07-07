@@ -54,17 +54,17 @@ export const featuresContainer = style({
 })
 
 export const feature = style({
-  padding: vars.space.lg,
-  background: vars.color.bg,
+  padding: "22px",
+  background: vars.color.surfaceCard,
   borderRadius: vars.radius.lg,
   border: `1px solid ${vars.color.border}`,
-  boxShadow: vars.color.shadowSm,
+  boxShadow: `${vars.color.shadowSm}, ${vars.color.surfaceInset}`,
   transition: `border-color ${vars.transition.base}, box-shadow ${vars.transition.base}, transform ${vars.transition.base}`,
-  animation: `${fadeInUp} 0.5s ease both`,
+  animation: `${fadeInUp} 0.5s cubic-bezier(0.22, 1, 0.36, 1) both`,
   selectors: {
     "&:hover": {
-      borderColor: `color-mix(in oklch, ${vars.color.brand} 22%, ${vars.color.border})`,
-      boxShadow: vars.color.shadowMd,
+      borderColor: `color-mix(in oklch, ${vars.color.brand} 28%, ${vars.color.border})`,
+      boxShadow: `${vars.color.shadowMd}, ${vars.color.surfaceInset}`,
     },
   },
   "@media": {
@@ -97,11 +97,13 @@ export const featureIcon = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: "40px",
-  height: "40px",
+  width: "42px",
+  height: "42px",
   marginBottom: "18px",
-  background: vars.color.brandSubtle,
+  background: `linear-gradient(180deg, color-mix(in oklch, ${vars.color.brandSubtle} 60%, ${vars.color.bg}) 0%, ${vars.color.brandSubtle} 100%)`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 18%, ${vars.color.border})`,
   borderRadius: vars.radius.base,
+  boxShadow: vars.color.surfaceInset,
   color: vars.color.brand,
 })
 

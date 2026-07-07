@@ -10,14 +10,16 @@ export type ArdoOwlMarkProps = {
  * error and empty states. Set `color` on the parent (or `style.color`)
  * to recolor; set `title` to give it accessible meaning.
  */
-export function ArdoOwlMark({ size = 96, title, ...props }: ArdoOwlMarkProps) {
+export function ArdoOwlMark({ size = 96, title, style, ...props }: ArdoOwlMarkProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 600"
       width={size}
       height={size}
-      style={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+      // Caller style is merged, not replaced, so passing `color` to tint the
+      // mark (it draws in currentColor) keeps the round line caps intact.
+      style={{ strokeLinecap: "round", strokeLinejoin: "round", ...style }}
       role={title == null ? "presentation" : "img"}
       aria-hidden={title == null ? true : undefined}
       {...props}

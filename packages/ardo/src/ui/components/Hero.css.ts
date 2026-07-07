@@ -9,16 +9,25 @@ export const hero = style({
   position: "relative",
   overflow: "hidden",
   selectors: {
-    // A single, quiet vertical wash — no brand glow. Reads as a calm
-    // documentation surface rather than a marketing splash.
+    // Layered brand-tinted wash, computed from the theme hues. Reads as a
+    // designed surface without shouting; adapts to any custom brand color.
     "&::before": {
       content: '""',
       position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: `linear-gradient(180deg, ${vars.color.bgSoft} 0%, ${vars.color.bg} 100%)`,
+      inset: 0,
+      background: vars.color.heroWash,
+      pointerEvents: "none",
+    },
+    // A fine dot grid that fades out halfway down. Gives the hero a subtle
+    // technical texture instead of a flat fill.
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      backgroundImage: vars.color.heroGrid,
+      backgroundSize: "22px 22px",
+      maskImage: "linear-gradient(180deg, oklch(0 0 0 / 0.9) 0%, transparent 68%)",
+      WebkitMaskImage: "linear-gradient(180deg, oklch(0 0 0 / 0.9) 0%, transparent 68%)",
       pointerEvents: "none",
     },
   },
@@ -37,7 +46,7 @@ export const heroContainer = style({
 })
 
 export const heroAnimate = style({
-  animation: `${fadeInUp} 0.6s ease both`,
+  animation: `${fadeInUp} 0.6s cubic-bezier(0.22, 1, 0.36, 1) both`,
   "@media": {
     "(prefers-reduced-motion: reduce)": {
       animation: "none",
@@ -52,45 +61,38 @@ globalStyle(`${hero} img`, {
 })
 
 export const heroVersion = style({
-  display: "inline-block",
-  padding: "4px 14px",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "6px",
+  padding: "5px 14px",
   fontSize: "13px",
   fontWeight: 600,
   color: vars.color.brand,
-  background: vars.color.brandSubtle,
-  border: `1px solid color-mix(in oklch, ${vars.color.brand} 20%, ${vars.color.border})`,
-  borderRadius: "999px",
-  marginBottom: "16px",
-  letterSpacing: "0.02em",
+  background: `color-mix(in oklch, ${vars.color.brandSubtle} 72%, ${vars.color.bg})`,
+  border: `1px solid color-mix(in oklch, ${vars.color.brand} 22%, ${vars.color.border})`,
+  borderRadius: vars.radius.full,
+  boxShadow: `${vars.color.shadowSm}, ${vars.color.surfaceInset}`,
+  marginBottom: "20px",
+  letterSpacing: "0.01em",
 })
 
 export const heroName = style({
-  fontSize: "58px",
+  fontSize: "clamp(40px, 7vw, 60px)",
   fontWeight: 800,
   color: vars.color.text,
-  letterSpacing: "-0.035em",
-  lineHeight: 1.1,
+  letterSpacing: "-0.03em",
+  lineHeight: 1.08,
   textWrap: "balance",
-  "@media": {
-    "(max-width: 768px)": {
-      fontSize: "38px",
-    },
-  },
 })
 
 export const heroText = style({
-  fontSize: "40px",
-  fontWeight: 600,
+  fontSize: "clamp(26px, 4.6vw, 40px)",
+  fontWeight: 650,
   color: vars.color.textLight,
   marginTop: "10px",
   letterSpacing: "-0.02em",
-  lineHeight: 1.18,
+  lineHeight: 1.16,
   textWrap: "balance",
-  "@media": {
-    "(max-width: 768px)": {
-      fontSize: "26px",
-    },
-  },
 })
 
 export const heroTagline = style({
@@ -127,16 +129,25 @@ export const heroAction = style({
   textDecoration: "none",
   borderRadius: vars.radius.base,
   transition: `all ${vars.transition.base}`,
+  selectors: {
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: `0 0 0 3px ${vars.color.ring}`,
+    },
+  },
 })
 
 export const heroActionBrand = style({
-  background: vars.color.brand,
-  color: "white",
-  boxShadow: vars.color.shadowSm,
+  background: vars.color.brandGradient,
+  color: vars.color.brandInk,
+  boxShadow: `${vars.color.shadowSm}, 0 8px 20px -6px color-mix(in oklch, ${vars.color.brand} 45%, transparent), inset 0 1px 0 oklch(1 0 0 / 0.18)`,
   selectors: {
     "&:hover": {
-      background: vars.color.brandDark,
-      boxShadow: vars.color.shadowMd,
+      boxShadow: `${vars.color.shadowMd}, 0 12px 28px -6px color-mix(in oklch, ${vars.color.brand} 55%, transparent), inset 0 1px 0 oklch(1 0 0 / 0.18)`,
+      filter: "brightness(1.05)",
+    },
+    "&:focus-visible": {
+      boxShadow: `0 0 0 3px ${vars.color.ring}, ${vars.color.shadowMd}`,
     },
   },
   "@media": {
@@ -158,13 +169,31 @@ export const heroActionBrand = style({
 })
 
 export const heroActionAlt = style({
-  background: vars.color.bg,
+  background: vars.color.surfaceCard,
   color: vars.color.text,
   border: `1px solid ${vars.color.border}`,
+  boxShadow: `${vars.color.shadowSm}, ${vars.color.surfaceInset}`,
   selectors: {
     "&:hover": {
-      borderColor: vars.color.brand,
+      borderColor: `color-mix(in oklch, ${vars.color.brand} 45%, ${vars.color.border})`,
       color: vars.color.brand,
+      boxShadow: `${vars.color.shadowMd}, ${vars.color.surfaceInset}`,
+    },
+  },
+  "@media": {
+    "(hover: hover)": {
+      selectors: {
+        "&:hover": {
+          transform: "translateY(-2px)",
+        },
+      },
+    },
+    "(prefers-reduced-motion: reduce)": {
+      selectors: {
+        "&:hover": {
+          transform: "none",
+        },
+      },
     },
   },
 })
