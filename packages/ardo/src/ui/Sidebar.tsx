@@ -369,6 +369,7 @@ function SidebarItemComponent({ item, depth }: SidebarItemComponentProps) {
         {hasItemLink ? (
           <NavLink
             to={item.link ?? "/"}
+            end={hasChildren}
             className={({ isActive }) =>
               [linkClassName, isActive && "active"].filter(Boolean).join(" ")
             }
