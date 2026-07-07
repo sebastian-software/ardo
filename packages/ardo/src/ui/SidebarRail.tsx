@@ -28,12 +28,17 @@ export type SidebarRailItem = {
 }
 
 export function SidebarRail({ items }: { items: SidebarRailItem[] }) {
-  if (items.length === 0) return null
+  // The rail is always present as a layout element so the sidebar looks the
+  // same everywhere and authors can see where contexts plug in. Without
+  // configured contexts it is just an empty surface (no navigation semantics).
+  if (items.length === 0) {
+    return <div className={styles.sidebarRail} aria-hidden="true" />
+  }
 
   return (
     <nav aria-label="Documentation sections" className={styles.sidebarRail}>
       <ul className={styles.sidebarRailList}>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <li key={item.key} className={styles.sidebarRailItem}>
             {item.to !== undefined ? (
               <NavLink
@@ -45,11 +50,11 @@ export function SidebarRail({ items }: { items: SidebarRailItem[] }) {
                     .join(" ")
                 }
               >
-                {resolveRailIcon(item, index)}
+                {resolveRailIcon(item)}
               </NavLink>
             ) : (
               <span className={styles.sidebarRailLink} aria-label={item.label}>
-                {resolveRailIcon(item, index)}
+                {resolveRailIcon(item)}
               </span>
             )}
             <span className={styles.sidebarRailLabel} aria-hidden="true">
@@ -86,53 +91,10 @@ function inferContextIconKey(ctx: ArdoContextItem): NonNullable<SidebarItemType[
   return "book"
 }
 
-export function getDataRailItems(items: SidebarItemType[], currentPath: string): SidebarRailItem[] {
-  return items.map((item, index) => ({
-    key: item.link ?? `${item.text}-${String(index)}`,
-    label: item.text,
-    to: item.link ?? findFirstItemLink(item.items ?? []),
-    iconKey: item.icon,
-    active: item.link === currentPath || hasActiveDataChild(item, currentPath),
-  }))
-}
-
-export function getTextLabel(children: ReactNode, fallback: string): string {
-  if (typeof children === "string") return children
-  if (typeof children === "number") return String(children)
-  return fallback
-}
-
-function findFirstItemLink(items: SidebarItemType[]): string | undefined {
-  for (const item of items) {
-    if ((item.link ?? "") !== "") return item.link
-    const nested = findFirstItemLink(item.items ?? [])
-    if (nested !== undefined) return nested
-  }
-  return undefined
-}
-
-function hasActiveDataChild(item: SidebarItemType, currentPath: string): boolean {
-  return (item.items ?? []).some(
-    (child) => child.link === currentPath || hasActiveDataChild(child, currentPath)
-  )
-}
-
-function resolveRailIcon(item: SidebarRailItem, index: number): ReactNode {
+function resolveRailIcon(item: SidebarRailItem): ReactNode {
   if (item.icon !== undefined) return item.icon
-  const iconKey = item.iconKey ?? inferIconKey(item.label, index)
-  const Icon = iconByKey[iconKey]
+  const Icon = iconByKey[item.iconKey ?? "book"]
   return <Icon size={18} strokeWidth={1.8} />
-}
-
-function inferIconKey(label: string, index: number): NonNullable<SidebarItemType["icon"]> {
-  const normalized = label.toLowerCase()
-  if (normalized.includes("api")) return "api"
-  if (normalized.includes("component")) return "components"
-  if (normalized.includes("custom") || normalized.includes("config")) return "settings"
-  if (normalized.includes("deploy") || normalized.includes("trouble")) return "tools"
-  if (normalized.includes("writing") || normalized.includes("markdown")) return "docs"
-  if (normalized.includes("intro") || normalized.includes("guide")) return "guide"
-  return fallbackIconKeys[index % fallbackIconKeys.length]
 }
 
 const iconByKey = {
@@ -146,12 +108,3 @@ const iconByKey = {
   settings: SettingsIcon,
   tools: WrenchIcon,
 } satisfies Record<NonNullable<SidebarItemType["icon"]>, typeof BookOpenIcon>
-
-const fallbackIconKeys = [
-  "guide",
-  "docs",
-  "settings",
-  "tools",
-  "components",
-  "box",
-] satisfies Array<NonNullable<SidebarItemType["icon"]>>
