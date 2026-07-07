@@ -18,6 +18,12 @@ import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
 import { recmaWrapExport } from "./recma-wrap-export"
 
 export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin {
+  return mdx(createMdxOptions(markdownConfig)) as Plugin
+}
+
+export function createMdxOptions(
+  markdownConfig: ArdoConfig["markdown"]
+): Parameters<typeof mdx>[0] {
   const themeConfig = markdownConfig?.theme ?? defaultMarkdownConfig.theme
   const lineNumbers = markdownConfig?.lineNumbers ?? false
   const shikiOptions = isShikiThemeObject(themeConfig)
@@ -31,7 +37,7 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
         transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
       }
 
-  return mdx({
+  return {
     include: /\.(md|mdx)$/,
     remarkPlugins: [
       remarkFrontmatter,
@@ -45,11 +51,12 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
         remarkMdxToc,
         { anchor: markdownConfig?.anchor, levels: markdownConfig?.toc?.level ?? [2, 3] },
       ],
+      ...(markdownConfig?.remarkPlugins ?? []),
     ],
-    rehypePlugins: [[rehypeShiki, shikiOptions]],
+    rehypePlugins: [[rehypeShiki, shikiOptions], ...(markdownConfig?.rehypePlugins ?? [])],
     recmaPlugins: [recmaWrapExport],
     providerImportSource: "ardo/mdx-provider",
-  }) as Plugin
+  }
 }
 
 export function getReactRouterPlugins(): Plugin[] {
