@@ -12,7 +12,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/ardo.svg)](https://www.npmjs.com/package/ardo)
 [![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node](https://img.shields.io/badge/Node-%3E%3D22.22.1-green.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
 
 [Documentation](https://ardo-docs.dev) ·
 [Getting Started](https://ardo-docs.dev/guide/getting-started) ·
