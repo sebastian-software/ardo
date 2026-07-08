@@ -10,6 +10,7 @@ import { flattenGitHubPagesBuildOutput, withArdoGitHubPages } from "./flatten-pl
 
 type BuildEnd = NonNullable<Config["buildEnd"]>
 type BuildEndArgs = Parameters<BuildEnd>[0]
+type ExitListener = (code: number) => void
 
 describe("flattenGitHubPagesBuildOutput", () => {
   it("flattens from the resolved React Router client build directory", async () => {
@@ -37,6 +38,11 @@ describe("flattenGitHubPagesBuildOutput", () => {
 describe("withArdoGitHubPages", () => {
   it("sets the GitHub Pages basename and flattens after an existing buildEnd hook", async () => {
     const tmpDir = await mkdtemp(path.join(os.tmpdir(), "ardo-build-end-"))
+    let exitListener: ExitListener | undefined
+    const processOnce = captureProcessExitListener((listener) => {
+      exitListener = listener
+    })
+
     try {
       const root = path.join(tmpDir, "project")
       const buildDir = path.join(root, "build", "client")
@@ -62,18 +68,87 @@ describe("withArdoGitHubPages", () => {
       await expect(readFile(path.join(buildDir, "repo", "index.html"), "utf8")).resolves.toBe(
         "nested"
       )
+      expect(processOnce).toHaveBeenCalledWith("exit", expect.any(Function))
+      expect(exitListener).toBeDefined()
 
-      process.emit("exit", 0)
+      exitListener?.(0)
 
       await expect(readFile(path.join(buildDir, "index.html"), "utf8")).resolves.toBe("nested")
       await expect(readFile(path.join(buildDir, "repo", "index.html"), "utf8")).rejects.toThrow(
         "ENOENT"
       )
     } finally {
+      processOnce.mockRestore()
+      await rm(tmpDir, { force: true, recursive: true })
+    }
+  })
+
+  it("lets the explicit options basename override the wrapped config basename", () => {
+    const config = withArdoGitHubPages(
+      {
+        basename: "/old/",
+        ssr: false,
+      },
+      { basename: "/new/" }
+    )
+
+    expect(config.basename).toBe("/new/")
+  })
+
+  it("marks the process as failed when deferred flattening throws", async () => {
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "ardo-build-end-failure-"))
+    let exitListener: ExitListener | undefined
+    const previousExitCode = process.exitCode
+    const processOnce = captureProcessExitListener((listener) => {
+      exitListener = listener
+    })
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined)
+
+    try {
+      process.exitCode = undefined
+      const root = path.join(tmpDir, "project")
+      const buildDir = path.join(root, "build", "client")
+      await mkdir(buildDir, { recursive: true })
+      await writeFile(path.join(buildDir, "repo"), "not a directory", "utf8")
+
+      const config = withArdoGitHubPages(
+        {
+          ssr: false,
+        },
+        { basename: "/repo/" }
+      )
+
+      await config.buildEnd(
+        await createBuildEndArgs({ basename: "/repo/", buildDirectory: "build", root })
+      )
+
+      expect(exitListener).toBeDefined()
+      exitListener?.(0)
+
+      expect(process.exitCode).toBe(1)
+      expect(consoleError).toHaveBeenCalledWith(
+        "[ardo] Failed to flatten GitHub Pages build output."
+      )
+    } finally {
+      process.exitCode = previousExitCode
+      consoleError.mockRestore()
+      processOnce.mockRestore()
       await rm(tmpDir, { force: true, recursive: true })
     }
   })
 })
+
+function captureProcessExitListener(onListener: (listener: ExitListener) => void) {
+  const mockOnce = (event: string | symbol, listener: (...args: unknown[]) => void) => {
+    expect(event).toBe("exit")
+    onListener((code) => {
+      listener(code)
+    })
+    return process
+  }
+
+  return vi.spyOn(process, "once").mockImplementation(mockOnce as typeof process.once)
+}
 
 async function createBuildEndArgs(input: {
   basename: string
