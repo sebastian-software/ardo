@@ -5,18 +5,14 @@ import { Link } from "react-router"
 import { useArdoConfig, useArdoPageData } from "../runtime/hooks"
 import { ArdoFeatureCard, ArdoFeatures } from "./components/Features"
 import * as heroStyles from "./components/Hero.css"
-import { ArdoFooter, type ArdoFooterProps } from "./Footer"
-import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import { ArdoFooter } from "./Footer"
+import { ArdoHeader } from "./Header"
 import * as layoutStyles from "./Layout.css"
 
 export type ArdoHomePageProps = {
-  /** Props passed to the Header component */
-  headerProps?: ArdoHeaderProps
-  /** Props passed to the Footer component */
-  footerProps?: ArdoFooterProps
-  /** Custom header element (overrides auto-generated header) */
+  /** Custom header element. Defaults to the standard ArdoHeader. */
   header?: ReactNode
-  /** Custom footer element (overrides auto-generated footer) */
+  /** Custom footer element. Defaults to the standard ArdoFooter. */
   footer?: ReactNode
 }
 
@@ -89,18 +85,18 @@ function HomeFeaturesSection({
   )
 }
 
-export function ArdoHomePage({ headerProps, footerProps, header, footer }: ArdoHomePageProps = {}) {
+export function ArdoHomePage({ header, footer }: ArdoHomePageProps = {}) {
   const pageData = useArdoPageData()
   const config = useArdoConfig()
 
   return (
     <div className={layoutStyles.home}>
-      {header === undefined ? <ArdoHeader title={config.title} {...headerProps} /> : header}
+      {header === undefined ? <ArdoHeader title={config.title} /> : header}
       <main className={layoutStyles.homeMain}>
         <HomeHeroSection hero={pageData?.frontmatter.hero} fallbackTitle={config.title} />
         <HomeFeaturesSection features={pageData?.frontmatter.features} />
       </main>
-      {footer === undefined ? <ArdoFooter {...footerProps} /> : footer}
+      {footer === undefined ? <ArdoFooter /> : footer}
     </div>
   )
 }

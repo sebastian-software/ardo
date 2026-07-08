@@ -1,6 +1,14 @@
-import { ArdoRootLayout, ArdoRoot } from "ardo/ui"
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeader,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoRootLayout,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
 import config from "virtual:ardo/config"
-import sidebar from "virtual:ardo/sidebar"
 import type { MetaFunction } from "react-router"
 import "./app.css"
 import "ardo/ui/styles.css"
@@ -12,5 +20,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-  return <ArdoRoot config={config} sidebar={sidebar} />
+  return (
+    <ArdoRoot config={config}>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+
+      <ArdoSidebar>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+          <ArdoGeneratedSidebar section="guide" />
+        </ArdoSidebarSection>
+      </ArdoSidebar>
+    </ArdoRoot>
+  )
 }

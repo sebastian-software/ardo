@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by the JSX-first navigation model.
 
 ## Context
 
@@ -23,21 +23,38 @@ This pattern was error-prone and required users to understand internal data flow
 
 ## Decision
 
-Components read their defaults from the Ardo context (`useArdoConfig`, `useArdoSidebar`). Explicit props serve as overrides. A new `ArdoRoot` combo component combines Provider, Layout, Header, Sidebar, and Footer with intelligent routing (sidebar hidden on homepage).
+Components read content metadata from the Ardo context, while site chrome is composed explicitly in
+JSX under `ArdoRoot`. `ArdoRoot` still combines Provider, Layout, Header, Sidebar, and Footer with
+intelligent routing, but sidebar sections and header links are now React children instead of virtual
+module props.
 
 ## Consequences
 
 ### Usage
 
 ```tsx
-// After: Minimal root.tsx
+// Current: JSX-first root.tsx
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeader,
+  ArdoRoot,
+  ArdoRootLayout,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
 import config from "virtual:ardo/config"
-import sidebar from "virtual:ardo/sidebar"
 
 export default function Root() {
   return (
     <ArdoRootLayout>
-      <ArdoRoot config={config} sidebar={sidebar} />
+      <ArdoRoot config={config}>
+        <ArdoHeader />
+        <ArdoSidebar>
+          <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+            <ArdoGeneratedSidebar section="guide" />
+          </ArdoSidebarSection>
+        </ArdoSidebar>
+      </ArdoRoot>
     </ArdoRootLayout>
   )
 }
@@ -47,8 +64,8 @@ export default function Root() {
 
 - `ArdoHeader` resolves title from config when no `title` prop is provided
 - `ArdoFooter` reads project metadata automatically from config
-- `ArdoSidebar` renders from `virtual:ardo/sidebar` when no `items`/`children` are given
-- `ArdoRoot` combines everything with sensible defaults
+- `ArdoSidebarSection` defines each rail item and its sidebar panel together
+- `ArdoGeneratedSidebar` renders generated Markdown and TypeDoc navigation inside a section
 
 ### Benefits
 

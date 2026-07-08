@@ -1,39 +1,63 @@
+import type { ReactNode } from "react"
+
 import { renderToStaticMarkup } from "react-dom/server"
 import { MemoryRouter } from "react-router"
-import { describe, expect, it } from "vitest"
-
-import type { ArdoContextItem, SidebarItem } from "../config/types"
+import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
-import { ArdoSidebar } from "./Sidebar"
+import {
+  ArdoGeneratedSidebar,
+  ArdoSidebar,
+  ArdoSidebarGroup,
+  ArdoSidebarLink,
+  ArdoSidebarSection,
+} from "./Sidebar"
 
-type RenderOptions = {
-  currentPath?: string
-  contexts?: ArdoContextItem[]
-}
-
-function renderSidebar(
-  items: SidebarItem[],
-  { currentPath = "/", contexts }: RenderOptions = {}
-): string {
-  return renderToStaticMarkup(
-    <MemoryRouter initialEntries={[currentPath]}>
-      <ArdoProvider config={{ title: "Docs" }} sidebar={[]} contexts={contexts}>
-        <ArdoSidebar items={items} />
-      </ArdoProvider>
-    </MemoryRouter>
-  )
-}
-
-describe("ArdoSidebar", () => {
-  it("connects collapsed group toggles to inert content", () => {
-    const view = renderSidebar([
+vi.mock("virtual:ardo/generated-sidebars", () => ({
+  default: {
+    adr: [
+      {
+        text: "Architecture Decision Records",
+        link: "/adr",
+        items: [{ text: "ADR-0003", link: "/adr/0003-bitmask-hashing" }],
+      },
+    ],
+    api: [{ text: "API", items: [{ text: "Reference", link: "/api-reference" }] }],
+    flat: [
+      { text: "Intro", link: "/intro" },
+      { text: "Setup", link: "/setup" },
+    ],
+    guide: [
       {
         text: "Guide",
         collapsed: true,
         items: [{ text: "Getting Started", link: "/guide/getting-started" }],
       },
-    ])
+    ],
+  },
+}))
+
+function renderSidebar(children: ReactNode, currentPath = "/guide/getting-started"): string {
+  return renderToStaticMarkup(
+    <MemoryRouter initialEntries={[currentPath]}>
+      <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
+        <ArdoSidebar>{children}</ArdoSidebar>
+      </ArdoProvider>
+    </MemoryRouter>
+  )
+}
+
+function generatedSection(section: string, to = `/${section}`) {
+  return (
+    <ArdoSidebarSection id={section} label={section} to={to}>
+      <ArdoGeneratedSidebar section={section} />
+    </ArdoSidebarSection>
+  )
+}
+
+describe("ArdoSidebar", () => {
+  it("connects collapsed generated group toggles to inert content", () => {
+    const view = renderSidebar(generatedSection("guide"))
     const toggle =
       /<button[^>]*aria-expanded="false"[^>]*aria-controls="([^"]+)"[^>]*aria-label="Expand Guide"/.exec(
         view
@@ -45,31 +69,22 @@ describe("ArdoSidebar", () => {
     expect(view).toContain("inert")
   })
 
-  it("renders unlinked groups with a single toggle button", () => {
-    const view = renderSidebar([
-      {
-        text: "API",
-        items: [{ text: "Reference", link: "/api-reference" }],
-      },
-    ])
+  it("renders manual unlinked groups with a single toggle button", () => {
+    const view = renderSidebar(
+      <ArdoSidebarSection id="api" label="API" to="/api-reference">
+        <ArdoSidebarGroup title="API">
+          <ArdoSidebarLink to="/api-reference">Reference</ArdoSidebarLink>
+        </ArdoSidebarGroup>
+      </ArdoSidebarSection>,
+      "/api-reference"
+    )
 
     expect(view.match(/<button/g)).toHaveLength(1)
     expect(view).toContain('aria-expanded="true"')
     expect(view).toContain('aria-label="Collapse API"')
   })
 
-  it("marks a linked group node active only on its own page", () => {
-    const items: SidebarItem[] = [
-      {
-        text: "Architecture Decision Records",
-        link: "/adr",
-        items: [{ text: "ADR-0003", link: "/adr/0003-bitmask-hashing" }],
-      },
-    ]
-
-    // A linked top-level group renders as a capsule node header that carries
-    // the active/child-active state (its title `NavLink` uses `end`, so the
-    // parent is only exactly-active on its own overview page).
+  it("marks a linked generated group node active only on its own page", () => {
     const headerClass = (view: string) => {
       const header = (view.match(/<div [^>]*>/g) ?? []).find((tag) =>
         tag.includes("sidebarNodeHeader")
@@ -77,73 +92,57 @@ describe("ArdoSidebar", () => {
       return /class="([^"]*)"/.exec(header ?? "")?.[1] ?? ""
     }
 
-    const onOverview = headerClass(renderSidebar(items, { currentPath: "/adr" }))
+    const onOverview = headerClass(renderSidebar(generatedSection("adr"), "/adr"))
     expect(onOverview.split(/\s+/)).toContain("active")
 
-    const onChild = headerClass(renderSidebar(items, { currentPath: "/adr/0003-bitmask-hashing" }))
+    const onChild = headerClass(renderSidebar(generatedSection("adr"), "/adr/0003-bitmask-hashing"))
     expect(onChild).toContain("child-active")
     expect(onChild.split(/\s+/)).not.toContain("active")
   })
 
-  it("keeps flat lists plain, without group nodes or a trunk", () => {
-    const view = renderSidebar([
-      { text: "Intro", link: "/intro" },
-      { text: "Setup", link: "/setup" },
-    ])
+  it("keeps generated flat lists plain, without group nodes or a trunk", () => {
+    const view = renderSidebar(generatedSection("flat", "/intro"), "/intro")
 
     expect(view).not.toContain("sidebarTrunk")
     expect(view).not.toContain("sidebarNodeHeader")
   })
 
-  it("adds group nodes and a trunk when the list contains a group", () => {
-    const view = renderSidebar([
-      { text: "Guide", items: [{ text: "Start", link: "/guide/start" }] },
-    ])
+  it("adds generated group nodes and a trunk when the list contains a group", () => {
+    const view = renderSidebar(generatedSection("api", "/api-reference"), "/api-reference")
 
     expect(view).toContain("sidebarTrunk")
     expect(view).toContain("sidebarNodeHeader")
   })
 
-  it("keeps the rail surface without mirroring sections when no contexts exist", () => {
-    const view = renderSidebar([
-      { text: "API", items: [{ text: "Reference", link: "/api-reference" }] },
-    ])
-
-    // The rail surface stays for a consistent layout...
-    expect(view).toContain("sidebarRail")
-    // ...but it carries no navigation and never mirrors the sidebar sections.
-    expect(view).not.toContain('aria-label="Documentation sections"')
-    expect(view).not.toContain("sidebarRailLink")
-  })
-
-  it("renders the rail as a context switcher when contexts are configured", () => {
+  it("renders the rail from sidebar sections", () => {
     const view = renderSidebar(
-      [{ text: "API", items: [{ text: "Reference", link: "/api-reference" }] }],
-      {
-        contexts: [
-          { id: "guide", label: "Guide", href: "/guide" },
-          { id: "api-reference", label: "API Reference", href: "/api-reference" },
-        ],
-      }
+      <>
+        {generatedSection("guide")}
+        {generatedSection("api", "/api-reference")}
+      </>
     )
 
     expect(view).toContain('aria-label="Documentation sections"')
     expect(view).toContain('href="/guide"')
-    expect(view).toContain('aria-label="Guide"')
+    expect(view).toContain('aria-label="guide"')
     expect(view).toContain('href="/api-reference"')
-    expect(view).toContain('aria-label="API Reference"')
+    expect(view).toContain('aria-label="api"')
   })
 
-  it("keeps the rail empty for a single context (nothing to switch)", () => {
+  it("switches the sidebar panel to the active section", () => {
     const view = renderSidebar(
-      [{ text: "API", items: [{ text: "Reference", link: "/api-reference" }] }],
-      {
-        contexts: [{ id: "guide", label: "Guide", href: "/guide" }],
-      }
+      <>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+          <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+        </ArdoSidebarSection>
+        <ArdoSidebarSection id="api" label="API" to="/api-reference">
+          <ArdoSidebarLink to="/api-reference">API Reference</ArdoSidebarLink>
+        </ArdoSidebarSection>
+      </>,
+      "/api-reference"
     )
 
-    expect(view).toContain("sidebarRail")
-    expect(view).not.toContain("sidebarRailLink")
-    expect(view).not.toContain('aria-label="Documentation sections"')
+    expect(view).toContain("API Reference")
+    expect(view).not.toContain("Getting Started")
   })
 })

@@ -10,9 +10,10 @@ import { ArdoFooter } from "./Footer"
 import { ArdoHeader } from "./Header"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import { ArdoNav, ArdoNavLink } from "./Nav"
-import { ArdoSidebar } from "./Sidebar"
+import { ArdoSidebar, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
 
 vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
+vi.mock("virtual:ardo/generated-sidebars", () => ({ default: {} }))
 
 const config = { title: "Docs" }
 const triggerRef: RefObject<HTMLButtonElement | null> = { current: null }
@@ -28,8 +29,10 @@ function renderShell(children: ReactNode): string {
   )
 }
 
-function renderRootRoute(element: ReactNode, handle?: unknown): string {
-  const router = createMemoryRouter([{ path: "/", element, handle }], { initialEntries: ["/"] })
+function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"): string {
+  const router = createMemoryRouter([{ path: "*", element, handle }], {
+    initialEntries: [initialPath],
+  })
   return renderToStaticMarkup(<RouterProvider router={router} />)
 }
 
@@ -58,34 +61,42 @@ describe("UI shell landmarks", () => {
 
   it("renders the mobile menu trigger when only nav is provided", () => {
     const view = renderShell(
-      <ArdoHeader
-        nav={
-          <ArdoNav>
-            <ArdoNavLink to="/guide">Guide</ArdoNavLink>
-          </ArdoNav>
-        }
-      />
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
     )
 
     expect(view).toContain('aria-label="Toggle menu"')
     expect(view).toContain('aria-expanded="false"')
   })
 
-  it("honors explicit null header and footer overrides", () => {
+  it("extracts JSX chrome children around route content", () => {
     const view = renderRootRoute(
-      <ArdoRoot config={config} sidebar={[]} header={null} footer={null}>
+      <ArdoRoot config={config}>
+        <ArdoHeader search={false} />
+        <ArdoSidebar>
+          <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+            <ArdoSidebarLink to="/guide">Guide</ArdoSidebarLink>
+          </ArdoSidebarSection>
+        </ArdoSidebar>
+        <ArdoFooter message="Docs footer" />
         <p>Content</p>
-      </ArdoRoot>
+      </ArdoRoot>,
+      undefined,
+      "/guide"
     )
 
     expect(view).toContain("Content")
-    expect(view).not.toContain("ardo-header")
-    expect(view).not.toContain("ardo-footer")
+    expect(view).toContain("ardo-header")
+    expect(view).toContain("ardo-sidebar")
+    expect(view).toContain("Docs footer")
   })
 
   it("suppresses route chrome from the route handle", () => {
     const view = renderRootRoute(
-      <ArdoRoot config={config} sidebar={[]}>
+      <ArdoRoot config={config}>
         <p>Landing</p>
       </ArdoRoot>,
       { chrome: false, layout: "bare" }
@@ -108,7 +119,6 @@ describe("UI shell landmarks", () => {
             logo: "/logo.svg",
           },
         }}
-        sidebar={[]}
       >
         <p>Content</p>
       </ArdoRoot>

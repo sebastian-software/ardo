@@ -75,8 +75,8 @@ export type { ArdoErrorBoundaryProps } from "./ErrorBoundary"
 
 export { ArdoFooter } from "./Footer"
 export type { ArdoFooterCopyrightProps, ArdoFooterMessageProps, ArdoFooterProps } from "./Footer"
-export { ArdoHeader, ArdoSocialLink } from "./Header"
-export type { ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
+export { ArdoHeader, ArdoHeaderActions, ArdoSocialLink } from "./Header"
+export type { ArdoHeaderActionsProps, ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
 export { ArdoHomePage } from "./HomePage"
 export type { ArdoHomePageProps } from "./HomePage"
 export type { ArdoContainerLabels, ArdoLabels, ArdoLabelsInput } from "./labels"
@@ -88,7 +88,19 @@ export { ArdoNav, ArdoNavLink } from "./Nav"
 export type { ArdoNavLinkProps, ArdoNavProps } from "./Nav"
 export { ArdoOwlMark } from "./OwlMark"
 export type { ArdoOwlMarkProps } from "./OwlMark"
-export { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink } from "./Sidebar"
-export type { ArdoSidebarGroupProps, ArdoSidebarLinkProps, ArdoSidebarProps } from "./Sidebar"
+export {
+  ArdoGeneratedSidebar,
+  ArdoSidebar,
+  ArdoSidebarGroup,
+  ArdoSidebarLink,
+  ArdoSidebarSection,
+} from "./Sidebar"
+export type {
+  ArdoGeneratedSidebarProps,
+  ArdoSidebarGroupProps,
+  ArdoSidebarLinkProps,
+  ArdoSidebarProps,
+  ArdoSidebarSectionProps,
+} from "./Sidebar"
 export { ArdoTOC } from "./Toc"
 export type { ArdoTOCProps } from "./Toc"

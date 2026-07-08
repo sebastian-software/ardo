@@ -9,7 +9,6 @@ export type {
   HeadConfig,
   LlmsConfig,
   MarkdownConfig,
-  NavItem,
   PageData,
   PageFrontmatter,
   ProjectMeta,

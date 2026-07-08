@@ -2,7 +2,7 @@
  * Ambient module declarations for Ardo virtual modules.
  *
  * These types are automatically available when importing from
- * `virtual:ardo/config`, `virtual:ardo/sidebar`, or `virtual:ardo/search-index`.
+ * `virtual:ardo/config` or `virtual:ardo/search-index`.
  *
  * To use, add to your tsconfig.json:
  * ```json
@@ -19,12 +19,6 @@ declare module "virtual:ardo/config" {
   import type { ArdoConfig } from "ardo"
   const config: ArdoConfig
   export default config
-}
-
-declare module "virtual:ardo/sidebar" {
-  import type { SidebarItem } from "ardo"
-  const sidebar: SidebarItem[]
-  export default sidebar
 }
 
 declare module "virtual:ardo/search-index" {

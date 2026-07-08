@@ -9,14 +9,7 @@ declare module "virtual:ardo/config" {
   export default config
 }
 
-declare module "virtual:ardo/sidebar" {
-  import type { SidebarItem } from "./config/types"
-
-  const sidebar: SidebarItem[]
-  export default sidebar
-}
-
-declare module "virtual:ardo/sidebars" {
+declare module "virtual:ardo/generated-sidebars" {
   import type { SidebarItem } from "./config/types"
 
   const sidebars: Record<string, SidebarItem[]>

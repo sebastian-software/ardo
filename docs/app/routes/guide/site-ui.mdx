@@ -1,24 +1,30 @@
 ---
 title: Site UI Configuration
-description: Configure ArdoRoot, header, footer, edit links, last-updated metadata, and context sidebars from root.tsx.
+description: Configure ArdoRoot, header, footer, edit links, last-updated metadata, and JSX sidebar sections from root.tsx.
 order: 6
 ---
 
 # Site UI Configuration
 
-Build-time options belong in `ardo()` config. Site chrome belongs in React. Configure the header,
-sidebar, footer, edit links, last-updated metadata, and multi-section sidebars in your app's
-`root.tsx` with `<ArdoRoot>`.
+Build-time options belong in `ardo()` config. Site chrome belongs in React. Define the header, left
+rail, sidebar panels, footer, edit links, and last-updated metadata in your app's `root.tsx`.
 
 ## Minimal Root
 
-Every Ardo app needs the generated config and sidebar data. Import them from virtual modules and
-pass them to `ArdoRoot`.
+Every Ardo app needs the generated config. Navigation is composed with React components.
 
 ```tsx
-import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeader,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoRootLayout,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
 import config from "virtual:ardo/config"
-import sidebar from "virtual:ardo/sidebar"
 import "ardo/ui/styles.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -26,12 +32,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-  return <ArdoRoot config={config} sidebar={sidebar} />
+  return (
+    <ArdoRoot config={config}>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+
+      <ArdoSidebar>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+          <ArdoGeneratedSidebar section="guide" />
+        </ArdoSidebarSection>
+      </ArdoSidebar>
+    </ArdoRoot>
+  )
 }
 ```
 
-`ArdoRootLayout` owns the document-level theme bootstrap and global shell setup. `ArdoRoot` owns the
-React Router outlet, Ardo providers, default header, sidebar, and footer.
+`ArdoRootLayout` owns the document-level theme bootstrap. `ArdoRoot` owns the React Router outlet,
+Ardo providers, and the shell slots supplied as JSX children.
 
 ## RootLayout Theme Policy
 
@@ -49,168 +69,101 @@ export function Layout({ children }: { children: React.ReactNode }) {
 | ------------ | ------------------------------------------------------------------------ |
 | `auto`       | Stored user preference wins; system preference is the fallback. Default. |
 | `light`      | Always render light mode and clear stale stored theme preferences.       |
-| `dark`       | Always render dark mode and clear stale stored theme preferences.        |
-| `system`     | Always follow `prefers-color-scheme` and clear stale stored preferences. |
+| `dark`       | Always render dark mode and clear stale theme preferences.               |
+| `system`     | Always follow `prefers-color-scheme` and clear stored preferences.       |
 
-Explicit policies are applied by the inline bootstrap script before first paint, so returning dark
-mode visitors do not see a light-mode flash.
+## ArdoRoot
 
-## ArdoRoot Props
+`ArdoRoot` accepts site-wide content settings as props and shell components as children.
 
-| Prop             | Type                                                                               | Purpose                                                                        |
-| ---------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `config`         | `ArdoConfig`                                                                       | Generated site config from `virtual:ardo/config`.                              |
-| `sidebar`        | `SidebarItem[] \| Record<string, SidebarItem[]>`                                   | Generated sidebar data from `virtual:ardo/sidebar` or `virtual:ardo/sidebars`. |
-| `contexts`       | `ArdoContextItem[]`                                                                | Optional rail items for switching between multiple sidebar contexts.           |
-| `header`         | `ReactNode`                                                                        | Replace the entire default header.                                             |
-| `sidebarContent` | `ReactNode`                                                                        | Replace the generated sidebar content.                                         |
-| `footer`         | `ReactNode`                                                                        | Replace the default footer element.                                            |
-| `headerProps`    | `ArdoHeaderProps`                                                                  | Configure the default header. Ignored when `header` is provided.               |
-| `sidebarProps`   | `ArdoSidebarProps`                                                                 | Configure the default sidebar. Ignored when `sidebarContent` is provided.      |
-| `footerProps`    | `ArdoFooterProps`                                                                  | Configure the default footer. Ignored when `footer` is provided.               |
-| `editLink`       | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                |
-| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                       |
-| `labels`         | `ArdoLabelsInput`                                                                  | Override default UI chrome strings and aria labels.                            |
-| `tocLabel`       | `string`                                                                           | Label for the generated table-of-contents panel.                               |
-| `className`      | `string`                                                                           | Replace the default layout class.                                              |
-| `children`       | `ReactNode`                                                                        | Replace the default React Router `<Outlet />` content.                         |
+| Prop          | Type                                                                               | Purpose                                                                    |
+| ------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `config`      | `ArdoConfig`                                                                       | Generated site config from `virtual:ardo/config`.                          |
+| `editLink`    | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                            |
+| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                   |
+| `labels`      | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                        |
+| `tocLabel`    | `string`                                                                           | Label for the table-of-contents panel.                                     |
+| `className`   | `string`                                                                           | Replace the default layout class.                                          |
+| `children`    | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides. |
 
 ## Header
 
-Use `headerProps` when you want the default responsive header but need to configure the logo,
-navigation, search, theme toggle, or action area.
-
-If `brand.logo` is configured in `ardo()`, the default header uses it automatically. Pass
-`headerProps.logo` only when the header should use a different logo from the site brand.
+Use `ArdoHeader` for the default responsive header. Put `ArdoNav` links directly inside it. Use
+`ArdoHeaderActions` for right-side actions.
 
 ```tsx
-import { ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
+import { ArdoHeader, ArdoHeaderActions, ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
 import logo from "./assets/logo.svg"
-
-export default function Root() {
-  return (
-    <ArdoRoot
-      config={config}
-      sidebar={sidebar}
-      headerProps={{
-        logo,
-        title: "My Docs",
-        searchPlaceholder: "Search documentation...",
-        nav: (
-          <ArdoNav>
-            <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
-            <ArdoNavLink to="/api-reference">API</ArdoNavLink>
-          </ArdoNav>
-        ),
-        actions: <ArdoSocialLink href="https://github.com/example/project" icon="github" />,
-      }}
-    />
-  )
-}
+;<ArdoHeader logo={logo} title="My Docs" searchPlaceholder="Search documentation...">
+  <ArdoNav>
+    <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+    <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+  </ArdoNav>
+  <ArdoHeaderActions>
+    <ArdoSocialLink href="https://github.com/example/project" icon="github" />
+  </ArdoHeaderActions>
+</ArdoHeader>
 ```
 
-| Header prop         | Purpose                                                                  |
-| ------------------- | ------------------------------------------------------------------------ |
-| `logo`              | String URL or `{ light, dark }` logo variants.                           |
-| `title`             | Header title. Defaults to `config.title`.                                |
-| `nav`               | Desktop navigation content, usually `ArdoNav` and `ArdoNavLink`.         |
-| `actions`           | Right-side actions such as `ArdoSocialLink` or custom buttons.           |
-| `search`            | Set to `false` to hide search. Defaults to `true`.                       |
-| `searchPlaceholder` | Placeholder for the search input.                                        |
-| `themeToggle`       | Set to `false` to hide the theme toggle. Defaults to `true`.             |
-| `mobileMenuContent` | Additional content for the mobile menu. `ArdoRoot` supplies the sidebar. |
-| `className`         | Replace the default header class.                                        |
+If `brand.logo` is configured in `ardo()`, `ArdoRoot` passes it to the default header unless the
+header sets its own `logo`.
 
-Pass `header` instead of `headerProps` when your design needs a fully custom header element. Pass
-`header={null}` when a root layout should intentionally render no header.
+| Header prop         | Purpose                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `logo`              | String URL or `{ light, dark }` logo variants.               |
+| `title`             | Header title. Defaults to `config.title`.                    |
+| `search`            | Set to `false` to hide search. Defaults to `true`.           |
+| `searchPlaceholder` | Placeholder for the search input.                            |
+| `themeToggle`       | Set to `false` to hide the theme toggle. Defaults to `true`. |
+| `className`         | Replace the default header class.                            |
 
-For route-level chrome suppression, export a `handle` from the route:
+## Sidebar Sections
 
-```tsx title="app/routes/landing.tsx"
-export const handle = { layout: "bare", chrome: false }
-```
-
-`chrome: false` removes the default header and footer for that route. `layout: "bare"` still controls
-sidebar and rail rendering.
-
-## Labels
-
-Use `labels` for single-language sites that need non-English UI chrome without replacing every
-default component. Ardo merges your overrides with English defaults, so you can set only the strings
-you need.
+The left navigation is always a rail plus a panel. Define both with `ArdoSidebarSection`: the section
+props create the rail item, and the section children create the panel.
 
 ```tsx
-<ArdoRoot
-  config={{ ...config, lang: "de-DE" }}
-  sidebar={sidebar}
-  labels={{
-    layout: {
-      skipToContent: "Zum Inhalt springen",
-    },
-    search: {
-      placeholder: "Suchen...",
-      label: "Suche",
-      clear: "Suche leeren",
-      noResults: (query) => `Keine Treffer fur "${query}"`,
-      resultCount: (count) => `${count} ${count === 1 ? "Treffer" : "Treffer"}`,
-    },
-    toc: {
-      label: "Auf dieser Seite",
-      navLabel: "Inhaltsverzeichnis",
-    },
-    footer: {
-      builtOn: "Erstellt am",
-      builtWithArdo: "Erstellt mit Ardo",
-    },
-  }}
-/>
+import { ArdoGeneratedSidebar, ArdoSidebar, ArdoSidebarSection } from "ardo/ui"
+import { BookOpen, Code2 } from "lucide-react"
+;<ArdoSidebar>
+  <ArdoSidebarSection
+    id="guide"
+    label="Guide"
+    to="/guide/getting-started"
+    icon={<BookOpen size={18} />}
+  >
+    <ArdoGeneratedSidebar section="guide" />
+  </ArdoSidebarSection>
+
+  <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code2 size={18} />}>
+    <ArdoGeneratedSidebar section="api-reference" />
+  </ArdoSidebarSection>
+</ArdoSidebar>
 ```
 
-The label object covers search, sidebar collapse buttons, mobile menu buttons, breadcrumbs, footer
-prefixes, copy buttons, callout title defaults, the skip link, and table-of-contents labels. Existing
-single-purpose props still work: `headerProps.searchPlaceholder` overrides `labels.search.placeholder`,
-and `tocLabel` overrides `labels.toc.label`.
+`ArdoGeneratedSidebar` renders the Markdown and TypeDoc navigation generated from route files for the
+given top-level section. For fully manual navigation, compose links and groups directly:
+
+```tsx
+<ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+  <ArdoSidebarGroup title="Guide">
+    <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+    <ArdoSidebarLink to="/guide/configuration">Configuration</ArdoSidebarLink>
+  </ArdoSidebarGroup>
+</ArdoSidebarSection>
+```
 
 ## Footer
 
-For light customization, pass `footerProps`. For the common "default footer with sponsor and
-copyright" case, pass an explicit `footer` element.
+Pass `ArdoFooter` as a child of `ArdoRoot`.
 
 ```tsx
-import { ArdoFooter } from "ardo/ui"
-
-export default function Root() {
-  return (
-    <ArdoRoot
-      config={config}
-      sidebar={sidebar}
-      footer={
-        <ArdoFooter
-          sponsor={{ text: "Example Co", link: "https://example.com" }}
-          message="Released under the MIT License."
-          copyright="Copyright 2026 Example Co"
-        />
-      }
-    />
-  )
-}
+<ArdoFooter
+  sponsor={{ text: "Example Co", link: "https://example.com" }}
+  message="Released under the MIT License."
+  copyright="Copyright 2026 Example Co"
+/>
 ```
-
-| Footer prop            | Purpose                                                                 |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `message`              | React content rendered as footer message text.                          |
-| `copyright`            | React content rendered as copyright text.                               |
-| `trustedMessageHtml`   | Trusted HTML for the message line. Do not pass user-provided content.   |
-| `trustedCopyrightHtml` | Trusted HTML for the copyright line. Do not pass user-provided content. |
-| `project`              | Project metadata override for the linked package/version line.          |
-| `sponsor`              | Sponsor link rendered as "Sponsored by ...".                            |
-| `buildTime`            | Build timestamp override. Defaults to generated config metadata.        |
-| `buildHash`            | Git hash override. Defaults to generated config metadata.               |
-| `ardoLink`             | Set to `false` to hide the "Built with Ardo" link.                      |
-| `children`             | Full custom footer content. Skips automatic footer rendering.           |
-| `className`            | Replace the default footer class.                                       |
-
-Pass `footer={null}` when a root layout should intentionally render no footer.
 
 ## Edit Links and Last Updated
 
@@ -220,7 +173,6 @@ document pages, and page frontmatter can opt out with `editLink: false` or `last
 ```tsx
 <ArdoRoot
   config={config}
-  sidebar={sidebar}
   editLink={{
     pattern: "https://github.com/example/project/edit/main/docs/app/routes/:path",
     text: "Edit this page on GitHub",
@@ -231,44 +183,20 @@ document pages, and page frontmatter can opt out with `editLink: false` or `last
     formatOptions: { dateStyle: "medium" },
   }}
   tocLabel="On this page"
-/>
+>
+  {/* Header, sidebar, and footer here */}
+</ArdoRoot>
 ```
 
 The `:path` placeholder receives the route file path relative to the generated Markdown route root.
 
-## Context Sidebars
+## Route-Level Chrome
 
-Use `virtual:ardo/sidebars` and `contexts` when your docs have distinct areas, such as guide pages
-and generated API reference pages. The sidebar rail becomes a context switcher, and `ArdoRoot`
-selects the active sidebar map entry by context id.
+For route-level chrome suppression, export a `handle` from the route:
 
-```tsx
-import { ArdoRoot } from "ardo/ui"
-import config from "virtual:ardo/config"
-import sidebars from "virtual:ardo/sidebars"
-
-export default function Root() {
-  return (
-    <ArdoRoot
-      config={config}
-      sidebar={sidebars}
-      contexts={[
-        { id: "guide", label: "Guide", href: "/guide/getting-started" },
-        { id: "api-reference", label: "API", href: "/api-reference" },
-      ]}
-    />
-  )
-}
+```tsx title="app/routes/landing.tsx"
+export const handle = { layout: "bare", chrome: false }
 ```
 
-Each context item has:
-
-| Field   | Purpose                                                                                     |
-| ------- | ------------------------------------------------------------------------------------------- |
-| `id`    | Sidebar map key. Conventionally the top-level route folder, such as `guide` or `api`.       |
-| `label` | Text shown in the sidebar rail tooltip.                                                     |
-| `href`  | Landing link for the context. Also used to infer the default active route prefix.           |
-| `match` | Optional string prefix or `RegExp` when `href` is not enough to match the context's routes. |
-
-Use `virtual:ardo/sidebar` for a single global sidebar. Use `virtual:ardo/sidebars` only when you
-want context-aware navigation.
+`chrome: false` removes header and footer for that route. `layout: "bare"` removes sidebar and rail
+rendering.

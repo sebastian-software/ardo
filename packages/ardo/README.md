@@ -52,7 +52,7 @@ export default defineConfig({
 })
 ```
 
-The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and component props.
+The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and JSX components.
 
 Use `brand` for the common theme setup: primary color, accent color, neutral chrome tone, and the
 default header logo. Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and
@@ -63,9 +63,17 @@ or `icons: false` to manage them from `public/`.
 ## Root layout
 
 ```tsx
-import { ArdoRoot, ArdoRootLayout } from "ardo/ui"
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeader,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoRootLayout,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
 import config from "virtual:ardo/config"
-import sidebar from "virtual:ardo/sidebar"
 import "ardo/ui/styles.css"
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -73,7 +81,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-  return <ArdoRoot config={config} sidebar={sidebar} />
+  return (
+    <ArdoRoot config={config}>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+
+      <ArdoSidebar>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+          <ArdoGeneratedSidebar section="guide" />
+        </ArdoSidebarSection>
+      </ArdoSidebar>
+    </ArdoRoot>
+  )
 }
 ```
 
