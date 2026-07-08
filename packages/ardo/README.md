@@ -41,6 +41,12 @@ export default defineConfig({
     ardo({
       title: "My Documentation",
       description: "Docs for my React library",
+      brand: {
+        color: "blue",
+        accent: "teal",
+        neutral: "slate",
+        logo: "./app/assets/logo.svg",
+      },
     }),
   ],
 })
@@ -48,7 +54,11 @@ export default defineConfig({
 
 The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and component props.
 
-Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and `apple-touch-icon.png`) from the default Ardo mark. Use `icons: { source: "./app/assets/logo.svg" }` to generate those files from your own SVG, or `icons: false` to manage them from `public/`.
+Use `brand` for the common theme setup: primary color, accent color, neutral chrome tone, and the
+default header logo. Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and
+`apple-touch-icon.png`) from that local SVG logo when available. Use
+`icons: { source: "./app/assets/favicon.svg" }` when favicon assets should come from a different SVG,
+or `icons: false` to manage them from `public/`.
 
 ## Root layout
 

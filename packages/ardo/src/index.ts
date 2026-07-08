@@ -1,6 +1,10 @@
 // Config (client-safe: pure types and small utility functions)
 export { defineConfig, loadConfig, resolveConfig } from "./config"
 export type {
+  ArdoBrandConfig,
+  ArdoBrandHue,
+  ArdoBrandHuePreset,
+  ArdoBrandLogo,
   ArdoConfig,
   HeadConfig,
   LlmsConfig,

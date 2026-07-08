@@ -6,6 +6,11 @@ export default defineConfig({
     ardo({
       title: "Ardo Monorepo Example",
       description: "A monorepo documentation site with multiple TypeDoc entry points",
+      brand: {
+        color: "amber",
+        accent: "blue",
+        neutral: "slate",
+      },
       githubPages: false,
     }),
   ],

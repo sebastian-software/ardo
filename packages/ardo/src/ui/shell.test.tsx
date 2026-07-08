@@ -95,4 +95,29 @@ describe("UI shell landmarks", () => {
     expect(view).not.toContain("ardo-header")
     expect(view).not.toContain("ardo-footer")
   })
+
+  it("applies brand hue styles and logo defaults", () => {
+    const view = renderRootRoute(
+      <ArdoRoot
+        config={{
+          title: "Docs",
+          brand: {
+            color: "blue",
+            accent: "teal",
+            neutral: "slate",
+            logo: "/logo.svg",
+          },
+        }}
+        sidebar={[]}
+      >
+        <p>Content</p>
+      </ArdoRoot>
+    )
+
+    expect(view).toContain("data-ardo-brand")
+    expect(view).toContain("--ardo-hue-brand:240")
+    expect(view).toContain("--ardo-hue-accent:170")
+    expect(view).toContain("--ardo-hue-neutral:260")
+    expect(view).toContain('<img src="/logo.svg" alt="Docs"')
+  })
 })

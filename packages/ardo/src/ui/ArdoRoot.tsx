@@ -3,6 +3,7 @@ import { Outlet, useLocation, useMatches } from "react-router"
 
 import type { ArdoConfig, ArdoContextItem, SidebarItem } from "../config/types"
 
+import { createBrandThemeCss } from "../config/brand"
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { ArdoFooter, type ArdoFooterProps } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
@@ -187,6 +188,12 @@ function resolveContextSidebar(
   return sidebar[activeContext.id] ?? []
 }
 
+function ArdoBrandThemeStyle({ brand }: { brand: ArdoConfig["brand"] }) {
+  const css = createBrandThemeCss(brand)
+  if (css === undefined) return null
+  return <style data-ardo-brand dangerouslySetInnerHTML={{ __html: css }} />
+}
+
 export function ArdoRoot({
   config,
   sidebar,
@@ -220,10 +227,14 @@ export function ArdoRoot({
     () => resolveContextSidebar(sidebar, activeContext),
     [sidebar, activeContext]
   )
+  const resolvedHeaderProps =
+    config.brand?.logo === undefined || headerProps?.logo !== undefined
+      ? headerProps
+      : { ...headerProps, logo: config.brand.logo }
   // Search lives in the header now. The sidebar no longer carries it.
   const resolvedSidebar = isBareLayout ? undefined : resolveSidebar(sidebarContent, sidebarProps)
   const resolvedHeader = showChrome
-    ? resolveRootHeader(header, headerProps, isBareLayout ? undefined : resolvedSidebar)
+    ? resolveRootHeader(header, resolvedHeaderProps, isBareLayout ? undefined : resolvedSidebar)
     : null
   const resolvedFooter = showChrome ? (
     footer === undefined ? (
@@ -239,21 +250,24 @@ export function ArdoRoot({
   )
 
   const content = (
-    <ArdoProvider
-      config={config}
-      sidebar={sidebarItems}
-      contexts={contexts}
-      activeContextId={activeContext?.id}
-    >
-      <ArdoLayout
-        className={resolveLayoutClassName(className, isBareLayout)}
-        header={resolvedHeader}
-        sidebar={resolvedSidebar}
-        footer={resolvedFooter}
+    <>
+      <ArdoBrandThemeStyle brand={config.brand} />
+      <ArdoProvider
+        config={config}
+        sidebar={sidebarItems}
+        contexts={contexts}
+        activeContextId={activeContext?.id}
       >
-        {children ?? <Outlet />}
-      </ArdoLayout>
-    </ArdoProvider>
+        <ArdoLayout
+          className={resolveLayoutClassName(className, isBareLayout)}
+          header={resolvedHeader}
+          sidebar={resolvedSidebar}
+          footer={resolvedFooter}
+        >
+          {children ?? <Outlet />}
+        </ArdoLayout>
+      </ArdoProvider>
+    </>
   )
 
   const hasSiteConfig =

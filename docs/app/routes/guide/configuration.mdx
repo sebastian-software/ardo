@@ -135,6 +135,32 @@ ardo({
 })
 ```
 
+### brand
+
+- **Type:** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; logo?: string | { light: string; dark: string } }`
+- **Default:** `{}`
+
+Simple brand configuration for the default theme and header logo. `color`, `accent`, and `neutral`
+accept OKLCH hue numbers or preset names: `berry`, `red`, `orange`, `amber`, `green`, `teal`,
+`blue`, `indigo`, `purple`, `pink`, `slate`, and `gray`.
+
+```ts
+ardo({
+  title: "My Docs",
+  brand: {
+    color: "blue",
+    accent: "teal",
+    neutral: "slate",
+    logo: "./app/assets/logo.svg",
+  },
+})
+```
+
+When `color` is set without `accent`, Ardo derives an accent hue. When `neutral` is omitted, the
+neutral chrome follows `color`. Local SVG logo paths are bundled for the default header and also
+become the default source for generated favicons. Use `headerProps.logo` or `icons.source` when the
+header and favicon should use different assets.
+
 ### seo.llms
 
 - **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
