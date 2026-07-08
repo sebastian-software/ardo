@@ -16,25 +16,25 @@ The build output is located in `build/client/` and can be deployed to any static
 
 Ardo automatically detects your GitHub repository name from the git remote and sets Vite's `base` path for you. No manual `base` configuration is needed in `vite.config.ts`.
 
-For client-side routing to work correctly under the subdirectory (e.g. `https://username.github.io/my-docs/`), add `basename` to your `react-router.config.ts`:
+For client-side routing and prerendered HTML to work correctly under the subdirectory (e.g. `https://username.github.io/my-docs/`), wrap your React Router config with `withArdoGitHubPages()`:
 
 ```ts
 import type { Config } from "@react-router/dev/config"
-import { detectGitHubBasename } from "ardo/vite"
+import { withArdoGitHubPages } from "ardo/vite"
 
-export default {
+const config = {
   ssr: false,
   prerender: true,
-  basename: detectGitHubBasename(),
 } satisfies Config
+
+export default withArdoGitHubPages(config)
 ```
 
-`detectGitHubBasename()` returns `"/repo-name/"` when a GitHub remote is detected, or `undefined` otherwise — so it's safe to leave in place for all environments.
+`withArdoGitHubPages()` detects the repository name from your GitHub remote, sets React Router's `basename`, and registers Ardo's final synchronous flatten step for the React Router CLI build.
 
 <Tip>
-  The build output is automatically flattened by Ardo. When `basename` creates nested directories
-  like `build/client/repo-name/`, the plugin moves files back to `build/client/` so GitHub Pages
-  serves them correctly. No post-build script is needed.
+  When React Router writes prerendered files under `build/client/repo-name/`, Ardo moves those files
+  back to `build/client/` after prerendering finishes. No post-build script is needed.
 </Tip>
 
 If you deploy to the root (`https://username.github.io/`), no configuration is needed — both `base` and `basename` will remain at their defaults.

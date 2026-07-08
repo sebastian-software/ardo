@@ -1,9 +1,9 @@
 import type { Config } from "@react-router/dev/config"
-{{GITHUB_PAGES_REACT_ROUTER_IMPORT}}
+import { withArdoGitHubPages } from "ardo/vite"
 
 const config = {
   ssr: false,
   prerender: true,
 } satisfies Config
 
-export default {{GITHUB_PAGES_REACT_ROUTER_CONFIG}}
+export default withArdoGitHubPages(config, { basename: "/ardo/" })

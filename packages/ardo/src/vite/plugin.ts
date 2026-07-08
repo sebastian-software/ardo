@@ -11,7 +11,6 @@ import {
   formatLinkCheckDiagnostics,
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
-import { createFlattenPlugin } from "./flatten-plugin"
 import {
   detectGitHash,
   detectGitHubBasename,
@@ -102,10 +101,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(createMdxPlugin(pressConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...getReactRouterPlugins())
-
-  if (githubPages) {
-    plugins.push(createFlattenPlugin())
-  }
 
   return plugins
 }
