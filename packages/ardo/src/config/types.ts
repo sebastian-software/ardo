@@ -68,6 +68,39 @@ export type SocialLink = {
 }
 
 // =============================================================================
+// Brand Config
+// =============================================================================
+
+export type ArdoBrandHuePreset =
+  | "amber"
+  | "berry"
+  | "blue"
+  | "gray"
+  | "green"
+  | "indigo"
+  | "orange"
+  | "pink"
+  | "purple"
+  | "red"
+  | "slate"
+  | "teal"
+
+export type ArdoBrandHue = ArdoBrandHuePreset | number
+
+export type ArdoBrandLogo = { light: string; dark: string } | string
+
+export type ArdoBrandConfig = {
+  /** Main brand hue used by primary accents and calls to action. */
+  color?: ArdoBrandHue
+  /** Accent hue used by secondary accents and code surfaces. Defaults from color. */
+  accent?: ArdoBrandHue
+  /** Neutral chrome hue used by backgrounds, borders, text, header, and sidebar. */
+  neutral?: ArdoBrandHue
+  /** Header logo path/URL, optionally with light/dark variants. */
+  logo?: ArdoBrandLogo
+}
+
+// =============================================================================
 // Markdown Config
 // =============================================================================
 
@@ -193,6 +226,8 @@ export type ArdoConfig = {
   sidebar?: SidebarConfig
   /** Site-level social metadata defaults */
   metadata?: MetadataConfig
+  /** Simple brand customization for the default theme and header logo. */
+  brand?: ArdoBrandConfig
   /** Sitemap and robots.txt generation */
   seo?: SeoConfig
   /** Build-time internal link checking */
