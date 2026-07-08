@@ -92,6 +92,22 @@ describe("createProjectStructure", () => {
     expect(fs.existsSync(path.join(tmpDir, "pnpm-workspace.yaml"))).toBe(false)
   })
 
+  it("wraps React Router config for GitHub Pages prerender output", () => {
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "Docs",
+      projectName: "docs-site",
+      typedoc: false,
+      githubPages: true,
+      description: "Built with Ardo",
+    })
+
+    const reactRouterConfig = fs.readFileSync(path.join(tmpDir, "react-router.config.ts"), "utf8")
+
+    expect(reactRouterConfig).toContain(`import { withArdoGitHubPages } from "ardo/vite"`)
+    expect(reactRouterConfig).toContain("export default withArdoGitHubPages(config)")
+    expect(reactRouterConfig).not.toContain("detectGitHubBasename")
+  })
+
   it("keeps only the working pnpm build-script allowlist for pnpm scaffolds", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",

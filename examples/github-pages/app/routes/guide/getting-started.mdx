@@ -1,0 +1,51 @@
+---
+title: Getting Started
+description: Get up and running with this basic Ardo example.
+order: 1
+---
+
+# Getting Started
+
+Welcome to the **Ardo Basic Example**. This is a minimal documentation site that demonstrates Ardo as a pure static site generator — no TypeDoc, no library code, just Markdown.
+
+## What's Included
+
+This example shows:
+
+- Markdown content with frontmatter
+- Automatic route generation
+- Built-in search
+- Dark mode support
+- Static pre-rendering
+
+## Project Structure
+
+```
+examples/basic/
+├── app/
+│   ├── routes/
+│   │   ├── home.tsx
+│   │   └── guide/
+│   │       ├── getting-started.mdx
+│   │       └── markdown-features.mdx
+│   ├── root.tsx
+│   ├── entry.client.tsx
+│   └── entry.server.tsx
+├── vite.config.ts
+├── react-router.config.ts
+└── package.json
+```
+
+## Running Locally
+
+```bash
+pnpm dev
+```
+
+## Building for Production
+
+```bash
+pnpm build
+```
+
+The output will be in `build/client/`, ready for static hosting on Vercel, Netlify, or any other platform.

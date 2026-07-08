@@ -63,12 +63,12 @@ export function createProjectStructure(root: string, template: string, options: 
     GITHUB_PAGES_CONFIG: options.githubPages
       ? "// GitHub Pages: base path auto-detected from git remote"
       : "githubPages: false, // Disabled for non-GitHub Pages deployment",
-    GITHUB_PAGES_BASENAME_IMPORT: options.githubPages
-      ? 'import { detectGitHubBasename } from "ardo/vite"'
+    GITHUB_PAGES_REACT_ROUTER_IMPORT: options.githubPages
+      ? 'import { withArdoGitHubPages } from "ardo/vite"'
       : "",
-    GITHUB_PAGES_BASENAME: options.githubPages
-      ? "basename: detectGitHubBasename(),"
-      : "// basename: detectGitHubBasename(), // Uncomment for GitHub Pages",
+    GITHUB_PAGES_REACT_ROUTER_CONFIG: options.githubPages
+      ? "withArdoGitHubPages(config)"
+      : "config",
     DESCRIPTION: escapeTemplateValue(options.description),
   }
 
