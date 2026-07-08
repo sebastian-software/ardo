@@ -26,6 +26,7 @@ const config: StorybookConfig = {
 
     baseConfig.resolve.alias = {
       ...normalizedAlias,
+      "virtual:ardo/generated-sidebars": path.resolve(__dirname, "./mocks/generated-sidebars.ts"),
       "virtual:ardo/search-index": path.resolve(__dirname, "./mocks/search-index.ts"),
     }
 
