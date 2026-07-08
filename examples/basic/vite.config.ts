@@ -6,6 +6,11 @@ export default defineConfig({
     ardo({
       title: "Ardo Basic Example",
       description: "A simple documentation site built with Ardo",
+      brand: {
+        color: "blue",
+        accent: "teal",
+        neutral: "slate",
+      },
       githubPages: false,
     }),
   ],

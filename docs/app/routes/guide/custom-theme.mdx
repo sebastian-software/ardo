@@ -6,20 +6,67 @@ order: 7
 
 # Custom Theme
 
-Ardo starts with a polished default theme, but it is not a black box. React teams should be able to carry their brand, design system, and component choices into documentation without fighting the framework. You have four levels of customization, and you can mix them freely:
+Ardo starts with a polished default theme, but it is not a black box. React teams should be able to carry their brand, design system, and component choices into documentation without fighting the framework. You have five levels of customization, and you can mix them freely:
 
-1. **CSS variables** — Change colors, spacing, and typography without touching components
-2. **Vanilla Extract tokens** — Type-safe styling with `ardo/theme` imports and `.css.ts` files
-3. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
-4. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
+1. **Brand shortcut** — Set brand, accent, neutral, and logo values in `ardo()`
+2. **CSS variables** — Change colors, spacing, and typography without touching components
+3. **Vanilla Extract tokens** — Type-safe styling with `ardo/theme` imports and `.css.ts` files
+4. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
+5. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
 
 Start simple. Go deeper when you need to.
 
-## Brand Color
+## Brand Shortcut
 
-The fastest way to customize Ardo's look. The default theme uses OKLCH hue tokens for brand, accent,
-and neutral chrome colors, so you can change the brand while keeping backgrounds, borders, header,
-sidebar, and text on a separate neutral base.
+Use `brand` in `vite.config.ts` for the common case: one primary brand color, one accent color, a
+neutral chrome tone, and a logo.
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "Acme Docs",
+      brand: {
+        color: "blue",
+        accent: "teal",
+        neutral: "slate",
+        logo: "./app/assets/logo.svg",
+      },
+    }),
+  ],
+})
+```
+
+`color`, `accent`, and `neutral` accept either preset names or OKLCH hue numbers:
+
+```ts
+ardo({
+  title: "Acme Docs",
+  brand: {
+    color: 240,
+    accent: 170,
+    neutral: 260,
+  },
+})
+```
+
+Presets: `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`,
+`slate`, and `gray`.
+
+When `color` is set without `accent`, Ardo derives a complementary accent. When `neutral` is omitted,
+neutral chrome follows the brand hue. `brand.logo` is used by the default header and, for local SVG
+paths, as the default source for generated favicons. Explicit `headerProps.logo` and
+`icons.source` still win when you need different assets.
+
+## Brand Color Helper
+
+Use the TypeScript helper when you prefer defining theme values from app code instead of the
+`ardo()` config. The default theme uses OKLCH hue tokens for brand, accent, and neutral chrome
+colors, so you can change the brand while keeping backgrounds, borders, header, sidebar, and text on
+a separate neutral base.
 
 Create a `.css.ts` file:
 
@@ -56,7 +103,7 @@ The default hue is `356` (a muted berry tone). Some starting points:
 | `356` | Berry (default) |
 | `170` | Teal            |
 | `240` | Blue            |
-| `260` | Indigo          |
+| `270` | Indigo          |
 | `290` | Purple          |
 | `330` | Pink            |
 | `25`  | Red             |

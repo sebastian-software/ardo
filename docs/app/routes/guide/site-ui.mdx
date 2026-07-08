@@ -80,6 +80,9 @@ mode visitors do not see a light-mode flash.
 Use `headerProps` when you want the default responsive header but need to configure the logo,
 navigation, search, theme toggle, or action area.
 
+If `brand.logo` is configured in `ardo()`, the default header uses it automatically. Pass
+`headerProps.logo` only when the header should use a different logo from the site brand.
+
 ```tsx
 import { ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
 import logo from "./assets/logo.svg"

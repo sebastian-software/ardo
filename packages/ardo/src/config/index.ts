@@ -3,6 +3,10 @@ import path from "node:path"
 import { URL } from "node:url"
 
 import type {
+  ArdoBrandConfig,
+  ArdoBrandHue,
+  ArdoBrandHuePreset,
+  ArdoBrandLogo,
   ArdoConfig,
   HeadConfig,
   LinkCheckConfig,
@@ -27,11 +31,17 @@ import type {
   TypeDocConfig,
 } from "./types"
 
+import { resolveBrandThemeHues } from "./brand"
+
 type ConfigModule = {
   default?: unknown
 }
 
 export type {
+  ArdoBrandConfig,
+  ArdoBrandHue,
+  ArdoBrandHuePreset,
+  ArdoBrandLogo,
   ArdoConfig,
   HeadConfig,
   LinkCheckConfig,
@@ -97,6 +107,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     },
     sidebar: config.sidebar ?? {},
     metadata: config.metadata ?? {},
+    brand: config.brand ?? {},
     vite: config.vite,
     project: config.project ?? {},
     root,
@@ -163,6 +174,8 @@ function validateConfig(config: ArdoConfig): void {
     errors.push("siteUrl must be an absolute URL.")
   }
 
+  validateBrandConfig(config, errors)
+
   const sitemapPriority =
     typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
   if (
@@ -174,6 +187,14 @@ function validateConfig(config: ArdoConfig): void {
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
+  }
+}
+
+function validateBrandConfig(config: ArdoConfig, errors: string[]): void {
+  try {
+    resolveBrandThemeHues(config.brand)
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : String(error))
   }
 }
 

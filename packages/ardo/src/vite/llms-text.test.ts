@@ -7,6 +7,7 @@ import { createLlmsTextAssets, generateLlmsFullTxt, generateLlmsTxt } from "./ll
 
 const config: ResolvedConfig = {
   base: "/docs/",
+  brand: {},
   contentDir: "/tmp/routes",
   description: "Framework docs",
   head: [],

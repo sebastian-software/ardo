@@ -84,6 +84,28 @@ describe("resolveConfig", () => {
     })
   })
 
+  it("preserves brand configuration", () => {
+    const resolved = resolveConfig(
+      {
+        title: "Test",
+        brand: {
+          color: "blue",
+          accent: "teal",
+          neutral: "slate",
+          logo: "./app/assets/logo.svg",
+        },
+      },
+      "/project"
+    )
+
+    expect(resolved.brand).toStrictEqual({
+      color: "blue",
+      accent: "teal",
+      neutral: "slate",
+      logo: "./app/assets/logo.svg",
+    })
+  })
+
   it("merges markdown config with defaults", () => {
     const config = {
       title: "Test",
@@ -137,5 +159,18 @@ describe("resolveConfig", () => {
     expect(() =>
       resolveConfig({ title: "Test", seo: { sitemap: { priority: 2 } } }, "/project")
     ).toThrow("seo.sitemap.priority must be between 0 and 1")
+  })
+
+  it("rejects unknown brand hue presets", () => {
+    expect(() =>
+      resolveConfig(
+        {
+          title: "Test",
+          // @ts-expect-error exercising runtime validation for JavaScript configs.
+          brand: { color: "cerulean" },
+        },
+        "/project"
+      )
+    ).toThrow("brand.color must be one of")
   })
 })

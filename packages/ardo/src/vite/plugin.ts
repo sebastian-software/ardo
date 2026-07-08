@@ -5,13 +5,13 @@ import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
+import { resolveBrandIconOptions, serializeVirtualConfigModule } from "./brand"
 import {
   checkInternalLinks,
   createBuildOutputAssets,
   formatLinkCheckDiagnostics,
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
-import { createFlattenPlugin } from "./flatten-plugin"
 import {
   detectGitHash,
   detectGitHubBasename,
@@ -94,7 +94,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
   const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
-  plugins.push(...createIconsPlugin(icons))
+  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, routesDirOption)
 
@@ -102,10 +102,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(createMdxPlugin(pressConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...getReactRouterPlugins())
-
-  if (githubPages) {
-    plugins.push(createFlattenPlugin())
-  }
 
   return plugins
 }
@@ -284,11 +280,12 @@ async function loadVirtualModule(id: string, state: PluginState): Promise<string
       description: state.resolvedConfig.description,
       base: state.resolvedConfig.base,
       lang: state.resolvedConfig.lang,
+      brand: state.resolvedConfig.brand,
       project: state.resolvedConfig.project,
       buildTime: new Date().toISOString(),
       buildHash: detectGitHash(state.resolvedConfig.root),
     }
-    return `export default ${JSON.stringify(clientConfig)}`
+    return serializeVirtualConfigModule(clientConfig, state.resolvedConfig.root)
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_SIDEBAR_ID]) {
