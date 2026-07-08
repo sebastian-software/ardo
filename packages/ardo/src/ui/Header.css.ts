@@ -29,6 +29,11 @@ export const headerContainer = style({
   height: vars.layout.headerHeight,
   padding: `0 ${vars.space.lg}`,
   "@media": {
+    "(max-width: 1024px)": {
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 1fr) auto auto",
+      columnGap: vars.space.sm,
+    },
     "(max-width: 640px)": {
       padding: `0 ${vars.space.md}`,
     },
@@ -40,6 +45,13 @@ export const headerLeft = style({
   alignItems: "center",
   gap: vars.space.md,
   flexShrink: 0,
+  minWidth: 0,
+  "@media": {
+    "(max-width: 1024px)": {
+      gridColumn: 1,
+      overflow: "hidden",
+    },
+  },
 })
 
 export const headerCenter = style({
@@ -50,8 +62,9 @@ export const headerCenter = style({
   padding: `0 ${vars.space.lg}`,
   "@media": {
     "(max-width: 1024px)": {
-      justifyContent: "flex-end",
-      padding: `0 ${vars.space.sm}`,
+      gridColumn: 2,
+      justifyContent: "center",
+      padding: 0,
     },
   },
 })
@@ -61,12 +74,19 @@ export const headerRight = style({
   alignItems: "center",
   gap: "0.75rem",
   flexShrink: 0,
+  "@media": {
+    "(max-width: 1024px)": {
+      gridColumn: 3,
+      gap: vars.space.sm,
+    },
+  },
 })
 
 export const logoLink = style({
   display: "flex",
   alignItems: "center",
   gap: vars.space.sm,
+  minWidth: 0,
   textDecoration: "none",
   color: vars.color.text,
   transition: `opacity ${vars.transition.fast}`,
@@ -102,10 +122,14 @@ export const siteTitle = style({
   fontSize: vars.fontSize.lg,
   fontWeight: 700,
   letterSpacing: "-0.025em",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 })
 
 export const mobileMenuButton = style({
   display: "none",
+  flexShrink: 0,
   background: "none",
   border: "none",
   cursor: "pointer",
@@ -129,6 +153,7 @@ export const hamburger = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.space.xs,
+  pointerEvents: "none",
 })
 
 globalStyle(`${hamburger} span`, {
@@ -137,6 +162,7 @@ globalStyle(`${hamburger} span`, {
   height: "2px",
   background: vars.color.text,
   borderRadius: "1px",
+  pointerEvents: "none",
   transition: `all ${vars.transition.fast}`,
 })
 
