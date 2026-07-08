@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.8.0...create-ardo-v3.8.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* flatten GitHub Pages prerender output ([4c5fa82](https://github.com/sebastian-software/ardo/commit/4c5fa823821ece38aa47687eb8792c58d5a15c58))
+
 ## [3.8.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.7.0...create-ardo-v3.8.0) (2026-07-07)
 
 

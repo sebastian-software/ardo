@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.8.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.8.0...ardo-v3.8.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* address GitHub Pages flatten review feedback ([e02c600](https://github.com/sebastian-software/ardo/commit/e02c6003bf15d1a523d8458d0a13af6630177d1f))
+* flatten GitHub Pages prerender output ([4c5fa82](https://github.com/sebastian-software/ardo/commit/4c5fa823821ece38aa47687eb8792c58d5a15c58))
+
 ## [3.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.7.0...ardo-v3.8.0) (2026-07-07)
 
 
