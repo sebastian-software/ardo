@@ -22,7 +22,7 @@ export function withArdoGitHubPages<TConfig extends Config>(
   options: ArdoGitHubPagesOptions = {}
 ): Required<Pick<Config, "basename" | "buildEnd">> & TConfig {
   const userBuildEnd = config.buildEnd
-  const basename = config.basename ?? options.basename ?? detectGitHubBasename(options.cwd)
+  const basename = options.basename ?? config.basename ?? detectGitHubBasename(options.cwd)
   const buildEnd: BuildEnd = async (args) => {
     await userBuildEnd?.(args)
     scheduleGitHubPagesBuildOutputFlatten(args)
@@ -39,7 +39,13 @@ export function scheduleGitHubPagesBuildOutputFlatten(args: GitHubPagesBuildArgs
   // React Router calls buildEnd before prerendering; the CLI exit event is the first reliable
   // synchronous point after pre-rendered HTML has been written.
   process.once("exit", () => {
-    flattenGitHubPagesBuildOutput(args)
+    try {
+      flattenGitHubPagesBuildOutput(args)
+    } catch (error) {
+      process.exitCode = 1
+      console.error("[ardo] Failed to flatten GitHub Pages build output.")
+      console.error(error)
+    }
   })
 }
 
