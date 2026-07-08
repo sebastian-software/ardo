@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, use, useMemo } from "react"
 
-import type { ArdoConfig, ArdoContextItem, PageData, SidebarItem, TOCItem } from "../config/types"
+import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
 import type { ArdoLabels } from "../ui/labels"
 
 import { defaultArdoLabels } from "../ui/labels"
@@ -8,8 +8,6 @@ import { defaultArdoLabels } from "../ui/labels"
 type ArdoContextValue = {
   config: ArdoConfig
   sidebar: SidebarItem[]
-  contexts?: ArdoContextItem[]
-  activeContextId?: string
   currentPage?: PageData
 }
 
@@ -33,14 +31,6 @@ export function useArdoSidebar(): SidebarItem[] {
   return sidebar
 }
 
-export function useArdoContexts(): {
-  activeId: string | undefined
-  items: ArdoContextItem[]
-} {
-  const { contexts, activeContextId } = useArdoContext()
-  return { items: contexts ?? [], activeId: activeContextId }
-}
-
 export function useArdoPageData(): PageData | undefined {
   const { currentPage } = useArdoContext()
   return currentPage
@@ -54,23 +44,14 @@ export function useArdoTOC(): TOCItem[] {
 type ArdoProviderProps = {
   config: ArdoConfig
   sidebar: SidebarItem[]
-  contexts?: ArdoContextItem[]
-  activeContextId?: string
   currentPage?: PageData
   children: ReactNode
 }
 
-export function ArdoProvider({
-  config,
-  sidebar,
-  contexts,
-  activeContextId,
-  currentPage,
-  children,
-}: ArdoProviderProps) {
+export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
   const contextValue = useMemo(
-    () => ({ config, sidebar, contexts, activeContextId, currentPage }),
-    [config, currentPage, sidebar, contexts, activeContextId]
+    () => ({ config, sidebar, currentPage }),
+    [config, currentPage, sidebar]
   )
   return <ArdoContext value={contextValue}>{children}</ArdoContext>
 }

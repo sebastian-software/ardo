@@ -1,4 +1,14 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
@@ -27,10 +37,8 @@ export type ArdoHeaderProps = {
   logo?: ArdoLogo
   /** Site title displayed next to logo */
   title?: string
-  /** Navigation content (Nav component or custom) */
-  nav?: ReactNode
-  /** Actions/right side content (social links, custom buttons) */
-  actions?: ReactNode
+  /** Navigation and action children. Use ArdoHeaderActions for right-side actions. */
+  children?: ReactNode
   /** Show search (default: true) */
   search?: boolean
   /** Placeholder text for the search input */
@@ -41,6 +49,52 @@ export type ArdoHeaderProps = {
   mobileMenuContent?: ReactNode
   /** Additional CSS classes */
   className?: string
+}
+
+export type ArdoHeaderActionsProps = {
+  /** Right-side header actions such as social links or custom buttons. */
+  children?: ReactNode
+}
+
+export function ArdoHeaderActions({ children }: ArdoHeaderActionsProps) {
+  return <>{children}</>
+}
+
+function compactNodes(nodes: ReactNode[]): ReactNode {
+  if (nodes.length === 0) return undefined
+  if (nodes.length === 1) return nodes[0]
+  return <>{nodes}</>
+}
+
+function isHeaderActionsElement(child: ReactNode): child is ReactElement<ArdoHeaderActionsProps> {
+  return isValidElement(child) && child.type === ArdoHeaderActions
+}
+
+function splitHeaderChildren(children: ReactNode): { actions: ReactNode; nav: ReactNode } {
+  const navNodes: ReactNode[] = []
+  const actionNodes: ReactNode[] = []
+
+  for (const child of flattenHeaderChildren(children)) {
+    if (isHeaderActionsElement(child)) {
+      actionNodes.push(child.props.children)
+    } else {
+      navNodes.push(child)
+    }
+  }
+
+  return { actions: compactNodes(actionNodes), nav: compactNodes(navNodes) }
+}
+
+function flattenHeaderChildren(children: ReactNode): ReactNode[] {
+  const result: ReactNode[] = []
+  for (const child of Children.toArray(children)) {
+    if (isValidElement<{ children?: ReactNode }>(child) && child.type === Fragment) {
+      result.push(...flattenHeaderChildren(child.props.children))
+    } else {
+      result.push(child)
+    }
+  }
+  return result
 }
 
 /**
@@ -68,8 +122,7 @@ function useMobileMenu(): [boolean, (open: boolean) => void] {
 export function ArdoHeader({
   logo,
   title,
-  nav,
-  actions,
+  children,
   search = true,
   searchPlaceholder,
   themeToggle = true,
@@ -80,6 +133,7 @@ export function ArdoHeader({
   const labels = useArdoLabels()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
+  const { actions, nav } = splitHeaderChildren(children)
 
   const resolvedLogo = logo
   const resolvedTitle = title ?? config.title

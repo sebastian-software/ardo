@@ -36,7 +36,7 @@ export const WithNav: Story = {
   args: {
     title: "Ardo",
     search: false,
-    nav: (
+    children: (
       <ArdoNav>
         <ArdoNavLink to="/guide">Guide</ArdoNavLink>
         <ArdoNavLink to="/api">API</ArdoNavLink>

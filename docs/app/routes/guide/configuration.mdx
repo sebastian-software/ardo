@@ -158,8 +158,8 @@ ardo({
 
 When `color` is set without `accent`, Ardo derives an accent hue. When `neutral` is omitted, the
 neutral chrome follows `color`. Local SVG logo paths are bundled for the default header and also
-become the default source for generated favicons. Use `headerProps.logo` or `icons.source` when the
-header and favicon should use different assets.
+become the default source for generated favicons. Use an explicit `logo` on `ArdoHeader` or
+`icons.source` when the header and favicon should use different assets.
 
 ### seo.llms
 
@@ -332,10 +332,9 @@ ardo({
 - **Type:** `string[]`
 - **Default:** `[]`
 
-Controls the order of top-level sections in the generated sidebar from `virtual:ardo/sidebar`.
-Use route directory names, without leading slashes. Sections listed here appear first in the
-configured order. Any section not listed still appears automatically after the configured sections
-using the normal generated order.
+Controls the order of top-level sections used by `ArdoGeneratedSidebar`. Use route directory names,
+without leading slashes. Sections listed here appear first in the configured order. Any section not
+listed still appears automatically after the configured sections using the normal generated order.
 
 ```ts
 ardo({
@@ -681,9 +680,9 @@ Options controlling the generated markdown output.
 
 ## UI Configuration
 
-Navigation, sidebar, footer, editLink, lastUpdated, and search are configured via JSX props in your
-`root.tsx` using `<ArdoRoot>`. See [Site UI Configuration](/guide/site-ui) for the `ArdoRoot`,
-header, footer, and context-sidebar reference.
+Navigation, sidebar sections, footer, editLink, lastUpdated, and search are configured with JSX in
+your `root.tsx` using `<ArdoRoot>`. See [Site UI Configuration](/guide/site-ui) for the `ArdoRoot`,
+header, footer, and sidebar-section reference.
 
 ## Package Exports
 

@@ -1,16 +1,24 @@
-import { cloneElement, isValidElement, type ReactNode, useMemo } from "react"
+import {
+  Children,
+  cloneElement,
+  Fragment,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  useMemo,
+} from "react"
 import { Outlet, useLocation, useMatches } from "react-router"
 
-import type { ArdoConfig, ArdoContextItem, SidebarItem } from "../config/types"
+import type { ArdoConfig } from "../config/types"
 
 import { createBrandThemeCss } from "../config/brand"
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
-import { ArdoFooter, type ArdoFooterProps } from "./Footer"
+import { ArdoFooter } from "./Footer"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { type ArdoLabelsInput, resolveArdoLabels } from "./labels"
 import { ArdoLayout } from "./Layout"
 import * as layoutStyles from "./Layout.css"
-import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
+import { isArdoSidebarElement, resolveArdoSidebarItems } from "./Sidebar"
 
 // =============================================================================
 // ArdoRoot Component
@@ -19,34 +27,6 @@ import { ArdoSidebar, type ArdoSidebarProps } from "./Sidebar"
 export type ArdoRootProps = {
   /** Ardo config (from virtual:ardo/config) */
   config: ArdoConfig
-  /**
-   * Sidebar data.
-   *
-   * - `SidebarItem[]` — a single sidebar shown for every non-bare route
-   *   (from `virtual:ardo/sidebar`, back-compat).
-   * - `Record<string, SidebarItem[]>` — a per-context sidebar map
-   *   (from `virtual:ardo/sidebars`). The active context's sidebar is
-   *   shown; the key matches the `id` of the matching `ArdoContextItem`.
-   */
-  sidebar: Record<string, SidebarItem[]> | SidebarItem[]
-  /**
-   * Top-level navigation contexts shown in the sidebar rail. When provided,
-   * the rail renders these as world-switcher items and `sidebar` is treated
-   * as a map keyed by context id.
-   */
-  contexts?: ArdoContextItem[]
-  /** Custom header element (overrides auto-generated header) */
-  header?: ReactNode
-  /** Custom sidebar element (overrides auto-generated sidebar) */
-  sidebarContent?: ReactNode
-  /** Custom footer element (overrides auto-generated footer) */
-  footer?: ReactNode
-  /** Props passed to auto-generated ArdoHeader (ignored when header is provided) */
-  headerProps?: ArdoHeaderProps
-  /** Props passed to auto-generated ArdoSidebar (ignored when sidebarContent is provided) */
-  sidebarProps?: ArdoSidebarProps
-  /** Props passed to auto-generated ArdoFooter (ignored when footer is provided) */
-  footerProps?: ArdoFooterProps
   /** Edit link configuration (applied site-wide via ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
@@ -57,7 +37,7 @@ export type ArdoRootProps = {
   tocLabel?: string
   /** Additional CSS classes for the layout */
   className?: string
-  /** Content to render (defaults to <Outlet />) */
+  /** Site chrome children: ArdoHeader, ArdoSidebar, ArdoFooter, and optional content overrides. */
   children?: ReactNode
 }
 
@@ -68,57 +48,33 @@ export type ArdoRootProps = {
  * @example Minimal usage
  * ```tsx
  * import config from "virtual:ardo/config"
- * import sidebar from "virtual:ardo/sidebar"
  *
  * export default function Root() {
- *   return <ArdoRoot config={config} sidebar={sidebar} />
+ *   return <ArdoRoot config={config} />
  * }
  * ```
  *
- * @example With custom nav and footer overrides
+ * @example With JSX chrome
  * ```tsx
  * export default function Root() {
  *   return (
- *     <ArdoRoot
- *       config={config}
- *       sidebar={sidebar}
- *       headerProps={{
- *         nav: (
- *           <Nav>
- *             <NavLink to="/guide">Guide</NavLink>
- *             <NavLink to="/api">API</NavLink>
- *           </Nav>
- *         ),
- *       }}
- *       footerProps={{
- *         message: "Released under the MIT License.",
- *       }}
- *       editLink={{
- *         pattern: "https://github.com/user/repo/edit/main/docs/:path",
- *         text: "Edit this page on GitHub",
- *       }}
- *       lastUpdated={{ enabled: true }}
- *     />
+ *     <ArdoRoot config={config}>
+ *       <ArdoHeader>
+ *         <ArdoNav>
+ *           <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+ *         </ArdoNav>
+ *       </ArdoHeader>
+ *       <ArdoSidebar>
+ *         <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+ *           <ArdoGeneratedSidebar section="guide" />
+ *         </ArdoSidebarSection>
+ *       </ArdoSidebar>
+ *       <ArdoFooter message="Released under the MIT License." />
+ *     </ArdoRoot>
  *   )
  * }
  * ```
  */
-function resolveRootHeader(
-  header: ReactNode,
-  headerProps: ArdoHeaderProps | undefined,
-  mobileMenuContent: ReactNode
-): ReactNode {
-  if (header !== undefined) {
-    return enhanceHeaderWithMobileMenuContent(header, mobileMenuContent)
-  }
-  return (
-    <ArdoHeader
-      {...headerProps}
-      mobileMenuContent={headerProps?.mobileMenuContent ?? mobileMenuContent}
-    />
-  )
-}
-
 function resolveLayoutClassName(className: string | undefined, isBareLayout: boolean): string {
   if (className != null) return className
   return isBareLayout ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout
@@ -162,48 +118,78 @@ function useRouteChrome(): boolean | undefined {
   return undefined
 }
 
-function contextMatchesPath(ctx: ArdoContextItem, pathname: string): boolean {
-  if (ctx.match != null) {
-    return typeof ctx.match === "string" ? pathname.startsWith(ctx.match) : ctx.match.test(pathname)
-  }
-  const firstSegment = ctx.href.split("/").find((segment) => segment !== "")
-  if (firstSegment === undefined) return false
-  const root = `/${firstSegment}`
-  return pathname === root || pathname.startsWith(`${root}/`)
-}
-
-function findActiveContext(
-  contexts: ArdoContextItem[] | undefined,
-  pathname: string
-): ArdoContextItem | undefined {
-  return contexts?.find((ctx) => contextMatchesPath(ctx, pathname))
-}
-
-function resolveContextSidebar(
-  sidebar: Record<string, SidebarItem[]> | SidebarItem[],
-  activeContext: ArdoContextItem | undefined
-): SidebarItem[] {
-  if (Array.isArray(sidebar)) return sidebar
-  if (activeContext == null) return []
-  return sidebar[activeContext.id] ?? []
-}
-
 function ArdoBrandThemeStyle({ brand }: { brand: ArdoConfig["brand"] }) {
   const css = createBrandThemeCss(brand)
   if (css === undefined) return null
   return <style data-ardo-brand dangerouslySetInnerHTML={{ __html: css }} />
 }
 
+type RootChrome = {
+  content: ReactNode
+  footer: ReactNode
+  header: ReactNode
+  sidebar: ReactNode
+}
+
+function splitRootChildren(children: ReactNode): RootChrome {
+  const content: ReactNode[] = []
+  let footer: ReactNode
+  let header: ReactNode
+  let sidebar: ReactNode
+
+  for (const child of flattenRootChildren(children)) {
+    if (isArdoHeaderElement(child)) {
+      header = child
+    } else if (isArdoSidebarElement(child)) {
+      sidebar = child
+    } else if (isArdoFooterElement(child)) {
+      footer = child
+    } else {
+      content.push(child)
+    }
+  }
+
+  return {
+    content: content.length === 0 ? undefined : content.length === 1 ? content[0] : <>{content}</>,
+    footer,
+    header,
+    sidebar,
+  }
+}
+
+function flattenRootChildren(children: ReactNode): ReactNode[] {
+  const result: ReactNode[] = []
+  for (const child of Children.toArray(children)) {
+    if (isValidElement<{ children?: ReactNode }>(child) && child.type === Fragment) {
+      result.push(...flattenRootChildren(child.props.children))
+    } else {
+      result.push(child)
+    }
+  }
+  return result
+}
+
+function isArdoHeaderElement(child: ReactNode): child is ReactElement<ArdoHeaderProps> {
+  return isValidElement<ArdoHeaderProps>(child) && child.type === ArdoHeader
+}
+
+function isArdoFooterElement(child: ReactNode): boolean {
+  return isValidElement(child) && child.type === ArdoFooter
+}
+
+function resolveRootHeader(
+  config: ArdoConfig,
+  header: ReactNode,
+  mobileMenuContent: ReactNode
+): ReactNode {
+  if (header !== undefined) {
+    return enhanceHeader(header, config, mobileMenuContent)
+  }
+  return <ArdoHeader logo={config.brand?.logo} mobileMenuContent={mobileMenuContent} />
+}
+
 export function ArdoRoot({
   config,
-  sidebar,
-  contexts,
-  header,
-  sidebarContent,
-  footer,
-  headerProps,
-  sidebarProps,
-  footerProps,
   editLink,
   lastUpdated,
   labels,
@@ -214,33 +200,26 @@ export function ArdoRoot({
   const location = useLocation()
   const layout = useRouteLayout()
   const routeChrome = useRouteChrome()
+  const chrome = useMemo(() => splitRootChildren(children), [children])
   const showChrome = routeChrome !== false
   // Bare layout: no sidebar, no rail — used for the home page and any other
   // marketing-style routes (TSX or MDX). Falls back to the legacy hardcoded
   // home detection if a route hasn't opted in via `handle.layout`.
   const isBareLayout = layout === "bare" || location.pathname === "/" || location.pathname === ""
-  const activeContext = useMemo(
-    () => findActiveContext(contexts, location.pathname),
-    [contexts, location.pathname]
-  )
   const sidebarItems = useMemo(
-    () => resolveContextSidebar(sidebar, activeContext),
-    [sidebar, activeContext]
+    () => resolveArdoSidebarItems(chrome.sidebar, location.pathname),
+    [chrome.sidebar, location.pathname]
   )
-  const resolvedHeaderProps =
-    config.brand?.logo === undefined || headerProps?.logo !== undefined
-      ? headerProps
-      : { ...headerProps, logo: config.brand.logo }
   // Search lives in the header now. The sidebar no longer carries it.
-  const resolvedSidebar = isBareLayout ? undefined : resolveSidebar(sidebarContent, sidebarProps)
+  const resolvedSidebar = isBareLayout ? undefined : chrome.sidebar
   const resolvedHeader = showChrome
-    ? resolveRootHeader(header, resolvedHeaderProps, isBareLayout ? undefined : resolvedSidebar)
+    ? resolveRootHeader(config, chrome.header, isBareLayout ? undefined : resolvedSidebar)
     : null
   const resolvedFooter = showChrome ? (
-    footer === undefined ? (
-      <ArdoFooter {...footerProps} />
+    chrome.footer === undefined ? (
+      <ArdoFooter />
     ) : (
-      footer
+      chrome.footer
     )
   ) : null
 
@@ -252,19 +231,14 @@ export function ArdoRoot({
   const content = (
     <>
       <ArdoBrandThemeStyle brand={config.brand} />
-      <ArdoProvider
-        config={config}
-        sidebar={sidebarItems}
-        contexts={contexts}
-        activeContextId={activeContext?.id}
-      >
+      <ArdoProvider config={config} sidebar={sidebarItems}>
         <ArdoLayout
           className={resolveLayoutClassName(className, isBareLayout)}
           header={resolvedHeader}
           sidebar={resolvedSidebar}
           footer={resolvedFooter}
         >
-          {children ?? <Outlet />}
+          {chrome.content ?? <Outlet />}
         </ArdoLayout>
       </ArdoProvider>
     </>
@@ -282,25 +256,9 @@ export function ArdoRoot({
   )
 }
 
-/**
- * Resolves the sidebar element. Custom content is passed through as-is;
- * when none is given, a default data-driven <ArdoSidebar> is created.
- */
-function resolveSidebar(
-  sidebarContent: ReactNode | undefined,
-  sidebarProps: ArdoSidebarProps | undefined
-): ReactNode {
-  if (sidebarContent == null) {
-    return <ArdoSidebar {...sidebarProps} />
-  }
-  if (isValidElement(sidebarContent)) {
-    return sidebarContent
-  }
-  return <ArdoSidebar>{sidebarContent}</ArdoSidebar>
-}
-
-function enhanceHeaderWithMobileMenuContent(
+function enhanceHeader(
   header: ReactNode,
+  config: ArdoConfig,
   mobileMenuContent: ReactNode
 ): ReactNode {
   if (!isValidElement<ArdoHeaderProps>(header) || header.type !== ArdoHeader) {
@@ -312,5 +270,8 @@ function enhanceHeaderWithMobileMenuContent(
     return header
   }
 
-  return cloneElement(header, { mobileMenuContent })
+  return cloneElement(header, {
+    logo: header.props.logo ?? config.brand?.logo,
+    mobileMenuContent,
+  })
 }

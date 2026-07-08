@@ -9,7 +9,7 @@ export type SidebarGenerationOptions = {
 }
 
 /**
- * @deprecated Use the generated virtual sidebar from `ardo()` instead.
+ * @deprecated Use `<ArdoGeneratedSidebar />` inside your JSX sidebar instead.
  * This compatibility wrapper now delegates to the same sidebar generator used
  * by the Vite integration.
  */
