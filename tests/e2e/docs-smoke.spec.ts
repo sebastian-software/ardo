@@ -28,7 +28,8 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await page.setViewportSize({ width: 390, height: 780 })
   await page.goto("/guide/getting-started")
 
-  await page.getByRole("button", { name: "Toggle menu" }).click()
+  await expect(page.getByRole("heading", { level: 1, name: "Getting Started" })).toBeVisible()
+  await page.getByRole("banner").last().getByRole("button", { name: "Toggle menu" }).click()
   const menu = page.getByRole("dialog", { name: /Ardo navigation menu/ })
   await expect(menu).toBeVisible()
 
