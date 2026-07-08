@@ -21,6 +21,14 @@ describe("resolveBrandThemeHues", () => {
     })
   })
 
+  it("keeps indigo distinct from neutral gray and slate presets", () => {
+    expect(resolveBrandThemeHues({ color: "indigo", neutral: "slate" })).toStrictEqual({
+      color: 270,
+      accent: 144,
+      neutral: 260,
+    })
+  })
+
   it("normalizes numeric hues", () => {
     expect(resolveBrandThemeHues({ color: -10, accent: 370, neutral: 720 })).toStrictEqual({
       color: 350,

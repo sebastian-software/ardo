@@ -6,7 +6,7 @@ export const brandHuePresets = {
   blue: 240,
   gray: 260,
   green: 130,
-  indigo: 260,
+  indigo: 270,
   orange: 45,
   pink: 330,
   purple: 290,
