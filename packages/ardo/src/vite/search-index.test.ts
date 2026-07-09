@@ -21,7 +21,7 @@ describe("generateSearchIndex", () => {
 
     expect(await generateSearchIndex(routesDir)).toContainEqual(
       expect.objectContaining({
-        id: path.join("v1.md", "changelog.md"),
+        id: `${path.join("v1.md", "changelog.md")}#page-0`,
         path: "/v1.md/changelog",
         publicPath: "/v1.md/changelog",
         routePath: "/v1.md/changelog",
@@ -51,14 +51,76 @@ const secret = "do not index code"
 
     expect(docs).toStrictEqual([
       {
-        id: "guide/getting-started.mdx",
+        id: "guide/getting-started.mdx#getting-started",
         title: "Getting Started",
+        pageTitle: "Getting Started",
         content: "Getting Started Install Ardo from npm.",
-        path: "/guide/getting-started",
-        publicPath: "/guide/getting-started",
+        excerpt: "Install Ardo from npm.",
+        path: "/guide/getting-started#getting-started",
+        publicPath: "/guide/getting-started#getting-started",
         routePath: "/guide/getting-started",
+        anchor: "getting-started",
+        headingHierarchy: ["Getting Started"],
+        routeGroup: "Guide",
         section: "Guide",
       },
+    ])
+  })
+
+  it("builds one static record per markdown section with heading hierarchy", async () => {
+    await writeRoute(
+      "guide/configuration.mdx",
+      `---
+title: Configuration
+---
+
+# Configure Ardo
+
+Choose defaults.
+
+## GitHub Pages
+
+Deploy static files.
+
+## GitHub Pages
+
+Keep redirects.
+`
+    )
+
+    const docs = await generateSearchIndex(routesDir, {
+      basePath: "/v3/",
+      localeId: "en",
+      versionId: "v3",
+    })
+
+    expect(docs).toStrictEqual([
+      expect.objectContaining({
+        id: "guide/configuration.mdx#configure-ardo",
+        title: "Configure Ardo",
+        pageTitle: "Configuration",
+        anchor: "configure-ardo",
+        headingHierarchy: ["Configure Ardo"],
+        path: "/guide/configuration#configure-ardo",
+        publicPath: "/v3/en/guide/configuration#configure-ardo",
+        routeGroup: "Guide",
+        localeId: "en",
+        versionId: "v3",
+      }),
+      expect.objectContaining({
+        id: "guide/configuration.mdx#github-pages",
+        title: "GitHub Pages",
+        headingHierarchy: ["Configure Ardo", "GitHub Pages"],
+        path: "/guide/configuration#github-pages",
+        publicPath: "/v3/en/guide/configuration#github-pages",
+      }),
+      expect.objectContaining({
+        id: "guide/configuration.mdx#github-pages-1",
+        title: "GitHub Pages",
+        headingHierarchy: ["Configure Ardo", "GitHub Pages"],
+        path: "/guide/configuration#github-pages-1",
+        publicPath: "/v3/en/guide/configuration#github-pages-1",
+      }),
     ])
   })
 
@@ -88,7 +150,7 @@ const secret = "do not index code"
     const [doc] = await generateSearchIndex(routesDir)
 
     expect(doc).toBeDefined()
-    expect(doc.content.length).toBeLessThanOrEqual(2000)
+    expect(doc.excerpt.length).toBeLessThanOrEqual(2000)
   })
 })
 

@@ -16,8 +16,13 @@ import { type SearchMatch, SearchResults } from "./SearchResults"
 type SearchDoc = {
   id: string
   title: string
+  pageTitle: string
   content: string
+  excerpt: string
   path: string
+  anchor?: string
+  headingHierarchy: string[]
+  routeGroup?: string
   section?: string
 }
 
