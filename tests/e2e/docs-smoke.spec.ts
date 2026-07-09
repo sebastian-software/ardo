@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test"
 
+const docsBasePath = "/v3"
+const gettingStartedPath = `${docsBasePath}/guide/getting-started`
+
 test("built docs site hydrates and supports search and theme interactions", async ({ page }) => {
   const consoleErrors: string[] = []
   page.on("console", (message) => {
@@ -8,7 +11,7 @@ test("built docs site hydrates and supports search and theme interactions", asyn
     }
   })
 
-  await page.goto("/guide/getting-started")
+  await page.goto(gettingStartedPath)
 
   await expect(page.getByRole("heading", { level: 1, name: "Getting Started" })).toBeVisible()
 
@@ -19,14 +22,14 @@ test("built docs site hydrates and supports search and theme interactions", asyn
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v3\/guide\/markdown/)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
 
 test("mobile docs navigation opens as a dialog and restores route navigation", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
-  await page.goto("/guide/getting-started")
+  await page.goto(gettingStartedPath)
 
   await expect(page.getByRole("heading", { level: 1, name: "Getting Started" })).toBeVisible()
   await page.getByRole("banner").last().getByRole("button", { name: "Toggle menu" }).click()
@@ -35,6 +38,6 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
 
   await menu.getByRole("link", { name: "Markdown Features" }).click()
 
-  await expect(page).toHaveURL(/\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v3\/guide\/markdown/)
   await expect(menu).toBeHidden()
 })
