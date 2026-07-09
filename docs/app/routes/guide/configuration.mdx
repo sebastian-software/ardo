@@ -283,6 +283,39 @@ ardo({
 
 Use frontmatter `redirectFrom` when a redirect belongs to one page instead of the whole site.
 
+### versioning
+
+- **Type:** `false | { current: string; versions: Array<{ id: string; label?: string; path: string }>; rootRedirect?: boolean }`
+- **Default:** `false`
+
+Enables a small major-version documentation model. Ardo builds the current docs under the active
+version path, exposes the configured versions to the header version switcher, emits
+`/versions.json`, and generates a static `/index.html` redirect to the current version by default.
+
+```ts
+ardo({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
+})
+```
+
+When `base` is set, Ardo treats it as the deployment root and appends the version path. For example,
+`base: "/my-project/"` with `path: "/v3/"` produces canonical URLs under `/my-project/v3/`.
+The generated sitemap contains the current build only; older major versions can remain deployed as
+static folders without being advertised as duplicate current content.
+
+Set `rootRedirect: false` if you want to provide your own root page or provider-level redirect. On
+static hosts such as GitHub Pages, Ardo's redirect is an HTML file with meta refresh and JavaScript.
+If you put a CDN or hosting layer with real HTTP redirects in front of the site, configure those
+redirects outside Ardo.
+
 ### srcDir
 
 - **Type:** `string`

@@ -1,6 +1,7 @@
 import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
+import { createVersioningBuildOutputAssets, getRootVersionRedirect } from "./build-versioning"
 import { createLlmsTextAssets } from "./llms-text"
 
 type LinkCheckDiagnostic = {
@@ -67,6 +68,10 @@ export function generateRobots(config: ResolvedConfig) {
 
 export function collectRedirects(entries: RouteManifestEntry[], config: ResolvedConfig) {
   const redirects = [...config.redirects]
+  const rootVersionRedirect = getRootVersionRedirect(config)
+  if (rootVersionRedirect != null) {
+    redirects.push(rootVersionRedirect)
+  }
 
   for (const entry of entries) {
     for (const from of entry.frontmatter.redirectFrom ?? []) {
@@ -136,17 +141,19 @@ export function createBuildOutputAssets(
   config: ResolvedConfig
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
-  if (shouldEmitSitemap(config)) {
+  if (config.seo.sitemap !== false) {
     assets.push({ fileName: "sitemap.xml", source: generateSitemap(entries, config) })
   }
 
-  if (shouldEmitRobots(config)) {
+  if (config.seo.robots !== false) {
     assets.push({ fileName: "robots.txt", source: generateRobots(config) })
   }
 
-  if (shouldEmitLlms(config)) {
+  if (config.seo.llms !== false) {
     assets.push(...createLlmsTextAssets(entries, config))
   }
+
+  assets.push(...createVersioningBuildOutputAssets(config))
 
   const redirects = collectRedirects(entries, config)
   if (redirects.length === 0) {
@@ -176,18 +183,6 @@ function createRedirectAssets(redirects: Array<{ from: string; to: string }>): B
 
 export function formatLinkCheckDiagnostics(diagnostics: LinkCheckDiagnostic[]) {
   return diagnostics.map((diagnostic) => `${diagnostic.filePath}: ${diagnostic.message}`).join("\n")
-}
-
-export function shouldEmitSitemap(config: ResolvedConfig) {
-  return config.seo.sitemap !== false
-}
-
-export function shouldEmitRobots(config: ResolvedConfig) {
-  return config.seo.robots !== false
-}
-
-export function shouldEmitLlms(config: ResolvedConfig) {
-  return config.seo.llms !== false
 }
 
 function extractInternalLinks(content: string) {
@@ -311,7 +306,7 @@ function collectQuotedHrefLinks({
 
 function toRedirectAssetName(from: string) {
   const routePath = from.replace(/^\//u, "").replace(/\/$/u, "")
-  return `${routePath}/index.html`
+  return routePath === "" ? "index.html" : `${routePath}/index.html`
 }
 
 function dedupeRedirects(redirects: Array<{ from: string; to: string }>) {

@@ -16,7 +16,12 @@ export {
 } from "../runtime/loader"
 export { generateSidebar, type SidebarGenerationOptions } from "../runtime/sidebar"
 
-export { type ArdoGitHubPagesOptions, withArdoGitHubPages } from "./flatten-plugin"
+export {
+  type ArdoGitHubPagesOptions,
+  type ArdoVersioningOptions,
+  withArdoGitHubPages,
+  withArdoVersioning,
+} from "./flatten-plugin"
 export { type ArdoIconOptions } from "./icons"
 // Vite Plugin
 export { ardoPlugin as ardo, ardoPlugin, type ArdoPluginOptions } from "./plugin"

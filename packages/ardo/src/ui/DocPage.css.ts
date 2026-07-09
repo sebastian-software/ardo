@@ -129,15 +129,3 @@ export const pageRailLink = style({
     },
   },
 })
-
-export const pageRailSelect = style({
-  width: "100%",
-  minHeight: "2.5rem",
-  padding: `0 ${vars.space.sm}`,
-  border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radius.base,
-  background: vars.color.bg,
-  color: vars.color.text,
-  font: "inherit",
-  fontSize: vars.fontSize.sm,
-})

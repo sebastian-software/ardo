@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { useArdoConfig, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
 import { ArdoContent } from "./Content"
 import * as styles from "./DocPage.css"
 import { ArdoLayout } from "./Layout"
@@ -116,27 +116,16 @@ function ArdoPageRail({
   tocLabel?: string
   hideToc?: boolean
 }) {
-  const config = useArdoConfig()
   const siteConfig = useArdoSiteConfig()
   const pageData = useArdoPageData()
-  const version = config.project?.version ?? ""
   const edit = resolveRailEditLink({ pageData, editLink, siteConfig })
   const updated = resolveRailLastUpdated({ pageData, lastUpdated, siteConfig })
   const hasMeta = edit.show || updated.show
-  const hasVersion = version !== ""
 
-  if (!hasVersion && !hasMeta && hideToc) return null
+  if (!hasMeta && hideToc) return null
 
   return (
     <aside className={styles.pageRail}>
-      {hasVersion && (
-        <section className={styles.pageRailSection}>
-          <h2 className={styles.pageRailTitle}>Version</h2>
-          <select className={styles.pageRailSelect} defaultValue={version} aria-label="Version">
-            <option value={version}>{version}</option>
-          </select>
-        </section>
-      )}
       {hasMeta && (
         <section className={styles.pageRailSection}>
           <h2 className={styles.pageRailTitle}>Page</h2>

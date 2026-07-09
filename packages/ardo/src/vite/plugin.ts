@@ -12,12 +12,7 @@ import {
   formatLinkCheckDiagnostics,
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
-import {
-  detectGitHash,
-  detectGitHubBasename,
-  detectGitHubRepoName,
-  getGitHubPagesBase,
-} from "./git-utils"
+import { detectGitHash, detectGitHubBasename } from "./git-utils"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
@@ -28,6 +23,7 @@ import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
 import { generateContextSidebars } from "./sidebar-index"
 import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
+import { resolveVersionedMainBase } from "./versioning"
 
 const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 const VIRTUAL_GENERATED_SIDEBARS_ID = "virtual:ardo/generated-sidebars"
@@ -39,6 +35,7 @@ const RESOLVED_IDS: Record<string, string> = {
 }
 
 type PluginState = {
+  deploymentBase?: string
   isSsrBuild?: boolean
   resolvedConfig?: ResolvedConfig
   routesDir: string
@@ -144,7 +141,12 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     configResolved(config) {
       state.isSsrBuild = config.build.ssr !== false
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
-      state.resolvedConfig = resolveArdoConfig(config.root, options.pressConfig, config.base)
+      state.resolvedConfig = resolveArdoConfig({
+        root: config.root,
+        pressConfig: options.pressConfig,
+        viteBase: config.base,
+        deploymentBaseOverride: state.deploymentBase,
+      })
     },
     resolveId(id) {
       return resolveVirtualModuleId(id)
@@ -214,12 +216,19 @@ function createMainConfig(
     ssr: { noExternal: ["ardo"] },
   }
 
-  if (githubPages && command === "build" && userConfig.base == null) {
-    const repoName = detectGitHubRepoName(root)
-    if (repoName != null) {
-      config.base = getGitHubPagesBase(repoName)
-      console.log(`[ardo] GitHub Pages detected, using base: ${config.base}`)
-    }
+  const baseResult = resolveVersionedMainBase({
+    command,
+    githubPages,
+    pressConfig,
+    root,
+    userBase: userConfig.base,
+  })
+  state.deploymentBase = baseResult.deploymentBase
+  if (baseResult.viteBase != null && userConfig.base == null) {
+    config.base = baseResult.viteBase
+  }
+  for (const message of baseResult.logMessages) {
+    console.log(message)
   }
 
   if (pressConfig.outDir != null) {
@@ -229,13 +238,21 @@ function createMainConfig(
   return mergeArdoViteConfig(pressConfig.vite, config)
 }
 
-function resolveArdoConfig(
-  root: string,
-  pressConfig: PressConfigOptions,
+function resolveArdoConfig({
+  root,
+  pressConfig,
+  viteBase,
+  deploymentBaseOverride,
+}: {
+  deploymentBaseOverride: string | undefined
+  pressConfig: PressConfigOptions
+  root: string
   viteBase: string
-): ResolvedConfig {
+}): ResolvedConfig {
   const detectedProject = readProjectMeta(root)
   const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
+  const deploymentBase =
+    deploymentBaseOverride ?? pressConfig.base ?? normalizeViteBaseForArdo(viteBase)
   const configWithDefaults: ArdoConfig = {
     title: pressConfig.title ?? "Ardo",
     description: pressConfig.description ?? "Documentation powered by Ardo",
@@ -245,7 +262,7 @@ function resolveArdoConfig(
     {
       ...configWithDefaults,
       ...pressConfig,
-      base: pressConfig.base ?? normalizeViteBaseForArdo(viteBase),
+      base: deploymentBase,
       project,
     },
     root
