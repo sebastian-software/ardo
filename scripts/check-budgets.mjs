@@ -41,20 +41,20 @@ const budgets = {
     // what visitors actually download. Lazy chunks (e.g. Mermaid) are
     // excluded because they only load on pages that use them.
     label: "eager client JS gzip",
-    budget: 340_000,
-    baseline: "≈269 KB (2026-07)",
+    budget: 380_000,
+    baseline: "≈309 KB (2026-07, after the v4.0 content growth)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
     budget: 1_500_000,
-    baseline: "≈1.19 MB (2026-07, ≈930 KB of it lazy Mermaid chunks)",
+    baseline: "≈1.23 MB (2026-07, ≈930 KB of it lazy Mermaid chunks)",
   },
   searchIndexGzip: {
     label: "search index gzip",
-    budget: 60_000,
-    baseline: "≈14 KB (2026-07)",
+    budget: 80_000,
+    baseline: "≈50 KB (2026-07, after the v4.0 content growth)",
   },
   buildDurationMs: {
     label: "docs build duration",
