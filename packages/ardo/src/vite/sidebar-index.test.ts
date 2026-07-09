@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { generateContextSidebars, generateSidebar } from "./sidebar-index"
 
 let routesDir: string
+const routeMetadataKeys = new Set(["localeId", "publicPath", "routePath", "versionId"])
 
 beforeEach(async () => {
   routesDir = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-sidebar-"))
@@ -215,6 +216,29 @@ sidebar: false
     })
   })
 
+  it("adds route identity metadata to generated sidebar links", async () => {
+    await writeRoute("guide/getting-started.mdx", "---\ntitle: Getting Started\n---\n")
+
+    await expect(
+      generateContextSidebars(routesDir, {
+        basePath: "/v3/",
+        localeId: "en",
+        versionId: "v3",
+      })
+    ).resolves.toStrictEqual({
+      guide: [
+        {
+          text: "Getting Started",
+          link: "/guide/getting-started",
+          routePath: "/guide/getting-started",
+          publicPath: "/v3/en/guide/getting-started",
+          versionId: "v3",
+          localeId: "en",
+        },
+      ],
+    })
+  })
+
   it("renders a folder as a leaf link when its index sets sidebar: leaf", async () => {
     await writeRoute(
       "api/index.md",
@@ -263,15 +287,21 @@ function toVirtualSidebar(value: unknown): unknown {
     return value.map((item) => toVirtualSidebar(item))
   }
 
-  if (value != null && typeof value === "object") {
-    const result: Record<string, unknown> = {}
-    for (const [key, item] of Object.entries(value)) {
-      if (item !== undefined) {
-        result[key] = toVirtualSidebar(item)
-      }
-    }
-    return result
+  if (!isRecord(value)) {
+    return value
   }
 
-  return value
+  return Object.fromEntries(
+    Object.entries(value).flatMap(([key, item]) =>
+      isRouteMetadataKey(key) || item === undefined ? [] : [[key, toVirtualSidebar(item)]]
+    )
+  )
+}
+
+function isRouteMetadataKey(key: string): boolean {
+  return routeMetadataKeys.has(key)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object"
 }

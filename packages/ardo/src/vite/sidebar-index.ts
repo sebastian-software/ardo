@@ -5,8 +5,10 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 import type { SidebarConfig, SidebarItem } from "../config/types"
+import type { RouteManifestOptions } from "./route-manifest"
 
 import { stripTrailingExtension } from "./path-utils"
+import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
 type SidebarNode = {
   text: string
@@ -15,6 +17,13 @@ type SidebarNode = {
   collapsed?: boolean
   order?: number
   sectionId: string
+} & Partial<RouteIdentity>
+
+type SidebarGenerationOptions = RouteManifestOptions & SidebarConfig
+
+type SidebarScanContext = {
+  options: RouteManifestOptions
+  rootDir: string
 }
 
 type SidebarFrontmatter = {
@@ -34,10 +43,10 @@ type SidebarFrontmatter = {
 
 export async function generateSidebar(
   routesDir: string,
-  options: SidebarConfig = {}
+  options: SidebarGenerationOptions = {}
 ): Promise<SidebarItem[]> {
   try {
-    const nodes = await scanSidebarDirectory(routesDir, routesDir)
+    const nodes = await scanSidebarDirectory(routesDir, { options, rootDir: routesDir })
     sortNodesBySectionOrder(nodes, options.sectionOrder)
     return nodes.map((node) => stripOrderFromNode(node))
   } catch {
@@ -55,7 +64,8 @@ export async function generateSidebar(
  * skipped — they belong to a bare layout, not a sidebar context.
  */
 export async function generateContextSidebars(
-  routesDir: string
+  routesDir: string,
+  options: RouteManifestOptions = {}
 ): Promise<Record<string, SidebarItem[]>> {
   try {
     const entries = await fs.readdir(routesDir, { withFileTypes: true })
@@ -65,7 +75,7 @@ export async function generateContextSidebars(
       const subDir = path.join(routesDir, entry.name)
       // Pass `routesDir` as the root so links remain absolute (`/guide/foo`),
       // not relative to the sub-folder.
-      const nodes = await scanSidebarDirectory(subDir, routesDir)
+      const nodes = await scanSidebarDirectory(subDir, { options, rootDir: routesDir })
       if (nodes.length > 0) {
         sidebars[entry.name] = nodes.map((node) => stripOrderFromNode(node))
       }
@@ -76,23 +86,25 @@ export async function generateContextSidebars(
   }
 }
 
-async function scanSidebarDirectory(dir: string, rootDir: string): Promise<SidebarNode[]> {
+async function scanSidebarDirectory(
+  dir: string,
+  context: SidebarScanContext
+): Promise<SidebarNode[]> {
   const entries = await fs.readdir(dir, { withFileTypes: true })
   const nodes: SidebarNode[] = []
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
-    const relativePath = path.relative(rootDir, fullPath)
 
     if (entry.isDirectory()) {
-      const directoryNode = await createDirectoryNode(entry, fullPath, rootDir)
+      const directoryNode = await createDirectoryNode(entry, fullPath, context)
       if (directoryNode != null) {
         nodes.push(directoryNode)
       }
       continue
     }
 
-    const fileNode = await createMarkdownNode(entry, fullPath, relativePath)
+    const fileNode = await createMarkdownNode(entry, fullPath, context)
     if (fileNode != null) {
       nodes.push(fileNode)
     }
@@ -105,30 +117,32 @@ async function scanSidebarDirectory(dir: string, rootDir: string): Promise<Sideb
 async function createDirectoryNode(
   entry: Dirent,
   fullPath: string,
-  rootDir: string
+  context: SidebarScanContext
 ): Promise<null | SidebarNode> {
-  const relativePath = path.relative(rootDir, fullPath)
+  const relativePath = path.relative(context.rootDir, fullPath)
   const metadata = await readDirectoryIndexMetadata(fullPath)
 
   if (metadata?.sidebar === false) {
     return null
   }
 
-  const link = metadata == null ? undefined : `/${relativePath.replaceAll("\\", "/")}`
+  const identity =
+    metadata == null ? undefined : createSidebarRouteIdentity(relativePath, context.options)
+  const link = identity?.routePath
 
   if (metadata?.sidebar === "leaf") {
     // Show the folder as a single link without auto-listing its children.
     // Requires an index page to provide a valid link.
-    if (link === undefined) return null
+    if (identity == null) return null
     return {
       text: metadata.title ?? formatTitle(entry.name),
-      link,
+      ...toSidebarRouteFields(identity),
       order: metadata.order,
       sectionId: entry.name,
     }
   }
 
-  const children = await scanSidebarDirectory(fullPath, rootDir)
+  const children = await scanSidebarDirectory(fullPath, context)
   if (children.length === 0) {
     return null
   }
@@ -136,6 +150,7 @@ async function createDirectoryNode(
   return {
     text: metadata?.title ?? formatTitle(entry.name),
     link,
+    ...(identity == null ? {} : toSidebarRouteFields(identity)),
     items: children,
     collapsed: metadata?.collapsed,
     order: metadata?.order,
@@ -146,7 +161,7 @@ async function createDirectoryNode(
 async function createMarkdownNode(
   entry: Dirent,
   fullPath: string,
-  relativePath: string
+  context: SidebarScanContext
 ): Promise<null | SidebarNode> {
   if (!isSidebarMarkdownFile(entry.name)) {
     return null
@@ -164,13 +179,39 @@ async function createMarkdownNode(
   }
 
   const title = frontmatter.title ?? formatTitle(stripTrailingExtension(entry.name, extension))
-  const link = `/${stripTrailingExtension(relativePath, extension).replaceAll("\\", "/")}`
+  const relativePath = path.relative(context.rootDir, fullPath)
+  const routePath = `/${stripTrailingExtension(relativePath, extension).replaceAll("\\", "/")}`
+  const identity = createSidebarRouteIdentity(routePath, context.options)
 
   return {
     text: title,
-    link,
+    ...toSidebarRouteFields(identity),
     order: frontmatter.order,
     sectionId: stripTrailingExtension(entry.name, extension),
+  }
+}
+
+function createSidebarRouteIdentity(
+  routePath: string,
+  options: RouteManifestOptions
+): RouteIdentity {
+  return createRouteIdentity({
+    basePath: options.basePath,
+    localeId: options.localeId,
+    routePath,
+    versionId: options.versionId,
+  })
+}
+
+function toSidebarRouteFields(
+  identity: RouteIdentity
+): Partial<RouteIdentity> & Pick<SidebarNode, "link"> {
+  return {
+    link: identity.routePath,
+    routePath: identity.routePath,
+    publicPath: identity.publicPath,
+    ...(identity.versionId == null ? {} : { versionId: identity.versionId }),
+    ...(identity.localeId == null ? {} : { localeId: identity.localeId }),
   }
 }
 
@@ -306,9 +347,13 @@ function formatTitle(name: string): string {
 function stripOrderFromNode(node: SidebarNode): SidebarItem {
   return {
     text: node.text,
-    link: node.link,
-    collapsed: node.collapsed,
-    items: node.items?.map((item) => stripOrderFromNode(item)),
+    ...(node.link == null ? {} : { link: node.link }),
+    ...(node.routePath == null ? {} : { routePath: node.routePath }),
+    ...(node.publicPath == null ? {} : { publicPath: node.publicPath }),
+    ...(node.versionId == null ? {} : { versionId: node.versionId }),
+    ...(node.localeId == null ? {} : { localeId: node.localeId }),
+    ...(node.collapsed == null ? {} : { collapsed: node.collapsed }),
+    ...(node.items == null ? {} : { items: node.items.map((item) => stripOrderFromNode(item)) }),
   }
 }
 

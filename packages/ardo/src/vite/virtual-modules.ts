@@ -48,7 +48,10 @@ export async function loadVirtualModule(
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID]) {
-    const sidebars = await generateContextSidebars(state.routesDir)
+    const sidebars = await generateContextSidebars(
+      state.routesDir,
+      createRouteManifestOptions(state.resolvedConfig)
+    )
     return `export default ${JSON.stringify(sidebars)}`
   }
 

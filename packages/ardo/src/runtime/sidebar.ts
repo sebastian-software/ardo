@@ -1,5 +1,6 @@
 import type { ResolvedConfig, SidebarItem } from "../config/types"
 
+import { createRouteManifestOptions } from "../vite/route-manifest"
 import { generateSidebar as generateViteSidebar } from "../vite/sidebar-index"
 
 export type SidebarGenerationOptions = {
@@ -14,5 +15,11 @@ export type SidebarGenerationOptions = {
  * by the Vite integration.
  */
 export async function generateSidebar(options: SidebarGenerationOptions): Promise<SidebarItem[]> {
-  return generateViteSidebar(options.contentDir, options.config.sidebar)
+  return generateViteSidebar(options.contentDir, {
+    ...options.config.sidebar,
+    ...createRouteManifestOptions({
+      base: options.basePath,
+      versioning: options.config.versioning,
+    }),
+  })
 }
