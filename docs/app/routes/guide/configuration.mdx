@@ -482,6 +482,45 @@ ardo({
 
 Set `icons: false` if you want to manage all root icon files yourself from `public/`.
 
+### content
+
+- **Type:** `Array<{ from: string; to: string; frontmatter?: (file) => Record<string, string | number | boolean | string[] | undefined> }>`
+- **Default:** `[]`
+
+Materializes Markdown and MDX that lives outside the routes directory into generated route files.
+Use this for repo-native docs such as ADRs, `CHANGELOG.md`, or package READMEs that should remain in
+their canonical source location but still publish with the rest of the site.
+
+```ts
+ardo({
+  title: "My Docs",
+  content: [
+    {
+      from: "./adr",
+      to: "decisions",
+      frontmatter: (file) => ({
+        description: `Copied from ${file.relativePath}`,
+      }),
+    },
+    {
+      from: "./CHANGELOG.md",
+      to: "changelog",
+    },
+  ],
+})
+```
+
+Ardo writes the generated files below `routesDir/<to>/` and marks the directory with
+`.ardo-generated`. It refuses to replace a non-empty target directory without that marker. When a
+source file has no frontmatter, Ardo synthesizes `title` from the first `#` heading or filename and
+`order` from a numeric filename prefix such as `0001-`.
+
+When `from` points to a single file, Ardo writes it as `routesDir/<to>/index.md` or
+`routesDir/<to>/index.mdx`, so `to: "changelog"` becomes the `/changelog` route.
+
+This is intentionally a narrow bridge before schema-backed content collections. It does not rewrite
+relative links or define collection schemas.
+
 ### routesDir
 
 - **Type:** `string`

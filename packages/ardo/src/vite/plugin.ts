@@ -2,6 +2,7 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
+import type { ContentSourceMapping } from "./content-sources"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
@@ -12,6 +13,7 @@ import {
   formatLinkCheckDiagnostics,
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
+import { createContentSourcePlugin } from "./content-sources-plugin"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
@@ -44,12 +46,18 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
+  "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
 >
 
 export type ArdoPluginOptions = {
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
+  /**
+   * Materialize Markdown/MDX files from outside the routes directory into
+   * generated route files. This is a narrow bridge until schema-backed content
+   * collections land.
+   */
+  content?: ContentSourceMapping[]
   /**
    * Generate the lean favicon set recommended for modern websites:
    * /favicon.ico, /icon.svg, and /apple-touch-icon.png.
@@ -73,6 +81,7 @@ export { detectGitHubBasename } from "./git-utils"
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
+    content,
     icons = {},
     routes,
     typedoc,
@@ -85,6 +94,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
+  addContentSourcePlugin(plugins, content, routesDirOption)
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, routesDirOption)
 
@@ -94,6 +104,23 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(...getReactRouterPlugins())
 
   return plugins
+}
+
+function addContentSourcePlugin(
+  plugins: Plugin[],
+  content: ArdoPluginOptions["content"],
+  routesDirOption: string | undefined
+): void {
+  if (content == null || content.length === 0) {
+    return
+  }
+
+  plugins.push(
+    createContentSourcePlugin(content, {
+      root: process.cwd(),
+      routesDirOption,
+    })
+  )
 }
 
 function addRoutesPlugin(

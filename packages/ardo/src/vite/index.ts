@@ -16,6 +16,7 @@ export {
 } from "../runtime/loader"
 export { generateSidebar, type SidebarGenerationOptions } from "../runtime/sidebar"
 
+export { type ContentSourceFile, type ContentSourceMapping } from "./content-sources"
 export {
   type ArdoGitHubPagesOptions,
   type ArdoVersioningOptions,
