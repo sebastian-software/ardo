@@ -36,6 +36,7 @@ describe("route-manifest", () => {
       `---
 title: Café Guide
 description: Accent-aware page
+collapsed: true
 redirectFrom:
   - /old-guide
   - 123
@@ -53,9 +54,13 @@ redirectFrom:
     expect(entries[0]).toMatchObject({
       anchors: ["café-déjà-vu"],
       frontmatter: {
+        collapsed: true,
         description: "Accent-aware page",
         redirectFrom: ["/old-guide"],
         title: "Café Guide",
+      },
+      metadata: {
+        collapsed: true,
       },
       identity: {
         publicPath: "/guide/:slug",

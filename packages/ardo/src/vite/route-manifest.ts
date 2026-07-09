@@ -13,6 +13,7 @@ import {
   type PageFrontmatterMetadata,
   type PageMetadata,
   parsePageFrontmatterMetadata,
+  toFrontmatterRecord,
 } from "./page-metadata"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
@@ -96,7 +97,7 @@ async function createManifestEntry(
 
   const content = await fs.readFile(filePath, "utf8")
   const parsed = extension === ".tsx" ? { content, data: {} } : matter(content)
-  const data = toRecord(parsed.data)
+  const data = toFrontmatterRecord(parsed.data)
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
   const identity = createRouteIdentity({
@@ -170,16 +171,4 @@ function getMarkdownHeadingText(line: string): null | string {
   }
 
   return trimmed.slice(level + 1)
-}
-
-function toRecord(value: unknown): Record<string, unknown> {
-  if (typeof value !== "object" || value == null || Array.isArray(value)) {
-    return {}
-  }
-
-  const record: Record<string, unknown> = {}
-  for (const [key, entry] of Object.entries(value)) {
-    record[key] = entry
-  }
-  return record
 }

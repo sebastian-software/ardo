@@ -3,6 +3,7 @@ import type { RouteIdentity } from "./route-identity"
 export type PageMetadata = {
   title?: string
   description?: string
+  collapsed?: boolean
   order?: number
   sidebar?: "leaf" | boolean
   sitemap?: boolean
@@ -17,13 +18,26 @@ export type PageMetadata = {
 
 export type PageFrontmatterMetadata = Pick<
   PageMetadata,
-  "description" | "llms" | "order" | "redirectFrom" | "sidebar" | "sitemap" | "title"
+  "collapsed" | "description" | "llms" | "order" | "redirectFrom" | "sidebar" | "sitemap" | "title"
 >
+
+export function toFrontmatterRecord(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value == null || Array.isArray(value)) {
+    return {}
+  }
+
+  const record: Record<string, unknown> = {}
+  for (const [key, entry] of Object.entries(value)) {
+    record[key] = entry
+  }
+  return record
+}
 
 export function parsePageFrontmatterMetadata(
   data: Record<string, unknown>
 ): PageFrontmatterMetadata {
   return {
+    collapsed: typeof data.collapsed === "boolean" ? data.collapsed : undefined,
     description: typeof data.description === "string" ? data.description : undefined,
     llms: typeof data.llms === "boolean" ? data.llms : undefined,
     order: typeof data.order === "number" ? data.order : undefined,
