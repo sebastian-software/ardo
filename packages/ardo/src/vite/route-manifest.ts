@@ -8,6 +8,7 @@ import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
 import { createHeadingSlugger } from "../markdown/heading-slug"
+import { getMarkdownFenceMarker, type MarkdownFenceMarker } from "./markdown-fence"
 import {
   createPageMetadata,
   type PageFrontmatterMetadata,
@@ -151,7 +152,22 @@ function toRoutePath(relativePath: string, extension: ".md" | ".mdx" | ".tsx") {
 function extractAnchors(content: string): string[] {
   const anchors: string[] = []
   const slugger = createHeadingSlugger()
+  let fenceMarker: MarkdownFenceMarker | null = null
+
   for (const line of content.split("\n")) {
+    const nextFenceMarker = getMarkdownFenceMarker(line)
+    if (fenceMarker != null) {
+      if (nextFenceMarker === fenceMarker) {
+        fenceMarker = null
+      }
+      continue
+    }
+
+    if (nextFenceMarker != null) {
+      fenceMarker = nextFenceMarker
+      continue
+    }
+
     const headingText = getMarkdownHeadingText(line)
     if (headingText != null) anchors.push(slugger.slug(headingText))
   }

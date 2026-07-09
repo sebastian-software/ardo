@@ -69,6 +69,25 @@ describe("ardoPlugin", () => {
     expect(config.base).toBe("/v3/")
   })
 
+  it("sets Vite base to the current version and default locale when i18n is active", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", path: "/v3/" }],
+      },
+      i18n: {
+        defaultLocale: "en",
+        locales: [{ id: "en" }, { id: "de", label: "Deutsch" }],
+      },
+    })
+
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+
+    expect(config.base).toBe("/v3/en/")
+  })
+
   it("uses resolved Vite base in the virtual Ardo config", async () => {
     const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
 

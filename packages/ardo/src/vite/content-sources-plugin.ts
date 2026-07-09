@@ -15,6 +15,8 @@ export function createContentSourcePlugin(
 ): Plugin {
   let root = options.root
   let routesDir = resolveRoutesDir(root, options.routesDirOption)
+  let didMaterializeDuringConfig = false
+  let queuedMaterialization: Promise<void> = Promise.resolve()
 
   async function materializeAndWriteRoutes(): Promise<void> {
     await runArdoLifecyclePhase("content-sources:materialize", async () =>
@@ -29,6 +31,17 @@ export function createContentSourcePlugin(
     )
   }
 
+  function queueMaterializeAndWriteRoutes(onError: (error: unknown) => void): void {
+    queuedMaterialization = queuedMaterialization
+      .catch(() => {
+        // Keep later watcher events from being pinned behind an earlier failure.
+      })
+      .then(async () => {
+        await materializeAndWriteRoutes()
+      })
+    void queuedMaterialization.catch(onError)
+  }
+
   return {
     name: "ardo:content-sources",
     enforce: "pre",
@@ -36,12 +49,17 @@ export function createContentSourcePlugin(
       root = userConfig.root ?? root
       routesDir = resolveRoutesDir(root, options.routesDirOption)
       await materializeAndWriteRoutes()
+      didMaterializeDuringConfig = true
     },
     configResolved(config) {
       root = config.root
       routesDir = resolveRoutesDir(root, options.routesDirOption)
     },
     async buildStart() {
+      if (didMaterializeDuringConfig) {
+        didMaterializeDuringConfig = false
+        return
+      }
       await materializeAndWriteRoutes()
     },
     configureServer(server) {
@@ -51,7 +69,11 @@ export function createContentSourcePlugin(
 
       const handleChange = (changedPath: string) => {
         if (shouldHandleSourceChange(changedPath, root, sources)) {
-          void materializeAndWriteRoutes()
+          queueMaterializeAndWriteRoutes((error) => {
+            server.config.logger.error(
+              `[ardo] Failed to materialize content sources: ${formatUnknownError(error)}`
+            )
+          })
         }
       }
 
@@ -81,4 +103,8 @@ function isPathInside(filePath: string, directoryPath: string): boolean {
 
 function isMarkdownFile(filePath: string): boolean {
   return filePath.endsWith(".md") || filePath.endsWith(".mdx")
+}
+
+function formatUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }

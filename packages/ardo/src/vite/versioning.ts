@@ -1,6 +1,7 @@
 import type { ArdoConfig } from "../config/types"
 
 import {
+  joinUrlPath,
   normalizeBasePath,
   resolveVersionedBase,
   resolveVersioningConfig,
@@ -11,7 +12,7 @@ import { detectGitHubRepoName, getGitHubPagesBase } from "./git-utils"
 export type VersionedMainBaseInput = {
   command: string
   githubPages: boolean
-  pressConfig: Pick<ArdoConfig, "base" | "versioning">
+  pressConfig: Pick<ArdoConfig, "base" | "i18n" | "versioning">
   root: string
   userBase: string | undefined
 }
@@ -26,7 +27,11 @@ export function resolveVersionedMainBase(input: VersionedMainBaseInput): Version
   const logMessages: string[] = []
   const githubPagesBase = resolveGitHubPagesBase(input)
   const deploymentBase = resolveDeploymentBase(input, githubPagesBase)
-  const versionBase = resolveViteVersionedBase(input.pressConfig.versioning, deploymentBase)
+  const versionBase = resolveViteVersionedBase(
+    input.pressConfig.i18n,
+    input.pressConfig.versioning,
+    deploymentBase
+  )
   const viteBase = versionBase ?? input.pressConfig.base ?? githubPagesBase
 
   if (githubPagesBase != null) {
@@ -70,6 +75,7 @@ function resolveDeploymentBase(
 }
 
 function resolveViteVersionedBase(
+  i18n: ArdoConfig["i18n"],
   versioning: ArdoConfig["versioning"],
   deploymentBase: string
 ): string | undefined {
@@ -78,7 +84,10 @@ function resolveViteVersionedBase(
     return undefined
   }
 
-  return resolveVersionedBase(deploymentBase, resolvedVersioning)
+  const versionedBase = resolveVersionedBase(deploymentBase, resolvedVersioning)
+  return i18n === false || i18n == null
+    ? versionedBase
+    : joinUrlPath(versionedBase, i18n.defaultLocale)
 }
 
 function stripVersionPath(base: string, versionPath: string): string {

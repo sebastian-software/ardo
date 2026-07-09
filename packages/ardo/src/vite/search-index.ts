@@ -1,6 +1,7 @@
 import path from "node:path"
 
 import { createHeadingSlugger } from "../markdown/heading-slug"
+import { getMarkdownFenceMarker, type MarkdownFenceMarker } from "./markdown-fence"
 import { stripTrailingExtension } from "./path-utils"
 import {
   type RouteManifestEntry,
@@ -29,6 +30,7 @@ export type SearchManifest = {
   version: 2
   recordCount: number
   chunks: Array<{
+    byteSize: number
     file: string
     recordCount: number
   }>
@@ -54,15 +56,17 @@ export function createSearchAssets(entries: RouteManifestEntry[]): Array<{
 }> {
   const records = createSearchRecords(entries)
   const chunkFile = "search/chunk-0.json"
+  const chunkSource = `${JSON.stringify(records)}\n`
+  const chunkByteSize = new TextEncoder().encode(chunkSource).byteLength
   const manifest: SearchManifest = {
     version: 2,
     recordCount: records.length,
-    chunks: [{ file: chunkFile, recordCount: records.length }],
+    chunks: [{ byteSize: chunkByteSize, file: chunkFile, recordCount: records.length }],
   }
 
   return [
     { fileName: "search/manifest.json", source: `${JSON.stringify(manifest, null, 2)}\n` },
-    { fileName: chunkFile, source: `${JSON.stringify(records)}\n` },
+    { fileName: chunkFile, source: chunkSource },
   ]
 }
 
@@ -114,8 +118,13 @@ function splitMarkdownSections(content: string): MarkdownSection[] {
   const slugger = createHeadingSlugger()
   const sections: MarkdownSection[] = [{ content: "", headingHierarchy: [] }]
   const headingStack: Array<{ level: number; title: string }> = []
+  const fenceState: MarkdownFenceState = { marker: null }
 
   for (const line of content.split("\n")) {
+    if (appendFenceLineIfNeeded(sections, line, fenceState)) {
+      continue
+    }
+
     const heading = parseMarkdownHeading(line)
     if (heading == null) {
       appendSectionContentLine(sections, line)
@@ -133,6 +142,33 @@ function splitMarkdownSections(content: string): MarkdownSection[] {
   }
 
   return sections
+}
+
+type MarkdownFenceState = {
+  marker: MarkdownFenceMarker | null
+}
+
+function appendFenceLineIfNeeded(
+  sections: MarkdownSection[],
+  line: string,
+  state: MarkdownFenceState
+): boolean {
+  const nextFenceMarker = getMarkdownFenceMarker(line)
+  if (state.marker != null) {
+    appendSectionContentLine(sections, line)
+    if (nextFenceMarker === state.marker) {
+      state.marker = null
+    }
+    return true
+  }
+
+  if (nextFenceMarker == null) {
+    return false
+  }
+
+  appendSectionContentLine(sections, line)
+  state.marker = nextFenceMarker
+  return true
 }
 
 function joinSearchTextParts(parts: string[]): string {
@@ -225,17 +261,23 @@ function sanitizeSearchContent(content: string): string {
 function removeCodeFences(content: string): string {
   const lines = content.split("\n")
   const keptLines: string[] = []
-  let isInsideFence = false
+  let fenceMarker: MarkdownFenceMarker | null = null
 
   for (const line of lines) {
-    if (line.trimStart().startsWith("```")) {
-      isInsideFence = !isInsideFence
+    const nextFenceMarker = getMarkdownFenceMarker(line)
+    if (fenceMarker != null) {
+      if (nextFenceMarker === fenceMarker) {
+        fenceMarker = null
+      }
       continue
     }
 
-    if (!isInsideFence) {
-      keptLines.push(line)
+    if (nextFenceMarker != null) {
+      fenceMarker = nextFenceMarker
+      continue
     }
+
+    keptLines.push(line)
   }
 
   return keptLines.join("\n")

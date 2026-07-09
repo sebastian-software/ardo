@@ -194,7 +194,7 @@ describe("build outputs", () => {
     expect(generateVersionsJson(versionedConfig)).toContain('"path": "/docs/v3/"')
   })
 
-  it("can keep the root page when versioning disables the root redirect", () => {
+  it("can keep root pages when versioning disables root redirects", () => {
     const versionedConfig = resolveConfig(
       {
         title: "Docs",
@@ -203,14 +203,18 @@ describe("build outputs", () => {
           rootRedirect: false,
           versions: [{ id: "v3", path: "/v3/" }],
         },
+        i18n: {
+          defaultLocale: "en",
+          locales: [{ id: "en" }],
+        },
       },
       "/site"
     )
 
-    expect(collectRedirects(entries, versionedConfig)).not.toContainEqual({
-      from: "/",
-      to: "/v3/",
-    })
+    const redirects = collectRedirects(createEntries(versionedConfig), versionedConfig)
+
+    expect(redirects).not.toContainEqual({ from: "/", to: "/v3/en/" })
+    expect(redirects).not.toContainEqual({ from: "/v3/", to: "/v3/en/" })
   })
 
   it("reports missing internal routes and anchors", () => {
@@ -257,7 +261,7 @@ describe("build outputs", () => {
     ).toStrictEqual({
       version: 2,
       recordCount: 1,
-      chunks: [{ file: "search/chunk-0.json", recordCount: 1 }],
+      chunks: [{ byteSize: expect.any(Number), file: "search/chunk-0.json", recordCount: 1 }],
     })
     expect(
       JSON.parse(assets.find((asset) => asset.fileName === "search/chunk-0.json")?.source ?? "[]")

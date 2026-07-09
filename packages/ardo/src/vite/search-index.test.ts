@@ -43,6 +43,15 @@ Install **Ardo** from npm.
 
 \`\`\`ts
 const secret = "do not index code"
+# Not A Heading
+\`\`\`
+
+~~~md
+## Also Not A Heading
+### Still Not A Heading
+~~~
+\`\`\`ts
+const moreSecret = "also do not index"
 \`\`\`
 `
     )
