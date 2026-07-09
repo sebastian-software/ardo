@@ -1,13 +1,11 @@
-import type { Dirent } from "node:fs"
-
-import matter from "gray-matter"
-import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { RouteManifestOptions } from "./route-manifest"
-
 import { stripTrailingExtension } from "./path-utils"
-import { createRouteIdentity } from "./route-identity"
+import {
+  type RouteManifestEntry,
+  type RouteManifestOptions,
+  scanRouteManifest,
+} from "./route-manifest"
 
 export type SearchDoc = {
   id: string
@@ -21,106 +19,30 @@ export type SearchDoc = {
   versionId?: string
 }
 
-type SearchScanContext = {
-  docs: SearchDoc[]
-  options: RouteManifestOptions
-  routesDir: string
-}
-
-type SearchDocBuildContext = {
-  options: RouteManifestOptions
-  routesDir: string
-  section?: string
-}
-
-type SearchEntryContext = {
-  dir: string
-  section?: string
-  scanContext: SearchScanContext
-}
-
 export async function generateSearchIndex(
   routesDir: string,
   options: RouteManifestOptions = {}
 ): Promise<SearchDoc[]> {
-  const context: SearchScanContext = { docs: [], options, routesDir }
-  await scanDirectoryForSearch(routesDir, undefined, context)
-  return context.docs
+  const entries = await scanRouteManifest(routesDir, options)
+  return entries
+    .filter((entry) => isSearchableEntry(entry))
+    .map((entry) => createSearchDocFromEntry(entry))
 }
 
-async function scanDirectoryForSearch(
-  dir: string,
-  section: string | undefined,
-  context: SearchScanContext
-): Promise<void> {
-  let entries: Dirent[]
-
-  try {
-    entries = await fs.readdir(dir, { withFileTypes: true })
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    console.warn("[ardo] Failed to scan for search index:", errorMessage)
-    return
-  }
-
-  for (const entry of entries) {
-    await processSearchEntry(entry, { dir, section, scanContext: context })
-  }
-}
-
-async function processSearchEntry(entry: Dirent, context: SearchEntryContext): Promise<void> {
-  const fullPath = path.join(context.dir, entry.name)
-  if (entry.isDirectory()) {
-    const nestedSection = createNestedSection(context.section, entry.name)
-    await scanDirectoryForSearch(fullPath, nestedSection, context.scanContext)
-    return
-  }
-
-  if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
-    const doc = await createSearchDocFromFile(entry.name, fullPath, {
-      options: context.scanContext.options,
-      routesDir: context.scanContext.routesDir,
-      section: context.section,
-    })
-    if (doc != null) {
-      context.scanContext.docs.push(doc)
-    }
-  }
-}
-
-async function createSearchDocFromFile(
-  fileName: string,
-  filePath: string,
-  context: SearchDocBuildContext
-): Promise<null | SearchDoc> {
-  const fileContent = await fs.readFile(filePath, "utf8")
-  const parsed = matter(fileContent)
-  const extension = fileName.endsWith(".mdx") ? ".mdx" : ".md"
-  const title =
-    typeof parsed.data.title === "string"
-      ? parsed.data.title
-      : formatTitle(stripTrailingExtension(fileName, extension))
-
-  const relativePath = path.relative(context.routesDir, filePath)
-  const routePath = buildRoutePath(relativePath, fileName, extension)
-  const identity = createRouteIdentity({
-    basePath: context.options.basePath,
-    localeId: context.options.localeId,
-    routePath,
-    versionId: context.options.versionId,
-  })
-  const content = sanitizeSearchContent(parsed.content)
+function createSearchDocFromEntry(entry: RouteManifestEntry): SearchDoc {
+  const title = entry.metadata.title ?? formatTitle(getSearchTitleSource(entry.metadata.sourcePath))
+  const content = sanitizeSearchContent(entry.content)
 
   return {
-    id: relativePath,
+    id: entry.metadata.sourcePath,
     title,
     content,
-    path: identity.routePath,
-    publicPath: identity.publicPath,
-    routePath: identity.routePath,
-    ...(identity.localeId == null ? {} : { localeId: identity.localeId }),
-    section: context.section,
-    ...(identity.versionId == null ? {} : { versionId: identity.versionId }),
+    path: entry.routePath,
+    publicPath: entry.publicPath,
+    routePath: entry.routePath,
+    ...(entry.metadata.localeId == null ? {} : { localeId: entry.metadata.localeId }),
+    section: createSectionFromSourcePath(entry.metadata.sourcePath),
+    ...(entry.metadata.versionId == null ? {} : { versionId: entry.metadata.versionId }),
   }
 }
 
@@ -195,18 +117,25 @@ function collapseWhitespace(content: string): string {
   return result.trim()
 }
 
-function buildRoutePath(relativePath: string, fileName: string, extension: string): string {
-  if (fileName === "index.mdx" || fileName === "index.md") {
-    const directoryPath = path.dirname(relativePath).replaceAll("\\", "/")
-    return directoryPath === "." ? "/" : `/${directoryPath}`
-  }
-
-  return `/${stripTrailingExtension(relativePath, extension).replaceAll("\\", "/")}`
+function isSearchableEntry(entry: RouteManifestEntry): boolean {
+  return entry.source === "markdown"
 }
 
-function createNestedSection(section: string | undefined, directoryName: string): string {
-  const currentTitle = formatTitle(directoryName)
-  return section != null ? `${section} > ${currentTitle}` : currentTitle
+function createSectionFromSourcePath(sourcePath: string): string | undefined {
+  const directoryPath = path.dirname(sourcePath).replaceAll("\\", "/")
+  if (directoryPath === ".") {
+    return undefined
+  }
+
+  return directoryPath
+    .split("/")
+    .map((segment) => formatTitle(segment))
+    .join(" > ")
+}
+
+function getSearchTitleSource(sourcePath: string): string {
+  const extension = sourcePath.endsWith(".mdx") ? ".mdx" : ".md"
+  return stripTrailingExtension(path.basename(sourcePath), extension)
 }
 
 function formatTitle(name: string): string {

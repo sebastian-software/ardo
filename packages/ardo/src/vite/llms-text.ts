@@ -33,7 +33,7 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
 
   for (const entry of getLlmsEntries(entries)) {
     const title = getEntryTitle(entry)
-    const description = entry.frontmatter.description
+    const description = entry.metadata.description
     const content = sanitizeLlmsContent(entry.content, title)
 
     lines.push(`## ${title}`, "")
@@ -88,8 +88,7 @@ function resolveLlmsConfig(config: ResolvedConfig): ResolvedLlmsConfig {
 
 function getLlmsEntries(entries: RouteManifestEntry[]): LlmsRouteEntry[] {
   return entries.filter(
-    (entry): entry is LlmsRouteEntry =>
-      entry.source === "markdown" && entry.frontmatter.llms !== false
+    (entry): entry is LlmsRouteEntry => entry.source === "markdown" && entry.metadata.llms !== false
   )
 }
 
@@ -117,7 +116,7 @@ function appendDocsSection(
   lines.push("## Docs", "")
   for (const entry of entries) {
     const title = getEntryTitle(entry)
-    const description = entry.frontmatter.description
+    const description = entry.metadata.description
     const suffix = description == null ? "" : `: ${description}`
     lines.push(`- [${title}](${toAbsolutePublicUrl(entry.publicPath, config)})${suffix}`)
   }
@@ -141,7 +140,7 @@ function appendFullDocSection(
 }
 
 function getEntryTitle(entry: LlmsRouteEntry): string {
-  return entry.frontmatter.title ?? formatRouteTitle(entry.routePath)
+  return entry.metadata.title ?? formatRouteTitle(entry.routePath)
 }
 
 function sanitizeLlmsContent(content: string, title: string): string {
