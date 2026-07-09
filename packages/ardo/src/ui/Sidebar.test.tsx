@@ -5,13 +5,8 @@ import { MemoryRouter } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
-import {
-  ArdoGeneratedSidebar,
-  ArdoSidebar,
-  ArdoSidebarGroup,
-  ArdoSidebarLink,
-  ArdoSidebarSection,
-} from "./Sidebar"
+import { ArdoGeneratedSidebar } from "./GeneratedSidebar"
+import { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
 
 vi.mock("virtual:ardo/generated-sidebars", () => ({
   default: {
