@@ -49,9 +49,9 @@ jobs:
       - name: Run integration tests
         run: pnpm test:integration
 
-      - name: Build docs site
+      - name: Build docs site and check performance budgets
         if: matrix.node-version == '22'
-        run: pnpm docs:build
+        run: pnpm docs:budgets
 
       - name: Build examples
         if: matrix.node-version == '22'

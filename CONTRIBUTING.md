@@ -80,6 +80,17 @@ Read them before changing routing, public exports, theming, build output, or rel
 | `pnpm format`     | Format code with Prettier      |
 | `pnpm typecheck`  | Run TypeScript type checking   |
 
+### Performance Budgets
+
+The docs site build is guarded by performance budgets (`pnpm docs:budgets`, runs in CI). The check builds the docs site and fails on material regressions in:
+
+- **`entry.client` gzip size** — the main client entry served to every visitor
+- **Total client JS gzip size** — all JavaScript in `docs/build/client`
+- **Search index gzip size** — the serialized `virtual:ardo/search-index` payload
+- **Docs build duration** — a generous cap that only catches pathological slowdowns
+
+Budget values and measured baselines live at the top of [`scripts/check-budgets.mjs`](./scripts/check-budgets.mjs). If your change intentionally exceeds a budget, update the budget and baseline there and explain the increase in the commit message. To re-check sizes without rebuilding, run `node scripts/check-budgets.mjs --no-build`.
+
 ### Running Tests
 
 ```bash

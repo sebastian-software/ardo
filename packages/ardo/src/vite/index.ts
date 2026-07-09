@@ -15,6 +15,7 @@ export {
   type LoadDocResult,
 } from "../runtime/loader"
 export { generateSidebar, type SidebarGenerationOptions } from "../runtime/sidebar"
+export { generateSearchIndex, type SearchDoc } from "./search-index"
 
 export { type ContentSourceFile, type ContentSourceMapping } from "./content-sources"
 export {
