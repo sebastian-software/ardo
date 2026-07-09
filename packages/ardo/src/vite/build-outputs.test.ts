@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 
+import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { resolveConfig } from "../config"
@@ -13,6 +14,7 @@ import {
   generateVercelRedirects,
 } from "./build-outputs"
 import { generateVersionsJson } from "./build-versioning"
+import { createCurrentRouteIdentity } from "./route-identity"
 
 const baseConfig = resolveConfig(
   {
@@ -23,40 +25,58 @@ const baseConfig = resolveConfig(
   "/site"
 )
 
-const entries: RouteManifestEntry[] = [
-  {
-    anchors: ["overview"],
-    content:
-      "# Guide\n\nimport Demo from './demo'\n\n[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)\n\n<Tip>\nKeep this text.\n</Tip>\n\nWrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry.\n\n```tsx\n<Demo />\nexport const value = true\n```",
-    filePath: "/site/app/routes/guide.mdx",
-    frontmatter: {
-      description: "Guide description",
-      redirectFrom: ["/old-guide"],
-      title: "Guide",
-    },
-    lastmod: new Date("2026-01-02T03:04:05.000Z"),
-    path: "/guide",
-    source: "markdown",
-  },
-  {
-    anchors: [],
-    content: "",
-    filePath: "/site/app/routes/hidden.mdx",
-    frontmatter: { sitemap: false },
-    lastmod: new Date("2026-01-03T03:04:05.000Z"),
-    path: "/hidden",
-    source: "markdown",
-  },
-  {
-    anchors: [],
-    content: "export default function Home() { return <Home /> }",
-    filePath: "/site/app/routes/home.tsx",
-    frontmatter: {},
-    lastmod: new Date("2026-01-04T03:04:05.000Z"),
-    path: "/",
-    source: "tsx",
-  },
-]
+const entries = createEntries(baseConfig)
+
+function createEntries(config: ResolvedConfig): RouteManifestEntry[] {
+  return [
+    entry(config, {
+      anchors: ["overview"],
+      content:
+        "# Guide\n\nimport Demo from './demo'\n\n[Valid](/guide#overview) [Missing](/missing) [Bad anchor](/guide#nope)\n\n<Tip>\nKeep this text.\n</Tip>\n\nWrap with `<ArdoRoot>` and close via `</ArdoRoot>` in your entry.\n\n```tsx\n<Demo />\nexport const value = true\n```",
+      filePath: "/site/app/routes/guide.mdx",
+      frontmatter: {
+        description: "Guide description",
+        redirectFrom: ["/old-guide"],
+        title: "Guide",
+      },
+      lastmod: new Date("2026-01-02T03:04:05.000Z"),
+      routePath: "/guide",
+      source: "markdown",
+    }),
+    entry(config, {
+      anchors: [],
+      content: "",
+      filePath: "/site/app/routes/hidden.mdx",
+      frontmatter: { sitemap: false },
+      lastmod: new Date("2026-01-03T03:04:05.000Z"),
+      routePath: "/hidden",
+      source: "markdown",
+    }),
+    entry(config, {
+      anchors: [],
+      content: "export default function Home() { return <Home /> }",
+      filePath: "/site/app/routes/home.tsx",
+      frontmatter: {},
+      lastmod: new Date("2026-01-04T03:04:05.000Z"),
+      routePath: "/",
+      source: "tsx",
+    }),
+  ]
+}
+
+function entry(
+  config: ResolvedConfig,
+  input: Omit<RouteManifestEntry, "identity" | "path" | "publicPath">
+): RouteManifestEntry {
+  const identity = createCurrentRouteIdentity(input.routePath, config)
+  return {
+    ...input,
+    identity,
+    path: identity.routePath,
+    publicPath: identity.publicPath,
+    routePath: identity.routePath,
+  }
+}
 
 describe("build outputs", () => {
   it("generates sitemap and robots content from route entries and config", () => {
@@ -84,7 +104,7 @@ describe("build outputs", () => {
       "/site"
     )
 
-    const sitemap = generateSitemap(entries, versionedConfig)
+    const sitemap = generateSitemap(createEntries(versionedConfig), versionedConfig)
 
     expect(sitemap).toContain("<loc>https://example.com/docs/v3/guide</loc>")
     expect(sitemap).not.toContain("/docs/v2/")
@@ -98,9 +118,9 @@ describe("build outputs", () => {
 
     expect(redirects).toStrictEqual([
       { from: "/legacy", to: "/guide" },
-      { from: "/old-guide", to: "/guide" },
+      { from: "/old-guide", to: "/docs/guide" },
     ])
-    expect(generateNetlifyRedirects(redirects)).toContain("/legacy /guide 301")
+    expect(generateNetlifyRedirects(redirects)).toContain("/old-guide /docs/guide 301")
     expect(generateVercelRedirects(redirects)).toContain('"source": "/old-guide"')
   })
 
@@ -119,9 +139,10 @@ describe("build outputs", () => {
       },
       "/site"
     )
-    const assets = createBuildOutputAssets(entries, versionedConfig)
+    const versionedEntries = createEntries(versionedConfig)
+    const assets = createBuildOutputAssets(versionedEntries, versionedConfig)
 
-    expect(collectRedirects(entries, versionedConfig)).toContainEqual({
+    expect(collectRedirects(versionedEntries, versionedConfig)).toContainEqual({
       from: "/",
       to: "/docs/v3/",
     })

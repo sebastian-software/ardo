@@ -57,8 +57,36 @@ redirectFrom:
         redirectFrom: ["/old-guide"],
         title: "Café Guide",
       },
+      identity: {
+        publicPath: "/guide/:slug",
+        routePath: "/guide/:slug",
+      },
       path: "/guide/:slug",
+      publicPath: "/guide/:slug",
+      routePath: "/guide/:slug",
       source: "markdown",
+    })
+  })
+
+  it("can build versioned and localized public paths without changing route paths", async () => {
+    await fs.writeFile(path.join(tempDir, "guide.mdx"), "# Guide", "utf8")
+
+    const [entry] = await scanRouteManifest(tempDir, {
+      basePath: "/v3/",
+      localeId: "en",
+      versionId: "v3",
+    })
+
+    expect(entry).toMatchObject({
+      identity: {
+        localeId: "en",
+        publicPath: "/v3/en/guide",
+        routePath: "/guide",
+        versionId: "v3",
+      },
+      path: "/guide",
+      publicPath: "/v3/en/guide",
+      routePath: "/guide",
     })
   })
 })
