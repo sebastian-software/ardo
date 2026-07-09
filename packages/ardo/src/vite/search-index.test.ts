@@ -23,6 +23,8 @@ describe("generateSearchIndex", () => {
       expect.objectContaining({
         id: path.join("v1.md", "changelog.md"),
         path: "/v1.md/changelog",
+        publicPath: "/v1.md/changelog",
+        routePath: "/v1.md/changelog",
       })
     )
   })
@@ -53,8 +55,30 @@ const secret = "do not index code"
         title: "Getting Started",
         content: "Getting Started Install Ardo from npm.",
         path: "/guide/getting-started",
+        publicPath: "/guide/getting-started",
+        routePath: "/guide/getting-started",
         section: "Guide",
       },
+    ])
+  })
+
+  it("adds route identity metadata without changing runtime navigation paths", async () => {
+    await writeRoute("guide/getting-started.mdx", "---\ntitle: Getting Started\n---\nBody")
+
+    const docs = await generateSearchIndex(routesDir, {
+      basePath: "/v3/",
+      localeId: "en",
+      versionId: "v3",
+    })
+
+    expect(docs).toStrictEqual([
+      expect.objectContaining({
+        localeId: "en",
+        path: "/guide/getting-started",
+        publicPath: "/v3/en/guide/getting-started",
+        routePath: "/guide/getting-started",
+        versionId: "v3",
+      }),
     ])
   })
 

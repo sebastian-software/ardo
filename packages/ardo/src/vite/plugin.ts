@@ -5,14 +5,13 @@ import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
-import { resolveBrandIconOptions, serializeVirtualConfigModule } from "./brand"
+import { resolveBrandIconOptions } from "./brand"
 import {
   checkInternalLinks,
   createBuildOutputAssets,
   formatLinkCheckDiagnostics,
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
-import { detectGitHash, detectGitHubBasename } from "./git-utils"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
@@ -20,19 +19,15 @@ import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-u
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
-import { generateSearchIndex } from "./search-index"
-import { generateContextSidebars } from "./sidebar-index"
 import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 import { resolveVersionedMainBase } from "./versioning"
-
-const VIRTUAL_MODULE_ID = "virtual:ardo/config"
-const VIRTUAL_GENERATED_SIDEBARS_ID = "virtual:ardo/generated-sidebars"
-const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
-const RESOLVED_IDS: Record<string, string> = {
-  [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
-  [VIRTUAL_GENERATED_SIDEBARS_ID]: `\0${VIRTUAL_GENERATED_SIDEBARS_ID}`,
-  [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
-}
+import {
+  loadVirtualModule,
+  RESOLVED_IDS,
+  resolveVirtualModuleId,
+  VIRTUAL_GENERATED_SIDEBARS_ID,
+  VIRTUAL_SEARCH_ID,
+} from "./virtual-modules"
 
 type PluginState = {
   deploymentBase?: string
@@ -74,7 +69,7 @@ export type ArdoPluginOptions = {
   routesDir?: string
 } & Partial<ArdoConfig>
 
-export { detectGitHubBasename }
+export { detectGitHubBasename } from "./git-utils"
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
@@ -281,42 +276,6 @@ function mergeArdoViteConfig(
   }
 
   return mergeConfig(ardoConfig, viteConfig as UserConfig)
-}
-
-function resolveVirtualModuleId(id: string): string | undefined {
-  return RESOLVED_IDS[id]
-}
-
-async function loadVirtualModule(id: string, state: PluginState): Promise<string | undefined> {
-  if (state.resolvedConfig == null) {
-    return undefined
-  }
-
-  if (id === RESOLVED_IDS[VIRTUAL_MODULE_ID]) {
-    const clientConfig = {
-      title: state.resolvedConfig.title,
-      description: state.resolvedConfig.description,
-      base: state.resolvedConfig.base,
-      lang: state.resolvedConfig.lang,
-      brand: state.resolvedConfig.brand,
-      project: state.resolvedConfig.project,
-      buildTime: new Date().toISOString(),
-      buildHash: detectGitHash(state.resolvedConfig.root),
-    }
-    return serializeVirtualConfigModule(clientConfig, state.resolvedConfig.root)
-  }
-
-  if (id === RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID]) {
-    const sidebars = await generateContextSidebars(state.routesDir)
-    return `export default ${JSON.stringify(sidebars)}`
-  }
-
-  if (id === RESOLVED_IDS[VIRTUAL_SEARCH_ID]) {
-    const searchIndex = await generateSearchIndex(state.routesDir)
-    return `export default ${JSON.stringify(searchIndex)}`
-  }
-
-  return undefined
 }
 
 function configureVirtualModuleInvalidation(server: ViteDevServer, state: PluginState): void {

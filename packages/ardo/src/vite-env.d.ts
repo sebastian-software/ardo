@@ -22,7 +22,11 @@ declare module "virtual:ardo/search-index" {
     title: string
     content: string
     path: string
+    publicPath: string
+    routePath: string
+    localeId?: string
     section?: string
+    versionId?: string
   }
   const searchDocs: SearchDoc[]
   export default searchDocs
