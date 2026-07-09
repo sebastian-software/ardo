@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.0.0...ardo-v4.1.0) (2026-07-09)
+
+
+### Features
+
+* add Mermaid diagram support for Markdown and MDX ([4704fd7](https://github.com/sebastian-software/ardo/commit/4704fd7b7db3d7fe2096bb8e0cc981731eae1d28)), closes [#67](https://github.com/sebastian-software/ardo/issues/67) [#290](https://github.com/sebastian-software/ardo/issues/290)
+* add performance budgets for the docs build ([ba16eb9](https://github.com/sebastian-software/ardo/commit/ba16eb972fba01c12a41fb53c97140bcde2a9c14)), closes [#178](https://github.com/sebastian-software/ardo/issues/178) [#290](https://github.com/sebastian-software/ardo/issues/290)
+* adopt Base UI as interaction layer foundation ([d1e2c9b](https://github.com/sebastian-software/ardo/commit/d1e2c9bc279c3df80f6d5e3e95fac05b3e9c101c)), closes [#290](https://github.com/sebastian-software/ardo/issues/290)
+* rebuild Accordion and AccordionGroup on Base UI ([225ac0c](https://github.com/sebastian-software/ardo/commit/225ac0c95e8af8d8c8a92213d4097c2b6d0f4877)), closes [#72](https://github.com/sebastian-software/ardo/issues/72) [#290](https://github.com/sebastian-software/ardo/issues/290)
+
+
+### Bug Fixes
+
+* resolve rebase conflicts with v4.0.0 main ([beae4bc](https://github.com/sebastian-software/ardo/commit/beae4bc3278cee928ef90bf91d99017e3279d876)), closes [#290](https://github.com/sebastian-software/ardo/issues/290)
+
+
+### Tests
+
+* add Storybook stories for the Mermaid component ([9924f2d](https://github.com/sebastian-software/ardo/commit/9924f2d37543e8e558a42b498a8b7c7548263598))
+
 ## [4.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.8.1...ardo-v4.0.0) (2026-07-09)
 
 
