@@ -3,6 +3,7 @@ import type { RouteManifestEntry } from "./route-manifest"
 
 import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
 import { createLlmsTextAssets } from "./llms-text"
+import { createSearchAssets } from "./search-index"
 
 type LinkCheckDiagnostic = {
   filePath: string
@@ -150,6 +151,7 @@ export function createBuildOutputAssets(
     assets.push(...createLlmsTextAssets(entries, config))
   }
 
+  assets.push(...createSearchAssets(entries))
   assets.push(...createVersioningBuildOutputAssets(config))
 
   const redirects = collectRedirects(entries, config)

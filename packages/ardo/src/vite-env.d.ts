@@ -20,11 +20,16 @@ declare module "virtual:ardo/search-index" {
   interface SearchDoc {
     id: string
     title: string
+    pageTitle: string
     content: string
+    excerpt: string
     path: string
     publicPath: string
     routePath: string
+    anchor?: string
+    headingHierarchy: string[]
     localeId?: string
+    routeGroup?: string
     section?: string
     versionId?: string
   }
