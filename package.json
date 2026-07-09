@@ -23,6 +23,7 @@
     "typecheck": "pnpm -r typecheck",
     "docs:dev": "pnpm -r --filter ./docs dev",
     "docs:build": "pnpm -r --filter './docs' build",
+    "docs:budgets": "node scripts/check-budgets.mjs",
     "storybook": "storybook dev --port 6006",
     "storybook:build": "STORYBOOK_BASE=/storybook/ storybook build --output-dir storybook-static",
     "storybook:build:test": "storybook build --output-dir storybook-static",
