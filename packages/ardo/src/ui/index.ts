@@ -75,6 +75,8 @@ export type { ArdoErrorBoundaryProps } from "./ErrorBoundary"
 
 export { ArdoFooter } from "./Footer"
 export type { ArdoFooterCopyrightProps, ArdoFooterMessageProps, ArdoFooterProps } from "./Footer"
+export { ArdoGeneratedSidebar } from "./GeneratedSidebar"
+export type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 export { ArdoHeader, ArdoHeaderActions, ArdoSocialLink } from "./Header"
 export type { ArdoHeaderActionsProps, ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
 export { ArdoHomePage } from "./HomePage"
@@ -88,15 +90,8 @@ export { ArdoNav, ArdoNavLink } from "./Nav"
 export type { ArdoNavLinkProps, ArdoNavProps } from "./Nav"
 export { ArdoOwlMark } from "./OwlMark"
 export type { ArdoOwlMarkProps } from "./OwlMark"
-export {
-  ArdoGeneratedSidebar,
-  ArdoSidebar,
-  ArdoSidebarGroup,
-  ArdoSidebarLink,
-  ArdoSidebarSection,
-} from "./Sidebar"
+export { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
 export type {
-  ArdoGeneratedSidebarProps,
   ArdoSidebarGroupProps,
   ArdoSidebarLinkProps,
   ArdoSidebarProps,

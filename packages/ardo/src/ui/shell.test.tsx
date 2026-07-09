@@ -13,7 +13,6 @@ import { ArdoNav, ArdoNavLink } from "./Nav"
 import { ArdoSidebar, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
 
 vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
-vi.mock("virtual:ardo/generated-sidebars", () => ({ default: {} }))
 
 const config = { title: "Docs" }
 const triggerRef: RefObject<HTMLButtonElement | null> = { current: null }

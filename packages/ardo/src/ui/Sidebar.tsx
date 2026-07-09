@@ -13,9 +13,9 @@ import {
   useState,
 } from "react"
 import { NavLink, useLocation } from "react-router"
-import generatedSidebarsModule from "virtual:ardo/generated-sidebars"
 
 import type { SidebarItem as SidebarItemType } from "../config/types"
+import type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 
 import { useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
@@ -25,7 +25,6 @@ import { SidebarRail, type SidebarRailItem } from "./SidebarRail"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
-const generatedSidebars = generatedSidebarsModule as Record<string, SidebarItemType[]>
 
 // =============================================================================
 // Sidebar Context
@@ -69,6 +68,12 @@ export type ArdoSidebarSectionProps = {
   children?: ReactNode
 }
 
+/**
+ * Marker component for declaring one rail item and panel inside `ArdoSidebar`.
+ *
+ * `ArdoSidebar` reads this element's props before React renders it. When used
+ * outside `ArdoSidebar`, it only renders its children.
+ */
 export function ArdoSidebarSection({
   children,
   icon,
@@ -83,18 +88,6 @@ export function ArdoSidebarSection({
   void match
   void to
   return <>{children}</>
-}
-
-export type ArdoGeneratedSidebarProps = {
-  /** Top-level generated navigation section, such as "guide" or "api-reference". */
-  section: string
-}
-
-export function ArdoGeneratedSidebar({ section }: ArdoGeneratedSidebarProps) {
-  const items = generatedSidebarItems(section)
-  if (items.length === 0) return null
-  const treeMode = items.some((item) => (item.items?.length ?? 0) > 0)
-  return <SidebarItemListItems items={items} depth={0} treeMode={treeMode} />
 }
 
 // =============================================================================
@@ -119,7 +112,10 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
   const { pathname } = useLocation()
   const labels = useArdoLabels()
   const sections = getSidebarSectionElements(children)
-  const activeSection = findActiveSidebarSection(sections, pathname)
+  const activeSection =
+    sections.length === 0
+      ? undefined
+      : (findMatchingSidebarSection(sections, pathname) ?? sections[0])
   const railItems = sections.map((section) => sectionToRailItem(section, section === activeSection))
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
@@ -321,7 +317,7 @@ type SidebarItemsProps = {
   depth: number
 }
 
-function SidebarItems({ items, depth }: SidebarItemsProps) {
+export function SidebarItems({ items, depth }: SidebarItemsProps) {
   // The tree treatment (icon-circle nodes threaded on a trunk line) only kicks
   // in for top-level lists that actually contain groups. Flat lists of single
   // links stay plain — the circles are a group marker, not a per-link bullet.
@@ -596,8 +592,9 @@ export function resolveArdoSidebarItems(
     return sidebarItemsFromChildren(sidebar.props.children)
   }
 
-  const activeSection = findActiveSidebarSection(sections, currentPath)
-  return activeSection == null ? [] : sidebarItemsFromChildren(activeSection.props.children)
+  const [firstSection] = sections
+  const activeSection = findMatchingSidebarSection(sections, currentPath) ?? firstSection
+  return sidebarItemsFromChildren(activeSection.props.children)
 }
 
 function getSidebarSectionElements(
@@ -610,11 +607,11 @@ function isSidebarSectionElement(child: ReactNode): child is ReactElement<ArdoSi
   return isValidElement<ArdoSidebarSectionProps>(child) && child.type === ArdoSidebarSection
 }
 
-function findActiveSidebarSection(
+function findMatchingSidebarSection(
   sections: Array<ReactElement<ArdoSidebarSectionProps>>,
   pathname: string
 ): ReactElement<ArdoSidebarSectionProps> | undefined {
-  return sections.find((section) => sidebarSectionMatchesPath(section, pathname)) ?? sections[0]
+  return sections.find((section) => sidebarSectionMatchesPath(section, pathname))
 }
 
 function sidebarSectionMatchesPath(
@@ -659,12 +656,8 @@ function sectionUsesGeneratedTree(children: ReactNode): boolean {
     (child) =>
       isValidElement(child) &&
       isGeneratedSidebarElement(child) &&
-      generatedSidebarItems(child.props.section).some((item) => (item.items?.length ?? 0) > 0)
+      generatedSidebarItemsFromElement(child).some((item) => (item.items?.length ?? 0) > 0)
   )
-}
-
-function generatedSidebarItems(section: string): SidebarItemType[] {
-  return generatedSidebars[section] ?? []
 }
 
 function routePathToString(to: RoutePath | undefined): string | undefined {
@@ -685,7 +678,7 @@ function sidebarItemsFromChild(child: ReactNode): SidebarItemType[] {
   if (!isValidElement(child)) return []
   if (isSidebarLinkElement(child)) return [sidebarItemFromLink(child)]
   if (isSidebarGroupElement(child)) return [sidebarItemFromGroup(child)]
-  if (isGeneratedSidebarElement(child)) return generatedSidebarItems(child.props.section)
+  if (isGeneratedSidebarElement(child)) return generatedSidebarItemsFromElement(child)
   return []
 }
 
@@ -757,5 +750,25 @@ function isSidebarGroupElement(child: ReactElement): child is ReactElement<ArdoS
 function isGeneratedSidebarElement(
   child: ReactElement
 ): child is ReactElement<ArdoGeneratedSidebarProps> {
-  return child.type === ArdoGeneratedSidebar
+  return typeof generatedSidebarItemsResolver(child) === "function"
+}
+
+function generatedSidebarItemsFromElement(
+  child: ReactElement<ArdoGeneratedSidebarProps>
+): SidebarItemType[] {
+  return generatedSidebarItemsResolver(child)?.(child.props.section) ?? []
+}
+
+function generatedSidebarItemsResolver(child: ReactElement) {
+  return hasGeneratedSidebarItemsResolver(child.type)
+    ? child.type.ardoGeneratedSidebarItems
+    : undefined
+}
+
+function hasGeneratedSidebarItemsResolver(value: unknown): value is {
+  ardoGeneratedSidebarItems: (section: string) => SidebarItemType[]
+} {
+  if (typeof value !== "function") return false
+  if (!("ardoGeneratedSidebarItems" in value)) return false
+  return typeof value.ardoGeneratedSidebarItems === "function"
 }
