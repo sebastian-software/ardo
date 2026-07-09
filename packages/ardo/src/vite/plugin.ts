@@ -15,6 +15,7 @@ import {
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createContentSourcePlugin } from "./content-sources-plugin"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
+import { runArdoLifecyclePhase } from "./lifecycle"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
@@ -187,14 +188,16 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         return
       }
 
-      const manifest = await scanRouteManifest(
-        state.routesDir,
-        createRouteManifestOptions(state.resolvedConfig)
+      const resolvedConfig = state.resolvedConfig
+      const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
+        scanRouteManifest(state.routesDir, createRouteManifestOptions(resolvedConfig))
       )
-      reportLinkDiagnostics(this, manifest, state.resolvedConfig)
-      for (const asset of createBuildOutputAssets(manifest, state.resolvedConfig)) {
-        this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
-      }
+      reportLinkDiagnostics(this, manifest, resolvedConfig)
+      await runArdoLifecyclePhase("outputs:emit", () => {
+        for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {
+          this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
+        }
+      })
     },
   }
 }

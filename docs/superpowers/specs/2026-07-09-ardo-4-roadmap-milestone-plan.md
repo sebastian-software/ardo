@@ -272,14 +272,20 @@ Instead, use the 4.0 internals to make lifecycle phases explicit.
 
 Candidate internal phases:
 
-- resolve config
-- resolve route identity
-- collect route and generated content sources
-- normalize metadata
-- generate sidebars
-- generate search records
-- generate build output assets
-- register markdown/rehype/recma transforms
+- `config:resolve` resolves user config, deployment base, versioning, i18n, and project metadata.
+- `content-sources:materialize` materializes generated or mapped content before route scanning.
+- `routes:generate` generates React Router route files from the routes directory.
+- `metadata:scan` scans route files into normalized route identity and page metadata.
+- `sidebars:generate` generates sidebar trees from normalized route metadata.
+- `search:generate` generates section-level static search records and assets.
+- `outputs:emit` emits sitemap, redirects, llms, versions, and search assets.
+- `markdown:transform` applies Markdown, MDX, rehype, recma, and metadata transforms.
+
+These names are internal in 4.0. They should be used as code structure and test vocabulary only,
+not documented as stable extension hooks. The first future-public candidates are likely generated
+content, route generation, metadata scan, sidebar generation, search generation, and output
+emission. Config resolution and markdown transform hooks need more hardening before they can become
+public.
 
 TypeDoc, content source mapping, llms output, redirects, and Search 2.0 should become good internal
 examples of these phases. A future public extension API can then expose the phases that have proven
