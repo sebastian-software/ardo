@@ -1,5 +1,46 @@
 # Changelog
 
+## [4.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v3.8.1...ardo-v4.0.0) (2026-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Ardo 4.0 stabilizes the major-version docs URL contract; production docs should use canonical /vN/ paths and preserve older major folders during static deployments.
+
+### Features
+
+* add brand shortcut ([5fa1007](https://github.com/sebastian-software/ardo/commit/5fa1007204a82a6f6e63cf12951464441c640e81))
+* add content source mapping ([b8a100a](https://github.com/sebastian-software/ardo/commit/b8a100a993daff9a054b918083cb9b7ede8f3381))
+* add docs versioning and pages deploy ([013c349](https://github.com/sebastian-software/ardo/commit/013c349fd02d74ff132b735d50f2d0c125252b64))
+* add jsx-first site navigation ([dfab5d6](https://github.com/sebastian-software/ardo/commit/dfab5d6645577850b95ac4d4a72a297089de5950))
+* add jsx-first site navigation ([55f0d4c](https://github.com/sebastian-software/ardo/commit/55f0d4c7894d7283aad0d7d78a178164a1a70acf))
+* add route identity builder ([4496625](https://github.com/sebastian-software/ardo/commit/449662538abb35cfcf94610dc82239c11f52a86d))
+* add route metadata to generated sidebars ([41c479f](https://github.com/sebastian-software/ardo/commit/41c479f89ee4d774fe1e0a6378b4283e7764ee66))
+* add route metadata to search index ([fc030fd](https://github.com/sebastian-software/ardo/commit/fc030fd5f26892d24b6b987015525f645a2c95fb))
+* add static section search records ([0613964](https://github.com/sebastian-software/ardo/commit/0613964c9688a98b0eb4581bc8597e34c9dc4359))
+* enable versioned docs deployment ([e6b542b](https://github.com/sebastian-software/ardo/commit/e6b542b9c42ab743fe567feba66ae9868e5e443f))
+* harden v4 docs deployment readiness ([e86cd4c](https://github.com/sebastian-software/ardo/commit/e86cd4cd44c1e412f9767c92870665e7368d6294)), closes [#288](https://github.com/sebastian-software/ardo/issues/288)
+* prepare locale-prefixed docs URLs ([c0fe0e8](https://github.com/sebastian-software/ardo/commit/c0fe0e8577e147c152b9c5449082f1fcb99ed556))
+* stabilize version switcher paths ([b97014e](https://github.com/sebastian-software/ardo/commit/b97014e22011ec91f87c2be86c8f1d2de6be02df))
+* thread route identity through build outputs ([0d17a14](https://github.com/sebastian-software/ardo/commit/0d17a14553e21424f64f17f5a1af9c1f052243a4))
+
+
+### Bug Fixes
+
+* address generated sidebar review findings ([d1434e1](https://github.com/sebastian-software/ardo/commit/d1434e1b65dbbc74c2c9a60f96964c66df9d34b1))
+* address generated sidebar review findings ([da48557](https://github.com/sebastian-software/ardo/commit/da4855725e92aaf47122fe9bd5e93efb49afa0cf))
+* address roadmap review feedback ([d8190f9](https://github.com/sebastian-software/ardo/commit/d8190f921412f08b9071122c295539156a815cdc))
+* keep runtime sidebar output stable ([fe1fef7](https://github.com/sebastian-software/ardo/commit/fe1fef76fd588570f6783f3797fac9e7327a2462))
+* stabilize mobile docs navigation test ([6100143](https://github.com/sebastian-software/ardo/commit/610014342a8451fa6e0ad64365850f6f69e94d54))
+* stabilize mobile docs navigation test ([97881e1](https://github.com/sebastian-software/ardo/commit/97881e1470389dd970aedcc167acc7f6a20efc30))
+
+
+### Code Refactoring
+
+* centralize page metadata for search outputs ([5ee609d](https://github.com/sebastian-software/ardo/commit/5ee609d0a3dc49e026e71e72b5e9f74b9724c9d8))
+* name internal lifecycle phases ([315f920](https://github.com/sebastian-software/ardo/commit/315f92055c25414f0024295f7b5beadbaabca9d1))
+* share frontmatter metadata parsing ([00e7726](https://github.com/sebastian-software/ardo/commit/00e7726e2a6ac4b21e04b6d8c11ac798c8a2a8e7))
+
 ## [3.8.1](https://github.com/sebastian-software/ardo/compare/ardo-v3.8.0...ardo-v3.8.1) (2026-07-08)
 
 
