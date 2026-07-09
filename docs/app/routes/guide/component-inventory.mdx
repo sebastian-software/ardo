@@ -1,0 +1,79 @@
+---
+title: Component Inventory
+description: The authoring component baseline - what ships with Ardo, what is deferred, and what is intentionally out of scope.
+order: 12
+---
+
+# Component Inventory
+
+This page is the authoritative inventory of Ardo's authoring components. It states what ships out of the box, what is deferred to later releases, and what is intentionally out of scope — so the component set stays a coherent authoring system instead of a loose collection.
+
+## The Base UI boundary
+
+Since v4.1, Ardo uses [Base UI](https://base-ui.com) as the interaction layer for components with non-trivial keyboard, focus, or ARIA behavior (see ADR 0015 in the repository). The rules:
+
+- **New interactive components** (accordions, tooltips, popovers, dialogs, menus, selects) are built on Base UI primitives.
+- **Ardo owns the public API and styling.** Components ship as `Ardo*` wrappers with documentation-oriented props and theme-token styling. Base UI types and markup never leak into MDX.
+- **Static-first defaults.** Collapsed or hidden content stays in the pre-rendered HTML where the primitive supports it, so search engines and find-in-page still work.
+- **Simple native controls stay local.** A copy button or theme toggle gains nothing from a primitive and is not migrated.
+- **Existing components migrate selectively** when they are touched — one default implementation path, not a second permanent stack.
+
+### Review of existing interactive components
+
+| Component                          | Decision                                                                                                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Accordion` / `AccordionGroup`     | **Migrated to Base UI** in v4.1. Same MDX API; collapsed content is now find-in-page discoverable.                                                             |
+| `Tabs`                             | Migrate to the Base UI Tabs primitive on the next substantial change. The current implementation is accessible and interaction-tested; no API change expected. |
+| Search popover / overlay           | Migrate to Base UI Popover/Dialog on the next substantial change, to inherit maintained focus-trap and dismiss behavior.                                       |
+| Mobile slide panel (drawer)        | Migrate to the Base UI Drawer/Dialog primitive on the next substantial change.                                                                                 |
+| `CopyButton`, `ThemeToggle`, links | Stay local — plain native controls where a primitive adds no behavior.                                                                                         |
+
+## Shipped
+
+Available today, usable from MDX without imports, theme-aware, with docs and Storybook coverage.
+
+| Block                          | Components                                    | Docs                                                       |
+| ------------------------------ | --------------------------------------------- | ---------------------------------------------------------- |
+| Callouts / GitHub-style alerts | `Note`, `Tip`, `Info`, `Warning`, `Danger`    | [Markdown Features](/guide/markdown#callout-components)    |
+| Code blocks and groups         | `CodeBlock`, `CodeGroup`, titles, line marks  | [Markdown Features](/guide/markdown#syntax-highlighting)   |
+| Tabs                           | `Tabs`, `TabList`, `Tab`, `TabPanels`         | [Markdown Features](/guide/markdown#tabs)                  |
+| Steps                          | `Steps`                                       | [Markdown Features](/guide/markdown#steps)                 |
+| Accordions                     | `Accordion`, `AccordionGroup` (Base UI)       | [Markdown Features](/guide/markdown#accordions)            |
+| Badges and status pills        | `Badge` with semantic variants                | [Markdown Features](/guide/markdown#badge-component)       |
+| Cards and link cards           | `Card`, `CardGroup`                           | [Markdown Features](/guide/markdown#cards)                 |
+| Mermaid diagrams               | ` ```mermaid ` fences, lazy + theme-aware     | [Markdown Features](/guide/markdown#mermaid-diagrams)      |
+| Icons                          | `Icon` with registered and Lucide icons       | [Markdown Features](/guide/markdown#icons)                 |
+| Hero and features              | `Hero`, `Features`, `FeatureCard`             | [Site UI Configuration](/guide/site-ui)                    |
+| Reusable snippets              | MDX snippet imports and `ArdoBareContent`     | [Markdown Features](/guide/markdown#reusable-mdx-snippets) |
+| Docs shell                     | TOC, sidebar, search, breadcrumbs, versioning | [Site UI Configuration](/guide/site-ui)                    |
+
+## Deferred
+
+Valuable, but intentionally not in the current release. Deferred blocks have a clear home when they land: interactive ones go through the Base UI boundary above.
+
+| Block                | Status                                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Tooltip              | Likely first follow-up on the Base UI layer ([#81](https://github.com/sebastian-software/ardo/issues/81)). |
+| File tree block      | Deferred — setup and project-structure docs currently use code fences.                                     |
+| Package manager tabs | Deferred convenience — npm/pnpm/yarn/bun instructions work today with `Tabs` + `CodeGroup`.                |
+| Example/demo frame   | Deferred — interactive React examples need a sandboxing and hydration story first.                         |
+| Math notation        | Deferred ([#68](https://github.com/sebastian-software/ardo/issues/68)); MathML-first approach preferred.   |
+
+## Intentionally out of scope
+
+These need a broader architectural decision or belong to their own product track, and are deliberately not part of the authoring baseline:
+
+- **API endpoint blocks** — belong to the OpenAPI track ([#69](https://github.com/sebastian-software/ardo/issues/69)) rather than standalone components.
+- **Twoslash / TypeScript hover examples** — high maintenance and toolchain weight relative to their reach.
+- **Sandpack or embedded live playgrounds** — the bundle and maintenance cost conflicts with Ardo's static-first, budget-guarded output.
+- **Schema-backed content collections, extension API, i18n, analytics/feedback adapters** — separate roadmap tracks (see [Feature Status](/guide/status-roadmap)).
+
+## Guarantees for shipped components
+
+Every shipped block keeps these properties, and new blocks must meet them before they move into the table above:
+
+- Usable from MDX without manual imports where practical.
+- Accessible behavior appropriate to its interaction model (via Base UI for non-trivial interaction).
+- Styled through theme tokens; works in light and dark mode.
+- Documented with an MDX example, covered by tests or Storybook stories.
+- Within the docs build performance budgets checked in CI.
