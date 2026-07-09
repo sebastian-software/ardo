@@ -155,6 +155,38 @@ describe("build outputs", () => {
     expect(generateVersionsJson(versionedConfig)).toContain('"path": "/docs/v2/"')
   })
 
+  it("adds locale-prefixed redirects and sitemap URLs when i18n URL prep is active", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        versioning: {
+          current: "v3",
+          versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+        },
+        i18n: {
+          defaultLocale: "en",
+          locales: [{ id: "en" }, { id: "de" }],
+        },
+      },
+      "/site"
+    )
+    const versionedEntries = createEntries(versionedConfig)
+
+    expect(collectRedirects(versionedEntries, versionedConfig)).toContainEqual({
+      from: "/",
+      to: "/docs/v3/en/",
+    })
+    expect(collectRedirects(versionedEntries, versionedConfig)).toContainEqual({
+      from: "/docs/v3/",
+      to: "/docs/v3/en/",
+    })
+    expect(generateSitemap(versionedEntries, versionedConfig)).toContain(
+      "<loc>/docs/v3/en/guide</loc>"
+    )
+    expect(generateVersionsJson(versionedConfig)).toContain('"path": "/docs/v3/"')
+  })
+
   it("can keep the root page when versioning disables the root redirect", () => {
     const versionedConfig = resolveConfig(
       {

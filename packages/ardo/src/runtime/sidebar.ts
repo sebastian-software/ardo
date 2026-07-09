@@ -19,6 +19,7 @@ export async function generateSidebar(options: SidebarGenerationOptions): Promis
     ...options.config.sidebar,
     ...createRouteManifestOptions({
       base: options.basePath,
+      i18n: options.config.i18n,
       versioning: options.config.versioning,
     }),
   })

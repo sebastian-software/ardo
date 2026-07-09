@@ -75,6 +75,31 @@ describe("route identity", () => {
     })
   })
 
+  it("uses the default locale in current route identities when i18n is active", () => {
+    const config = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        versioning: {
+          current: "v3",
+          versions: [{ id: "v3", path: "/v3/" }],
+        },
+        i18n: {
+          defaultLocale: "en",
+          locales: [{ id: "en" }, { id: "de" }],
+        },
+      },
+      "/site"
+    )
+
+    expect(createCurrentRouteIdentity("/guide", config)).toStrictEqual({
+      localeId: "en",
+      publicPath: "/docs/v3/en/guide",
+      routePath: "/guide",
+      versionId: "v3",
+    })
+  })
+
   it("keeps locale optional for current non-i18n sites", () => {
     const config = resolveConfig({ title: "Docs", base: "/docs/" }, "/site")
 

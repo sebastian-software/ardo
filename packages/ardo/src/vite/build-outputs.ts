@@ -1,7 +1,7 @@
 import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
-import { createVersioningBuildOutputAssets, getRootVersionRedirect } from "./build-versioning"
+import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
 import { createLlmsTextAssets } from "./llms-text"
 
 type LinkCheckDiagnostic = {
@@ -68,10 +68,7 @@ export function generateRobots(config: ResolvedConfig) {
 
 export function collectRedirects(entries: RouteManifestEntry[], config: ResolvedConfig) {
   const redirects = [...config.redirects]
-  const rootVersionRedirect = getRootVersionRedirect(config)
-  if (rootVersionRedirect != null) {
-    redirects.push(rootVersionRedirect)
-  }
+  redirects.push(...getVersioningRedirects(config))
 
   for (const entry of entries) {
     for (const from of entry.frontmatter.redirectFrom ?? []) {

@@ -83,6 +83,32 @@ describe("ardoPlugin", () => {
     expect(String(code)).toContain('"base":"/docs/"')
   })
 
+  it("exposes versioning and i18n URL config in the virtual Ardo config", async () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", path: "/v3/" }],
+      },
+      i18n: {
+        defaultLocale: "en",
+        locales: [{ id: "en" }, { id: "de", label: "Deutsch" }],
+      },
+    })
+
+    plugin.configResolved({
+      base: "/v3/",
+      build: { ssr: false },
+      root: "/project",
+    })
+
+    const code = await plugin.load("\0virtual:ardo/config")
+
+    expect(String(code)).toContain('"versioning":{')
+    expect(String(code)).toContain('"i18n":{"defaultLocale":"en"')
+  })
+
   it("normalizes absolute Vite bases before exposing the virtual Ardo config", async () => {
     const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
 
