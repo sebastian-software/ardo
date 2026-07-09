@@ -28,6 +28,7 @@ import {
 } from "./icons"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
+import { getVersionedPath } from "./version-path"
 
 // =============================================================================
 // Header Component
@@ -247,43 +248,6 @@ function ArdoVersionSwitcher() {
       ))}
     </select>
   )
-}
-
-function getVersionedPath(pathname: string, currentBase: string, targetBase: string) {
-  const relativePath = getPathWithinBase(pathname, currentBase)
-  const normalizedTarget = normalizePathBase(targetBase)
-  if (relativePath === "/") {
-    return normalizedTarget
-  }
-
-  return `${normalizedTarget.replace(/\/$/u, "")}${relativePath}`
-}
-
-function getPathWithinBase(pathname: string, base: string) {
-  const normalizedBase = normalizePathBase(base).replace(/\/$/u, "")
-  if (normalizedBase === "") {
-    return pathname
-  }
-
-  if (pathname === normalizedBase) {
-    return "/"
-  }
-
-  if (pathname.startsWith(`${normalizedBase}/`)) {
-    return pathname.slice(normalizedBase.length) || "/"
-  }
-
-  return "/"
-}
-
-function normalizePathBase(path: string) {
-  const trimmed = path.trim()
-  if (trimmed === "" || trimmed === "/") {
-    return "/"
-  }
-
-  const withLeadingSlash = trimmed.startsWith("/") ? trimmed : `/${trimmed}`
-  return withLeadingSlash.endsWith("/") ? withLeadingSlash : `${withLeadingSlash}/`
 }
 
 // =============================================================================

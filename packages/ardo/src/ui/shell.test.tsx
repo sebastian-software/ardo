@@ -11,6 +11,7 @@ import { ArdoHeader } from "./Header"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import { ArdoNav, ArdoNavLink } from "./Nav"
 import { ArdoSidebar, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
+import { getVersionedPath } from "./version-path"
 
 vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
 
@@ -95,6 +96,17 @@ describe("UI shell landmarks", () => {
     expect(view).toContain('aria-label="Documentation version"')
     expect(view).toContain('<option value="v3" selected="">3.x</option>')
     expect(view).toContain('<option value="v2">2.x</option>')
+  })
+
+  it("preserves the equivalent route path when switching documentation versions", () => {
+    expect(getVersionedPath("/v3/guide/getting-started", "/v3/", "/v2/")).toBe(
+      "/v2/guide/getting-started"
+    )
+    expect(getVersionedPath("/docs/v3/guide/getting-started", "/docs/v3/", "/docs/v2/")).toBe(
+      "/docs/v2/guide/getting-started"
+    )
+    expect(getVersionedPath("/v3/", "/v3/", "/v2/")).toBe("/v2/")
+    expect(getVersionedPath("/unversioned", "/v3/", "/v2/")).toBe("/v2/")
   })
 
   it("extracts JSX chrome children around route content", () => {
