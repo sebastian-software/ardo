@@ -35,7 +35,7 @@ import type {
 
 import { resolveBrandThemeHues } from "./brand"
 import { resolveI18nConfig } from "./i18n"
-import { resolveVersionedBase, resolveVersioningConfig } from "./versioning"
+import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
   default?: unknown
@@ -102,6 +102,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     description: config.description ?? "",
     titleSeparator: config.titleSeparator ?? " | ",
     base: resolveVersionedBase(deploymentBase, versioning),
+    deploymentBase: normalizeBasePath(deploymentBase),
     siteUrl: config.siteUrl ?? "",
     srcDir,
     outDir: config.outDir ?? "dist",

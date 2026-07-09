@@ -117,6 +117,33 @@ describe("build outputs", () => {
     expect(sitemap).not.toContain("/docs/v2/")
   })
 
+  it("keeps root asset cross-references on the deployment base for versioned docs", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        versioning: {
+          current: "v3",
+          versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+        },
+      },
+      "/site"
+    )
+    const assets = createBuildOutputAssets(createEntries(versionedConfig), versionedConfig)
+    const robots = generateRobots(versionedConfig)
+    const llms = assets.find((asset) => asset.fileName === "llms.txt")
+
+    expect(generateSitemap(createEntries(versionedConfig), versionedConfig)).toContain(
+      "<loc>https://example.com/docs/v3/guide</loc>"
+    )
+    expect(robots).toContain("Sitemap: https://example.com/docs/sitemap.xml")
+    expect(robots).not.toContain("https://example.com/docs/v3/sitemap.xml")
+    expect(llms?.source).toContain("- [Full documentation](https://example.com/docs/llms-full.txt)")
+    expect(llms?.source).not.toContain("https://example.com/docs/v3/llms-full.txt")
+    expect(llms?.source).toContain("- [Guide](https://example.com/docs/v3/guide)")
+  })
+
   it("combines configured and frontmatter redirects for provider outputs", () => {
     const redirects = collectRedirects(entries, {
       ...baseConfig,

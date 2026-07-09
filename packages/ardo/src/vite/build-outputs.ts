@@ -326,7 +326,7 @@ function dedupeRedirects(redirects: Array<{ from: string; to: string }>) {
 }
 
 function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
-  const basePath = joinUrlPath(config.base, routePath)
+  const basePath = joinUrlPath(config.deploymentBase, routePath)
   if (config.siteUrl === "") {
     return basePath
   }

@@ -1,0 +1,87 @@
+---
+title: Upgrade to Ardo 4.0
+description: Prepare an Ardo project for the 4.0 release and the stable major-version URL contract.
+order: 13
+---
+
+# Upgrade to Ardo 4.0
+
+Ardo 4.0 uses the breaking-release window to stabilize documentation URL identity. The main public
+change is the major-version URL contract: production documentation should live under a stable major
+folder such as `/v3/` or `/v4/`, while `/` redirects to the current major version.
+
+## What Changes
+
+- Major-versioned documentation URLs become the recommended public shape for deployed docs.
+- Root `index.html`, `versions.json`, `sitemap.xml`, `robots.txt`, `llms.txt`, search assets, and
+  redirect files are emitted as static build outputs.
+- `sitemap.xml` advertises only the current canonical major version so older folders can stay
+  reachable without being indexed as duplicate current content.
+- GitHub Pages deployments should preserve older major folders when a new major version becomes
+  current.
+
+## Update Versioned Docs
+
+Configure the current major version in `vite.config.ts`:
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Docs",
+      siteUrl: "https://docs.example.com",
+      versioning: {
+        current: "v4",
+        versions: [
+          { id: "v4", label: "4.x", path: "/v4/" },
+          { id: "v3", label: "3.x", path: "/v3/" },
+        ],
+      },
+    }),
+  ],
+})
+```
+
+Set the same basename in `react-router.config.ts`:
+
+```ts
+import type { Config } from "@react-router/dev/config"
+import { withArdoVersioning } from "ardo/vite"
+
+const config = {
+  ssr: false,
+  prerender: true,
+} satisfies Config
+
+export default withArdoVersioning(config, { basename: "/v4/" })
+```
+
+## Preserve Older GitHub Pages Versions
+
+GitHub Pages replaces the full uploaded artifact on each deploy. Before switching the current docs
+build to a new major folder, keep the final generated folder for the previous major version and copy
+it into the Pages artifact during deployment.
+
+For this repository, older major snapshots live under `docs/version-snapshots/`:
+
+```text
+docs/version-snapshots/v3/
+```
+
+The Pages workflow fails if `versions.json` lists an older major version that is missing from both
+the current build and `docs/version-snapshots/`. This protects stable URLs such as `/v3/...` from
+being deleted by the first `/v4/` deployment.
+
+## Check Existing Links
+
+Update external documentation links to point at the versioned canonical URL:
+
+```text
+https://docs.example.com/v4/guide/getting-started
+```
+
+Avoid making `latest` canonical. If a `latest` alias is added later, it should redirect to the
+current major-version folder.

@@ -14,9 +14,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Node](https://img.shields.io/badge/Node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
 
-[Documentation](https://ardo-docs.dev) ·
-[Getting Started](https://ardo-docs.dev/guide/getting-started) ·
-[API Reference](https://ardo-docs.dev/api-reference) ·
+[Documentation](https://ardo-docs.dev/v3/) ·
+[Getting Started](https://ardo-docs.dev/v3/guide/getting-started) ·
+[API Reference](https://ardo-docs.dev/v3/api-reference) ·
 [Examples](https://github.com/sebastian-software/ardo/tree/main/examples)
 
 </div>
@@ -30,12 +30,12 @@ React or moving docs into a closed platform.
 The full product overview, comparison, configuration reference, deployment notes, and roadmap live
 on the documentation site:
 
-- [What is Ardo?](https://ardo-docs.dev/guide/what-is-ardo)
-- [Getting Started](https://ardo-docs.dev/guide/getting-started)
-- [Comparison](https://ardo-docs.dev/guide/comparison)
-- [Configuration](https://ardo-docs.dev/guide/configuration)
-- [Deployment](https://ardo-docs.dev/guide/deployment)
-- [Feature Status](https://ardo-docs.dev/guide/status-roadmap)
+- [What is Ardo?](https://ardo-docs.dev/v3/guide/what-is-ardo)
+- [Getting Started](https://ardo-docs.dev/v3/guide/getting-started)
+- [Comparison](https://ardo-docs.dev/v3/guide/comparison)
+- [Configuration](https://ardo-docs.dev/v3/guide/configuration)
+- [Deployment](https://ardo-docs.dev/v3/guide/deployment)
+- [Feature Status](https://ardo-docs.dev/v3/guide/status-roadmap)
 
 ## Quick start
 
@@ -50,7 +50,7 @@ Open `http://localhost:5173`. Add an `.mdx` file to `app/routes/`, and Ardo adds
 generated sidebar.
 
 For manual installation, existing workspaces, TypeDoc setup, theming, and deployment, use the
-[Getting Started guide](https://ardo-docs.dev/guide/getting-started).
+[Getting Started guide](https://ardo-docs.dev/v3/guide/getting-started).
 
 ## Examples
 

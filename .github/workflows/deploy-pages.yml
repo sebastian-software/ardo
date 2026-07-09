@@ -55,10 +55,13 @@ jobs:
           mkdir -p docs/build/client/storybook
           cp -r storybook-static/* docs/build/client/storybook/
 
+      - name: Prepare GitHub Pages artifact
+        run: node scripts/prepare-pages-artifact.mjs
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/build/client
+          path: docs/build/pages
 
   deploy:
     name: Deploy docs
