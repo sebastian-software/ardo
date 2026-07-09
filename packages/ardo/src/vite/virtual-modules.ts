@@ -40,6 +40,8 @@ export async function loadVirtualModule(
       base: state.resolvedConfig.base,
       lang: state.resolvedConfig.lang,
       brand: state.resolvedConfig.brand,
+      versioning: state.resolvedConfig.versioning,
+      i18n: state.resolvedConfig.i18n,
       project: state.resolvedConfig.project,
       buildTime: new Date().toISOString(),
       buildHash: detectGitHash(state.resolvedConfig.root),

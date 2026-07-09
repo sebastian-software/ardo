@@ -188,6 +188,24 @@ export type DocumentationVersioningConfig = {
 }
 
 // =============================================================================
+// i18n URL Preparation
+// =============================================================================
+
+export type DocumentationLocale = {
+  /** Stable locale id used in canonical URLs, such as "en" or "de". */
+  id: string
+  /** Human-readable label for future locale switchers. Defaults to id. */
+  label?: string
+}
+
+export type I18nConfig = {
+  /** Default locale. When i18n is active, canonical URLs include this locale. */
+  defaultLocale: string
+  /** Locales reserved for future localized docs. */
+  locales: DocumentationLocale[]
+}
+
+// =============================================================================
 // Ardo Config (Main Configuration)
 // =============================================================================
 
@@ -237,6 +255,13 @@ export type ArdoConfig = {
    * version path to build canonical URLs, sitemap entries, and runtime links.
    */
   versioning?: DocumentationVersioningConfig | false
+  /**
+   * Future locale-aware documentation routing.
+   *
+   * In 4.0 this reserves canonical locale-prefixed URLs only. It does not add
+   * translation loading, localized content fallback, or a public locale switcher.
+   */
+  i18n?: false | I18nConfig
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)

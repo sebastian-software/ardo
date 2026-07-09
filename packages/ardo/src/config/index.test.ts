@@ -133,6 +133,27 @@ describe("resolveConfig", () => {
     })
   })
 
+  it("resolves i18n URL preparation config", () => {
+    const resolved = resolveConfig(
+      {
+        title: "Test",
+        i18n: {
+          defaultLocale: "en",
+          locales: [{ id: "en" }, { id: "de", label: "Deutsch" }],
+        },
+      },
+      "/project"
+    )
+
+    expect(resolved.i18n).toStrictEqual({
+      defaultLocale: "en",
+      locales: [
+        { id: "en", label: "en" },
+        { id: "de", label: "Deutsch" },
+      ],
+    })
+  })
+
   it("merges markdown config with defaults", () => {
     const config = {
       title: "Test",
@@ -214,6 +235,34 @@ describe("resolveConfig", () => {
         "/project"
       )
     ).toThrow('versioning.versions["v3"].path must start and end with "/"')
+  })
+
+  it("rejects invalid i18n config", () => {
+    expect(() =>
+      resolveConfig(
+        {
+          title: "Test",
+          i18n: {
+            defaultLocale: "fr",
+            locales: [{ id: "en" }],
+          },
+        },
+        "/project"
+      )
+    ).toThrow('i18n.defaultLocale "fr" must match a locale id')
+
+    expect(() =>
+      resolveConfig(
+        {
+          title: "Test",
+          i18n: {
+            defaultLocale: "en",
+            locales: [{ id: "en/us" }],
+          },
+        },
+        "/project"
+      )
+    ).toThrow("i18n.locales entries must be a non-empty locale id without slashes")
   })
 
   it("rejects unknown brand hue presets", () => {

@@ -12,6 +12,7 @@ const config: ResolvedConfig = {
   contentDir: "/tmp/routes",
   description: "Framework docs",
   head: [],
+  i18n: false,
   lang: "en",
   linkCheck: {
     enabled: true,

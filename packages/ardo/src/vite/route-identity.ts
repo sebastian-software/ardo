@@ -1,5 +1,7 @@
 import type { ResolvedConfig } from "../config/types"
 
+import { getDefaultLocaleId } from "../config/i18n"
+
 export type RouteIdentity = {
   versionId?: string
   localeId?: string
@@ -33,12 +35,12 @@ export function createRouteIdentity(input: RouteIdentityInput): RouteIdentity {
 
 export function createCurrentRouteIdentity(
   routePath: string,
-  config: Pick<ResolvedConfig, "base" | "versioning">,
+  config: Pick<ResolvedConfig, "base" | "i18n" | "versioning">,
   options: { localeId?: string } = {}
 ): RouteIdentity {
   return createRouteIdentity({
     basePath: config.base,
-    localeId: options.localeId,
+    localeId: options.localeId ?? getDefaultLocaleId(config.i18n),
     routePath,
     versionId: config.versioning === false ? undefined : config.versioning.current,
   })

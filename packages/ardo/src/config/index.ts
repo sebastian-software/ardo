@@ -11,6 +11,7 @@ import type {
   DocumentationVersion,
   DocumentationVersioningConfig,
   HeadConfig,
+  I18nConfig,
   LinkCheckConfig,
   LlmsConfig,
   MarkdownConfig,
@@ -33,6 +34,7 @@ import type {
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
+import { resolveI18nConfig } from "./i18n"
 import { resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
@@ -48,6 +50,7 @@ export type {
   DocumentationVersion,
   DocumentationVersioningConfig,
   HeadConfig,
+  I18nConfig,
   LinkCheckConfig,
   LlmsConfig,
   MarkdownConfig,
@@ -92,6 +95,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
   const contentDir = path.resolve(root, srcDir)
   const deploymentBase = config.base ?? "/"
   const versioning = resolveVersioningConfig(config.versioning, deploymentBase)
+  const i18n = resolveI18nConfig(config.i18n)
 
   return {
     title: config.title,
@@ -107,6 +111,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     linkCheck: config.linkCheck ?? {},
     redirects: config.redirects ?? [],
     versioning,
+    i18n,
     markdown: {
       ...defaultMarkdownConfig,
       ...config.markdown,
@@ -182,6 +187,7 @@ function validateConfig(config: ArdoConfig): void {
 
   validateBrandConfig(config, errors)
   validateVersioningConfig(config, errors)
+  validateI18nConfig(config, errors)
 
   const sitemapPriority =
     typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
@@ -194,6 +200,43 @@ function validateConfig(config: ArdoConfig): void {
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
+  }
+}
+
+function validateI18nConfig(config: ArdoConfig, errors: string[]): void {
+  const i18n = config.i18n
+  if (i18n == null || i18n === false) {
+    return
+  }
+
+  validateLocaleId("i18n.defaultLocale", i18n.defaultLocale, errors)
+  if (i18n.locales.length === 0) {
+    errors.push("i18n.locales must contain at least one locale.")
+    return
+  }
+
+  if (!validateLocaleEntries(i18n, errors)) {
+    errors.push(`i18n.defaultLocale "${i18n.defaultLocale}" must match a locale id.`)
+  }
+}
+
+function validateLocaleEntries(i18n: I18nConfig, errors: string[]): boolean {
+  const ids = new Set<string>()
+  let defaultFound = false
+  for (const locale of i18n.locales) {
+    validateLocaleId("i18n.locales entries", locale.id, errors)
+    if (ids.has(locale.id)) {
+      errors.push(`i18n.locales contains duplicate id "${locale.id}".`)
+    }
+    ids.add(locale.id)
+    defaultFound ||= locale.id === i18n.defaultLocale
+  }
+  return defaultFound
+}
+
+function validateLocaleId(field: string, value: string, errors: string[]): void {
+  if (value.trim() === "" || value.includes("/")) {
+    errors.push(`${field} must be a non-empty locale id without slashes.`)
   }
 }
 

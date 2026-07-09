@@ -316,6 +316,39 @@ static hosts such as GitHub Pages, Ardo's redirect is an HTML file with meta ref
 If you put a CDN or hosting layer with real HTTP redirects in front of the site, configure those
 redirects outside Ardo.
 
+### i18n
+
+- **Type:** `false | { defaultLocale: string; locales: Array<{ id: string; label?: string }> }`
+- **Default:** `false`
+
+Reserves locale-prefixed canonical URLs for future localized docs. In 4.0 this is URL preparation
+only: Ardo does not load translated content, resolve locale fallbacks, or render a public locale
+switcher yet.
+
+When enabled, Ardo always includes the locale in canonical public URLs. With versioning active, the
+version segment comes first:
+
+```ts
+ardo({
+  title: "My Docs",
+  versioning: {
+    current: "v3",
+    versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+  },
+  i18n: {
+    defaultLocale: "en",
+    locales: [
+      { id: "en", label: "English" },
+      { id: "de", label: "Deutsch" },
+    ],
+  },
+})
+```
+
+This produces URLs such as `/v3/en/guide/getting-started`. The root redirect points to the current
+version plus the default locale, and the version root redirects to the default locale root. The
+default locale is not hidden when i18n is active.
+
 ### srcDir
 
 - **Type:** `string`

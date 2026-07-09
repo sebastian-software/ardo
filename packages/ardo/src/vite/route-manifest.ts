@@ -6,6 +6,7 @@ import path from "node:path"
 
 import type { ResolvedConfig } from "../config/types"
 
+import { getDefaultLocaleId } from "../config/i18n"
 import { createHeadingSlugger } from "../markdown/heading-slug"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
@@ -42,10 +43,11 @@ type RouteManifestScanContext = {
 }
 
 export function createRouteManifestOptions(
-  config: Pick<ResolvedConfig, "base" | "versioning">
+  config: Pick<ResolvedConfig, "base" | "i18n" | "versioning">
 ): RouteManifestOptions {
   return {
     basePath: config.base,
+    localeId: getDefaultLocaleId(config.i18n),
     versionId: config.versioning === false ? undefined : config.versioning.current,
   }
 }
