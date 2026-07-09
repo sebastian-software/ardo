@@ -15,7 +15,7 @@ export type SidebarGenerationOptions = {
  * by the Vite integration.
  */
 export async function generateSidebar(options: SidebarGenerationOptions): Promise<SidebarItem[]> {
-  return generateViteSidebar(options.contentDir, {
+  const sidebar = await generateViteSidebar(options.contentDir, {
     ...options.config.sidebar,
     ...createRouteManifestOptions({
       base: options.basePath,
@@ -23,4 +23,17 @@ export async function generateSidebar(options: SidebarGenerationOptions): Promis
       versioning: options.config.versioning,
     }),
   })
+  return sidebar.map((item) => toRuntimeSidebarItem(item))
+}
+
+function toRuntimeSidebarItem(item: SidebarItem): SidebarItem {
+  return {
+    text: item.text,
+    ...(item.link == null ? {} : { link: item.link }),
+    ...(item.icon == null ? {} : { icon: item.icon }),
+    ...(item.collapsed == null ? {} : { collapsed: item.collapsed }),
+    ...(item.items == null
+      ? {}
+      : { items: item.items.map((child) => toRuntimeSidebarItem(child)) }),
+  }
 }
