@@ -49,7 +49,7 @@ async function readVersions(filePath) {
   try {
     const raw = await fs.readFile(filePath, "utf8")
     const parsed = JSON.parse(raw)
-    if (!Array.isArray(parsed.versions)) {
+    if (typeof parsed !== "object" || parsed === null || !Array.isArray(parsed.versions)) {
       return []
     }
 
