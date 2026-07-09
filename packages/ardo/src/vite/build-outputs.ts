@@ -26,7 +26,7 @@ export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedC
   const changefreq = sitemapConfig.changefreq ?? "weekly"
   const priority = sitemapConfig.priority ?? 0.7
   const urls = entries
-    .filter((entry) => entry.frontmatter.sitemap !== false)
+    .filter((entry) => entry.metadata.sitemap !== false)
     .map((entry) => {
       const loc = toAbsolutePublicUrl(entry.publicPath, config)
       return [
@@ -71,7 +71,7 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
   redirects.push(...getVersioningRedirects(config))
 
   for (const entry of entries) {
-    for (const from of entry.frontmatter.redirectFrom ?? []) {
+    for (const from of entry.metadata.redirectFrom ?? []) {
       redirects.push({ from, to: entry.publicPath })
     }
   }

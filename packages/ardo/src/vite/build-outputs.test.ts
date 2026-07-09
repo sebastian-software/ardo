@@ -1,3 +1,4 @@
+import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 import type { ResolvedConfig } from "../config/types"
@@ -14,6 +15,7 @@ import {
   generateVercelRedirects,
 } from "./build-outputs"
 import { generateVersionsJson } from "./build-versioning"
+import { createPageMetadata } from "./page-metadata"
 import { createCurrentRouteIdentity } from "./route-identity"
 
 const baseConfig = resolveConfig(
@@ -66,7 +68,7 @@ function createEntries(config: ResolvedConfig): RouteManifestEntry[] {
 
 function entry(
   config: ResolvedConfig,
-  input: Omit<RouteManifestEntry, "identity" | "path" | "publicPath">
+  input: Omit<RouteManifestEntry, "identity" | "metadata" | "path" | "publicPath">
 ): RouteManifestEntry {
   const identity = createCurrentRouteIdentity(input.routePath, config)
   return {
@@ -74,6 +76,11 @@ function entry(
     identity,
     path: identity.routePath,
     publicPath: identity.publicPath,
+    metadata: createPageMetadata({
+      frontmatter: input.frontmatter,
+      identity,
+      sourcePath: path.relative(config.contentDir, input.filePath),
+    }),
     routePath: identity.routePath,
   }
 }

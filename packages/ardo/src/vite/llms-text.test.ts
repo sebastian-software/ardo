@@ -4,6 +4,7 @@ import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { createLlmsTextAssets, generateLlmsFullTxt, generateLlmsTxt } from "./llms-text"
+import { createPageMetadata } from "./page-metadata"
 import { createCurrentRouteIdentity } from "./route-identity"
 
 const config: ResolvedConfig = {
@@ -43,14 +44,16 @@ const config: ResolvedConfig = {
 function entry(overrides: Partial<RouteManifestEntry>): RouteManifestEntry {
   const routePath = overrides.routePath ?? "/guide/page"
   const identity = createCurrentRouteIdentity(routePath, config)
+  const frontmatter = overrides.frontmatter ?? {}
 
   return {
     anchors: [],
     content: "",
     filePath: "/tmp/page.mdx",
-    frontmatter: {},
+    frontmatter,
     identity,
     lastmod: new Date("2026-01-01T00:00:00.000Z"),
+    metadata: createPageMetadata({ frontmatter, identity, sourcePath: "page.mdx" }),
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,

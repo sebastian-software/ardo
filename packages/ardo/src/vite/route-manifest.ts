@@ -8,21 +8,22 @@ import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
 import { createHeadingSlugger } from "../markdown/heading-slug"
+import {
+  createPageMetadata,
+  type PageFrontmatterMetadata,
+  type PageMetadata,
+  parsePageFrontmatterMetadata,
+} from "./page-metadata"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
 export type RouteManifestEntry = {
   anchors: string[]
   content: string
   filePath: string
-  frontmatter: {
-    description?: string
-    llms?: boolean
-    redirectFrom?: string[]
-    sitemap?: boolean
-    title?: string
-  }
+  frontmatter: PageFrontmatterMetadata
   identity: RouteIdentity
   lastmod: Date
+  metadata: PageMetadata
   /** @deprecated Use routePath for internal route lookups or publicPath for canonical output. */
   path: string
   publicPath: string
@@ -104,20 +105,16 @@ async function createManifestEntry(
     routePath: toRoutePath(relativePath, extension),
     versionId: options.versionId,
   })
+  const frontmatter = parsePageFrontmatterMetadata(data)
 
   return {
     anchors: extractAnchors(parsed.content),
     content: parsed.content,
     filePath,
-    frontmatter: {
-      description: typeof data.description === "string" ? data.description : undefined,
-      llms: typeof data.llms === "boolean" ? data.llms : undefined,
-      redirectFrom: parseRedirectFrom(data.redirectFrom),
-      sitemap: typeof data.sitemap === "boolean" ? data.sitemap : undefined,
-      title: typeof data.title === "string" ? data.title : undefined,
-    },
+    frontmatter,
     identity,
     lastmod: stat.mtime,
+    metadata: createPageMetadata({ frontmatter, identity, sourcePath: relativePath }),
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,
@@ -148,19 +145,6 @@ function toRoutePath(relativePath: string, extension: ".md" | ".mdx" | ".tsx") {
   }
 
   return `/${withoutExtension}`.replaceAll(/\$(\w+)/gu, ":$1")
-}
-
-function parseRedirectFrom(value: unknown): string[] | undefined {
-  if (typeof value === "string") {
-    return [value]
-  }
-
-  if (Array.isArray(value)) {
-    const redirects = value.filter((entry): entry is string => typeof entry === "string")
-    return redirects.length === 0 ? undefined : redirects
-  }
-
-  return undefined
 }
 
 function extractAnchors(content: string): string[] {

@@ -84,6 +84,13 @@ redirectFrom:
         routePath: "/guide",
         versionId: "v3",
       },
+      metadata: {
+        localeId: "en",
+        publicPath: "/v3/en/guide",
+        routePath: "/guide",
+        sourcePath: "guide.mdx",
+        versionId: "v3",
+      },
       path: "/guide",
       publicPath: "/v3/en/guide",
       routePath: "/guide",
