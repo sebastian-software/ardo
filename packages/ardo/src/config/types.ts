@@ -411,6 +411,14 @@ export type PageData = {
 // =============================================================================
 
 export type ResolvedConfig = {
+  /**
+   * The configured deployment base before version and locale prefixes are applied.
+   *
+   * `base` is the canonical public route base used by the app runtime. Root-emitted
+   * files such as `robots.txt`, `sitemap.xml`, and `llms.txt` need this unversioned
+   * base because they are written beside the version folders.
+   */
+  deploymentBase: string
   project: ProjectMeta
   vite?: Record<string, unknown>
   typedoc?: TypeDocConfig

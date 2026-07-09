@@ -214,7 +214,7 @@ function findLastRouteSegment(routePath: string): string {
 }
 
 function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
-  const basePath = buildPublicPath({ basePath: config.base, routePath })
+  const basePath = buildPublicPath({ basePath: config.deploymentBase, routePath })
   if (config.siteUrl === "") {
     return basePath
   }

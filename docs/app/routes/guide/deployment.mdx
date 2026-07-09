@@ -112,6 +112,11 @@ content. On GitHub Pages, the root redirect is a static `index.html` file. If yo
 behind a CDN or host that supports HTTP redirects, configure that provider-level redirect outside
 Ardo.
 
+When `versions.json` lists older major versions, do not upload only the fresh `build/client` folder
+to GitHub Pages. GitHub Pages replaces the full artifact on every deploy, so use a staging directory
+that combines the current build with retained static folders for older majors before calling
+`actions/upload-pages-artifact`.
+
 ### Step 2: Add a GitHub Actions Workflow
 
 Create `.github/workflows/deploy.yml` in your repository:

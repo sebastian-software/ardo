@@ -11,6 +11,7 @@ const config: ResolvedConfig = {
   base: "/docs/",
   brand: {},
   contentDir: "/tmp/routes",
+  deploymentBase: "/docs/",
   description: "Framework docs",
   head: [],
   i18n: false,
