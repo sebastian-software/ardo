@@ -4,22 +4,31 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import type { RouteManifestOptions } from "./route-manifest"
+
 import { stripTrailingExtension } from "./path-utils"
+import { createRouteIdentity } from "./route-identity"
 
 export type SearchDoc = {
   id: string
   title: string
   content: string
   path: string
+  publicPath: string
+  routePath: string
+  localeId?: string
   section?: string
+  versionId?: string
 }
 
 type SearchScanContext = {
   docs: SearchDoc[]
+  options: RouteManifestOptions
   routesDir: string
 }
 
 type SearchDocBuildContext = {
+  options: RouteManifestOptions
   routesDir: string
   section?: string
 }
@@ -30,8 +39,11 @@ type SearchEntryContext = {
   scanContext: SearchScanContext
 }
 
-export async function generateSearchIndex(routesDir: string): Promise<SearchDoc[]> {
-  const context: SearchScanContext = { docs: [], routesDir }
+export async function generateSearchIndex(
+  routesDir: string,
+  options: RouteManifestOptions = {}
+): Promise<SearchDoc[]> {
+  const context: SearchScanContext = { docs: [], options, routesDir }
   await scanDirectoryForSearch(routesDir, undefined, context)
   return context.docs
 }
@@ -66,6 +78,7 @@ async function processSearchEntry(entry: Dirent, context: SearchEntryContext): P
 
   if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
     const doc = await createSearchDocFromFile(entry.name, fullPath, {
+      options: context.scanContext.options,
       routesDir: context.scanContext.routesDir,
       section: context.section,
     })
@@ -90,14 +103,24 @@ async function createSearchDocFromFile(
 
   const relativePath = path.relative(context.routesDir, filePath)
   const routePath = buildRoutePath(relativePath, fileName, extension)
+  const identity = createRouteIdentity({
+    basePath: context.options.basePath,
+    localeId: context.options.localeId,
+    routePath,
+    versionId: context.options.versionId,
+  })
   const content = sanitizeSearchContent(parsed.content)
 
   return {
     id: relativePath,
     title,
     content,
-    path: routePath,
+    path: identity.routePath,
+    publicPath: identity.publicPath,
+    routePath: identity.routePath,
+    ...(identity.localeId == null ? {} : { localeId: identity.localeId }),
     section: context.section,
+    ...(identity.versionId == null ? {} : { versionId: identity.versionId }),
   }
 }
 
