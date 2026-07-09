@@ -64,7 +64,11 @@ export function getVersioningRedirects(
 export function getVersionRootLocaleRedirect(
   config: ResolvedConfig
 ): { from: string; to: string } | null {
-  if (config.versioning === false || config.i18n === false) {
+  if (
+    config.versioning === false ||
+    config.versioning.rootRedirect === false ||
+    config.i18n === false
+  ) {
     return null
   }
 

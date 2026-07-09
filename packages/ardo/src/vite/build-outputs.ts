@@ -73,6 +73,8 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
 
   for (const entry of entries) {
     for (const from of entry.metadata.redirectFrom ?? []) {
+      // Keep `from` as the authored static source path; `to` uses the canonical
+      // public route because generated HTML and provider redirects share this contract.
       redirects.push({ from, to: entry.publicPath })
     }
   }

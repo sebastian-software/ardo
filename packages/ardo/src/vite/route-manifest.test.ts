@@ -19,7 +19,18 @@ describe("route-manifest", () => {
   it("extracts unicode and deduplicated heading anchors", async () => {
     await fs.writeFile(
       path.join(tempDir, "guide.mdx"),
-      ["# Guide", "## Über uns", "## Über uns", "## `API` & Usage"].join("\n"),
+      [
+        "# Guide",
+        "```md",
+        "# Ignored",
+        "```",
+        "## Über uns",
+        "~~~md",
+        "## Also ignored",
+        "~~~",
+        "## Über uns",
+        "## `API` & Usage",
+      ].join("\n"),
       "utf8"
     )
 
