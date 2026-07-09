@@ -24,12 +24,14 @@ export {
   withArdoGitHubPages,
   withArdoVersioning,
 } from "./flatten-plugin"
+
 export { type ArdoIconOptions } from "./icons"
 // Vite Plugin
 export { ardoPlugin as ardo, ardoPlugin, type ArdoPluginOptions } from "./plugin"
-
 export { ardoPlugin as default } from "./plugin"
 
 export { detectGitHubBasename } from "./plugin"
 
 export { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
+
+export { generateSearchIndex, type SearchDoc } from "./search-index"
