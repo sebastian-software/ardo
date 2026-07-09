@@ -22,7 +22,7 @@ test("built docs site hydrates and supports search and theme interactions", asyn
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/v3\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v3\/guide\/configuration#markdown$/)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
