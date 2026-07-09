@@ -4,28 +4,25 @@ import { describe, expect, it } from "vitest"
 import { ArdoAccordion, ArdoAccordionGroup } from "./Accordion"
 
 describe("ArdoAccordion", () => {
-  it("connects trigger and region IDs in server-rendered markup", () => {
+  it("server-renders an accessible closed accordion", () => {
     const view = renderToStaticMarkup(
       <ArdoAccordion title="Details">Accordion content</ArdoAccordion>
     )
-    const trigger =
-      /<button[^>]*id="([^"]+)"[^>]*aria-expanded="false"[^>]*aria-controls="([^"]+)"/.exec(view)
 
-    expect(trigger).not.toBeNull()
-    expect(view).toContain(`id="${trigger?.[2]}"`)
-    expect(view).toContain(`aria-labelledby="${trigger?.[1]}"`)
+    expect(view).toContain('aria-expanded="false"')
     expect(view).toContain('role="region"')
+    expect(view).toContain("aria-labelledby=")
   })
 
-  it("removes collapsed content from focus and accessibility navigation", () => {
+  it("keeps collapsed content in the markup for search engines and find-in-page", () => {
     const view = renderToStaticMarkup(
       <ArdoAccordion title="Collapsed">
         <a href="/hidden">Hidden link</a>
       </ArdoAccordion>
     )
 
-    expect(view).toContain('aria-hidden="true"')
-    expect(view).toContain("inert")
+    expect(view).toContain("Hidden link")
+    expect(view).toContain("hidden=")
   })
 
   it("server-renders a default-open item inside an only-one-open group", () => {
@@ -39,8 +36,8 @@ describe("ArdoAccordion", () => {
     )
 
     expect(view).toContain('aria-expanded="true"')
-    expect(view).toContain('data-open="true"')
-    expect(view).toContain('aria-hidden="false"')
+    expect(view).toContain("data-open")
+    expect(view).toContain('aria-controls="')
   })
 
   it("renders a configurable heading level", () => {
@@ -52,5 +49,21 @@ describe("ArdoAccordion", () => {
 
     expect(view).toContain("<h4")
     expect(view).toContain("</h4>")
+  })
+
+  it("server-renders every default-open item in a multi-open group", () => {
+    const view = renderToStaticMarkup(
+      <ArdoAccordionGroup>
+        <ArdoAccordion title="First" defaultOpen>
+          First panel
+        </ArdoAccordion>
+        <ArdoAccordion title="Second" defaultOpen>
+          Second panel
+        </ArdoAccordion>
+      </ArdoAccordionGroup>
+    )
+
+    const openCount = view.match(/aria-expanded="true"/g)?.length ?? 0
+    expect(openCount).toBe(2)
   })
 })

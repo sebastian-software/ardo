@@ -87,7 +87,8 @@ export const chevron = style({
       borderBottom: `2px solid ${vars.color.textLight}`,
       transform: "rotate(45deg)",
     },
-    [`${accordion}[data-open="true"] &`]: {
+    // Base UI marks the open item with a bare data-open attribute
+    [`${accordion}[data-open] &`]: {
       transform: "rotate(180deg)",
     },
   },
@@ -98,17 +99,23 @@ export const chevron = style({
   },
 })
 
+// Height animation follows the Base UI panel pattern: the panel is sized by
+// --accordion-panel-height while open and collapses to 0 during enter/exit.
 export const content = style({
-  display: "grid",
-  gridTemplateRows: "0fr",
-  borderTop: `1px solid transparent`,
-  opacity: 0,
-  transition: `grid-template-rows ${vars.transition.base}, opacity ${vars.transition.base}, border-color ${vars.transition.base}`,
+  boxSizing: "border-box",
+  height: `var(--accordion-panel-height)`,
+  overflow: "hidden",
+  // Transparent while closed: the hidden panel box could otherwise paint a 1px line
+  borderTop: "1px solid transparent",
+  opacity: 1,
+  transition: `height ${vars.transition.base}, opacity ${vars.transition.base}, border-color ${vars.transition.base}`,
   selectors: {
-    [`${accordion}[data-open="true"] &`]: {
-      gridTemplateRows: "1fr",
+    "&[data-open], &[data-ending-style]": {
       borderTopColor: vars.color.border,
-      opacity: 1,
+    },
+    "&[data-starting-style], &[data-ending-style]": {
+      height: 0,
+      opacity: 0,
     },
   },
   "@media": {
@@ -120,7 +127,6 @@ export const content = style({
 
 export const contentInner = style({
   minHeight: 0,
-  overflow: "hidden",
   padding: "0 18px 16px",
   color: vars.color.textLight,
   fontSize: "14px",

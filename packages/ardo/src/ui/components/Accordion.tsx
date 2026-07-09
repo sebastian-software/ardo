@@ -1,26 +1,21 @@
-import type { ElementType, ReactNode } from "react"
+import type { ReactNode } from "react"
 
+import { Accordion } from "@base-ui/react/accordion"
 import {
   Children,
   cloneElement,
   createContext,
+  createElement,
   isValidElement,
   use,
   useId,
   useMemo,
-  useState,
 } from "react"
 
 import * as styles from "./Accordion.css"
 import { ArdoIcon } from "./Icon"
 
-type AccordionGroupContextValue = {
-  openItem: string | undefined
-  onlyOneOpen: boolean
-  setOpenItem: (value: string | undefined) => void
-}
-
-const AccordionGroupContext = createContext<AccordionGroupContextValue | null>(null)
+const AccordionGroupContext = createContext(false)
 
 export type ArdoAccordionHeadingLevel = 2 | 3 | 4 | 5 | 6
 
@@ -63,11 +58,11 @@ function fallbackValue(index: number): string {
 }
 
 function resolveAccordionGroupChildren(children: ReactNode): {
-  defaultOpenValue: string | undefined
+  defaultOpenValues: string[]
   normalizedChildren: ReactNode
 } {
   let accordionIndex = 0
-  let defaultOpenValue: string | undefined
+  const defaultOpenValues: string[] = []
 
   const normalizedChildren = Children.map(children, (child): ReactNode => {
     if (!isValidElement<ArdoAccordionProps>(child) || child.type !== ArdoAccordion) {
@@ -77,47 +72,84 @@ function resolveAccordionGroupChildren(children: ReactNode): {
     const value = child.props.value ?? fallbackValue(accordionIndex)
     accordionIndex += 1
 
-    if (defaultOpenValue == null && child.props.defaultOpen === true) {
-      defaultOpenValue = value
+    if (child.props.defaultOpen === true) {
+      defaultOpenValues.push(value)
     }
 
     return child.props.value == null ? cloneElement(child, { value }) : child
   })
 
-  return { defaultOpenValue, normalizedChildren }
+  return { defaultOpenValues, normalizedChildren }
 }
 
 /**
  * Group container for accordion items.
+ *
+ * Built on the Base UI Accordion primitive (see ADR 0015), which supplies
+ * keyboard behavior, focus management, and ARIA wiring.
  */
 export function ArdoAccordionGroup({
   children,
   onlyOneOpen = false,
   className,
 }: ArdoAccordionGroupProps) {
-  const { defaultOpenValue, normalizedChildren } = useMemo(
+  const { defaultOpenValues, normalizedChildren } = useMemo(
     () => resolveAccordionGroupChildren(children),
     [children]
   )
-  const [openItem, setOpenItem] = useState<string | undefined>(() =>
-    onlyOneOpen ? defaultOpenValue : undefined
-  )
-  const contextValue = useMemo(
-    () => ({ onlyOneOpen, openItem, setOpenItem }),
-    [onlyOneOpen, openItem]
-  )
+  const defaultValue = onlyOneOpen ? defaultOpenValues.slice(0, 1) : defaultOpenValues
   const groupClassName =
     className == null ? styles.accordionGroup : `${styles.accordionGroup} ${className}`
 
   return (
-    <AccordionGroupContext value={contextValue}>
-      <div className={groupClassName}>{normalizedChildren}</div>
+    <AccordionGroupContext value={true}>
+      <Accordion.Root
+        multiple={!onlyOneOpen}
+        defaultValue={defaultValue}
+        hiddenUntilFound
+        className={groupClassName}
+      >
+        {normalizedChildren}
+      </Accordion.Root>
     </AccordionGroupContext>
+  )
+}
+
+function AccordionItem({
+  title,
+  children,
+  icon,
+  headingLevel = 3,
+  value,
+  className,
+}: Omit<ArdoAccordionProps, "defaultOpen">) {
+  const accordionClassName =
+    className == null ? styles.accordion : `${styles.accordion} ${className}`
+  const hasIcon = icon != null
+  const headingRender = createElement(`h${headingLevel}`)
+
+  return (
+    <Accordion.Item value={value} className={accordionClassName}>
+      <Accordion.Header className={styles.heading} render={headingRender}>
+        <Accordion.Trigger className={styles.trigger}>
+          {hasIcon && <AccordionIcon icon={icon} />}
+          <span className={styles.title}>{title}</span>
+          <span className={styles.chevron} aria-hidden="true" />
+        </Accordion.Trigger>
+      </Accordion.Header>
+      <Accordion.Panel className={styles.content}>
+        <div className={styles.contentInner}>{children}</div>
+      </Accordion.Panel>
+    </Accordion.Item>
   )
 }
 
 /**
  * Collapsible documentation content section.
+ *
+ * Works standalone or inside an `ArdoAccordionGroup`. Collapsed content
+ * stays in the pre-rendered HTML (`hidden="until-found"`), so it remains
+ * visible to search engines and the browser's find-in-page.
  */
 export function ArdoAccordion({
   title,
@@ -129,53 +161,27 @@ export function ArdoAccordion({
   className,
 }: ArdoAccordionProps) {
   const generatedId = useId()
-  const context = use(AccordionGroupContext)
+  const insideGroup = use(AccordionGroupContext)
   const resolvedValue = value ?? generatedId
-  const [isOpen, setIsOpen] = useState(defaultOpen)
-  const groupedOpen = context?.onlyOneOpen === true ? context.openItem === resolvedValue : isOpen
-  const open = !context?.onlyOneOpen ? isOpen : groupedOpen
-  const accordionClassName =
-    className == null ? styles.accordion : `${styles.accordion} ${className}`
-  const contentId = `${generatedId}-content`
-  const triggerId = `${generatedId}-trigger`
-  const hasIcon = icon != null
-  const Heading = `h${headingLevel}` as ElementType
+  const item = (
+    <AccordionItem
+      title={title}
+      icon={icon}
+      headingLevel={headingLevel}
+      value={resolvedValue}
+      className={className}
+    >
+      {children}
+    </AccordionItem>
+  )
 
-  const toggleOpen = () => {
-    if (context?.onlyOneOpen === true) {
-      context.setOpenItem(open ? undefined : resolvedValue)
-      return
-    }
-
-    setIsOpen((current) => !current)
+  if (insideGroup) {
+    return item
   }
 
   return (
-    <section className={accordionClassName} data-open={open ? "true" : "false"}>
-      <Heading className={styles.heading}>
-        <button
-          id={triggerId}
-          type="button"
-          className={styles.trigger}
-          aria-expanded={open}
-          aria-controls={contentId}
-          onClick={toggleOpen}
-        >
-          {hasIcon && <AccordionIcon icon={icon} />}
-          <span className={styles.title}>{title}</span>
-          <span className={styles.chevron} aria-hidden="true" />
-        </button>
-      </Heading>
-      <div
-        id={contentId}
-        role="region"
-        aria-labelledby={triggerId}
-        className={styles.content}
-        aria-hidden={!open}
-        inert={!open || undefined}
-      >
-        <div className={styles.contentInner}>{children}</div>
-      </div>
-    </section>
+    <Accordion.Root multiple defaultValue={defaultOpen ? [resolvedValue] : []} hiddenUntilFound>
+      {item}
+    </Accordion.Root>
   )
 }
