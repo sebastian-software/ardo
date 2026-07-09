@@ -42,15 +42,22 @@ export function withArdoGitHubPages<TConfig extends Config>(
 export function withArdoVersioning<TConfig extends Config>(
   config: TConfig,
   options: ArdoVersioningOptions = {}
-): Required<Pick<Config, "basename">> & TConfig {
+): Required<Pick<Config, "basename" | "buildEnd">> & TConfig {
+  const userBuildEnd = config.buildEnd
   const basename = options.basename ?? config.basename
   if (basename == null) {
     throw new Error("[ardo] withArdoVersioning requires a basename, for example '/v3/'.")
   }
 
+  const buildEnd: BuildEnd = async (args) => {
+    await userBuildEnd?.(args)
+    scheduleVersionedBuildAssetsMove(args)
+  }
+
   return {
     ...config,
     basename,
+    buildEnd,
   }
 }
 
@@ -88,6 +95,48 @@ export function flattenGitHubPagesBuildOutput(args: GitHubPagesBuildArgs): void 
   copyRecursive(nestedDir, buildDir)
   fs.rmSync(nestedDir, { recursive: true, force: true })
   console.log("[ardo] Build output flattened successfully.")
+}
+
+export function scheduleVersionedBuildAssetsMove(args: GitHubPagesBuildArgs): void {
+  // React Router calls buildEnd before prerendering; the CLI exit event is the first reliable
+  // synchronous point after pre-rendered HTML has been written.
+  process.once("exit", () => {
+    try {
+      moveVersionedBuildAssets(args)
+    } catch (error) {
+      process.exitCode = 1
+      console.error("[ardo] Failed to move versioned build assets.")
+      console.error(error)
+    }
+  })
+}
+
+export function moveVersionedBuildAssets(args: GitHubPagesBuildArgs): void {
+  const baseName = trimSlashes(args.reactRouterConfig.basename)
+  if (baseName === "") {
+    return
+  }
+
+  const buildDir = path.resolve(
+    args.viteConfig.root,
+    args.reactRouterConfig.buildDirectory,
+    "client"
+  )
+  const assetsDir = path.join(buildDir, "assets")
+  if (!fs.existsSync(assetsDir)) {
+    return
+  }
+
+  const versionedAssetsDir = path.join(buildDir, baseName, "assets")
+  console.log(
+    `[ardo] Moving ${path.relative(process.cwd(), assetsDir)} to ${path.relative(
+      process.cwd(),
+      versionedAssetsDir
+    )}`
+  )
+  copyRecursive(assetsDir, versionedAssetsDir)
+  fs.rmSync(assetsDir, { recursive: true, force: true })
+  console.log("[ardo] Versioned build assets moved successfully.")
 }
 
 function trimSlashes(value: string): string {

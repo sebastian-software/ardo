@@ -25,9 +25,7 @@ export type VersionedMainBaseResult = {
 export function resolveVersionedMainBase(input: VersionedMainBaseInput): VersionedMainBaseResult {
   const logMessages: string[] = []
   const githubPagesBase = resolveGitHubPagesBase(input)
-  const deploymentBase = normalizeBasePath(
-    input.pressConfig.base ?? githubPagesBase ?? normalizeViteBaseForArdo(input.userBase ?? "/")
-  )
+  const deploymentBase = resolveDeploymentBase(input, githubPagesBase)
   const versionBase = resolveViteVersionedBase(input.pressConfig.versioning, deploymentBase)
   const viteBase = versionBase ?? input.pressConfig.base ?? githubPagesBase
 
@@ -50,6 +48,27 @@ function resolveGitHubPagesBase(input: VersionedMainBaseInput): string | undefin
   return repoName == null ? undefined : getGitHubPagesBase(repoName)
 }
 
+function resolveDeploymentBase(
+  input: VersionedMainBaseInput,
+  githubPagesBase: string | undefined
+): string {
+  const configuredBase = input.pressConfig.base ?? githubPagesBase
+  if (configuredBase != null) {
+    return normalizeBasePath(configuredBase)
+  }
+
+  const userBase = normalizeViteBaseForArdo(input.userBase ?? "/")
+  const versioning = input.pressConfig.versioning
+  if (input.userBase == null || versioning == null || versioning === false) {
+    return normalizeBasePath(userBase)
+  }
+
+  const currentVersion = versioning.versions.find((version) => version.id === versioning.current)
+  return currentVersion == null
+    ? normalizeBasePath(userBase)
+    : stripVersionPath(userBase, currentVersion.path)
+}
+
 function resolveViteVersionedBase(
   versioning: ArdoConfig["versioning"],
   deploymentBase: string
@@ -60,4 +79,35 @@ function resolveViteVersionedBase(
   }
 
   return resolveVersionedBase(deploymentBase, resolvedVersioning)
+}
+
+function stripVersionPath(base: string, versionPath: string): string {
+  const normalizedBase = normalizeBasePath(base)
+  const normalizedVersion = normalizeBasePath(versionPath)
+  if (normalizedVersion === "/") {
+    return normalizedBase
+  }
+
+  const baseWithoutTrailingSlash = normalizedBase.replace(/\/$/u, "")
+  const versionSuffix = `/${trimSlashes(normalizedVersion)}`
+  if (baseWithoutTrailingSlash === versionSuffix) {
+    return "/"
+  }
+
+  if (baseWithoutTrailingSlash.endsWith(versionSuffix)) {
+    return normalizeBasePath(baseWithoutTrailingSlash.slice(0, -versionSuffix.length) || "/")
+  }
+
+  return normalizedBase
+}
+
+function trimSlashes(value: string): string {
+  let trimmed = value
+  while (trimmed.startsWith("/")) {
+    trimmed = trimmed.slice(1)
+  }
+  while (trimmed.endsWith("/")) {
+    trimmed = trimmed.slice(0, -1)
+  }
+  return trimmed
 }

@@ -54,6 +54,21 @@ describe("ardoPlugin", () => {
     expect(config.build?.outDir).toBe("custom-build")
   })
 
+  it("sets Vite base to the current major version for versioned docs", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", path: "/v3/" }],
+      },
+    })
+
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+
+    expect(config.base).toBe("/v3/")
+  })
+
   it("uses resolved Vite base in the virtual Ardo config", async () => {
     const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
 

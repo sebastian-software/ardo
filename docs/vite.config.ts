@@ -8,6 +8,10 @@ export default defineConfig({
       description: "React-first Static Documentation Framework",
       siteUrl: "https://ardo-docs.dev",
       githubPages: false,
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+      },
 
       // TypeDoc API documentation
       typedoc: {

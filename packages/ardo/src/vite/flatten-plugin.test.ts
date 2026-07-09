@@ -6,7 +6,12 @@ import path from "node:path"
 import { resolveConfig } from "vite"
 import { describe, expect, it, vi } from "vitest"
 
-import { flattenGitHubPagesBuildOutput, withArdoGitHubPages } from "./flatten-plugin"
+import {
+  flattenGitHubPagesBuildOutput,
+  moveVersionedBuildAssets,
+  withArdoGitHubPages,
+  withArdoVersioning,
+} from "./flatten-plugin"
 
 type BuildEnd = NonNullable<Config["buildEnd"]>
 type BuildEndArgs = Parameters<BuildEnd>[0]
@@ -133,6 +138,83 @@ describe("withArdoGitHubPages", () => {
       process.exitCode = previousExitCode
       consoleError.mockRestore()
       processOnce.mockRestore()
+      await rm(tmpDir, { force: true, recursive: true })
+    }
+  })
+})
+
+describe("withArdoVersioning", () => {
+  it("sets the version basename and moves root assets after an existing buildEnd hook", async () => {
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "ardo-versioning-build-end-"))
+    let exitListener: ExitListener | undefined
+    const processOnce = captureProcessExitListener((listener) => {
+      exitListener = listener
+    })
+
+    try {
+      const root = path.join(tmpDir, "project")
+      const buildDir = path.join(root, "build", "client")
+      await mkdir(path.join(buildDir, "assets"), { recursive: true })
+      await mkdir(path.join(buildDir, "v3"), { recursive: true })
+      await writeFile(path.join(buildDir, "assets", "entry.js"), "asset", "utf8")
+      const userBuildEnd = vi.fn<BuildEnd>()
+
+      const config = withArdoVersioning(
+        {
+          ssr: false,
+          prerender: true,
+          buildEnd: userBuildEnd,
+        },
+        { basename: "/v3/" }
+      )
+
+      expect(config.basename).toBe("/v3/")
+
+      const args = await createBuildEndArgs({ basename: "/v3/", buildDirectory: "build", root })
+      await config.buildEnd(args)
+
+      expect(userBuildEnd).toHaveBeenCalledWith(args)
+      await expect(readFile(path.join(buildDir, "assets", "entry.js"), "utf8")).resolves.toBe(
+        "asset"
+      )
+      expect(processOnce).toHaveBeenCalledWith("exit", expect.any(Function))
+      expect(exitListener).toBeDefined()
+
+      exitListener?.(0)
+
+      await expect(readFile(path.join(buildDir, "v3", "assets", "entry.js"), "utf8")).resolves.toBe(
+        "asset"
+      )
+      await expect(readFile(path.join(buildDir, "assets", "entry.js"), "utf8")).rejects.toThrow(
+        "ENOENT"
+      )
+    } finally {
+      processOnce.mockRestore()
+      await rm(tmpDir, { force: true, recursive: true })
+    }
+  })
+})
+
+describe("moveVersionedBuildAssets", () => {
+  it("moves Vite assets into the versioned client build folder", async () => {
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "ardo-version-assets-"))
+    try {
+      const root = path.join(tmpDir, "project")
+      const buildDir = path.join(root, "custom-build", "client")
+      await mkdir(path.join(buildDir, "assets"), { recursive: true })
+      await writeFile(path.join(buildDir, "assets", "entry.js"), "asset", "utf8")
+
+      moveVersionedBuildAssets(
+        await createBuildEndArgs({ basename: "/v3/", buildDirectory: "custom-build", root })
+      )
+
+      await expect(readFile(path.join(buildDir, "v3", "assets", "entry.js"), "utf8")).resolves.toBe(
+        "asset"
+      )
+      await expect(readFile(path.join(buildDir, "assets", "entry.js"), "utf8")).rejects.toThrow(
+        "ENOENT"
+      )
+    } finally {
       await rm(tmpDir, { force: true, recursive: true })
     }
   })
