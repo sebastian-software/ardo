@@ -36,10 +36,20 @@ const budgets = {
     budget: 75_000,
     baseline: "≈56 KB (2026-07)",
   },
-  totalJsGzip: {
-    label: "total client JS gzip",
+  eagerJsGzip: {
+    // JS referenced from prerendered HTML (script src + modulepreload):
+    // what visitors actually download. Lazy chunks (e.g. Mermaid) are
+    // excluded because they only load on pages that use them.
+    label: "eager client JS gzip",
     budget: 340_000,
-    baseline: "≈257 KB (2026-07)",
+    baseline: "≈269 KB (2026-07)",
+  },
+  totalJsGzip: {
+    // Everything emitted, including lazily loaded chunks. Deliberately
+    // roomy — this only catches runaway output growth.
+    label: "total client JS gzip",
+    budget: 1_500_000,
+    baseline: "≈1.19 MB (2026-07, ≈930 KB of it lazy Mermaid chunks)",
   },
   searchIndexGzip: {
     label: "search index gzip",
@@ -94,6 +104,32 @@ async function measureTotalJs(jsFiles) {
   return sizes.reduce((sum, size) => sum + size, 0)
 }
 
+/**
+ * Sums the gzip size of every JS file referenced from prerendered HTML
+ * via <script src> or <link rel="modulepreload"> — the code visitors
+ * actually download. Lazily imported chunks are not referenced in HTML
+ * and are therefore excluded.
+ */
+async function measureEagerJs(jsFiles) {
+  const htmlFiles = await collectFiles(clientDir, ".html")
+  const referenced = new Set()
+  const referencePattern = /(?:src|href)="([^"]+\.js)"/g
+
+  for (const htmlFile of htmlFiles) {
+    const html = await readFile(htmlFile, "utf8")
+    for (const match of html.matchAll(referencePattern)) {
+      referenced.add(path.basename(match[1]))
+    }
+  }
+
+  const eagerFiles = jsFiles.filter((file) => referenced.has(path.basename(file)))
+  if (eagerFiles.length === 0) {
+    throw new Error("No JS files referenced from prerendered HTML — check the reference pattern")
+  }
+  const sizes = await Promise.all(eagerFiles.map((file) => gzipSize(file)))
+  return { count: eagerFiles.length, total: sizes.reduce((sum, size) => sum + size, 0) }
+}
+
 async function measureSearchIndex() {
   const vitePkg = path.join(repoRoot, "packages", "ardo", "dist", "vite", "index.js")
   if (!existsSync(vitePkg)) {
@@ -129,9 +165,11 @@ async function main() {
 
   const jsFiles = await collectFiles(clientDir, ".js")
   const searchIndex = await measureSearchIndex()
+  const eager = await measureEagerJs(jsFiles)
 
   const results = [
     { key: "entryClientGzip", value: await measureEntryClient(jsFiles), format: formatBytes },
+    { key: "eagerJsGzip", value: eager.total, format: formatBytes },
     { key: "totalJsGzip", value: await measureTotalJs(jsFiles), format: formatBytes },
     { key: "searchIndexGzip", value: searchIndex.gzip, format: formatBytes },
   ]
@@ -140,7 +178,7 @@ async function main() {
   }
 
   console.log(`[budgets] search index: ${searchIndex.docCount} documents`)
-  console.log(`[budgets] client JS files: ${jsFiles.length}\n`)
+  console.log(`[budgets] client JS files: ${jsFiles.length} (${eager.count} eager)\n`)
 
   let failed = false
   for (const { key, value, format } of results) {

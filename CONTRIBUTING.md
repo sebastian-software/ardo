@@ -85,7 +85,8 @@ Read them before changing routing, public exports, theming, build output, or rel
 The docs site build is guarded by performance budgets (`pnpm docs:budgets`, runs in CI). The check builds the docs site and fails on material regressions in:
 
 - **`entry.client` gzip size** — the main client entry served to every visitor
-- **Total client JS gzip size** — all JavaScript in `docs/build/client`
+- **Eager client JS gzip size** — all JavaScript referenced from prerendered HTML; lazily loaded chunks (such as Mermaid) are excluded
+- **Total client JS gzip size** — everything emitted including lazy chunks, with a deliberately roomy cap
 - **Search index gzip size** — the serialized `virtual:ardo/search-index` payload
 - **Docs build duration** — a generous cap that only catches pathological slowdowns
 
