@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.0.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.8.1...create-ardo-v4.0.0) (2026-07-09)
+
+
+### Features
+
+* add jsx-first site navigation ([dfab5d6](https://github.com/sebastian-software/ardo/commit/dfab5d6645577850b95ac4d4a72a297089de5950))
+* add jsx-first site navigation ([55f0d4c](https://github.com/sebastian-software/ardo/commit/55f0d4c7894d7283aad0d7d78a178164a1a70acf))
+
 ## [3.8.1](https://github.com/sebastian-software/ardo/compare/create-ardo-v3.8.0...create-ardo-v3.8.1) (2026-07-08)
 
 
