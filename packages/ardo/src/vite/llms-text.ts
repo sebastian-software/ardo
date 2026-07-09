@@ -2,6 +2,7 @@ import type { LlmsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
+import { buildPublicPath } from "./route-identity"
 
 type LlmsRouteEntry = {
   source: "markdown"
@@ -39,7 +40,7 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     if (description != null) {
       lines.push(description, "")
     }
-    lines.push(`Source: ${toAbsoluteUrl(entry.path, config)}`, "")
+    lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
     if (content !== "") {
       lines.push(content, "")
     }
@@ -118,7 +119,7 @@ function appendDocsSection(
     const title = getEntryTitle(entry)
     const description = entry.frontmatter.description
     const suffix = description == null ? "" : `: ${description}`
-    lines.push(`- [${title}](${toAbsoluteUrl(entry.path, config)})${suffix}`)
+    lines.push(`- [${title}](${toAbsolutePublicUrl(entry.publicPath, config)})${suffix}`)
   }
   lines.push("")
 }
@@ -140,7 +141,7 @@ function appendFullDocSection(
 }
 
 function getEntryTitle(entry: LlmsRouteEntry): string {
-  return entry.frontmatter.title ?? formatRouteTitle(entry.path)
+  return entry.frontmatter.title ?? formatRouteTitle(entry.routePath)
 }
 
 function sanitizeLlmsContent(content: string, title: string): string {
@@ -214,7 +215,7 @@ function findLastRouteSegment(routePath: string): string {
 }
 
 function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
-  const basePath = joinUrlPath(config.base, routePath)
+  const basePath = buildPublicPath({ basePath: config.base, routePath })
   if (config.siteUrl === "") {
     return basePath
   }
@@ -222,8 +223,10 @@ function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
   return `${config.siteUrl.replace(/\/$/u, "")}${basePath}`
 }
 
-function joinUrlPath(basePath: string, routePath: string) {
-  const normalizedBase = basePath === "/" ? "" : `/${basePath.replaceAll(/^\/|\/$/gu, "")}`
-  const normalizedRoute = routePath === "/" ? "/" : `/${routePath.replaceAll(/^\/|\/$/gu, "")}`
-  return `${normalizedBase}${normalizedRoute}` || "/"
+function toAbsolutePublicUrl(publicPath: string, config: ResolvedConfig) {
+  if (config.siteUrl === "") {
+    return publicPath
+  }
+
+  return `${config.siteUrl.replace(/\/$/u, "")}${publicPath}`
 }

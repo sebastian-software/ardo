@@ -4,7 +4,10 @@ import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import type { ResolvedConfig } from "../config/types"
+
 import { createHeadingSlugger } from "../markdown/heading-slug"
+import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
 export type RouteManifestEntry = {
   anchors: string[]
@@ -17,22 +20,46 @@ export type RouteManifestEntry = {
     sitemap?: boolean
     title?: string
   }
+  identity: RouteIdentity
   lastmod: Date
+  /** @deprecated Use routePath for internal route lookups or publicPath for canonical output. */
   path: string
+  publicPath: string
+  routePath: string
   source: "markdown" | "tsx"
 }
 
-export async function scanRouteManifest(routesDir: string): Promise<RouteManifestEntry[]> {
-  const entries: RouteManifestEntry[] = []
-  await scanRouteDirectory(routesDir, routesDir, entries)
-  return entries.sort((left, right) => left.path.localeCompare(right.path))
+export type RouteManifestOptions = {
+  basePath?: string
+  localeId?: string
+  versionId?: string
 }
 
-async function scanRouteDirectory(
-  dir: string,
+type RouteManifestScanContext = {
+  entries: RouteManifestEntry[]
+  options: RouteManifestOptions
+  routesDir: string
+}
+
+export function createRouteManifestOptions(
+  config: Pick<ResolvedConfig, "base" | "versioning">
+): RouteManifestOptions {
+  return {
+    basePath: config.base,
+    versionId: config.versioning === false ? undefined : config.versioning.current,
+  }
+}
+
+export async function scanRouteManifest(
   routesDir: string,
-  manifestEntries: RouteManifestEntry[]
-) {
+  options: RouteManifestOptions = {}
+): Promise<RouteManifestEntry[]> {
+  const entries: RouteManifestEntry[] = []
+  await scanRouteDirectory(routesDir, { entries, options, routesDir })
+  return entries.sort((left, right) => left.routePath.localeCompare(right.routePath))
+}
+
+async function scanRouteDirectory(dir: string, context: RouteManifestScanContext) {
   let entries: Dirent[]
   try {
     entries = await fs.readdir(dir, { withFileTypes: true })
@@ -43,20 +70,21 @@ async function scanRouteDirectory(
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      await scanRouteDirectory(fullPath, routesDir, manifestEntries)
+      await scanRouteDirectory(fullPath, context)
       continue
     }
 
-    const manifestEntry = await createManifestEntry(fullPath, routesDir)
+    const manifestEntry = await createManifestEntry(fullPath, context.routesDir, context.options)
     if (manifestEntry != null) {
-      manifestEntries.push(manifestEntry)
+      context.entries.push(manifestEntry)
     }
   }
 }
 
 async function createManifestEntry(
   filePath: string,
-  routesDir: string
+  routesDir: string,
+  options: RouteManifestOptions
 ): Promise<null | RouteManifestEntry> {
   const extension = getRouteExtension(filePath)
   if (extension == null || isIgnoredRouteFile(path.basename(filePath))) {
@@ -68,6 +96,12 @@ async function createManifestEntry(
   const data = toRecord(parsed.data)
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
+  const identity = createRouteIdentity({
+    basePath: options.basePath,
+    localeId: options.localeId,
+    routePath: toRoutePath(relativePath, extension),
+    versionId: options.versionId,
+  })
 
   return {
     anchors: extractAnchors(parsed.content),
@@ -80,8 +114,11 @@ async function createManifestEntry(
       sitemap: typeof data.sitemap === "boolean" ? data.sitemap : undefined,
       title: typeof data.title === "string" ? data.title : undefined,
     },
+    identity,
     lastmod: stat.mtime,
-    path: toRoutePath(relativePath, extension),
+    path: identity.routePath,
+    publicPath: identity.publicPath,
+    routePath: identity.routePath,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
 }

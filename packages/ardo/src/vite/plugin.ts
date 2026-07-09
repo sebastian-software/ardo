@@ -18,7 +18,7 @@ import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
-import { scanRouteManifest } from "./route-manifest"
+import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 import { generateSearchIndex } from "./search-index"
 import { generateContextSidebars } from "./sidebar-index"
@@ -165,7 +165,10 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         return
       }
 
-      const manifest = await scanRouteManifest(state.routesDir)
+      const manifest = await scanRouteManifest(
+        state.routesDir,
+        createRouteManifestOptions(state.resolvedConfig)
+      )
       reportLinkDiagnostics(this, manifest, state.resolvedConfig)
       for (const asset of createBuildOutputAssets(manifest, state.resolvedConfig)) {
         this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })

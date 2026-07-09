@@ -28,7 +28,7 @@ export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedC
   const urls = entries
     .filter((entry) => entry.frontmatter.sitemap !== false)
     .map((entry) => {
-      const loc = toAbsoluteUrl(entry.path, config)
+      const loc = toAbsolutePublicUrl(entry.publicPath, config)
       return [
         "  <url>",
         `    <loc>${escapeXml(loc)}</loc>`,
@@ -75,7 +75,7 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
 
   for (const entry of entries) {
     for (const from of entry.frontmatter.redirectFrom ?? []) {
-      redirects.push({ from, to: entry.path })
+      redirects.push({ from, to: entry.publicPath })
     }
   }
 
@@ -126,7 +126,7 @@ export function checkInternalLinks(
   }
 
   const excludedPatterns = config.linkCheck.exclude ?? []
-  const routeMap = new Map(entries.map((entry) => [entry.path, entry]))
+  const routeMap = new Map(entries.map((entry) => [entry.routePath, entry]))
   const diagnostics: LinkCheckDiagnostic[] = []
 
   for (const entry of entries) {
@@ -238,7 +238,7 @@ function checkSingleLink(
   }
 
   const [targetPath = "", targetAnchor = ""] = href.split("#")
-  const normalizedPath = normalizeInternalPath(targetPath, entry.path)
+  const normalizedPath = normalizeInternalPath(targetPath, entry.routePath)
   const targetEntry = context.routeMap.get(normalizedPath)
   if (targetEntry == null) {
     return { filePath: entry.filePath, href, message: `Missing internal route: ${href}` }
@@ -331,6 +331,14 @@ function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
   }
 
   return `${config.siteUrl.replace(/\/$/u, "")}${basePath}`
+}
+
+function toAbsolutePublicUrl(publicPath: string, config: ResolvedConfig) {
+  if (config.siteUrl === "") {
+    return publicPath
+  }
+
+  return `${config.siteUrl.replace(/\/$/u, "")}${publicPath}`
 }
 
 function joinUrlPath(basePath: string, routePath: string) {
