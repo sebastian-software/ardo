@@ -162,6 +162,28 @@ export type ProjectMeta = {
 }
 
 // =============================================================================
+// Documentation Versioning
+// =============================================================================
+
+export type DocumentationVersion = {
+  /** Stable version id, usually the major line such as "v3" or "v2". */
+  id: string
+  /** Human-readable label shown in the version switcher. Defaults to id. */
+  label?: string
+  /** Public path for this major documentation version, such as "/v3/". */
+  path: string
+}
+
+export type DocumentationVersioningConfig = {
+  /** Active documentation version id for this build. */
+  current: string
+  /** Major documentation versions available from the version switcher. */
+  versions: DocumentationVersion[]
+  /** Generate a static root redirect to the current version. Defaults to true. */
+  rootRedirect?: boolean
+}
+
+// =============================================================================
 // Ardo Config (Main Configuration)
 // =============================================================================
 
@@ -204,6 +226,13 @@ export type ArdoConfig = {
   linkCheck?: LinkCheckConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
+  /**
+   * Major-version documentation routing.
+   *
+   * When enabled, Ardo treats `base` as the deployment root and appends the current
+   * version path to build canonical URLs, sitemap entries, and runtime links.
+   */
+  versioning?: DocumentationVersioningConfig | false
   /**
    * TypeDoc API documentation generation.
    * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)

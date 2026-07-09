@@ -1,4 +1,5 @@
 import {
+  type ChangeEvent,
   Children,
   Fragment,
   isValidElement,
@@ -181,6 +182,7 @@ export function ArdoHeader({
 
           <div className={styles.headerRight}>
             {nav != null && <div className={styles.desktopNav}>{nav}</div>}
+            <ArdoVersionSwitcher />
             {themeToggle && <ArdoThemeToggle />}
             {actions}
           </div>
@@ -201,6 +203,87 @@ export function ArdoHeader({
       )}
     </>
   )
+}
+
+function ArdoVersionSwitcher() {
+  const config = useArdoConfig()
+  const location = useLocation()
+  const versioning = config.versioning
+  if (versioning === false || versioning == null || versioning.versions.length < 2) {
+    return null
+  }
+
+  const currentVersion = versioning.versions.find((version) => version.id === versioning.current)
+  if (currentVersion == null) {
+    return null
+  }
+  const activeVersioning = versioning
+  const activeVersion = currentVersion
+
+  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
+    const targetVersion = activeVersioning.versions.find(
+      (version) => version.id === event.target.value
+    )
+    if (targetVersion == null || targetVersion.id === activeVersion.id) {
+      return
+    }
+
+    const pathname = getVersionedPath(location.pathname, activeVersion.path, targetVersion.path)
+    globalThis.location.assign(`${pathname}${location.search}${location.hash}`)
+  }
+
+  return (
+    <select
+      aria-label="Documentation version"
+      className={styles.versionSwitcher}
+      onChange={handleChange}
+      title="Documentation version"
+      value={activeVersion.id}
+    >
+      {activeVersioning.versions.map((version) => (
+        <option key={version.id} value={version.id}>
+          {version.label ?? version.id}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+function getVersionedPath(pathname: string, currentBase: string, targetBase: string) {
+  const relativePath = getPathWithinBase(pathname, currentBase)
+  const normalizedTarget = normalizePathBase(targetBase)
+  if (relativePath === "/") {
+    return normalizedTarget
+  }
+
+  return `${normalizedTarget.replace(/\/$/u, "")}${relativePath}`
+}
+
+function getPathWithinBase(pathname: string, base: string) {
+  const normalizedBase = normalizePathBase(base).replace(/\/$/u, "")
+  if (normalizedBase === "") {
+    return pathname
+  }
+
+  if (pathname === normalizedBase) {
+    return "/"
+  }
+
+  if (pathname.startsWith(`${normalizedBase}/`)) {
+    return pathname.slice(normalizedBase.length) || "/"
+  }
+
+  return "/"
+}
+
+function normalizePathBase(path: string) {
+  const trimmed = path.trim()
+  if (trimmed === "" || trimmed === "/") {
+    return "/"
+  }
+
+  const withLeadingSlash = trimmed.startsWith("/") ? trimmed : `/${trimmed}`
+  return withLeadingSlash.endsWith("/") ? withLeadingSlash : `${withLeadingSlash}/`
 }
 
 // =============================================================================

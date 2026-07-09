@@ -13,10 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [docs, basic, library, monorepo]
+        site: [basic, library, monorepo]
         include:
-          - site: docs
-            directory: docs
           - site: basic
             directory: examples/basic
           - site: library
@@ -48,7 +46,6 @@ jobs:
       - name: Set Vercel Project ID
         run: |
           case "${{ matrix.site }}" in
-            docs)     echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DOCS }}" >> $GITHUB_ENV ;;
             basic)    echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_BASIC }}" >> $GITHUB_ENV ;;
             library)  echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_LIBRARY }}" >> $GITHUB_ENV ;;
             monorepo) echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_MONOREPO }}" >> $GITHUB_ENV ;;
@@ -57,13 +54,6 @@ jobs:
       - name: Build site
         run: pnpm build
         working-directory: ${{ matrix.directory }}
-
-      - name: Build and copy Storybook (docs only)
-        if: matrix.site == 'docs'
-        run: |
-          pnpm storybook:build
-          mkdir -p docs/build/client/storybook
-          cp -r storybook-static/* docs/build/client/storybook/
 
       - name: Prepare Vercel output
         run: |

@@ -39,6 +39,79 @@ export default withArdoGitHubPages(config)
 
 If you deploy to the root (`https://username.github.io/`), no configuration is needed — both `base` and `basename` will remain at their defaults.
 
+For a GitHub Pages site behind a custom domain, disable GitHub Pages subpath detection and keep the
+React Router config unwrapped. The site is served from the domain root:
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Docs",
+      siteUrl: "https://docs.example.com",
+      githubPages: false,
+    }),
+  ],
+})
+```
+
+### Major-Versioned GitHub Pages Docs
+
+For stable major-version URLs, build the current docs into a version folder and keep older major
+versions deployed as static folders:
+
+```text
+/          -> static HTML redirect to /v3/
+/v3/       -> current major docs
+/v2/       -> previous major docs
+/versions.json
+```
+
+Configure Ardo's versioning in `vite.config.ts`:
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Docs",
+      siteUrl: "https://docs.example.com",
+      versioning: {
+        current: "v3",
+        versions: [
+          { id: "v3", label: "3.x", path: "/v3/" },
+          { id: "v2", label: "2.x", path: "/v2/" },
+        ],
+      },
+    }),
+  ],
+})
+```
+
+Set the matching React Router basename without GitHub Pages flattening:
+
+```ts
+import type { Config } from "@react-router/dev/config"
+import { withArdoVersioning } from "ardo/vite"
+
+const config = {
+  ssr: false,
+  prerender: true,
+} satisfies Config
+
+export default withArdoVersioning(config, { basename: "/v3/" })
+```
+
+The generated sitemap lists the current major version only. Older versions can stay available under
+their folders for stable inbound links, while the active build avoids advertising duplicate current
+content. On GitHub Pages, the root redirect is a static `index.html` file. If your custom domain sits
+behind a CDN or host that supports HTTP redirects, configure that provider-level redirect outside
+Ardo.
+
 ### Step 2: Add a GitHub Actions Workflow
 
 Create `.github/workflows/deploy.yml` in your repository:
@@ -107,6 +180,10 @@ jobs:
 In your repository settings, go to **Pages** and set the source to **GitHub Actions**.
 
 Push to `main` and the workflow will build and deploy your site automatically.
+
+If you use a custom domain, add it in the same Pages settings screen before updating DNS. For a
+custom GitHub Actions workflow, GitHub stores the custom domain in the repository settings; a
+`CNAME` file in the build output is not required.
 
 <Tip>Projects scaffolded with `pnpm create ardo@latest` include this workflow out of the box.</Tip>
 

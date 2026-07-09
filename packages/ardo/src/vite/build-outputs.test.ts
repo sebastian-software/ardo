@@ -12,6 +12,7 @@ import {
   generateSitemap,
   generateVercelRedirects,
 } from "./build-outputs"
+import { generateVersionsJson } from "./build-versioning"
 
 const baseConfig = resolveConfig(
   {
@@ -66,6 +67,29 @@ describe("build outputs", () => {
     expect(generateRobots(baseConfig)).toContain("Sitemap: https://example.com/docs/sitemap.xml")
   })
 
+  it("uses the current version path for sitemap URLs", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        versioning: {
+          current: "v3",
+          versions: [
+            { id: "v3", label: "3.x", path: "/v3/" },
+            { id: "v2", label: "2.x", path: "/v2/" },
+          ],
+        },
+      },
+      "/site"
+    )
+
+    const sitemap = generateSitemap(entries, versionedConfig)
+
+    expect(sitemap).toContain("<loc>https://example.com/docs/v3/guide</loc>")
+    expect(sitemap).not.toContain("/docs/v2/")
+  })
+
   it("combines configured and frontmatter redirects for provider outputs", () => {
     const redirects = collectRedirects(entries, {
       ...baseConfig,
@@ -78,6 +102,55 @@ describe("build outputs", () => {
     ])
     expect(generateNetlifyRedirects(redirects)).toContain("/legacy /guide 301")
     expect(generateVercelRedirects(redirects)).toContain('"source": "/old-guide"')
+  })
+
+  it("adds a static root redirect and versions metadata for versioned docs", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        versioning: {
+          current: "v3",
+          versions: [
+            { id: "v3", label: "3.x", path: "/v3/" },
+            { id: "v2", label: "2.x", path: "/v2/" },
+          ],
+        },
+      },
+      "/site"
+    )
+    const assets = createBuildOutputAssets(entries, versionedConfig)
+
+    expect(collectRedirects(entries, versionedConfig)).toContainEqual({
+      from: "/",
+      to: "/docs/v3/",
+    })
+    expect(assets.find((asset) => asset.fileName === "index.html")?.source).toContain(
+      "url=/docs/v3/"
+    )
+    expect(assets.find((asset) => asset.fileName === "versions.json")?.source).toBe(
+      generateVersionsJson(versionedConfig)
+    )
+    expect(generateVersionsJson(versionedConfig)).toContain('"path": "/docs/v2/"')
+  })
+
+  it("can keep the root page when versioning disables the root redirect", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        versioning: {
+          current: "v3",
+          rootRedirect: false,
+          versions: [{ id: "v3", path: "/v3/" }],
+        },
+      },
+      "/site"
+    )
+
+    expect(collectRedirects(entries, versionedConfig)).not.toContainEqual({
+      from: "/",
+      to: "/v3/",
+    })
   })
 
   it("reports missing internal routes and anchors", () => {

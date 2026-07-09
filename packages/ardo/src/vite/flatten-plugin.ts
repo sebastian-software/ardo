@@ -17,6 +17,10 @@ export type ArdoGitHubPagesOptions = {
   cwd?: string
 }
 
+export type ArdoVersioningOptions = {
+  basename?: string
+}
+
 export function withArdoGitHubPages<TConfig extends Config>(
   config: TConfig,
   options: ArdoGitHubPagesOptions = {}
@@ -32,6 +36,21 @@ export function withArdoGitHubPages<TConfig extends Config>(
     ...config,
     basename,
     buildEnd,
+  }
+}
+
+export function withArdoVersioning<TConfig extends Config>(
+  config: TConfig,
+  options: ArdoVersioningOptions = {}
+): Required<Pick<Config, "basename">> & TConfig {
+  const basename = options.basename ?? config.basename
+  if (basename == null) {
+    throw new Error("[ardo] withArdoVersioning requires a basename, for example '/v3/'.")
+  }
+
+  return {
+    ...config,
+    basename,
   }
 }
 

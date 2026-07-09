@@ -8,6 +8,8 @@ import type {
   ArdoBrandHuePreset,
   ArdoBrandLogo,
   ArdoConfig,
+  DocumentationVersion,
+  DocumentationVersioningConfig,
   HeadConfig,
   LinkCheckConfig,
   LlmsConfig,
@@ -31,6 +33,7 @@ import type {
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
+import { resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
   default?: unknown
@@ -42,6 +45,8 @@ export type {
   ArdoBrandHuePreset,
   ArdoBrandLogo,
   ArdoConfig,
+  DocumentationVersion,
+  DocumentationVersioningConfig,
   HeadConfig,
   LinkCheckConfig,
   LlmsConfig,
@@ -85,12 +90,14 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
 
   const srcDir = config.srcDir ?? "content"
   const contentDir = path.resolve(root, srcDir)
+  const deploymentBase = config.base ?? "/"
+  const versioning = resolveVersioningConfig(config.versioning, deploymentBase)
 
   return {
     title: config.title,
     description: config.description ?? "",
     titleSeparator: config.titleSeparator ?? " | ",
-    base: config.base ?? "/",
+    base: resolveVersionedBase(deploymentBase, versioning),
     siteUrl: config.siteUrl ?? "",
     srcDir,
     outDir: config.outDir ?? "dist",
@@ -99,6 +106,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     seo: config.seo ?? {},
     linkCheck: config.linkCheck ?? {},
     redirects: config.redirects ?? [],
+    versioning,
     markdown: {
       ...defaultMarkdownConfig,
       ...config.markdown,
@@ -173,6 +181,7 @@ function validateConfig(config: ArdoConfig): void {
   }
 
   validateBrandConfig(config, errors)
+  validateVersioningConfig(config, errors)
 
   const sitemapPriority =
     typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
@@ -185,6 +194,65 @@ function validateConfig(config: ArdoConfig): void {
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
+  }
+}
+
+function validateVersioningConfig(config: ArdoConfig, errors: string[]): void {
+  const versioning = config.versioning
+  if (versioning == null || versioning === false) {
+    return
+  }
+
+  validateCurrentVersionId(versioning.current, errors)
+  if (hasNoVersions(versioning.versions, errors)) {
+    return
+  }
+
+  validateVersionEntries(versioning, errors)
+}
+
+function validateCurrentVersionId(current: string, errors: string[]): void {
+  if (current.trim() === "") {
+    errors.push("versioning.current must be a non-empty version id.")
+  }
+}
+
+function hasNoVersions(versions: DocumentationVersion[], errors: string[]) {
+  if (versions.length > 0) {
+    return false
+  }
+
+  errors.push("versioning.versions must contain at least one version.")
+  return true
+}
+
+function validateVersionEntries(versioning: DocumentationVersioningConfig, errors: string[]): void {
+  const ids = new Set<string>()
+  let currentFound = false
+  for (const version of versioning.versions) {
+    validateVersionEntry(version, ids, errors)
+    ids.add(version.id)
+    currentFound ||= version.id === versioning.current
+  }
+
+  if (!currentFound) {
+    errors.push(`versioning.current "${versioning.current}" must match a version id.`)
+  }
+}
+
+function validateVersionEntry(
+  version: DocumentationVersion,
+  ids: Set<string>,
+  errors: string[]
+): void {
+  if (version.id.trim() === "") {
+    errors.push("versioning.versions entries must have a non-empty id.")
+  }
+  if (ids.has(version.id)) {
+    errors.push(`versioning.versions contains duplicate id "${version.id}".`)
+  }
+  if (!isValidBasePath(version.path)) {
+    errors.push(`versioning.versions["${version.id}"].path must start and end with "/".`)
   }
 }
 

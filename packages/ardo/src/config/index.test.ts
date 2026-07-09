@@ -106,6 +106,33 @@ describe("resolveConfig", () => {
     })
   })
 
+  it("resolves major versioning paths against the deployment base", () => {
+    const resolved = resolveConfig(
+      {
+        title: "Test",
+        base: "/repo/",
+        versioning: {
+          current: "v3",
+          versions: [
+            { id: "v3", label: "3.x", path: "/v3/" },
+            { id: "v2", label: "2.x", path: "/v2/" },
+          ],
+        },
+      },
+      "/project"
+    )
+
+    expect(resolved.base).toBe("/repo/v3/")
+    expect(resolved.versioning).toStrictEqual({
+      current: "v3",
+      rootRedirect: true,
+      versions: [
+        { id: "v3", label: "3.x", path: "/repo/v3/" },
+        { id: "v2", label: "2.x", path: "/repo/v2/" },
+      ],
+    })
+  })
+
   it("merges markdown config with defaults", () => {
     const config = {
       title: "Test",
@@ -159,6 +186,34 @@ describe("resolveConfig", () => {
     expect(() =>
       resolveConfig({ title: "Test", seo: { sitemap: { priority: 2 } } }, "/project")
     ).toThrow("seo.sitemap.priority must be between 0 and 1")
+  })
+
+  it("rejects invalid versioning config", () => {
+    expect(() =>
+      resolveConfig(
+        {
+          title: "Test",
+          versioning: {
+            current: "v4",
+            versions: [{ id: "v3", path: "/v3/" }],
+          },
+        },
+        "/project"
+      )
+    ).toThrow('versioning.current "v4" must match a version id')
+
+    expect(() =>
+      resolveConfig(
+        {
+          title: "Test",
+          versioning: {
+            current: "v3",
+            versions: [{ id: "v3", path: "v3" }],
+          },
+        },
+        "/project"
+      )
+    ).toThrow('versioning.versions["v3"].path must start and end with "/"')
   })
 
   it("rejects unknown brand hue presets", () => {

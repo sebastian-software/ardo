@@ -176,6 +176,36 @@ export const desktopNav = style({
   },
 })
 
+export const versionSwitcher = style({
+  height: "2rem",
+  maxWidth: "5.5rem",
+  padding: `0 ${vars.space.xs}`,
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radius.sm,
+  background: vars.color.bg,
+  color: vars.color.textLight,
+  font: "inherit",
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1,
+  cursor: "pointer",
+  selectors: {
+    "&:hover": {
+      color: vars.color.text,
+      borderColor: vars.color.accent,
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${vars.color.accent}`,
+      outlineOffset: "2px",
+    },
+  },
+  "@media": {
+    "(max-width: 480px)": {
+      maxWidth: "4.75rem",
+      fontSize: vars.fontSize.xs,
+    },
+  },
+})
+
 // =============================================================================
 // Mobile slide-in panel
 // =============================================================================

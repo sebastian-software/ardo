@@ -71,6 +71,32 @@ describe("UI shell landmarks", () => {
     expect(view).toContain('aria-expanded="false"')
   })
 
+  it("renders a compact version switcher when major docs versions are configured", () => {
+    const view = renderToStaticMarkup(
+      <MemoryRouter initialEntries={["/v3/guide"]}>
+        <ArdoProvider
+          config={{
+            title: "Docs",
+            versioning: {
+              current: "v3",
+              versions: [
+                { id: "v3", label: "3.x", path: "/v3/" },
+                { id: "v2", label: "2.x", path: "/v2/" },
+              ],
+            },
+          }}
+          sidebar={[]}
+        >
+          <ArdoHeader search={false} />
+        </ArdoProvider>
+      </MemoryRouter>
+    )
+
+    expect(view).toContain('aria-label="Documentation version"')
+    expect(view).toContain('<option value="v3" selected="">3.x</option>')
+    expect(view).toContain('<option value="v2">2.x</option>')
+  })
+
   it("extracts JSX chrome children around route content", () => {
     const view = renderRootRoute(
       <ArdoRoot config={config}>

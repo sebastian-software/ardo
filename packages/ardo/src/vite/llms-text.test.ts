@@ -35,6 +35,7 @@ const config: ResolvedConfig = {
   srcDir: "app/routes",
   title: "Ardo",
   titleSeparator: " | ",
+  versioning: false,
 }
 
 function entry(overrides: Partial<RouteManifestEntry>): RouteManifestEntry {
