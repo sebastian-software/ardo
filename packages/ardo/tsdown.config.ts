@@ -47,6 +47,7 @@ export default defineConfig({
       "vite",
       "tailwindcss",
       "lucide-react",
+      "mermaid",
       /^virtual:ardo\//,
     ],
   },

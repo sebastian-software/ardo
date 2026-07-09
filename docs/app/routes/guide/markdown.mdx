@@ -129,6 +129,34 @@ export function greet(name: string) {
 }
 ```
 
+## Mermaid Diagrams
+
+Use `mermaid` code fences for flowcharts, sequence diagrams, state machines, and other [Mermaid](https://mermaid.js.org/) diagram types. Diagrams follow the site theme in light and dark mode, and the Mermaid library is loaded lazily — pages without diagrams never download it.
+
+````markdown
+```mermaid
+graph TD
+    A[Write docs] --> B{Need a diagram?}
+    B -->|Yes| C[Add a mermaid fence]
+    B -->|No| D[Ship it]
+    C --> D
+```
+````
+
+```mermaid
+graph TD
+    A[Write docs] --> B{Need a diagram?}
+    B -->|Yes| C[Add a mermaid fence]
+    B -->|No| D[Ship it]
+    C --> D
+```
+
+Mermaid is an optional dependency — install it once in your docs project:
+
+```bash
+pnpm add mermaid
+```
+
 ## Badge Component
 
 Use badges for inline status labels, version indicators, and metadata tags. The `Badge` component is auto-registered in MDX files — no import needed.
