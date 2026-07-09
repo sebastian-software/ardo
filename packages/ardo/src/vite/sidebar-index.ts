@@ -5,8 +5,10 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 import type { SidebarConfig, SidebarItem } from "../config/types"
+import type { PageFrontmatterMetadata } from "./page-metadata"
 import type { RouteManifestOptions } from "./route-manifest"
 
+import { parsePageFrontmatterMetadata, toFrontmatterRecord } from "./page-metadata"
 import { stripTrailingExtension } from "./path-utils"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
@@ -26,20 +28,7 @@ type SidebarScanContext = {
   rootDir: string
 }
 
-type SidebarFrontmatter = {
-  collapsed?: boolean
-  order?: number
-  /**
-   * Sidebar inclusion mode:
-   * - `false` → hide this file/folder entirely
-   * - `"leaf"` (directory index only) → show the folder as a single link,
-   *   without auto-listing its children. The folder's index page is
-   *   expected to render the detail list itself.
-   * - `true` / `undefined` → default tree behaviour
-   */
-  sidebar?: "leaf" | boolean
-  title?: string
-}
+type SidebarFrontmatter = Pick<PageFrontmatterMetadata, "collapsed" | "order" | "sidebar" | "title">
 
 export async function generateSidebar(
   routesDir: string,
@@ -249,17 +238,7 @@ function readFrontmatterSafely(filePath: string, fileContent: string): null | Si
 
 function readFrontmatter(fileContent: string): SidebarFrontmatter {
   const parsed = matter(fileContent)
-  const title = typeof parsed.data.title === "string" ? parsed.data.title : undefined
-  const order = typeof parsed.data.order === "number" ? parsed.data.order : undefined
-  const collapsed = typeof parsed.data.collapsed === "boolean" ? parsed.data.collapsed : undefined
-  const sidebar = parseSidebarValue(parsed.data.sidebar)
-  return { title, order, collapsed, sidebar }
-}
-
-function parseSidebarValue(raw: unknown): SidebarFrontmatter["sidebar"] {
-  if (typeof raw === "boolean") return raw
-  if (raw === "leaf") return "leaf"
-  return undefined
+  return parsePageFrontmatterMetadata(toFrontmatterRecord(parsed.data))
 }
 
 function warnFrontmatterReadFailure(filePath: string, error: unknown): void {
