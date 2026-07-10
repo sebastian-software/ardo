@@ -182,7 +182,7 @@ export default function HomePage() {
               language="mdx"
               title="getting-started.mdx"
               code={
-                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n<Tip>\n  Start from the reference project closest to your repository.\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
+                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo lucide-react react react-dom\n```\n\n<Tip>\n  Start from the reference project closest to your repository.\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
               }
             />
           </div>

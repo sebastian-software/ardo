@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import { execFileSync, execSync } from "node:child_process"
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
@@ -20,6 +20,20 @@ function collectFiles(dir: string, ext: string): string[] {
   }
   walk(dir)
   return results
+}
+
+function packArdoPackage(packDir: string): string {
+  fs.mkdirSync(packDir, { recursive: true })
+  execFileSync("pnpm", ["pack", "--pack-destination", packDir], {
+    cwd: ardoPackageDir,
+    stdio: "pipe",
+    timeout: 120_000,
+  })
+  const tarball = fs.readdirSync(packDir).find((file) => file.endsWith(".tgz"))
+  if (tarball == null) {
+    throw new Error("Ardo package tarball was not created")
+  }
+  return path.join(packDir, tarball)
 }
 
 describe("scaffold integration build", () => {
@@ -79,10 +93,10 @@ export function greet(name: string, config?: GreeterConfig): string {
 `
     )
 
-    // 4. Patch package.json — use local ardo (wildcard deps resolve via ardo)
+    // 4. Patch package.json — exercise the published-package boundary.
     const pkgPath = path.join(tmpDir, "package.json")
     const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
-    pkg.dependencies.ardo = `file:${ardoPackageDir}`
+    pkg.dependencies.ardo = `file:${packArdoPackage(path.join(tmpDir, "packages"))}`
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
     // 5. Install dependencies
