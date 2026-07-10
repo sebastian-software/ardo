@@ -1,14 +1,16 @@
 ---
 title: Getting Started
-description: Create a static React documentation site with Ardo's scaffolded Vite and React Router setup.
+description: Add static React documentation with Ardo, either through an agent-guided adoption or a small standalone project.
 order: 2
 ---
 
 # Getting Started
 
-The fastest way to evaluate Ardo is to scaffold a real docs site, run it locally, and add one MDX page. The scaffold gives you the full React Router shell, Tailwind v4, Ardo's default UI, and static build settings so you can focus on content first.
+For an existing repository, start with [Adopt Ardo in an Existing Project](/guide/adopt-ardo). It gives a coding agent a safe, reference-project-based path without replacing your application setup. The standalone CLI remains useful for an empty directory when its default shape is already what you want.
 
-Already have a React repository? Use [Adopt Ardo in an Existing Project](/guide/adopt-ardo) instead. It gives a coding agent a safe, reference-project-based path without replacing your application setup.
+## Existing project
+
+Give your coding agent the URL `https://ardo-docs.dev/llms.txt` and the [adoption guide](/guide/adopt-ardo). It will inspect the repository, select the closest reference project, and propose the smallest change before editing files.
 
 ## Prerequisites
 
@@ -17,9 +19,9 @@ You'll need:
 - [Node.js](https://nodejs.org/) version 22.22.1 or higher
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
-## Fast Path
+## Empty-directory convenience
 
-The fastest path is the `create-ardo` CLI. It scaffolds a complete project — configuration, example content, and a GitHub Pages deployment workflow — so you can focus on writing.
+Use `create-ardo` only when you want its opinionated, complete starter shape — configuration, example content, and a GitHub Pages workflow — in a new empty directory.
 
 ```bash
 pnpm create ardo@latest my-docs
