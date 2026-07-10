@@ -260,6 +260,30 @@ ardo({
 Use `checkAnchors: false` when another tool rewrites heading ids after Ardo has read the route
 manifest. Use `enabled: false` only when another link checker owns the build gate.
 
+### validation
+
+- **Type:** `{ frontmatter?: { invalid?: "warn" | "error" | "ignore"; unknown?: "warn" | "error" | "ignore" } }`
+- **Default:** invalid documented fields warn; unknown fields are ignored for compatibility.
+
+Ardo validates its documented frontmatter fields once while it scans route metadata. Diagnostics name
+the source file and never feed malformed values into sidebar, search, sitemap, redirect, or LLM
+output. Turn strict mode on when a project wants misspelled metadata to fail CI:
+
+```ts
+ardo({
+  title: "My Docs",
+  validation: {
+    frontmatter: {
+      invalid: "error",
+      unknown: "error",
+    },
+  },
+})
+```
+
+Use `unknown: "warn"` while adopting strict mode in an established documentation set. Keep it at
+the default only when another tool intentionally owns custom frontmatter fields.
+
 ### redirects
 
 - **Type:** `Array<{ from: string; to: string }>`

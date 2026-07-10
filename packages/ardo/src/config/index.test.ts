@@ -46,6 +46,7 @@ describe("resolveConfig", () => {
     expect(resolved.lang).toBe("en")
     expect(resolved.contentDir).toBe("/project/content")
     expect(resolved.sidebar).toStrictEqual({})
+    expect(resolved.validation).toStrictEqual({})
   })
 
   it("uses provided values over defaults", () => {
@@ -81,6 +82,22 @@ describe("resolveConfig", () => {
 
     expect(resolved.sidebar).toStrictEqual({
       sectionOrder: ["guide", "reference"],
+    })
+  })
+
+  it("preserves a frontmatter validation policy", () => {
+    const resolved = resolveConfig(
+      {
+        title: "Test",
+        validation: {
+          frontmatter: { invalid: "error", unknown: "warn" },
+        },
+      },
+      "/project"
+    )
+
+    expect(resolved.validation).toStrictEqual({
+      frontmatter: { invalid: "error", unknown: "warn" },
     })
   })
 

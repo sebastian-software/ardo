@@ -14,6 +14,7 @@ import {
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createContentSourcePlugin } from "./content-sources-plugin"
+import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { transformMarkdownMeta } from "./markdown-meta"
@@ -192,6 +193,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
         scanRouteManifest(state.routesDir, createRouteManifestOptions(resolvedConfig))
       )
+      reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       reportLinkDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
         for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {

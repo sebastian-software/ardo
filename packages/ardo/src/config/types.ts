@@ -248,6 +248,8 @@ export type ArdoConfig = {
   linkCheck?: LinkCheckConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
+  /** Build-time validation policy for content metadata. */
+  validation?: ContentValidationConfig
   /**
    * Major-version documentation routing.
    *
@@ -339,6 +341,24 @@ export type RedirectConfig = {
 }
 
 // =============================================================================
+// Content validation
+// =============================================================================
+
+export type DiagnosticLevel = "error" | "ignore" | "warn"
+
+export type FrontmatterValidationConfig = {
+  /** How to report unsupported frontmatter keys. Defaults to `ignore` for compatibility. */
+  unknown?: DiagnosticLevel
+  /** How to report known frontmatter keys with an invalid value. Defaults to `warn`. */
+  invalid?: DiagnosticLevel
+}
+
+export type ContentValidationConfig = {
+  /** Validation policy for Markdown and MDX page frontmatter. */
+  frontmatter?: FrontmatterValidationConfig
+}
+
+// =============================================================================
 // Page Types
 // =============================================================================
 
@@ -357,7 +377,7 @@ export type PageFrontmatter = {
   order?: number
   collapsed?: boolean
   layout?: "doc" | "home" | "page"
-  sidebar?: boolean
+  sidebar?: "leaf" | boolean
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
@@ -424,4 +444,8 @@ export type ResolvedConfig = {
   typedoc?: TypeDocConfig
   root: string
   contentDir: string
-} & Required<Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "vite">>
+  /** Optional for compatibility with manually constructed test/config fixtures. */
+  validation?: ContentValidationConfig
+} & Required<
+  Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "validation" | "vite">
+>

@@ -13,8 +13,9 @@ import {
   createPageMetadata,
   type PageFrontmatterMetadata,
   type PageMetadata,
-  parsePageFrontmatterMetadata,
+  type PageMetadataDiagnostic,
   toFrontmatterRecord,
+  validatePageFrontmatter,
 } from "./page-metadata"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
@@ -23,6 +24,7 @@ export type RouteManifestEntry = {
   content: string
   filePath: string
   frontmatter: PageFrontmatterMetadata
+  frontmatterDiagnostics?: PageMetadataDiagnostic[]
   identity: RouteIdentity
   lastmod: Date
   metadata: PageMetadata
@@ -107,13 +109,15 @@ async function createManifestEntry(
     routePath: toRoutePath(relativePath, extension),
     versionId: options.versionId,
   })
-  const frontmatter = parsePageFrontmatterMetadata(data)
+  const frontmatterResult = validatePageFrontmatter(data)
+  const frontmatter = frontmatterResult.frontmatter
 
   return {
     anchors: extractAnchors(parsed.content),
     content: parsed.content,
     filePath,
     frontmatter,
+    frontmatterDiagnostics: frontmatterResult.diagnostics,
     identity,
     lastmod: stat.mtime,
     metadata: createPageMetadata({ frontmatter, identity, sourcePath: relativePath }),

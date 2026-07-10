@@ -112,4 +112,35 @@ redirectFrom:
       routePath: "/guide",
     })
   })
+
+  it("keeps file-specific frontmatter diagnostics beside normalized metadata", async () => {
+    await fs.writeFile(
+      path.join(tempDir, "guide.mdx"),
+      `---
+order: first
+titlle: Misspelled
+title: Guide
+---
+
+# Guide
+`,
+      "utf8"
+    )
+
+    const [entry] = await scanRouteManifest(tempDir)
+
+    expect(entry.metadata.title).toBe("Guide")
+    expect(entry.frontmatterDiagnostics).toStrictEqual([
+      {
+        field: "order",
+        kind: "invalid",
+        message: 'Invalid value for frontmatter field "order".',
+      },
+      {
+        field: "titlle",
+        kind: "unknown",
+        message: 'Unsupported frontmatter field "titlle".',
+      },
+    ])
+  })
 })
