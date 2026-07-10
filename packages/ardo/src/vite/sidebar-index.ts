@@ -11,6 +11,7 @@ import type { RouteManifestOptions } from "./route-manifest"
 import { parsePageFrontmatterMetadata, toFrontmatterRecord } from "./page-metadata"
 import { stripTrailingExtension } from "./path-utils"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
+import { sortNodesBySectionOrder } from "./sidebar-order"
 
 type SidebarNode = {
   text: string
@@ -24,6 +25,7 @@ type SidebarNode = {
 type SidebarGenerationOptions = RouteManifestOptions & SidebarConfig
 
 type SidebarScanContext = {
+  localePrefix?: string
   options: RouteManifestOptions
   rootDir: string
 }
@@ -57,21 +59,60 @@ export async function generateContextSidebars(
   options: RouteManifestOptions = {}
 ): Promise<Record<string, SidebarItem[]>> {
   try {
-    const entries = await fs.readdir(routesDir, { withFileTypes: true })
-    const sidebars: Record<string, SidebarItem[]> = {}
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue
-      const subDir = path.join(routesDir, entry.name)
-      // Pass `routesDir` as the root so links remain absolute (`/guide/foo`),
-      // not relative to the sub-folder.
-      const nodes = await scanSidebarDirectory(subDir, { options, rootDir: routesDir })
-      if (nodes.length > 0) {
-        sidebars[entry.name] = nodes.map((node) => stripOrderFromNode(node))
-      }
+    if (options.localeIds != null && options.localeIds.length > 0) {
+      return await generateLocalizedContextSidebars(routesDir, options)
     }
-    return sidebars
+    return await generateNonLocalizedContextSidebars(routesDir, options)
   } catch {
     return {}
+  }
+}
+
+async function generateNonLocalizedContextSidebars(
+  routesDir: string,
+  options: RouteManifestOptions
+): Promise<Record<string, SidebarItem[]>> {
+  const sidebars: Record<string, SidebarItem[]> = {}
+  const entries = await fs.readdir(routesDir, { withFileTypes: true })
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue
+    const nodes = await scanSidebarDirectory(path.join(routesDir, entry.name), {
+      options,
+      rootDir: routesDir,
+    })
+    if (nodes.length > 0) sidebars[entry.name] = nodes.map((node) => stripOrderFromNode(node))
+  }
+  return sidebars
+}
+
+async function generateLocalizedContextSidebars(
+  routesDir: string,
+  options: RouteManifestOptions
+): Promise<Record<string, SidebarItem[]>> {
+  const sidebars: Record<string, SidebarItem[]> = {}
+  for (const localeId of options.localeIds ?? []) {
+    const localeDir = path.join(routesDir, localeId)
+    const entries = await readDirectoryEntries(localeDir)
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue
+      const nodes = await scanSidebarDirectory(path.join(localeDir, entry.name), {
+        localePrefix: localeId,
+        options: { ...options, localeId, localeIds: undefined },
+        rootDir: localeDir,
+      })
+      if (nodes.length > 0) {
+        sidebars[`${localeId}:${entry.name}`] = nodes.map((node) => stripOrderFromNode(node))
+      }
+    }
+  }
+  return sidebars
+}
+
+async function readDirectoryEntries(directory: string): Promise<Dirent[]> {
+  try {
+    return await fs.readdir(directory, { withFileTypes: true })
+  } catch {
+    return []
   }
 }
 
@@ -139,7 +180,7 @@ async function createDirectoryNode(
   return {
     text: metadata?.title ?? formatTitle(entry.name),
     link,
-    ...(identity == null ? {} : toSidebarRouteFields(identity)),
+    ...(identity == null ? {} : toSidebarRouteFields(identity, context.localePrefix)),
     items: children,
     collapsed: metadata?.collapsed,
     order: metadata?.order,
@@ -174,7 +215,7 @@ async function createMarkdownNode(
 
   return {
     text: title,
-    ...toSidebarRouteFields(identity),
+    ...toSidebarRouteFields(identity, context.localePrefix),
     order: frontmatter.order,
     sectionId: stripTrailingExtension(entry.name, extension),
   }
@@ -193,10 +234,11 @@ function createSidebarRouteIdentity(
 }
 
 function toSidebarRouteFields(
-  identity: RouteIdentity
+  identity: RouteIdentity,
+  localePrefix?: string
 ): Partial<RouteIdentity> & Pick<SidebarNode, "link"> {
   return {
-    link: identity.routePath,
+    link: localePrefix == null ? identity.routePath : `/${localePrefix}${identity.routePath}`,
     routePath: identity.routePath,
     publicPath: identity.publicPath,
     ...(identity.versionId == null ? {} : { versionId: identity.versionId }),
@@ -276,43 +318,6 @@ function sortNodes(nodes: SidebarNode[]): void {
   })
 }
 
-function sortNodesBySectionOrder(nodes: SidebarNode[], sectionOrder: string[] | undefined): void {
-  if (sectionOrder == null || sectionOrder.length === 0) {
-    return
-  }
-
-  const sectionOrderMap = new Map<string, number>()
-  for (const [index, section] of sectionOrder.entries()) {
-    const normalizedSection = normalizeSectionId(section)
-    if (normalizedSection !== "" && !sectionOrderMap.has(normalizedSection)) {
-      sectionOrderMap.set(normalizedSection, index)
-    }
-  }
-
-  if (sectionOrderMap.size === 0) {
-    return
-  }
-
-  nodes.sort((leftNode, rightNode) => {
-    const leftIndex = sectionOrderMap.get(leftNode.sectionId)
-    const rightIndex = sectionOrderMap.get(rightNode.sectionId)
-
-    if (leftIndex != null && rightIndex != null) {
-      return leftIndex - rightIndex
-    }
-
-    if (leftIndex != null) {
-      return -1
-    }
-
-    if (rightIndex != null) {
-      return 1
-    }
-
-    return 0
-  })
-}
-
 function isSidebarMarkdownFile(fileName: string): boolean {
   const isMarkdownFile = fileName.endsWith(".mdx") || fileName.endsWith(".md")
   const isIndexFile = fileName === "index.mdx" || fileName === "index.md"
@@ -334,20 +339,4 @@ function stripOrderFromNode(node: SidebarNode): SidebarItem {
     ...(node.collapsed == null ? {} : { collapsed: node.collapsed }),
     ...(node.items == null ? {} : { items: node.items.map((item) => stripOrderFromNode(item)) }),
   }
-}
-
-function normalizeSectionId(section: string): string {
-  const normalizedSection = section.replaceAll("\\", "/")
-  let startIndex = 0
-  let endIndex = normalizedSection.length
-
-  while (startIndex < endIndex && normalizedSection[startIndex] === "/") {
-    startIndex += 1
-  }
-
-  while (endIndex > startIndex && normalizedSection[endIndex - 1] === "/") {
-    endIndex -= 1
-  }
-
-  return normalizedSection.slice(startIndex, endIndex)
 }

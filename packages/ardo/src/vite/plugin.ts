@@ -2,22 +2,24 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
+import type { CollectionsConfig } from "./collections"
 import type { ContentSourceMapping } from "./content-sources"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
 import { resolveBrandIconOptions } from "./brand"
-import {
-  checkInternalLinks,
-  createBuildOutputAssets,
-  formatLinkCheckDiagnostics,
-} from "./build-outputs"
+import { createBuildOutputAssets } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
+import { createCollectionContentSources } from "./collections"
 import { createContentSourcePlugin } from "./content-sources-plugin"
+import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
+import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
+import { reportLinkDiagnostics } from "./link-diagnostics"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
+import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
@@ -28,11 +30,13 @@ import {
   loadVirtualModule,
   RESOLVED_IDS,
   resolveVirtualModuleId,
+  VIRTUAL_COLLECTIONS_ID,
   VIRTUAL_GENERATED_SIDEBARS_ID,
   VIRTUAL_SEARCH_ID,
 } from "./virtual-modules"
 
 type PluginState = {
+  collections?: CollectionsConfig
   deploymentBase?: string
   isSsrBuild?: boolean
   resolvedConfig?: ResolvedConfig
@@ -47,7 +51,7 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
+  "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
 >
 
 export type ArdoPluginOptions = {
@@ -59,6 +63,8 @@ export type ArdoPluginOptions = {
    * collections land.
    */
   content?: ContentSourceMapping[]
+  /** Schema-backed local Markdown/MDX collections that also materialize into routes. */
+  collections?: CollectionsConfig
   /**
    * Generate the lean favicon set recommended for modern websites:
    * /favicon.ico, /icon.svg, and /apple-touch-icon.png.
@@ -83,19 +89,33 @@ export { detectGitHubBasename } from "./git-utils"
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
     content,
+    collections,
     icons = {},
+    openapi,
     routes,
     typedoc,
     githubPages = true,
     routesDir: routesDirOption,
     ...pressConfig
   } = options
-  const state: PluginState = { routesDir: resolveRoutesDir(process.cwd(), routesDirOption) }
+  const state: PluginState = {
+    collections,
+    routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
+  }
 
-  const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
+  const mainPluginOptions: MainPluginOptions = {
+    githubPages,
+    pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
+    routesDirOption,
+  }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
-  addContentSourcePlugin(plugins, content, routesDirOption)
+  addContentSourcePlugin(
+    plugins,
+    [...(content ?? []), ...createCollectionContentSources(collections)],
+    routesDirOption
+  )
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, routesDirOption)
 
@@ -192,6 +212,8 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
         scanRouteManifest(state.routesDir, createRouteManifestOptions(resolvedConfig))
       )
+      reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
+      reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       reportLinkDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
         for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {
@@ -204,24 +226,6 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
 
 function isServerOutput(outputDir: string | undefined) {
   return outputDir?.replaceAll("\\", "/").endsWith("/server") === true
-}
-
-function reportLinkDiagnostics(
-  context: { error: (message: string) => never; warn: (message: string) => void },
-  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
-  config: ResolvedConfig
-) {
-  const diagnostics = checkInternalLinks(manifest, config)
-  if (diagnostics.length === 0) {
-    return
-  }
-
-  const message = `[ardo] Broken internal links found:\n${formatLinkCheckDiagnostics(diagnostics)}`
-  if (config.linkCheck.level === "error") {
-    context.error(message)
-  } else {
-    context.warn(message)
-  }
 }
 
 function createMainConfig(
@@ -334,7 +338,11 @@ function shouldInvalidateRouteVirtualModules(changedPath: string, routesDir: str
 }
 
 function invalidateVirtualModules(server: ViteDevServer): void {
-  const virtualIds = [RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID], RESOLVED_IDS[VIRTUAL_SEARCH_ID]]
+  const virtualIds = [
+    RESOLVED_IDS[VIRTUAL_COLLECTIONS_ID],
+    RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID],
+    RESOLVED_IDS[VIRTUAL_SEARCH_ID],
+  ]
 
   for (const id of virtualIds) {
     const module = server.moduleGraph.getModuleById(id)

@@ -8,6 +8,10 @@ order: 4
 
 Frontmatter keeps page-specific decisions close to the page. Use it for titles, descriptions, sidebar order, layout choices, table-of-contents behavior, edit links, and homepage content.
 
+Ardo normalizes documented frontmatter once for route metadata, sidebars, search, redirects, sitemap,
+and LLM output. Invalid values are reported with the source file during production builds. Unknown
+fields remain compatible by default, but can be made visible or blocking in [Configuration](/guide/configuration#validation).
+
 ## Basic Usage
 
 ```yaml
@@ -108,7 +112,7 @@ layout: home
 
 ### sidebar
 
-- Type: `boolean`
+- Type: `boolean | "leaf"`
 - Default: `true`
 
 Whether to show the sidebar on this page.
@@ -121,6 +125,9 @@ sidebar: false
 
 For `ArdoGeneratedSidebar`, `sidebar: false` also removes leaf markdown pages from generated
 navigation.
+
+Use `sidebar: leaf` on an `index.md` or `index.mdx` to show the containing directory as one link
+without auto-listing its children.
 
 ### order
 

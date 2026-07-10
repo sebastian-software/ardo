@@ -39,7 +39,7 @@ export default function HomePage() {
         tagline="Static documentation built on React Router, Vite, and MDX. Write guides with your own components, generate API reference from your TypeScript source, and deploy plain files anywhere."
         image={<ArdoOwlMark className={styles.heroOwl} title="Ardo" />}
         actions={[
-          { text: "Start your first project", link: "/guide/getting-started", theme: "brand" },
+          { text: "Adopt Ardo with your agent", link: "/guide/adopt-ardo", theme: "brand" },
           {
             text: "Browse on GitHub",
             link: "https://github.com/sebastian-software/ardo",
@@ -51,10 +51,10 @@ export default function HomePage() {
       {/* Quick Start Section */}
       <section className={`${styles.section} ${styles.quickStartSection}`}>
         <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>From zero to docs in four lines</h2>
+          <h2 className={styles.sectionTitle}>Give your coding agent a real starting point</h2>
           <p className={styles.sectionSubtitle}>
-            Scaffold a complete static docs site. Add an MDX file, see it in navigation, deploy the
-            output anywhere.
+            Start from the project you already have. Ardo&apos;s agent guide, llms.txt, and
+            reference projects make the existing architecture the source of truth.
           </p>
 
           <div className={styles.terminal}>
@@ -65,15 +65,16 @@ export default function HomePage() {
             </div>
             <div className={styles.terminalBody}>
               <code>
-                <span className={styles.terminalPrompt}>$</span> pnpm create ardo@latest my-docs
+                <span className={styles.terminalPrompt}>$</span> Open https://ardo-docs.dev/llms.txt
                 <br />
-                <span className={styles.terminalPrompt}>$</span> cd my-docs && pnpm install
+                <span className={styles.terminalPrompt}>$</span> Ask your agent to read the adoption
+                guide
                 <br />
-                <span className={styles.terminalPrompt}>$</span> pnpm dev
+                <span className={styles.terminalPrompt}>$</span> Choose the closest reference
+                project
                 <br />
                 <br />
-                <span className={styles.terminalSuccess}>✓</span> Server running at{" "}
-                <span className={styles.terminalLink}>http://localhost:5173</span>
+                <span className={styles.terminalSuccess}>✓</span> A focused plan for your repository
               </code>
             </div>
           </div>
@@ -181,7 +182,7 @@ export default function HomePage() {
               language="mdx"
               title="getting-started.mdx"
               code={
-                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n<Tip>\n  Use `create-ardo` for a complete project setup!\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
+                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo react react-dom\n```\n\n<Tip>\n  Start from the reference project closest to your repository.\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
               }
             />
           </div>
@@ -259,8 +260,8 @@ export default function HomePage() {
                 Ardo <span className={styles.compareTag}>React + Vite</span>
               </div>
               <p className={styles.compareNote}>
-                Your React components, TypeDoc API pages, and static output, at about 155 KB gzip
-                for the first page. No platform, no second UI model.
+                Your React components, TypeDoc API pages, and static output. No platform, no second
+                UI model.
               </p>
             </li>
             <li className={styles.compareRow}>
@@ -312,10 +313,10 @@ export default function HomePage() {
       {/* Examples Section */}
       <section className={`${styles.section} ${styles.examplesSection}`}>
         <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>Examples to start from</h2>
+          <h2 className={styles.sectionTitle}>Choose your starting shape</h2>
           <p className={styles.sectionSubtitle}>
-            First-party scaffolds for the most common starting points. Open any of them in the repo,
-            copy what you need, ship.
+            First-party references for an agent or a team. Inspect the closest shape and adapt it to
+            your repository instead of generating a generic project.
           </p>
 
           <div className={styles.examplesGrid}>
@@ -371,16 +372,16 @@ export default function HomePage() {
       {/* Final CTA Section */}
       <section className={`${styles.section} ${styles.ctaSection}`}>
         <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>Ship your docs this week</h2>
+          <h2 className={styles.sectionTitle}>Ship docs that still feel like your product</h2>
           <p className={styles.sectionSubtitle}>
-            Start with the default theme, keep your React components, and publish static output from
-            your own repo.
+            Keep your React components and deployment choices. Let your agent make a small,
+            reviewable change from the documentation your project can verify.
           </p>
 
           <div className={styles.ctaButtons}>
-            <Link to="/guide/getting-started" className={styles.ctaPrimary}>
+            <Link to="/guide/adopt-ardo" className={styles.ctaPrimary}>
               <Rocket size={20} />
-              Create your first project
+              Start the agent-guided adoption
             </Link>
             <a
               href="https://github.com/sebastian-software/ardo"

@@ -33,6 +33,16 @@ declare module "virtual:ardo/search-index" {
   export default searchDocs
 }
 
+declare module "virtual:ardo/collections" {
+  import type { CollectionEntry } from "ardo/vite"
+
+  const collections: Record<string, CollectionEntry[]>
+  export function getCollection<TData = Record<string, unknown>>(
+    name: string
+  ): CollectionEntry<TData>[]
+  export default collections
+}
+
 declare module "*.mdx" {
   import type { ComponentType } from "react"
   import type { PageFrontmatter, TOCItem } from "ardo"

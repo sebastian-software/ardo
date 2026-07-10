@@ -8,14 +8,18 @@ import type {
   ArdoBrandHuePreset,
   ArdoBrandLogo,
   ArdoConfig,
+  ContentValidationConfig,
+  DiagnosticLevel,
   DocumentationVersion,
   DocumentationVersioningConfig,
+  FrontmatterValidationConfig,
   HeadConfig,
   I18nConfig,
   LinkCheckConfig,
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  OpenApiConfig,
   PageData,
   PageFrontmatter,
   ProjectMeta,
@@ -34,7 +38,9 @@ import type {
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
+import { isArdoConfig } from "./guards"
 import { resolveI18nConfig } from "./i18n"
+import { validateOpenApiConfig } from "./openapi"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
@@ -47,14 +53,18 @@ export type {
   ArdoBrandHuePreset,
   ArdoBrandLogo,
   ArdoConfig,
+  ContentValidationConfig,
+  DiagnosticLevel,
   DocumentationVersion,
   DocumentationVersioningConfig,
+  FrontmatterValidationConfig,
   HeadConfig,
   I18nConfig,
   LinkCheckConfig,
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  OpenApiConfig,
   PageData,
   PageFrontmatter,
   ProjectMeta,
@@ -75,7 +85,6 @@ export type {
 export function defineConfig(config: ArdoConfig): ArdoConfig {
   return config
 }
-
 export const defaultMarkdownConfig: MarkdownConfig = {
   theme: {
     light: "github-light-default",
@@ -111,6 +120,8 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     seo: config.seo ?? {},
     linkCheck: config.linkCheck ?? {},
     redirects: config.redirects ?? [],
+    validation: config.validation ?? {},
+    openapi: config.openapi,
     versioning,
     i18n,
     markdown: {
@@ -189,6 +200,7 @@ function validateConfig(config: ArdoConfig): void {
   validateBrandConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
+  validateOpenApiConfig(config, errors)
 
   const sitemapPriority =
     typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
@@ -319,12 +331,4 @@ function isValidUrl(value: string): boolean {
   } catch {
     return false
   }
-}
-
-function isArdoConfig(value: unknown): value is ArdoConfig {
-  if (typeof value !== "object" || value === null) {
-    return false
-  }
-
-  return "title" in value && typeof value.title === "string"
 }

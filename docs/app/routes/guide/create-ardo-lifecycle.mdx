@@ -1,0 +1,21 @@
+---
+title: create-ardo Lifecycle
+description: The decision record for Ardo's optional starter CLI.
+order: 2.7
+---
+
+# create-ardo Lifecycle
+
+`create-ardo` remains an optional convenience for a new, empty directory. It is not the primary adoption path for an existing application, library, or workspace.
+
+## Current decision
+
+Keep the package maintained as a small, version-aligned starter. Do not expand it into a project-detection or migration engine. Those problems depend on the repository's routing, component system, package manager, deployment, and ownership boundaries; an agent with the project plus Ardo's [machine-readable guidance](/guide/adopt-ardo) can make a safer decision than a generic script.
+
+## What to use instead
+
+For an existing repository, give an agent `https://ardo-docs.dev/llms.txt`, the [adoption guide](/guide/adopt-ardo), and the closest [reference project](/guide/reference-projects). It should inspect the project, state its plan, and make the smallest compatible change after approval.
+
+## Revisit criteria
+
+Reconsider the CLI only when real user evidence shows a repeated, stable empty-project need that cannot be served by the reference projects and docs. Any future change needs an integration test, a documented migration story, and a reason it cannot be handled by the agent-first path.

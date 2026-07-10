@@ -112,4 +112,50 @@ redirectFrom:
       routePath: "/guide",
     })
   })
+
+  it("keeps file-specific frontmatter diagnostics beside normalized metadata", async () => {
+    await fs.writeFile(
+      path.join(tempDir, "guide.mdx"),
+      `---
+order: first
+titlle: Misspelled
+title: Guide
+---
+
+# Guide
+`,
+      "utf8"
+    )
+
+    const [entry] = await scanRouteManifest(tempDir)
+
+    expect(entry.metadata.title).toBe("Guide")
+    expect(entry.frontmatterDiagnostics).toStrictEqual([
+      {
+        field: "order",
+        kind: "invalid",
+        message: 'Invalid value for frontmatter field "order".',
+      },
+      {
+        field: "titlle",
+        kind: "unknown",
+        message: 'Unsupported frontmatter field "titlle".',
+      },
+    ])
+  })
+
+  it("reads locale directory names into metadata without making them part of the logical route", async () => {
+    await fs.mkdir(path.join(tempDir, "de", "guide"), { recursive: true })
+    await fs.writeFile(path.join(tempDir, "de", "guide", "start.mdx"), "# Start", "utf8")
+
+    const [entry] = await scanRouteManifest(tempDir, {
+      basePath: "/v3/",
+      localeIds: ["en", "de"],
+    })
+
+    expect(entry).toMatchObject({
+      metadata: { localeId: "de", publicPath: "/v3/de/guide/start", routePath: "/guide/start" },
+      routePath: "/guide/start",
+    })
+  })
 })

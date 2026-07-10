@@ -46,6 +46,7 @@ describe("resolveConfig", () => {
     expect(resolved.lang).toBe("en")
     expect(resolved.contentDir).toBe("/project/content")
     expect(resolved.sidebar).toStrictEqual({})
+    expect(resolved.validation).toStrictEqual({})
   })
 
   it("uses provided values over defaults", () => {
@@ -81,6 +82,22 @@ describe("resolveConfig", () => {
 
     expect(resolved.sidebar).toStrictEqual({
       sectionOrder: ["guide", "reference"],
+    })
+  })
+
+  it("preserves a frontmatter validation policy", () => {
+    const resolved = resolveConfig(
+      {
+        title: "Test",
+        validation: {
+          frontmatter: { invalid: "error", unknown: "warn" },
+        },
+      },
+      "/project"
+    )
+
+    expect(resolved.validation).toStrictEqual({
+      frontmatter: { invalid: "error", unknown: "warn" },
     })
   })
 
@@ -263,6 +280,18 @@ describe("resolveConfig", () => {
         "/project"
       )
     ).toThrow("i18n.locales entries must be a non-empty locale id without slashes")
+  })
+
+  it("rejects remote OpenAPI specs and unsafe output paths", () => {
+    expect(() =>
+      resolveConfig(
+        {
+          openapi: { out: "../api", spec: "https://example.com/openapi.yaml" },
+          title: "Docs",
+        },
+        "/project"
+      )
+    ).toThrow("openapi.spec must be a local file path")
   })
 
   it("rejects unknown brand hue presets", () => {

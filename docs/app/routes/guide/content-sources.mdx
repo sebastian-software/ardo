@@ -1,0 +1,67 @@
+---
+title: Content Sources
+description: Publish Markdown and MDX outside app/routes while preserving one canonical source file.
+order: 5
+---
+
+# Content Sources
+
+Use content sources when the Markdown you want to publish already belongs elsewhere in a repository: ADRs, package guides, changelogs, or shared documentation. Ardo materializes a read-only route view during the build while the original file remains canonical.
+
+## Map a Directory
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "Workspace Docs",
+      content: [{ from: "../../adr", to: "decisions" }],
+    }),
+  ],
+})
+```
+
+An `../../adr/0001-routing.md` source becomes `/decisions/0001-routing`. Existing frontmatter stays intact; otherwise Ardo derives a title from the first heading or filename and uses a numeric filename prefix as sidebar order.
+
+## What Participates
+
+Mapped Markdown and MDX become ordinary generated routes. They participate in the sidebar, section search, sitemap, LLM text output, redirects, internal-link checking, and [frontmatter validation](/guide/frontmatter).
+
+## Generated-File Boundary
+
+Ardo writes mapped files under the selected `to` directory and marks it as generated. Edit the original source, never the materialized route. The plugin refuses to delete a non-empty handwritten target directory, so use a dedicated prefix such as `decisions/`.
+
+## Boundaries
+
+Content sources intentionally do not fetch remote URLs, act as a CMS, or transform arbitrary file types. They are a local-filesystem bridge while [schema-backed collections](https://github.com/sebastian-software/ardo/issues/196) evolve.
+
+## Schema-Backed Collections
+
+Use `collections` when the same local Markdown set should both materialize into routes and be available to a custom React route as typed build data:
+
+```ts
+import { ardo, defineCollection } from "ardo/vite"
+
+const recipes = defineCollection<{ title: string }>({
+  from: "../../recipes",
+  to: "recipes",
+  schema: (data) => ({ title: String(data.title) }),
+})
+
+ardo({ title: "Docs", collections: { recipes } })
+```
+
+Import `getCollection<T>()` from `virtual:ardo/collections` in a custom route to read typed generated records:
+
+```tsx
+import { getCollection } from "virtual:ardo/collections"
+
+const recipes = getCollection<{ title: string }>("recipes")
+```
+
+Collections remain local and static: the schema runs during the build, while the generated route pages continue through the normal sidebar, search, sitemap, redirect, and LLM pipelines. Source paths are project-relative, so the virtual module does not expose an author's absolute filesystem paths.
+
+The [external content and collections reference](https://github.com/sebastian-software/ardo/tree/main/examples/content-sources) builds this complete shape: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.

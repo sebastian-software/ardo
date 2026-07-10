@@ -69,7 +69,7 @@ describe("ardoPlugin", () => {
     expect(config.base).toBe("/v3/")
   })
 
-  it("sets Vite base to the current version and default locale when i18n is active", () => {
+  it("keeps the Vite base at the version root when i18n is active", () => {
     const plugin = getMainPlugin({
       githubPages: false,
       title: "Docs",
@@ -85,7 +85,7 @@ describe("ardoPlugin", () => {
 
     const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
 
-    expect(config.base).toBe("/v3/en/")
+    expect(config.base).toBe("/v3/")
   })
 
   it("uses resolved Vite base in the virtual Ardo config", async () => {

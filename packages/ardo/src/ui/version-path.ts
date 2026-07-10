@@ -10,6 +10,35 @@ export function getVersionedPath(pathname: string, currentBase: string, targetBa
   return `${normalizedTarget.replace(/\/$/u, "")}${relativePath}`
 }
 
+export function getLocalizedPath(
+  pathname: string,
+  currentLocale: string,
+  targetLocale: string
+): string {
+  const segments = pathname.split("/")
+  const localeIndex = segments.indexOf(currentLocale)
+  if (localeIndex === -1) return pathname
+
+  segments[localeIndex] = targetLocale
+  return segments.join("/") || "/"
+}
+
+export function getLocaleFromPath(pathname: string, localeIds: string[]): string | undefined {
+  const segments = pathname.split("/")
+  let activeLocale: string | undefined
+  let activeLocaleIndex = Number.POSITIVE_INFINITY
+
+  for (const localeId of localeIds) {
+    const localeIndex = segments.indexOf(localeId)
+    if (localeIndex !== -1 && localeIndex < activeLocaleIndex) {
+      activeLocale = localeId
+      activeLocaleIndex = localeIndex
+    }
+  }
+
+  return activeLocale
+}
+
 function getPathWithinBase(pathname: string, base: string) {
   const normalizedBase = normalizeBasePath(base).replace(/\/$/u, "")
   if (normalizedBase === "") {

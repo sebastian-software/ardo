@@ -146,6 +146,13 @@ export type TypeDocConfig = {
   }
 }
 
+export type OpenApiConfig = {
+  /** Local OpenAPI 3.0/3.1 JSON or YAML file. Remote URLs are intentionally unsupported. */
+  spec: string
+  /** Generated route prefix. Defaults to `api`. */
+  out?: string
+}
+
 // =============================================================================
 // Project Metadata (auto-detected from package.json)
 // =============================================================================
@@ -188,7 +195,7 @@ export type DocumentationVersioningConfig = {
 }
 
 // =============================================================================
-// i18n URL Preparation
+// i18n
 // =============================================================================
 
 export type DocumentationLocale = {
@@ -199,9 +206,9 @@ export type DocumentationLocale = {
 }
 
 export type I18nConfig = {
-  /** Default locale. When i18n is active, canonical URLs include this locale. */
+  /** Default locale. When i18n is active, public URLs include this locale. */
   defaultLocale: string
-  /** Locales reserved for future localized docs. */
+  /** Locales that have their own complete static route tree. */
   locales: DocumentationLocale[]
 }
 
@@ -248,6 +255,8 @@ export type ArdoConfig = {
   linkCheck?: LinkCheckConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
+  /** Build-time validation policy for content metadata. */
+  validation?: ContentValidationConfig
   /**
    * Major-version documentation routing.
    *
@@ -256,10 +265,9 @@ export type ArdoConfig = {
    */
   versioning?: DocumentationVersioningConfig | false
   /**
-   * Future locale-aware documentation routing.
-   *
-   * In 4.0 this reserves canonical locale-prefixed URLs only. It does not add
-   * translation loading, localized content fallback, or a public locale switcher.
+   * Strict static localization. Put each localized route under
+   * `app/routes/<locale>/`; Ardo rejects missing or unlocalized pages rather
+   * than serving an implicit fallback.
    */
   i18n?: false | I18nConfig
   /**
@@ -268,6 +276,8 @@ export type ArdoConfig = {
    * - `{ ... }`: Enable with custom config
    */
   typedoc?: true | TypeDocConfig
+  /** Static OpenAPI 3.0/3.1 reference generation. */
+  openapi?: OpenApiConfig
   /** Custom Vite configuration */
   vite?: Record<string, unknown>
   /**
@@ -339,6 +349,24 @@ export type RedirectConfig = {
 }
 
 // =============================================================================
+// Content validation
+// =============================================================================
+
+export type DiagnosticLevel = "error" | "ignore" | "warn"
+
+export type FrontmatterValidationConfig = {
+  /** How to report unsupported frontmatter keys. Defaults to `ignore` for compatibility. */
+  unknown?: DiagnosticLevel
+  /** How to report known frontmatter keys with an invalid value. Defaults to `warn`. */
+  invalid?: DiagnosticLevel
+}
+
+export type ContentValidationConfig = {
+  /** Validation policy for Markdown and MDX page frontmatter. */
+  frontmatter?: FrontmatterValidationConfig
+}
+
+// =============================================================================
 // Page Types
 // =============================================================================
 
@@ -357,7 +385,7 @@ export type PageFrontmatter = {
   order?: number
   collapsed?: boolean
   layout?: "doc" | "home" | "page"
-  sidebar?: boolean
+  sidebar?: "leaf" | boolean
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
@@ -424,4 +452,12 @@ export type ResolvedConfig = {
   typedoc?: TypeDocConfig
   root: string
   contentDir: string
-} & Required<Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "vite">>
+  /** Optional for compatibility with manually constructed test/config fixtures. */
+  validation?: ContentValidationConfig
+  openapi?: OpenApiConfig
+} & Required<
+  Omit<
+    ArdoConfig,
+    "buildHash" | "buildTime" | "openapi" | "project" | "typedoc" | "validation" | "vite"
+  >
+>

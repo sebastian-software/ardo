@@ -13,8 +13,9 @@ import {
   createPageMetadata,
   type PageFrontmatterMetadata,
   type PageMetadata,
-  parsePageFrontmatterMetadata,
+  type PageMetadataDiagnostic,
   toFrontmatterRecord,
+  validatePageFrontmatter,
 } from "./page-metadata"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
 
@@ -23,6 +24,7 @@ export type RouteManifestEntry = {
   content: string
   filePath: string
   frontmatter: PageFrontmatterMetadata
+  frontmatterDiagnostics?: PageMetadataDiagnostic[]
   identity: RouteIdentity
   lastmod: Date
   metadata: PageMetadata
@@ -30,11 +32,14 @@ export type RouteManifestEntry = {
   path: string
   publicPath: string
   routePath: string
+  /** Locale directory that directly contains this route, if any. */
+  sourceLocaleId?: string
   source: "markdown" | "tsx"
 }
 
 export type RouteManifestOptions = {
   basePath?: string
+  localeIds?: string[]
   localeId?: string
   versionId?: string
 }
@@ -50,6 +55,7 @@ export function createRouteManifestOptions(
 ): RouteManifestOptions {
   return {
     basePath: config.base,
+    localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),
     localeId: getDefaultLocaleId(config.i18n),
     versionId: config.versioning === false ? undefined : config.versioning.current,
   }
@@ -101,27 +107,45 @@ async function createManifestEntry(
   const data = toFrontmatterRecord(parsed.data)
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
+  const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
   const identity = createRouteIdentity({
     basePath: options.basePath,
-    localeId: options.localeId,
-    routePath: toRoutePath(relativePath, extension),
+    localeId: localizedRoute.localeId ?? options.localeId,
+    routePath: toRoutePath(localizedRoute.relativePath, extension),
     versionId: options.versionId,
   })
-  const frontmatter = parsePageFrontmatterMetadata(data)
+  const frontmatterResult = validatePageFrontmatter(data)
+  const frontmatter = frontmatterResult.frontmatter
 
   return {
     anchors: extractAnchors(parsed.content),
     content: parsed.content,
     filePath,
     frontmatter,
+    frontmatterDiagnostics: frontmatterResult.diagnostics,
     identity,
     lastmod: stat.mtime,
     metadata: createPageMetadata({ frontmatter, identity, sourcePath: relativePath }),
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,
+    sourceLocaleId: localizedRoute.localeId,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
+}
+
+function splitLocaleRoute(relativePath: string, localeIds: string[] | undefined) {
+  if (localeIds == null || localeIds.length === 0) {
+    return { relativePath }
+  }
+
+  const segments = relativePath.replaceAll("\\", "/").split("/")
+  const localeId = segments[0]
+  if (!localeIds.includes(localeId)) {
+    return { relativePath }
+  }
+
+  return { localeId, relativePath: segments.slice(1).join("/") }
 }
 
 function getRouteExtension(filePath: string): ".md" | ".mdx" | ".tsx" | null {

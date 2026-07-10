@@ -1,0 +1,59 @@
+---
+title: OpenAPI Reference
+description: Generate static API reference pages from a local OpenAPI 3.0 or 3.1 JSON or YAML specification.
+order: 11
+---
+
+# OpenAPI Reference
+
+Ardo can turn a local OpenAPI 3.0 or 3.1 specification into static MDX reference pages. The generated pages use the ordinary route, sidebar, search, sitemap, link-check, and LLM-output pipeline, so an API reference behaves like the rest of the documentation.
+
+## Configure a Local Spec
+
+Keep the specification in the repository and point Ardo at its relative path:
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "Pet API",
+      openapi: {
+        spec: "./openapi.yaml",
+        out: "api",
+      },
+    }),
+  ],
+})
+```
+
+`spec` accepts `.json`, `.yaml`, and `.yml` files. `out` defaults to `api`, so the reference index is available at `/api` and operations are grouped below tag paths such as `/api/pets/get-pets`.
+
+## Generated Content
+
+The initial static reference includes:
+
+- API title and description;
+- endpoint method and path;
+- tag-based grouping;
+- endpoint summary or description;
+- declared parameters and required markers;
+- declared response status codes and descriptions.
+
+Generated directories are marked as Ardo-managed. Edit the OpenAPI source, not the generated MDX files.
+
+## Static by Design
+
+The build never fetches a remote specification, sends requests to an API, stores credentials, or renders an interactive request console. This keeps builds reproducible and static deployments safe. Teams can add a custom React component for a project-specific playground later without changing the generated reference contract.
+
+## Validate
+
+Run the usual docs build after a specification change:
+
+```bash
+pnpm build
+```
+
+An invalid document, an unsupported OpenAPI major version, or a non-object specification fails the build with an actionable Ardo error.
