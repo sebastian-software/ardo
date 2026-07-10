@@ -1,0 +1,51 @@
+---
+title: Adopt Ardo in an Existing Project
+description: Give a coding agent reliable, versioned instructions for adding or updating Ardo without replacing your application architecture.
+order: 2.5
+---
+
+# Adopt Ardo in an Existing Project
+
+Ardo fits into an existing React, Vite, and React Router repository. Do not regenerate the project or replace its component system. Give a coding agent this instruction together with the repository:
+
+```text
+Set up Ardo in this repository. Read https://ardo-docs.dev/llms.txt first, then follow the "Adopt Ardo in an Existing Project" guide. Inspect the project, choose the closest Ardo reference project, propose a plan, and wait for approval before changing files. Preserve existing routing, components, styles, and deployment choices unless the plan explains a necessary change.
+```
+
+`/llms.txt` is a concise map of the documentation; `/llms-full.txt` contains the complete Markdown context when an agent needs more detail. Both are generated with the docs build and match the released framework version.
+
+## Choose a Reference Project
+
+| Existing project                          | Start from                                                                                        |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Product or internal docs in one React app | [Basic docs reference](https://github.com/sebastian-software/ardo/tree/main/examples/basic)       |
+| TypeScript library with public API pages  | [Library docs reference](https://github.com/sebastian-software/ardo/tree/main/examples/library)   |
+| Workspace with multiple packages          | [Monorepo docs reference](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo) |
+
+References are target shapes, not files to copy wholesale. Their READMEs identify required files, configurable seams, generated-file boundaries, and validation commands.
+
+## Agent Workflow
+
+1. Inspect `package.json`, the workspace layout, `vite.config.*`, `react-router.config.*`, the app root, existing routes, and deployment workflow.
+2. Read this guide, [Getting Started](/guide/getting-started), [Configuration](/guide/configuration), and the closest reference project.
+3. State a plan naming every file to add or change, the selected reference, and any assumption that cannot be verified.
+4. Wait for approval, then make the smallest focused change that keeps existing application behavior.
+5. Run the repository's applicable validation commands and report their results.
+
+## Safety Boundaries
+
+Never silently replace a customized `app/root.tsx`, providers, design-system components, deployment configuration, route model, workspace policy, credentials, or hosted-service choices. When a reference and the project disagree, retain the project choice and explain the adaptation. Ask for direction when a decision changes runtime behavior or deployment ownership.
+
+## Adopt or Migrate
+
+For adoption, follow [Getting Started](/guide/getting-started#manual-installation) and introduce Ardo around documentation routes rather than replacing the application shell. Use [Content Sources](/guide/content-sources) for Markdown owned elsewhere in the repository and [TypeDoc Integration](/guide/typedoc) for API pages.
+
+For an existing Ardo project, compare configuration and route layout with the matching current reference. Keep project-specific root/layout code and update only the framework integration, generated-route boundary, and documented configuration fields that differ. Run at least:
+
+```bash
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+Use `CI=true` for non-interactive pnpm environments. `pnpm create ardo` remains an optional convenience for a new empty directory, not the recommended path for a customized project.
