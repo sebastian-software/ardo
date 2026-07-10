@@ -19,6 +19,7 @@ import type {
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  OpenApiConfig,
   PageData,
   PageFrontmatter,
   ProjectMeta,
@@ -61,6 +62,7 @@ export type {
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  OpenApiConfig,
   PageData,
   PageFrontmatter,
   ProjectMeta,
@@ -197,6 +199,7 @@ function validateConfig(config: ArdoConfig): void {
   validateBrandConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
+  validateOpenApiConfig(config, errors)
 
   const sitemapPriority =
     typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
@@ -210,6 +213,29 @@ function validateConfig(config: ArdoConfig): void {
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
   }
+}
+
+function validateOpenApiConfig(config: ArdoConfig, errors: string[]): void {
+  const openapi = config.openapi
+  if (openapi == null) return
+
+  if (openapi.spec.trim() === "") {
+    errors.push("openapi.spec must be a non-empty local JSON or YAML file path.")
+  }
+  if (/^https?:\/\//iu.test(openapi.spec)) {
+    errors.push("openapi.spec must be a local file path; remote URLs are unsupported.")
+  }
+  if (openapi.out != null && !isValidGeneratedRoutePrefix(openapi.out)) {
+    errors.push("openapi.out must be a relative route prefix without dot segments.")
+  }
+}
+
+function isValidGeneratedRoutePrefix(value: string): boolean {
+  return (
+    value.trim() !== "" &&
+    !path.isAbsolute(value) &&
+    value.split(/[\\/]/u).every((segment) => segment !== "." && segment !== "..")
+  )
 }
 
 function validateI18nConfig(config: ArdoConfig, errors: string[]): void {

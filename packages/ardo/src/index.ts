@@ -12,6 +12,7 @@ export type {
   HeadConfig,
   LlmsConfig,
   MarkdownConfig,
+  OpenApiConfig,
   PageData,
   PageFrontmatter,
   ProjectMeta,

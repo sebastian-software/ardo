@@ -345,9 +345,14 @@ redirects outside Ardo.
 - **Type:** `false | { defaultLocale: string; locales: Array<{ id: string; label?: string }> }`
 - **Default:** `false`
 
-Reserves locale-prefixed canonical URLs for future localized docs. In 4.0 this is URL preparation
-only: Ardo does not load translated content, resolve locale fallbacks, or render a public locale
-switcher yet.
+Ardo builds every locale as an explicit static route tree and renders a locale switcher when more
+than one locale is configured. Put the translated documents in `app/routes/<locale>/`; for example,
+`app/routes/en/guide/getting-started.mdx` and
+`app/routes/de/guide/getting-started.mdx`.
+
+This is deliberately strict: every visible route must be present in every configured locale. The
+build fails for a missing translation or for a page outside a locale directory. There is no runtime
+fallback, so a localized URL never silently serves a different language.
 
 When enabled, Ardo always includes the locale in canonical public URLs. With versioning active, the
 version segment comes first:
@@ -371,7 +376,8 @@ ardo({
 
 This produces URLs such as `/v3/en/guide/getting-started`. The root redirect points to the current
 version plus the default locale, and the version root redirects to the default locale root. The
-default locale is not hidden when i18n is active.
+default locale is not hidden when i18n is active. Routes such as `app/routes/root.tsx` remain the
+application shell and are not locale documents.
 
 ### srcDir
 

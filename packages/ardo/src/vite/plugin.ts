@@ -18,6 +18,7 @@ import { createContentSourcePlugin } from "./content-sources-plugin"
 import { createCollectionContentSources } from "./collections"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
+import { findLocalizedRouteDiagnostics, formatLocalizedRouteDiagnostics } from "./i18n-routes"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { transformMarkdownMeta } from "./markdown-meta"
@@ -53,14 +54,7 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  | "collections"
-  | "content"
-  | "githubPages"
-  | "icons"
-  | "openapi"
-  | "routes"
-  | "routesDir"
-  | "typedoc"
+  "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
 >
 
 export type ArdoPluginOptions = {
@@ -112,7 +106,11 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
 
-  const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
+  const mainPluginOptions: MainPluginOptions = {
+    githubPages,
+    pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
+    routesDirOption,
+  }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
@@ -217,6 +215,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
         scanRouteManifest(state.routesDir, createRouteManifestOptions(resolvedConfig))
       )
+      reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       reportLinkDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
@@ -226,6 +225,19 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
   }
+}
+
+function reportLocalizedRouteDiagnostics(
+  context: { error: (message: string) => never },
+  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
+  config: ResolvedConfig
+) {
+  const diagnostics = findLocalizedRouteDiagnostics(manifest, config)
+  if (diagnostics.length === 0) return
+
+  context.error(
+    `[ardo] i18n requires a complete static route tree for every configured locale:\n${formatLocalizedRouteDiagnostics(diagnostics)}`
+  )
 }
 
 function isServerOutput(outputDir: string | undefined) {

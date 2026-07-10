@@ -195,7 +195,7 @@ export type DocumentationVersioningConfig = {
 }
 
 // =============================================================================
-// i18n URL Preparation
+// i18n
 // =============================================================================
 
 export type DocumentationLocale = {
@@ -206,9 +206,9 @@ export type DocumentationLocale = {
 }
 
 export type I18nConfig = {
-  /** Default locale. When i18n is active, canonical URLs include this locale. */
+  /** Default locale. When i18n is active, public URLs include this locale. */
   defaultLocale: string
-  /** Locales reserved for future localized docs. */
+  /** Locales that have their own complete static route tree. */
   locales: DocumentationLocale[]
 }
 
@@ -265,10 +265,9 @@ export type ArdoConfig = {
    */
   versioning?: DocumentationVersioningConfig | false
   /**
-   * Future locale-aware documentation routing.
-   *
-   * In 4.0 this reserves canonical locale-prefixed URLs only. It does not add
-   * translation loading, localized content fallback, or a public locale switcher.
+   * Strict static localization. Put each localized route under
+   * `app/routes/<locale>/`; Ardo rejects missing or unlocalized pages rather
+   * than serving an implicit fallback.
    */
   i18n?: false | I18nConfig
   /**

@@ -282,6 +282,18 @@ describe("resolveConfig", () => {
     ).toThrow("i18n.locales entries must be a non-empty locale id without slashes")
   })
 
+  it("rejects remote OpenAPI specs and unsafe output paths", () => {
+    expect(() =>
+      resolveConfig(
+        {
+          openapi: { out: "../api", spec: "https://example.com/openapi.yaml" },
+          title: "Docs",
+        },
+        "/project"
+      )
+    ).toThrow("openapi.spec must be a local file path")
+  })
+
   it("rejects unknown brand hue presets", () => {
     expect(() =>
       resolveConfig(
