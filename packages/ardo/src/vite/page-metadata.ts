@@ -212,7 +212,7 @@ function normalizePrevious(value: unknown): PageFrontmatterMetadata | undefined 
 }
 
 function normalizeRedirectFrom(value: unknown): PageFrontmatterMetadata | undefined {
-  if (typeof value === "string") return { redirectFrom: value }
+  if (typeof value === "string") return { redirectFrom: [value] }
   if (!Array.isArray(value)) return undefined
 
   const redirectFrom = value.filter(isString)

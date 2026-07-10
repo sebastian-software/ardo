@@ -28,7 +28,7 @@ import {
 } from "./icons"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
-import { getLocalizedPath, getVersionedPath } from "./version-path"
+import { getLocaleFromPath, getLocalizedPath, getVersionedPath } from "./version-path"
 
 // =============================================================================
 // Header Component
@@ -213,10 +213,11 @@ function ArdoLocaleSwitcher() {
   const i18n = config.i18n
   if (i18n === false || i18n == null || i18n.locales.length < 2) return null
 
-  const activeLocale = i18n.locales.find((locale) =>
-    location.pathname.split("/").includes(locale.id)
-  )
-  const currentLocale = activeLocale?.id ?? i18n.defaultLocale
+  const currentLocale =
+    getLocaleFromPath(
+      location.pathname,
+      i18n.locales.map((locale) => locale.id)
+    ) ?? i18n.defaultLocale
 
   function handleChange(event: ChangeEvent<HTMLSelectElement>) {
     const targetLocale = event.target.value

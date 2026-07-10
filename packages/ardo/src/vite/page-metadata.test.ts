@@ -54,4 +54,10 @@ describe("validatePageFrontmatter", () => {
       },
     ])
   })
+
+  it("normalizes a single redirect source to the redirect list contract", () => {
+    expect(validatePageFrontmatter({ redirectFrom: "/old-guide" }).frontmatter).toStrictEqual({
+      redirectFrom: ["/old-guide"],
+    })
+  })
 })
