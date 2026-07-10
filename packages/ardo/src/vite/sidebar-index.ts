@@ -24,6 +24,7 @@ type SidebarNode = {
 type SidebarGenerationOptions = RouteManifestOptions & SidebarConfig
 
 type SidebarScanContext = {
+  localePrefix?: string
   options: RouteManifestOptions
   rootDir: string
 }
@@ -57,6 +58,9 @@ export async function generateContextSidebars(
   options: RouteManifestOptions = {}
 ): Promise<Record<string, SidebarItem[]>> {
   try {
+    if (options.localeIds != null && options.localeIds.length > 0) {
+      return generateLocalizedContextSidebars(routesDir, options)
+    }
     const entries = await fs.readdir(routesDir, { withFileTypes: true })
     const sidebars: Record<string, SidebarItem[]> = {}
     for (const entry of entries) {
@@ -73,6 +77,32 @@ export async function generateContextSidebars(
   } catch {
     return {}
   }
+}
+
+async function generateLocalizedContextSidebars(
+  routesDir: string,
+  options: RouteManifestOptions
+): Promise<Record<string, SidebarItem[]>> {
+  const sidebars: Record<string, SidebarItem[]> = {}
+  for (const localeId of options.localeIds ?? []) {
+    const localeDir = path.join(routesDir, localeId)
+    let entries: Dirent[]
+    try {
+      entries = await fs.readdir(localeDir, { withFileTypes: true })
+    } catch {
+      continue
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue
+      const nodes = await scanSidebarDirectory(path.join(localeDir, entry.name), {
+        localePrefix: localeId,
+        options: { ...options, localeId, localeIds: undefined },
+        rootDir: localeDir,
+      })
+      if (nodes.length > 0) sidebars[`${localeId}:${entry.name}`] = nodes.map(stripOrderFromNode)
+    }
+  }
+  return sidebars
 }
 
 async function scanSidebarDirectory(
@@ -139,7 +169,7 @@ async function createDirectoryNode(
   return {
     text: metadata?.title ?? formatTitle(entry.name),
     link,
-    ...(identity == null ? {} : toSidebarRouteFields(identity)),
+    ...(identity == null ? {} : toSidebarRouteFields(identity, context.localePrefix)),
     items: children,
     collapsed: metadata?.collapsed,
     order: metadata?.order,
@@ -174,7 +204,7 @@ async function createMarkdownNode(
 
   return {
     text: title,
-    ...toSidebarRouteFields(identity),
+    ...toSidebarRouteFields(identity, context.localePrefix),
     order: frontmatter.order,
     sectionId: stripTrailingExtension(entry.name, extension),
   }
@@ -193,10 +223,11 @@ function createSidebarRouteIdentity(
 }
 
 function toSidebarRouteFields(
-  identity: RouteIdentity
+  identity: RouteIdentity,
+  localePrefix?: string
 ): Partial<RouteIdentity> & Pick<SidebarNode, "link"> {
   return {
-    link: identity.routePath,
+    link: localePrefix == null ? identity.routePath : `/${localePrefix}${identity.routePath}`,
     routePath: identity.routePath,
     publicPath: identity.publicPath,
     ...(identity.versionId == null ? {} : { versionId: identity.versionId }),

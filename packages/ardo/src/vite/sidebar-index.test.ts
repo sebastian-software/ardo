@@ -239,6 +239,34 @@ sidebar: false
     })
   })
 
+  it("keeps generated context sidebars separate by locale while preserving runtime locale links", async () => {
+    await writeRoute("en/guide/start.mdx", "---\ntitle: Start\n---\n")
+    await writeRoute("de/guide/start.mdx", "---\ntitle: Einstieg\n---\n")
+
+    await expect(
+      generateContextSidebars(routesDir, { basePath: "/v3/", localeIds: ["en", "de"] })
+    ).resolves.toStrictEqual({
+      "de:guide": [
+        {
+          text: "Einstieg",
+          link: "/de/guide/start",
+          routePath: "/guide/start",
+          publicPath: "/v3/de/guide/start",
+          localeId: "de",
+        },
+      ],
+      "en:guide": [
+        {
+          text: "Start",
+          link: "/en/guide/start",
+          routePath: "/guide/start",
+          publicPath: "/v3/en/guide/start",
+          localeId: "en",
+        },
+      ],
+    })
+  })
+
   it("renders a folder as a leaf link when its index sets sidebar: leaf", async () => {
     await writeRoute(
       "api/index.md",
