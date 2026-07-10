@@ -146,6 +146,13 @@ export type TypeDocConfig = {
   }
 }
 
+export type OpenApiConfig = {
+  /** Local OpenAPI 3.0/3.1 JSON or YAML file. Remote URLs are intentionally unsupported. */
+  spec: string
+  /** Generated route prefix. Defaults to `api`. */
+  out?: string
+}
+
 // =============================================================================
 // Project Metadata (auto-detected from package.json)
 // =============================================================================
@@ -270,6 +277,8 @@ export type ArdoConfig = {
    * - `{ ... }`: Enable with custom config
    */
   typedoc?: true | TypeDocConfig
+  /** Static OpenAPI 3.0/3.1 reference generation. */
+  openapi?: OpenApiConfig
   /** Custom Vite configuration */
   vite?: Record<string, unknown>
   /**
@@ -446,6 +455,10 @@ export type ResolvedConfig = {
   contentDir: string
   /** Optional for compatibility with manually constructed test/config fixtures. */
   validation?: ContentValidationConfig
+  openapi?: OpenApiConfig
 } & Required<
-  Omit<ArdoConfig, "buildHash" | "buildTime" | "project" | "typedoc" | "validation" | "vite">
+  Omit<
+    ArdoConfig,
+    "buildHash" | "buildTime" | "openapi" | "project" | "typedoc" | "validation" | "vite"
+  >
 >

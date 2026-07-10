@@ -118,6 +118,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     linkCheck: config.linkCheck ?? {},
     redirects: config.redirects ?? [],
     validation: config.validation ?? {},
+    openapi: config.openapi,
     versioning,
     i18n,
     markdown: {

@@ -16,6 +16,7 @@ import {
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createContentSourcePlugin } from "./content-sources-plugin"
 import { createCollectionContentSources } from "./collections"
+import { createOpenApiPlugin } from "./openapi-plugin"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
@@ -52,7 +53,14 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
+  | "collections"
+  | "content"
+  | "githubPages"
+  | "icons"
+  | "openapi"
+  | "routes"
+  | "routesDir"
+  | "typedoc"
 >
 
 export type ArdoPluginOptions = {
@@ -92,6 +100,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     content,
     collections,
     icons = {},
+    openapi,
     routes,
     typedoc,
     githubPages = true,
@@ -105,6 +114,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
 
   const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
   addContentSourcePlugin(
     plugins,

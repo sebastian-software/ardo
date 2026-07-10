@@ -92,7 +92,8 @@
     "shiki": "^4.1.0",
     "typedoc": "^0.28.19",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0"
+    "unist-util-visit": "^5.1.0",
+    "yaml": "^2.9.0"
   },
   "peerDependencies": {
     "@react-router/dev": "^8.0.0",
