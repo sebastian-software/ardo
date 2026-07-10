@@ -37,3 +37,21 @@ Ardo writes mapped files under the selected `to` directory and marks it as gener
 ## Boundaries
 
 Content sources intentionally do not fetch remote URLs, act as a CMS, or transform arbitrary file types. They are a local-filesystem bridge while [schema-backed collections](https://github.com/sebastian-software/ardo/issues/196) evolve.
+
+## Schema-Backed Collections
+
+Use `collections` when the same local Markdown set should both materialize into routes and be available to a custom React route as typed build data:
+
+```ts
+import { ardo, defineCollection } from "ardo/vite"
+
+const recipes = defineCollection<{ title: string }>({
+  from: "../../recipes",
+  to: "recipes",
+  schema: (data) => ({ title: String(data.title) }),
+})
+
+ardo({ title: "Docs", collections: { recipes } })
+```
+
+Import `virtual:ardo/collections` from a custom route to read the generated static records. Collections remain local and static: the schema runs during the build, while the generated route pages continue through the normal sidebar, search, sitemap, redirect, and LLM pipelines.

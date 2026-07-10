@@ -1,6 +1,8 @@
 import type { ResolvedConfig } from "../config/types"
+import type { CollectionsConfig } from "./collections"
 
 import { serializeVirtualConfigModule } from "./brand"
+import { readCollections } from "./collections"
 import { detectGitHash } from "./git-utils"
 import { createRouteManifestOptions } from "./route-manifest"
 import { generateSearchIndex } from "./search-index"
@@ -9,14 +11,17 @@ import { generateContextSidebars } from "./sidebar-index"
 export const VIRTUAL_MODULE_ID = "virtual:ardo/config"
 export const VIRTUAL_GENERATED_SIDEBARS_ID = "virtual:ardo/generated-sidebars"
 export const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
+export const VIRTUAL_COLLECTIONS_ID = "virtual:ardo/collections"
 
 export const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
   [VIRTUAL_GENERATED_SIDEBARS_ID]: `\0${VIRTUAL_GENERATED_SIDEBARS_ID}`,
   [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
+  [VIRTUAL_COLLECTIONS_ID]: `\0${VIRTUAL_COLLECTIONS_ID}`,
 }
 
 export type ArdoVirtualModuleState = {
+  collections?: CollectionsConfig
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -63,6 +68,14 @@ export async function loadVirtualModule(
       createRouteManifestOptions(state.resolvedConfig)
     )
     return `export default ${JSON.stringify(searchIndex)}`
+  }
+
+  if (id === RESOLVED_IDS[VIRTUAL_COLLECTIONS_ID]) {
+    const collections = await readCollections({
+      collections: state.collections,
+      root: state.resolvedConfig.root,
+    })
+    return `export const collections = ${JSON.stringify(collections)}; export function getCollection(name) { return collections[name] ?? []; } export default collections;`
   }
 
   return undefined

@@ -3,6 +3,7 @@ import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "v
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { ContentSourceMapping } from "./content-sources"
+import type { CollectionsConfig } from "./collections"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
@@ -14,6 +15,7 @@ import {
 } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createContentSourcePlugin } from "./content-sources-plugin"
+import { createCollectionContentSources } from "./collections"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
@@ -29,11 +31,13 @@ import {
   loadVirtualModule,
   RESOLVED_IDS,
   resolveVirtualModuleId,
+  VIRTUAL_COLLECTIONS_ID,
   VIRTUAL_GENERATED_SIDEBARS_ID,
   VIRTUAL_SEARCH_ID,
 } from "./virtual-modules"
 
 type PluginState = {
+  collections?: CollectionsConfig
   deploymentBase?: string
   isSsrBuild?: boolean
   resolvedConfig?: ResolvedConfig
@@ -48,7 +52,7 @@ type MainPluginOptions = {
 
 type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
+  "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
 >
 
 export type ArdoPluginOptions = {
@@ -60,6 +64,8 @@ export type ArdoPluginOptions = {
    * collections land.
    */
   content?: ContentSourceMapping[]
+  /** Schema-backed local Markdown/MDX collections that also materialize into routes. */
+  collections?: CollectionsConfig
   /**
    * Generate the lean favicon set recommended for modern websites:
    * /favicon.ico, /icon.svg, and /apple-touch-icon.png.
@@ -84,6 +90,7 @@ export { detectGitHubBasename } from "./git-utils"
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
     content,
+    collections,
     icons = {},
     routes,
     typedoc,
@@ -91,12 +98,19 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     routesDir: routesDirOption,
     ...pressConfig
   } = options
-  const state: PluginState = { routesDir: resolveRoutesDir(process.cwd(), routesDirOption) }
+  const state: PluginState = {
+    collections,
+    routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
+  }
 
   const mainPluginOptions: MainPluginOptions = { githubPages, pressConfig, routesDirOption }
   const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
-  addContentSourcePlugin(plugins, content, routesDirOption)
+  addContentSourcePlugin(
+    plugins,
+    [...(content ?? []), ...createCollectionContentSources(collections)],
+    routesDirOption
+  )
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, routesDirOption)
 
@@ -336,7 +350,11 @@ function shouldInvalidateRouteVirtualModules(changedPath: string, routesDir: str
 }
 
 function invalidateVirtualModules(server: ViteDevServer): void {
-  const virtualIds = [RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID], RESOLVED_IDS[VIRTUAL_SEARCH_ID]]
+  const virtualIds = [
+    RESOLVED_IDS[VIRTUAL_COLLECTIONS_ID],
+    RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID],
+    RESOLVED_IDS[VIRTUAL_SEARCH_ID],
+  ]
 
   for (const id of virtualIds) {
     const module = server.moduleGraph.getModuleById(id)
