@@ -16,9 +16,9 @@ export function createOpenApiPlugin(
   let generated = false
   return {
     name: "ardo:openapi",
-    async config(userConfig) {
+    async config(userConfig, env) {
       root = userConfig.root ?? root
-      if (generated) return
+      if (env.isSsrBuild || generated) return
       generated = true
       const routesDir = resolveRoutesDir(root, routesDirOption)
       await generateOpenApiDocs({ config, root, routesDir })
@@ -27,9 +27,6 @@ export function createOpenApiPlugin(
         routesDir,
         routesFilePath: path.join(root, "app", "routes.ts"),
       })
-    },
-    buildEnd() {
-      generated = false
     },
   }
 }
