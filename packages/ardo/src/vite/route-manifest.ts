@@ -37,6 +37,7 @@ export type RouteManifestEntry = {
 
 export type RouteManifestOptions = {
   basePath?: string
+  localeIds?: string[]
   localeId?: string
   versionId?: string
 }
@@ -52,6 +53,7 @@ export function createRouteManifestOptions(
 ): RouteManifestOptions {
   return {
     basePath: config.base,
+    localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),
     localeId: getDefaultLocaleId(config.i18n),
     versionId: config.versioning === false ? undefined : config.versioning.current,
   }
@@ -103,10 +105,11 @@ async function createManifestEntry(
   const data = toFrontmatterRecord(parsed.data)
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
+  const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
   const identity = createRouteIdentity({
     basePath: options.basePath,
-    localeId: options.localeId,
-    routePath: toRoutePath(relativePath, extension),
+    localeId: localizedRoute.localeId ?? options.localeId,
+    routePath: toRoutePath(localizedRoute.relativePath, extension),
     versionId: options.versionId,
   })
   const frontmatterResult = validatePageFrontmatter(data)
@@ -126,6 +129,20 @@ async function createManifestEntry(
     routePath: identity.routePath,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
+}
+
+function splitLocaleRoute(relativePath: string, localeIds: string[] | undefined) {
+  if (localeIds == null || localeIds.length === 0) {
+    return { relativePath }
+  }
+
+  const segments = relativePath.replaceAll("\\", "/").split("/")
+  const localeId = segments[0]
+  if (localeId == null || !localeIds.includes(localeId)) {
+    return { relativePath }
+  }
+
+  return { localeId, relativePath: segments.slice(1).join("/") }
 }
 
 function getRouteExtension(filePath: string): ".md" | ".mdx" | ".tsx" | null {

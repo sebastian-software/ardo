@@ -143,4 +143,19 @@ title: Guide
       },
     ])
   })
+
+  it("reads locale directory names into metadata without making them part of the logical route", async () => {
+    await fs.mkdir(path.join(tempDir, "de", "guide"), { recursive: true })
+    await fs.writeFile(path.join(tempDir, "de", "guide", "start.mdx"), "# Start", "utf8")
+
+    const [entry] = await scanRouteManifest(tempDir, {
+      basePath: "/v3/",
+      localeIds: ["en", "de"],
+    })
+
+    expect(entry).toMatchObject({
+      metadata: { localeId: "de", publicPath: "/v3/de/guide/start", routePath: "/guide/start" },
+      routePath: "/guide/start",
+    })
+  })
 })
