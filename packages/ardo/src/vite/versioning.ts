@@ -1,7 +1,6 @@
 import type { ArdoConfig } from "../config/types"
 
 import {
-  joinUrlPath,
   normalizeBasePath,
   resolveVersionedBase,
   resolveVersioningConfig,
@@ -27,11 +26,7 @@ export function resolveVersionedMainBase(input: VersionedMainBaseInput): Version
   const logMessages: string[] = []
   const githubPagesBase = resolveGitHubPagesBase(input)
   const deploymentBase = resolveDeploymentBase(input, githubPagesBase)
-  const versionBase = resolveViteVersionedBase(
-    input.pressConfig.i18n,
-    input.pressConfig.versioning,
-    deploymentBase
-  )
+  const versionBase = resolveViteVersionedBase(input.pressConfig.versioning, deploymentBase)
   const viteBase = versionBase ?? input.pressConfig.base ?? githubPagesBase
 
   if (githubPagesBase != null) {
@@ -75,7 +70,6 @@ function resolveDeploymentBase(
 }
 
 function resolveViteVersionedBase(
-  i18n: ArdoConfig["i18n"],
   versioning: ArdoConfig["versioning"],
   deploymentBase: string
 ): string | undefined {
@@ -84,10 +78,7 @@ function resolveViteVersionedBase(
     return undefined
   }
 
-  const versionedBase = resolveVersionedBase(deploymentBase, resolvedVersioning)
-  return i18n === false || i18n == null
-    ? versionedBase
-    : joinUrlPath(versionedBase, i18n.defaultLocale)
+  return resolveVersionedBase(deploymentBase, resolvedVersioning)
 }
 
 function stripVersionPath(base: string, versionPath: string): string {
