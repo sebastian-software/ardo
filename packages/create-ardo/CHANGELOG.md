@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v4.1.0...create-ardo-v4.2.0) (2026-07-10)
+
+
+### Bug Fixes
+
+* harden v4.2 release consumers and OpenAPI builds ([52064c5](https://github.com/sebastian-software/ardo/commit/52064c500db35ffa2afd6b8a48727432aa7a19b8))
+* require lucide for UI consumers ([33b72c6](https://github.com/sebastian-software/ardo/commit/33b72c640484c34765466686f31bd7b3442ffe2e))
+
 ## [4.1.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v4.0.0...create-ardo-v4.1.0) (2026-07-09)
 
 

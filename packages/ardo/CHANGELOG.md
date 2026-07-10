@@ -1,5 +1,31 @@
 # Changelog
 
+## [4.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.1.0...ardo-v4.2.0) (2026-07-10)
+
+
+### Features
+
+* add external content collection reference ([5638c69](https://github.com/sebastian-software/ardo/commit/5638c696be07faa13bb493b5889f6d3505879d0a))
+* add locale switcher ([0a3fadf](https://github.com/sebastian-software/ardo/commit/0a3fadf693cbf8b1a43792ccc8de2ba583c91f23))
+* add static content collections ([714cfca](https://github.com/sebastian-software/ardo/commit/714cfca111b8b771c2907320d3465f23fddace4a))
+* deliver v4.2 universal documentation workflows ([8e49e3c](https://github.com/sebastian-software/ardo/commit/8e49e3cbb58c6bb62320502db86dc0d48a58cdc5))
+* detect locale content routes ([96bc520](https://github.com/sebastian-software/ardo/commit/96bc5208f8cb811e5ea58895bca220303634d9c5))
+* enforce static documentation invariants ([d3a9e9e](https://github.com/sebastian-software/ardo/commit/d3a9e9eb9c25db6b4a6567449156f588c4cbc7c8))
+* expose typed collection records ([4e55652](https://github.com/sebastian-software/ardo/commit/4e55652e51b133dccbe2e15c0cb4ba78be0781a6))
+* generate locale-specific sidebars ([16e75e8](https://github.com/sebastian-software/ardo/commit/16e75e8159826c220299d33c69dbd422920ec6c3))
+* generate static OpenAPI references ([9a976dd](https://github.com/sebastian-software/ardo/commit/9a976dd22383a32786e1cb2f9372b8ef17aac16b))
+* validate page frontmatter metadata ([70470db](https://github.com/sebastian-software/ardo/commit/70470dbff482d58e29a278e0d9724a4e4176bf85))
+
+
+### Bug Fixes
+
+* avoid duplicate openapi generation ([853756b](https://github.com/sebastian-software/ardo/commit/853756b95cac3526b755bd5befb9ffb8a0bae23b))
+* harden v4.2 release consumers and OpenAPI builds ([52064c5](https://github.com/sebastian-software/ardo/commit/52064c500db35ffa2afd6b8a48727432aa7a19b8))
+* keep i18n routes below version base ([794e6d0](https://github.com/sebastian-software/ardo/commit/794e6d0aa8dd292db00fb15b9a7736f1f8ddcb52))
+* preserve frontmatter redirects ([49f892e](https://github.com/sebastian-software/ardo/commit/49f892ee100b6f6cfdf115f58b091c5381854ca1))
+* require lucide for UI consumers ([33b72c6](https://github.com/sebastian-software/ardo/commit/33b72c640484c34765466686f31bd7b3442ffe2e))
+* satisfy v4.2 lint gate ([73b6189](https://github.com/sebastian-software/ardo/commit/73b61894a2e4e93e2ceafe239eb51c1fc7b66680))
+
 ## [4.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.0.0...ardo-v4.1.0) (2026-07-09)
 
 
