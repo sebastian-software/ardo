@@ -37,6 +37,9 @@ declare module "virtual:ardo/collections" {
   import type { CollectionEntry } from "ardo/vite"
 
   const collections: Record<string, CollectionEntry[]>
+  export function getCollection<TData = Record<string, unknown>>(
+    name: string
+  ): CollectionEntry<TData>[]
   export default collections
 }
 

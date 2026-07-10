@@ -35,12 +35,31 @@ describe("collections", () => {
       recipes: [
         {
           data: { title: "Quickstart" },
-          sourcePath: path.join(tempDir, "recipes", "quickstart.md"),
+          sourcePath: "recipes/quickstart.md",
         },
       ],
     })
     expect(createCollectionContentSources(collections)).toStrictEqual([
       { from: "recipes", to: "recipes" },
     ])
+  })
+
+  it("makes schema failures actionable", async () => {
+    await fs.writeFile(path.join(tempDir, "invalid.md"), "---\ntitle: 42\n---\n# Invalid\n")
+
+    await expect(
+      readCollections({
+        collections: {
+          pages: {
+            from: "invalid.md",
+            schema: () => {
+              throw new Error("title must be a string")
+            },
+            to: "pages",
+          },
+        },
+        root: tempDir,
+      })
+    ).rejects.toThrow("Failed to validate collection entry")
   })
 })

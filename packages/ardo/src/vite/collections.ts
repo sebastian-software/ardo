@@ -39,7 +39,11 @@ export async function readCollections(input: {
 }): Promise<Record<string, CollectionEntry[]>> {
   const result: Record<string, CollectionEntry[]> = {}
   for (const [name, definition] of Object.entries(input.collections ?? {})) {
-    result[name] = await readCollection(path.resolve(input.root, definition.from), definition)
+    const entries = await readCollection(path.resolve(input.root, definition.from), definition)
+    result[name] = entries.map((entry) => ({
+      ...entry,
+      sourcePath: path.relative(input.root, entry.sourcePath).replaceAll("\\", "/"),
+    }))
   }
   return result
 }
@@ -56,10 +60,16 @@ async function readCollection(
     if (!isMarkdownFile(filePath)) continue
     const parsed = matter(await fs.readFile(filePath, "utf8"))
     const data = toRecord(parsed.data)
-    entries.push({
-      data: definition.schema == null ? data : definition.schema(data),
-      sourcePath: filePath,
-    })
+    try {
+      entries.push({
+        data: definition.schema == null ? data : definition.schema(data),
+        sourcePath: filePath,
+      })
+    } catch (error) {
+      throw new Error(
+        `[ardo] Failed to validate collection entry ${filePath}: ${formatUnknownError(error)}`
+      )
+    }
   }
 
   return entries
@@ -82,4 +92,8 @@ function isMarkdownFile(filePath: string): boolean {
 
 function toRecord(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value != null && !Array.isArray(value) ? { ...value } : {}
+}
+
+function formatUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }

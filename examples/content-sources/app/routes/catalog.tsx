@@ -1,7 +1,12 @@
-import collections from "virtual:ardo/collections"
+import { getCollection } from "virtual:ardo/collections"
+
+type Recipe = {
+  summary: string
+  title: string
+}
 
 export default function CatalogPage() {
-  const recipes = collections.recipes ?? []
+  const recipes = getCollection<Recipe>("recipes")
 
   return (
     <main>
@@ -12,7 +17,7 @@ export default function CatalogPage() {
       <ul>
         {recipes.map((recipe) => (
           <li key={recipe.sourcePath}>
-            <strong>{String(recipe.data.title)}</strong>: {String(recipe.data.summary)}
+            <strong>{recipe.data.title}</strong>: {recipe.data.summary}
           </li>
         ))}
       </ul>
