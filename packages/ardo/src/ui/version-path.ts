@@ -10,6 +10,19 @@ export function getVersionedPath(pathname: string, currentBase: string, targetBa
   return `${normalizedTarget.replace(/\/$/u, "")}${relativePath}`
 }
 
+export function getLocalizedPath(
+  pathname: string,
+  currentLocale: string,
+  targetLocale: string
+): string {
+  const segments = pathname.split("/")
+  const localeIndex = segments.findIndex((segment) => segment === currentLocale)
+  if (localeIndex === -1) return pathname
+
+  segments[localeIndex] = targetLocale
+  return segments.join("/") || "/"
+}
+
 function getPathWithinBase(pathname: string, base: string) {
   const normalizedBase = normalizeBasePath(base).replace(/\/$/u, "")
   if (normalizedBase === "") {

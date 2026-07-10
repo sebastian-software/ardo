@@ -28,7 +28,7 @@ import {
 } from "./icons"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
-import { getVersionedPath } from "./version-path"
+import { getLocalizedPath, getVersionedPath } from "./version-path"
 
 // =============================================================================
 // Header Component
@@ -184,6 +184,7 @@ export function ArdoHeader({
           <div className={styles.headerRight}>
             {nav != null && <div className={styles.desktopNav}>{nav}</div>}
             <ArdoVersionSwitcher />
+            <ArdoLocaleSwitcher />
             {themeToggle && <ArdoThemeToggle />}
             {actions}
           </div>
@@ -203,6 +204,41 @@ export function ArdoHeader({
         </MobileSlidePanel>
       )}
     </>
+  )
+}
+
+function ArdoLocaleSwitcher() {
+  const config = useArdoConfig()
+  const location = useLocation()
+  const i18n = config.i18n
+  if (i18n === false || i18n == null || i18n.locales.length < 2) return null
+
+  const activeLocale = i18n.locales.find((locale) =>
+    location.pathname.split("/").includes(locale.id)
+  )
+  const currentLocale = activeLocale?.id ?? i18n.defaultLocale
+
+  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
+    const targetLocale = event.target.value
+    if (targetLocale === currentLocale) return
+    const pathname = getLocalizedPath(location.pathname, currentLocale, targetLocale)
+    globalThis.location.assign(`${pathname}${location.search}${location.hash}`)
+  }
+
+  return (
+    <select
+      aria-label="Documentation language"
+      className={styles.versionSwitcher}
+      onChange={handleChange}
+      title="Documentation language"
+      value={currentLocale}
+    >
+      {i18n.locales.map((locale) => (
+        <option key={locale.id} value={locale.id}>
+          {locale.label ?? locale.id}
+        </option>
+      ))}
+    </select>
   )
 }
 
