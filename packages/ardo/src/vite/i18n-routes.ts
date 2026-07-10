@@ -1,5 +1,4 @@
 import type { ResolvedConfig } from "../config/types"
-
 import type { RouteManifestEntry } from "./route-manifest"
 
 export type LocalizedRouteDiagnostic = {
@@ -20,21 +19,39 @@ export function findLocalizedRouteDiagnostics(
 ): LocalizedRouteDiagnostic[] {
   if (config.i18n === false) return []
 
-  const diagnostics: LocalizedRouteDiagnostic[] = []
   const localeIds = config.i18n.locales.map((locale) => locale.id)
-  const localized = new Map<string, Set<string>>()
+  const { diagnostics, localized } = collectLocalizedRoutes(manifest)
+  diagnostics.push(...findMissingLocalizedRoutes(localized, localeIds))
 
+  return diagnostics.sort((left, right) =>
+    `${left.routePath}:${left.localeId ?? ""}`.localeCompare(
+      `${right.routePath}:${right.localeId ?? ""}`
+    )
+  )
+}
+
+function collectLocalizedRoutes(
+  manifest: Array<Pick<RouteManifestEntry, "routePath" | "sourceLocaleId">>
+): { diagnostics: LocalizedRouteDiagnostic[]; localized: Map<string, Set<string>> } {
+  const diagnostics: LocalizedRouteDiagnostic[] = []
+  const localized = new Map<string, Set<string>>()
   for (const entry of manifest) {
     if (entry.sourceLocaleId == null) {
       diagnostics.push({ routePath: entry.routePath, type: "unlocalized" })
-      continue
+    } else {
+      const routes = localized.get(entry.sourceLocaleId) ?? new Set<string>()
+      routes.add(entry.routePath)
+      localized.set(entry.sourceLocaleId, routes)
     }
-
-    const routes = localized.get(entry.sourceLocaleId) ?? new Set<string>()
-    routes.add(entry.routePath)
-    localized.set(entry.sourceLocaleId, routes)
   }
+  return { diagnostics, localized }
+}
 
+function findMissingLocalizedRoutes(
+  localized: Map<string, Set<string>>,
+  localeIds: string[]
+): LocalizedRouteDiagnostic[] {
+  const diagnostics: LocalizedRouteDiagnostic[] = []
   const routePaths = new Set([...localized.values()].flatMap((routes) => [...routes]))
   for (const routePath of routePaths) {
     for (const localeId of localeIds) {
@@ -43,12 +60,7 @@ export function findLocalizedRouteDiagnostics(
       }
     }
   }
-
-  return diagnostics.sort((left, right) =>
-    `${left.routePath}:${left.localeId ?? ""}`.localeCompare(
-      `${right.routePath}:${right.localeId ?? ""}`
-    )
-  )
+  return diagnostics
 }
 
 export function formatLocalizedRouteDiagnostics(diagnostics: LocalizedRouteDiagnostic[]): string {
@@ -59,4 +71,17 @@ export function formatLocalizedRouteDiagnostics(diagnostics: LocalizedRouteDiagn
         : `- ${diagnostic.routePath}: missing ${diagnostic.localeId} translation`
     )
     .join("\n")
+}
+
+export function reportLocalizedRouteDiagnostics(
+  context: { error: (message: string) => never },
+  manifest: Array<Pick<RouteManifestEntry, "routePath" | "sourceLocaleId">>,
+  config: Pick<ResolvedConfig, "i18n">
+) {
+  const diagnostics = findLocalizedRouteDiagnostics(manifest, config)
+  if (diagnostics.length === 0) return
+
+  context.error(
+    `[ardo] i18n requires a complete static route tree for every configured locale:\n${formatLocalizedRouteDiagnostics(diagnostics)}`
+  )
 }

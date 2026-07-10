@@ -2,27 +2,24 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
-import type { ContentSourceMapping } from "./content-sources"
 import type { CollectionsConfig } from "./collections"
+import type { ContentSourceMapping } from "./content-sources"
 
 import { resolveConfig } from "../config/index"
 import { normalizeViteBaseForArdo } from "./base"
 import { resolveBrandIconOptions } from "./brand"
-import {
-  checkInternalLinks,
-  createBuildOutputAssets,
-  formatLinkCheckDiagnostics,
-} from "./build-outputs"
+import { createBuildOutputAssets } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
-import { createContentSourcePlugin } from "./content-sources-plugin"
 import { createCollectionContentSources } from "./collections"
-import { createOpenApiPlugin } from "./openapi-plugin"
+import { createContentSourcePlugin } from "./content-sources-plugin"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
-import { findLocalizedRouteDiagnostics, formatLocalizedRouteDiagnostics } from "./i18n-routes"
+import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { type ArdoIconOptions, createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
+import { reportLinkDiagnostics } from "./link-diagnostics"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
+import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
@@ -227,39 +224,8 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
   }
 }
 
-function reportLocalizedRouteDiagnostics(
-  context: { error: (message: string) => never },
-  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
-  config: ResolvedConfig
-) {
-  const diagnostics = findLocalizedRouteDiagnostics(manifest, config)
-  if (diagnostics.length === 0) return
-
-  context.error(
-    `[ardo] i18n requires a complete static route tree for every configured locale:\n${formatLocalizedRouteDiagnostics(diagnostics)}`
-  )
-}
-
 function isServerOutput(outputDir: string | undefined) {
   return outputDir?.replaceAll("\\", "/").endsWith("/server") === true
-}
-
-function reportLinkDiagnostics(
-  context: { error: (message: string) => never; warn: (message: string) => void },
-  manifest: Awaited<ReturnType<typeof scanRouteManifest>>,
-  config: ResolvedConfig
-) {
-  const diagnostics = checkInternalLinks(manifest, config)
-  if (diagnostics.length === 0) {
-    return
-  }
-
-  const message = `[ardo] Broken internal links found:\n${formatLinkCheckDiagnostics(diagnostics)}`
-  if (config.linkCheck.level === "error") {
-    context.error(message)
-  } else {
-    context.warn(message)
-  }
 }
 
 function createMainConfig(

@@ -38,7 +38,9 @@ import type {
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
+import { isArdoConfig } from "./guards"
 import { resolveI18nConfig } from "./i18n"
+import { validateOpenApiConfig } from "./openapi"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
@@ -83,7 +85,6 @@ export type {
 export function defineConfig(config: ArdoConfig): ArdoConfig {
   return config
 }
-
 export const defaultMarkdownConfig: MarkdownConfig = {
   theme: {
     light: "github-light-default",
@@ -215,29 +216,6 @@ function validateConfig(config: ArdoConfig): void {
   }
 }
 
-function validateOpenApiConfig(config: ArdoConfig, errors: string[]): void {
-  const openapi = config.openapi
-  if (openapi == null) return
-
-  if (openapi.spec.trim() === "") {
-    errors.push("openapi.spec must be a non-empty local JSON or YAML file path.")
-  }
-  if (/^https?:\/\//iu.test(openapi.spec)) {
-    errors.push("openapi.spec must be a local file path; remote URLs are unsupported.")
-  }
-  if (openapi.out != null && !isValidGeneratedRoutePrefix(openapi.out)) {
-    errors.push("openapi.out must be a relative route prefix without dot segments.")
-  }
-}
-
-function isValidGeneratedRoutePrefix(value: string): boolean {
-  return (
-    value.trim() !== "" &&
-    !path.isAbsolute(value) &&
-    value.split(/[\\/]/u).every((segment) => segment !== "." && segment !== "..")
-  )
-}
-
 function validateI18nConfig(config: ArdoConfig, errors: string[]): void {
   const i18n = config.i18n
   if (i18n == null || i18n === false) {
@@ -353,12 +331,4 @@ function isValidUrl(value: string): boolean {
   } catch {
     return false
   }
-}
-
-function isArdoConfig(value: unknown): value is ArdoConfig {
-  if (typeof value !== "object" || value === null) {
-    return false
-  }
-
-  return "title" in value && typeof value.title === "string"
 }

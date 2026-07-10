@@ -16,7 +16,7 @@ export function getLocalizedPath(
   targetLocale: string
 ): string {
   const segments = pathname.split("/")
-  const localeIndex = segments.findIndex((segment) => segment === currentLocale)
+  const localeIndex = segments.indexOf(currentLocale)
   if (localeIndex === -1) return pathname
 
   segments[localeIndex] = targetLocale

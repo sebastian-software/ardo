@@ -52,7 +52,7 @@ describe("collections", () => {
         collections: {
           pages: {
             from: "invalid.md",
-            schema: () => {
+            schema() {
               throw new Error("title must be a string")
             },
             to: "pages",

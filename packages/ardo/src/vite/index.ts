@@ -15,13 +15,13 @@ export {
   type LoadDocResult,
 } from "../runtime/loader"
 export { generateSidebar, type SidebarGenerationOptions } from "../runtime/sidebar"
-export { type ContentSourceFile, type ContentSourceMapping } from "./content-sources"
 export {
-  defineCollection,
   type CollectionDefinition,
   type CollectionEntry,
   type CollectionsConfig,
+  defineCollection,
 } from "./collections"
+export { type ContentSourceFile, type ContentSourceMapping } from "./content-sources"
 
 export {
   type ArdoGitHubPagesOptions,

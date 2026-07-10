@@ -3,6 +3,7 @@ import path from "node:path"
 import { parse } from "yaml"
 
 import type { OpenApiConfig } from "../config/types"
+
 import { prepareGeneratedDocsDirectory } from "../typedoc/generator"
 
 type OpenApiDocument = {
@@ -29,7 +30,7 @@ export async function generateOpenApiDocs(input: {
 }): Promise<number> {
   const config = { out: "api", ...input.config }
   const document = await readOpenApiDocument(path.resolve(input.root, config.spec))
-  if (document.openapi == null || !document.openapi.startsWith("3.")) {
+  if (!document.openapi?.startsWith("3.")) {
     throw new Error("[ardo] openapi.spec must contain an OpenAPI 3.0 or 3.1 document.")
   }
 
@@ -57,11 +58,11 @@ async function readOpenApiDocument(filePath: string): Promise<OpenApiDocument> {
   if (typeof value !== "object" || value == null || Array.isArray(value)) {
     throw new Error("[ardo] openapi.spec must contain an object document.")
   }
-  return value as OpenApiDocument
+  return value
 }
 
 function collectOperations(document: OpenApiDocument) {
-  const operations: Array<Operation & { method: string; path: string; slug: string; tag: string }> =
+  const operations: Array<{ method: string; path: string; slug: string; tag: string } & Operation> =
     []
   for (const [routePath, pathItem] of Object.entries(document.paths ?? {})) {
     for (const [method, operation] of Object.entries(pathItem)) {
@@ -93,9 +94,11 @@ function renderIndex(
 }
 
 function renderOperation(operation: ReturnType<typeof collectOperations>[number]): string {
-  const parameters = operation.parameters?.length
-    ? `## Parameters\n\n${operation.parameters.map((parameter) => `- \`${parameter.name ?? ""}\` (${parameter.in ?? ""}${parameter.required ? ", required" : ""}): ${parameter.description ?? ""}`).join("\n")}\n`
-    : ""
+  const parametersList = operation.parameters ?? []
+  const parameters =
+    parametersList.length > 0
+      ? `## Parameters\n\n${parametersList.map((parameter) => `- \`${parameter.name ?? ""}\` (${parameter.in ?? ""}${parameter.required ? ", required" : ""}): ${parameter.description ?? ""}`).join("\n")}\n`
+      : ""
   const responses =
     operation.responses == null
       ? ""
@@ -110,6 +113,6 @@ function slugify(value: string): string {
     value
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/gu, "-")
-      .replaceAll(/(^-|-$)/gu, "") || "endpoint"
+      .replaceAll(/^-|-$/gu, "") || "endpoint"
   )
 }

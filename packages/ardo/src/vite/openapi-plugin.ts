@@ -1,8 +1,11 @@
 import type { Plugin } from "vite"
+
 import path from "node:path"
+
 import type { OpenApiConfig } from "../config/types"
-import { resolveRoutesDir } from "./path-utils"
+
 import { generateOpenApiDocs } from "./openapi"
+import { resolveRoutesDir } from "./path-utils"
 import { writeRoutesFileSync } from "./routes-core"
 
 export function createOpenApiPlugin(

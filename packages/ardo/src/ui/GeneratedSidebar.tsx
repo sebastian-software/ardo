@@ -1,10 +1,10 @@
+import { useLocation } from "react-router"
 import generatedSidebarsModule from "virtual:ardo/generated-sidebars"
 
 import type { SidebarItem as SidebarItemType } from "../config/types"
 
 import { useArdoConfig } from "../runtime/hooks"
 import { SidebarItems } from "./Sidebar"
-import { useLocation } from "react-router"
 
 const generatedSidebars = generatedSidebarsModule as Record<string, SidebarItemType[]>
 

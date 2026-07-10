@@ -129,7 +129,7 @@ async function createManifestEntry(
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,
-    ...(localizedRoute.localeId == null ? {} : { sourceLocaleId: localizedRoute.localeId }),
+    sourceLocaleId: localizedRoute.localeId,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
 }
@@ -141,7 +141,7 @@ function splitLocaleRoute(relativePath: string, localeIds: string[] | undefined)
 
   const segments = relativePath.replaceAll("\\", "/").split("/")
   const localeId = segments[0]
-  if (localeId == null || !localeIds.includes(localeId)) {
+  if (!localeIds.includes(localeId)) {
     return { relativePath }
   }
 

@@ -67,7 +67,8 @@ async function readCollection(
       })
     } catch (error) {
       throw new Error(
-        `[ardo] Failed to validate collection entry ${filePath}: ${formatUnknownError(error)}`
+        `[ardo] Failed to validate collection entry ${filePath}: ${formatUnknownError(error)}`,
+        { cause: error }
       )
     }
   }
