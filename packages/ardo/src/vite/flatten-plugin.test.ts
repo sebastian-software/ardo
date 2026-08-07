@@ -245,6 +245,7 @@ async function createBuildEndArgs(input: {
       basename: input.basename,
       buildDirectory: input.buildDirectory,
       future: {
+        unstable_enableNodeReadableStream: false,
         unstable_optimizeDeps: false,
       },
       prerender: true,
