@@ -9,8 +9,11 @@ export default defineConfig({
       siteUrl: "https://ardo-docs.dev",
       githubPages: false,
       versioning: {
-        current: "v3",
-        versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+        current: "v4",
+        versions: [
+          { id: "v4", label: "4.x", path: "/v4/" },
+          { id: "v3", label: "3.x", path: "/v3/" },
+        ],
       },
 
       // TypeDoc API documentation

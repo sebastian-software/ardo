@@ -14,10 +14,10 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![Node](https://img.shields.io/badge/Node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
 
-[Documentation](https://ardo-docs.dev/v3/) ·
-[Adopt with an agent](https://ardo-docs.dev/v3/guide/adopt-ardo) ·
-[Getting Started](https://ardo-docs.dev/v3/guide/getting-started) ·
-[API Reference](https://ardo-docs.dev/v3/api-reference) ·
+[Documentation](https://ardo-docs.dev/v4/) ·
+[Adopt with an agent](https://ardo-docs.dev/v4/guide/adopt-ardo) ·
+[Getting Started](https://ardo-docs.dev/v4/guide/getting-started) ·
+[API Reference](https://ardo-docs.dev/v4/api-reference) ·
 [Examples](https://github.com/sebastian-software/ardo/tree/main/examples)
 
 </div>
@@ -31,18 +31,18 @@ React or moving docs into a closed platform.
 The full product overview, comparison, configuration reference, deployment notes, and roadmap live
 on the documentation site:
 
-- [What is Ardo?](https://ardo-docs.dev/v3/guide/what-is-ardo)
-- [Getting Started](https://ardo-docs.dev/v3/guide/getting-started)
-- [Adopt Ardo in an Existing Project](https://ardo-docs.dev/v3/guide/adopt-ardo)
-- [Comparison](https://ardo-docs.dev/v3/guide/comparison)
-- [Configuration](https://ardo-docs.dev/v3/guide/configuration)
-- [Deployment](https://ardo-docs.dev/v3/guide/deployment)
-- [Feature Status](https://ardo-docs.dev/v3/guide/status-roadmap)
+- [What is Ardo?](https://ardo-docs.dev/v4/guide/what-is-ardo)
+- [Getting Started](https://ardo-docs.dev/v4/guide/getting-started)
+- [Adopt Ardo in an Existing Project](https://ardo-docs.dev/v4/guide/adopt-ardo)
+- [Comparison](https://ardo-docs.dev/v4/guide/comparison)
+- [Configuration](https://ardo-docs.dev/v4/guide/configuration)
+- [Deployment](https://ardo-docs.dev/v4/guide/deployment)
+- [Feature Status](https://ardo-docs.dev/v4/guide/status-roadmap)
 
 ## Adopt an existing project
 
 Give your coding agent `https://ardo-docs.dev/llms.txt` and the
-[adoption guide](https://ardo-docs.dev/v3/guide/adopt-ardo). It will inspect the repository, select
+[adoption guide](https://ardo-docs.dev/v4/guide/adopt-ardo). It will inspect the repository, select
 the closest reference project, and propose the smallest change before editing files.
 
 ## Empty-directory quick start
@@ -59,7 +59,7 @@ generated sidebar.
 
 Use this convenience scaffold only when its default shape fits. For an existing workspace, TypeDoc
 setup, theming, and deployment, use the
-[Getting Started guide](https://ardo-docs.dev/v3/guide/getting-started).
+[Getting Started guide](https://ardo-docs.dev/v4/guide/getting-started).
 
 ## Examples
 
