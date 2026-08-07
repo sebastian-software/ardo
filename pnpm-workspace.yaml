@@ -5,7 +5,7 @@ packages:
 
 overrides:
   eslint-plugin-oxlint: 1.77.0
-  oxlint: 1.70.0
+  oxlint: 1.77.0
 
 peerDependencyRules:
   allowedVersions:
