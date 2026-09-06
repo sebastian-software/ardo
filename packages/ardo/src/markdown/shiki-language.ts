@@ -1,4 +1,4 @@
-import { type BundledLanguage, bundledLanguages, type Highlighter } from "shiki"
+import { bundledLanguages, type Highlighter } from "ferriki"
 
 const warnedHighlightFailures = new Set<string>()
 
@@ -20,7 +20,7 @@ export async function resolveHighlightLanguage(params: {
     warnHighlightFailure({
       key: `missing:${normalizedLanguage}`,
       language: normalizedLanguage,
-      message: "language is not bundled with Shiki",
+      message: "language is not bundled with Ferriki",
       sourcePath: params.sourcePath,
     })
     return "text"
@@ -34,7 +34,7 @@ export async function resolveHighlightLanguage(params: {
       error,
       key: `load:${normalizedLanguage}`,
       language: normalizedLanguage,
-      message: "language could not be loaded",
+      message: "language could not be loaded by Ferriki",
       sourcePath: params.sourcePath,
     })
     return "text"
@@ -70,7 +70,7 @@ function isPlainTextLanguage(language: string): boolean {
   return ["plain", "plaintext", "text", "txt"].includes(language)
 }
 
-function isBundledLanguage(language: string): language is BundledLanguage {
+function isBundledLanguage(language: string): boolean {
   return Object.hasOwn(bundledLanguages, language)
 }
 

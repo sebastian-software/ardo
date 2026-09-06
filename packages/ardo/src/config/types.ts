@@ -1,4 +1,4 @@
-import type { BundledTheme } from "shiki"
+import type { BundledTheme } from "ferriki"
 import type { PluggableList } from "unified"
 
 // =============================================================================

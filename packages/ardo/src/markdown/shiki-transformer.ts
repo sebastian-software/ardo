@@ -1,5 +1,5 @@
+import type { ShikiTransformer } from "ferriki"
 import type { Root } from "hast"
-import type { ShikiTransformer } from "shiki"
 
 import { visit } from "unist-util-visit"
 
@@ -21,8 +21,8 @@ export function remarkCodeMeta() {
       const hProperties = ensureRecord(data.hProperties)
 
       // Preserve meta as metastring property on the <code> HAST element.
-      // @shikijs/rehype reads head.properties.metastring and passes it
-      // to Shiki as meta.__raw, which ardoLineTransformer reads.
+      // The Ferriki rehype adapter reads properties.metastring and preserves
+      // the raw fence metadata for Ardo's line/title decoration.
       hProperties.metastring = meta
       data.hProperties = hProperties
 

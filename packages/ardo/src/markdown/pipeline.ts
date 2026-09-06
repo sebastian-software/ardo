@@ -9,7 +9,12 @@ import { unified } from "unified"
 import type { MarkdownConfig, PageFrontmatter, TOCItem } from "../config/types"
 
 import { rehypeLinks } from "./links"
-import { createShikiHighlighter, rehypeShikiFromHighlighter, type ShikiHighlighter } from "./shiki"
+import {
+  createShikiHighlighter,
+  rehypeShikiFromHighlighter,
+  remarkCodeMeta,
+  type ShikiHighlighter,
+} from "./shiki"
 import { remarkExtractToc, type TocExtraction } from "./toc"
 
 export type TransformResult = {
@@ -39,6 +44,7 @@ export async function transformMarkdown(
     .use(remarkParse)
     .use(remarkFrontmatter, ["yaml"])
     .use(remarkGfm)
+    .use(remarkCodeMeta)
     .use(remarkExtractToc, {
       anchor: config.anchor,
       tocExtraction,

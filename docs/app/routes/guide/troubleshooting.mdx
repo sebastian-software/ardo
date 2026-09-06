@@ -39,11 +39,7 @@ import { defineConfig } from "vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
-  plugins: [
-    ardo({
-      /* config */
-    }),
-  ],
+  plugins: [ardo({/* config */})],
 })
 ```
 
@@ -105,7 +101,7 @@ const foo = "bar"
 ```
 ````
 
-Supported languages: [Shiki Languages](https://shiki.style/languages)
+Supported languages: [Ferriki's bundled language catalog](https://github.com/sebastian-software/ferriki/blob/main/docs/ferriki-api.md#bundled-catalogs)
 
 ### CodeBlock Not Highlighted in `.tsx` Routes
 
@@ -151,11 +147,7 @@ If deploying to a subdirectory, set the `base` option in `vite.config.ts`:
 ```typescript
 export default defineConfig({
   base: "/my-docs/",
-  plugins: [
-    ardo({
-      /* config */
-    }),
-  ],
+  plugins: [ardo({/* config */})],
 })
 ```
 
