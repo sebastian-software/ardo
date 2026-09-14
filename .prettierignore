@@ -13,3 +13,6 @@ node_modules/
 docs/app/routes/api-reference/
 CHANGELOG.md
 pnpm-lock.yaml
+
+# mdtheme checks the generated README byte for byte.
+/README.md
