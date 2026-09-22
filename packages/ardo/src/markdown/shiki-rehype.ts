@@ -1,15 +1,15 @@
+import type { Highlighter } from "ferriki"
 import type { Element, Root, Text } from "hast"
-import type { Highlighter } from "shiki"
 
 import { visit } from "unist-util-visit"
 
 import type { MarkdownConfig } from "../config/types"
 
 import { shikiContainerClassName } from "../ui/components/code-block-classes"
-import { buildCodeBlockHtml } from "./shiki-html"
+import { buildCodeBlockHast } from "./shiki-html"
 import { resolveHighlightLanguage, warnHighlightFailure } from "./shiki-language"
-import { parseHighlightLines, parseTitle } from "./shiki-meta"
-import { highlightWithTheme, resolveThemeConfig } from "./shiki-theme"
+import { parseHighlightLines, parseLabel, parseTitle } from "./shiki-meta"
+import { highlightWithThemeHast, resolveThemeConfig } from "./shiki-theme"
 
 type RehypeShikiOptions = {
   config: MarkdownConfig
@@ -61,44 +61,45 @@ async function transformCodeNode(context: TransformCodeNodeContext): Promise<voi
 
   const metaString = getMetaString(codeNode)
   const language = getLanguage(codeNode)
-  const innerHtml = await tryRenderHighlightedHtml({
+  const highlighted = await tryRenderHighlightedHast({
     codeContent,
     context,
     language,
-    metaString,
   })
-  if (innerHtml == null) {
+  if (highlighted == null) {
     return
   }
 
-  replaceNodeWithShikiContainer(context.parent, context.index, innerHtml)
+  replaceNodeWithShikiContainer(
+    context.parent,
+    context.index,
+    buildCodeBlockHast(highlighted, codeContent, {
+      highlightLines: parseHighlightLines(metaString),
+      label: parseLabel(metaString),
+      lang: language,
+      lineNumbers: (context.config.lineNumbers ?? false) || metaString.includes("showLineNumbers"),
+      title: parseTitle(metaString),
+    })
+  )
 }
 
-async function tryRenderHighlightedHtml(params: {
+async function tryRenderHighlightedHast(params: {
   codeContent: string
   context: TransformCodeNodeContext
   language: string
-  metaString: string
-}): Promise<null | string> {
-  const { codeContent, context, language, metaString } = params
+}): Promise<null | Root> {
+  const { codeContent, context, language } = params
   try {
     const highlightLanguage = await resolveHighlightLanguage({
       highlighter: context.highlighter,
       language,
     })
-    const html = renderHighlightedHtml({
+    return renderHighlightedHast({
       code: codeContent,
       highlighter: context.highlighter,
       language: highlightLanguage,
       originalLanguage: language,
       themeConfig: context.themeConfig,
-    })
-
-    return buildCodeBlockHtml(html, {
-      highlightLines: parseHighlightLines(metaString),
-      lang: highlightLanguage,
-      lineNumbers: (context.config.lineNumbers ?? false) || metaString.includes("showLineNumbers"),
-      title: parseTitle(metaString),
     })
   } catch (error) {
     warnHighlightFailure({
@@ -111,15 +112,15 @@ async function tryRenderHighlightedHtml(params: {
   }
 }
 
-function renderHighlightedHtml(params: {
+function renderHighlightedHast(params: {
   code: string
   highlighter: Highlighter
   language: string
   originalLanguage: string
   themeConfig: MarkdownConfig["theme"]
-}): string {
+}): Root {
   try {
-    return highlightWithTheme(params)
+    return highlightWithThemeHast(params)
   } catch (error) {
     warnHighlightFailure({
       error,
@@ -132,7 +133,7 @@ function renderHighlightedHtml(params: {
       throw error
     }
 
-    return highlightWithTheme({ ...params, language: "text" })
+    return highlightWithThemeHast({ ...params, language: "text" })
   }
 }
 
@@ -196,25 +197,14 @@ function getTextContent(node: Element | Text): string {
 function replaceNodeWithShikiContainer(
   parent: unknown,
   index: number | undefined,
-  innerHtml: string
+  container: Element
 ): void {
   if (index == null || !hasChildrenArray(parent)) {
     return
   }
 
-  parent.children[index] = {
-    type: "element",
-    tagName: "div",
-    properties: {
-      className: [shikiContainerClassName],
-    },
-    children: [
-      {
-        type: "raw",
-        value: innerHtml,
-      },
-    ],
-  }
+  container.properties.className = [shikiContainerClassName]
+  parent.children[index] = container
 }
 
 function hasChildrenArray(value: unknown): value is { children: unknown[] } {

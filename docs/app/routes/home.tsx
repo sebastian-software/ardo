@@ -158,9 +158,9 @@ export default function HomePage() {
           Full-text search powered by MiniSearch. Runs entirely in the browser. No external service
           to configure, no API keys, works offline.
         </ArdoFeatureCard>
-        <ArdoFeatureCard title="MDX with Shiki" icon={<FileCode size={28} strokeWidth={1.5} />}>
+        <ArdoFeatureCard title="MDX with Ferriki" icon={<FileCode size={28} strokeWidth={1.5} />}>
           Write Markdown, import React components where you need them. Code blocks are
-          syntax-highlighted at build time with Shiki. No client-side JS for highlighting.
+          syntax-highlighted at build time with Ferriki. No client-side JS for highlighting.
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Make it yours" icon={<Palette size={28} strokeWidth={1.5} />}>
           Type-safe theming with Vanilla Extract: set your brand hues in one line, override any
@@ -233,7 +233,7 @@ export default function HomePage() {
               <div className={styles.techIcon}>
                 <Terminal size={32} />
               </div>
-              <span>Shiki</span>
+              <span>Ferriki</span>
             </div>
             <div className={styles.techItem}>
               <div className={styles.techIcon}>

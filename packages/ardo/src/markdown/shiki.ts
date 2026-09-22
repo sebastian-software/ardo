@@ -1,4 +1,4 @@
-import { createHighlighter, type Highlighter } from "shiki"
+import { createHighlighter, type Highlighter } from "ferriki"
 
 import type { MarkdownConfig } from "../config/types"
 
@@ -10,30 +10,40 @@ export { ardoLineTransformer, remarkCodeMeta } from "./shiki-transformer"
 
 export type ShikiHighlighter = Highlighter
 
+type HighlightCodeInput = {
+  sourcePath?: string
+  theme?: NonNullable<MarkdownConfig["theme"]>
+}
+
 const cachedHighlighterPromises = new Map<string, Promise<ShikiHighlighter>>()
 
 /**
- * Highlights code using Shiki with Ardo's default themes.
+ * Highlights code using Ferriki with Ardo's default themes.
  * Creates and caches a highlighter instance for reuse.
  */
 export async function highlightCode(
   code: string,
   language: string,
-  options?: { sourcePath?: string; theme?: MarkdownConfig["theme"] }
+  options?: HighlightCodeInput
+): Promise<string>
+export async function highlightCode(
+  code: string,
+  language: string,
+  options: HighlightCodeInput = {}
 ): Promise<string> {
-  const themeConfig = resolveThemeConfig(options?.theme)
+  const themeConfig = resolveThemeConfig(options.theme)
   const highlighter = await getCachedHighlighter(themeConfig)
   const highlightLanguage = await resolveHighlightLanguage({
     highlighter,
     language,
-    sourcePath: options?.sourcePath,
+    sourcePath: options.sourcePath,
   })
 
   return highlightCodeWithFallback({
     code,
     highlighter,
     language: highlightLanguage,
-    sourcePath: options?.sourcePath,
+    sourcePath: options.sourcePath,
     themeConfig,
   })
 }
