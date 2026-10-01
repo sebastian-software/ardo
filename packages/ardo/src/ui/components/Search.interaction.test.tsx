@@ -41,6 +41,19 @@ function renderSearch() {
 }
 
 describe("ArdoSearch interactions", () => {
+  it("focuses the search input when autoFocus is enabled", async () => {
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <ArdoSearch autoFocus />
+      </MemoryRouter>
+    )
+
+    await user.keyboard("install")
+
+    expect(await screen.findByRole("option", { name: /Getting Started/ })).toBeTruthy()
+  })
+
   it("opens results, supports keyboard selection, and navigates on Enter", async () => {
     const user = userEvent.setup()
     renderSearch()

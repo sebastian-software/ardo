@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode, SVGAttributes } from "react"
+import { type ComponentType, createElement, type ReactNode, type SVGAttributes } from "react"
 
 type IconComponent = ComponentType<{ size?: number } & SVGAttributes<SVGSVGElement>>
 
@@ -64,5 +64,5 @@ export function ArdoIcon({ name, ...props }: ArdoIconProps): ReactNode {
     return null
   }
 
-  return <IconComp {...props} />
+  return createElement(IconComp, props)
 }

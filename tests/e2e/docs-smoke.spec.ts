@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-const docsBasePath = "/v4"
+const docsBasePath = "/v5"
 const gettingStartedPath = `${docsBasePath}/guide/getting-started`
 
 test("built docs site hydrates and supports search and theme interactions", async ({ page }) => {
@@ -22,7 +22,7 @@ test("built docs site hydrates and supports search and theme interactions", asyn
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/v4\/guide\/configuration#markdown$/)
+  await expect(page).toHaveURL(/\/v5\/guide\/configuration#markdown$/)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
@@ -38,6 +38,6 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
 
   await menu.getByRole("link", { name: "Markdown Features" }).click()
 
-  await expect(page).toHaveURL(/\/v4\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v5\/guide\/markdown/)
   await expect(menu).toBeHidden()
 })

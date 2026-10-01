@@ -1,6 +1,7 @@
 # Native engine migration: local verification
 
-Verified on 2026-10-01 on macOS arm64. This records source/package verification
+Verified on 2026-10-01 on macOS arm64, with development builds on Node 24.21.0
+and runtime unit/coverage tests on exact Node 22.13.0. This records source/package verification
 before the coordinated releases; it does not certify a registry installation
 or the other native platform binaries.
 
@@ -30,12 +31,16 @@ See [ADR 0017](../adr/0017-native-markdown-and-highlighting.md),
 
 | Gate                                                  | Result                                                                                                                                                    |
 | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ardo unit tests                                       | 236 tests in 57 files pass on exact Node 22.13.0, including the real default provider's single-copy-button SSR regression                                 |
+| Ardo unit tests                                       | 241 tests in 58 files pass on exact Node 22.13.0, including the real default provider's single-copy-button SSR regression and the CI UI regressions       |
+| Ardo coverage                                         | Pass: statements 59.3%, branches 56.08%, functions 66.17%, lines 59.48%; the existing thresholds are unchanged                                            |
+| Ardo lint and formatting                              | Pass: full lint has 0 errors and 287 non-failing warnings; full formatting passes                                                                         |
+| Ardo browser smoke tests                              | Both Chromium tests pass against the built `/v5/` docs: hydration, search, theme changes, and mobile navigation                                           |
+| Ardo Storybook                                        | Production and interaction builds pass; all 33 browser interaction tests in 23 suites pass                                                                |
 | Ardo integration                                      | 32 tests in 6 suites pass: examples and a fresh packed scaffold consumer                                                                                  |
 | Ardo declared workspace typechecks and package builds | Pass                                                                                                                                                      |
 | Ardo production docs                                  | TypeDoc generates 47 API pages; 70 routes prerender under `/v5/`                                                                                          |
 | Docs search and fragments                             | All 432 search targets and 477 rendered internal fragment links resolve                                                                                   |
-| Docs budgets                                          | Pass: entry 55.7 KiB, eager JS 351.4 KiB, total JS 1270.6 KiB, search 56.2 KiB gzip                                                                       |
+| Docs budgets                                          | Pass: entry 55.7 KiB, eager JS 351.7 KiB, total JS 1270.9 KiB, search 56.2 KiB gzip; build duration 93.2 seconds                                          |
 | Ferromark Rust                                        | Workspace all-feature tests, strict Clippy, formatting, and bench compilation pass                                                                        |
 | Ferromark legacy MDX                                  | Existing ESM/JSX/expression tests also pass without default features                                                                                      |
 | Ferromark Node                                        | All 144 tests pass, including exact Node 22.13.0; lint, types, formatting, and pack checks pass; 78 tests pass in a clean packed consumer                 |
@@ -59,10 +64,17 @@ and final lines, highlights exactly on lines 3–5, and 50 dual-theme tokens.
 
 ## Existing findings
 
-The full Ardo lint command still reports 7 errors in unchanged UI files; the
-original checkout reproduces those errors. The full formatting command still
-reports unchanged `packages/create-ardo/src/cli-options.ts`; the original file
-reproduces the finding.
+The seven previously recorded UI lint errors and the CLI formatting finding
+are fixed. The disclosure state closes on pathname changes without remounting
+header children; search autofocus uses a callback ref; icon rendering keeps
+the registered component identity; tab values are assigned before child render.
+Regression tests cover navigation/back/reopen, autofocus, and implicit tab
+associations under StrictMode, parent rerenders, clicks, and nested groups.
+Custom components that create tabs internally use explicit matching values
+and a default value, as documented in the component contract.
+
+The Storybook runner emits five non-failing accessibility notices for existing
+stories (MobileSlidePanel, ErrorBoundary, Layout, Steps, and Footer).
 
 TypeDoc's unchanged generator creates component navigation under `other/`
 instead of `components/` and props links under `interfaces/` even for grouped

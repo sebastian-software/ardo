@@ -9,7 +9,7 @@ function renderFooter(
   node: React.ReactNode,
   options: {
     lang?: string
-    labels?: Parameters<typeof resolveArdoLabels>[0]
+    labels?: NonNullable<Parameters<typeof resolveArdoLabels>[0]>
   } = {}
 ): string {
   const labels = options.labels === undefined ? undefined : resolveArdoLabels(options.labels)

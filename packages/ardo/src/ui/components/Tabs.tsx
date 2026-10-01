@@ -1,14 +1,15 @@
 import {
   Children,
+  cloneElement,
   createContext,
   isValidElement,
   type KeyboardEvent,
+  type ReactElement,
   type ReactNode,
   use,
   useCallback,
   useId,
   useMemo,
-  useRef,
   useState,
 } from "react"
 
@@ -18,9 +19,7 @@ type TabsContextValue = {
   activeTab: string
   setActiveTab: (tab: string) => void
   getPanelId: (value: string) => string
-  getTabValue: (value?: string) => string
   getTabId: (value: string) => string
-  getPanelValue: (value?: string) => string
 }
 
 const TabsContext = createContext<null | TabsContextValue>(null)
@@ -35,7 +34,7 @@ function useTabsContext() {
 }
 
 export type ArdoTabsProps = {
-  /** Default active tab value */
+  /** Default active tab value; set explicitly when custom components create the tabs. */
   defaultValue?: string
   /** Tab components (ArdoTabList and ArdoTabPanels) */
   children: ReactNode
@@ -47,21 +46,7 @@ export type ArdoTabsProps = {
 export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   const tabsId = useId()
   const [activeTab, setActiveTab] = useState(() => defaultValue ?? findFirstTabValue(children))
-  const tabIndexRef = useRef(0)
-  const panelIndexRef = useRef(0)
-
-  tabIndexRef.current = 0
-  panelIndexRef.current = 0
-
-  const getTabValue = useCallback((value?: string) => {
-    const index = tabIndexRef.current++
-    return value ?? `${AUTO_TAB_PREFIX}${index}`
-  }, [])
-
-  const getPanelValue = useCallback((value?: string) => {
-    const index = panelIndexRef.current++
-    return value ?? `${AUTO_TAB_PREFIX}${index}`
-  }, [])
+  const indexedChildren = assignImplicitValues(children, { panels: 0, tabs: 0 })
 
   const getTabId = useCallback(
     (value: string) => `${tabsId}-tab-${toDomIdSegment(value)}`,
@@ -77,16 +62,14 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
       activeTab,
       setActiveTab,
       getPanelId,
-      getPanelValue,
       getTabId,
-      getTabValue,
     }),
-    [activeTab, getPanelId, getPanelValue, getTabId, getTabValue]
+    [activeTab, getPanelId, getTabId]
   )
 
   return (
     <TabsContext value={contextValue}>
-      <div className={styles.tabs}>{children}</div>
+      <div className={styles.tabs}>{indexedChildren}</div>
     </TabsContext>
   )
 }
@@ -108,7 +91,9 @@ export function ArdoTabList({ children }: ArdoTabListProps) {
 }
 
 export type ArdoTabProps = {
-  /** Unique value identifying this tab (optional if tab order matches panels) */
+  /** Unique value identifying this tab (optional if tab order matches panels).
+   * Custom components that create tabs internally need explicit matching values.
+   */
   value?: string
   /** Tab button label */
   children: ReactNode
@@ -118,8 +103,8 @@ export type ArdoTabProps = {
  * Individual tab button.
  */
 export function ArdoTab({ value, children }: ArdoTabProps) {
-  const { activeTab, setActiveTab, getPanelId, getTabId, getTabValue } = useTabsContext()
-  const resolvedValue = getTabValue(value)
+  const { activeTab, setActiveTab, getPanelId, getTabId } = useTabsContext()
+  const resolvedValue = value ?? `${AUTO_TAB_PREFIX}0`
   const isActive = activeTab === resolvedValue
 
   return (
@@ -142,7 +127,9 @@ export function ArdoTab({ value, children }: ArdoTabProps) {
 }
 
 export type ArdoTabPanelProps = {
-  /** Value matching the corresponding ArdoTab (optional if panel order matches tabs) */
+  /** Value matching the corresponding ArdoTab (optional if panel order matches tabs).
+   * Custom components that create panels internally need explicit matching values.
+   */
   value?: string
   /** Panel content */
   children: ReactNode
@@ -152,8 +139,8 @@ export type ArdoTabPanelProps = {
  * Content panel for a tab.
  */
 export function ArdoTabPanel({ value, children }: ArdoTabPanelProps) {
-  const { activeTab, getPanelId, getPanelValue, getTabId } = useTabsContext()
-  const resolvedValue = getPanelValue(value)
+  const { activeTab, getPanelId, getTabId } = useTabsContext()
+  const resolvedValue = value ?? `${AUTO_TAB_PREFIX}0`
   const isActive = activeTab === resolvedValue
 
   if (!isActive) {
@@ -185,6 +172,65 @@ export function ArdoTabPanels({ children }: ArdoTabPanelsProps) {
   return <div className={styles.tabPanels}>{children}</div>
 }
 
+type TabChildIndexes = {
+  panels: number
+  tabs: number
+}
+
+function assignImplicitValues(children: ReactNode, indexes: TabChildIndexes): ReactNode {
+  if (isReactNodeArray(children)) {
+    return assignChildSequence(children, indexes)
+  }
+
+  if (!isValidElement<{ children?: ReactNode; value?: string }>(children)) {
+    return isIterableNode(children) ? assignChildSequence(children, indexes) : children
+  }
+
+  return assignElementValue(children, indexes)
+}
+
+function assignChildSequence(children: Iterable<ReactNode>, indexes: TabChildIndexes): ReactNode[] {
+  const values: ReactNode[] = []
+  for (const child of children) values.push(assignImplicitValues(child, indexes))
+  return values
+}
+
+function assignElementValue(
+  child: ReactElement<{ children?: ReactNode; value?: string }>,
+  indexes: TabChildIndexes
+): ReactNode {
+  if (child.type === ArdoTabs) return child
+
+  if (child.type === ArdoTab) {
+    const value = child.props.value ?? `${AUTO_TAB_PREFIX}${indexes.tabs}`
+    indexes.tabs += 1
+    return cloneElement(child, { value })
+  }
+
+  if (child.type === ArdoTabPanel) {
+    const value = child.props.value ?? `${AUTO_TAB_PREFIX}${indexes.panels}`
+    indexes.panels += 1
+    return cloneElement(child, { value })
+  }
+
+  if (child.props.children == null) return child
+  const nestedChildren = assignImplicitValues(child.props.children, indexes)
+  return cloneElement(child, undefined, nestedChildren)
+}
+
+function isReactNodeArray(value: ReactNode): value is readonly ReactNode[] {
+  return Array.isArray(value)
+}
+
+function isIterableNode(value: ReactNode): value is Iterable<ReactNode> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !isValidElement(value) &&
+    Symbol.iterator in value
+  )
+}
+
 function findFirstTabValue(children: ReactNode): string {
   for (const child of Children.toArray(children)) {
     const tabValue = getFirstTabValueFromChild(child)
@@ -200,6 +246,7 @@ function getFirstTabValueFromChild(child: ReactNode): null | string {
   if (!isValidElement<{ children?: ReactNode }>(child)) {
     return null
   }
+  if (child.type === ArdoTabs) return null
 
   if (isValidElement<ArdoTabProps>(child) && child.type === ArdoTab) {
     return child.props.value ?? `${AUTO_TAB_PREFIX}0`

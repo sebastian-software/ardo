@@ -371,6 +371,9 @@ npm create ardo@latest my-docs
 </Tabs>
 ````
 
+For custom components that create tabs or panels internally, set `defaultValue` on `Tabs`
+and give each tab/panel pair matching explicit `value` props.
+
 | Component  | Prop           | Type        | Purpose                                                                |
 | ---------- | -------------- | ----------- | ---------------------------------------------------------------------- |
 | `Tabs`     | `defaultValue` | `string`    | Initial active tab value. Defaults to the first tab.                   |

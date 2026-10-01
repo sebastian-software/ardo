@@ -73,7 +73,7 @@ export function parseCreateArdoArgs(
     positionals: [],
   }
 
-  for (let index = 0; index < args.length; ) {
+  for (let index = 0; index < args.length;) {
     index = parseToken(args, index, state)
   }
 
