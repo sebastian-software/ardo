@@ -91,7 +91,8 @@ export function ArdoTabList({ children }: ArdoTabListProps) {
 }
 
 export type ArdoTabProps = {
-  /** Unique value identifying this tab (optional if tab order matches panels).
+  /**
+   * Unique value identifying this tab (optional if tab order matches panels).
    * Custom components that create tabs internally need explicit matching values.
    */
   value?: string
@@ -127,7 +128,8 @@ export function ArdoTab({ value, children }: ArdoTabProps) {
 }
 
 export type ArdoTabPanelProps = {
-  /** Value matching the corresponding ArdoTab (optional if panel order matches tabs).
+  /**
+   * Value matching the corresponding ArdoTab (optional if panel order matches tabs).
    * Custom components that create panels internally need explicit matching values.
    */
   value?: string
