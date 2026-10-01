@@ -16,6 +16,37 @@ afterEach(async () => {
 })
 
 describe("route-manifest", () => {
+  it("uses native IDs after redundant title removal, including setext and JSX headings", async () => {
+    await fs.writeFile(
+      path.join(tempDir, "native.mdx"),
+      [
+        "---",
+        "title: Native",
+        "---",
+        "",
+        "# Native",
+        "",
+        "## Native",
+        "",
+        "What's included?",
+        "----------------",
+        "",
+        "## <Badge>What's included?</Badge>",
+      ].join("\n")
+    )
+    const [entry] = await scanRouteManifest(tempDir)
+    expect(entry.anchors).toStrictEqual(["native", "what-s-included", "what-s-included-1"])
+    expect(entry.content).not.toMatch(/^# Native$/m)
+    expect(
+      entry.headings?.map(({ start, end }) =>
+        Buffer.from(entry.content).subarray(start, end).toString().trim()
+      )
+    ).toStrictEqual([
+      "## Native",
+      "What's included?\n----------------",
+      "## <Badge>What's included?</Badge>",
+    ])
+  })
   it("extracts unicode and deduplicated heading anchors", async () => {
     await fs.writeFile(
       path.join(tempDir, "guide.mdx"),

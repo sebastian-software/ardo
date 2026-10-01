@@ -10,8 +10,9 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- Node.js >= 22.0.0
+- Node.js >= 22.13.0
 - pnpm >= 9.0.0
+- A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
 ### Development Setup
 
@@ -64,6 +65,51 @@ The architecture decision records in [`docs/adr/`](./docs/adr/) explain the majo
 decisions: React Router migration, static prerendering, TypeDoc integration, Vanilla Extract,
 context-aware UI, public API naming, Storybook, Tailwind in the scaffold, and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
+
+### Coordinated native-engine development
+
+The Ardo 5 migration requires Ferromark's new `compileJsx`/`JsxCompiler` APIs, scheduled for
+Ferromark 3.1. Until that release exists, the previous registry lockfile cannot
+install the new dependency graph with `--frozen-lockfile`. Release Ferromark
+first, regenerate this lockfile with `pnpm install --no-frozen-lockfile`, then
+release Ardo 5 and update the engine homepages' registry lockfiles. Package
+versions in source stay under their existing release workflows.
+
+To verify the coordinated changes before publication, build and pack the
+Ferromark and Ferriki Node facades and the matching native platform packages
+from their source checkouts. In a disposable Ardo checkout, add temporary pnpm
+workspace overrides pointing to those tarballs. For example, on macOS arm64:
+
+```yaml
+overrides:
+  # Merge these entries into the existing overrides map.
+  ferromark: file:/absolute/path/to/ferromark-3.0.0.tgz
+  ferromark-darwin-arm64: file:/absolute/path/to/ferromark-darwin-arm64-3.0.0.tgz
+  "@ferriki/core": file:/absolute/path/to/ferriki-core-0.8.2.tgz
+  "@ferriki/darwin-arm64": file:/absolute/path/to/ferriki-darwin-arm64-0.8.2.tgz
+```
+
+These tarball names reflect the source version labels before release, rather
+than an already published JSX-capable Ferromark 3.0. Install with
+`pnpm install --no-frozen-lockfile`, then run the normal build, unit tests,
+typechecks, and docs build. With pnpm 11, use workspace overrides;
+`package.json`'s legacy `pnpm.overrides` field is ignored. While the source
+manifest and temporary lockfile differ, use
+`pnpm --config.verifyDepsBeforeRun=false <command>` to run an installed tool
+without an automatic reinstall.
+
+The packed-scaffold integration suite starts a separate consumer installation.
+Set `ARDO_TEST_ENGINE_OVERRIDES` to a JSON file containing the same package-name
+to `file:/absolute/path/to/tarball.tgz` map, so that consumer uses the tested
+engine builds too. For homepage verification, also pack Ardo and add its
+tarball to the homepage's temporary workspace overrides.
+
+Ferromark's native JSX compiler owns Ferriki for Markdown fences; Ardo uses
+the direct Ferriki facade for literal TSX codeblocks. Both download verified
+standard assets on first use and share a content-addressed cache. Persist it and
+set `FERRIKI_CACHE_DIR` and `FERRIKI_ASSETS_REMOTE=0` for subsequent offline
+checks. Restore the original workspace config and lockfile after local
+verification; do not commit tarball paths or invented registry integrity data.
 
 ## Development Workflow
 

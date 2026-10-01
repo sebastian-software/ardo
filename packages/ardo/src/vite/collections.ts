@@ -1,8 +1,9 @@
-import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
 import type { ContentSourceMapping } from "./content-sources"
+
+import { readNativeMarkdownFrontmatter } from "../markdown/native-metadata"
 
 export type CollectionEntry<TData = Record<string, unknown>> = {
   data: TData
@@ -58,8 +59,10 @@ async function readCollection(
 
   for (const filePath of files) {
     if (!isMarkdownFile(filePath)) continue
-    const parsed = matter(await fs.readFile(filePath, "utf8"))
-    const data = toRecord(parsed.data)
+    const data = readNativeMarkdownFrontmatter(
+      await fs.readFile(filePath, "utf8"),
+      filePath.endsWith(".mdx") ? "mdx" : "md"
+    )
     try {
       entries.push({
         data: definition.schema == null ? data : definition.schema(data),
@@ -89,10 +92,6 @@ async function readMarkdownFiles(directory: string): Promise<string[]> {
 
 function isMarkdownFile(filePath: string): boolean {
   return filePath.endsWith(".md") || filePath.endsWith(".mdx")
-}
-
-function toRecord(value: unknown): Record<string, unknown> {
-  return typeof value === "object" && value != null && !Array.isArray(value) ? { ...value } : {}
 }
 
 function formatUnknownError(error: unknown): string {

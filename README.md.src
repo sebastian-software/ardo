@@ -14,7 +14,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/ardo.svg)](https://www.npmjs.com/package/ardo)
 [![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node](https://img.shields.io/badge/Node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-%3E%3D22.13.0-green.svg)](https://nodejs.org/)
 <!-- mdtheme:badges:end -->
 
 [Documentation](https://ardo-docs.dev/v4/) ·
@@ -26,8 +26,8 @@
 
 ---
 
-Ardo is a static documentation framework built on React 19, React Router 8, Vite 8, MDX,
-TypeScript, and Vanilla Extract. It gives React teams VitePress-style simplicity without leaving
+Ardo is a static documentation framework built on React 19, React Router 8, Vite 8, Ferromark,
+Ferriki, TypeScript, and Vanilla Extract. It gives React teams VitePress-style simplicity without leaving
 React or moving docs into a closed platform.
 
 The full product overview, comparison, configuration reference, deployment notes, and roadmap live

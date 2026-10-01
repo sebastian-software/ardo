@@ -1,6 +1,8 @@
+import type { JsxHeading } from "ferromark"
+
 import path from "node:path"
 
-import { createHeadingSlugger } from "../markdown/heading-slug"
+import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
 import { getMarkdownFenceMarker, type MarkdownFenceMarker } from "./markdown-fence"
 import { stripTrailingExtension } from "./path-utils"
 import {
@@ -74,7 +76,13 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
   const pageTitle =
     entry.metadata.title ?? formatTitle(getSearchTitleSource(entry.metadata.sourcePath))
   const routeGroup = createSectionFromSourcePath(entry.metadata.sourcePath)
-  const sections = splitMarkdownSections(entry.content)
+  const headings =
+    entry.headings ??
+    readNativeMarkdownMetadata(
+      entry.content,
+      entry.metadata.sourcePath.endsWith(".mdx") ? "mdx" : "md"
+    ).headings
+  const sections = splitMarkdownSections(entry.content, headings)
   return sections.flatMap((section, index): SearchDoc[] => {
     const excerpt = sanitizeSearchContent(section.content)
     if (excerpt === "" && section.anchor == null) {
@@ -114,61 +122,30 @@ type MarkdownSection = {
   title?: string
 }
 
-function splitMarkdownSections(content: string): MarkdownSection[] {
-  const slugger = createHeadingSlugger()
-  const sections: MarkdownSection[] = [{ content: "", headingHierarchy: [] }]
+function splitMarkdownSections(content: string, headings: JsxHeading[]): MarkdownSection[] {
+  const source = Buffer.from(content)
+  const sections: MarkdownSection[] = []
   const headingStack: Array<{ level: number; title: string }> = []
-  const fenceState: MarkdownFenceState = { marker: null }
-
-  for (const line of content.split("\n")) {
-    if (appendFenceLineIfNeeded(sections, line, fenceState)) {
-      continue
-    }
-
-    const heading = parseMarkdownHeading(line)
-    if (heading == null) {
-      appendSectionContentLine(sections, line)
-      continue
-    }
-
+  const linkedHeadings = headings.filter((heading) => heading.id != null)
+  const firstHeading = linkedHeadings.at(0)
+  sections.push({
+    content: source.subarray(0, firstHeading?.start ?? source.length).toString(),
+    headingHierarchy: [],
+  })
+  for (const [index, heading] of linkedHeadings.entries()) {
     removeCompletedHeadings(headingStack, heading.level)
-    headingStack.push({ level: heading.level, title: heading.title })
+    headingStack.push({ level: heading.level, title: heading.text })
     sections.push({
-      anchor: slugger.slug(heading.rawTitle),
-      content: "",
+      anchor: heading.id,
+      content: source
+        .subarray(heading.end, linkedHeadings.at(index + 1)?.start ?? source.length)
+        .toString(),
       headingHierarchy: headingStack.map((entry) => entry.title),
-      title: heading.title,
+      title: heading.text,
     })
   }
 
   return sections
-}
-
-type MarkdownFenceState = {
-  marker: MarkdownFenceMarker | null
-}
-
-function appendFenceLineIfNeeded(
-  sections: MarkdownSection[],
-  line: string,
-  state: MarkdownFenceState
-): boolean {
-  const nextFenceMarker = getMarkdownFenceMarker(line)
-  if (state.marker != null) {
-    appendSectionContentLine(sections, line)
-    if (nextFenceMarker === state.marker) {
-      state.marker = null
-    }
-    return true
-  }
-
-  if (nextFenceMarker == null) {
-    return false
-  }
-
-  appendSectionContentLine(sections, line)
-  state.marker = nextFenceMarker
-  return true
 }
 
 function joinSearchTextParts(parts: string[]): string {
@@ -187,13 +164,6 @@ function joinSearchTextParts(parts: string[]): string {
   return uniqueParts.join(" ")
 }
 
-function appendSectionContentLine(sections: MarkdownSection[], line: string): void {
-  const currentSection = sections.at(-1)
-  if (currentSection != null) {
-    currentSection.content += `${line}\n`
-  }
-}
-
 function removeCompletedHeadings(
   headingStack: Array<{ level: number; title: string }>,
   nextLevel: number
@@ -203,47 +173,6 @@ function removeCompletedHeadings(
     headingStack.pop()
     currentHeading = headingStack.at(-1)
   }
-}
-
-function parseMarkdownHeading(
-  line: string
-): { level: number; rawTitle: string; title: string } | null {
-  const trimmed = line.trimStart()
-  let level = 0
-  for (const character of trimmed) {
-    if (character !== "#") break
-    level++
-  }
-
-  if (level === 0 || level > 6 || trimmed[level] !== " ") {
-    return null
-  }
-
-  const rawTitle = trimmed.slice(level + 1)
-  return { level, rawTitle, title: sanitizeHeadingTitle(rawTitle) }
-}
-
-function sanitizeHeadingTitle(title: string): string {
-  return collapseWhitespace(replacePunctuationWithSpaces(stripHtmlTags(title)))
-}
-
-function stripHtmlTags(value: string): string {
-  let result = ""
-  let isInsideTag = false
-  for (const character of value) {
-    if (character === "<") {
-      isInsideTag = true
-      continue
-    }
-
-    if (character === ">") {
-      isInsideTag = false
-      continue
-    }
-
-    if (!isInsideTag) result += character
-  }
-  return result
 }
 
 function appendAnchor(routePath: string, anchor: string | undefined): string {

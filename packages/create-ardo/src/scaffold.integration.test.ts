@@ -24,16 +24,37 @@ function collectFiles(dir: string, ext: string): string[] {
 
 function packArdoPackage(packDir: string): string {
   fs.mkdirSync(packDir, { recursive: true })
-  execFileSync("pnpm", ["pack", "--pack-destination", packDir], {
-    cwd: ardoPackageDir,
-    stdio: "pipe",
-    timeout: 120_000,
-  })
+  execFileSync(
+    "pnpm",
+    ["--config.verifyDepsBeforeRun=false", "pack", "--pack-destination", packDir],
+    {
+      cwd: ardoPackageDir,
+      stdio: "pipe",
+      timeout: 120_000,
+    }
+  )
   const tarball = fs.readdirSync(packDir).find((file) => file.endsWith(".tgz"))
   if (tarball == null) {
     throw new Error("Ardo package tarball was not created")
   }
   return path.join(packDir, tarball)
+}
+
+// Coordinated engine releases can exercise the packed consumer boundary with
+// locally built engine/platform tarballs. Normal CI resolves registry releases.
+function readEngineOverrides(): Record<string, string> | undefined {
+  const inputPath = process.env.ARDO_TEST_ENGINE_OVERRIDES
+  if (inputPath == null) return undefined
+  const input: unknown = JSON.parse(fs.readFileSync(inputPath, "utf8"))
+  if (typeof input !== "object" || input === null || Array.isArray(input)) {
+    throw new Error("ARDO_TEST_ENGINE_OVERRIDES must name a JSON object of package overrides")
+  }
+  const overrides: Record<string, string> = {}
+  for (const [name, value] of Object.entries(input)) {
+    if (typeof value !== "string") throw new Error(`Invalid local engine override for ${name}`)
+    overrides[name] = value
+  }
+  return overrides
 }
 
 describe("scaffold integration build", () => {
@@ -97,6 +118,13 @@ export function greet(name: string, config?: GreeterConfig): string {
     const pkgPath = path.join(tmpDir, "package.json")
     const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
     pkg.dependencies.ardo = `file:${packArdoPackage(path.join(tmpDir, "packages"))}`
+    const engineOverrides = readEngineOverrides()
+    if (engineOverrides != null) {
+      const settings = Object.entries(engineOverrides)
+        .map(([name, value]) => `  ${JSON.stringify(name)}: ${JSON.stringify(value)}`)
+        .join("\n")
+      fs.appendFileSync(path.join(tmpDir, "pnpm-workspace.yaml"), `\noverrides:\n${settings}\n`)
+    }
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
 
     // 5. Install dependencies

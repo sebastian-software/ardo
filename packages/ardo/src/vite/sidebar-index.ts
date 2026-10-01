@@ -1,6 +1,5 @@
 import type { Dirent } from "node:fs"
 
-import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
@@ -8,6 +7,7 @@ import type { SidebarConfig, SidebarItem } from "../config/types"
 import type { PageFrontmatterMetadata } from "./page-metadata"
 import type { RouteManifestOptions } from "./route-manifest"
 
+import { readNativeMarkdownFrontmatter } from "../markdown/native-metadata"
 import { parsePageFrontmatterMetadata, toFrontmatterRecord } from "./page-metadata"
 import { stripTrailingExtension } from "./path-utils"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
@@ -260,7 +260,9 @@ async function readDirectoryIndexMetadata(fullPath: string): Promise<null | Side
 async function readFrontmatterFile(filePath: string): Promise<null | SidebarFrontmatter> {
   try {
     const fileContent = await fs.readFile(filePath, "utf8")
-    return readFrontmatterSafely(filePath, fileContent)
+    // An existing index still identifies the directory route when its metadata
+    // is malformed; only the metadata falls back, and child pages remain visible.
+    return readFrontmatterSafely(filePath, fileContent) ?? {}
   } catch (error) {
     if (!isFileNotFoundError(error)) {
       warnFrontmatterReadFailure(filePath, error)
@@ -271,16 +273,16 @@ async function readFrontmatterFile(filePath: string): Promise<null | SidebarFron
 
 function readFrontmatterSafely(filePath: string, fileContent: string): null | SidebarFrontmatter {
   try {
-    return readFrontmatter(fileContent)
+    return readFrontmatter(fileContent, filePath)
   } catch (error) {
     warnFrontmatterReadFailure(filePath, error)
     return null
   }
 }
 
-function readFrontmatter(fileContent: string): SidebarFrontmatter {
-  const parsed = matter(fileContent)
-  return parsePageFrontmatterMetadata(toFrontmatterRecord(parsed.data))
+function readFrontmatter(fileContent: string, filePath: string): SidebarFrontmatter {
+  const data = readNativeMarkdownFrontmatter(fileContent, filePath.endsWith(".mdx") ? "mdx" : "md")
+  return parsePageFrontmatterMetadata(toFrontmatterRecord(data))
 }
 
 function warnFrontmatterReadFailure(filePath: string, error: unknown): void {

@@ -1,19 +1,6 @@
-// Markdown transformation
-export {
-  transformMarkdown,
-  transformMarkdownToReact,
-  type TransformResult,
-} from "../markdown/pipeline"
-export { createShikiHighlighter, highlightCode, type ShikiHighlighter } from "../markdown/shiki"
+// Ferriki is also exposed for code blocks authored in React components.
+export { highlightCode } from "../markdown/ferriki"
 // Build-time utilities (Node.js only)
-export {
-  getPageDataForRoute,
-  getSlugFromPath,
-  loadAllDocs,
-  loadDoc,
-  type LoadDocOptions,
-  type LoadDocResult,
-} from "../runtime/loader"
 export { generateSidebar, type SidebarGenerationOptions } from "../runtime/sidebar"
 export {
   type CollectionDefinition,

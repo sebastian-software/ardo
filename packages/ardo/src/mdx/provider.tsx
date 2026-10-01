@@ -1,16 +1,12 @@
-import type { MDXComponents } from "mdx/types"
-import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react"
+import type { AnchorHTMLAttributes, ElementType, ReactNode } from "react"
 
-import { isValidElement } from "react"
 import { Link } from "react-router"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
 import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
-import * as codeStyles from "../ui/components/CodeBlock.css"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
-import { ArdoCopyButton } from "../ui/components/CopyButton"
 import { ArdoIcon } from "../ui/components/Icon"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
@@ -56,62 +52,20 @@ function SmartLink({
 }
 
 /**
- * Extracts text content from React children (for copy button)
- */
-function extractTextContent(children: ReactNode): string {
-  if (typeof children === "string") {
-    return children
-  }
-  if (Array.isArray(children)) {
-    return children.map((child: ReactNode) => extractTextContent(child)).join("")
-  }
-  if (isValidElement<{ children?: ReactNode }>(children)) {
-    const nestedChildren = children.props.children
-    if (nestedChildren != null) {
-      return extractTextContent(nestedChildren)
-    }
-  }
-  return ""
-}
-
-/**
- * Code block wrapper with copy button and optional title.
- * Forwards data-label for CodeGroup tab labels.
- */
-function PreBlock({
-  children,
-  "data-title": dataTitle,
-  "data-label": dataLabel,
-  ...props
-}: { "data-title"?: string; "data-label"?: string } & HTMLAttributes<HTMLPreElement>) {
-  const code = extractTextContent(children)
-  const hasDataTitle = dataTitle != null && dataTitle !== ""
-
-  return (
-    <div className={codeStyles.codeBlock} data-label={dataLabel}>
-      {hasDataTitle && <div className={codeStyles.codeTitle}>{dataTitle}</div>}
-      <div className={codeStyles.codeWrapper}>
-        <pre {...props}>{children}</pre>
-        <ArdoCopyButton code={code} />
-      </div>
-    </div>
-  )
-}
-
-/**
  * Provides MDX components for rendering documentation content.
- * Used as the providerImportSource for `@mdx-js/rollup`.
+ * Used by generated Ferromark route modules to resolve Markdown components.
  */
-export function useMDXComponents(): MDXComponents {
+export type ArdoMDXComponents = Record<string, ElementType>
+
+export function useMDXComponents(): ArdoMDXComponents {
   return {
     // Wrapper for the entire MDX content - renders content + TOC via DocContent.
-    // The recma-wrap-export plugin wraps this with ArdoPageDataProvider,
-    // which makes frontmatter/toc available to both Content and TOC components.
+    // Generated route modules wrap this with ArdoPageDataProvider, which makes
+    // frontmatter and the outline available throughout the page content.
     wrapper: ({ children }: { children: ReactNode }) => <ArdoDocContent>{children}</ArdoDocContent>,
 
     // MDX element overrides — styled via tag selectors in content.css.ts
     a: SmartLink,
-    pre: PreBlock,
 
     // Custom Ardo components available in MDX (mapped as short names)
     Accordion: ArdoAccordion,

@@ -9,8 +9,9 @@ export default defineConfig({
       siteUrl: "https://ardo-docs.dev",
       githubPages: false,
       versioning: {
-        current: "v4",
+        current: "v5",
         versions: [
+          { id: "v5", label: "5.x", path: "/v5/" },
           { id: "v4", label: "4.x", path: "/v4/" },
           { id: "v3", label: "3.x", path: "/v3/" },
         ],

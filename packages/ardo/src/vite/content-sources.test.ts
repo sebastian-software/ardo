@@ -92,6 +92,20 @@ title: Changelog
     expect(generated).toContain("order: 10")
   })
 
+  it("uses native visible heading text for defaults while preserving the source body", async () => {
+    const source =
+      "```md\n# Example inside a fence\n```\n\nNative *Title*\n==============\n\nBody.\n"
+    await writeSource("notes/01-native.md", source)
+    await materializeContentSources({
+      root: rootDir,
+      routesDir,
+      sources: [{ from: "notes", to: "notes" }],
+    })
+    const generated = await fs.readFile(path.join(routesDir, "notes", "01-native.md"), "utf8")
+    expect(generated).toContain('title: "Native Title"')
+    expect(generated.endsWith(source)).toBe(true)
+  })
+
   it("refuses to replace handwritten target directories", async () => {
     await writeSource("adr/0001-safe.md", "# Safe\n")
     await fs.mkdir(path.join(routesDir, "decisions"), { recursive: true })
