@@ -69,6 +69,10 @@ jobs:
         if: matrix.node-version == '22'
         run: pnpm storybook:build
 
+      - name: Install Storybook Playwright browser
+        if: matrix.node-version == '22'
+        run: node scripts/install-storybook-playwright-browser.mjs
+
       - name: Run Storybook interaction tests
         if: matrix.node-version == '22'
         run: |
