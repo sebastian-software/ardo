@@ -89,9 +89,13 @@ async function getHighlighter(theme: FerrikiTheme | undefined): Promise<Highligh
   const cacheKey = themeKey(theme)
   let highlighterPromise = highlighterPromises.get(cacheKey)
   if (highlighterPromise == null) {
-    highlighterPromise = createHighlighter({
-      themes: themeNames(theme),
-    })
+    highlighterPromise = createHighlighter({ themes: themeNames(theme) }).catch(
+      (error: unknown) => {
+        // Asset downloads can fail transiently; let later transforms retry.
+        highlighterPromises.delete(cacheKey)
+        throw error
+      }
+    )
     highlighterPromises.set(cacheKey, highlighterPromise)
   }
 

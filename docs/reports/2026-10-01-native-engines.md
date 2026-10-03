@@ -57,6 +57,11 @@ public API; the direct Node facade uses 0.8.2. Their standard asset manifests
 match byte-for-byte for all 325 payloads, and the local cache matches every
 manifest hash. The adapter does not consume private Ferriki APIs.
 
+Separately, on 2026-10-03, the Ardo adapter was smoke-tested against published
+Ferriki 0.10.0: dual-theme rendering, metadata and line numbers,
+unknown-language plain-text fallback, HTML escaping, and retry after a failed
+asset initialization all passed.
+
 Independent review of the generated homepage caught a nested legacy `pre`
 wrapper. Removing it leaves one native code block and one copy button. The
 final TSX fixture has the title and label, seven numbered lines including blank
@@ -95,7 +100,7 @@ release workflows. Local tarballs contain the coordinated changes under those
 labels; they do not represent already published JSX-capable releases.
 
 1. Release the Ferromark JSX API as 3.1, including matching native sidecars.
-2. Regenerate Ardo's registry lockfile for `ferromark ^3.1.0` and Ferriki 0.8.2,
+2. Regenerate Ardo's registry lockfile for `ferromark ^3.1.0` and Ferriki 0.10.0,
    repeat the normal frozen-install gates, and release the linked Ardo packages
    as 5.0.
 3. Regenerate both engine homepage lockfiles for `ardo ^5.0.0` and verify their

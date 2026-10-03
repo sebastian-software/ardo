@@ -85,8 +85,8 @@ overrides:
   # Merge these entries into the existing overrides map.
   ferromark: file:/absolute/path/to/ferromark-3.0.0.tgz
   ferromark-darwin-arm64: file:/absolute/path/to/ferromark-darwin-arm64-3.0.0.tgz
-  "@ferriki/core": file:/absolute/path/to/ferriki-core-0.8.2.tgz
-  "@ferriki/darwin-arm64": file:/absolute/path/to/ferriki-darwin-arm64-0.8.2.tgz
+  "@ferriki/core": file:/absolute/path/to/ferriki-core-0.10.0.tgz
+  "@ferriki/darwin-arm64": file:/absolute/path/to/ferriki-darwin-arm64-0.10.0.tgz
 ```
 
 These tarball names reflect the source version labels before release, rather
