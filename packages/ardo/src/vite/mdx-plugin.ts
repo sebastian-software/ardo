@@ -1,63 +1,42 @@
 import type { Plugin } from "vite"
 
-import mdx from "@mdx-js/rollup"
 import { reactRouter } from "@react-router/dev/vite"
-import rehypeShiki from "@shikijs/rehype"
-import remarkFrontmatter from "remark-frontmatter"
-import remarkGfm from "remark-gfm"
-import remarkMdxFrontmatter from "remark-mdx-frontmatter"
+import { transformWithOxc } from "vite"
 
 import type { ArdoConfig } from "../config/types"
+import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
-import { defaultMarkdownConfig } from "../config/index"
-import { remarkCallouts } from "../markdown/remark-callouts"
-import { remarkMdxHandle } from "../markdown/remark-mdx-handle"
-import { remarkMdxToc } from "../markdown/remark-mdx-toc"
-import { remarkMermaid } from "../markdown/remark-mermaid"
-import { remarkStripFrontmatterH1 } from "../markdown/remark-strip-frontmatter-h1"
-import { ardoLineTransformer, remarkCodeMeta } from "../markdown/shiki"
-import { recmaWrapExport } from "./recma-wrap-export"
+import { compileMdxRouteModule } from "./mdx-compile"
 
+/** Compile Markdown and MDX route modules with Ferromark and Ferriki. */
 export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin {
-  return mdx(createMdxOptions(markdownConfig)) as Plugin
-}
-
-export function createMdxOptions(
-  markdownConfig: ArdoConfig["markdown"]
-): Parameters<typeof mdx>[0] {
-  const themeConfig = markdownConfig?.theme ?? defaultMarkdownConfig.theme
-  const lineNumbers = markdownConfig?.lineNumbers ?? false
-  const shikiOptions = isShikiThemeObject(themeConfig)
-    ? {
-        themes: { light: themeConfig.light, dark: themeConfig.dark },
-        defaultColor: false as const,
-        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
-      }
-    : {
-        theme: themeConfig,
-        transformers: [ardoLineTransformer({ globalLineNumbers: lineNumbers })],
-      }
-
   return {
-    include: /\.(md|mdx)$/,
-    remarkPlugins: [
-      remarkFrontmatter,
-      remarkStripFrontmatterH1,
-      [remarkMdxFrontmatter, { name: "frontmatter" }],
-      remarkMdxHandle,
-      remarkGfm,
-      remarkCallouts,
-      remarkMermaid,
-      remarkCodeMeta,
-      [
-        remarkMdxToc,
-        { anchor: markdownConfig?.anchor, levels: markdownConfig?.toc?.level ?? [2, 3] },
-      ],
-      ...(markdownConfig?.remarkPlugins ?? []),
-    ],
-    rehypePlugins: [[rehypeShiki, shikiOptions], ...(markdownConfig?.rehypePlugins ?? [])],
-    recmaPlugins: [recmaWrapExport],
-    providerImportSource: "ardo/mdx-provider",
+    enforce: "pre",
+    name: "ardo:ferromark",
+    async transform(source, id) {
+      const format = getMarkdownFormat(id)
+      if (format == null) return
+
+      const sourceName = id.split("?", 1)[0] ?? id
+      const module = compileMdxRouteModule({
+        format,
+        id: sourceName,
+        markdownConfig,
+        source,
+      })
+      const transformed = await transformWithOxc(
+        module.code,
+        sourceName,
+        {
+          jsx: { runtime: "automatic" },
+          lang: format === "mdx" ? "tsx" : "jsx",
+          sourcemap: true,
+          sourceType: "module",
+        },
+        module.map
+      )
+      return { code: transformed.code, map: transformed.map ?? module.map }
+    },
   }
 }
 
@@ -66,11 +45,12 @@ export function getReactRouterPlugins(): Plugin[] {
   return Array.isArray(routerPlugin) ? routerPlugin : [routerPlugin]
 }
 
-function isShikiThemeObject(themeConfig: unknown): themeConfig is { dark: string; light: string } {
-  return (
-    typeof themeConfig === "object" &&
-    themeConfig != null &&
-    "light" in themeConfig &&
-    "dark" in themeConfig
-  )
+function getMarkdownFormat(id: string): NativeMarkdownFormat | undefined {
+  const [path = id, query = ""] = id.split("?", 2)
+  if (query.split("&").some((parameter) => parameter === "raw" || parameter === "url")) {
+    return undefined
+  }
+  if (path.endsWith(".mdx")) return "mdx"
+  if (path.endsWith(".md")) return "md"
+  return undefined
 }

@@ -1,6 +1,6 @@
 import type { MarkdownConfig } from "../config/types"
 
-import { highlightCode } from "../markdown/shiki"
+import { highlightCode } from "../markdown/ferriki"
 import { outdent, scanArdoCodeBlocks, type ScannedCodeBlock } from "./codeblock-scan"
 
 export async function transformArdoCodeBlocks(
@@ -57,6 +57,7 @@ async function createSelfClosingReplacement(
   const html = await safeHighlightCode({
     codeContent: codeValue,
     language,
+    meta: extractPropValue(block.props, "meta") ?? undefined,
     markdownConfig,
     sourcePath: options.sourcePath,
   })
@@ -84,6 +85,7 @@ async function createChildrenReplacement(
   const html = await safeHighlightCode({
     codeContent,
     language,
+    meta: extractPropValue(block.props, "meta") ?? undefined,
     markdownConfig,
     sourcePath: options.sourcePath,
   })
@@ -148,6 +150,7 @@ function getPropPatterns(propName: string): RegExp[] {
 async function safeHighlightCode(params: {
   codeContent: string
   language: string
+  meta?: string
   markdownConfig: MarkdownConfig | undefined
   sourcePath?: string
 }): Promise<null | string> {
@@ -155,6 +158,8 @@ async function safeHighlightCode(params: {
     return await highlightCode(params.codeContent, params.language, {
       sourcePath: params.sourcePath,
       theme: params.markdownConfig?.theme,
+      lineNumbers: params.markdownConfig?.lineNumbers,
+      meta: params.meta,
     })
   } catch {
     return null

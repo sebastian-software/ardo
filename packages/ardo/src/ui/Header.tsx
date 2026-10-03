@@ -104,12 +104,14 @@ function flattenHeaderChildren(children: ReactNode): ReactNode[] {
  * while open.
  */
 function useMobileMenu(): [boolean, (open: boolean) => void] {
-  const location = useLocation()
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const [previousPathname, setPreviousPathname] = useState(location.pathname)
 
-  useEffect(() => {
+  if (location.pathname !== previousPathname) {
+    setPreviousPathname(location.pathname)
     setOpen(false)
-  }, [location.pathname])
+  }
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : ""

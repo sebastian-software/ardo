@@ -60,20 +60,53 @@ const moreSecret = "also do not index"
 
     expect(docs).toStrictEqual([
       {
-        id: "guide/getting-started.mdx#getting-started",
+        id: "guide/getting-started.mdx#page-0",
         title: "Getting Started",
         pageTitle: "Getting Started",
         content: "Getting Started Install Ardo from npm.",
         excerpt: "Install Ardo from npm.",
-        path: "/guide/getting-started#getting-started",
-        publicPath: "/guide/getting-started#getting-started",
+        path: "/guide/getting-started",
+        publicPath: "/guide/getting-started",
         routePath: "/guide/getting-started",
-        anchor: "getting-started",
         headingHierarchy: ["Getting Started"],
         routeGroup: "Guide",
         section: "Guide",
       },
     ])
+  })
+
+  it("indexes native setext and JSX heading text using the rendered heading ranges", async () => {
+    await writeRoute(
+      "guide/native.mdx",
+      [
+        "---",
+        "title: Native",
+        "---",
+        "",
+        "# Native",
+        "",
+        "日本語 introduction.",
+        "",
+        "What's included?",
+        "----------------",
+        "",
+        "First section.",
+        "",
+        "## <Badge>What's included?</Badge>",
+        "",
+        "Second section.",
+      ].join("\n")
+    )
+    const records = await generateSearchIndex(routesDir)
+    expect(records.map(({ anchor }) => anchor)).toStrictEqual([
+      undefined,
+      "what-s-included",
+      "what-s-included-1",
+    ])
+    expect(records[0].excerpt).toBe("日本語 introduction.")
+    expect(records[1].excerpt).toBe("First section.")
+    expect(records[2].excerpt).toBe("Second section.")
+    expect(records[2].title).toBe("What's included?")
   })
 
   it("builds one static record per markdown section with heading hierarchy", async () => {

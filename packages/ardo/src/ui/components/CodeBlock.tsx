@@ -1,5 +1,6 @@
 import { Children, isValidElement, useState } from "react"
 
+import { shikiContainerClassName } from "./code-block-classes"
 import * as styles from "./CodeBlock.css"
 import { ArdoCopyButton } from "./CopyButton"
 
@@ -47,13 +48,15 @@ export type ArdoCodeBlockProps = {
   language?: string
   /** Optional title shown above the code */
   title?: string
+  /** Label used by CodeGroup tabs */
+  "data-label"?: string
   /** Show line numbers */
   lineNumbers?: boolean
   /** Line numbers to highlight */
   highlightLines?: number[]
   /** Code as children — supports template literals with auto-outdent */
   children?: React.ReactNode
-  /** Pre-rendered Shiki HTML (injected by ardo:codeblock-highlight plugin) */
+  /** Pre-rendered Ferriki HTML injected by the literal TSX codeblock prepass */
   __html?: string
 }
 
@@ -76,7 +79,7 @@ function CodeBlockContent({
   lineNumbers: boolean
   children?: React.ReactNode
 }) {
-  // The Ardo build plugin injects Shiki-generated HTML here. Runtime code samples and custom children render through React instead.
+  // The Ardo build plugin injects Ferriki-generated HTML here. Runtime code samples and custom children render through React instead.
   if (hasHtml) return <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
   if (hasCustomChildren) return <>{children}</>
   return (
@@ -116,6 +119,7 @@ export function ArdoCodeBlock({
   code: codeProp,
   language = "text",
   title,
+  "data-label": dataLabel,
   lineNumbers = false,
   highlightLines = EMPTY_HIGHLIGHT_LINES,
   children,
@@ -128,7 +132,13 @@ export function ArdoCodeBlock({
   const lines = code.split("\n")
 
   return (
-    <div className={styles.codeBlock} data-lang={language}>
+    <div
+      className={
+        hasCustomChildren ? `${styles.codeBlock} ${shikiContainerClassName}` : styles.codeBlock
+      }
+      data-lang={language}
+      data-label={dataLabel}
+    >
       {hasTitle && <div className={styles.codeTitle}>{title}</div>}
       <div className={styles.codeWrapper}>
         <CodeBlockContent
@@ -157,7 +167,7 @@ export type ArdoCodeGroupProps = {
 
 /**
  * Tabbed group of code blocks.
- * Labels come from the `labels` prop (set at remark level) or fall back to
+ * Labels come from the `labels` prop or fall back to
  * data-label / title / language props on children.
  */
 export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProps) {

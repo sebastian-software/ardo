@@ -583,10 +583,10 @@ ardo({
 
 ### markdown.theme
 
-- **Type:** `BundledTheme | { light: BundledTheme; dark: BundledTheme }`
+- **Type:** `ThemeInput | { light: ThemeInput; dark: ThemeInput }` from `@ferriki/core`
 - **Default:** `{ light: "github-light-default", dark: "github-dark-default" }`
 
-Syntax highlighting theme. Can be a single Shiki theme name or a light/dark pair.
+Syntax highlighting theme. Ferriki accepts a theme name, a custom TextMate theme registration, or a light/dark pair. Standard themes are downloaded and cached on first use.
 
 ```ts
 markdown: {
@@ -623,19 +623,32 @@ markdown: {
 }
 ```
 
-### markdown.remarkPlugins
+### markdown.passes
 
-- **Type:** `unknown[]`
+- **Type:** `NativePassOptions[]` from `ferromark`
 - **Default:** `[]`
 
-Additional remark plugins for markdown processing. Ardo already includes `remark-frontmatter`, `remark-mdx-frontmatter`, and `remark-gfm`.
+Run Ferromark's native transforms in array order. The same transformed heading text supplies the rendered page, table of contents, search, and link validation.
 
-### markdown.rehypePlugins
+```ts
+markdown: {
+  passes: [
+    { kind: "typography", language: "en" },
+    { kind: "emojiShortcodes" },
+    { kind: "githubReferences", repository: "owner/repository" },
+  ],
+}
+```
 
-- **Type:** `unknown[]`
-- **Default:** `[]`
+`markdown.typography` is a shorthand for a typography pass. Configure either `typography` or `passes`; Ferromark rejects using both together.
 
-Additional rehype plugins for HTML processing. Ardo already includes `@shikijs/rehype` for syntax highlighting.
+### Native Markdown syntax
+
+Ferromark syntax options are configured directly under `markdown`. GFM tables, strikethrough, task lists, autolinks, footnotes, and callouts are enabled by default. Optional extensions include `headingAttributes`, `imageAttributes`, `extendedAttributes`, `definitionLists`, `insertions`, `superscript`, `subscript`, `math`, and `lineComments`.
+
+`headingOffset` shifts rendered heading levels and TOC levels together. `headingIdPrefix` prefixes native IDs everywhere they are used. See the [Ferromark Node API](https://github.com/sebastian-software/ferromark/blob/main/node/ferromark/README.md) for option semantics and supported passes.
+
+Ardo manages document format, YAML frontmatter, React component bindings, and removal of a matching first page-title heading. The former remark, rehype, and recma plugin options have been removed; see [Upgrade to Ardo 5](/guide/upgrade-to-v5).
 
 ---
 

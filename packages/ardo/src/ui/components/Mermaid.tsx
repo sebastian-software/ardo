@@ -4,15 +4,15 @@ import * as styles from "./Mermaid.css"
 
 export type ArdoMermaidProps = {
   /** Mermaid diagram source. */
-  code: string
+  code?: string
+  /** Native Markdown code-component children. */
+  children?: string
   /** Additional CSS class. */
   className?: string
 }
 
 type RenderState =
-  | { status: "error"; message: string }
-  | { status: "pending" }
-  | { status: "rendered"; svg: string }
+  { status: "error"; message: string } | { status: "pending" } | { status: "rendered"; svg: string }
 
 function subscribeToThemeClass(onChange: () => void): () => void {
   const observer = new MutationObserver(onChange)
@@ -45,7 +45,8 @@ function useDocumentThemeIsDark(): boolean {
  *
  * Requires the optional `mermaid` peer dependency to be installed.
  */
-export function ArdoMermaid({ code, className }: ArdoMermaidProps) {
+export function ArdoMermaid({ code: codeProp, children, className }: ArdoMermaidProps) {
+  const code = codeProp ?? (typeof children === "string" ? children : "")
   const [state, setState] = useState<RenderState>({ status: "pending" })
   const reactId = useId()
   const isDark = useDocumentThemeIsDark()

@@ -1,0 +1,54 @@
+---
+title: Upgrade to Ardo 5
+description: Move to Ferromark Markdown and MDX compilation and Ferriki syntax highlighting.
+order: 14
+---
+
+# Upgrade to Ardo 5
+
+Ardo 5 uses Ferromark for Markdown and MDX, including native Ferriki syntax highlighting. Ferromark emits framework-neutral JSX; Ardo supplies React component bindings, layouts, page context, and route metadata. Your existing React route setup remains the integration point.
+
+## Runtime and installation
+
+Use Node.js 22.13 or newer on Linux or Windows x64/arm64, or macOS Apple Silicon. Keep optional dependencies enabled so the package manager installs the matching native binaries. There is no JavaScript engine fallback.
+
+Standard Ferriki grammars and themes are downloaded and cached on first use. Populate a cache during a network-enabled build, persist it in CI, and configure offline runs with:
+
+```sh
+FERRIKI_CACHE_DIR=/path/to/persisted/ferriki-cache
+FERRIKI_ASSETS_REMOTE=0
+```
+
+See [Ferriki's standard assets](https://github.com/sebastian-software/ferriki/blob/main/docs/ferriki-api.md#standard-assets) for mirrors and cache behavior.
+
+## Markdown configuration
+
+Remove `markdown.remarkPlugins`, `markdown.rehypePlugins`, and recma customization. Configure supported Ferromark syntax options and ordered native transforms directly:
+
+```ts
+markdown: {
+  theme: { light: "github-light-default", dark: "github-dark-default" },
+  lineNumbers: true,
+  headingAttributes: true,
+  passes: [
+    { kind: "typography", language: "en" },
+    { kind: "emojiShortcodes" },
+  ],
+}
+```
+
+GFM tables, strikethrough, task lists, autolinks, footnotes, and callouts remain enabled by default. Use YAML frontmatter. MDX imports, named exports, expressions, component overrides, and a default layout export remain supported. Ferromark renders fence titles, labels, highlighted lines, and line numbers with native Ferriki highlighting. Literal `ArdoCodeBlock` usage in TSX routes uses Ardo's direct Ferriki prepass.
+
+## Heading links
+
+Ferromark owns heading IDs. Punctuation separates words: `What's included?` becomes `what-s-included`. Duplicate IDs receive numeric suffixes. A first top-level H1 matching the frontmatter title is omitted and does not reserve an ID. Setext headings and Markdown inside JSX use the same outline as ATX headings.
+
+Update handwritten fragment links when an ID changes. Rendered headings, the table of contents, search records, and link checking share native IDs. Run a production build with link validation enabled to catch stale fragments.
+
+## Removed standalone APIs
+
+`transformMarkdown`, `transformMarkdownToReact`, `loadDoc`, and `loadAllDocs` have been removed. Compile standalone HTML with Ferromark directly. For route content, use Ardo's Vite integration and public runtime hooks.
+
+## Coordinated release
+
+The new JSX API must be released in Ferromark 3.1 before the dependent Ardo 5 release. Ferriki 0.10.0 supplies the highlighting API. Before those releases, verification uses locally packed engine builds and the matching platform sidecars. Local tarball overrides are development inputs, not registry release metadata; regenerate the registry lockfile after the Ferromark release is available.

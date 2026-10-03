@@ -20,7 +20,7 @@ pnpm add ardo react react-dom react-router isbot
 
 ### Node.js Version Error
 
-Ardo requires Node.js 22.22.1 or higher. Check your version:
+Ardo requires Node.js 22.13.0 or higher. Check your version:
 
 ```bash
 node --version
@@ -39,11 +39,7 @@ import { defineConfig } from "vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
-  plugins: [
-    ardo({
-      /* config */
-    }),
-  ],
+  plugins: [ardo({/* config */})],
 })
 ```
 
@@ -97,7 +93,7 @@ Check that your file:
 
 ### Code Blocks Not Highlighted
 
-Syntax highlighting uses Shiki. Ensure you specify the language:
+Syntax highlighting uses Ferriki. Ensure you specify the language:
 
 ````markdown
 ```javascript
@@ -105,7 +101,13 @@ const foo = "bar"
 ```
 ````
 
-Supported languages: [Shiki Languages](https://shiki.style/languages)
+See [Ferriki's standard assets](https://github.com/sebastian-software/ferriki/blob/main/docs/ferriki-api.md#standard-assets) for supported languages and themes. An unknown language produces a warning and renders as plain text.
+
+### Native Engine or Asset Loading Fails
+
+Ardo requires Node.js 22.13 or newer and native binaries for Linux or Windows on x64/arm64, or macOS on Apple Silicon. Keep optional dependencies enabled when installing packages.
+
+Ferriki downloads standard language and theme assets on first use. For offline CI, populate and persist a cache beforehand, then set `FERRIKI_CACHE_DIR` to its location and `FERRIKI_ASSETS_REMOTE=0` to disable downloads. A missing theme or native binary fails the build; see [Ferriki troubleshooting](https://github.com/sebastian-software/ferriki/blob/main/docs/troubleshooting.md).
 
 ### CodeBlock Not Highlighted in `.tsx` Routes
 
@@ -151,11 +153,7 @@ If deploying to a subdirectory, set the `base` option in `vite.config.ts`:
 ```typescript
 export default defineConfig({
   base: "/my-docs/",
-  plugins: [
-    ardo({
-      /* config */
-    }),
-  ],
+  plugins: [ardo({/* config */})],
 })
 ```
 

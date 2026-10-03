@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { highlightCode } from "../markdown/shiki"
+import { highlightCode } from "../markdown/ferriki"
 import { transformArdoCodeBlocks } from "./codeblock-transform"
 
-vi.mock("../markdown/shiki", () => ({
+vi.mock("../markdown/ferriki", () => ({
   highlightCode: vi.fn(async (code: string, language: string) => {
     await Promise.resolve()
     return `<pre>${language}:${code}</pre>`
@@ -34,6 +34,8 @@ describe("transformArdoCodeBlocks", () => {
     expect(mockedHighlightCode).toHaveBeenCalledWith("\\n", "text", {
       sourcePath: undefined,
       theme: undefined,
+      lineNumbers: undefined,
+      meta: undefined,
     })
   })
 
@@ -45,6 +47,8 @@ describe("transformArdoCodeBlocks", () => {
     expect(mockedHighlightCode).toHaveBeenCalledWith("const x = 1", "ts", {
       sourcePath: "/site/app/demo.tsx",
       theme: undefined,
+      lineNumbers: undefined,
+      meta: undefined,
     })
   })
 })

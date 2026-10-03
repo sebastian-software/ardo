@@ -53,7 +53,7 @@ export const ARDO_INTERNAL_LIFECYCLE_PHASES: readonly ArdoInternalLifecyclePhase
   },
   {
     id: "markdown:transform",
-    description: "Apply Markdown, MDX, rehype, recma, and metadata transforms.",
+    description: "Compile Markdown and MDX with Ferromark, Ferriki, and React page metadata.",
     futurePublicCandidate: false,
   },
 ]

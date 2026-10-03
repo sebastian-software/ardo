@@ -1,6 +1,8 @@
-import matter from "gray-matter"
+import { compileJsx } from "ferromark"
 import fs from "node:fs/promises"
 import path from "node:path"
+
+import { parseNativeFrontmatter } from "../markdown/native-metadata"
 
 const GENERATED_SENTINEL_FILE = ".ardo-generated"
 
@@ -155,42 +157,46 @@ function createMaterializedMarkdown(input: {
   file: ContentSourceFile
   source: ResolvedContentSourceMapping
 }): string {
-  const parsed = matter(input.file.content)
-  const hasFrontmatter = hasYamlFrontmatter(input.file.content)
+  const parsed = compileJsx(input.file.content, {
+    format: input.file.filePath.endsWith(".mdx") ? "mdx" : "md",
+    frontMatter: true,
+  })
+  const data = parseNativeFrontmatter(parsed.frontMatter, parsed.frontMatterKind)
+  const content = removeFrontmatter(input.file.content, parsed.frontMatterSpan)
   const frontmatter = {
-    ...(hasFrontmatter ? toRecord(parsed.data) : createDefaultFrontmatter(input.file)),
+    ...(parsed.frontMatterSpan == null
+      ? createDefaultFrontmatter(
+          input.file,
+          parsed.headings.find((heading) => heading.level === 1)?.text
+        )
+      : toRecord(data)),
     ...input.source.frontmatter?.(input.file),
   }
 
   if (Object.keys(frontmatter).length === 0) {
-    return `${parsed.content.trimStart()}\n`
+    return `${content.trimStart()}\n`
   }
 
-  return `${serializeFrontmatter(frontmatter)}${parsed.content.trimStart()}`
+  return `${serializeFrontmatter(frontmatter)}${content.trimStart()}`
+}
+
+function removeFrontmatter(
+  source: string,
+  range: { start: number; end: number } | undefined
+): string {
+  if (range == null) return source
+  const bytes = Buffer.from(source)
+  return Buffer.concat([bytes.subarray(0, range.start), bytes.subarray(range.end)]).toString()
 }
 
 function createDefaultFrontmatter(
-  file: ContentSourceFile
+  file: ContentSourceFile,
+  heading: string | undefined
 ): Record<string, ContentSourceFrontmatterValue> {
   return {
-    title: findFirstHeading(file.content) ?? formatTitleFromFileName(file.relativePath),
+    title: heading ?? formatTitleFromFileName(file.relativePath),
     order: findFilenameOrder(file.relativePath),
   }
-}
-
-function hasYamlFrontmatter(content: string): boolean {
-  return content.trimStart().startsWith("---")
-}
-
-function findFirstHeading(content: string): string | undefined {
-  for (const line of content.split("\n")) {
-    const trimmed = line.trim()
-    if (trimmed.startsWith("# ")) {
-      return trimmed.slice(2).trim()
-    }
-  }
-
-  return undefined
 }
 
 function findFilenameOrder(relativePath: string): number | undefined {

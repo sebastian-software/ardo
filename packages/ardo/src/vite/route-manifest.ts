@@ -1,14 +1,13 @@
+import type { JsxHeading } from "ferromark"
 import type { Dirent } from "node:fs"
 
-import matter from "gray-matter"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { ResolvedConfig } from "../config/types"
+import type { MarkdownConfig, ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
-import { createHeadingSlugger } from "../markdown/heading-slug"
-import { getMarkdownFenceMarker, type MarkdownFenceMarker } from "./markdown-fence"
+import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
 import {
   createPageMetadata,
   type PageFrontmatterMetadata,
@@ -24,6 +23,8 @@ export type RouteManifestEntry = {
   content: string
   filePath: string
   frontmatter: PageFrontmatterMetadata
+  /** Native heading ranges refer to UTF-8 bytes in content. */
+  headings?: JsxHeading[]
   frontmatterDiagnostics?: PageMetadataDiagnostic[]
   identity: RouteIdentity
   lastmod: Date
@@ -42,6 +43,7 @@ export type RouteManifestOptions = {
   localeIds?: string[]
   localeId?: string
   versionId?: string
+  markdown?: MarkdownConfig
 }
 
 type RouteManifestScanContext = {
@@ -51,13 +53,14 @@ type RouteManifestScanContext = {
 }
 
 export function createRouteManifestOptions(
-  config: Pick<ResolvedConfig, "base" | "i18n" | "versioning">
+  config: { markdown?: MarkdownConfig } & Pick<ResolvedConfig, "base" | "i18n" | "versioning">
 ): RouteManifestOptions {
   return {
     basePath: config.base,
     localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),
     localeId: getDefaultLocaleId(config.i18n),
     versionId: config.versioning === false ? undefined : config.versioning.current,
+    markdown: config.markdown,
   }
 }
 
@@ -103,8 +106,11 @@ async function createManifestEntry(
   }
 
   const content = await fs.readFile(filePath, "utf8")
-  const parsed = extension === ".tsx" ? { content, data: {} } : matter(content)
-  const data = toFrontmatterRecord(parsed.data)
+  const parsed =
+    extension === ".tsx"
+      ? { content, frontmatter: {}, headings: [] }
+      : readNativeMarkdownMetadata(content, extension === ".mdx" ? "mdx" : "md", options.markdown)
+  const data = toFrontmatterRecord(parsed.frontmatter)
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
   const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
@@ -118,8 +124,9 @@ async function createManifestEntry(
   const frontmatter = frontmatterResult.frontmatter
 
   return {
-    anchors: extractAnchors(parsed.content),
+    anchors: parsed.headings.flatMap((heading) => (heading.id == null ? [] : [heading.id])),
     content: parsed.content,
+    headings: parsed.headings,
     filePath,
     frontmatter,
     frontmatterDiagnostics: frontmatterResult.diagnostics,
@@ -171,44 +178,4 @@ function toRoutePath(relativePath: string, extension: ".md" | ".mdx" | ".tsx") {
   }
 
   return `/${withoutExtension}`.replaceAll(/\$(\w+)/gu, ":$1")
-}
-
-function extractAnchors(content: string): string[] {
-  const anchors: string[] = []
-  const slugger = createHeadingSlugger()
-  let fenceMarker: MarkdownFenceMarker | null = null
-
-  for (const line of content.split("\n")) {
-    const nextFenceMarker = getMarkdownFenceMarker(line)
-    if (fenceMarker != null) {
-      if (nextFenceMarker === fenceMarker) {
-        fenceMarker = null
-      }
-      continue
-    }
-
-    if (nextFenceMarker != null) {
-      fenceMarker = nextFenceMarker
-      continue
-    }
-
-    const headingText = getMarkdownHeadingText(line)
-    if (headingText != null) anchors.push(slugger.slug(headingText))
-  }
-  return anchors
-}
-
-function getMarkdownHeadingText(line: string): null | string {
-  const trimmed = line.trimStart()
-  let level = 0
-  for (const character of trimmed) {
-    if (character !== "#") break
-    level++
-  }
-
-  if (level === 0 || level > 6 || trimmed[level] !== " ") {
-    return null
-  }
-
-  return trimmed.slice(level + 1)
 }

@@ -1,5 +1,6 @@
-import type { BundledTheme } from "shiki"
-import type { PluggableList } from "unified"
+import type { MarkdownConfig } from "./markdown"
+
+export type { MarkdownConfig } from "./markdown"
 
 // =============================================================================
 // Sidebar Types (for data-driven sidebar)
@@ -72,27 +73,6 @@ export type ArdoBrandConfig = {
   neutral?: ArdoBrandHue
   /** Header logo path/URL, optionally with light/dark variants. */
   logo?: ArdoBrandLogo
-}
-
-// =============================================================================
-// Markdown Config
-// =============================================================================
-
-export type MarkdownConfig = {
-  /** Syntax highlighting theme */
-  theme?: { light: BundledTheme; dark: BundledTheme } | BundledTheme
-  /** Show line numbers in code blocks */
-  lineNumbers?: boolean
-  /** Enable anchor links for headings */
-  anchor?: boolean
-  /** Table of contents configuration */
-  toc?: {
-    level?: [number, number]
-  }
-  /** Remark plugins */
-  remarkPlugins?: PluggableList
-  /** Rehype plugins */
-  rehypePlugins?: PluggableList
 }
 
 // =============================================================================
@@ -323,13 +303,7 @@ export type SitemapConfig = {
 }
 
 export type SitemapChangefreq =
-  | "always"
-  | "daily"
-  | "hourly"
-  | "monthly"
-  | "never"
-  | "weekly"
-  | "yearly"
+  "always" | "daily" | "hourly" | "monthly" | "never" | "weekly" | "yearly"
 
 export type RobotsConfig = {
   allow?: string[]

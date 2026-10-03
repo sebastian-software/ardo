@@ -195,19 +195,31 @@ globalStyle(`${s} button[data-code]:hover, ${s} button[data-code]:focus-visible`
 })
 
 // =============================================================================
-// Shiki theme integration
+// Ferriki theme integration
 // =============================================================================
 
 globalStyle(".shiki", {
   background: "transparent !important",
 })
 
-globalStyle(".shiki span", {
+globalStyle('.shiki span[style*="--shiki-light"]', {
   color: "var(--shiki-light)",
 })
 
-globalStyle(".dark .shiki span", {
-  color: "var(--shiki-dark)",
+globalStyle('.dark .shiki span[style*="--shiki-dark"]', {
+  color: "var(--shiki-dark) !important",
+})
+
+globalStyle('.dark .shiki span[style*="--shiki-dark-font-style"]', {
+  fontStyle: "var(--shiki-dark-font-style) !important",
+})
+
+globalStyle('.dark .shiki span[style*="--shiki-dark-font-weight"]', {
+  fontWeight: "var(--shiki-dark-font-weight) !important",
+})
+
+globalStyle('.dark .shiki span[style*="--shiki-dark-text-decoration"]', {
+  textDecoration: "var(--shiki-dark-text-decoration) !important",
 })
 
 // =============================================================================

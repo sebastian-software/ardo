@@ -13,19 +13,20 @@ import { ArdoSearch, type ArdoSearchProps } from "./Search"
  * search overlay.
  */
 export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
+  const location = useLocation()
   const labels = useArdoLabels()
   const [overlayOpen, setOverlayOpen] = useState(false)
-  const location = useLocation()
+  const [previousPathname, setPreviousPathname] = useState(location.pathname)
   const overlayRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const closeOverlay = useCallback(() => {
     setOverlayOpen(false)
   }, [])
 
-  // Close the overlay on navigation.
-  useEffect(() => {
+  if (location.pathname !== previousPathname) {
+    setPreviousPathname(location.pathname)
     setOverlayOpen(false)
-  }, [location.pathname])
+  }
 
   useSearchOverlayFocus({
     onClose: closeOverlay,

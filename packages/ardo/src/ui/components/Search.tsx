@@ -1,5 +1,5 @@
 import MiniSearch from "minisearch"
-import { useEffect, useId, useMemo, useRef, useState } from "react"
+import { useCallback, useId, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
@@ -86,6 +86,7 @@ function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
 
 function SearchInput({
   inputRef,
+  setInputRef,
   placeholder,
   query,
   hasQuery,
@@ -98,6 +99,7 @@ function SearchInput({
   labels,
 }: {
   inputRef: React.RefObject<HTMLInputElement | null>
+  setInputRef: React.RefCallback<HTMLInputElement>
   placeholder: string
   query: string
   hasQuery: boolean
@@ -113,7 +115,7 @@ function SearchInput({
     <div className={styles.searchField}>
       <SearchIcon size={18} />
       <input
-        ref={inputRef}
+        ref={setInputRef}
         type="text"
         className={styles.searchInput}
         placeholder={placeholder}
@@ -186,6 +188,13 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
   const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const setInputRef = useCallback(
+    (input: HTMLInputElement | null) => {
+      inputRef.current = input
+      if (input != null && autoFocus) input.focus()
+    },
+    [autoFocus]
+  )
   const searchIndex = useSearchIndex()
   const state = useSearch(searchIndex)
   const hasQuery = state.query.trim().length > 0
@@ -195,10 +204,6 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
     results: state.results,
     selectedIndex: state.selectedIndex,
   })
-
-  useEffect(() => {
-    if (autoFocus) inputRef.current?.focus()
-  }, [autoFocus])
 
   useGlobalSearchShortcut(inputRef, state.setIsOpen)
   useOutsideClick({
@@ -245,6 +250,7 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
     >
       <SearchInput
         inputRef={inputRef}
+        setInputRef={setInputRef}
         placeholder={placeholder ?? labels.search.placeholder}
         query={state.query}
         hasQuery={hasQuery}

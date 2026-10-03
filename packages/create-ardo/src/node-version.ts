@@ -1,4 +1,4 @@
-export const MINIMUM_NODE_VERSION = "22.22.1"
+export const MINIMUM_NODE_VERSION = "22.13.0"
 
 export function assertSupportedNodeVersion(version = process.versions.node): void {
   if (isSupportedNodeVersion(version)) {

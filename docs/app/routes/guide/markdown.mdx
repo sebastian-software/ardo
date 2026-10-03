@@ -73,7 +73,7 @@ URLs are automatically converted to links: https://reactrouter.com
 
 ## Syntax Highlighting
 
-Code blocks are automatically highlighted using [Shiki](https://shiki.matsu.io/). The following languages are bundled and work out of the box:
+Ferromark highlights Markdown code blocks at build time with its native [Ferriki](https://ferriki.dev/) integration. Standard language grammars and themes are downloaded and cached on first use. Examples include:
 
 | Category        | Languages                                                       |
 | --------------- | --------------------------------------------------------------- |
@@ -82,6 +82,8 @@ Code blocks are automatically highlighted using [Shiki](https://shiki.matsu.io/)
 | Markdown        | `markdown`, `mdx`                                               |
 | Shell & DevOps  | `bash`, `shell`, `dockerfile`                                   |
 | General purpose | `python`, `rust`, `go`, `sql`, `diff`                           |
+
+Both `.md` and `.mdx` routes are parsed by Ferromark. MDX adds JavaScript expressions, imports, exports, and JSX components; React compiles the generated JSX through Vite. Use YAML frontmatter for page metadata.
 
 ```typescript
 interface User {
@@ -369,6 +371,9 @@ npm create ardo@latest my-docs
 </Tabs>
 ````
 
+For custom components that create tabs or panels internally, set `defaultValue` on `Tabs`
+and give each tab/panel pair matching explicit `value` props.
+
 | Component  | Prop           | Type        | Purpose                                                                |
 | ---------- | -------------- | ----------- | ---------------------------------------------------------------------- |
 | `Tabs`     | `defaultValue` | `string`    | Initial active tab value. Defaults to the first tab.                   |
@@ -519,7 +524,7 @@ import Prerequisites from "../../snippets/prerequisites.mdx"
 # Getting Started
 
 <ArdoBareContent>
-  <Prerequisites runtime="Node.js 22.22.1+" packageManager="pnpm" />
+  <Prerequisites runtime="Node.js 22.13.0+" packageManager="pnpm" />
 </ArdoBareContent>
 ```
 

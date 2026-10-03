@@ -63,11 +63,17 @@ jobs:
 
       - name: Run browser tests
         if: matrix.node-version == '22'
+        env:
+          ARDO_E2E_PREBUILT_DOCS: "true"
         run: pnpm test:e2e
 
       - name: Build Storybook
         if: matrix.node-version == '22'
         run: pnpm storybook:build
+
+      - name: Install Storybook Playwright browser
+        if: matrix.node-version == '22'
+        run: node scripts/install-storybook-playwright-browser.mjs
 
       - name: Run Storybook interaction tests
         if: matrix.node-version == '22'
