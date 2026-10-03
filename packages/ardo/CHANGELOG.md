@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.2.0...ardo-v5.0.0) (2026-10-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* compile Markdown with Ferromark and Ferriki ([#322](https://github.com/sebastian-software/ardo/issues/322))
+
+### Features
+
+* compile Markdown with Ferromark and Ferriki ([#322](https://github.com/sebastian-software/ardo/issues/322)) ([bba461b](https://github.com/sebastian-software/ardo/commit/bba461b81555141197d0bbe4621afe575b1edc20))
+
+
+### Bug Fixes
+
+* restore React Router test compatibility ([5b8e362](https://github.com/sebastian-software/ardo/commit/5b8e362219289dd90a76377ba8a8dc8dc83952ca))
+
 ## [4.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.1.0...ardo-v4.2.0) (2026-07-10)
 
 

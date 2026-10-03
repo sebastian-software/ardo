@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.0.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v4.2.0...create-ardo-v5.0.0) (2026-10-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* compile Markdown with Ferromark and Ferriki ([#322](https://github.com/sebastian-software/ardo/issues/322))
+
+### Features
+
+* compile Markdown with Ferromark and Ferriki ([#322](https://github.com/sebastian-software/ardo/issues/322)) ([bba461b](https://github.com/sebastian-software/ardo/commit/bba461b81555141197d0bbe4621afe575b1edc20))
+
+
+### Bug Fixes
+
+* **deps:** update actions/checkout action to v7 ([492582c](https://github.com/sebastian-software/ardo/commit/492582cb3d74dcaca09a2cc44f26d8349be9cd2f))
+* **deps:** update actions/configure-pages action to v6 ([e41ac32](https://github.com/sebastian-software/ardo/commit/e41ac3239516f3bba8f8ed92793d68df3c340ac2))
+* **deps:** update actions/deploy-pages action to v5 ([cb7d7dd](https://github.com/sebastian-software/ardo/commit/cb7d7dd2f19df7890f7eff12d83f812771082510))
+* **deps:** update actions/setup-node action to v7 ([1c4238e](https://github.com/sebastian-software/ardo/commit/1c4238ed15beb762651f27a36a79c7afedae4d32))
+* **deps:** update actions/upload-pages-artifact action to v5 ([47f26fc](https://github.com/sebastian-software/ardo/commit/47f26fc70a4eb4f386bf2dcc665f420e1f497d85))
+* **deps:** update pnpm/action-setup action to v6 ([44ef0e1](https://github.com/sebastian-software/ardo/commit/44ef0e18e3790ef7545ea0e39b90f168dae7825a))
+* **deps:** update pnpm/action-setup action to v6 ([cdeb2b9](https://github.com/sebastian-software/ardo/commit/cdeb2b9306e46c2466c7641e339c1ff7ec620e31))
+
 ## [4.2.0](https://github.com/sebastian-software/ardo/compare/create-ardo-v4.1.0...create-ardo-v4.2.0) (2026-07-10)
 
 
