@@ -1,5 +1,6 @@
 import { Children, isValidElement, useState } from "react"
 
+import { shikiContainerClassName } from "./code-block-classes"
 import * as styles from "./CodeBlock.css"
 import { ArdoCopyButton } from "./CopyButton"
 
@@ -131,7 +132,13 @@ export function ArdoCodeBlock({
   const lines = code.split("\n")
 
   return (
-    <div className={styles.codeBlock} data-lang={language} data-label={dataLabel}>
+    <div
+      className={
+        hasCustomChildren ? `${styles.codeBlock} ${shikiContainerClassName}` : styles.codeBlock
+      }
+      data-lang={language}
+      data-label={dataLabel}
+    >
       {hasTitle && <div className={styles.codeTitle}>{title}</div>}
       <div className={styles.codeWrapper}>
         <CodeBlockContent
