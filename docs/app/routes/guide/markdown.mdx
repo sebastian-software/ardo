@@ -85,6 +85,14 @@ Ferromark highlights Markdown code blocks at build time with its native [Ferriki
 
 Both `.md` and `.mdx` routes are parsed by Ferromark. MDX adds JavaScript expressions, imports, exports, and JSX components; React compiles the generated JSX through Vite. Use YAML frontmatter for page metadata.
 
+Ferromark compiles each route into an MDX module, following the same contract as `@mdx-js/mdx`:
+
+- `import` and `export` blocks are JavaScript. TypeScript syntax there is a compile error; move typed code into a `.ts` module and import it.
+- A component you import is used as imported. Every other component comes from Ardo's components, then from the `components` prop. An undefined component fails with an error that names it.
+- An `export default` becomes the page layout and replaces Ardo's content wrapper, so the page renders inside your layout instead of `ArdoDocContent`.
+- JSX inside a JavaScript expression, such as `{items.map((item) => <Card />)}`, does not see Ardo's components. Import the component you use there.
+- Generated code reserves `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoMermaid`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute`, and `_ardoToc`. Declaring one of them is a compile error.
+
 ```typescript
 interface User {
   id: string

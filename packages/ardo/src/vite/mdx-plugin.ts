@@ -29,7 +29,7 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
         sourceName,
         {
           jsx: { runtime: "automatic" },
-          lang: format === "mdx" ? "tsx" : "jsx",
+          lang: "jsx",
           sourcemap: true,
           sourceType: "module",
         },
