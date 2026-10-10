@@ -1,0 +1,4702 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-10",
+  "source": {
+    "ferrikiCommit": "676b8e953e6597a337fc644e712a4a30e5b8bea5",
+    "registryLockCommit": "1224a2dc3997e3666d69f66d3e0184de1da2c72a",
+    "candidateArdoRuntimeCommit": "c97b6852147c8644f6ef926193d9a98e88b40eaa",
+    "candidateArdoFinalHead": "8f702496af7a37bb062079bd7b5242fdabccb421",
+    "candidateTarballSha256": "68d1f10f8e0d3401fc7e0ac7955cd5e6ccd61eac84219b6c78fea796056f239e",
+    "compatibilitySourceSha256": "be71440bb815f448cacd039ff2909139f6b2099b7036d82fc321105122a00d04"
+  },
+  "environment": {
+    "cpu": "Apple M1 Ultra",
+    "logicalCpus": 20,
+    "macos": "27.0.1",
+    "node": "24.21.0",
+    "pnpm": "11.25.0",
+    "nodeOptions": "--max-old-space-size=16384 --no-deprecation",
+    "assetsRemote": false
+  },
+  "method": {
+    "warmupsPerLane": 1,
+    "pairs": 5,
+    "timedCommand": "/usr/bin/time -l -o time.txt pnpm exec react-router build",
+    "betweenBuilds": "Remove only homepage/build; retain dependencies and verified separate offline caches",
+    "diagnosticsExcludedFromTiming": true,
+    "rssMeaning": "macOS time-l reported maximum RSS, not aggregate child-process/native allocation memory"
+  },
+  "summary": {
+    "baseline": {
+      "elapsedSeconds": {
+        "median": 9.5,
+        "min": 9.38,
+        "max": 9.61,
+        "mad": 0.09999999999999964
+      },
+      "maxRssMiB": {
+        "median": 1254.625,
+        "min": 1228.828125,
+        "max": 1333.25,
+        "mad": 25.796875
+      }
+    },
+    "candidate": {
+      "elapsedSeconds": {
+        "median": 9.35,
+        "min": 9.2,
+        "max": 9.45,
+        "mad": 0.07000000000000028
+      },
+      "maxRssMiB": {
+        "median": 1342.21875,
+        "min": 1338,
+        "max": 1387.90625,
+        "mad": 4.21875
+      }
+    }
+  },
+  "samples": [
+    {
+      "lane": "baseline",
+      "name": "warmup",
+      "elapsedSeconds": 9.49,
+      "maxRssMiB": 1296.71875,
+      "rawTime": "        9.49 real        10.68 user         2.09 sys\n          1359708160  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              102323  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                 473  voluntary context switches\n              192252  involuntary context switches\n          3068988043  instructions retired\n           982881533  cycles elapsed\n           128278712  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "d874043091a3fe249727d65c026ae552b08a09da1936fe78f707292e71fb13a2"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "76212eb249696c884304ead60bce689e12eb57e8350ef249f81caaf6761dc52c"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "b03acaa7336d569714d1fb819d856b7780feaafae7b1089aa63ebeef893682a7"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "19bf611a8f54dc01c85f1e5df5c921bc29bdd14129e7d6faa02360c8df00c1b5"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "c14f3287e6071e883b23da8d412a01e872fb8ba0e6537e1c17f8a08c0091bcaf"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "97153fe763cea9a72a016fdc4bcfea31282be0120f874c407a1937192710479b"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "9ad5c6645df82717205ccf11c4829c032bf6b9528c0a2cf58edb4c65aa149633"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "d9666af80855931e95dedb6af428bc08fecf7c30a7f4c681f8565f0d327775c9"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "119c279b54a7c2649627940ec0cf17e2b66562272b1cb026b98e0a1b6b112e86"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "aeb5b069d9ac4b19a2fbd28f29a0d4bfc61a56afdd6a3a67cf374e0a06fe4087"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "5fec95dab850121adc30899a5002df689e30d1224a504b836116757822f1f91a"
+        }
+      ],
+      "logSha256": "47a0bbb2a6eed199d90d8649b62dbd3b0fcedcd5c2de88bba0d4a1954c215386",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "72a9ed422d98cd1e7f1c917b0b944389c2d5eb4a4c074f8d315d0ed2302e6cec",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "warmup",
+      "elapsedSeconds": 9.24,
+      "maxRssMiB": 1259.203125,
+      "rawTime": "        9.24 real        10.29 user         1.90 sys\n          1320370176  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              100340  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                1012  voluntary context switches\n              143054  involuntary context switches\n          3094157435  instructions retired\n           974133778  cycles elapsed\n           135966000  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "5f0f92b076a9d3aae0d7f26af7d4c2292b10247eabc84c5bf2c16acc0258884c"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "a64bbadd1995dbe010137b216f03e308a19ff9419fa940be9f80ba2c51c3d49a"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "0058de181ea32d1573c9a200e664caecdb464aa047f0f7aa34e7e946cbe12e93"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "d9c563d3e2968c8c67ebc1810a0eb90f9d94a577578b7d516fe04353b28c811c"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "ab234f7308f394617ba4ecd641841bd1048d81d27be316fbf22553c3dfa8c476"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "830ec6707ca8412cf4ec655e5375a86ba37cbac6ba9d6f9c5aa91dc2af4c06e9"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "2ce0b853f704158412943cac192250098d3f462f9b179fc4fbd834e222d6d035"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "4a79dea37fa02432205c1743a6cc8c8e79c05e7d9d0b9c749ce9e465f8908c25"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "f19f2dff529a2ae8937480cf15c726dd83a089fecf65ab9e39b4273400052cc4"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "9fbe9fd2dd6798d3288897c51061b297c81da50d93bc314fbba1c7f4d45c12ea"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "fa48235766320a0764f7f395977a1418d15605652b5e1dbfdbb850f1b17284a4"
+        }
+      ],
+      "logSha256": "61978b907922037781ba49f59d090a72a6598cdf0e8d35cb33613b4645640bf8",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "4c84d4347e9b42a358f2f22b3f02d2740f46d4d221737283017aff5d4db5893e",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-1",
+      "elapsedSeconds": 9.61,
+      "maxRssMiB": 1333.25,
+      "rawTime": "        9.61 real        10.94 user         2.11 sys\n          1398013952  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              105090  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                1916  voluntary context switches\n              189280  involuntary context switches\n          3096160998  instructions retired\n          1001373485  cycles elapsed\n           135916680  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "003064229f8206d3df129a913effd8fa89354b410884ef03e9ef1974bfad16dd"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "b7594ec871b52bb7c656391aad4ae322f5a6ede4f3dc05a36a0015f1bdc75000"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "6d595f9f5c596f6044dfd920c25b7d028e73e11a489a55d85d9285d307ccc75b"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "b574258a771d95ae6f3df9ecbc2d4ad183267d882d28d22547fd5c5ad6333def"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "12a6fd7b716037c2ba61418afaf45932ed4e4e6380c9f89715749af7b504520f"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "dbf8f2e68e3a295e620270b6156d7bae61c7e9e53b96af35102d934ac633fedc"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "4c3a03abac2a7999e5d44d0ccd839be7dec6fc262464a2f8478137773cfd9003"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "93cb283f91fe030308726884eb641330a88292d20edb9f76d958bd9a19e93f95"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "7de8393af6a093f69cc5b13ada6c27b5db5a87576e6297ffcdbca14ef384ff8f"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "9767e6045e8ae2b0d0ff468f0ea9a4e245ed7562c33367deaa11665ee9a42369"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "6310117c24f151a27f71ca266d2eca30c006b287095f56070916a76a9830538b"
+        }
+      ],
+      "logSha256": "dd00d3c871f3cf0e77f72eb60c0f7f2f1cb9bf002925cb29bd80d17457639c71",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "c73fe6100dbf2c703f7b4fd2f0091f427a424bbc469b88ce4f61f2d220d82777",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-1",
+      "elapsedSeconds": 9.34,
+      "maxRssMiB": 1387.90625,
+      "rawTime": "        9.34 real        10.62 user         2.03 sys\n          1455325184  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              108645  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                2136  voluntary context switches\n              159819  involuntary context switches\n          3087211896  instructions retired\n           962213758  cycles elapsed\n           128278952  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "75baddf3d34f0c846310b3d5aba80c014cf7d59cfef46cd60f5cfadd805066bc"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "2ca9d78558cab8a558bf9c2632bfc3e54e69fd0c5becc19e4c814a59e5f35f27"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "cf833617a3d711ecc3a1f5191d46cca2a4903d9011c9b7bb701f4b15caff5233"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "b0c8f1459649298222007eb6cb5d235457b0c15e118aea9ff56819b2f87d3413"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "51dd55a6588dbcf8f5be22ddd4d4bacf538af123adb57929d09dc7063d50984e"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "a2408780251a4a1671912f24dadaeed9cec5c890dc228cf2854d3cd82856e3e9"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "36fd7c094bddcd447064b0e649489f6c68769b362186093a90a84658557badee"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "2582dffe72b722413ad50a9bba83c26e8ef2dd5d8335e1fc46872823e93bd8b9"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "af7429400d75742087a950c69e3e58fbe0a48bd33cd2f9def2bcb1cf7d4c32a2"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "ff221eb496cbd5fc1160ac4141c6f23949693e6c4ac4d9df68307fd25a1eb615"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "08612d81178adaea27b69ccdd5dd5ccd4fa5545ad58d21895ee8681e992dff73"
+        }
+      ],
+      "logSha256": "8ead78a0088ae74c7f6d63403f9d2b832c4258997a62ec13f6a2e507f6a00bcf",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "f46467034b752ef50f571f0748c80b4211a23161f0e0bdf70eab15216ca8f88f",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-2",
+      "elapsedSeconds": 9.2,
+      "maxRssMiB": 1342.21875,
+      "rawTime": "        9.20 real        10.40 user         1.93 sys\n          1407418368  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              106073  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  32  voluntary context switches\n              142083  involuntary context switches\n          3105510034  instructions retired\n           996044935  cycles elapsed\n           131883504  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "3de7dac1adafef99711b331db84cdc6e1380eb5794d52b0b157dbd87a1ee958a"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "ea5bd269a023368a1f631208a7470e0b97eac687ee7f6d30620701895d142807"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "0ae7a550e19fdce20932ef350b8e6f3b02d43c59069321767de118ddd9c02ddf"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "dc3c809cd975f7d2605f465ca37e9f59a009ec540e6b3e5e58b0daa15c317777"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "f8e9e747fef9aaf23fb204f9bd3941062bdf3a6443deff8b2b202d2f5fd78609"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "f57cad31961a1bf05fa4a61fbee775768c9568cb4d66869dc6079642735caf1a"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "3d6ff9a138c9d213039c93b13b5caf6799d521dfc3d1247960bc95f0748f6f62"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "431aa25d1059adb1e3af85708dbe89a2104dbced0570a60458109a7b9e96cc90"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "f8b15139664dc671b1dd8a9f73b41ce1960f5ebec44d5bb9c3dd5e86621ada09"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "0d3d60a11eaeb0aa57e8d3d1074f0c6a1656aff1ad088ecd970403d2f7752e82"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "7c9c5ed65ffaac3ce0ed97fbc1ce2bcbedf8334315627b0f805ad69cb6460912"
+        }
+      ],
+      "logSha256": "9d50d40792d9c891521e97b4165adb25e935a06c4d1316843d48738d9aee5107",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "5e54bdb03b38239e9e02cf60d4bb1a30684840be4fc7aa3be5852571ad4ca240",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-2",
+      "elapsedSeconds": 9.6,
+      "maxRssMiB": 1254.625,
+      "rawTime": "        9.60 real        10.76 user         1.93 sys\n          1315569664  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              100619  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                 854  voluntary context switches\n              146193  involuntary context switches\n          3105074096  instructions retired\n           979207130  cycles elapsed\n           135818592  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "1c6b05c02a1e4ba73bd549b7575c57ebeb76a956a86b293d2bf1c684fed1681e"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "222fa050771ea86eb378070cb30f18533669b8279aedec133e3d457b14077e74"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "41e251d34785aea935d0d5863059ba8109bfb8e6d36ee6e482efc77cc008ebb9"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "b35c4dc83c1f51edd2ca51b98bee41933be2c7fe1c188dc360a4c08ffa25ad93"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "3370d45692822e337a0896043b567190f98e4ade7d2a37e572eee972364c951d"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "0b75e18ab1c492b06edb3bc76fef597445390590abdccacc295d366df6d33845"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "835d55967c4597583e3562eee1156ca43d6947890040652248e011b3da956d88"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "47036bc45591f00d1baacde29890d767f3ffa5fdf291868bb96ec37f2f8ebca8"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "7afab4b8b761713f836d250a0f5c7fe4ad67b251fbb025d590abef4964bbf408"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "fa1f28235267db0d21309704d03d2f5307934a8fe02be84b715fa94340ece972"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "4e1ae4d03930c0833f74ac051defc0a1c815f8641153d0b6b8af7c4c058f295f"
+        }
+      ],
+      "logSha256": "6adfb0852f8a521df5525ffc797341c466e33a445b03a31d8d15def0456602dd",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "07f2a8c0fb11f9616a361d6e36b85702998a3c42b957ca0c454d03ba1e327704",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-3",
+      "elapsedSeconds": 9.38,
+      "maxRssMiB": 1228.828125,
+      "rawTime": "        9.38 real        10.61 user         1.92 sys\n          1288519680  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n               98496  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  29  voluntary context switches\n              146038  involuntary context switches\n          3099276235  instructions retired\n           990146007  cycles elapsed\n           132424176  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "3de890858170a4e82e9b5c2d457fe03ed2d78dd4d98827952d1b0f35b3f39a8c"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "9042c4bf8eac423939a57bd8ec2d8e485233ae374181b58b7a2d7fa1cefe1424"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "5b65508ec6d2d7422ac6463e4e0411529cf9446421abaff4761d88ba721f2112"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "ecc922c0778e6a06af96c1bd13d0b40c6ef63e775f4b40ff2778beb95727bf63"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "5eb5da987fbf39db0e65dc847f1fc54885de7d727a34746a0d1da5298c5ca1f1"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "928b494172f318a39c5bd7284322f48804db99df4c673d0a770d01c34e4b6ad1"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "8d119b290e95b14640553ceb46e29232b1044719836b4759405f40565c7b0a70"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "dfee07ba70719e57b7b0ea817d1cd0002a98975eca9c778d208051b320857dcc"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "757ec9353b601faea63745acab229092f65b5b78fa6f938c7e29f091b88cdfba"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "3ff88bb1d1f1e2eea62d195e3eeb8cab44da9829ab3490fdaaac8c764a2bea97"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "b505da79affe79352845083555265300ac1c95cee72c63bbd65f87733a4f16ea"
+        }
+      ],
+      "logSha256": "c306807cf1c4422cb67bce70b27fe0d64bdf6d79c1ab78b91469cfcfd69ea4ca",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "fce8167124cc4d370b84817d5cbcdb4e390b95703e35a7529d91467a4f854648",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-3",
+      "elapsedSeconds": 9.35,
+      "maxRssMiB": 1386.5,
+      "rawTime": "        9.35 real        10.64 user         2.06 sys\n          1453850624  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              108469  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  27  voluntary context switches\n              146526  involuntary context switches\n          3077950263  instructions retired\n           981280228  cycles elapsed\n           128442624  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "27610055053641620e5a5af243c23f4c7b883204f8a53f646a3f124218d82ce4"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "71d18454a8f636883d4a81b63e11b4c763121478b41cdee8cff2e356bd48e864"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "7fdfbd2d656821b615837232a979f257a2b3993d3f3bc5416db207aaedd3003d"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "f20393e13dd0eebb8c1695f4d9241b1c715b1a07caf97a72a85fcbaed679e088"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "91114cc42108bc5a929903ada589dda3e0fc1e76aad9ab3d5b4a72d90c2a481e"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "0f659fbeda4cab3c4be59a34d0513a19ac975695e23e71b151778c0287c2ef2a"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "abf4654b15da4b91a16e72ff3e90fe9419ff66c0ef74d22d1b3b8c413b8f47dd"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "3bf2e9cbe614bf8b819f72e657deff51da612a33642089b8f3fa4a0350557926"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "ff1f17b136880af3cfec5fef61935c3a542aa037e0448cd99bffd94ed9f615ad"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "db3622e4dbc686a9a267f1cd60e561b13e9500fe0b0690ca63f4781d8d7e90bd"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "30ee3317f074b280316c2d5dd13ff8c35168a25495cae6c6d98429e3b242ee27"
+        }
+      ],
+      "logSha256": "e19c513efa038f9c4f733b1bc2ef794f00e2ed28a5c3349d7e9fe028e27d9ed1",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "88b58fb03baa28ac637f44a778cb30de9894cc5536da54094f116797d88f9bab",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-4",
+      "elapsedSeconds": 9.45,
+      "maxRssMiB": 1338,
+      "rawTime": "        9.45 real        10.75 user         1.92 sys\n          1402994688  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              105581  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  34  voluntary context switches\n              144924  involuntary context switches\n          3293660358  instructions retired\n          1058437569  cycles elapsed\n           132883264  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "a67d8abfaf0e940357ac0fec968cfb1ab5950e08b3c5a0fb3271b2de5c2c4b7b"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "d69a4d892fd5bbc88a648c7ab0bfd3b99f64c5e951b740d12b4209c9e8c3d94b"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "e7fe663ed2124b0b2618069168f9c0c56553789a8780c6276ae92966358713a1"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "1ec10f6443cf6f3a962514b52d00f07353972fdfef579d63b7242d9cbd9336ba"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "52f90e8d3d783d2365dbd4ac67e2ee36f3c7e98dde1e58cfcaca6e486a3b47b0"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "3aa06bfb70e7305a08dc38a9ebe95d7f29ceb372bd9d760a6d24e3077980e1a8"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "70d6fcb7bf216bea77fe64a602cf390bcc62fdb9c1413adc77e9021247fc94ca"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "92226c8f7a6f1590114faaa4c5f1cf9523dcaa4d8a46db392cf49bd9dd66aeb0"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "b425e848c4ce89e9937ed72d6e52ab9dfb63928a98837519114bda3b8c7dbb97"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "2c3dc1d66cae3ea38acc6169d1796e2a3eb84706dfd99d926145a8d2a3ea0f10"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "369fed57043992e45259c6010036294e153b6ecda05b4cd7d36007cfe4215aa6"
+        }
+      ],
+      "logSha256": "337b0bed0dcf6f2f380e7dbd59c0d9774a36469f52ac4839d12aa04a6c424568",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "739b5d6088000a8ffedf418a254e865f498e67c5e17eb2145f74518732e7ca9d",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-4",
+      "elapsedSeconds": 9.48,
+      "maxRssMiB": 1311.421875,
+      "rawTime": "        9.48 real        10.75 user         2.00 sys\n          1375125504  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              104435  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  31  voluntary context switches\n              148412  involuntary context switches\n          3098346572  instructions retired\n           995397785  cycles elapsed\n           137129312  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "3faa72af04d7975ba614dc63472ac671d5932292e118d4ae789d68b2363bebeb"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "0fcc58e01c251376bd27547d4821e9e15f6a96f70e188b5b07caa94a03ea93f9"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "bcf584df2f119b0807d8c3488534ff9f0b1e1a65663b23ff607041044f56698d"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "44d85f0b1260ff15b3035efe00aa0bbd3626cd6cd77d64e34ae743a52a6dcf05"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "256a2ce024779ac0149bd1537c0803e3c370eddaa0d2b03deb26cb4e7481fbd4"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "b8630c63cd3e8440680313189ed2dc323ed9fafafbb547c427e60ddf255dc124"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "2b866c1b3570273768a6f9627dbfab3e1b25817e873c8a73ca99b68fa000a177"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "73a58c672ba188bf3cb667ef4bd61a8ec9165c6c98d1ba2a1d668c1f87d92b84"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "ba09aa950221b7db453e90dd1db58c9725ffe20ad677d39927992b9cd1e24c94"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "f3b89aa15755f1a32a6ba68f97b873f044610b968ebb3de7e3a5b53af7ab35a8"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "30562a33333796b23bad6d980bad4e3577a6870cd5f7c76f9a13f4d72aa29cee"
+        }
+      ],
+      "logSha256": "854aee0cf4cc103bffff9e8ee37685b59ee8686a0fd1a6b87c970dfdf1ea1531",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "afd417b44e00331beb568d3d940033e7b6cce7b40fac1ce3d4fff4628f0f0702",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-5",
+      "elapsedSeconds": 9.5,
+      "maxRssMiB": 1234.765625,
+      "rawTime": "        9.50 real        10.72 user         2.00 sys\n          1294745600  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n               99394  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 106  messages received\n                   0  signals received\n                  29  voluntary context switches\n              152222  involuntary context switches\n          3101663763  instructions retired\n           980706429  cycles elapsed\n           132473472  peak memory footprint\n",
+      "lockSha256": "669fd6b58290df50bc4c75b484f552cf994f35fd69976f91ff0ab24a47053c11",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "6e8370d835b673ce889e7ae44fbc09109126cb37cc2773836cc03ed4574fbdf3"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "2dc3b481bf33eb3c3fd09bd20bd1183dba190daa591e0126526b006741607446"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "50626e80bbe1f12436dc959882175efc8d67a37f0061079102c815bc322c203b"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "6c2bd3e84be99218f75ec31be7c99d8596d869ea0b0aa50c3d2d345d477a39e9"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "6c7521dddf85cbd5f0e2bffcdc2c8eb61ca8d7a9662b057b1a112cf4230debcf"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "15b6eb06f100e16996353d52e60f7c9c2a0cde75931b72b294eb7827a2b74dd4"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "988df81f2b554c8b036779510623980591d967683d9cd99f7df9df930f07fa28"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "6799d7f8997d2d910f61c00f622062fe8dcc266fdd14b68da5a334b5e60bf4ab"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "831d96f267fccd0ba95fc9ee8cf349b513294cd84b28f0d5191043ed1ea101de"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "c9d9a899a5d579f121a2907051383441eb125e3bdb4c54bbc981e7f020ecd53d"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "9747c5f7e0f655e3da54d2998f6277c455bd5bdbc5bf0dc8cc77d83d4a2d331a"
+        }
+      ],
+      "logSha256": "98360fe4837fc40e59f950123d7119a376e2edba1f93d0cb4c8d276e30eb3446",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "f06f59b18133d41c3efcf39c29d05616e6a48cf4f96c5659c64acd6311d8b244",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-5",
+      "elapsedSeconds": 9.42,
+      "maxRssMiB": 1341.921875,
+      "rawTime": "        9.42 real        10.66 user         1.96 sys\n          1407107072  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              105711  page reclaims\n                 208  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                  29  voluntary context switches\n              146427  involuntary context switches\n          3079278404  instructions retired\n           966931183  cycles elapsed\n           131293272  peak memory footprint\n",
+      "lockSha256": "cfdcb506e5f4d5e26ccf8a85e89ebba1052ca864c9f7ffef51c551fb816c6e45",
+      "outputs": [
+        {
+          "path": "__spa-fallback.html",
+          "bytes": 3058,
+          "sha256": "1e89778234bfc9b595a0799a24352440e2dfb6d6b35d2ec9b78bf47f09dbcea5"
+        },
+        {
+          "path": "evidence/benchmarks/index.html",
+          "bytes": 38335,
+          "sha256": "5b468a3411cd4e7dc6f9b52ddb5efa7c7f5f5c20bfaae5a4de88f79777a706e1"
+        },
+        {
+          "path": "evidence/compatibility/index.html",
+          "bytes": 36449,
+          "sha256": "1014d77df82e3ebdcede6bcc64bcbc53d616fa257b544f7ff1b3faf2f8078d52"
+        },
+        {
+          "path": "guide/api/index.html",
+          "bytes": 22590,
+          "sha256": "ace88805c751a15bb74831d3a7ade2cb03e90517e43c312147bdf31600dc4c72"
+        },
+        {
+          "path": "guide/class-highlighting/index.html",
+          "bytes": 62174,
+          "sha256": "8f801c45d28c5c5cca84cf7c0f03a647a589f23ee7eaa4e0c25d2963fd0f3b0d"
+        },
+        {
+          "path": "guide/getting-started/index.html",
+          "bytes": 32084,
+          "sha256": "58ae6362984cfff27df4cd065138cea8cfc4e89d0720a2a920e862d586744567"
+        },
+        {
+          "path": "guide/languages-and-themes/index.html",
+          "bytes": 34120,
+          "sha256": "5771935cbd3f69c0989c1258573e1264850b65906900676b9ac54b9e796987a0"
+        },
+        {
+          "path": "guide/migrating-from-shiki/index.html",
+          "bytes": 24548,
+          "sha256": "b5ee091e118765851e6bf92b0c1db9496ec6d5cc49ca9181404f5652ea0da959"
+        },
+        {
+          "path": "guide/troubleshooting/index.html",
+          "bytes": 20431,
+          "sha256": "0457db17494abeb22c2085dd09507e9f516fb26b62d60275cfca014544e2c978"
+        },
+        {
+          "path": "index.html",
+          "bytes": 33335,
+          "sha256": "4a5524e5eedf9c3f5788fd2c0967553473aa36c2f3dda2eb18502c7dd095e759"
+        },
+        {
+          "path": "rust/getting-started/index.html",
+          "bytes": 52422,
+          "sha256": "9e946703150fb16e31ac08de63bb58f7e18ca8cd52ca9796170c11ed5c5e0382"
+        }
+      ],
+      "logSha256": "d579f9b622496a8014dfc8ef7526157de46f00b9033d79a82bfc0f232f937e27",
+      "cacheReceiptSha256": "b05bc289f6152edc4bb856cb57238dbbcb1ab9adb205b1ec27b4b690d47b19df",
+      "hostSnapshotSha256": "d1004be7a5bd19e9f49d05d70ac4199822cc820924d356ac7ea0d0858b0bf1b0",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4"
+    }
+  ],
+  "cacheReceipt": {
+    "manifestSha256": "30ca207f07ee8616369ffb8e5c6456195abca74d56de6a106a87cf99cd83debf",
+    "files": [
+      {
+        "path": "languages/abap.fkgram",
+        "sha256": "21e7e00c5af74abf6bd4c05f1bc8932f7e93a4471cef5eced64734a621c3f606",
+        "size": 15513,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/actionscript-3.fkgram",
+        "sha256": "fc7b8ce508f6aa1814d4fef517671071676f712a6bb08357c51037d307ff45e8",
+        "size": 15188,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ada.fkgram",
+        "sha256": "60854d4ecf09f85730097d40db65336ce2e1d4f2df6ffcba1e2039b3ecf8f9d4",
+        "size": 46505,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ahk.fkgram",
+        "sha256": "6a73b304292fc25c74f43e516f464866432c875373ee09a7dde966edbd4028d9",
+        "size": 29830,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ahk2.fkgram",
+        "sha256": "5a6893a62a6ce64ba7e4724609c6611fd2917e5316abd0960b8695dd1afab63b",
+        "size": 43741,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-expression.fkgram",
+        "sha256": "c6d5855a43eaae7a0798cd5ea434cdc14df57f6e339001f7dfffc46539bbb405",
+        "size": 18285,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-html.fkgram",
+        "sha256": "27cec245a72e83504c42fad691eee7614213b15a9d963a17c29a851c492dd119",
+        "size": 965,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-inline-style.fkgram",
+        "sha256": "5d0a143e8af212a2c1a6a874d76a3d1c90e4359b8b37c01d8822ddc5aa6d7c1f",
+        "size": 1285,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-inline-template.fkgram",
+        "sha256": "e3179b827f427840a5d682f2f8d5088f37b9c5581dc28fc6595cf122a5b955d8",
+        "size": 1116,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-let-declaration.fkgram",
+        "sha256": "43775c3754c317a47d25e6353053632770c4962e79c14982d627a4610edf436d",
+        "size": 1035,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-template-blocks.fkgram",
+        "sha256": "15cfd2f41937c3f474b11b9acf281cb81169e761f36b3245cd7732e63f81ec99",
+        "size": 2115,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-template.fkgram",
+        "sha256": "c007522816e2c0989bdba0deacb8e16f82f051f1864fa24ceeb5d2cb2b1b4494",
+        "size": 628,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/angular-ts.fkgram",
+        "sha256": "2bed0187fca4a18306e692ea7a231eda7527aed494942b92206a13f01c1efcc0",
+        "size": 164222,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/apache.fkgram",
+        "sha256": "02815e52284ac76f580000252fd34597912d402d0b7fcdfb128146d49e4a9f9f",
+        "size": 12161,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/apex.fkgram",
+        "sha256": "44038cb6dd72bc7aa961022738d94829b1cea39591bbf0f1c35baa81e5df1a53",
+        "size": 46404,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/apl.fkgram",
+        "sha256": "9c499e5174fc295883cbeaf6989ed428ce2f25ef97aa773a15a256744778bf31",
+        "size": 23347,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/applescript.fkgram",
+        "sha256": "d51ff8a3a5ca390cd96637257fb217f12024b920d17523714c5e3231d6f0363e",
+        "size": 28515,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ara.fkgram",
+        "sha256": "a9f02184aaaf55c3b76b3a6d0cbab7ad74e7b01fc37ee46b003ab7cd85d63d82",
+        "size": 6080,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/asciidoc.fkgram",
+        "sha256": "ad99d877d165e0ef2b39f4995d3a4458f608c40e840bc72311054779dc0a15c8",
+        "size": 128766,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/asm.fkgram",
+        "sha256": "b8fbddbbe072638e7d808058b4cc37cab1e2ae5ab87b9b2377495d182aca7789",
+        "size": 39391,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/astro.fkgram",
+        "sha256": "707fd24ca02296ea4c1326ba6920b4fa7ece69e7a8de4acdce7376e5c8369966",
+        "size": 23638,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/awk.fkgram",
+        "sha256": "1ada0006337b58d418764dd8c94c00f0d7911e9f6cc5da82141542cbc1b52cd5",
+        "size": 5307,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ballerina.fkgram",
+        "sha256": "9e34fadf594be28d700d4213df4ef83e58bd5f02dfc9c82c5b815188383d4a7b",
+        "size": 56396,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/bat.fkgram",
+        "sha256": "830054ee7191c7e464ccff51a7fb9c0e927ecd9b68959cd70262f1e6b75eeee0",
+        "size": 12662,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/beancount.fkgram",
+        "sha256": "89e2023a12f93374ff858f5a42405217169cb88206467c919dfb6b81e8466f14",
+        "size": 10176,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/berry.fkgram",
+        "sha256": "3a694833b8852c1a28a1ee67a27cd3288f6c04f256429581076ec0b8ab319851",
+        "size": 2741,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/bibtex.fkgram",
+        "sha256": "3db61f7acd2d480a1ff31814a0ecbbc53272d906972f20371f6a9874d9a5b926",
+        "size": 4655,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/bicep.fkgram",
+        "sha256": "7b281df9d6183c59daa4e7e98c54e3470ca245e6e41e238704a1b0e5c3302e13",
+        "size": 5069,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/bird2.fkgram",
+        "sha256": "a0c5e9435871fe0e0339ba5efbfcaa57641be10facfc5f025f680fd2bf736264",
+        "size": 36658,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/blade.fkgram",
+        "sha256": "2c6e362ee2787a259d3140eefc5e47a29a44273fed053d4917d636529a7e37ca",
+        "size": 102576,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/bsl.fkgram",
+        "sha256": "1f35fe5cfbecacb44d3b3fa48b88da396979c73bd1ee4950734db3895ebbac59",
+        "size": 33554,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/c.fkgram",
+        "sha256": "1e2505754c052acedd7d69451db1ddff9e49ed97549f3f3a78cf873a7068a21a",
+        "size": 69583,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/c3.fkgram",
+        "sha256": "e64b16ba100494db551c69d5a2eacdc52792b9966ba966cfdfc46a7fa95fc532",
+        "size": 25721,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cadence.fkgram",
+        "sha256": "c1abddd355672f48eee62e5249025095eaecce945d759abff3ca7970afa522dd",
+        "size": 22823,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cairo.fkgram",
+        "sha256": "48d2b7c54b034691a1478ae4a7eee47d29e128ca5f93bfe79f0660eff1afc841",
+        "size": 2795,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/chapel.fkgram",
+        "sha256": "1c1143d39d68d8c70d08d43e8aaca9360c94deee97e73822742a7624ba7b1aa0",
+        "size": 6320,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/clarity.fkgram",
+        "sha256": "a6df102f154340e64cbd2f734e62cd968c232714e3e9b6ffc1dcfdda1646771e",
+        "size": 13910,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/clojure.fkgram",
+        "sha256": "c921bcd2c48f674cfcf428b63e991bd4dd371834eec861b5316efbae054c8810",
+        "size": 6221,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cmake.fkgram",
+        "sha256": "e60c98d413eebaae27f3c5efaa9f83caf4dd3c79b8796e74a0ed543b2c9226a3",
+        "size": 9636,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cobol.fkgram",
+        "sha256": "6ffbb13db8c43ce8864d6ad4d091c2cf6dd95cafedada3c9aa023cc457921100",
+        "size": 38272,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/codeowners.fkgram",
+        "sha256": "75a55efbd5e0e75f9f126521fbbfafae374c7e338c067966380279eaec5dbc66",
+        "size": 517,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/codeql.fkgram",
+        "sha256": "0ed3c9a88b1bd36f8e8a881a24036a74736258c6d77f166d27cd5337d6f56b59",
+        "size": 26456,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/coffee.fkgram",
+        "sha256": "b5574d7bcbef89af6527639c908ff8e279c466c0e949cb9a22392a82856c1f1b",
+        "size": 26622,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/common-lisp.fkgram",
+        "sha256": "04e4f727c7dbf19d11f50fcea07816c78b5e876dc3aa3e4ccb0d58ef606960d9",
+        "size": 22142,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/coq.fkgram",
+        "sha256": "97d4f0e45ec23f54cacb15b15206c94d2c4cf9700b13933a344fa4b46eaad6d7",
+        "size": 5724,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cpp-macro.fkgram",
+        "sha256": "9af5f8afa1a9418a11f3ec1c3a1cfdd767a00db7ba882ed0006df59e38aaced0",
+        "size": 270457,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cpp.fkgram",
+        "sha256": "9dd2e3af9c97dc7f39af8b2d287578bb47dbe5ff1d62cc62ec7816af31ad1fcb",
+        "size": 476199,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/crystal.fkgram",
+        "sha256": "9195bfcf67396eb244b0f73fb05930f08f7e32746e4a17a308ec99e77e976b96",
+        "size": 28195,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/csharp.fkgram",
+        "sha256": "11ae37a8e76fc94dabf2017d6ccfd7009db1764750c8440c3fbecf2aefbbf41d",
+        "size": 86841,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/css.fkgram",
+        "sha256": "b15f8f35bf4c66146f7850cf003fa8bf085e573c2c7eaf7610ecd3b3fe56fafd",
+        "size": 48099,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/csv.fkgram",
+        "sha256": "d3db3973eec9cd6bb06b377e76e107c174ffbdb2d1e8f340793cda77526ec45f",
+        "size": 1042,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cue.fkgram",
+        "sha256": "052578dae86e5657ce512ec7118bab82b9f80afbf448c73e113747736fda444e",
+        "size": 15482,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/cypher.fkgram",
+        "sha256": "b61f4d1f34aad674e84f88bc6c4d0a8d8c17c0616e65782a3907c1dc8336a0bc",
+        "size": 5720,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/d.fkgram",
+        "sha256": "adf3bbdaa2bba28a942b28787e03c86a53ea0f5db7f73df056619cc0ae923bbd",
+        "size": 42115,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/dart.fkgram",
+        "sha256": "b0de88247e7c4a5e376dec5a92e81431fdf0badd15ac48ef97fa9392adbabb78",
+        "size": 8237,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/dax.fkgram",
+        "sha256": "4e11c83c077a44d1814a03dccf0d3343b5d26d8540c337ad1863f941b4fe6f65",
+        "size": 5272,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/desktop.fkgram",
+        "sha256": "f6c704f762b164884d38fff96a32e726864b6de26b2da767982ae275ea5399b2",
+        "size": 1770,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/diff.fkgram",
+        "sha256": "148b4813b48fbbb2a6aee444c827231cd8bccbd21a935953581162bc6ae7fce5",
+        "size": 2467,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/docker.fkgram",
+        "sha256": "18826de9f5c10d03a159e595d37da541f91fcc52fef5fe3b0dee2de6aae26b2c",
+        "size": 1698,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/dotenv.fkgram",
+        "sha256": "950f06eb4b414d242d023ce2b42afc66a6e4f598173fc4f482f19bad4d63e434",
+        "size": 1367,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/dream-maker.fkgram",
+        "sha256": "331b71b40ee4abff70c3691cb17380bf9f40b97a289613978145f8196e40bf0c",
+        "size": 9982,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/edge.fkgram",
+        "sha256": "b6240aea7f78f94bb681c34042fd4d296404e9b894bd841415ba91a05b91b549",
+        "size": 2141,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/elixir.fkgram",
+        "sha256": "95b54fb82f8162d13d8c8699e18f913731d82f25d415d1b489a5494b642bf47f",
+        "size": 15624,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/elm.fkgram",
+        "sha256": "08aa366d98c080c9ec93b525284de31e7cb476c983e6e849e6d3db44e20dc322",
+        "size": 10576,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/emacs-lisp.fkgram",
+        "sha256": "32a61c7a38154015a163f0529f33b0921a6b83076776aad3484ea26a849f0037",
+        "size": 788874,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/erb.fkgram",
+        "sha256": "9cee714da2030d4d3eaeb2c186ac93dcd6916cb602f66a9fdfa600fa3a86feaf",
+        "size": 2014,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/erlang.fkgram",
+        "sha256": "2d376827787b6670efefe45cd528c8f6f87c485d4b316399cbd383cb2515a185",
+        "size": 36589,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/es-tag-css.fkgram",
+        "sha256": "0e2a6d5aab89a22d0d31d8a7cc5ee445a17bfc6d59008f7c66e0c741b98291a4",
+        "size": 1818,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/es-tag-glsl.fkgram",
+        "sha256": "e66898cf854edb46d67960c227b90c8abeee35c00716fd96de26c1c6157f43c2",
+        "size": 1698,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/es-tag-html.fkgram",
+        "sha256": "57203fc4f91e743df1c8c586bf0c2607aefa76fa400c52f221c9cf3c0e2b9d44",
+        "size": 2009,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/es-tag-sql.fkgram",
+        "sha256": "09fb072432ea4eefd11f9eb6cc9615fd999f126413ef69ff9f9b1361141cc00c",
+        "size": 8164,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/es-tag-xml.fkgram",
+        "sha256": "e0cf49710c494f1c518961a24fe7839713960d9e31e2b5f08aa05a012b95a42e",
+        "size": 1152,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fennel.fkgram",
+        "sha256": "b76c71af8c2d3dfe4090b921b15f08deb1be43477fc4b5278aaa5e6e48be946e",
+        "size": 4667,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fish.fkgram",
+        "sha256": "ad5e42e3465951d25663c52e733559ee3f02d34737d70fdc86af80e013a64cbf",
+        "size": 12594,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fluent.fkgram",
+        "sha256": "2497307b5d484592e536682b8519c22730aab7875423c827a486db4c6fa82c69",
+        "size": 3521,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fortran-fixed-form.fkgram",
+        "sha256": "f979a19b6130c6249b58192d5364718f209c2a15e51213088880f17830500569",
+        "size": 1618,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fortran-free-form.fkgram",
+        "sha256": "6a667b091c1dae714c9a82cb354bd011bdd0f0833c08190178d4ccc915e63907",
+        "size": 86035,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/fsharp.fkgram",
+        "sha256": "f55f7abca5ec0178d5a2a215700bac6dd1381a4fb2c776c0227124804ffd833a",
+        "size": 24551,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gdresource.fkgram",
+        "sha256": "f12bb3eb75556cdb2b5780064d49d8abe94ae13adbba3b401424dc213a19443b",
+        "size": 4973,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gdscript.fkgram",
+        "sha256": "da6a6d4c4ddfa1bef4de9bca96f06629c040bb066c5a18a50f782e722c3bee38",
+        "size": 18537,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gdshader.fkgram",
+        "sha256": "03963f29d6c7170776893aed3919caf5c9f5a65530fcd1054741cd51221bbea1",
+        "size": 6090,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/genie.fkgram",
+        "sha256": "bd7dff1bd048792bd783b2339ecf1c0c8b9a6f7fa124247ea12f8b6f3ae396d9",
+        "size": 3213,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gherkin.fkgram",
+        "sha256": "fcd82d14bbc7348b312d31166093bee77f83e803c064600e4a7407f05dda6d1c",
+        "size": 11873,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/git-commit.fkgram",
+        "sha256": "c05135f06e106b63157ddcb0ee000be756093ebf6f9d81da285b4f43af970f73",
+        "size": 1172,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/git-rebase.fkgram",
+        "sha256": "c0d60b3630db366be386dd205f9659f61cda3fed8613bec479cc98871c114857",
+        "size": 919,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gleam.fkgram",
+        "sha256": "c9257655da78f200a371de04c8c0f731ac1a520199cd04d934b7295d409f4e8f",
+        "size": 2460,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/glimmer-js.fkgram",
+        "sha256": "012e12c5c4e9a231a894c464aac7f66ded81a32fe375e598afa083875adf65c5",
+        "size": 19662,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/glimmer-ts.fkgram",
+        "sha256": "34c027cf2195d37a95a7fe7da8ae8dc5c22e5f94a5464add30630f368228bd53",
+        "size": 19662,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/glsl.fkgram",
+        "sha256": "61987adcd0ea9a26f4d01212ee883a7c885b289030be196cb8e111381c7b42a9",
+        "size": 3522,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gn.fkgram",
+        "sha256": "86d08d15caa61667dca9663d71bec0b66fed106cb53c8a203c9892bb267dd6b0",
+        "size": 3883,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/gnuplot.fkgram",
+        "sha256": "8caaaad6d0a64a20fe9a9e8ad7d15118c2144c99c4a26e9c5c33300261cf1271",
+        "size": 14102,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/go.fkgram",
+        "sha256": "aab3a908eaf2518d9a7a739e46ab85d6cc73877835fb77bd5f33458cb30358d6",
+        "size": 44539,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/graphql.fkgram",
+        "sha256": "59b1d9d7720db22762db031fdaf7c9a1db63f47ba0b6f96571d1c7f25b6189bc",
+        "size": 17464,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/groovy.fkgram",
+        "sha256": "1eef7153c03e25fd9f37882b720efe600a6ecea355e281fbc50bc4c29ffb19f4",
+        "size": 18638,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hack.fkgram",
+        "sha256": "97f3ca6f149df99b5c8d6a5e8639544a6dbe12754d5d043895ad0466b6a7b1d8",
+        "size": 79456,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/haml.fkgram",
+        "sha256": "6b68e32728bf34db9029700f356d061ea0714b2770d93cc6f57d30b09e815f50",
+        "size": 7886,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/handlebars.fkgram",
+        "sha256": "144a6d6378fbb6d07c2516295f503dd55eacaeb4c96cb6d2e204005112ee1339",
+        "size": 11825,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/haskell.fkgram",
+        "sha256": "db534ab8e3fb67e67519c370dbfa738cac03d6c1e64e24ac7845bea68700cb83",
+        "size": 39508,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/haxe.fkgram",
+        "sha256": "837b51a7e06dfce80f0bf15d78158c625a691a1305d70596d8a04791c4f860f7",
+        "size": 35115,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hcl.fkgram",
+        "sha256": "e5f859ea36bb37da4e124ce1f481158788a74e7f03e34fa599de00cd82fb56de",
+        "size": 9751,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hjson.fkgram",
+        "sha256": "37fac7aa3f2b9d46461810872c9a486f0d5d73eb60dda589cd9b076729d78d5f",
+        "size": 11680,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hlsl.fkgram",
+        "sha256": "9a1aba1b63ce4d8c5133307620ffbe8870ff848217d9656c026501051d774625",
+        "size": 7028,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/html-derivative.fkgram",
+        "sha256": "4b89708b4fa95c3f420ee5e73b0b203a3e1215a153a068391e73a5d030a3a282",
+        "size": 800,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/html.fkgram",
+        "sha256": "34a9227ac6dec807768170cc47ebea439366f748a0b1c1be804405e445715d11",
+        "size": 56458,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/http.fkgram",
+        "sha256": "8d115878e148066dc67676c5b31df2b4158829c284596347f602d27e46bdc088",
+        "size": 4096,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hurl.fkgram",
+        "sha256": "6605551f1ac484166489e3524550c2e2dd8d7eccac9c9ee585223edd8f31338e",
+        "size": 3291,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hxml.fkgram",
+        "sha256": "fd211dd505d7ea6d3c19614eb301b1420fa8ac7e8d8e07445b30c01b2dd5404f",
+        "size": 1784,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/hy.fkgram",
+        "sha256": "c82c41e701be8db3fb445fa0c7f89947ea3b842416a920c4470f84756f5c9076",
+        "size": 2499,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/imba.fkgram",
+        "sha256": "72533b212e68fb04b1cbd00dec8579f5894c4e91d7e42fdb5b489a4f46fbe81b",
+        "size": 48295,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ini.fkgram",
+        "sha256": "38e6e5a7a4a162c5ce4de1233eaf2ae481420af7396aeb4ef35b9aa398f76154",
+        "size": 1471,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/java.fkgram",
+        "sha256": "5940e32aa6af91d0036c5691239489d7bb15aaa1fcb42301d86c96cae963baf9",
+        "size": 26370,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/javascript.fkgram",
+        "sha256": "3c9f911beea5cedfe4197ad93c9f0c9d837954b6d400323f96dbf6fb390b3aaa",
+        "size": 159404,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jinja-html.fkgram",
+        "sha256": "cb460bfacdd266f6146e1d6b0de7e979be87e7d0ab5a24f14d2021a7d617926b",
+        "size": 541,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jinja.fkgram",
+        "sha256": "d5ca22eda5343bd8f2c4dc955ab6f45964e5ab4dac89f33950a4b589b9c3b97a",
+        "size": 4844,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jison.fkgram",
+        "sha256": "06198a5d5e14f21a7b755f88b180a1986742d4d3522756f97c36fbd2a0bd53c0",
+        "size": 9418,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/json.fkgram",
+        "sha256": "ea14414513bc4c28cbf19967ebc593146e68e5bcad876333be75462d3adaf618",
+        "size": 2735,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/json5.fkgram",
+        "sha256": "c49b5c046645361968997f65d87c151b13fae716d0e9fdfac7a36a8e93807667",
+        "size": 3151,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jsonc.fkgram",
+        "sha256": "b78c6a3f99b23cfc1cf8bd7d4a1bd1e6af4ad69722fa9538a11de96df55f808a",
+        "size": 3044,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jsonl.fkgram",
+        "sha256": "a96fcb665212e02a24a1884337058aac1f5fe1905aeaebfc1fbd6ca8e3b7da54",
+        "size": 2935,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jsonnet.fkgram",
+        "sha256": "f856c1749582311fdf540049d73b3d41a207b77928de24e5d05595c10a5740a5",
+        "size": 3411,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jssm.fkgram",
+        "sha256": "222cf157cbbdd8699d665e2f7b4c244b6bf631cb904f5d746787522ba25d8d54",
+        "size": 2181,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/jsx.fkgram",
+        "sha256": "b3204961670d79641291725e4bb15ba898804885d3b4d0e231f2e3f009cb1a64",
+        "size": 162348,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/julia.fkgram",
+        "sha256": "38847cb4c41ae1e587b72701c612bd25457e5c12e4a2be8479814b8821578561",
+        "size": 29074,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/just.fkgram",
+        "sha256": "4cea37de157d6d386d15fdd0341537bec36dde495012bf1693e019de36c80aae",
+        "size": 10368,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/kdl.fkgram",
+        "sha256": "4178b477112c4b53a957efe862d9d20178ca0194b82e2b68ab1a617404dc1917",
+        "size": 3451,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/kotlin.fkgram",
+        "sha256": "a18027f9bc2c652996d70b899663ee093e6478a7eaa3fb1278884354ab6d1d69",
+        "size": 8452,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/kusto.fkgram",
+        "sha256": "f4da1992c771c10158da0da1e93252e075db17019e45e5e7a1e4f748880d9224",
+        "size": 14682,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/latex.fkgram",
+        "sha256": "4df3998b47958183193b67f1e9932421b4b738908c5cf7fa5976f1a0c29f45b7",
+        "size": 70196,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/lean.fkgram",
+        "sha256": "ce53f250e2a41be4d7dac665788f0c39de941d7e8bb4cfbea293154d71254b58",
+        "size": 5553,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/less.fkgram",
+        "sha256": "77f310de327c8e0b485b0b8f486fa22770175b9d6f0eef7a4cfabca74a39d964",
+        "size": 94832,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/liquid.fkgram",
+        "sha256": "448832bae9fd7e0b9dbe96654282e5d17a0ff6147b2af8a275f43d28998e6fbb",
+        "size": 17465,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/llvm.fkgram",
+        "sha256": "2a38d582a46becf987aa7ed71ee15028bed1b838363685fc2ddb9a4316b0cd6c",
+        "size": 4691,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/log.fkgram",
+        "sha256": "e1a50c20172670005fe5834fe15b1ebc7d52c612f833aed9671b72319fe0d30f",
+        "size": 2607,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/logo.fkgram",
+        "sha256": "f192cb9a17371e55934dbc22e66e2e78b0bc98a3116170cb9f5680582c6f7487",
+        "size": 3046,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/lua.fkgram",
+        "sha256": "203d3edacd6111bbbd86c0391972fa7225eac4beafa80ffb5c9852b7bbce427b",
+        "size": 14870,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/luau.fkgram",
+        "sha256": "3156539ce0da443b909ad67e608c7ff7ed6f5377db4b4e7574c90107cbf7a866",
+        "size": 15510,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/make.fkgram",
+        "sha256": "27baaa158e6be1cc97c930fa6f1ae898a07c14a89c79e00d2a1e838ed83e1bcb",
+        "size": 8680,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/markdown-nix.fkgram",
+        "sha256": "b078d6a05579480a40406189d339be2535661ce12bc808fc284749f2056b89ad",
+        "size": 825,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/markdown-vue.fkgram",
+        "sha256": "d8d77ffac96159d476a80098777c82577d3cb38262be14ce4cfb11440a582fdb",
+        "size": 745,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/markdown.fkgram",
+        "sha256": "02b97c59ac27e383dab64e482229698bccb36f146e059c7849dd1c0b4664b7f5",
+        "size": 57275,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/marko.fkgram",
+        "sha256": "bdd969bc21ce44ef16211f3ad44c8d2be3b8853251fdd5ad5555453d0f34e66b",
+        "size": 24703,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/matlab.fkgram",
+        "sha256": "6e6a9fa76ddc536ae97a49fc79f4f922fe73aa6a352482b3b15c0176c24fcab2",
+        "size": 15315,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/mdc.fkgram",
+        "sha256": "43586f99e1a0bf2dd53c9551a725b71c1ee7f7d4c0fdb489ccc88971572a7aef",
+        "size": 19743,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/mdx.fkgram",
+        "sha256": "6fc1a122cacee03a61b1224fda1a1964e1a33404de5f59592caa9f7a0e9b1439",
+        "size": 131446,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/mermaid.fkgram",
+        "sha256": "bb731c692d10ef334d8aa9aad848ef2be641128fe8530f773e33c4f559574135",
+        "size": 51877,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/mipsasm.fkgram",
+        "sha256": "060011029ea00383294de4c6fa4a453b72fc34c35016edfcd2bc404c54e91aba",
+        "size": 3031,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/mojo.fkgram",
+        "sha256": "c0c6d2e59087ca8739404ff9b7f8d429745030259122e1e22836770701f70b5d",
+        "size": 67767,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/moonbit.fkgram",
+        "sha256": "eadb1901f2a178d0983a5350f496a2e1a15af29b7bb722dfa0341deabd7a2737",
+        "size": 24191,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/move.fkgram",
+        "sha256": "db6d7607fa7ab898cf0bf8a0b43d3ebb42649b458b221531b7ffa9f04598f99c",
+        "size": 17171,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/narrat.fkgram",
+        "sha256": "02b229c7eae2d635616c32ab8e08862e930f9187ad27c02344c0c383ce9c7692",
+        "size": 3531,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nextflow-groovy.fkgram",
+        "sha256": "6155a9b485f9dc8ae80a6bbc7a31f16fda882cb8c5c63223ba1935a1d5183588",
+        "size": 10177,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nextflow.fkgram",
+        "sha256": "f6551e8338efa2643f534d84c5a6bb63e6f732244263b7c098f67691050f09b8",
+        "size": 4321,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nginx.fkgram",
+        "sha256": "4ee31d510170632dd33f97a3d07f011b239d00ee978a4384836ec3dc2f7300fd",
+        "size": 34752,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nim.fkgram",
+        "sha256": "553857f45544b1132a4a379b7a221a7bffda27e7b99cacc6f571c3fdb82a429c",
+        "size": 21417,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nix.fkgram",
+        "sha256": "6cda7dfa91e091fbbdff556761b3ca3d29163d594c88e6ff3f0c269cf1cb389c",
+        "size": 14272,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nsis.fkgram",
+        "sha256": "c2ff5e58f3acbf32ab98a781fb8bec2a134d3cbeff20e030b6853027d9f6bc45",
+        "size": 12730,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/nushell.fkgram",
+        "sha256": "fa56323721edd5401b463f4b88fc8cad009932cb74955fc4f53bb1d0da279ef3",
+        "size": 20239,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/objective-c.fkgram",
+        "sha256": "3ea182d2a7b1788c1d85f7a88d807263c18ce1a9abf219d7a915aa0814c23489",
+        "size": 103133,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/objective-cpp.fkgram",
+        "sha256": "f6755dabf370b8b5dc2c3a0f42bee9bdb7c95b7b68116a191712b771e1cd21a8",
+        "size": 167476,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ocaml.fkgram",
+        "sha256": "6679fa6d8f5bbe5d2321b657ecd5b5d0fca6398a415afcd5b80099895aba61d0",
+        "size": 60430,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/odin.fkgram",
+        "sha256": "c156b3f41ce3e14f3abacae6468a39d60192bf4eafb36b72b4037152192647ae",
+        "size": 16030,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/openscad.fkgram",
+        "sha256": "5828e0c61c03f4133a9ab96f056399473a1844852b137e22aa905d8581441192",
+        "size": 2699,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/org.fkgram",
+        "sha256": "deb94a6a796c1c542a5ad1ef8d6e5afe76267aba010c49b94b3f0fb124910967",
+        "size": 32690,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/pascal.fkgram",
+        "sha256": "abd3080d4349918d8321848838f0e383792fa69674dd8a63c9a6416eb9ddd15e",
+        "size": 4018,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/perl.fkgram",
+        "sha256": "7c0866fda7fdd3586a8758b55230d0ad5604195c0fbafbbd1c700a1efc97034c",
+        "size": 41984,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/php.fkgram",
+        "sha256": "234d6ecc0519b9177817e002477c67fe9ac28df99d6b28685796365b7b69c400",
+        "size": 109478,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/pkl.fkgram",
+        "sha256": "27b4a39722e317efcdad9c630ddff5f596fbc1364cb0e47d92e778ea2eb57070",
+        "size": 9573,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/plsql.fkgram",
+        "sha256": "f2cfbfba2598e70e26e254de34428d7dec47a27787f87d64870c3168ae48ecaf",
+        "size": 8166,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/po.fkgram",
+        "sha256": "11154e57a9b0b76daeaaf1d9b56d3cab061c36350057aea9764416d786ffbfb1",
+        "size": 3096,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/polar.fkgram",
+        "sha256": "7774adeb9abe37c5b8414176efd356251673afa0215b0378b08334627af3ce5e",
+        "size": 4507,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/postcss.fkgram",
+        "sha256": "30f7fdeb8e9df4bff9947cbaf0839dd3a429b114f62588f46e4074dba859ed26",
+        "size": 6236,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/powerquery.fkgram",
+        "sha256": "57bced2112372946c38fd1dbca65d18c31e6f981f4cb7065f769169ab0f0e13b",
+        "size": 5679,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/powershell.fkgram",
+        "sha256": "5454e8561b925cdb2a94f5b66ad72ef8cffb0b78aa8d95163c256c34263d952f",
+        "size": 19715,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/prisma.fkgram",
+        "sha256": "a25186f579b4b80244b895c85596e46e1ba61706ae0efd77de67db40823381e7",
+        "size": 7536,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/prolog.fkgram",
+        "sha256": "6dd49b13dbccad70a2434be43d8710e42e8c183088b5969e5dc7b7bf260bdfd0",
+        "size": 11242,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/proto.fkgram",
+        "sha256": "9eefabdc31f8e17b3b945fb6e304f7cc056674f154441f244c3e2aa5786d80b3",
+        "size": 6332,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/pug.fkgram",
+        "sha256": "6c02dba45bd934ee6b27199bdfe44bd80ee8c2582559a8412fcb2624a087846a",
+        "size": 13230,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/puppet.fkgram",
+        "sha256": "e36b5dfe27ee3b145b53d831ff77a834496ee7ea56ab3222d10f38858aae1894",
+        "size": 11101,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/purescript.fkgram",
+        "sha256": "efbd1e56adb2a23888c746681ae8227173fa68a0fc547cf1d75e8bccbe7335ab",
+        "size": 22794,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/python.fkgram",
+        "sha256": "5aabe89523b99c18d2daa0dc2f77110d3641d597b9c8e02902e88817b469a1ec",
+        "size": 68196,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/qml.fkgram",
+        "sha256": "744ab3d3df8bc2c9a4455bd4fb597a99ac3ab4af1ac806ae7c5724ef0b10b2bb",
+        "size": 5101,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/qmldir.fkgram",
+        "sha256": "972927f6952352d4779f6d04a8a87e70cec604e877f01b0004a3b86157676ca0",
+        "size": 945,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/qss.fkgram",
+        "sha256": "49971a46795d6acf8a1336bcc82d4f3229a8d3e42c5a48add38c3a4e1b39b83d",
+        "size": 7327,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/r.fkgram",
+        "sha256": "321e39d91a6abe9f9b60b27e028fdbf3e16fce1f83167bf8b55d7dbe0baed8d6",
+        "size": 6421,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/racket.fkgram",
+        "sha256": "1a973f7baf8b81c995c3b5ab67dabff8fba3a692c68f19c3edce73aeaec29e87",
+        "size": 89563,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/raku.fkgram",
+        "sha256": "b0d2177115af1093661fcc1571a6d0a86d96f86939cae9bb686b189495e4a892",
+        "size": 10251,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/razor.fkgram",
+        "sha256": "84b3f5d1dcb1ddbaacb44dec7f8e4099126b3e5cbc6158b87ab04d460b451265",
+        "size": 26880,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/rbs.fkgram",
+        "sha256": "99f2cc2454fa72c25e6bd872b57a0d4ef5780bc7aa06be8ef162850e582e3d7d",
+        "size": 3139,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/reg.fkgram",
+        "sha256": "938560f2a2e1567a83b35a564539450f32556d5fc5c5f7b98f4b5428998f7350",
+        "size": 2286,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/regexp.fkgram",
+        "sha256": "cd6aa3b8b708768dd505561051b961a9232941689f3b98d2ba91e013c52a814c",
+        "size": 7785,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/rel.fkgram",
+        "sha256": "fb8822ff26463980d9df07d00ba76c1401ee907c3a4917057629006dbcf48d58",
+        "size": 3247,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/riscv.fkgram",
+        "sha256": "7a1382ab3be1e0e33bdcb6ecf2cd9721a0f9b17ab8b763b4e4f6d12566cd0e29",
+        "size": 6516,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ron.fkgram",
+        "sha256": "4240d7ff8247cfeb4c40b1b287dd431fc106c05dfb88603162d50754199b8da8",
+        "size": 3815,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/rosmsg.fkgram",
+        "sha256": "b93d54f60eb1e554507d2c7ca38ed91147606d9bafffb66f7bed0d76cbe26fb8",
+        "size": 4388,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/rst.fkgram",
+        "sha256": "2999e1193e5b0a78f71fe809ff882393a3f41c961f1e3e57e95016993dcf6a89",
+        "size": 9497,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ruby.fkgram",
+        "sha256": "1f5b30b9d7060ba07aa2e070eaf34374e57891398db75f921545fb3fd0aba590",
+        "size": 44639,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/rust.fkgram",
+        "sha256": "13aa5bbd69f081454afac0a1b87ca9978cc0b4dbb17de81b72953755d54cddb4",
+        "size": 14739,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/sas.fkgram",
+        "sha256": "8fa9d9d6586467e52dd58f35c4b5b8cc9de28a07f93e2960d110e37db782c66f",
+        "size": 8874,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/sass.fkgram",
+        "sha256": "6aa46bfb07b2dff2f24d133ac4760f6001e175ce52a779c71de21042c975759f",
+        "size": 9001,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/scala.fkgram",
+        "sha256": "32d3b21a2fff30ebdf0b2bdd77951e1bf246c844883f47f460df2d228ca789aa",
+        "size": 26992,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/scheme.fkgram",
+        "sha256": "ed63e0d036590e742f859296d3dac7b48b74b0eb8325dc93863af7f203873fc9",
+        "size": 6960,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/scss.fkgram",
+        "sha256": "f4a6a789c569427a4b020dd4c264d946701b5266754393b8d30d054ee25398cf",
+        "size": 26488,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/sdbl.fkgram",
+        "sha256": "81ee3ce47e40439bfdc41e1ad5355b3d9e0861c2d7c8f5b875a1e1f408e794f5",
+        "size": 4546,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/shaderlab.fkgram",
+        "sha256": "1624ca2b9b40a1eb768a3c40f7e0087a129f765534763733367b3d481e6aa3c2",
+        "size": 5729,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/shellscript.fkgram",
+        "sha256": "d50cfc4fe3d6c5c396a5f7017f5f4b91a6712aa1f9f229de59aaebe96ed34600",
+        "size": 40013,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/shellsession.fkgram",
+        "sha256": "e56f0b906d1f332bf5e66c4c241727a4ec62c46984f1df09713e035b892af79c",
+        "size": 641,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/smalltalk.fkgram",
+        "sha256": "82d19a06046ba35a097a453017207c9d3b28566d6eb84fff909b631155d3bc17",
+        "size": 13913,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/smithy.fkgram",
+        "sha256": "fd62fffd5f60ba2a6592ccbbbd98dc88109e2c0d0d7b4c6c250f4a6928d45314",
+        "size": 8948,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/solidity.fkgram",
+        "sha256": "00d2e3ffa39468d83145509653ae5aa0a286010415dd44fe2eb58fbfd7e16c29",
+        "size": 15777,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/soy.fkgram",
+        "sha256": "3ae11940188659f7a5c9411266d225c3789cf4d99982589805db630d6baa60cd",
+        "size": 6679,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/sparql.fkgram",
+        "sha256": "6fa2b63f28db99bdcc49b7c2853f3cad1ff680aa5e50cd2b846ac5d522d3c0ef",
+        "size": 1400,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/splunk.fkgram",
+        "sha256": "edff6a11fd830dc9beb3390c834ff7a023a7ce08083f4bd40de49b1b9e928a40",
+        "size": 3339,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/sql.fkgram",
+        "sha256": "0afdd84f9d33776aef08f558caa8929b5835f5d02aaf61b10fc97ce5ff3c1141",
+        "size": 22916,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ssh-config.fkgram",
+        "sha256": "b865eecf31d899d9e9768b04be3975da365923151d1474e256fb75e6b0da0274",
+        "size": 3557,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/stata.fkgram",
+        "sha256": "e7816559f4604bc82e4e759220acd9f99daf87f3c7bdb8860420fa252a2e194c",
+        "size": 55763,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/stylus.fkgram",
+        "sha256": "c1f83a60d06b179fa2703b650b54a93789f0cf9f04c1d210f5eb7da9b194ef84",
+        "size": 30467,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/surrealql.fkgram",
+        "sha256": "6510987a58a21bf6121a576c968d92833b5c7a4d437ee2508a94d7e7ad050e33",
+        "size": 11642,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/svelte.fkgram",
+        "sha256": "e11da7bb64e499ee108b1c2402587291a07110b9dae3b4a36ae6d65d56d550ca",
+        "size": 17877,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/swift.fkgram",
+        "sha256": "1850d3d157ab156b1b0a99a91198bc049a0ed72ad32e068a0dba2540a92371c7",
+        "size": 84278,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/system-verilog.fkgram",
+        "sha256": "d785cd40662d2ebae2123745c73a8eb7865d15c94a83c5ff73ac46544e63cc52",
+        "size": 25254,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/systemd.fkgram",
+        "sha256": "3fb2a48ea41107c158840ce6d8ad69e2c88f41b184bcff161dce84ca4ebd4849",
+        "size": 7616,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/talonscript.fkgram",
+        "sha256": "ebf250e00dfd405fff486f847c6e6647de46146351cfbf528fffca72472e1816",
+        "size": 6622,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/tasl.fkgram",
+        "sha256": "7e3a3111c5601cb2c3221b7fa9bf71b55c34840197e17d6b94e1d53ef2575734",
+        "size": 3208,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/tcl.fkgram",
+        "sha256": "c6078323349d16a2b73993498251d929ddfa31895574e100c68883122d49e0bf",
+        "size": 4241,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/templ.fkgram",
+        "sha256": "c0ee79471ab735ebac1b89c3a96b66c62712cc3ee9c4f85c2c6234b852e24a59",
+        "size": 23682,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/terraform.fkgram",
+        "sha256": "209b9d432119bc5d0f969253b67647bf6d08a89b243ef1f0b6ed99d2dfed418c",
+        "size": 11133,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/tex.fkgram",
+        "sha256": "1ff5b48870c7a49ee0954a11599c774f318b2890e8957c04143dabae3b2ffe6e",
+        "size": 9384,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/toml.fkgram",
+        "sha256": "1bfc7fe90b0dd3ef0bc271aa719f32596f39cb144fcf9cf225551156f1a9b098",
+        "size": 6156,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/ts-tags.fkgram",
+        "sha256": "db8d38d891bfd50d3d61b46b1e2ba0a34b6ff910ecd5417ed3ac80a52418468b",
+        "size": 361,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/tsv.fkgram",
+        "sha256": "83851f68f75ed90c52950dd46c93651d5f44686c7f0cfcedbbc4304433411e78",
+        "size": 658,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/tsx.fkgram",
+        "sha256": "fd35a30a37e161fe19709f2e9f834bc06e2659dcbac1d10cfa08317a7245df45",
+        "size": 160089,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/turtle.fkgram",
+        "sha256": "9ac14e5eb0ee389f77500d314fdfe15c9aa1ebec1d30f6828792fec5ae195521",
+        "size": 3614,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/twig.fkgram",
+        "sha256": "ec35e11eff93c1624ffef5fdbb2ee74dd913abe9fdf63d12a01a372e9c12b7fb",
+        "size": 20795,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/typescript.fkgram",
+        "sha256": "1b463d5bc89c274fac995f43ce6a3230676cfeed8026aca2b6cc7b18aabd24d2",
+        "size": 163952,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/typespec.fkgram",
+        "sha256": "4bea47e3b106c349959cba3ebabc22bebfd56dff4bb8585746189d14f5010645",
+        "size": 24178,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/typst.fkgram",
+        "sha256": "6ee624c73339c175509dfe2cbda6cfe18e33d7b901676acc2d80860f7dcb3896",
+        "size": 156187,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/v.fkgram",
+        "sha256": "f64bbe62e93312fbd36d715b5be7ea2058ced16df784ee75758e6e3cd67ddc3e",
+        "size": 12879,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vala.fkgram",
+        "sha256": "6a8b6b86bb5c39bd4239672d1b91d6121ca1a64d2f144c7e1f50c95b60a685bc",
+        "size": 3224,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vb.fkgram",
+        "sha256": "a017d91aaf8190685bfc368cb17a6416f56e47480a586ce43af6451b11ce3d01",
+        "size": 5877,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/verilog.fkgram",
+        "sha256": "de27a99e4485768e16becfdceb722abf73c68ec1083d4ed02f2349465d6c7ccb",
+        "size": 6261,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vhdl.fkgram",
+        "sha256": "f6388be9057343393d537f12cc5cf807ad292e7a479aab28d9a069ed2edf3893",
+        "size": 23566,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/viml.fkgram",
+        "sha256": "2b963f817a99d96a7b9ed9e656d6f849f9bf0dc389960df178be5d2b76b9558a",
+        "size": 20130,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue-directives.fkgram",
+        "sha256": "27cf0ec570e2ce5c2111afa12dd81f971bf48fc73934b40d55ec0629f3672543",
+        "size": 467,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue-html.fkgram",
+        "sha256": "8d2625b303666db03761ffbe54037845bf313e54f32f7f830ac1988c5d7f7d54",
+        "size": 8343,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue-interpolations.fkgram",
+        "sha256": "974dde08b153f76e9bbcf7f75fecbf95babea6576c6829063d4f2b0e9efd71a8",
+        "size": 458,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue-sfc-style-variable-injection.fkgram",
+        "sha256": "2b9e8d8e557ae821bfc5f13c9725082723f64780efe523e79661531ac69c777f",
+        "size": 919,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue-vine.fkgram",
+        "sha256": "91d34d82de47f6b6eafa46cf44015a57cdf69f0863834907c11bbcecac0a4003",
+        "size": 173681,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vue.fkgram",
+        "sha256": "e411a86c9113a546b3f1d1d6fa54ac7d75ed5d2f40d74d05d8e223a15f4e733b",
+        "size": 21727,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/vyper.fkgram",
+        "sha256": "e470404efcc9da52ad29137b87206ed3d06ab8139e7f8715ac61ee0959be7528",
+        "size": 72777,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wasm.fkgram",
+        "sha256": "a0f650e31c2d445cba13a2c07cfde4a8d483a85f768a198c8f142e1d4259031d",
+        "size": 11486,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wenyan.fkgram",
+        "sha256": "f9b9bf6c628b62fad27468c6ae7508a1b4bb92e05c007eade563f6ba1feba48a",
+        "size": 2118,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wgsl.fkgram",
+        "sha256": "14930b6514c657cdf95e8cdcc45f4e6fce47427903028d8c5adf0d2811b44257",
+        "size": 4964,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wikitext.fkgram",
+        "sha256": "6a2f0e2dcdfe7c0208d94a737c03c2ac3f33baef86cc6a6ab7369f772c489d75",
+        "size": 55084,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wit.fkgram",
+        "sha256": "482be45fcd4b254f0806c183dbca40d3d9d871ca34d6a06c2216381ab974c7fa",
+        "size": 20943,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/wolfram.fkgram",
+        "sha256": "e3662ea36ea0f4584c86f03e14b7e0a3863ce35073ea0acc73bc27f3a7b41995",
+        "size": 260709,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/xml.fkgram",
+        "sha256": "93b2b654ee764d9de688a31fb89501738af7467a7d99d10b8eea7ee832cee4eb",
+        "size": 5265,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/xsl.fkgram",
+        "sha256": "355ed21320a9bdbbb65ad87418e62e45520c63d502f2091fc1a002ccaec344d4",
+        "size": 1285,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/yaml.fkgram",
+        "sha256": "d249161243b26aa5602c66527c66706c357bbf2b828102d6824e331d814dadb9",
+        "size": 10031,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/zenscript.fkgram",
+        "sha256": "5be990ed36341393f8f6c84244b8cde5a02cb4d868123b5d104896a59533c0f4",
+        "size": 3752,
+        "formatVersion": 3
+      },
+      {
+        "path": "languages/zig.fkgram",
+        "sha256": "cfcaa34f0974ea4367a5f2b0903c81d5fb4de75ef5642dae5c1efcafbc362634",
+        "size": 5080,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/andromeeda.fktheme",
+        "sha256": "ed2651f9e461fd8fad39214f7a2569799371e7208947d5381365c0bd4322bd83",
+        "size": 8987,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/aurora-x.fktheme",
+        "sha256": "dd1789e79a1fe5681351fc03f9653567e59fb8ae2f2ac863aaeb241fb6601577",
+        "size": 13627,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/ayu-dark.fktheme",
+        "sha256": "e8e9428d0a190a8cd02ffb7723fd3bb7c23bd26b6bd0a22be73d3fa44dc90872",
+        "size": 20050,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/ayu-light.fktheme",
+        "sha256": "5199d76dac55eafc6803f622e3b7f88c065d9e1f7322257776367a4a3823400a",
+        "size": 20124,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/ayu-mirage.fktheme",
+        "sha256": "8b32a7b1d8b2630c9001853a0746ddbd9c7f1b76f6c8bc3ab089759e485e633b",
+        "size": 20058,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/catppuccin-frappe.fktheme",
+        "sha256": "535e6ae30b8d3dadb27a2ce83a5ebaf58be8e98bbebd2ded8b370b862aea320e",
+        "size": 50840,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/catppuccin-latte.fktheme",
+        "sha256": "6b9ce7b813181e65bcbf6b84e6bf6a746e598f91d6a063933b57352eb320327e",
+        "size": 50837,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/catppuccin-macchiato.fktheme",
+        "sha256": "7de8b82927482beeaebe84c75276d0329cc4ac50de491d35f9e099dc8dba79bb",
+        "size": 50851,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/catppuccin-mocha.fktheme",
+        "sha256": "71e66d379e12de385cad9f2b4e7b95902deb73b089a42169d2dcaadf57f89be5",
+        "size": 50835,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/dark-plus.fktheme",
+        "sha256": "5ffb7c2d8c42572c44582c5b8c2afc228ea01434edb4c9f114b7f828bcc3ebd8",
+        "size": 9067,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/dracula-soft.fktheme",
+        "sha256": "97749b8eefd765b07978ad2c89df904e7051ea5587e3b625f6dc5931183ec4ea",
+        "size": 21053,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/dracula.fktheme",
+        "sha256": "006e24889694faf45bfcdbdaaf17096c6ae712d592659b44beae643e66e8b689",
+        "size": 21033,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/everforest-dark.fktheme",
+        "sha256": "c9ab6e899d1da7947399e0b920c1fac1bf2ae856fd1b3d7d59e663264333d4d7",
+        "size": 53728,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/everforest-light.fktheme",
+        "sha256": "db2082f19473014cf72381a1456223f5a10e78aea7a00cfb82330f8984a11051",
+        "size": 53734,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-dark-default.fktheme",
+        "sha256": "b5b398986282d23b99d462a20ebad7b75da8c07c3e1e876190b2f292a53c557b",
+        "size": 14425,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-dark-dimmed.fktheme",
+        "sha256": "a2d8a8a1ef9718214a7590514b637fc00cf4922b4a3a2c13e48acba6bd42bbd6",
+        "size": 14421,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-dark-high-contrast.fktheme",
+        "sha256": "3755ea00abf572b2204f5f197add9dd79842f4ef08a555bf5e0777cce66466c0",
+        "size": 14597,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-dark.fktheme",
+        "sha256": "739a553651e07e530d80207846757eaf59e3a100cc2e9d00b3372221c3f3eb5e",
+        "size": 11379,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-light-default.fktheme",
+        "sha256": "b989ac945556d0b66ef60837410621ae0fd9aa8f80ef6e6c97c0dcb6d940f220",
+        "size": 14149,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-light-high-contrast.fktheme",
+        "sha256": "eecbd10943f1dd5cd39a86e400947f5d3ad0ae9ed68e643d5151379f64703f71",
+        "size": 14280,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/github-light.fktheme",
+        "sha256": "2d680840a84fedb5dcb7783625f17f6a2b3bfe34d20ee8957fb9d5bb69ba8399",
+        "size": 11161,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-dark-hard.fktheme",
+        "sha256": "575f001f750455fc48b172e672a8085b003bc8f674dd070224da9824973d78ab",
+        "size": 22620,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-dark-medium.fktheme",
+        "sha256": "ce1eec17e955df5590bfa02d8a456e96920e2ee6df6a15dd3e33d024ca9bc9d1",
+        "size": 22628,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-dark-soft.fktheme",
+        "sha256": "a51dcc3cc28c7a2b08713444a76e1b75cbfe6a0386a29fb8a9129e469d4eb736",
+        "size": 22620,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-light-hard.fktheme",
+        "sha256": "188fbc112ebede33b77f34ae412788d6588fd2545d3f0df1122c7289b66c531c",
+        "size": 22626,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-light-medium.fktheme",
+        "sha256": "a22aa25a46466033398fe25300e273be56c36c3b9521947bceb57e3201b6fc74",
+        "size": 22634,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/gruvbox-light-soft.fktheme",
+        "sha256": "458d06c2791cd0824954f19f5c72cfbb5e2af49acc3a43acfa46bcdf885a9485",
+        "size": 22626,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/horizon-bright.fktheme",
+        "sha256": "0ce9a4fe32c3fbbcb4dde3e4a973be338e4a6d4bbb997c2b869ea317583ef4f4",
+        "size": 8768,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/horizon.fktheme",
+        "sha256": "97100d9ad1a469f50557dd4f48e6113220dad828c5848fc185ec8df323ca7194",
+        "size": 8746,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/houston.fktheme",
+        "sha256": "7b610c72ffc5dce615355883149cadeff4df30c0c3ee0a67f73b5da87fa3fcd8",
+        "size": 35389,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/kanagawa-dragon.fktheme",
+        "sha256": "4a14658b30edae3dcb9e27ae271906914a2c93397fabd7cded3fc5b7d8807216",
+        "size": 17106,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/kanagawa-lotus.fktheme",
+        "sha256": "7fe8ad9610089b69cf5c1cc32b5f66c2a63e9b9647fd9c2653513969f9e81227",
+        "size": 17104,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/kanagawa-wave.fktheme",
+        "sha256": "746bb935e369ac89dc1bed68c6707588acb2a3565c33c259364eadb06da31f9b",
+        "size": 17098,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/laserwave.fktheme",
+        "sha256": "f9355e591dfaca56d07911581bb24e2a48200b06fa16952e66f7fdb88387a56d",
+        "size": 11469,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/light-plus.fktheme",
+        "sha256": "1da659518420ceaf84a9bc9e8bb81cc6acf01d3d29299c11f7413b9c92f54700",
+        "size": 9914,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/material-theme-darker.fktheme",
+        "sha256": "3b737a7b4c1d599602041ce56c7eb461bfcb41eaa327ee9fbec705f7f61c39f2",
+        "size": 18624,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/material-theme-lighter.fktheme",
+        "sha256": "14b317f21e3f510834cde632a831024ce83e1518d5b5707fed0e3faf77c1e4f6",
+        "size": 18632,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/material-theme-ocean.fktheme",
+        "sha256": "69fd93541bc02ad9b43fa63895dc03eccd45971a67e513948c532a44ad6118bd",
+        "size": 18622,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/material-theme-palenight.fktheme",
+        "sha256": "0fdf233cbee3b365fde9b1fda1f89fab522e20e0f316c021583bedff43f54e6f",
+        "size": 18636,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/material-theme.fktheme",
+        "sha256": "09012134db74c16db5f514a14fd1ea0c8241287d0b1a6da7f8214e032755ef6e",
+        "size": 18596,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/min-dark.fktheme",
+        "sha256": "407dc643155bf01fb1fabed512159ef043aba459fb1b0d84900aafc30a5e3d5f",
+        "size": 6259,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/min-light.fktheme",
+        "sha256": "c87e5480e5936ec1973b9fe5095fb16c0f1e498919fc65243178fca930e047e3",
+        "size": 6940,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/monokai.fktheme",
+        "sha256": "9a01985660210c7ab177fa046cfec0341e833ec0c62a4c650786f2260c820184",
+        "size": 7998,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/night-owl-light.fktheme",
+        "sha256": "3d93826dddd2863f967c6429d1fdf4d27920a6d99de6deeb7e957748b4757f18",
+        "size": 25886,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/night-owl.fktheme",
+        "sha256": "2f0502e18dd5fa1fa2097ef55d8ab792be4d0fb257345f4b2dece4521953a7c2",
+        "size": 28884,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/nord.fktheme",
+        "sha256": "e68ff2dae71a50102ba8c9d37f1938c88a877b71b42e7aefd20b3f2cf801d784",
+        "size": 26684,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/one-dark-pro.fktheme",
+        "sha256": "9a50af5841c383b3d8bd95fc6dcf9f730ae162b30e31031c3906d8417c8ce7b7",
+        "size": 33764,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/one-light.fktheme",
+        "sha256": "7c65346287d9ad211e1e9f98f96c3ef6e009bb18eb265d6d36f3bb72f916299f",
+        "size": 25272,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/plastic.fktheme",
+        "sha256": "2af349fa69c945226df67615abfb313248062d0beda37fe60ed54dbae5ea9441",
+        "size": 9261,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/poimandres.fktheme",
+        "sha256": "9d9a6d835193042be32b3c43e263113809fb5b0b6fad7901969ac90a99d02560",
+        "size": 33467,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/red.fktheme",
+        "sha256": "79c762160674bd448cf320bf85e5ed50fef4d16a1c6ce23af814f34035b4551f",
+        "size": 6376,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/rose-pine-dawn.fktheme",
+        "sha256": "aba3ddf33b974e53604f7493c0e2036fc293835e67daaf4e171ad4a36092e88f",
+        "size": 21734,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/rose-pine-moon.fktheme",
+        "sha256": "914b8b26c8cbdd76cc96f3bc55eba13cd0ac7c61560e22cd6d319efda5d6e152",
+        "size": 21732,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/rose-pine.fktheme",
+        "sha256": "e03ec34f2e1906e46b6c7a8911476d9e781cd344383063cb259346374c2364ae",
+        "size": 21712,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/slack-dark.fktheme",
+        "sha256": "b5400b202f1acf19cfea6dbe11af8641af5d590f5477e3df19b6f9244fbbbab4",
+        "size": 9089,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/slack-ochin.fktheme",
+        "sha256": "1a33b0edc21671867888c1fe84d3e5da991ef4cc973651f81fe34b2ac216a96f",
+        "size": 9406,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/snazzy-light.fktheme",
+        "sha256": "87e816a0591f7e0dd51e512c23351636c151073269294bebf2c8b94f0dc7a0ae",
+        "size": 20751,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/solarized-dark.fktheme",
+        "sha256": "840e04e0ba9985b120181dcf60ea4e7a296682ea4d2f307a29f154647bcb37cf",
+        "size": 6980,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/solarized-light.fktheme",
+        "sha256": "f3581b25322af2d5d12776708e69f855976637dc2055cee5ad48176d448ec845",
+        "size": 6611,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/synthwave-84.fktheme",
+        "sha256": "952fbc956d1d0854ca64f48a895bab12076272d0fdc9cb1dbf29b35f4d999d56",
+        "size": 14012,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/tokyo-night.fktheme",
+        "sha256": "7aa092e644b16524f9c736a501a8bd56caf9b8bb2099808f5f51af0086b25cf2",
+        "size": 35640,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/vesper.fktheme",
+        "sha256": "e1a4434a8249d30a7f1cc9018d4d9a5cf65a7b4f2912825cc0dfd3e9680cd31c",
+        "size": 12697,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/vitesse-black.fktheme",
+        "sha256": "197e1b3ce578124e8f9dc922cc4691c82c236a4f97b91c0e740b791773032470",
+        "size": 13655,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/vitesse-dark.fktheme",
+        "sha256": "076d2908ee46458a36e097f56f32fd786bef7e32ba63b61ece543442ea7e2a2d",
+        "size": 13735,
+        "formatVersion": 3
+      },
+      {
+        "path": "themes/vitesse-light.fktheme",
+        "sha256": "4896b4b7be950b9e08cd97f57392662d9725a947f2133b24c4b797f4a10938cc",
+        "size": 13595,
+        "formatVersion": 3
+      }
+    ]
+  },
+  "dependencyComparison": {
+    "candidateOnly": [
+      "@ferriki/core@0.13.0",
+      "@ferriki/darwin-arm64@0.13.0",
+      "@ferriki/linux-arm64-gnu@0.13.0",
+      "@ferriki/linux-arm64-musl@0.13.0",
+      "@ferriki/linux-x64-gnu@0.13.0",
+      "@ferriki/linux-x64-musl@0.13.0",
+      "@ferriki/win32-arm64-msvc@0.13.0",
+      "@ferriki/win32-x64-msvc@0.13.0",
+      "ardo@file:<packed-candidate>",
+      "ferromark-darwin-arm64@3.4.0",
+      "ferromark-linux-arm64-gnu@3.4.0",
+      "ferromark-linux-arm64-musl@3.4.0",
+      "ferromark-linux-x64-gnu@3.4.0",
+      "ferromark-linux-x64-musl@3.4.0",
+      "ferromark-win32-arm64-msvc@3.4.0",
+      "ferromark-win32-x64-msvc@3.4.0",
+      "ferromark@3.4.0"
+    ],
+    "baselineOnly": [
+      "@emnapi/core@1.9.2",
+      "@emnapi/runtime@1.9.2",
+      "@ferriki/core@0.10.0",
+      "@ferriki/darwin-arm64@0.10.0",
+      "@ferriki/linux-arm64-gnu@0.10.0",
+      "@ferriki/linux-arm64-musl@0.10.0",
+      "@ferriki/linux-x64-gnu@0.10.0",
+      "@ferriki/linux-x64-musl@0.10.0",
+      "@ferriki/win32-arm64-msvc@0.10.0",
+      "@ferriki/win32-x64-msvc@0.10.0",
+      "@oxc-parser/binding-android-arm-eabi@0.127.0",
+      "@oxc-parser/binding-android-arm64@0.127.0",
+      "@oxc-parser/binding-darwin-arm64@0.127.0",
+      "@oxc-parser/binding-darwin-x64@0.127.0",
+      "@oxc-parser/binding-freebsd-x64@0.127.0",
+      "@oxc-parser/binding-linux-arm-gnueabihf@0.127.0",
+      "@oxc-parser/binding-linux-arm-musleabihf@0.127.0",
+      "@oxc-parser/binding-linux-arm64-gnu@0.127.0",
+      "@oxc-parser/binding-linux-arm64-musl@0.127.0",
+      "@oxc-parser/binding-linux-ppc64-gnu@0.127.0",
+      "@oxc-parser/binding-linux-riscv64-gnu@0.127.0",
+      "@oxc-parser/binding-linux-riscv64-musl@0.127.0",
+      "@oxc-parser/binding-linux-s390x-gnu@0.127.0",
+      "@oxc-parser/binding-linux-x64-gnu@0.127.0",
+      "@oxc-parser/binding-linux-x64-musl@0.127.0",
+      "@oxc-parser/binding-openharmony-arm64@0.127.0",
+      "@oxc-parser/binding-wasm32-wasi@0.127.0",
+      "@oxc-parser/binding-win32-arm64-msvc@0.127.0",
+      "@oxc-parser/binding-win32-ia32-msvc@0.127.0",
+      "@oxc-parser/binding-win32-x64-msvc@0.127.0",
+      "@oxc-project/types@0.127.0",
+      "ardo@5.0.0",
+      "ferromark-darwin-arm64@3.1.0",
+      "ferromark-linux-arm64-gnu@3.1.0",
+      "ferromark-linux-arm64-musl@3.1.0",
+      "ferromark-linux-x64-gnu@3.1.0",
+      "ferromark-linux-x64-musl@3.1.0",
+      "ferromark-win32-arm64-msvc@3.1.0",
+      "ferromark-win32-x64-msvc@3.1.0",
+      "ferromark@3.1.0",
+      "magic-string@0.30.21",
+      "oxc-parser@0.127.0"
+    ],
+    "baselineDirect": {
+      "dependencies": {
+        "ferramenta-family": {
+          "specifier": "^2.0.0",
+          "version": "2.0.0(react@19.3.0)"
+        },
+        "isbot": {
+          "specifier": "^5.2.2",
+          "version": "5.2.2"
+        },
+        "react": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0"
+        },
+        "react-dom": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0(react@19.3.0)"
+        },
+        "react-router": {
+          "specifier": "^8.4.0",
+          "version": "8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)"
+        }
+      },
+      "devDependencies": {
+        "@react-router/dev": {
+          "specifier": "^8.4.0",
+          "version": "8.4.0(react-router@8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))"
+        },
+        "@types/react": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0"
+        },
+        "@types/react-dom": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0(@types/react@19.3.0)"
+        },
+        "axe-core": {
+          "specifier": "4.13.0",
+          "version": "4.13.0"
+        },
+        "eslint": {
+          "specifier": "^10.11.0",
+          "version": "10.11.0(jiti@2.7.0)"
+        },
+        "eslint-config-setup": {
+          "specifier": "^0.5.2",
+          "version": "0.5.2(@typescript-eslint/eslint-plugin@8.71.0(@typescript-eslint/parser@8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(@typescript-eslint/utils@8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(oxlint@1.86.0)(typescript@6.0.3)"
+        },
+        "jiti": {
+          "specifier": "^2.7.0",
+          "version": "2.7.0"
+        },
+        "oxfmt": {
+          "specifier": "^0.70.0",
+          "version": "0.70.0"
+        },
+        "oxlint": {
+          "specifier": "^1.85.0",
+          "version": "1.86.0"
+        },
+        "playwright": {
+          "specifier": "1.63.0",
+          "version": "1.63.0"
+        },
+        "typescript": {
+          "specifier": "^6.0.3",
+          "version": "6.0.3"
+        },
+        "vite": {
+          "specifier": "^8.3.0",
+          "version": "8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)"
+        }
+      }
+    },
+    "candidateDirect": {
+      "dependencies": {
+        "ferramenta-family": {
+          "specifier": "^2.0.0",
+          "version": "2.0.0(react@19.3.0)"
+        },
+        "isbot": {
+          "specifier": "^5.2.2",
+          "version": "5.2.2"
+        },
+        "react": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0"
+        },
+        "react-dom": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0(react@19.3.0)"
+        },
+        "react-router": {
+          "specifier": "^8.4.0",
+          "version": "8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)"
+        }
+      },
+      "devDependencies": {
+        "@react-router/dev": {
+          "specifier": "^8.4.0",
+          "version": "8.4.0(react-router@8.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(supports-color@9.4.0)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))"
+        },
+        "@types/react": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0"
+        },
+        "@types/react-dom": {
+          "specifier": "^19.3.0",
+          "version": "19.3.0(@types/react@19.3.0)"
+        },
+        "axe-core": {
+          "specifier": "4.13.0",
+          "version": "4.13.0"
+        },
+        "eslint": {
+          "specifier": "^10.11.0",
+          "version": "10.11.0(jiti@2.7.0)(supports-color@9.4.0)"
+        },
+        "eslint-config-setup": {
+          "specifier": "^0.5.2",
+          "version": "0.5.2(@typescript-eslint/eslint-plugin@8.71.0(@typescript-eslint/parser@8.71.0(eslint@10.11.0(jiti@2.7.0)(supports-color@9.4.0))(supports-color@9.4.0)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@9.4.0))(supports-color@9.4.0)(typescript@6.0.3))(@typescript-eslint/utils@8.71.0(eslint@10.11.0(jiti@2.7.0)(supports-color@9.4.0))(supports-color@9.4.0)(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)(supports-color@9.4.0))(oxlint@1.86.0)(supports-color@9.4.0)(typescript@6.0.3)"
+        },
+        "jiti": {
+          "specifier": "^2.7.0",
+          "version": "2.7.0"
+        },
+        "oxfmt": {
+          "specifier": "^0.70.0",
+          "version": "0.70.0"
+        },
+        "oxlint": {
+          "specifier": "^1.85.0",
+          "version": "1.86.0"
+        },
+        "playwright": {
+          "specifier": "1.63.0",
+          "version": "1.63.0"
+        },
+        "typescript": {
+          "specifier": "^6.0.3",
+          "version": "6.0.3"
+        },
+        "vite": {
+          "specifier": "^8.3.0",
+          "version": "8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)"
+        }
+      }
+    }
+  },
+  "diagnostics": {
+    "baseline": {
+      "native": {
+        "legacy.compile-including-highlighting": {
+          "count": 63,
+          "totalMs": 5860.589166
+        }
+      },
+      "windows": {
+        "startupToConfigMs": 607.9695,
+        "clientBuildIncludingNativeMs": 4072.795958,
+        "ssrBuildIncludingNativeMs": 4431.6555,
+        "clientEmitAfterTransformMs": 352.78720799999974,
+        "ssrEmitAfterTransformMs": 50.745333000000755,
+        "prerenderMs": 222.75670899999932
+      },
+      "records": [
+        {
+          "pid": 29927,
+          "event": "configResolved",
+          "ms": 607.9695
+        },
+        {
+          "pid": 29927,
+          "event": "configResolved",
+          "ms": 619.27325
+        },
+        {
+          "pid": 29927,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 621.738583
+        },
+        {
+          "pid": 29927,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 652.608875
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8968750000000227
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 219.842625
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 152.1930410000001
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.5346250000000055
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.1951249999999618
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 22.788125000000036
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 199.0347079999999
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 6.747875000000022
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 218.7952909999999
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 220.39816700000006
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.18895799999995688
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 22.708416999999827
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 192.944792
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 153.49250000000006
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.3456249999999272
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 6.774417000000085
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 215.7182499999999
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8112500000002001
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 22.924792000000252
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.1757079999997586
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 7.2359590000000935
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 194.24787500000002
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 151.2372909999999
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.337166000000252
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 216.4846249999996
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 216.13666599999988
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8131669999997939
+        },
+        {
+          "pid": 29927,
+          "event": "buildEnd",
+          "environment": "client",
+          "ms": 4339.414625
+        },
+        {
+          "pid": 29927,
+          "event": "generateBundle",
+          "environment": "client",
+          "ms": 4676.64425
+        },
+        {
+          "pid": 29927,
+          "event": "writeBundleStart",
+          "environment": "client",
+          "ms": 4687.706166
+        },
+        {
+          "pid": 29927,
+          "event": "writeBundleEnd",
+          "environment": "client",
+          "ms": 4692.201833
+        },
+        {
+          "pid": 29927,
+          "event": "closeBundle",
+          "environment": "client",
+          "ms": 4694.534541
+        },
+        {
+          "pid": 29927,
+          "event": "buildStart",
+          "environment": "ssr",
+          "ms": 4698.914666
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8350420000006125
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 7.874917000000096
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 152.60400000000027
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 209.24454199999946
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.1991250000000946
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 24.613292
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 241.40300000000025
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.3820409999998446
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 233.43916700000045
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 9.609875000000102
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 227.92104199999994
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8367920000000595
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 248.2119159999993
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 169.37779200000023
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 236.39970899999935
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.287333000000217
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.2138330000007045
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 23.327124999999796
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 7.140917000000627
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 192.624417
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.8451249999998254
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 216.40320799999972
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 154.5089170000001
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 213.20158300000003
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.1097499999996217
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.1755830000001879
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 22.01129199999923
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 190.86383299999943
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 6.72504200000003
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 1.369249999999738
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 218.88674999999967
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 153.51599999999962
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 213.33995800000048
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 2.194708000000901
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 0.18870799999967858
+        },
+        {
+          "pid": 29927,
+          "phase": "legacy.compile-including-highlighting",
+          "ms": 23.699667000000773
+        },
+        {
+          "pid": 29927,
+          "event": "buildEnd",
+          "environment": "ssr",
+          "ms": 9078.302708
+        },
+        {
+          "pid": 29927,
+          "event": "generateBundle",
+          "environment": "ssr",
+          "ms": 9113.548791
+        },
+        {
+          "pid": 29927,
+          "event": "writeBundleStart",
+          "environment": "ssr",
+          "ms": 9118.96775
+        },
+        {
+          "pid": 29927,
+          "event": "writeBundleEnd",
+          "environment": "ssr",
+          "ms": 9129.048041
+        },
+        {
+          "pid": 29927,
+          "event": "closeBundle",
+          "environment": "ssr",
+          "ms": 9130.570166
+        },
+        {
+          "pid": 29927,
+          "event": "prerenderStart",
+          "ms": 9131.310041
+        },
+        {
+          "pid": 29927,
+          "event": "configResolved",
+          "ms": 9162.660583
+        },
+        {
+          "pid": 29927,
+          "event": "configResolved",
+          "ms": 9175.595958
+        },
+        {
+          "pid": 29927,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 9177.766833
+        },
+        {
+          "pid": 29927,
+          "event": "prerenderEnd",
+          "ms": 9354.06675
+        },
+        {
+          "pid": 29927,
+          "event": "buildEnd",
+          "environment": "client",
+          "ms": 9354.329
+        },
+        {
+          "pid": 29927,
+          "event": "closeBundle",
+          "environment": "ssr",
+          "ms": 9354.487375
+        },
+        {
+          "pid": 29927,
+          "event": "closeBundle",
+          "environment": "client",
+          "ms": 9354.544875
+        }
+      ],
+      "rawFiles": {
+        "phasesSha256": "5fd32fedb78790b2968967f9d1cd25dbd2de2fcca66eb983d4395a3a95c4837b",
+        "logSha256": "94b96dce7249e54e1e269f13e7592d1bcaaca38580d2f8460928bb7680b0b5e4",
+        "cpuProfiles": [
+          {
+            "sha256": "a4b426014dd86eb65e7ada99950675979379a04ec837429f64c4dfb0209fa8fa",
+            "bytes": 2168380
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "native": {
+        "prepare.parse-and-passes": {
+          "count": 108,
+          "totalMs": 10.129079000001866
+        },
+        "render.module-and-highlighting": {
+          "count": 63,
+          "totalMs": 5939.694121
+        },
+        "render.metadata": {
+          "count": 27,
+          "totalMs": 3.5209130000039295
+        }
+      },
+      "windows": {
+        "startupToConfigMs": 614.587667,
+        "clientBuildIncludingNativeMs": 4015.476291,
+        "ssrBuildIncludingNativeMs": 4470.556167000001,
+        "clientEmitAfterTransformMs": 348.81433300000026,
+        "ssrEmitAfterTransformMs": 54.48458399999981,
+        "prerenderMs": 248.25824999999895
+      },
+      "records": [
+        {
+          "pid": 29997,
+          "event": "configResolved",
+          "ms": 614.587667
+        },
+        {
+          "pid": 29997,
+          "event": "configResolved",
+          "ms": 625.622458
+        },
+        {
+          "pid": 29997,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 628.008417
+        },
+        {
+          "pid": 29997,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 657.903667
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.2622079999999869
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 226.656292
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10612500000002001
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.14220799999998235
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06208300000002964
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 24.945291999999995
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07729200000005676
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 220.109958
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08966699999996308
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 153.80545800000004
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10341700000003584
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 7.330332999999882
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07662500000014916
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.9500829999999496
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.046917000000121334
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.05850000000009459
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06708300000013878
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 195.78774999999996
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09233300000005329
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 215.0902090000002
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09316600000011022
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 153.8988750000001
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10024999999995998
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.10591700000009041
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04804100000001199
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 22.934375000000045
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09608300000013514
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 6.286833000000115
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08262500000000728
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.8585410000000593
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04416700000001583
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.059166000000004715
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10408299999994597
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 190.80191600000012
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09704199999987395
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 218.0981670000001
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09750000000030923
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 154.17883299999994
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07875000000012733
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 213.52241700000013
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08233300000028976
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 22.387750000000324
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10270799999989322
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 6.49633300000005
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.05983300000025338
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.864292000000205
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.052708000000166066
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 191.71425
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08595799999966403
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.06741700000020501
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.050917000000026746
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.09766600000011749
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.13666699999976117
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 218.14554099999987
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11774999999988722
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.19020799999998417
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06879099999969185
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07425000000012005
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.05016599999999016
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.0862080000001697
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11520800000016607
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.12366699999984121
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.16025000000036016
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.12833399999999529
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.15858299999990777
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.15929200000027777
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11266599999999016
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.1056669999998121
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0749999999998181
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.12875000000076398
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.12920800000028976
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08266699999967386
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.11166599999978644
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07150000000001455
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07583299999987503
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.14908399999967514
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07370900000023539
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04783300000053714
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.07745799999975134
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07304199999998673
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.1257499999992433
+        },
+        {
+          "pid": 29997,
+          "event": "buildEnd",
+          "environment": "client",
+          "ms": 4292.368292
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.13329199999952834
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.13800000000082946
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08029199999964476
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.08266700000058336
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07304199999998673
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.14500000000043656
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06558299999960582
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.109375
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.045375000000603904
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.09270800000012969
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04329099999995378
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.07595799999944575
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.05216699999982666
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.1130830000001879
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.037250000000312866
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.06358300000010786
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04212500000085129
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.08966599999985192
+        },
+        {
+          "pid": 29997,
+          "event": "generateBundle",
+          "environment": "client",
+          "ms": 4624.397458
+        },
+        {
+          "pid": 29997,
+          "event": "writeBundleStart",
+          "environment": "client",
+          "ms": 4636.613292
+        },
+        {
+          "pid": 29997,
+          "event": "writeBundleEnd",
+          "environment": "client",
+          "ms": 4641.182625
+        },
+        {
+          "pid": 29997,
+          "event": "closeBundle",
+          "environment": "client",
+          "ms": 4643.484708
+        },
+        {
+          "pid": 29997,
+          "event": "buildStart",
+          "environment": "ssr",
+          "ms": 4647.849208
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08629199999995762
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.0976249999994252
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0898749999996653
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 23.18054099999972
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0851249999996071
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 195.64370800000052
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10670899999968242
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 6.2141249999995125
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.05933400000049005
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.09841600000072503
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04145799999969313
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 215.23470800000086
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08145899999999529
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 155.46820800000023
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09587499999997817
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 1.8362090000000535
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0887910000001284
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 229.04125000000022
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.13008300000001327
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 7.68579200000022
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08020800000031159
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 192.05887500000063
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08595799999966403
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.12579199999981938
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06287500000053114
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 222.4791669999995
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09254200000032142
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 155.64508300000034
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08779200000026322
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 1.7062080000005153
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.05904199999986304
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.06370799999967858
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.04391600000053586
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 214.5497919999998
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0860000000002401
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 22.73308299999917
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.12270799999987503
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06849999999940337
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.14716700000008132
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.13904199999979028
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.1359999999995125
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.1132500000003347
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11904200000026322
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0913749999999709
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 6.665791000000354
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07716700000037235
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.14383300000008603
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08670799999981682
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09425000000010186
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.12104200000067067
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09470800000053714
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09066600000005565
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 217.22237499999937
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.24020800000016607
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.3545830000002752
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.14124999999967258
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10541600000033213
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.2266250000002401
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.1505830000005517
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11070800000015879
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.1405830000003334
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08391699999992852
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11025000000063301
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.14812500000061846
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11058299999967858
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09779100000014296
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.12833300000056624
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.26433300000007875
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 271.075417
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09379099999932805
+        },
+        {
+          "pid": 29997,
+          "phase": "render.metadata",
+          "ms": 0.1152909999991607
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06483300000036252
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 175.68562500000007
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.09212500000012369
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 244.77429100000063
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10462499999994179
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 1.5870000000004438
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08374999999978172
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.08758299999954033
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.07445800000004965
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 24.68499999999949
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.12341699999979028
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 7.167916999999761
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.0812500000001819
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 216.27691699999923
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.10337499999877764
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 247.31866699999955
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.11074999999982538
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 170.7881669999988
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08554200000071432
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 240.46345800000017
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.18166699999892444
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 1.7862920000006852
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.06275000000096043
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.063958000000639
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.049958999999944353
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 24.493208999998387
+        },
+        {
+          "pid": 29997,
+          "phase": "prepare.parse-and-passes",
+          "ms": 0.08933400000023539
+        },
+        {
+          "pid": 29997,
+          "phase": "render.module-and-highlighting",
+          "ms": 0.15520900000046822
+        },
+        {
+          "pid": 29997,
+          "event": "buildEnd",
+          "environment": "ssr",
+          "ms": 9061.797833
+        },
+        {
+          "pid": 29997,
+          "event": "generateBundle",
+          "environment": "ssr",
+          "ms": 9098.676167
+        },
+        {
+          "pid": 29997,
+          "event": "writeBundleStart",
+          "environment": "ssr",
+          "ms": 9105.022083
+        },
+        {
+          "pid": 29997,
+          "event": "writeBundleEnd",
+          "environment": "ssr",
+          "ms": 9116.282417
+        },
+        {
+          "pid": 29997,
+          "event": "closeBundle",
+          "environment": "ssr",
+          "ms": 9118.405375
+        },
+        {
+          "pid": 29997,
+          "event": "prerenderStart",
+          "ms": 9119.468375
+        },
+        {
+          "pid": 29997,
+          "event": "configResolved",
+          "ms": 9155.857917
+        },
+        {
+          "pid": 29997,
+          "event": "configResolved",
+          "ms": 9170.251792
+        },
+        {
+          "pid": 29997,
+          "event": "buildStart",
+          "environment": "client",
+          "ms": 9172.823667
+        },
+        {
+          "pid": 29997,
+          "event": "prerenderEnd",
+          "ms": 9367.726625
+        },
+        {
+          "pid": 29997,
+          "event": "buildEnd",
+          "environment": "client",
+          "ms": 9368.044167
+        },
+        {
+          "pid": 29997,
+          "event": "closeBundle",
+          "environment": "ssr",
+          "ms": 9368.215875
+        },
+        {
+          "pid": 29997,
+          "event": "closeBundle",
+          "environment": "client",
+          "ms": 9368.287042
+        }
+      ],
+      "rawFiles": {
+        "phasesSha256": "5ee7d5e2bb15c63cad073e630bec885be1cd877a59028528004ab096bc166536",
+        "logSha256": "da2723cf182aa689dd89a81dc0ea2f940ad795dd5af92284bd0ef67397929d84",
+        "cpuProfiles": [
+          {
+            "sha256": "71f830346b29b9eb2210416f5ca780b318509ce36982ccb8c347de4b9773d330",
+            "bytes": 1996480
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Incremental published Ardo 5 versus packed candidate; Ardo 4.2 was not rerun.",
+    "pnpm 11.25.0 and macOS 27.0.1 differ from the October 4 historical environment.",
+    "One diagnostic build per lane; not statistical phase benchmarks.",
+    "Native module rendering includes highlighting, JSX emission, maps, and first language loading; it does not isolate tokenization.",
+    "Legacy compileJsx metadata and scope compiles are not intercepted by the prototype probe.",
+    "Vite bundling windows include native compilation and overlapping plugin waits; do not sum inclusive windows with native totals.",
+    "Prepared objects do not cache renders; repeated route transforms still highlight.",
+    "Issue #324 remains open."
+  ]
+}
