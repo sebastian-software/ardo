@@ -1,5 +1,24 @@
 # Changelog
 
+## [5.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v5.0.0...ardo-v5.1.0) (2026-10-10)
+
+
+### Features
+
+* compile MDX modules with prepared Ferromark documents ([#326](https://github.com/sebastian-software/ardo/issues/326)) ([30f2ea1](https://github.com/sebastian-software/ardo/commit/30f2ea11431c735186c01d8fe818abc988d444e2))
+* compile MDX routes with Ferromark's module output ([6c527f5](https://github.com/sebastian-software/ardo/commit/6c527f5835e9d54803362bf0428b1a09d5f34506)), closes [#325](https://github.com/sebastian-software/ardo/issues/325)
+
+
+### Performance
+
+* prepare native routes once with published Ferromark ([40a79de](https://github.com/sebastian-software/ardo/commit/40a79dee83b534ce1c37f5f2c939c0f1d74e3d14))
+
+
+### Code Refactoring
+
+* render literal TSX code blocks with Ferromark ([#327](https://github.com/sebastian-software/ardo/issues/327)) ([91c31a2](https://github.com/sebastian-software/ardo/commit/91c31a2854e0464e608cf5da826f786bdc719b8a))
+* render literal TSX fences with Ferromark ([c97b685](https://github.com/sebastian-software/ardo/commit/c97b6852147c8644f6ef926193d9a98e88b40eaa))
+
 ## [5.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.2.0...ardo-v5.0.0) (2026-10-03)
 
 
