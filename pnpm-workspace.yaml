@@ -27,14 +27,14 @@ minimumReleaseAgeExclude:
   - "@storybook/react@10.5.7"
   - lucide-react@1.29.0
   - storybook@10.5.7
-  - "@ferriki/core@0.10.0"
-  - "@ferriki/darwin-arm64@0.10.0"
-  - "@ferriki/linux-arm64-gnu@0.10.0"
-  - "@ferriki/linux-arm64-musl@0.10.0"
-  - "@ferriki/linux-x64-gnu@0.10.0"
-  - "@ferriki/linux-x64-musl@0.10.0"
-  - "@ferriki/win32-arm64-msvc@0.10.0"
-  - "@ferriki/win32-x64-msvc@0.10.0"
+  - "@ferriki/core@0.13.0"
+  - "@ferriki/darwin-arm64@0.13.0"
+  - "@ferriki/linux-arm64-gnu@0.13.0"
+  - "@ferriki/linux-arm64-musl@0.13.0"
+  - "@ferriki/linux-x64-gnu@0.13.0"
+  - "@ferriki/linux-x64-musl@0.13.0"
+  - "@ferriki/win32-arm64-msvc@0.13.0"
+  - "@ferriki/win32-x64-msvc@0.13.0"
   - ferromark-darwin-arm64@3.4.0
   - ferromark-linux-arm64-gnu@3.4.0
   - ferromark-linux-arm64-musl@3.4.0

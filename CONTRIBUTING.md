@@ -104,7 +104,10 @@ engine builds too. For homepage verification, also pack Ardo and add its
 tarball to the homepage's temporary workspace overrides.
 
 Ferromark's native JSX compiler owns Ferriki for Markdown fences; Ardo uses
-the direct Ferriki facade for literal TSX codeblocks. Both download verified
+the same native fence renderer for literal TSX codeblocks. The direct Ferriki
+facade remains for the public HTML-returning `highlightCode` helper and its
+`ThemeInput` configuration type; upgrading it does not change the Ferriki
+version compiled into Ferromark. Both download verified
 standard assets on first use and share a content-addressed cache. Persist it and
 set `FERRIKI_CACHE_DIR` and `FERRIKI_ASSETS_REMOTE=0` for subsequent offline
 checks. Restore the original workspace config and lockfile after local

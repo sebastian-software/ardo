@@ -21,7 +21,8 @@ const highlighterPromises = new Map<string, Promise<Highlighter>>()
 const failedLanguageWarnings = new Set<string>()
 
 /**
- * Render a code block through Ferriki. The highlighter is cached by theme and
+ * Compatibility HTML renderer exported from ardo/vite. Native Markdown and
+ * literal TSX fences use JsxCompiler instead. The highlighter is cached by theme and
  * loads language assets only when a document first uses that language.
  */
 export async function highlightCode(
