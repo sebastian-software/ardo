@@ -1,16 +1,14 @@
-import { JsxCompiler, type JsxModuleMap, type JsxModuleResult } from "ferromark"
+import type { JsxModuleMap, JsxModuleResult } from "ferromark"
 
 import type { ArdoConfig } from "../config/types"
 
 import {
-  getNativeMarkdownCompileOptions,
+  createNativeMarkdownMetadata,
   type NativeMarkdownFormat,
   type NativeMarkdownMetadata,
-  readNativeMarkdownMetadata,
+  prepareNativeMarkdown,
 } from "../markdown/native-metadata"
 import { buildToc } from "../markdown/toc"
-
-const jsxCompilers = new Map<string, JsxCompiler>()
 
 /** What the document's ESM exports and binds at the top level, as Ferromark reports it. */
 type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
@@ -40,20 +38,21 @@ export function compileMdxRouteModule(input: {
   markdownConfig: ArdoConfig["markdown"]
   source: string
 }): { code: string; map: JsxModuleMap } {
-  const metadata = readNativeMarkdownMetadata(input.source, input.format, input.markdownConfig)
-  const title = typeof metadata.frontmatter.title === "string" ? metadata.frontmatter.title : ""
-  const result = getJsxCompiler(input.markdownConfig).compile(input.source, {
-    ...getNativeMarkdownCompileOptions(input.markdownConfig, {
-      codeBlockComponent: "_components.CodeBlock",
-      format: input.format,
-    }),
-    output: "module",
+  const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
+    input.source,
+    input.format,
+    input.markdownConfig
+  )
+  const { componentPrefix: _componentPrefix, ...moduleOptions } = renderOptions
+  const result = prepared.renderModule({
+    ...moduleOptions,
+    codeBlockComponent: "_components.CodeBlock",
     providerImportSource: "ardo/mdx-provider",
     filename: input.id,
     defaultExport: false,
     reservedBindings: routeBindings,
-    ...(title === "" ? {} : { omitTitleHeading: title }),
   })
+  const metadata = createNativeMarkdownMetadata(input.source, frontmatter, result)
   return {
     code: result.code + createRouteCode({ markdownConfig: input.markdownConfig, metadata, result }),
     map: result.map,
@@ -107,19 +106,4 @@ function createHandleExport(layout: unknown, scope: AuthoredScope): string[] {
   if ((layout !== "bare" && layout !== "default") || scope.exports.has("handle")) return []
   if (scope.bindings.has("handle")) return ["export { handle };"]
   return [`export const handle = ${JSON.stringify({ layout })};`]
-}
-
-function getJsxCompiler(markdownConfig: ArdoConfig["markdown"]): JsxCompiler {
-  const theme = markdownConfig?.theme
-  const lineNumbers = markdownConfig?.lineNumbers ?? false
-  const cacheKey = `${theme === undefined ? "default-pair" : JSON.stringify(theme)}\u0000${lineNumbers}`
-  let compiler = jsxCompilers.get(cacheKey)
-  if (compiler == null) {
-    compiler = new JsxCompiler({
-      ...(theme === undefined ? {} : { theme }),
-      lineNumbers,
-    })
-    jsxCompilers.set(cacheKey, compiler)
-  }
-  return compiler
 }

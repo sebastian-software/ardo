@@ -35,14 +35,14 @@ minimumReleaseAgeExclude:
   - "@ferriki/linux-x64-musl@0.10.0"
   - "@ferriki/win32-arm64-msvc@0.10.0"
   - "@ferriki/win32-x64-msvc@0.10.0"
-  - ferromark-darwin-arm64@3.1.0
-  - ferromark-linux-arm64-gnu@3.1.0
-  - ferromark-linux-arm64-musl@3.1.0
-  - ferromark-linux-x64-gnu@3.1.0
-  - ferromark-linux-x64-musl@3.1.0
-  - ferromark-win32-arm64-msvc@3.1.0
-  - ferromark-win32-x64-msvc@3.1.0
-  - ferromark@3.1.0
+  - ferromark-darwin-arm64@3.4.0
+  - ferromark-linux-arm64-gnu@3.4.0
+  - ferromark-linux-arm64-musl@3.4.0
+  - ferromark-linux-x64-gnu@3.4.0
+  - ferromark-linux-x64-musl@3.4.0
+  - ferromark-win32-arm64-msvc@3.4.0
+  - ferromark-win32-x64-msvc@3.4.0
+  - ferromark@3.4.0
 
 onlyBuiltDependencies:
   - "@swc/core"

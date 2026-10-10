@@ -587,3 +587,15 @@ outline: [2, 3]
 ```
 
 See the [Frontmatter Reference](/guide/frontmatter) for all available options.
+
+## Prepared route metadata
+
+Ardo prepares each Markdown/MDX route once, parses its raw YAML frontmatter,
+and renders one native module. The TOC uses that module's final headings after
+title omission, heading offsets, prefixes, and native ID planning. Manifest
+and search readers use the same preparation/render options and final heading
+planner; sidebar and collection readers only extract preparation metadata.
+Prepared documents are scoped to each invocation, so edits are reparsed during
+HMR. Compiler and highlighter resources are reused by theme and line-number
+configuration. Metadata reads skip highlighting; rendering still highlights
+each document's fences.

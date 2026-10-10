@@ -1,7 +1,10 @@
-import { compileJsx, type CompileJsxOptions } from "ferromark"
+import type { CompileJsxOptions, JsxModuleResult, JsxRenderOptions, JsxResult } from "ferromark"
+
 import { parse as parseYaml } from "yaml"
 
 import type { MarkdownConfig } from "../config/types"
+
+import { getJsxCompiler } from "./jsx-compiler"
 
 export type NativeMarkdownFormat = "md" | "mdx"
 
@@ -51,7 +54,7 @@ const nativeOptionKeys = [
   "headingIdPrefix",
 ] as const satisfies ReadonlyArray<keyof MarkdownConfig>
 
-const calloutComponents = {
+const defaultCalloutComponents = {
   caution: "Danger",
   important: "Info",
   note: "Note",
@@ -88,7 +91,7 @@ export function getNativeMarkdownCompileOptions(
     format: options.format,
     frontMatter: true,
     headingIds: options.headingIds ?? markdownConfig.anchor ?? true,
-    calloutComponents,
+    calloutComponents: defaultCalloutComponents,
     codeComponents: { mermaid: "_ArdoMermaid" },
     ...(options.codeBlockComponent == null
       ? {}
@@ -107,17 +110,61 @@ export function readNativeMarkdownMetadata(
   format: NativeMarkdownFormat,
   markdownConfig: MarkdownConfig = {}
 ): NativeMarkdownMetadata {
-  const compileOptions = getNativeMarkdownCompileOptions(markdownConfig, {
+  const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
+    source,
     format,
-  })
-  const first = compileJsx(source, compileOptions)
-  const frontmatter = parseNativeFrontmatter(first.frontMatter, first.frontMatterKind)
-  const title = typeof frontmatter.title === "string" ? frontmatter.title : undefined
-  const compiled =
-    title == null || title === ""
-      ? first
-      : compileJsx(source, { ...compileOptions, omitTitleHeading: title })
+    markdownConfig
+  )
+  // Metadata consumers need final heading planning, but never highlighted JSX.
+  const result = prepared.render(renderOptions, () => "<pre />")
+  return createNativeMarkdownMetadata(source, frontmatter, result)
+}
 
+/** Prepare per invocation so HMR always uses the current source and options. */
+export function prepareNativeMarkdown(
+  source: string,
+  format: NativeMarkdownFormat,
+  markdownConfig: MarkdownConfig = {}
+) {
+  const {
+    calloutComponents,
+    codeComponents,
+    codeBlockComponent,
+    componentPrefix,
+    headingIds,
+    headingOffset,
+    headingIdPrefix,
+    callouts,
+    omitTitleHeading,
+    output: _output,
+    ...preparationOptions
+  } = getNativeMarkdownCompileOptions(markdownConfig, { format })
+  const prepared = getJsxCompiler(markdownConfig).prepare(source, preparationOptions)
+  const frontmatter = parseNativeFrontmatter(
+    prepared.metadata.frontMatter,
+    prepared.metadata.frontMatterKind
+  )
+  const title = typeof frontmatter.title === "string" ? frontmatter.title : undefined
+  const renderOptions: JsxRenderOptions = {
+    calloutComponents,
+    codeComponents,
+    codeBlockComponent,
+    componentPrefix,
+    headingIds,
+    headingOffset,
+    headingIdPrefix,
+    callouts,
+    omitTitleHeading: title == null || title === "" ? omitTitleHeading : title,
+  }
+  return { prepared, frontmatter, renderOptions }
+}
+
+/** Normalize final rendered heading spans for route-manifest/search content. */
+export function createNativeMarkdownMetadata(
+  source: string,
+  frontmatter: Record<string, unknown>,
+  compiled: JsxModuleResult | JsxResult
+): NativeMarkdownMetadata {
   const removedRanges = [
     ...(compiled.frontMatterSpan == null ? [] : [compiled.frontMatterSpan]),
     ...(compiled.omittedTitleHeadingSpan == null ? [] : [compiled.omittedTitleHeadingSpan]),
@@ -153,10 +200,7 @@ export function readNativeMarkdownFrontmatter(
   source: string,
   format: NativeMarkdownFormat
 ): Record<string, unknown> {
-  const result = compileJsx(source, {
-    format,
-    frontMatter: true,
-  })
+  const { metadata: result } = getJsxCompiler().prepare(source, { format, frontMatter: true })
   return parseNativeFrontmatter(result.frontMatter, result.frontMatterKind)
 }
 
