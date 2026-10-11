@@ -104,6 +104,23 @@ describe("native compiler API documentation", () => {
     })
   })
 
+  it("reads iterator helpers from the compiler's ESNext global augmentation", async () => {
+    const session = await project("export interface Lines extends IteratorObject<string> {}")
+    const config = path.join(temporary, "tsconfig.json")
+    const json = JSON.parse(await fs.readFile(config, "utf8"))
+    json.compilerOptions.lib = ["ESNext"]
+    await fs.writeFile(config, JSON.stringify(json))
+    const result = await session.extract()
+    expect(result.diagnostics).toStrictEqual([])
+    expect(result.items[0].propertiesComplete).toBe(true)
+    expect(result.items[0].properties.map((item) => item.name)).toStrictEqual(
+      expect.arrayContaining(["next", "map", "filter", "take", "drop", "toArray"])
+    )
+    const map = result.items[0].properties.find((item) => item.name === "map")
+    expect(map?.signatures[0].parameters[0].type).toBe("(value: string, index: number) => U")
+    expect(map?.comment.description).toContain("applying the callback")
+  })
+
   it("updates dependency types and JSDoc, preserves pages on errors, recovers, and removes obsolete pages", async () => {
     const session = await project(
       'import { value } from "./value.js"; export { value } from "./value.js"; export function read() { return { value }; }'

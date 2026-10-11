@@ -30,6 +30,7 @@ export type DeclarationModule = {
   source: string
   comments: Comment[]
   declarations: Map<string, DeclarationRecord[]>
+  globalDeclarations: Map<string, DeclarationRecord[]>
   imports: Map<string, Binding>
   exports: Map<string, Binding>
   stars: string[]

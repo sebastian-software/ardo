@@ -11,7 +11,7 @@ import type {
 export type DeclarationReference = { kind: "lib" | "path" | "types"; value: string }
 type LibraryReader = Pick<DeclarationReader, "read" | "report">
 
-/** Only explicitly supplied scripts and their header references contribute globals. */
+/** Supplied scripts, explicit global augmentations, and header references contribute globals. */
 export class DeclarationLibraries {
   private readonly files = new Set<string>()
   private readonly declarations = new Map<string, ResolvedDeclaration>()
@@ -31,8 +31,8 @@ export class DeclarationLibraries {
   private async loadFile(file: string, reader: LibraryReader): Promise<void> {
     const module = await reader.read(file)
     if (this.files.has(module.file)) return
-    if (module.isExternalModule)
-      throw new Error(`[ardo] Expected a script containing global declarations: ${module.file}`)
+    if (module.isExternalModule && module.globalDeclarations.size === 0)
+      throw new Error(`[ardo] Expected global declarations in the supplied library: ${module.file}`)
     this.files.add(module.file)
     for (const reference of module.references) {
       const dependency = referencedFile(reference, module, reader)
@@ -42,7 +42,8 @@ export class DeclarationLibraries {
   }
 
   private index(module: DeclarationModule): void {
-    for (const [name, records] of module.declarations) {
+    const globals = module.isExternalModule ? module.globalDeclarations : module.declarations
+    for (const [name, records] of globals) {
       // Constructor variables such as `declare var Error` describe the static
       // side. Inheritance needs the instance interface, including augmentations.
       const types = records.filter((record) =>
@@ -52,7 +53,8 @@ export class DeclarationLibraries {
       )
       if (types.length === 0) continue
       const existing = this.declarations.get(name)
-      if (existing == null) this.declarations.set(name, { module, name, records: types })
+      if (existing == null)
+        this.declarations.set(name, { module: types[0].module, name, records: types })
       else existing.records.push(...types)
     }
   }

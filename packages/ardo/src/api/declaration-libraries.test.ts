@@ -158,6 +158,49 @@ describe("compiler declaration libraries", () => {
     })
   })
 
+  it("merges explicit global augmentations without exposing module helpers", async () => {
+    const first = await declaration("base.d.ts", "interface IteratorObject<T> { value: T; }")
+    const second = await declaration(
+      "augmentation.d.ts",
+      [
+        "export {};",
+        "interface Helper<T> { /** Module helper. */ extra: T; }",
+        "interface IteratorObject<T> { privateName: T; }",
+        "declare global {",
+        "  interface IteratorObject<T> extends Helper<T> { map<U>(fn: (value: T) => U): IteratorObject<U>; }",
+        "  interface Derived<T> extends IteratorObject<T> { own: boolean; }",
+        "  type DefaultBase<T = IteratorObject<number>> = T;",
+        "}",
+      ].join("\n")
+    )
+    const entry = await declaration(
+      "api.d.ts",
+      "export interface PublicIterator extends Derived<string> {}\nexport interface PrivateHelper extends Helper<string> {}\nexport interface DefaultIterator extends DefaultBase {}"
+    )
+    const result = await extractDeclarations([entry], { libFiles: [first, second] })
+    expect(result.items[0]).toMatchObject({
+      propertiesComplete: true,
+      properties: [
+        { name: "value", type: "string" },
+        { name: "extra", type: "string", comment: { description: "Module helper." } },
+        { name: "map", signatures: [{ returnType: "IteratorObject<U>" }] },
+        { name: "own", type: "boolean" },
+      ],
+    })
+    expect(result.items[1]).toMatchObject({ propertiesComplete: false, properties: [] })
+    expect(result.items[2]).toMatchObject({
+      propertiesComplete: true,
+      properties: [
+        { name: "value", type: "number" },
+        { name: "extra", type: "number" },
+        { name: "map" },
+      ],
+    })
+    expect(result.diagnostics).toMatchObject([
+      { file: entry, message: "Could not expand properties of Helper." },
+    ])
+  })
+
   it("prefers local and imported names over global declarations", async () => {
     const library = await errorLibraries()
     await declaration("other.d.ts", "export interface Error { imported: number; }")

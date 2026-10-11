@@ -124,9 +124,10 @@ export class TypeProperties {
   ): Promise<Properties> {
     const bound = context.bindings.get(reference.name)
     if (bound != null) return this.of(bound, this.bindings.scope(bound, seen))
-    let resolved = this.reader.isLibrary(context.module)
-      ? undefined
-      : await this.reader.resolve(context.module, reference.name)
+    let resolved =
+      this.reader.isLibrary(context.module) && !context.module.isExternalModule
+        ? undefined
+        : await this.reader.resolve(context.module, reference.name)
     if (resolved == null && !context.module.imports.has(reference.name)) {
       const utility = await this.utility(reference, context, seen)
       if (utility != null) return utility
@@ -251,9 +252,10 @@ export class TypeProperties {
     if (node.typeName.type !== "Identifier") return undefined
     const bound = context.bindings.get(node.typeName.name)
     if (bound != null) return this.literalKeys(bound.node, bound, this.bindings.scope(bound, seen))
-    const local = this.reader.isLibrary(context.module)
-      ? undefined
-      : await this.reader.resolve(context.module, node.typeName.name)
+    const local =
+      this.reader.isLibrary(context.module) && !context.module.isExternalModule
+        ? undefined
+        : await this.reader.resolve(context.module, node.typeName.name)
     const resolved =
       local ??
       (context.module.imports.has(node.typeName.name)

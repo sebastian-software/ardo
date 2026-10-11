@@ -9,7 +9,7 @@ import type {
 
 import { parseSync, Severity, Visitor } from "oxc-parser"
 
-import type { DeclarationModule } from "./declaration-project"
+import type { DeclarationModule, DeclarationRecord } from "./declaration-project"
 
 import { readComment } from "./comments"
 import { readDeclarationReferences } from "./declaration-libraries"
@@ -38,6 +38,7 @@ export function createDeclarationModule(
     source,
     comments: parsed.comments,
     declarations: new Map(),
+    globalDeclarations: new Map(),
     imports: new Map(),
     exports: new Map(),
     stars: [],
@@ -66,7 +67,55 @@ export function createDeclarationModule(
     ),
   }
   for (const statement of program.body) indexStatement(statement, module, report)
+  indexGlobalAugmentations(program, module, report)
   return module
+}
+
+function indexGlobalAugmentations(
+  program: Program,
+  module: DeclarationModule,
+  report: Reporter
+): void {
+  const blocks = program.body.flatMap((statement) =>
+    statement.type === "TSModuleDeclaration" && statement.kind === "global"
+      ? statement.body.body
+      : []
+  )
+  if (blocks.length === 0) return
+  // Global declarations resolve against merged globals; module helpers stay private.
+  const context = globalScope(module)
+  for (const statement of blocks) {
+    if (isDeclaration(statement))
+      addDeclaration(context, statement, {
+        start: statement.start,
+        declarations: module.globalDeclarations,
+      })
+    else if (statement.type !== "EmptyStatement")
+      report(`Global declaration statement ${statement.type} is not supported.`)
+  }
+  for (const name of module.globalDeclarations.keys()) context.declarations.delete(name)
+}
+
+function globalScope(module: DeclarationModule): DeclarationModule {
+  return {
+    file: module.file,
+    source: module.source,
+    comments: module.comments,
+    declarations: new Map(module.declarations),
+    globalDeclarations: module.globalDeclarations,
+    imports: module.imports,
+    exports: module.exports,
+    stars: module.stars,
+    dependencies: module.dependencies,
+    get typeReferences() {
+      return module.typeReferences
+    },
+    get genericScopes() {
+      return module.genericScopes
+    },
+    isExternalModule: module.isExternalModule,
+    references: module.references,
+  }
 }
 
 /** Generic substitution is the only consumer of a complete reference/scope walk. */
@@ -169,17 +218,23 @@ function indexDefault(
 function addDeclaration(
   module: DeclarationModule,
   node: Declaration,
-  options: { start: number; fallback?: string }
+  options: {
+    start: number
+    fallback?: string
+    declarations?: Map<string, DeclarationRecord[]>
+  }
 ): string[] {
+  if (node.type === "TSModuleDeclaration" && node.kind === "global") return []
+  const declarations = options.declarations ?? module.declarations
   const comment = readComment(module.source, module.comments, options.start)
   const nodes = node.type === "VariableDeclaration" ? node.declarations : [node]
   const names: string[] = []
   for (const declaration of nodes) {
     const name = declaration.id?.type === "Identifier" ? declaration.id.name : options.fallback
     if (name == null) continue
-    const records = module.declarations.get(name) ?? []
+    const records = declarations.get(name) ?? []
     records.push({ node: declaration, comment, module })
-    module.declarations.set(name, records)
+    declarations.set(name, records)
     names.push(name)
   }
   return names

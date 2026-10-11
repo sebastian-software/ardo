@@ -116,9 +116,10 @@ class DeclarationCallables {
     context: TypeContext,
     state: Resolution
   ): Promise<ResolvedCallable[]> {
-    const local = this.reader.isLibrary(context.module)
-      ? undefined
-      : await this.reader.resolve(context.module, reference.name)
+    const local =
+      this.reader.isLibrary(context.module) && !context.module.isExternalModule
+        ? undefined
+        : await this.reader.resolve(context.module, reference.name)
     const resolved =
       local ??
       (context.module.imports.has(reference.name)
