@@ -1,0 +1,642 @@
+{
+  "compiler": "Version 7.0.2",
+  "typedoc": "0.28.20",
+  "oxc": "0.127.0",
+  "node": "v24.21.0",
+  "profiles": [
+    {
+      "name": "ardo",
+      "typedocCompiler": "6.0.3",
+      "entry": "packages/ardo/src/index.ts",
+      "input": "fresh declaration emit from source",
+      "exports": 85,
+      "typedocDeclarations": 85,
+      "typedocOnlyDeclarations": [],
+      "extractorOnlyDeclarations": [],
+      "propertyTablesCompared": 51,
+      "membersCompared": 201,
+      "differences": [
+        {
+          "item": "TypeDocConfig.sort",
+          "field": "type-syntax",
+          "extractor": "Array<\"alphabetical\" | \"enum-value-ascending\" | \"enum-value-descending\" | \"required-first\" | \"source-order\" | \"visibility\">",
+          "typedoc": "(\"alphabetical\" | \"enum-value-ascending\" | \"enum-value-descending\" | \"required-first\" | \"source-order\" | \"visibility\")[]"
+        },
+        {
+          "item": "TypeDocConfig.sidebar",
+          "field": "type-syntax",
+          "extractor": "{\n        title?: string;\n        position?: number;\n        collapsed?: boolean;\n    }",
+          "typedoc": "{ collapsed?: boolean; position?: number; title?: string }"
+        },
+        {
+          "item": "TypeDocConfig.markdown",
+          "field": "type-syntax",
+          "extractor": "{\n        breadcrumbs?: boolean;\n        hierarchy?: boolean;\n        sourceLinks?: boolean;\n        sourceBaseUrl?: string;\n        codeBlocks?: boolean;\n    }",
+          "typedoc": "{ breadcrumbs?: boolean; codeBlocks?: boolean; hierarchy?: boolean; sourceBaseUrl?: string; sourceLinks?: boolean }"
+        },
+        {
+          "item": "ArdoSiteConfig.lastUpdated",
+          "field": "type-syntax",
+          "extractor": "{\n        enabled?: boolean;\n        text?: string;\n        formatOptions?: Intl.DateTimeFormatOptions;\n    }",
+          "typedoc": "{ enabled?: boolean; formatOptions?: Intl.DateTimeFormatOptions; text?: string }"
+        }
+      ],
+      "additionalTables": [
+        {
+          "item": "MarkdownConfig",
+          "members": ["theme", "lineNumbers", "anchor", "toc"]
+        },
+        {
+          "item": "PageFrontmatter",
+          "members": [
+            "title",
+            "description",
+            "canonical",
+            "ogDescription",
+            "ogImage",
+            "ogTitle",
+            "ogType",
+            "twitterCard",
+            "twitterDescription",
+            "twitterImage",
+            "twitterTitle",
+            "order",
+            "collapsed",
+            "layout",
+            "sidebar",
+            "outline",
+            "editLink",
+            "lastUpdated",
+            "sitemap",
+            "lede",
+            "llms",
+            "redirectFrom",
+            "prev",
+            "next",
+            "hero",
+            "features",
+            "[key: string]"
+          ]
+        },
+        {
+          "item": "ResolvedConfig",
+          "members": [
+            "deploymentBase",
+            "project",
+            "vite",
+            "typedoc",
+            "root",
+            "contentDir",
+            "validation",
+            "openapi",
+            "title",
+            "description",
+            "titleSeparator",
+            "base",
+            "siteUrl",
+            "srcDir",
+            "outDir",
+            "lang",
+            "head",
+            "markdown",
+            "sidebar",
+            "metadata",
+            "brand",
+            "seo",
+            "linkCheck",
+            "redirects",
+            "versioning",
+            "i18n"
+          ]
+        },
+        {
+          "item": "ArdoProvider",
+          "members": ["config", "sidebar", "currentPage", "children"]
+        },
+        {
+          "item": "ArdoSiteConfigProvider",
+          "members": ["value", "children"]
+        },
+        {
+          "item": "ArdoContent",
+          "members": ["children", "editLink", "lastUpdated", "metaPlacement"]
+        },
+        {
+          "item": "ArdoCopyButton",
+          "members": ["code"]
+        },
+        {
+          "item": "ArdoDocLayout",
+          "members": ["content"]
+        },
+        {
+          "item": "ArdoDocPage",
+          "members": ["children", "editLink", "lastUpdated", "tocLabel"]
+        },
+        {
+          "item": "ArdoFooter",
+          "members": [
+            "message",
+            "trustedMessageHtml",
+            "copyright",
+            "trustedCopyrightHtml",
+            "children",
+            "className",
+            "project",
+            "sponsor",
+            "buildTime",
+            "buildHash",
+            "ardoLink"
+          ]
+        },
+        {
+          "item": "ArdoHeader",
+          "members": [
+            "logo",
+            "title",
+            "children",
+            "search",
+            "searchPlaceholder",
+            "themeToggle",
+            "mobileMenuContent",
+            "className"
+          ]
+        },
+        {
+          "item": "ArdoHomePage",
+          "members": ["header", "footer"]
+        },
+        {
+          "item": "ArdoLayout",
+          "members": ["header", "sidebar", "footer", "children", "className"]
+        },
+        {
+          "item": "ArdoSearch",
+          "members": ["placeholder", "autoFocus"]
+        },
+        {
+          "item": "ArdoSidebar",
+          "members": ["children", "header", "className"]
+        },
+        {
+          "item": "ArdoTOC",
+          "members": ["label"]
+        }
+      ],
+      "incompleteTables": ["MarkdownConfig"],
+      "diagnostics": [
+        {
+          "file": "config/markdown.d.ts",
+          "message": "Could not expand properties of CompileJsxOptions."
+        }
+      ]
+    },
+    {
+      "name": "library-example",
+      "typedocCompiler": "6.0.3",
+      "entry": "examples/library/src/index.ts",
+      "input": "fresh declaration emit from source",
+      "exports": 5,
+      "typedocDeclarations": 5,
+      "typedocOnlyDeclarations": [],
+      "extractorOnlyDeclarations": [],
+      "propertyTablesCompared": 2,
+      "membersCompared": 8,
+      "differences": [],
+      "additionalTables": [],
+      "incompleteTables": [],
+      "diagnostics": []
+    },
+    {
+      "name": "ferromark",
+      "typedocCompiler": "6.0.3",
+      "entry": "packages/ardo/node_modules/ferromark/index.d.mts",
+      "input": "published declarations",
+      "version": "3.4.0",
+      "exports": 32,
+      "typedocDeclarations": 33,
+      "typedocOnlyDeclarations": ["JsxRenderOptionKey"],
+      "extractorOnlyDeclarations": [],
+      "propertyTablesCompared": 15,
+      "membersCompared": 97,
+      "differences": [
+        {
+          "item": "JsxCodeRenderer",
+          "field": "call-signature-count",
+          "extractor": 0,
+          "typedoc": 1
+        },
+        {
+          "item": "JsxResult.esm",
+          "field": "type-syntax",
+          "extractor": "Array<{ value: string; start: number; end: number }>",
+          "typedoc": "{ end: number; start: number; value: string }[]"
+        },
+        {
+          "item": "JsxResult.codeBlocks",
+          "field": "type-syntax",
+          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
+          "typedoc": "{ code: string; language?: string; meta?: string }[]"
+        },
+        {
+          "item": "JsxResult.frontMatterSpan",
+          "field": "type-syntax",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxResult.omittedTitleHeadingSpan",
+          "field": "type-syntax",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxResult.mappings",
+          "field": "type-syntax",
+          "extractor": "Array<{\n    generatedLine: number;\n    generatedColumn: number;\n    sourceLine: number;\n    sourceColumn: number;\n  }>",
+          "typedoc": "{ generatedColumn: number; generatedLine: number; sourceColumn: number; sourceLine: number }[]"
+        },
+        {
+          "item": "JsxModuleResult.codeBlocks",
+          "field": "type-syntax",
+          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
+          "typedoc": "{ code: string; language?: string; meta?: string }[]"
+        },
+        {
+          "item": "JsxModuleResult.frontMatterSpan",
+          "field": "type-syntax",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxModuleResult.omittedTitleHeadingSpan",
+          "field": "type-syntax",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxCompilerOptions.theme",
+          "field": "type-syntax",
+          "extractor": "JsxTheme | { light: JsxTheme; dark: JsxTheme }",
+          "typedoc": "JsxTheme | { dark: JsxTheme; light: JsxTheme }"
+        },
+        {
+          "item": "JsxCompilerOptions.assets",
+          "field": "type-syntax",
+          "extractor": "{\n    /** Load a complete local standard asset directory instead of the release CDN/cache. */\n    assetRoot?: string;\n    remote?: boolean;\n    baseUrl?: string;\n    cacheDir?: string;\n    commit?: string;\n  }",
+          "typedoc": "{ assetRoot?: string; baseUrl?: string; cacheDir?: string; commit?: string; remote?: boolean }"
+        }
+      ],
+      "additionalTables": [
+        {
+          "item": "CompileJsxOptions",
+          "members": [
+            "format",
+            "componentPrefix",
+            "calloutComponents",
+            "codeComponents",
+            "codeBlockComponent",
+            "omitTitleHeading",
+            "output",
+            "tableAttributes",
+            "headingAttributes",
+            "cjkEmphasis",
+            "imageAttributes",
+            "imageCaptions",
+            "extendedAttributes",
+            "bracketedSpans",
+            "blockquoteAttributions",
+            "insertions",
+            "guillemetDigraphs",
+            "tables",
+            "mergedTableCells",
+            "strikethrough",
+            "superscript",
+            "subscript",
+            "taskLists",
+            "autolinkLiterals",
+            "footnotes",
+            "highlight",
+            "inlineFootnotes",
+            "allowLinkRefs",
+            "frontMatter",
+            "headingIds",
+            "headingOffset",
+            "headingIdPrefix",
+            "math",
+            "callouts",
+            "definitionLists",
+            "lineComments",
+            "typography",
+            "passes"
+          ]
+        },
+        {
+          "item": "CompileJsxModuleOptions",
+          "members": [
+            "output",
+            "providerImportSource",
+            "filename",
+            "defaultExport",
+            "reservedBindings",
+            "format",
+            "calloutComponents",
+            "codeComponents",
+            "codeBlockComponent",
+            "omitTitleHeading",
+            "tableAttributes",
+            "headingAttributes",
+            "cjkEmphasis",
+            "imageAttributes",
+            "imageCaptions",
+            "extendedAttributes",
+            "bracketedSpans",
+            "blockquoteAttributions",
+            "insertions",
+            "guillemetDigraphs",
+            "tables",
+            "mergedTableCells",
+            "strikethrough",
+            "superscript",
+            "subscript",
+            "taskLists",
+            "autolinkLiterals",
+            "footnotes",
+            "highlight",
+            "inlineFootnotes",
+            "allowLinkRefs",
+            "frontMatter",
+            "headingIds",
+            "headingOffset",
+            "headingIdPrefix",
+            "math",
+            "callouts",
+            "definitionLists",
+            "lineComments",
+            "typography",
+            "passes"
+          ]
+        },
+        {
+          "item": "JsxHeading",
+          "members": ["start", "end", "level", "id", "text"]
+        },
+        {
+          "item": "JsxPreparationOptions",
+          "members": [
+            "format",
+            "tableAttributes",
+            "headingAttributes",
+            "cjkEmphasis",
+            "imageAttributes",
+            "imageCaptions",
+            "extendedAttributes",
+            "bracketedSpans",
+            "blockquoteAttributions",
+            "insertions",
+            "guillemetDigraphs",
+            "tables",
+            "mergedTableCells",
+            "strikethrough",
+            "superscript",
+            "subscript",
+            "taskLists",
+            "autolinkLiterals",
+            "footnotes",
+            "highlight",
+            "inlineFootnotes",
+            "allowLinkRefs",
+            "frontMatter",
+            "math",
+            "definitionLists",
+            "lineComments",
+            "typography",
+            "passes"
+          ]
+        },
+        {
+          "item": "JsxRenderOptions",
+          "members": [
+            "componentPrefix",
+            "calloutComponents",
+            "codeComponents",
+            "codeBlockComponent",
+            "omitTitleHeading",
+            "headingIds",
+            "headingOffset",
+            "headingIdPrefix",
+            "callouts"
+          ]
+        },
+        {
+          "item": "JsxRenderModuleOptions",
+          "members": [
+            "componentPrefix",
+            "calloutComponents",
+            "codeComponents",
+            "codeBlockComponent",
+            "omitTitleHeading",
+            "headingIds",
+            "headingOffset",
+            "headingIdPrefix",
+            "callouts",
+            "providerImportSource",
+            "filename",
+            "defaultExport",
+            "reservedBindings"
+          ]
+        },
+        {
+          "item": "JsxPreparedMetadata",
+          "members": [
+            "esm",
+            "codeBlocks",
+            "outline",
+            "frontMatter",
+            "frontMatterSpan",
+            "frontMatterKind"
+          ]
+        },
+        {
+          "item": "PreparedJsxDocument",
+          "members": ["metadata", "render", "renderModule"]
+        }
+      ],
+      "incompleteTables": [],
+      "diagnostics": []
+    },
+    {
+      "name": "@ferriki/core",
+      "typedocCompiler": "6.0.3",
+      "entry": "packages/ardo/node_modules/@ferriki/core/index.d.mts",
+      "input": "published declarations",
+      "version": "0.13.0",
+      "exports": 43,
+      "typedocDeclarations": 43,
+      "typedocOnlyDeclarations": [],
+      "extractorOnlyDeclarations": [],
+      "propertyTablesCompared": 20,
+      "membersCompared": 134,
+      "differences": [
+        {
+          "item": "ThemeRegistration.type",
+          "field": "type-syntax",
+          "extractor": "\"dark\" | \"light\" | string",
+          "typedoc": "string"
+        },
+        {
+          "item": "HighlightOptions.structure",
+          "field": "type-syntax",
+          "extractor": "\"classic\" | \"inline\"",
+          "typedoc": "\"inline\" | \"classic\""
+        },
+        {
+          "item": "DecorationItem.start",
+          "field": "type-syntax",
+          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
+          "typedoc": "number | { character: number; line: number }"
+        },
+        {
+          "item": "DecorationItem.end",
+          "field": "type-syntax",
+          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
+          "typedoc": "number | { character: number; line: number }"
+        },
+        {
+          "item": "DecorationItem.transform",
+          "field": "type-syntax",
+          "extractor": "(element: HastElement, type: \"wrapper\" | \"line\" | \"token\") => HastElement | void",
+          "typedoc": "(element: HastElement, type: \"wrapper\" | \"line\" | \"token\") => void | HastElement"
+        },
+        {
+          "item": "ShikiTransformerContext.structure",
+          "field": "type-syntax",
+          "extractor": "HighlightOptions[\"structure\"]",
+          "typedoc": "\"inline\" | \"classic\" | undefined"
+        },
+        {
+          "item": "ShikiTransformer.tokens",
+          "field": "type-syntax",
+          "extractor": "(\n    this: ShikiTransformerContextCommon & {\n      readonly source: string;\n    },\n    tokens: ThemedToken[][],\n  ) => ThemedToken[][] | void",
+          "typedoc": "(this: ShikiTransformerContextCommon & { source: string }, tokens: ThemedToken[][]) => void | ThemedToken[][]"
+        },
+        {
+          "item": "ShikiTransformer.root",
+          "field": "type-syntax",
+          "extractor": "(this: ShikiTransformerContext, hast: HastRoot) => HastRoot | void",
+          "typedoc": "(this: ShikiTransformerContext, hast: HastRoot) => void | HastRoot"
+        },
+        {
+          "item": "ShikiTransformer.pre",
+          "field": "type-syntax",
+          "extractor": "(this: ShikiTransformerContext, hast: HastElement) => HastElement | void",
+          "typedoc": "(this: ShikiTransformerContext, hast: HastElement) => void | HastElement"
+        },
+        {
+          "item": "ShikiTransformer.code",
+          "field": "type-syntax",
+          "extractor": "(this: ShikiTransformerContext, hast: HastElement) => HastElement | void",
+          "typedoc": "(this: ShikiTransformerContext, hast: HastElement) => void | HastElement"
+        },
+        {
+          "item": "ShikiTransformer.line",
+          "field": "type-syntax",
+          "extractor": "(this: ShikiTransformerContext, hast: HastElement, line: number) => HastElement | void",
+          "typedoc": "(this: ShikiTransformerContext, hast: HastElement, line: number) => void | HastElement"
+        },
+        {
+          "item": "ShikiTransformer.span",
+          "field": "type-syntax",
+          "extractor": "(\n    this: ShikiTransformerContext,\n    hast: HastElement,\n    line: number,\n    col: number,\n    lineElement: HastElement,\n    token: ThemedToken,\n  ) => HastElement | void",
+          "typedoc": "(this: ShikiTransformerContext, hast: HastElement, line: number, col: number, lineElement: HastElement, token: ThemedToken) => void | HastElement"
+        },
+        {
+          "item": "Highlighter",
+          "field": "member-names",
+          "typedocOnly": [],
+          "extractorOnly": ["Symbol.dispose"]
+        },
+        {
+          "item": "Highlighter.getLastGrammarState",
+          "field": "type-syntax",
+          "extractor": "{\n    (code: string, options: HighlightOptions): GrammarState;\n  }",
+          "typedoc": "(code: string, options: HighlightOptions) => GrammarState"
+        },
+        {
+          "item": "Highlighter.loadLanguage",
+          "field": "type-syntax",
+          "extractor": "(...languages: RegistrationInput<LanguageInput>[]) => Promise<void>",
+          "typedoc": "(languages: RegistrationInput<LanguageInput>[]) => Promise<void>"
+        },
+        {
+          "item": "Highlighter.loadLanguageSync",
+          "field": "type-syntax",
+          "extractor": "(...languages: SyncRegistrationInput<LanguageInput>[]) => void",
+          "typedoc": "(languages: SyncRegistrationInput<LanguageInput>[]) => void"
+        },
+        {
+          "item": "Highlighter.loadTheme",
+          "field": "type-syntax",
+          "extractor": "(...themes: RegistrationInput<ThemeInput>[]) => Promise<void>",
+          "typedoc": "(themes: RegistrationInput<ThemeInput>[]) => Promise<void>"
+        },
+        {
+          "item": "Highlighter.loadThemeSync",
+          "field": "type-syntax",
+          "extractor": "(...themes: SyncRegistrationInput<ThemeInput>[]) => void",
+          "typedoc": "(themes: SyncRegistrationInput<ThemeInput>[]) => void"
+        },
+        {
+          "item": "ShikiError",
+          "field": "member-names",
+          "typedocOnly": ["cause", "message", "name", "stack"],
+          "extractorOnly": []
+        },
+        {
+          "item": "FerrikiError",
+          "field": "member-names",
+          "typedocOnly": ["cause", "message", "name", "stack"],
+          "extractorOnly": []
+        },
+        {
+          "item": "createHighlighterCore",
+          "field": "call-signature-count",
+          "extractor": 1,
+          "typedoc": 0
+        },
+        {
+          "item": "createShikiPrimitiveAsync",
+          "field": "call-signature-count",
+          "extractor": 1,
+          "typedoc": 0
+        },
+        {
+          "item": "getSingletonHighlighterCore",
+          "field": "call-signature-count",
+          "extractor": 1,
+          "typedoc": 0
+        },
+        {
+          "item": "CssVariablesThemeOptions.type",
+          "field": "type-syntax",
+          "extractor": "\"dark\" | \"light\" | string",
+          "typedoc": "string"
+        },
+        {
+          "item": "CssVariablesThemeOptions.variableDefaults",
+          "field": "type-syntax",
+          "extractor": "{\n    foreground?: string;\n    background?: string;\n  }",
+          "typedoc": "{ background?: string; foreground?: string }"
+        }
+      ],
+      "additionalTables": [],
+      "incompleteTables": ["ShikiError", "FerrikiError"],
+      "diagnostics": [
+        {
+          "file": "src/api.d.mts",
+          "message": "Could not expand properties of Error."
+        }
+      ]
+    }
+  ]
+}

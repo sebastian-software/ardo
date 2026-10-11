@@ -21,6 +21,35 @@ async function declaration(file: string, source: string): Promise<string> {
 }
 
 describe("declaration API documentation", () => {
+  it("retains JSDoc across lint comments without attaching documentation from a previous declaration", async () => {
+    const entry = await declaration(
+      "api.d.ts",
+      [
+        "/** Documented options. */",
+        "// oxlint-disable-next-line typescript/consistent-type-definitions",
+        "export interface Options { label: string; }",
+        "/** Render a document. */",
+        "// The arguments are the stable API shape.",
+        "/* eslint-disable-next-line max-params */",
+        "export declare function render(value: string): string;",
+        "// No documentation for this declaration.",
+        "export declare function other(): void;",
+        "/** @internal */",
+        "// eslint-disable-next-line max-params",
+        "export declare function internalOnly(): void;",
+      ].join("\n")
+    )
+    const result = await generateDeclarationDocs({ entryPoints: [entry] }, temporary)
+    expect(result.items.find((item) => item.name === "Options")?.comment.description).toBe(
+      "Documented options."
+    )
+    expect(result.pages.find((page) => page.path === "functions/render.md")?.content).toContain(
+      "Render a document."
+    )
+    expect(result.items.find((item) => item.name === "other")?.comment.description).toBe("")
+    expect(result.items.map((item) => item.name)).toStrictEqual(["Options", "render", "other"])
+  })
+
   it("renders emitted types, JSDoc, parameters, examples, and overloads", async () => {
     const entry = await declaration(
       "api.d.ts",

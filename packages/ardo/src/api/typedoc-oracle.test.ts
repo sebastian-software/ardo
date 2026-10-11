@@ -34,6 +34,18 @@ export interface RequiredProps extends Required<Base<string>> {}
 export interface SelectedProps extends Pick<Base<number>, 'value' | 'label'> {}
 export interface OmittedProps extends Omit<Base<number>, 'callback'> {}
 export interface ReadonlyProps extends Readonly<Base<string>> {}
+type FieldNames = 'value' | 'label';
+type Select<T, Keys extends keyof T = never> = Pick<T, Keys>;
+type Fields<Keys extends string, Value> = Record<Keys, Value>;
+type EmptyKeys = never;
+type Identity<T> = T;
+export interface IdentityProps extends Identity<Base<number>> {}
+export interface BoundSelection extends Select<Base<number>, FieldNames> {}
+export interface AliasedOmission extends Omit<Base<string>, FieldNames> {}
+export interface GenericRecord extends Fields<'left' | 'right', number> {}
+export interface DefaultSelection extends Select<Base<string>> {}
+export interface EmptySelection extends Pick<Base<string>, EmptyKeys> {}
+export interface EmptyRecord extends Record<EmptyKeys, number> {}
 type Combined<T> = Base<T> & {
   /** Enabled flag. */
   enabled: boolean;
@@ -212,6 +224,13 @@ describe("TypeDoc declaration oracle", () => {
     "SelectedProps",
     "OmittedProps",
     "ReadonlyProps",
+    "IdentityProps",
+    "BoundSelection",
+    "AliasedOmission",
+    "GenericRecord",
+    "DefaultSelection",
+    "EmptySelection",
+    "EmptyRecord",
     "IntersectionProps",
     "ChildClass",
     "Accessors",

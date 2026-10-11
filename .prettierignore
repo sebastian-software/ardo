@@ -11,6 +11,8 @@ node_modules/
 
 # Auto-generated files (TypeDoc API reference)
 docs/app/routes/api-reference/
+examples/library/.api-declarations/
+examples/library/app/routes/api-declarations/
 CHANGELOG.md
 pnpm-lock.yaml
 

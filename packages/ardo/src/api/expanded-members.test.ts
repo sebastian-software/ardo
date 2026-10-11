@@ -20,6 +20,38 @@ async function declaration(source: string): Promise<string> {
 }
 
 describe("expanded declaration members", () => {
+  it("retains method documentation across undocumented overloads", async () => {
+    const entry = await declaration(
+      [
+        "export declare class Compiler {",
+        "  /** Compile a module. @param source - Authored source. */",
+        "  compile(source: string, module: true): { code: string };",
+        "  compile(source: string): string;",
+        "}",
+        "export interface Reader {",
+        "  read(value: string): string;",
+        "  /** Read a number. */ read(value: number): number;",
+        "  read(value: boolean): boolean;",
+        "}",
+      ].join("\n")
+    )
+    const result = await generateDeclarationDocs({ entryPoints: [entry] }, temporary)
+    const compile = result.items.find((item) => item.name === "Compiler")?.properties[0]
+    expect(compile?.comment.description).toBe("Compile a module.")
+    expect(compile?.signatures).toHaveLength(2)
+    expect(compile?.signatures[0].parameters[0].description).toBe("Authored source.")
+    expect(result.pages.find((page) => page.path === "classes/compiler.md")?.content).toContain(
+      "Compile a module."
+    )
+    const read = result.items.find((item) => item.name === "Reader")?.properties[0]
+    expect(read?.comment.description).toBe("Read a number.")
+    expect(read?.signatures.map((signature) => signature.returnType)).toStrictEqual([
+      "string",
+      "number",
+      "boolean",
+    ])
+  })
+
   it("expands finite Record keys and substitutes generic values", async () => {
     const entry = await declaration(
       [

@@ -37,7 +37,13 @@ export class TypeProperties {
       )
     if (node.type === "TSTypeReference")
       return this.reference(
-        { name: formatType(node.typeName, value), args: node.typeArguments?.params ?? [] },
+        {
+          name:
+            node.typeName.type === "Identifier"
+              ? node.typeName.name
+              : formatType(node.typeName, value),
+          args: node.typeArguments?.params ?? [],
+        },
         value,
         seen
       )
@@ -133,7 +139,7 @@ export class TypeProperties {
         `Cannot safely apply ${reference.name} to index signatures; its type expression is preserved.`
       )
     if (reference.name === "Pick" || reference.name === "Omit") {
-      const keys = literalKeys(reference.args.at(1))
+      const keys = this.literalKeys(reference.args.at(1), context)
       if (keys == null)
         return this.incomplete(
           context,
@@ -166,8 +172,7 @@ export class TypeProperties {
     const value = reference.args.at(1)
     if (keys == null || value == null)
       return this.incomplete(context, "Record requires both key and value types.")
-    if (keys.type === "TSNeverKeyword") return { items: [], complete: true }
-    const names = literalKeys(keys)
+    const names = this.literalKeys(keys, context)
     const type = formatType(value, context)
     if (names != null)
       return { items: names.map((name) => recordMember(name, type, "property")), complete: true }
@@ -179,6 +184,51 @@ export class TypeProperties {
     return this.incomplete(
       context,
       "Only literal names and primitive index keys are supported in Record."
+    )
+  }
+
+  private literalKeys(
+    node: TSType | undefined,
+    context: TypeContext,
+    seen = new Set<string>()
+  ): string[] | undefined {
+    if (node == null) return undefined
+    if (node.type === "TSNeverKeyword") return []
+    if (node.type === "TSParenthesizedType")
+      return this.literalKeys(node.typeAnnotation, context, seen)
+    if (
+      node.type === "TSLiteralType" &&
+      node.literal.type === "Literal" &&
+      (typeof node.literal.value === "string" || typeof node.literal.value === "number")
+    )
+      return [String(node.literal.value)]
+    if (node.type === "TSUnionType") {
+      const keys = node.types.map((type) => this.literalKeys(type, context, seen))
+      return keys.every((key) => key != null) ? [...new Set(keys.flat())] : undefined
+    }
+    return node.type === "TSTypeReference" ? this.referencedKeys(node, context, seen) : undefined
+  }
+
+  private referencedKeys(
+    node: Extract<TSType, { type: "TSTypeReference" }>,
+    context: TypeContext,
+    seen: Set<string>
+  ): string[] | undefined {
+    if (node.typeName.type !== "Identifier") return undefined
+    const bound = context.bindings.get(node.typeName.name)
+    if (bound != null) return this.literalKeys(bound.node, bound, seen)
+    const resolved = this.reader.resolve(context.module, node.typeName.name)
+    const alias = resolved?.records.at(0)?.node
+    if (resolved == null || alias?.type !== "TSTypeAliasDeclaration") return undefined
+    const key = `${resolved.module.file}:${resolved.name}`
+    if (seen.has(key)) return undefined
+    return this.literalKeys(
+      alias.typeAnnotation,
+      {
+        module: resolved.module,
+        bindings: bindArguments(resolved, node.typeArguments?.params ?? [], context),
+      },
+      new Set(seen).add(key)
     )
   }
 
@@ -241,18 +291,6 @@ function bindArguments(
       })
   }
   return bindings
-}
-
-function literalKeys(node: TSType | undefined): string[] | undefined {
-  if (
-    node?.type === "TSLiteralType" &&
-    node.literal.type === "Literal" &&
-    (typeof node.literal.value === "string" || typeof node.literal.value === "number")
-  )
-    return [String(node.literal.value)]
-  if (node?.type !== "TSUnionType") return undefined
-  const keys = node.types.map((type) => literalKeys(type))
-  return keys.every((key) => key != null) ? keys.flat() : undefined
 }
 
 function isIndexKey(node: TSType): boolean {

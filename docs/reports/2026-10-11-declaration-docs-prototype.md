@@ -48,7 +48,8 @@ the existing Ardo naming convention. Local interfaces and aliases can supply
 their props, including inherited generic members and selected compositions:
 
 - Intersections and local generic type arguments.
-- `Pick` and `Omit` with literal property names.
+- `Pick` and `Omit` with literal property names, including local aliases and
+  bound generic key parameters. `never` produces an empty key set.
 - `Partial`, `Required`, and `Readonly`.
 - `Record` with finite literal keys or primitive dictionary keys, and interface
   and class index signatures.
@@ -64,7 +65,9 @@ includes summaries, `@param`, `@returns`/`@return`, `@remarks`, `@example`,
 `@internal` declarations and private/protected class members are excluded.
 Inherited property descriptions are obtained from the referenced declaration.
 Getter/setter pairs share one property, retain getter documentation, and report
-mutability independently of their declaration order.
+mutability independently of their declaration order. Lint comments between JSDoc
+and a declaration do not hide its documentation. Overloaded methods retain the
+first available member description and each signature's own parameter comments.
 
 The output writer is shared with the TypeDoc path. It retains the generated-file
 sentinel and refuses to replace a nonempty handwritten output directory. Parsing
@@ -158,16 +161,17 @@ optionality, readonly flags, and summaries. Type syntax is compared as parsed
 trees, ignoring whitespace, quote style, and outer parentheses; this is not a
 proof of semantic equivalence for arbitrary types.
 
-| Fixture group                                                     | Observed result                                                                                                 |
-| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Generic defaults and multiple inheritance levels                  | Property types, modifiers, and inherited comments match                                                         |
-| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`             | All five interface cases match                                                                                  |
-| Intersections, generic class inheritance, and getter/setter pairs | Match, including member comments and visibility filtering                                                       |
-| `Readonly<Record<'open' \| 'closed', boolean>>`                   | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                        |
-| Custom mapped and conditional helpers                             | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion |
-| A public `Partial<Base<string>>` alias                            | TypeDoc retains the alias without child properties; the prototype also supplies a property table                |
+| Fixture group                                                       | Observed result                                                                                                 |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Generic defaults, identity aliases, and multiple inheritance levels | Property types, modifiers, and inherited comments match                                                         |
+| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`               | All five interface cases match                                                                                  |
+| Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`    | All six cases match, including empty property sets and generic value substitution                               |
+| Intersections, generic class inheritance, and getter/setter pairs   | Match, including member comments and visibility filtering                                                       |
+| `Readonly<Record<'open' \| 'closed', boolean>>`                     | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                        |
+| Custom mapped and conditional helpers                               | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion |
+| A public `Partial<Base<string>>` alias                              | TypeDoc retains the alias without child properties; the prototype also supplies a property table                |
 
-The ten exact matches and four explicit difference cases are assertions in the
+The seventeen exact matches and four explicit difference cases are assertions in the
 test suite. The readonly difference is checked against the compiler with a
 `@ts-expect-error` assignment: declaration emission fails if the compiler stops
 rejecting writes. TypeDoc serves as a comparison tool, not an assumption that
@@ -182,13 +186,84 @@ tests use the workspace compiler by default. `ARDO_DECLARATION_TSC` selects anot
 CLI, and CI runs all declaration tests again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
-All 29 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 293 tests across 65 files, and all 32 integration
+All 38 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 302 tests across 65 files, and all 32 integration
 tests also passed during hardening;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
 intentional declaration and output paths. No end-to-end speed or dependency-size
 benchmark was performed.
+
+### Comparing real public APIs
+
+[`evaluate-declaration-docs.mjs`](../../scripts/evaluate-declaration-docs.mjs)
+repeats the comparison on Ardo, the library example, and the installed registry
+declarations of Ferromark and Ferriki. Ardo and the example are freshly compiled
+with type checking and retained comments; the two dependency declarations are
+read directly. TypeDoc uses the workspace JavaScript compiler as the independent
+oracle. Neither compiler is imported by the production extractor.
+
+With Ardo built, reproduce the native run with:
+
+```sh
+ARDO_DECLARATION_TSC=/path/to/typescript-7/bin/tsc node scripts/evaluate-declaration-docs.mjs /tmp/ardo-api-comparison.json
+```
+
+Omit the environment variable to compare using the workspace compiler. The
+script installs no packages, removes its temporary declaration output, and
+reports both compiler versions. An extraction or compiler failure fails the
+command; observed differences remain report data, not a percentage or CI gate.
+
+The [recorded native result](./2026-10-11-declaration-api-comparison.json) uses
+TypeScript 7.0.2 for emission and TypeDoc 0.28.20 with TypeScript 6.0.3 for the
+oracle:
+
+| Public API             | Extracted exports | Compared member occurrences | Remaining observations                                                                   |
+| ---------------------- | ----------------- | --------------------------- | ---------------------------------------------------------------------------------------- |
+| Ardo                   | 85                | 201                         | Four type-spelling differences; unresolved external `CompileJsxOptions` base             |
+| Library example        | 5                 | 8                           | No differences in the compared fields                                                    |
+| Ferromark 3.4.0        | 32                | 97                          | Ten type-spelling differences; callback alias lacks a structured signature               |
+| `@ferriki/core` 0.13.0 | 43                | 134                         | Type spelling, callable aliases, a symbol member, and inherited standard `Error` members |
+
+The 440 compared member occurrences include repeated props declarations and
+their component uses. The comparison covers available property/method names,
+optional/readonly flags, descriptions, property type syntax, and signature
+counts. It does not compare index signatures, constructors, every call parameter
+and return type, all tags, source links, or fully expanded semantics. Tables
+without a corresponding TypeDoc member owner are listed separately: Ardo has 16
+and Ferromark has eight. Some refer to local unexported props or utility aliases
+whose type expression TypeDoc retains without an available member table.
+Ferromark's additional TypeDoc declaration, `JsxRenderOptionKey`, is a local
+unexported helper rather than a missing public export.
+
+The real inputs exposed three problems that now have reproducing regression
+tests and fixes:
+
+- Ferromark places lint comments between JSDoc and several exports. Searching
+  only the immediately preceding comment lost four export descriptions.
+- Ferromark's preparation/render options use a local union alias inside `Pick`
+  and `Omit`. Resolving finite key aliases removes both expansion diagnostics and
+  supplies those property tables. Compiler-backed cases also cover generic keys,
+  generic identity aliases, defaults, and empty key sets.
+- `JsxCompiler.compile` documents its first overload. Merging a later
+  undocumented overload discarded the method description; the merged member
+  now retains it while preserving all signatures.
+
+Ardo's four remaining type-spelling differences are `Array<T>` versus `T[]` and
+object member order. Ferriki also shows union order, an indexed-access expression
+versus its expanded type, and the original `"dark" | "light" | string` versus
+TypeDoc's simplified `string`. The extractor preserves rest parameters and a
+nested readonly modifier that TypeDoc's printed property types omit. This is
+another reason to inspect oracle differences rather than treating them all as
+extractor defects.
+
+The strongest next improvement for Ardo is external member expansion:
+`MarkdownConfig` inherits Ferromark's `CompileJsxOptions`, so the current table
+lists only Ardo's own fields. Ferriki's error classes similarly omit inherited
+standard `Error` fields. A bounded package-declaration lookup or targeted native
+checker query would address actual missing members. Structured callable type
+aliases, such as Ferromark's `JsxCodeRenderer`, are a smaller follow-up: their full
+type text is already present, but dedicated parameter/return sections are absent.
 
 ## Remaining limits and migration implications
 

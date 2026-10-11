@@ -211,7 +211,14 @@ function mergeProperty(
 ): ApiProperty {
   if (previous == null) return property
   if (mode === "overloads" && previous.kind === "method" && property.kind === "method")
-    return { ...property, signatures: [...previous.signatures, ...property.signatures] }
+    return {
+      ...property,
+      comment:
+        previous.comment.description !== "" || previous.comment.tags.length > 0
+          ? previous.comment
+          : property.comment,
+      signatures: [...previous.signatures, ...property.signatures],
+    }
   if (mode === "intersection")
     return {
       ...property,

@@ -17,15 +17,15 @@ const inlineTags = new Set([
 ])
 
 export function readComment(source: string, comments: Comment[], start: number): ApiComment {
-  const reversed = [...comments].reverse()
-  const previous = reversed.find((comment) => comment.end <= start)
-  if (
-    previous?.type !== "Block" ||
-    !previous.value.startsWith("*") ||
-    source.slice(previous.end, start).trim() !== ""
-  )
-    return { description: "", tags: [] }
-  return parseComment(previous.value.slice(1))
+  let cursor = start
+  for (const comment of [...comments].reverse()) {
+    if (comment.end > cursor) continue
+    if (source.slice(comment.end, cursor).trim() !== "") break
+    if (comment.type === "Block" && comment.value.startsWith("*"))
+      return parseComment(comment.value.slice(1))
+    cursor = comment.start
+  }
+  return { description: "", tags: [] }
 }
 
 function parseComment(value: string): ApiComment {
