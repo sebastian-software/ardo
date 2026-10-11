@@ -18,8 +18,17 @@ const inlineTags = new Set([
 
 export function readComment(source: string, comments: Comment[], start: number): ApiComment {
   let cursor = start
-  for (const comment of [...comments].reverse()) {
-    if (comment.end > cursor) continue
+  // OXC returns comments in source order. Start at the last preceding comment
+  // instead of copying and scanning the entire file's comments for every member.
+  let low = 0
+  let high = comments.length
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2)
+    if (comments[middle].end <= start) low = middle + 1
+    else high = middle
+  }
+  for (let index = low - 1; index >= 0; index--) {
+    const comment = comments[index]
     if (source.slice(comment.end, cursor).trim() !== "") break
     if (comment.type === "Block" && comment.value.startsWith("*"))
       return parseComment(comment.value.slice(1))

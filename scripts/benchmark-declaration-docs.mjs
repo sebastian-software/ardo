@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process"
+import { createHash } from "node:crypto"
 import fs from "node:fs/promises"
 import { createRequire } from "node:module"
 import os from "node:os"
@@ -24,13 +25,20 @@ async function benchmark() {
       help: { type: "boolean" },
       runs: { type: "string", default: "7" },
       warmups: { type: "string", default: "1" },
+      modes: { type: "string" },
+      baseline: { type: "string" },
+      "profile-dir": { type: "string" },
     },
   })
   if (values.help) {
     console.log(
       "Usage: node scripts/benchmark-declaration-docs.mjs [OUTPUT.json] [--runs=7] [--warmups=1]\n" +
         "Build Ardo first. Set ARDO_DECLARATION_TSC to a native TypeScript 7 tsc executable.\n" +
-        "Runs sequential fresh Node processes on Ardo and the library example; installs nothing."
+        "Runs sequential fresh Node processes on Ardo and the library example; installs nothing.\n" +
+        "--modes=NAME,... selects scenarios. Additional modes: native-baseline, declarations-baseline,\n" +
+        "workspace-one-pass, native-binary. Baseline modes require --baseline=/path/to/old/dist.\n" +
+        "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
+        "--profile-dir=DIR records CPU profiles; use --runs=1 --warmups=0 for diagnosis, not timing claims."
     )
     return
   }
@@ -60,19 +68,62 @@ async function benchmark() {
       sourceRoot: "examples/library/src",
     },
   ]
-  const modes = [
+  const defaults = [
     "typedoc",
     "native-two-pass",
     "native-one-pass",
     "native-incremental",
     "declarations",
   ]
+  const supported = [
+    ...defaults,
+    "native-baseline",
+    "declarations-baseline",
+    "workspace-one-pass",
+    "native-binary",
+  ]
+  const modes = values.modes ? values.modes.split(",") : defaults
+  if (
+    !modes.length ||
+    new Set(modes).size !== modes.length ||
+    modes.some((mode) => !supported.includes(mode))
+  )
+    throw new Error(`Select unique modes from: ${supported.join(", ")}.`)
+  const currentDist = path.join(root, "packages/ardo/dist")
+  const baselineDist = values.baseline ? path.resolve(values.baseline) : undefined
+  if (modes.some((mode) => mode.endsWith("baseline")) && !baselineDist)
+    throw new Error(
+      "Baseline modes require --baseline pointing to a preserved package dist directory."
+    )
+  const nativeBinary = process.env.ARDO_DECLARATION_NATIVE_BINARY
+  if (
+    modes.includes("native-binary") &&
+    (!nativeBinary || compilerVersion(nativeBinary) !== version)
+  )
+    throw new Error(
+      "Set ARDO_DECLARATION_NATIVE_BINARY to the matching native compiler executable."
+    )
+  const profileDirectory = values["profile-dir"] ? path.resolve(values["profile-dir"]) : undefined
+  if (profileDirectory) await fs.mkdir(profileDirectory, { recursive: true })
   const report = {
     recordedAt: new Date().toISOString(),
     sourceRevision: execFileSync("git", ["rev-parse", "HEAD"], {
       cwd: root,
       encoding: "utf8",
     }).trim(),
+    sourceDirty: Boolean(
+      execFileSync("git", ["status", "--porcelain"], { cwd: root, encoding: "utf8" }).trim()
+    ),
+    implementation: {
+      currentApiSha256: createHash("sha256")
+        .update(await fs.readFile(path.join(currentDist, "api/index.js")))
+        .digest("hex"),
+      baselineApiSha256: baselineDist
+        ? createHash("sha256")
+            .update(await fs.readFile(path.join(baselineDist, "api/index.js")))
+            .digest("hex")
+        : null,
+    },
     environment: {
       node: process.version,
       platform: process.platform,
@@ -94,12 +145,13 @@ async function benchmark() {
     methodology: {
       runs,
       warmups,
+      cpuProfiling: Boolean(profileDirectory),
       boundary: "Fresh Node process launch through written Markdown pages and process exit",
       order: "Sequential; rotate mode order each round; no concurrent benchmark jobs",
       cache:
         "OS caches are uncontrolled. No-change incremental state and existing declarations are prepared separately.",
       included:
-        "Module imports, native CLI version check, complete project emit with type checking, library discovery, extraction, rendering, and writing",
+        "Module imports; compiler scenarios include CLI version validation, complete checked project emit and library discovery; all modes include extraction, rendering and writing",
       excluded:
         "Dependency installation, package build, temporary config setup, result verification, cleanup, and the subsequent Vite/HTML site build",
       nativeOptions:
@@ -107,7 +159,7 @@ async function benchmark() {
       typedocOptions:
         "Actual ardo/typedoc generator, plugin=[], excludeInternal/Private/Protected=true, sourceLinks=false; default breadcrumbs and hierarchy",
       output:
-        "The renderers produce different page trees and content. Output counts and bytes accompany each result; this is not feature parity or correctness evidence.",
+        "Native scenarios must produce identical page paths and Markdown bytes across runs and implementations. TypeDoc and the workspace compiler are reported separately. Counts alone are not feature parity or correctness evidence.",
       phases:
         "Worker phase durations exclude Node startup. Parent wallMs includes process startup and exit; phase medians need not sum to the wall median.",
     },
@@ -130,12 +182,18 @@ async function benchmark() {
         for (const mode of order) {
           const runDirectory = path.join(directory, `run-${ordinal++}`)
           const input =
-            mode === "declarations" || mode === "native-incremental"
+            mode.startsWith("declarations") || mode === "native-incremental"
               ? cache
               : await setup(profile, runDirectory)
           const options = {
             mode,
-            compiler,
+            compiler:
+              mode === "native-binary"
+                ? nativeBinary
+                : mode === "workspace-one-pass"
+                  ? path.join(root, "node_modules/typescript/bin/tsc")
+                  : compiler,
+            dist: mode.endsWith("baseline") ? baselineDist : currentDist,
             input,
             entry: path.join(root, profile.entry),
             packageRoot: path.dirname(path.join(root, profile.config)),
@@ -145,7 +203,19 @@ async function benchmark() {
           const start = performance.now()
           const stdout = execFileSync(
             process.execPath,
-            [script, "--worker", JSON.stringify(options)],
+            [
+              ...(profileDirectory
+                ? [
+                    "--cpu-prof",
+                    "--cpu-prof-interval=100",
+                    `--cpu-prof-dir=${profileDirectory}`,
+                    `--cpu-prof-name=${profile.name}-${mode}-${ordinal}.cpuprofile`,
+                  ]
+                : []),
+              script,
+              "--worker",
+              JSON.stringify(options),
+            ],
             {
               cwd: root,
               encoding: "utf8",
@@ -161,11 +231,14 @@ async function benchmark() {
           sample.wallMs = round(wallMs)
           // Verify actual files after the timed process exits.
           sample.markdownBytes = 0
-          for (const page of pagePaths) {
+          const hash = createHash("sha256")
+          for (const page of pagePaths.sort()) {
             const content = await fs.readFile(path.join(options.routes, "api", page))
             if (!content.length) throw new Error(`Empty generated page: ${page}`)
             sample.markdownBytes += content.length
+            hash.update(page).update("\0").update(content).update("\0")
           }
+          sample.markdownSha256 = hash.digest("hex")
           sample.declarationOutput = await declarationStats(input.declarations)
           if (roundIndex >= 0) results[mode].push(sample)
           console.error(
@@ -173,26 +246,41 @@ async function benchmark() {
           )
         }
       }
+      const nativeOutputs = new Set(
+        modes
+          .filter((mode) => mode !== "typedoc" && mode !== "workspace-one-pass")
+          .flatMap((mode) => results[mode].map((sample) => sample.markdownSha256))
+      )
+      if (nativeOutputs.size > 1)
+        throw new Error(`Native scenarios changed Markdown content for ${profile.name}.`)
       report.profiles.push({
         name: profile.name,
         entry: profile.entry,
         modes: modes.map((mode) => {
           const samples = results[mode]
-          const output = new Set(samples.map((sample) => `${sample.pages}:${sample.markdownBytes}`))
+          const output = new Set(samples.map((sample) => sample.markdownSha256))
           if (output.size !== 1)
-            throw new Error(`Unstable output size for ${profile.name}/${mode}.`)
+            throw new Error(`Unstable Markdown content for ${profile.name}/${mode}.`)
           return {
             mode,
             scenario:
-              mode === "typedoc"
-                ? "TypeDoc from source"
-                : mode === "native-two-pass"
-                  ? "Native full emit, then a second CLI project scan, then OXC"
-                  : mode === "native-one-pass"
-                    ? "Native full emit and library discovery in one project invocation, then OXC"
-                    : mode === "native-incremental"
-                      ? "Native no-change incremental build with existing output and build info, then OXC"
-                      : "OXC from existing declarations and supplied library paths; no compiler",
+              mode === "workspace-one-pass"
+                ? "Workspace JavaScript TypeScript full emit and library discovery, then OXC"
+                : mode === "native-binary"
+                  ? "Direct native executable, checked full emit and library discovery, then OXC"
+                  : mode === "native-baseline"
+                    ? "Native full emit and library discovery, then preserved baseline OXC implementation"
+                    : mode === "declarations-baseline"
+                      ? "Preserved baseline OXC implementation from existing declarations; no compiler"
+                      : mode === "typedoc"
+                        ? "TypeDoc from source"
+                        : mode === "native-two-pass"
+                          ? "Native full emit, then a second CLI project scan, then OXC"
+                          : mode === "native-one-pass"
+                            ? "Native full emit and library discovery in one project invocation, then OXC"
+                            : mode === "native-incremental"
+                              ? "Native no-change incremental build with existing output and build info, then OXC"
+                              : "OXC from existing declarations and supplied library paths; no compiler",
             summary: Object.fromEntries(
               ["wallMs", "importMs", "compilerVersionMs", "compilerMs", "generateMs"].map((key) => [
                 key,
@@ -260,7 +348,7 @@ async function worker(options) {
   const start = performance.now()
   const typedoc = options.mode === "typedoc"
   const api = await import(
-    pathToFileURL(path.join(root, `packages/ardo/dist/${typedoc ? "typedoc" : "api"}/index.js`))
+    pathToFileURL(path.join(options.dist, `${typedoc ? "typedoc" : "api"}/index.js`))
   )
   const importMs = performance.now() - start
   let compilerVersionMs = 0
@@ -268,10 +356,11 @@ async function worker(options) {
   let compilerProjectInvocations = 0
   let compilerProjectFiles = 0
   let libFiles = options.libFiles
-  if (!typedoc && options.mode !== "declarations") {
+  if (!typedoc && !options.mode.startsWith("declarations")) {
     const check = performance.now()
-    if (!/^Version 7\./u.test(compilerVersion(options.compiler)))
-      throw new Error("The declaration compiler must be native TypeScript 7.")
+    const expected = options.mode === "workspace-one-pass" ? /^Version 6\./u : /^Version 7\./u
+    if (!expected.test(compilerVersion(options.compiler)))
+      throw new Error("The declaration compiler does not match the selected scenario.")
     compilerVersionMs = performance.now() - check
     const result = compile(
       options.compiler,

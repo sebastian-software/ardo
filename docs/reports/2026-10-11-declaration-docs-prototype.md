@@ -300,8 +300,8 @@ compiler's inferred type for an actual invocation. CI runs all declaration tests
 again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
-All 132 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 396 tests across 69 files, and all 35 integration
+All 133 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 397 tests across 69 files, and all 35 integration
 tests also passed, including the native-compiler library build;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
@@ -309,6 +309,10 @@ intentional declaration and output paths. The follow-up
 [pipeline benchmark](./2026-10-11-declaration-docs-performance.md) includes native
 declaration emit, extraction, rendering, and writing. Dependency size and the
 subsequent Vite/HTML build are not benchmarked.
+The [profiling follow-up](./2026-10-11-declaration-docs-optimization.md) reduces
+comment lookup and generic-indexing costs, verifies byte-identical Markdown
+against the previous extractor, and measures the CLI launch and AST-transfer
+costs separately.
 
 ### Presentation normalization
 

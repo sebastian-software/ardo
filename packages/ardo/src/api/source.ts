@@ -7,6 +7,7 @@ export type TypeValue = { node: TSType } & TypeContext
 
 export function formatType(node: Span, context: TypeContext, seen = new Set<TypeValue>()): string {
   let text = context.module.source.slice(node.start, node.end)
+  if (context.bindings.size === 0) return text
   const references = context.module.typeReferences.filter(
     (reference) =>
       reference.start >= node.start &&

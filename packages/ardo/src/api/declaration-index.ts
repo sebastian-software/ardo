@@ -1,4 +1,11 @@
-import type { Declaration, ModuleExportName, Program } from "oxc-parser"
+import type {
+  Declaration,
+  ModuleExportName,
+  Program,
+  TSConstructorType,
+  TSFunctionType,
+  TSTypeReference,
+} from "oxc-parser"
 
 import { parseSync, Severity, Visitor } from "oxc-parser"
 
@@ -20,6 +27,12 @@ export function createDeclarationModule(
     throw new Error(
       `[ardo] Could not parse ${file}: ${errors.map((error) => error.message).join(" ")}`
     )
+  const program = parsed.program
+  let generics: ReturnType<typeof indexGenerics> | undefined
+  const genericIndex = () => {
+    generics ??= indexGenerics(program)
+    return generics
+  }
   const module: DeclarationModule = {
     file,
     source,
@@ -29,11 +42,15 @@ export function createDeclarationModule(
     exports: new Map(),
     stars: [],
     dependencies: new Map(),
-    typeReferences: [],
-    genericScopes: [],
+    get typeReferences() {
+      return genericIndex().references
+    },
+    get genericScopes() {
+      return genericIndex().scopes
+    },
     isExternalModule:
       /\.d\.(?:mts|cts)$/u.test(file) ||
-      parsed.program.body.some(
+      program.body.some(
         (statement) =>
           /^(?:Import|Export)/u.test(statement.type) ||
           [
@@ -45,22 +62,29 @@ export function createDeclarationModule(
     references: readDeclarationReferences(
       source,
       parsed.comments,
-      parsed.program.body.at(0)?.start ?? source.length
+      program.body.at(0)?.start ?? source.length
     ),
   }
-  for (const statement of parsed.program.body) indexStatement(statement, module, report)
+  for (const statement of program.body) indexStatement(statement, module, report)
+  return module
+}
+
+/** Generic substitution is the only consumer of a complete reference/scope walk. */
+function indexGenerics(program: Program) {
+  const references: TSTypeReference[] = []
+  const scopes: Array<TSConstructorType | TSFunctionType> = []
   new Visitor({
     TSTypeReference(node) {
-      module.typeReferences.push(node)
+      references.push(node)
     },
     TSFunctionType(node) {
-      module.genericScopes.push(node)
+      scopes.push(node)
     },
     TSConstructorType(node) {
-      module.genericScopes.push(node)
+      scopes.push(node)
     },
-  }).visit(parsed.program)
-  return module
+  }).visit(program)
+  return { references, scopes }
 }
 
 function indexStatement(

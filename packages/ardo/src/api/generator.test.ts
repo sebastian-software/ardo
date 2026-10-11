@@ -21,6 +21,37 @@ async function declaration(file: string, source: string): Promise<string> {
 }
 
 describe("declaration API documentation", () => {
+  it("locates preceding JSDoc among unrelated and nested comments without borrowing later documentation", async () => {
+    const entry = await declaration(
+      "api.d.ts",
+      [
+        "export interface First { value: string; }",
+        ...Array.from(
+          { length: 100 },
+          (_, index) =>
+            `/** Helper ${index}. */ interface Helper${index} { /** Helper field. */ value: number; }`
+        ),
+        "/** Selected options. */",
+        "// Keep this declaration compatible with the previous release.",
+        "export interface Selected { /** Documented field. */ value: string; }",
+        "export interface Last { /** Only the field is documented. */ value: boolean; }",
+        "/** A trailing comment does not document a previous declaration. */",
+      ].join("\r\n")
+    )
+    const result = await extractDeclarations([entry])
+    expect(result.diagnostics).toStrictEqual([])
+    expect(result.items.map((item) => item.comment.description)).toStrictEqual([
+      "",
+      "Selected options.",
+      "",
+    ])
+    expect(result.items.map((item) => item.properties[0].comment.description)).toStrictEqual([
+      "",
+      "Documented field.",
+      "Only the field is documented.",
+    ])
+  })
+
   it("retains JSDoc across lint comments without attaching documentation from a previous declaration", async () => {
     const entry = await declaration(
       "api.d.ts",
@@ -216,14 +247,15 @@ describe("declaration API documentation", () => {
   it("keeps Unicode comment positions and leaves shadowed generic callback types intact", async () => {
     const entry = await declaration(
       "api.d.ts",
-      "/** Café 😀. */ interface Base<T> { value: T; callback: <T>(value: T) => T; literal: 'T'; } export interface Options extends Base<string> {}"
+      "/** Café 😀. */ interface Base<T> { value: T; callback: <T>(value: T) => T; literal: 'T'; } export interface Options extends Base<string> {} export interface Numeric extends Base<number> {}"
     )
     const result = await extractDeclarations([entry])
     expect(result.diagnostics).toStrictEqual([])
-    expect(result.items[0].properties.map((property) => property.type)).toStrictEqual([
-      "string",
-      "<T>(value: T) => T",
-      "'T'",
+    expect(
+      result.items.map((item) => item.properties.map((property) => property.type))
+    ).toStrictEqual([
+      ["string", "<T>(value: T) => T", "'T'"],
+      ["number", "<T>(value: T) => T", "'T'"],
     ])
   })
 

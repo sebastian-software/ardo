@@ -1,0 +1,1169 @@
+{
+  "baselineRevision": "a45fd31d73383b5bdb3157af078d828f994604e5",
+  "implementation": {
+    "currentApiSha256": "67e33444a4a348ca66da05d42d55a254ecde1b1ff494ae790d78ada6ae822239",
+    "baselineApiSha256": "279596222873040264152048f0fc6367dc78ce81bf1f2d53adee207d40c2b66c"
+  },
+  "methodology": {
+    "samplingIntervalMicroseconds": 100,
+    "runs": 1,
+    "warmups": 0,
+    "purpose": "Diagnose hotspots, not provide benchmark timing claims",
+    "aggregation": "Attribute each timeDelta to its sample node; sum by function and source URL; self sample time excludes child frames",
+    "caveat": "Idle, startup and synchronous child-process waits are included. spawnSync time is blocked parent wall time, not native compiler CPU time. Sampling and instrumentation introduce noise.",
+    "paths": "Implementation and dependency URLs are normalized; no raw profile paths are required to interpret the totals"
+  },
+  "profiles": [
+    {
+      "phase": "before",
+      "input": "ardo",
+      "mode": "native-one-pass",
+      "sampledStackMs": 654.37,
+      "selected": {
+        "readCommentSelfMs": 52.0,
+        "jsonParseAstSelfMs": 61.75,
+        "oxcParseSyncSelfMs": 26.13,
+        "visitorSelfMs": 33.04,
+        "garbageCollectorSelfMs": 16.75,
+        "blockedSpawnSyncSelfMs": 355.0
+      },
+      "topFrames": [
+        {
+          "function": "spawnSync",
+          "source": "node:internal/child_process",
+          "selfSampleMs": 354.75
+        },
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 61.75
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 52.0
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 29.58
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 26.13
+        },
+        {
+          "function": "walkNode",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 22.58
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 16.75
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 12.17
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 11.38
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 4.62
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.71
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 3.17
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.67
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.58
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.5
+        },
+        {
+          "function": "walkTSTypeAnnotation",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 2.42
+        },
+        {
+          "function": "read",
+          "source": "",
+          "selfSampleMs": 1.71
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.63
+        },
+        {
+          "function": "walkIdentifier",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.62
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.38
+        },
+        {
+          "function": "walkTSPropertySignature",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.37
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.13
+        },
+        {
+          "function": "internalModuleStat",
+          "source": "",
+          "selfSampleMs": 1.12
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.04
+        },
+        {
+          "function": "indexStatement",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.96
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "input": "ardo",
+      "mode": "declarations",
+      "sampledStackMs": 293.5,
+      "selected": {
+        "readCommentSelfMs": 67.34,
+        "jsonParseAstSelfMs": 56.5,
+        "oxcParseSyncSelfMs": 24.04,
+        "visitorSelfMs": 33.04,
+        "garbageCollectorSelfMs": 17.88,
+        "blockedSpawnSyncSelfMs": 0
+      },
+      "topFrames": [
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 67.34
+        },
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 56.5
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 27.13
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 24.04
+        },
+        {
+          "function": "walkNode",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 21.33
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 17.88
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 12.41
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.92
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 3.58
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 3.42
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 3.17
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.71
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.42
+        },
+        {
+          "function": "walkTSTypeAnnotation",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 2.29
+        },
+        {
+          "function": "walkIdentifier",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.84
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.83
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.83
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.75
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.71
+        },
+        {
+          "function": "walkTSMethodSignature",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.38
+        },
+        {
+          "function": "walkTSTypeReference",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.29
+        },
+        {
+          "function": "walkTSPropertySignature",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.04
+        },
+        {
+          "function": "readDeclarationReferences",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.96
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "indexStatement",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.75
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "input": "library-example",
+      "mode": "native-one-pass",
+      "sampledStackMs": 379.5,
+      "selected": {
+        "readCommentSelfMs": 43.08,
+        "jsonParseAstSelfMs": 54.04,
+        "oxcParseSyncSelfMs": 22.58,
+        "visitorSelfMs": 29.54,
+        "garbageCollectorSelfMs": 17.42,
+        "blockedSpawnSyncSelfMs": 142.38
+      },
+      "topFrames": [
+        {
+          "function": "spawnSync",
+          "source": "node:internal/child_process",
+          "selfSampleMs": 141.88
+        },
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 54.04
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 43.08
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 22.58
+        },
+        {
+          "function": "walkNode",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 19.41
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 17.42
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 12.21
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 10.54
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 3.58
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.54
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 3.08
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.42
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.41
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.37
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.79
+        },
+        {
+          "function": "walkTSTypeAnnotation",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.63
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.58
+        },
+        {
+          "function": "walkIdentifier",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.46
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.37
+        },
+        {
+          "function": "walkTSTypeReference",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.34
+        },
+        {
+          "function": "realpath",
+          "source": "",
+          "selfSampleMs": 1.21
+        },
+        {
+          "function": "walkTSPropertySignature",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.12
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "read",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.88
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "input": "library-example",
+      "mode": "declarations",
+      "sampledStackMs": 239.96,
+      "selected": {
+        "readCommentSelfMs": 45.05,
+        "jsonParseAstSelfMs": 53.58,
+        "oxcParseSyncSelfMs": 23.75,
+        "visitorSelfMs": 28.88,
+        "garbageCollectorSelfMs": 18.46,
+        "blockedSpawnSyncSelfMs": 0
+      },
+      "topFrames": [
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 53.58
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 45.05
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 23.75
+        },
+        {
+          "function": "walkNode",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 20.92
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 18.46
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 12.09
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 10.92
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.62
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 3.42
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 3.25
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.79
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.17
+        },
+        {
+          "function": "walkTSTypeAnnotation",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 2.08
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.96
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.71
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.54
+        },
+        {
+          "function": "walkIdentifier",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 1.42
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.38
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.29
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "index",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.88
+        },
+        {
+          "function": "walkTSTypeReference",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 0.83
+        },
+        {
+          "function": "walkTSPropertySignature",
+          "source": "oxc-parser/src-js/generated/visit/walk.js",
+          "selfSampleMs": 0.75
+        },
+        {
+          "function": "loadFile",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.75
+        },
+        {
+          "function": "readDeclarationReferences",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.67
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "input": "ardo",
+      "mode": "native-one-pass",
+      "sampledStackMs": 591.37,
+      "selected": {
+        "readCommentSelfMs": 1.58,
+        "jsonParseAstSelfMs": 61.42,
+        "oxcParseSyncSelfMs": 25.54,
+        "visitorSelfMs": 0.21,
+        "garbageCollectorSelfMs": 19.96,
+        "blockedSpawnSyncSelfMs": 366.62
+      },
+      "topFrames": [
+        {
+          "function": "spawnSync",
+          "source": "node:internal/child_process",
+          "selfSampleMs": 366.04
+        },
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 61.42
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 38.37
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 25.54
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 19.96
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 13.67
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 5.54
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 5.46
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.12
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.71
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 2.38
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.25
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.83
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.67
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.58
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.58
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.58
+        },
+        {
+          "function": "realpath",
+          "source": "",
+          "selfSampleMs": 1.21
+        },
+        {
+          "function": "index",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.0
+        },
+        {
+          "function": "writeBuffer",
+          "source": "",
+          "selfSampleMs": 0.96
+        },
+        {
+          "function": "normalizeString",
+          "source": "node:path",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "(anonymous)",
+          "source": "node:internal/crypto/util",
+          "selfSampleMs": 0.83
+        },
+        {
+          "function": "extract",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.75
+        },
+        {
+          "function": "generateDeclarationDocs",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.67
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "input": "ardo",
+      "mode": "declarations",
+      "sampledStackMs": 207.33,
+      "selected": {
+        "readCommentSelfMs": 1.71,
+        "jsonParseAstSelfMs": 58.04,
+        "oxcParseSyncSelfMs": 24.34,
+        "visitorSelfMs": 0.17,
+        "garbageCollectorSelfMs": 17.04,
+        "blockedSpawnSyncSelfMs": 0
+      },
+      "topFrames": [
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 58.04
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 31.33
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 24.34
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 17.04
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 12.75
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 5.17
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 4.88
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.79
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 2.75
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.33
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.21
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.79
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.71
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.46
+        },
+        {
+          "function": "indexStatement",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.29
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.29
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.25
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.17
+        },
+        {
+          "function": "realpath",
+          "source": "",
+          "selfSampleMs": 0.88
+        },
+        {
+          "function": "index",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.88
+        },
+        {
+          "function": "(anonymous)",
+          "source": "node:internal/crypto/util",
+          "selfSampleMs": 0.83
+        },
+        {
+          "function": "open",
+          "source": "",
+          "selfSampleMs": 0.83
+        },
+        {
+          "function": "extract",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.71
+        },
+        {
+          "function": "readFile",
+          "source": "node:internal/fs/promises",
+          "selfSampleMs": 0.71
+        },
+        {
+          "function": "close",
+          "source": "",
+          "selfSampleMs": 0.67
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "input": "library-example",
+      "mode": "native-one-pass",
+      "sampledStackMs": 312.62,
+      "selected": {
+        "readCommentSelfMs": 0.71,
+        "jsonParseAstSelfMs": 55.38,
+        "oxcParseSyncSelfMs": 22.0,
+        "visitorSelfMs": 0,
+        "garbageCollectorSelfMs": 16.33,
+        "blockedSpawnSyncSelfMs": 143.83
+      },
+      "topFrames": [
+        {
+          "function": "spawnSync",
+          "source": "node:internal/child_process",
+          "selfSampleMs": 143.29
+        },
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 55.38
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 22.0
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 16.33
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 13.99
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 9.08
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 5.16
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 4.38
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 2.67
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.5
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 2.38
+        },
+        {
+          "function": "(anonymous)",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.33
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 1.92
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.67
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.5
+        },
+        {
+          "function": "read",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.21
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.0
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "indexStatement",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.79
+        },
+        {
+          "function": "extract",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.75
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.71
+        },
+        {
+          "function": "internalBinding",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 0.67
+        },
+        {
+          "function": "realpath",
+          "source": "",
+          "selfSampleMs": 0.67
+        },
+        {
+          "function": "(anonymous)",
+          "source": "node:internal/crypto/util",
+          "selfSampleMs": 0.54
+        },
+        {
+          "function": "index",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.54
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "input": "library-example",
+      "mode": "declarations",
+      "sampledStackMs": 175.92,
+      "selected": {
+        "readCommentSelfMs": 0.96,
+        "jsonParseAstSelfMs": 56.54,
+        "oxcParseSyncSelfMs": 23.38,
+        "visitorSelfMs": 0,
+        "garbageCollectorSelfMs": 16.54,
+        "blockedSpawnSyncSelfMs": 0
+      },
+      "topFrames": [
+        {
+          "function": "jsonParseAst",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 56.54
+        },
+        {
+          "function": "parseSync",
+          "source": "oxc-parser/src-js/index.js",
+          "selfSampleMs": 23.38
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "selfSampleMs": 16.54
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "selfSampleMs": 13.54
+        },
+        {
+          "function": "(program)",
+          "source": "",
+          "selfSampleMs": 10.5
+        },
+        {
+          "function": "compileForInternalLoader",
+          "source": "node:internal/bootstrap/realm",
+          "selfSampleMs": 6.04
+        },
+        {
+          "function": "get comments",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 4.58
+        },
+        {
+          "function": "get program",
+          "source": "oxc-parser/src-js/wrap.js",
+          "selfSampleMs": 3.54
+        },
+        {
+          "function": "compileSourceTextModule",
+          "source": "node:internal/modules/esm/utils",
+          "selfSampleMs": 2.83
+        },
+        {
+          "function": "write",
+          "source": "node:string_decoder",
+          "selfSampleMs": 2.5
+        },
+        {
+          "function": "addDeclaration",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 2.04
+        },
+        {
+          "function": "dlopen",
+          "source": "",
+          "selfSampleMs": 2.0
+        },
+        {
+          "function": "splitInlineTags",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.63
+        },
+        {
+          "function": "parseComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.25
+        },
+        {
+          "function": "createDeclarationModule",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 1.17
+        },
+        {
+          "function": "(anonymous)",
+          "source": "node:internal/crypto/util",
+          "selfSampleMs": 1.04
+        },
+        {
+          "function": "readComment",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.96
+        },
+        {
+          "function": "realpath",
+          "source": "",
+          "selfSampleMs": 0.92
+        },
+        {
+          "function": "indexStatement",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.75
+        },
+        {
+          "function": "index",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.67
+        },
+        {
+          "function": "read",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.63
+        },
+        {
+          "function": "loadFile",
+          "source": "ardo/api/index.js",
+          "selfSampleMs": 0.62
+        },
+        {
+          "function": "(anonymous)",
+          "source": "node:internal/modules/cjs/loader",
+          "selfSampleMs": 0.5
+        },
+        {
+          "function": "fstat",
+          "source": "",
+          "selfSampleMs": 0.5
+        },
+        {
+          "function": "finalizeResolution",
+          "source": "node:internal/modules/esm/resolve",
+          "selfSampleMs": 0.5
+        }
+      ]
+    }
+  ],
+  "nativeCompilerDiagnosticProbe": {
+    "input": "ardo",
+    "compiler": "Version 7.0.2",
+    "invocation": "Direct executable; same full checked declaration and declaration-map configuration, --listFiles --extendedDiagnostics",
+    "runs": 1,
+    "interpretation": "Compiler-reported diagnostic totals, not benchmark medians or parent-process CPU samples; not used for speedup claims",
+    "reported": {
+      "Files": "746",
+      "Lines": "232531",
+      "Identifiers": "211402",
+      "Symbols": "230371",
+      "Types": "71650",
+      "Instantiations": "131206",
+      "Memory used": "202270K",
+      "Memory allocs": "1276987",
+      "Config time": "0.000s",
+      "Parse time": "0.066s",
+      "Bind time": "0.006s",
+      "Check time": "0.138s",
+      "Emit time": "0.039s",
+      "Total time": "0.254s"
+    }
+  }
+}

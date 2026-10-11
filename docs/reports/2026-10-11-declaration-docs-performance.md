@@ -16,6 +16,11 @@ them as the backend for Ardo's own documentation. A universal default switch
 still needs build/watch integration and a migration contract for existing
 TypeDoc users. The prototype remains opt-in in this PR.
 
+These measurements describe the initial one-pass implementation. The
+[profiling and optimization follow-up](./2026-10-11-declaration-docs-optimization.md)
+identifies extraction hotspots, compares compiler work directly, and records
+the subsequent performance improvements with byte-identical Markdown output.
+
 ## Measured process
 
 The [benchmark script](../../scripts/benchmark-declaration-docs.mjs) starts a fresh
