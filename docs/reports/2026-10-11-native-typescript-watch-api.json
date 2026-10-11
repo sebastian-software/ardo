@@ -1,0 +1,209 @@
+{
+  "date": "2026-10-11",
+  "scope": "Bounded functional probes, not performance benchmarks or production Vite integration.",
+  "environment": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "nodeVersion": "24.21.0"
+  },
+  "registryDistTags": {
+    "dev": "3.9.4",
+    "tag-for-publishing-older-releases": "4.1.6",
+    "insiders": "4.6.2-insiders.20220225",
+    "beta": "6.0.0-beta",
+    "rc": "7.0.1-rc",
+    "latest": "7.0.2",
+    "next": "7.1.0-dev.20261011.1"
+  },
+  "cli": {
+    "version": "7.0.2",
+    "sameProcessForAllCycles": true,
+    "options": [
+      "--project",
+      "tsconfig.docs.json",
+      "--watch",
+      "--pretty",
+      "false",
+      "--preserveWatchOutput",
+      "--listEmittedFiles",
+      "--listFiles"
+    ],
+    "sourceFileCount": 2,
+    "generationTrigger": "Successful compiler completion status, not individual filesystem events.",
+    "cycles": [
+      {
+        "name": "initial",
+        "errors": 0,
+        "emitted": [
+          "declarations/value.d.ts.map",
+          "declarations/value.d.ts",
+          "declarations/index.d.ts.map",
+          "declarations/index.d.ts",
+          "state.tsbuildinfo"
+        ],
+        "declaration": "/** Get current options. */\nexport declare function getOptions(): {\n    value: number;\n};\nexport { value } from \"./value.js\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": ["index.md", "functions/getoptions.md", "variables/value.md"],
+        "dtsEvents": 4
+      },
+      {
+        "name": "dependency inferred type change",
+        "errors": 0,
+        "emitted": [
+          "declarations/value.d.ts.map",
+          "declarations/value.d.ts",
+          "declarations/index.d.ts.map",
+          "declarations/index.d.ts",
+          "state.tsbuildinfo"
+        ],
+        "declaration": "/** Get current options. */\nexport declare function getOptions(): {\n    value: string;\n};\nexport { value } from \"./value.js\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": ["index.md", "functions/getoptions.md", "variables/value.md"],
+        "dtsEvents": 8
+      },
+      {
+        "name": "JSDoc-only dependency change",
+        "errors": 0,
+        "emitted": [
+          "declarations/value.d.ts.map",
+          "declarations/value.d.ts",
+          "declarations/index.d.ts.map",
+          "declarations/index.d.ts",
+          "state.tsbuildinfo"
+        ],
+        "declaration": "/** Get current options. */\nexport declare function getOptions(): {\n    value: string;\n};\nexport { value } from \"./value.js\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": ["index.md", "functions/getoptions.md", "variables/value.md"],
+        "dtsEvents": 12
+      },
+      {
+        "name": "type error blocks declaration publication",
+        "errors": 1,
+        "emitted": ["state.tsbuildinfo"],
+        "declaration": "/** Get current options. */\nexport declare function getOptions(): {\n    value: string;\n};\nexport { value } from \"./value.js\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": null,
+        "dtsEvents": 12
+      },
+      {
+        "name": "error recovery",
+        "errors": 0,
+        "emitted": [
+          "declarations/value.d.ts.map",
+          "declarations/value.d.ts",
+          "declarations/index.d.ts.map",
+          "declarations/index.d.ts",
+          "state.tsbuildinfo"
+        ],
+        "declaration": "/** Get current options. */\nexport declare function getOptions(): {\n    value: number;\n};\nexport { value } from \"./value.js\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": ["index.md", "functions/getoptions.md", "variables/value.md"],
+        "dtsEvents": 16
+      },
+      {
+        "name": "removed public exports",
+        "errors": 0,
+        "emitted": ["declarations/index.d.ts.map", "declarations/index.d.ts", "state.tsbuildinfo"],
+        "declaration": "/** Remaining public value. */\nexport declare const label = \"visible\";\n//# sourceMappingURL=index.d.ts.map",
+        "documentationPages": ["index.md", "variables/label.md"],
+        "dtsEvents": 18
+      }
+    ],
+    "declarationFilesystemEventCount": 18,
+    "unreachableDeclarationLeftOnDisk": "/** Recovered value. */\nexport declare const value = 2;\n//# sourceMappingURL=value.d.ts.map"
+  },
+  "api": {
+    "sourceFileCount": 2,
+    "hostNotifications": "snapshot.update({ fileNotifications: { changed }, ensurePrograms: true })",
+    "version": "7.1.0-dev.20261011.1",
+    "apiInstances": 1,
+    "wroteDeclarationsToDisk": false,
+    "cycles": [
+      {
+        "label": "initial",
+        "emitSkipped": false,
+        "diagnosticCodes": [],
+        "files": [
+          {
+            "name": "output/index.d.ts",
+            "text": "/** Return the current value. */\nexport declare function result(): {\n    value: number;\n};\n//# sourceMappingURL=index.d.ts.map"
+          },
+          {
+            "name": "output/index.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"index.d.ts\",\"sources\":[\"../index.ts\"],\"names\":[],\"mappings\":\"AAEA,gCAAgC;AAChC,wBAAgB,MAAM;;EAAwB\"}"
+          },
+          {
+            "name": "output/value.d.ts",
+            "text": "/** Current value. */\nexport declare const value = 1;\n//# sourceMappingURL=value.d.ts.map"
+          },
+          {
+            "name": "output/value.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"value.d.ts\",\"sources\":[\"../value.ts\"],\"names\":[],\"mappings\":\"AAAA,qBAAqB;AACrB,eAAO,MAAM,KAAK,IAAI,CAAC\"}"
+          }
+        ]
+      },
+      {
+        "label": "imported dependency and JSDoc change",
+        "emitSkipped": false,
+        "diagnosticCodes": [],
+        "files": [
+          {
+            "name": "output/index.d.ts",
+            "text": "/** Return the current value. */\nexport declare function result(): {\n    value: string;\n};\n//# sourceMappingURL=index.d.ts.map"
+          },
+          {
+            "name": "output/index.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"index.d.ts\",\"sources\":[\"../index.ts\"],\"names\":[],\"mappings\":\"AAEA,gCAAgC;AAChC,wBAAgB,MAAM;;EAAwB\"}"
+          },
+          {
+            "name": "output/value.d.ts",
+            "text": "/** Updated value. */\nexport declare const value = \"guest\";\n//# sourceMappingURL=value.d.ts.map"
+          },
+          {
+            "name": "output/value.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"value.d.ts\",\"sources\":[\"../value.ts\"],\"names\":[],\"mappings\":\"AAAA,qBAAqB;AACrB,eAAO,MAAM,KAAK,UAAU,CAAC\"}"
+          }
+        ]
+      },
+      {
+        "label": "semantic error blocks declaration output",
+        "emitSkipped": true,
+        "diagnosticCodes": [2322],
+        "files": []
+      },
+      {
+        "label": "recovery",
+        "emitSkipped": false,
+        "diagnosticCodes": [],
+        "files": [
+          {
+            "name": "output/index.d.ts",
+            "text": "/** Return the current value. */\nexport declare function result(): {\n    value: boolean;\n};\n//# sourceMappingURL=index.d.ts.map"
+          },
+          {
+            "name": "output/index.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"index.d.ts\",\"sources\":[\"../index.ts\"],\"names\":[],\"mappings\":\"AAEA,gCAAgC;AAChC,wBAAgB,MAAM;;EAAwB\"}"
+          },
+          {
+            "name": "output/value.d.ts",
+            "text": "/** Recovered value. */\nexport declare const value = true;\n//# sourceMappingURL=value.d.ts.map"
+          },
+          {
+            "name": "output/value.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"value.d.ts\",\"sources\":[\"../value.ts\"],\"names\":[],\"mappings\":\"AAAA,uBAAuB;AACvB,eAAO,MAAM,KAAK,OAAO,CAAC\"}"
+          }
+        ]
+      },
+      {
+        "label": "removed export and unreachable module",
+        "emitSkipped": false,
+        "diagnosticCodes": [],
+        "files": [
+          {
+            "name": "output/index.d.ts",
+            "text": "/** Remaining public export. */\nexport declare const label = \"retained\";\n//# sourceMappingURL=index.d.ts.map"
+          },
+          {
+            "name": "output/index.d.ts.map",
+            "text": "{\"version\":3,\"file\":\"index.d.ts\",\"sources\":[\"../index.ts\"],\"names\":[],\"mappings\":\"AAAA,+BAA+B;AAC/B,eAAO,MAAM,KAAK,aAAa,CAAC\"}"
+          }
+        ]
+      }
+    ]
+  }
+}

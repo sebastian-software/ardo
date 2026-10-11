@@ -131,15 +131,19 @@ A second snapshot reused the open project. However, the installed `Program`
 has no `emit` method, and `Emitter` exposes only `printNode`; printing an AST
 node is not a project-wide declaration transform with inferred types.
 
-The requests for
+This limitation applies to the inspected stable package, TypeScript 7.0.2.
+The still-open requests for
 [capturing declaration emit](https://github.com/microsoft/TypeScript/issues/63843)
 and [general emit output](https://github.com/microsoft/TypeScript/issues/63851)
-are still open as of this investigation. In-memory checking is available;
-in-memory declaration emission through this published API is not. The checked
-CLI-to-files pipeline is therefore the current practical implementation. Direct
-checker queries could later supplement difficult mapped/conditional/indexed
-types, but that would introduce an experimental protocol dependency and needs
-its own correctness and performance evaluation.
+do not establish the functionality of newer packages. A subsequent probe of
+TypeScript **7.1.0-dev.20261011.1** successfully emits checked declarations and
+maps as strings, updates inferred types and JSDoc through a persistent API
+instance, and blocks output on errors. The
+[watch and API follow-up](./2026-10-11-native-typescript-watch-api.md) records
+that evidence and the current API stabilization plan. The benchmark above
+continues to measure the 7.0.2 CLI-to-files workflow; it makes no performance
+claim about the newer API. Additional checker integration needs its own
+correctness and performance evaluation.
 
 ## Default decision and migration work
 
