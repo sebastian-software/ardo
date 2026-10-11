@@ -36,6 +36,10 @@
       "types": "./dist/typedoc/index.d.ts",
       "import": "./dist/typedoc/index.js"
     },
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.js"
+    },
     "./typedoc/components": {
       "types": "./dist/typedoc/components/index.d.ts",
       "import": "./dist/typedoc/components/index.js"

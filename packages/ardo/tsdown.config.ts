@@ -19,6 +19,7 @@ export default defineConfig({
     "ui/index": "src/ui/index.ts",
     "icons/index": "src/icons/index.ts",
     "typedoc/index": "src/typedoc/index.ts",
+    "api/index": "src/api/index.ts",
     "typedoc/components/index": "src/typedoc/components/index.ts",
     "mdx/provider": "src/mdx/provider.tsx",
     "theme/index": "src/ui/theme/index.ts",

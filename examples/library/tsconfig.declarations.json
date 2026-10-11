@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.api.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "types": [],
+    "rootDir": "./src",
+    "outDir": "./.api-declarations"
+  }
+}

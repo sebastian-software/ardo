@@ -6,3 +6,5 @@
 # Ardo generated files
 app/routes.ts
 app/routes/api-reference/
+.api-declarations/
+app/routes/api-declarations/
