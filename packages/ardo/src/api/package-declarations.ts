@@ -8,18 +8,31 @@ type ExportResolution = null | string | undefined
 export async function resolveDeclarationImport(
   file: string,
   request: string,
-  packageRoot?: string
+  options: { packageRoot?: string; declarationFiles?: ReadonlyMap<string, string> } = {}
 ): Promise<string | undefined> {
-  if (request.startsWith(".")) return declarationFile(path.resolve(path.dirname(file), request))
+  const { packageRoot, declarationFiles } = options
+  if (request.startsWith(".")) {
+    const base = path.resolve(path.dirname(file), request)
+    return relativeDeclarationFile(base, declarationFiles)
+  }
   const parsed = packageRequest(request)
   if (parsed == null) return undefined
-  const starts = [path.dirname(await fs.realpath(file))]
+  const starts = [path.dirname(declarationFiles?.has(file) ? file : await fs.realpath(file))]
   if (packageRoot != null) starts.push(path.resolve(packageRoot))
   for (const start of starts) {
     const directory = await findPackage(start, parsed.name)
     if (directory != null) return packageEntry(directory, parsed.subpath, file)
   }
   return undefined
+}
+
+async function relativeDeclarationFile(
+  base: string,
+  declarationFiles?: ReadonlyMap<string, string>
+): Promise<string | undefined> {
+  for (const candidate of declarationCandidates(base))
+    if (declarationFiles?.has(candidate)) return candidate
+  return declarationFile(base)
 }
 
 function packageRequest(request: string): { name: string; subpath: string } | undefined {

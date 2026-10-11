@@ -17,14 +17,10 @@ export default defineConfig({
         ],
       },
 
-      // TypeDoc API documentation
-      typedoc: {
+      // Native TypeScript API documentation
+      api: {
         entryPoints: ["../packages/ardo/src/index.ts"],
-        tsconfig: "../packages/ardo/tsconfig.json",
-        markdown: {
-          sourceLinks: true,
-          sourceBaseUrl: "https://github.com/sebastian-software/ardo/blob/main/packages/ardo",
-        },
+        tsconfig: "../packages/ardo/tsconfig.api.json",
       },
 
       markdown: {

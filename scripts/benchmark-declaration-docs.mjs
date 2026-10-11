@@ -36,7 +36,8 @@ async function benchmark() {
         "Build Ardo first. Set ARDO_DECLARATION_TSC to a native TypeScript 7 tsc executable.\n" +
         "Runs sequential fresh Node processes on Ardo and the library example; installs nothing.\n" +
         "--modes=NAME,... selects scenarios. Additional modes: native-baseline, declarations-baseline,\n" +
-        "workspace-one-pass, native-binary. Baseline modes require --baseline=/path/to/old/dist.\n" +
+        "workspace-one-pass, native-binary, native-api. Native-api uses the pinned async Node API.\n" +
+        "Baseline modes require --baseline=/path/to/old/dist.\n" +
         "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
         "--profile-dir=DIR records CPU profiles; use --runs=1 --warmups=0 for diagnosis, not timing claims."
     )
@@ -81,6 +82,7 @@ async function benchmark() {
     "declarations-baseline",
     "workspace-one-pass",
     "native-binary",
+    "native-api",
   ]
   const modes = values.modes ? values.modes.split(",") : defaults
   if (
@@ -118,6 +120,7 @@ async function benchmark() {
       currentApiSha256: createHash("sha256")
         .update(await fs.readFile(path.join(currentDist, "api/index.js")))
         .digest("hex"),
+      currentApiChunks: await apiImplementationHashes(currentDist),
       baselineApiSha256: baselineDist
         ? createHash("sha256")
             .update(await fs.readFile(path.join(baselineDist, "api/index.js")))
@@ -151,7 +154,7 @@ async function benchmark() {
       cache:
         "OS caches are uncontrolled. No-change incremental state and existing declarations are prepared separately.",
       included:
-        "Module imports; compiler scenarios include CLI version validation, complete checked project emit and library discovery; all modes include extraction, rendering and writing",
+        "Module imports; CLI compiler scenarios include version validation, checked project emit and library discovery; native-api includes checked in-memory emit, compiler resolution and session disposal inside generateMs; all modes include extraction, rendering and writing",
       excluded:
         "Dependency installation, package build, temporary config setup, result verification, cleanup, and the subsequent Vite/HTML site build",
       nativeOptions:
@@ -264,23 +267,25 @@ async function benchmark() {
           return {
             mode,
             scenario:
-              mode === "workspace-one-pass"
-                ? "Workspace JavaScript TypeScript full emit and library discovery, then OXC"
-                : mode === "native-binary"
-                  ? "Direct native executable, checked full emit and library discovery, then OXC"
-                  : mode === "native-baseline"
-                    ? "Native full emit and library discovery, then preserved baseline OXC implementation"
-                    : mode === "declarations-baseline"
-                      ? "Preserved baseline OXC implementation from existing declarations; no compiler"
-                      : mode === "typedoc"
-                        ? "TypeDoc from source"
-                        : mode === "native-two-pass"
-                          ? "Native full emit, then a second CLI project scan, then OXC"
-                          : mode === "native-one-pass"
-                            ? "Native full emit and library discovery in one project invocation, then OXC"
-                            : mode === "native-incremental"
-                              ? "Native no-change incremental build with existing output and build info, then OXC"
-                              : "OXC from existing declarations and supplied library paths; no compiler",
+              mode === "native-api"
+                ? "Native async API checked in-memory emit, compiler resolution, OXC, Markdown, and session disposal; compiler included in generateMs"
+                : mode === "workspace-one-pass"
+                  ? "Workspace JavaScript TypeScript full emit and library discovery, then OXC"
+                  : mode === "native-binary"
+                    ? "Direct native executable, checked full emit and library discovery, then OXC"
+                    : mode === "native-baseline"
+                      ? "Native full emit and library discovery, then preserved baseline OXC implementation"
+                      : mode === "declarations-baseline"
+                        ? "Preserved baseline OXC implementation from existing declarations; no compiler"
+                        : mode === "typedoc"
+                          ? "TypeDoc from source"
+                          : mode === "native-two-pass"
+                            ? "Native full emit, then a second CLI project scan, then OXC"
+                            : mode === "native-one-pass"
+                              ? "Native full emit and library discovery in one project invocation, then OXC"
+                              : mode === "native-incremental"
+                                ? "Native no-change incremental build with existing output and build info, then OXC"
+                                : "OXC from existing declarations and supplied library paths; no compiler",
             summary: Object.fromEntries(
               ["wallMs", "importMs", "compilerVersionMs", "compilerMs", "generateMs"].map((key) => [
                 key,
@@ -311,6 +316,20 @@ async function benchmark() {
   } finally {
     await fs.rm(temporary, { recursive: true, force: true })
   }
+}
+
+async function apiImplementationHashes(directory) {
+  const chunks = (await fs.readdir(directory)).filter((file) =>
+    /^(?:native-project|generated-docs)-.*\.js$/u.test(file)
+  )
+  return Promise.all(
+    ["api/index.js", ...chunks].sort().map(async (file) => ({
+      file,
+      sha256: createHash("sha256")
+        .update(await fs.readFile(path.join(directory, file)))
+        .digest("hex"),
+    }))
+  )
 }
 
 async function setup(profile, directory, incremental = false) {
@@ -347,6 +366,7 @@ async function setup(profile, directory, incremental = false) {
 async function worker(options) {
   const start = performance.now()
   const typedoc = options.mode === "typedoc"
+  const nativeApi = options.mode === "native-api"
   const api = await import(
     pathToFileURL(path.join(options.dist, `${typedoc ? "typedoc" : "api"}/index.js`))
   )
@@ -356,7 +376,7 @@ async function worker(options) {
   let compilerProjectInvocations = 0
   let compilerProjectFiles = 0
   let libFiles = options.libFiles
-  if (!typedoc && !options.mode.startsWith("declarations")) {
+  if (!typedoc && !nativeApi && !options.mode.startsWith("declarations")) {
     const check = performance.now()
     const expected = options.mode === "workspace-one-pass" ? /^Version 6\./u : /^Version 7\./u
     if (!expected.test(compilerVersion(options.compiler)))
@@ -387,15 +407,20 @@ async function worker(options) {
         },
         options.routes
       )
-    : await api.generateDeclarationDocs(
-        {
-          entryPoints: [options.input.entry],
-          out: "api",
-          packageRoot: options.packageRoot,
-          libFiles,
-        },
-        options.routes
-      )
+    : nativeApi
+      ? await api.generateNativeDocs(
+          { entryPoints: [options.entry], tsconfig: options.input.config, out: "api" },
+          options.routes
+        )
+      : await api.generateDeclarationDocs(
+          {
+            entryPoints: [options.input.entry],
+            out: "api",
+            packageRoot: options.packageRoot,
+            libFiles,
+          },
+          options.routes
+        )
   const generateMs = performance.now() - generateStart
   const pages = typedoc ? result : result.pages
   if (!pages.length) throw new Error("No pages were generated.")
@@ -411,9 +436,9 @@ async function worker(options) {
         compilerVersionMs: round(compilerVersionMs),
         compilerMs: round(compilerMs),
         generateMs: round(generateMs),
-        compilerProjectInvocations,
-        compilerProjectFiles,
-        compilerLibFiles: typedoc ? null : libFiles.length,
+        compilerProjectInvocations: nativeApi ? 1 : compilerProjectInvocations,
+        compilerProjectFiles: nativeApi ? null : compilerProjectFiles,
+        compilerLibFiles: typedoc || nativeApi ? null : libFiles.length,
         extractedFiles: typedoc ? null : result.files.length,
         exports: typedoc ? null : result.items.length,
         pages: pages.length,

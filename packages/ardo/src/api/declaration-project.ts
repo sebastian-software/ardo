@@ -51,8 +51,13 @@ export class DeclarationReader {
   readonly diagnostics: ApiExtractionDiagnostic[] = []
   private readonly missingImports = new Set<string>()
   private readonly libraries = new DeclarationLibraries()
+  private readonly declarationFiles: Map<string, string>
 
-  constructor(private readonly options: DeclarationExtractionOptions = {}) {}
+  constructor(private readonly options: DeclarationExtractionOptions = {}) {
+    this.declarationFiles = new Map(
+      [...(options.declarationFiles ?? [])].map(([file, source]) => [path.resolve(file), source])
+    )
+  }
 
   async loadLibraries(): Promise<void> {
     await this.libraries.load(this.options.libFiles ?? [], this)
@@ -73,11 +78,12 @@ export class DeclarationReader {
       )
     }
 
-    const absolute = await fs.realpath(path.resolve(file))
+    const resolved = path.resolve(file)
+    const absolute = this.declarationFiles.has(resolved) ? resolved : await fs.realpath(resolved)
     const existing = this.modules.get(absolute)
     if (existing != null) return existing
 
-    const source = await fs.readFile(absolute, "utf8")
+    const source = this.declarationFiles.get(absolute) ?? (await fs.readFile(absolute, "utf8"))
     const module = createDeclarationModule(absolute, source, (message) => {
       this.report({ file: absolute }, message)
     })
@@ -195,7 +201,13 @@ export class DeclarationReader {
     const existing = module.dependencies.get(request)
     const key = `${module.file}:${request}`
     if (existing != null || this.missingImports.has(key)) return existing
-    const file = await resolveDeclarationImport(module.file, request, this.options.packageRoot)
+    const file =
+      this.options.resolveImport != null
+        ? await this.options.resolveImport(module.file, request)
+        : await resolveDeclarationImport(module.file, request, {
+            packageRoot: this.options.packageRoot,
+            declarationFiles: this.declarationFiles,
+          })
     if (file == null) {
       this.missingImports.add(key)
       return undefined

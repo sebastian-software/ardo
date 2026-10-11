@@ -15,6 +15,10 @@ export type DeclarationDocsConfig = {
 } & DeclarationExtractionOptions
 
 export type DeclarationExtractionOptions = {
+  /** Declaration contents supplied by a compiler. These files need not exist on disk. */
+  declarationFiles?: ReadonlyMap<string, string>
+  /** Use the compiler's module resolution when extracting a source project. */
+  resolveImport?: (file: string, request: string) => Promise<string | undefined>
   /**
    * Project directory used to locate installed packages when declaration output
    * is outside the project. Resolution first checks beside each declaration.
@@ -27,6 +31,35 @@ export type DeclarationExtractionOptions = {
    */
   libFiles?: string[]
 }
+
+/** Source API documentation using the native TypeScript compiler's async API. */
+export type NativeApiDocsConfig = {
+  /** Source entry points, resolved relative to the current working directory. */
+  entryPoints: string[]
+  /** TypeScript project configuration. Ardo applies declaration options in memory. */
+  tsconfig: string
+  /**
+   * Directory inside the routes directory.
+   * @default "api-reference"
+   */
+  out?: string
+  /**
+   * Title of the generated index.
+   * @default "API Reference"
+   */
+  title?: string
+}
+
+/** Host filesystem changes to apply to the next compiler snapshot. */
+export type NativeApiFileChanges = {
+  changed?: string[]
+  created?: string[]
+  deleted?: string[]
+  invalidateAll?: boolean
+}
+
+export type NativeApiExtraction = { watchFiles: string[] } & DeclarationProject
+export type NativeApiDocsResult = { watchFiles: string[] } & DeclarationDocsResult
 
 export type ApiComment = {
   description: string

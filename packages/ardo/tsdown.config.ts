@@ -46,6 +46,7 @@ export default defineConfig({
       "@react-router/dev/routes",
       "@react-router/dev/config",
       "vite",
+      /^@typescript\/native(?:\/|$)/,
       "tailwindcss",
       "lucide-react",
       "mermaid",

@@ -1,0 +1,115 @@
+---
+title: Native API Documentation
+description: Generate API documentation from source using native TypeScript and OXC.
+---
+
+# Native API Documentation
+
+The experimental `api` option generates Markdown documentation from your public
+TypeScript entry points. It includes inferred types, signatures, overloads,
+JSDoc, and supported inherited or composed properties. Ardo's own documentation
+and the library example use this integration.
+
+## Installation
+
+The current integration uses a pinned TypeScript 7.1 nightly and the OXC parser:
+
+```bash
+pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser
+```
+
+`@typescript/native` is an npm alias for the official `typescript` package. The
+alias lets your existing build tools keep their own TypeScript version while
+API documentation uses the native compiler. The supported build here is a
+nightly; it is not a released 7.1 beta.
+
+## Configuration
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      api: {
+        entryPoints: ["./src/index.ts"],
+        tsconfig: "./tsconfig.api.json",
+        out: "api-reference",
+        title: "API Reference",
+      },
+    }),
+  ],
+})
+```
+
+Paths are relative to the Vite project root. `out` must be a child directory of
+your routes directory. `api: true` uses `./src/index.ts`, `./tsconfig.json`, and
+the default output and title shown above. Configure one of `api` or `typedoc`.
+
+Choose a TypeScript configuration that includes your public entry points and
+their dependencies. You can limit documentation checking to the public graph:
+
+```json
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/index.ts"],
+  "include": []
+}
+```
+
+Add required ambient declaration files to `files` as well. Ardo enables checked
+declaration emission and retains comments in memory, including when your
+configuration uses `noEmit` or `removeComments`. Your configuration file is not
+rewritten. Declaration files do not need to be generated on disk.
+
+## Build and development
+
+The regular Vite or React Router build generates API Markdown before route
+discovery. An initial compiler error fails generation. In development, source,
+dependency, and configuration changes update the documentation through the
+running native compiler session. Type errors appear in the development overlay
+and retain the last successful pages. Fixing the errors resumes generation.
+
+Unchanged Markdown files retain their modification times. Removed exports remove
+their generated pages. Keep handwritten content outside the generated directory;
+Ardo refuses to replace a nonempty directory without its generated-file marker.
+
+Vite normally ignores files inside `node_modules`. Restart the development
+server after installing or editing dependencies there.
+
+## Programmatic use
+
+For one generation, the compiler session is closed automatically:
+
+```ts
+import { generateNativeDocs } from "ardo/api"
+
+const result = await generateNativeDocs(
+  { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.api.json" },
+  "./app/routes"
+)
+```
+
+Hosts that already watch files can reuse a `NativeApiProject`, call `extract`
+or `generate` with `changed`, `created`, and `deleted` file lists, and call
+`close()` on shutdown. Pass absolute file paths in notifications. There is one
+native compiler backend for both initial generation and updates.
+
+## Current limits
+
+This integration preserves type expressions and reports unsupported property
+expansion. Arbitrary mapped or conditional types, complete TSDoc behavior,
+namespace pages, and original-source links remain migration work. It currently
+opens one configured project; TypeScript solution-builder behavior is not
+provided.
+
+Place member JSDoc on its own line before the member. The compiler can omit
+comments after the opening brace on the same line. If the same package request
+resolves to different declarations in import and require modes within one file,
+the extractor reports incomplete expansion rather than selecting a potentially
+incorrect declaration.
+
+Existing projects can continue using the [TypeDoc integration](/guide/typedoc)
+while preparing a migration. The native path uses the official TypeScript Node
+client and does not require custom Go bindings.

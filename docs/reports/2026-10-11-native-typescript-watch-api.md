@@ -4,6 +4,10 @@ October 11, 2026. Follow-up to the
 [pipeline benchmark](./2026-10-11-declaration-docs-performance.md) and
 [profiling report](./2026-10-11-declaration-docs-optimization.md).
 
+This records the isolated probes before integration. The subsequent
+[native API integration](./2026-10-11-native-api-integration.md) replaces the
+example's CLI prebuild and connects in-memory declarations to OXC and Vite.
+
 The native CLI can already remain alive and update declarations in watch mode.
 The current 7.1 nightly also exposes working in-memory declaration emission
 through its JavaScript client. These are functional probes; neither path is

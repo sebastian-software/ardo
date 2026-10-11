@@ -4,6 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "strict": true,
+    "types": [],
+    "rootDir": "./src",
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true

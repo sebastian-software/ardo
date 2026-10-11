@@ -161,29 +161,24 @@ and extraction finish before existing generated output is replaced.
 
 ## Trying the example
 
-The library example has a separate
-[`tsconfig.declarations.json`](../../examples/library/tsconfig.declarations.json)
-and [`prebuild-declarations.mjs`](../../examples/library/prebuild-declarations.mjs).
-The configuration preserves comments and rejects declaration emit on type errors.
-The script checks that the selected compiler is TypeScript 7, emits declarations,
-collects its selected library files, then generates a separate `api-declarations`
-route tree.
+The library example now uses the native API directly through its
+[`vite.config.ts`](../../examples/library/vite.config.ts). The
+[native API integration report](./2026-10-11-native-api-integration.md) documents
+the transition from the original CLI experiment to a single build/development
+pipeline with declarations supplied to OXC in memory.
 
-The repository development dependencies include OXC. With dependencies installed
-and Ardo built, run from the repository root:
+With workspace dependencies installed, run from the repository root:
 
 ```sh
 pnpm --filter ardo build
-ARDO_DECLARATION_TSC=/path/to/typescript-7/bin/tsc node examples/library/prebuild-declarations.mjs
-pnpm --dir examples/library exec react-router build
+pnpm --dir examples/library build
 ```
 
-If native `tsc` is already on `PATH`, the environment variable can be omitted.
-The workspace currently pins TypeScript 6. Pass `--workspace-compiler` to explicitly
-allow that compiler for a baseline comparison. The integration tests use this
-flag and honor `ARDO_DECLARATION_TSC`; CI selects native TypeScript for the full
-integration run on Node.js 24 and the workspace compiler on Node.js 22 and 26.
-The declaration and generated route directories are ignored by Git.
+[`prebuild-declarations.mjs`](../../examples/library/prebuild-declarations.mjs)
+remains a standalone `generateNativeDocs` example. It uses the same API backend
+as Vite and accepts no CLI compiler selection. The earlier CLI baselines remain
+in the benchmark and oracle scripts. CI tests the API integration using the
+pinned native dependency on all configured Node.js versions.
 
 Applications with existing declaration output need the optional parser and the
 extraction step:

@@ -3,9 +3,10 @@ import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "v
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
-import type { ContentSourceMapping } from "./content-sources"
+import type { ArdoPluginOptions, PressConfigOptions } from "./plugin-options"
 
 import { resolveConfig } from "../config/index"
+import { addApiPlugin } from "./api-plugin"
 import { normalizeViteBaseForArdo } from "./base"
 import { resolveBrandIconOptions } from "./brand"
 import { createBuildOutputAssets } from "./build-outputs"
@@ -14,7 +15,7 @@ import { createCollectionContentSources } from "./collections"
 import { createContentSourcePlugin } from "./content-sources-plugin"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
-import { type ArdoIconOptions, createIconsPlugin } from "./icons"
+import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { reportLinkDiagnostics } from "./link-diagnostics"
 import { transformMarkdownMeta } from "./markdown-meta"
@@ -23,7 +24,7 @@ import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
-import { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
+import { ardoRoutesPlugin } from "./routes-plugin"
 import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 import { resolveVersionedMainBase } from "./versioning"
 import {
@@ -49,42 +50,9 @@ type MainPluginOptions = {
   routesDirOption: string | undefined
 }
 
-type PressConfigOptions = Omit<
-  ArdoPluginOptions,
-  "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
->
-
-export type ArdoPluginOptions = {
-  /** Options for the routes generator plugin */
-  routes?: ArdoRoutesPluginOptions | false
-  /**
-   * Materialize Markdown/MDX files from outside the routes directory into
-   * generated route files. This is a narrow bridge until schema-backed content
-   * collections land.
-   */
-  content?: ContentSourceMapping[]
-  /** Schema-backed local Markdown/MDX collections that also materialize into routes. */
-  collections?: CollectionsConfig
-  /**
-   * Generate the lean favicon set recommended for modern websites:
-   * /favicon.ico, /icon.svg, and /apple-touch-icon.png.
-   *
-   * @default true
-   */
-  icons?: ArdoIconOptions
-  /**
-   * Auto-detect GitHub repository and set base path for GitHub Pages.
-   * @default true
-   */
-  githubPages?: boolean
-  /**
-   * Directory where routes are located.
-   * @default "./app/routes"
-   */
-  routesDir?: string
-} & Partial<ArdoConfig>
-
 export { detectGitHubBasename } from "./git-utils"
+
+export type { ArdoPluginOptions } from "./plugin-options"
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
@@ -94,6 +62,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     openapi,
     routes,
     typedoc,
+    api,
     githubPages = true,
     routesDir: routesDirOption,
     ...pressConfig
@@ -102,7 +71,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     collections,
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
-
   const mainPluginOptions: MainPluginOptions = {
     githubPages,
     pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
@@ -118,6 +86,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   )
   addRoutesPlugin(plugins, routes, routesDirOption)
   addTypeDocPlugin(plugins, typedoc, routesDirOption)
+  addApiPlugin(plugins, { api, typedoc, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
   plugins.push(createMdxPlugin(pressConfig.markdown))

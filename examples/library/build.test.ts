@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest"
 import fs from "node:fs"
 import path from "node:path"
-import { execFileSync, execSync } from "node:child_process"
+import { execSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -23,20 +23,6 @@ describe("examples/library build", () => {
   let buildSucceeded = false
 
   beforeAll(() => {
-    // Generate declarations with the workspace compiler, or the explicitly selected native CLI.
-    execFileSync(process.execPath, ["prebuild-declarations.mjs", "--workspace-compiler"], {
-      cwd: __dirname,
-      stdio: "pipe",
-      timeout: 60_000,
-    })
-
-    // Run prebuild (TypeDoc generation)
-    execSync("node prebuild.mjs", {
-      cwd: __dirname,
-      stdio: "pipe",
-      timeout: 60_000,
-    })
-
     // Run react-router build
     execSync("npx react-router build", {
       cwd: __dirname,
@@ -63,14 +49,14 @@ describe("examples/library build", () => {
     expect(fs.existsSync(gsHtml)).toBe(true)
   })
 
-  it("generates TypeDoc API markdown in app/routes", () => {
+  it("generates native API markdown in app/routes", () => {
     const apiContentDir = path.join(__dirname, "app", "routes", "api-reference")
     expect(fs.existsSync(apiContentDir)).toBe(true)
     const mdFiles = collectFiles(apiContentDir, ".md")
     expect(mdFiles.length).toBeGreaterThan(0)
   })
 
-  it("generates TypeDoc API HTML pages in build", () => {
+  it("generates native API HTML pages in build", () => {
     const apiDistDir = path.join(__dirname, "build", "client", "api-reference")
     expect(fs.existsSync(apiDistDir)).toBe(true)
     const htmlFiles = collectFiles(apiDistDir, ".html")
@@ -78,8 +64,8 @@ describe("examples/library build", () => {
   })
 
   it("prerenders every declaration page, including callable types and overload documentation", () => {
-    const markdownDir = path.join(__dirname, "app", "routes", "api-declarations")
-    const htmlDir = path.join(__dirname, "build", "client", "api-declarations")
+    const markdownDir = path.join(__dirname, "app", "routes", "api-reference")
+    const htmlDir = path.join(__dirname, "build", "client", "api-reference")
     const pages = collectFiles(markdownDir, ".md")
     expect(pages).toHaveLength(12)
     for (const page of pages) {
@@ -110,7 +96,7 @@ describe("examples/library build", () => {
         __dirname,
         "build",
         "client",
-        "api-declarations",
+        "api-reference",
         "components",
         "documentationpanel",
         "index.html"
@@ -124,7 +110,7 @@ describe("examples/library build", () => {
   })
 
   it("preserves readonly dictionaries, unions, and indexed leaf expressions in rendered docs", () => {
-    const directory = path.join(__dirname, "build", "client", "api-declarations", "interfaces")
+    const directory = path.join(__dirname, "build", "client", "api-reference", "interfaces")
     const metadata = fs.readFileSync(path.join(directory, "pagemetadata", "index.html"), "utf8")
     expect(metadata).toContain("Index signatures")
     expect(metadata).toContain("unknown")
@@ -135,17 +121,13 @@ describe("examples/library build", () => {
     expect(result).toContain("ready")
   })
 
-  it("uses package name instead of 'index' for src/index.ts modules (#54)", () => {
-    // Regression test: TypeDoc should resolve the module name from package.json
-    // instead of using the literal filename "index" for src/index.ts entry points.
-    const apiIndexMd = path.join(__dirname, "app", "routes", "api-reference", "index.md")
-    expect(fs.existsSync(apiIndexMd)).toBe(true)
-    const content = fs.readFileSync(apiIndexMd, "utf-8")
-
-    // Should contain the package name as module name
-    expect(content).toContain("ardo-example-library")
-
-    // Should NOT contain "index" as a standalone module name in links
+  it("uses an API index with named exports", () => {
+    const content = fs.readFileSync(
+      path.join(__dirname, "app", "routes", "api-reference", "index.md"),
+      "utf8"
+    )
+    expect(content).toContain("API Reference")
+    expect(content).toContain("FormatOptions")
     expect(content).not.toMatch(/\[index\]\(/)
   })
 
