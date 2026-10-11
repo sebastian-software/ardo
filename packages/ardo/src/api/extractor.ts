@@ -22,6 +22,7 @@ export async function extractDeclarations(
   if (entryPoints.length === 0)
     throw new Error("[ardo] At least one declaration entry point is required.")
   const reader = new DeclarationReader(options)
+  await reader.loadLibraries()
   const extractor = new DeclarationExtractor(reader)
   const items: ApiDeclaration[] = []
   const added = new Set<string>()

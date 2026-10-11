@@ -1,7 +1,24 @@
 import type { TSType } from "oxc-parser"
 
-import type { ResolvedDeclaration } from "./declaration-project"
+import type { DeclarationRecord, ResolvedDeclaration } from "./declaration-project"
 import type { TypeContext, TypeValue } from "./source"
+
+import { formatType } from "./source"
+
+export type Reference = { name: string; args: TSType[] }
+
+export function baseReferences(node: DeclarationRecord["node"], context: TypeContext): Reference[] {
+  if (node.type === "TSInterfaceDeclaration")
+    return node.extends.map((base) => ({
+      name: formatType(base.expression, context),
+      args: base.typeArguments?.params ?? [],
+    }))
+  if (node.type === "ClassDeclaration" && node.superClass != null)
+    return [
+      { name: formatType(node.superClass, context), args: node.superTypeArguments?.params ?? [] },
+    ]
+  return []
+}
 
 export function bindArguments(
   resolved: ResolvedDeclaration,

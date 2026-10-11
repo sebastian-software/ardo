@@ -19,6 +19,11 @@ import { Parent as PackageParent } from '@ardo-oracle/base';
 export interface ExternalChild extends PackageBase<number[]> { /** Own flag. */ own: boolean; }
 export interface ExternalSelection extends Pick<PackageNamespace.Base<number>, 'value'> {}
 export interface ExternalSubpath extends ScopedBase<string> {}
+export class GlobalError extends Error {
+  /** Failure category. */ readonly code = 'failure';
+}
+export class GlobalTypeError extends TypeError {}
+export interface GlobalErrorOptions extends Partial<Pick<Error, 'message' | 'cause'>> {}
 export class ExternalClass extends PackageParent<number> {
   readonly own = true;
   readonly label = 'constant';
@@ -115,8 +120,13 @@ beforeAll(async () => {
     })
   )
   await fs.writeFile(
+    path.join(dependency, "lib.d.ts"),
+    "export {}; // A package module must not be mistaken for a compiler library."
+  )
+  await fs.writeFile(
     path.join(dependency, "index.d.mts"),
     `
+    import './lib.js';
     export interface Base<T = string> {
       /** The package value. */ readonly value: T;
       /** Optional package label. */ label?: string;
@@ -178,7 +188,18 @@ beforeAll(async () => {
   )
   oracle = await app.convert()
   if (oracle == null) throw new Error("TypeDoc did not produce an oracle project.")
-  extracted = await extractDeclarations([path.join(temporary, "declarations/api.d.ts")])
+  const compilerFiles = execFileSync(compiler, ["--project", tsconfig, "--listFilesOnly"], {
+    cwd: temporary,
+    encoding: "utf8",
+    timeout: 15_000,
+  }).split(/\r?\n/u)
+  const coreLib = compilerFiles.find((file) => path.basename(file) === "lib.es5.d.ts")
+  const libFiles = compilerFiles.filter(
+    (file) => coreLib != null && path.dirname(file) === path.dirname(coreLib)
+  )
+  extracted = await extractDeclarations([path.join(temporary, "declarations/api.d.ts")], {
+    libFiles,
+  })
 }, 30_000)
 
 afterAll(async () => {
@@ -269,6 +290,9 @@ describe("TypeDoc declaration oracle", () => {
     "ExternalChild",
     "ExternalSelection",
     "ExternalClass",
+    "GlobalError",
+    "GlobalTypeError",
+    "GlobalErrorOptions",
     "GenericChild",
     "DefaultChild",
     "OptionalProps",

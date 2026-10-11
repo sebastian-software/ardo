@@ -10,14 +10,17 @@ import type {
 import fs from "node:fs/promises"
 import path from "node:path"
 
+import type { DeclarationReference } from "./declaration-libraries"
 import type { ApiComment, ApiExtractionDiagnostic, DeclarationExtractionOptions } from "./types"
 
 import { createDeclarationModule } from "./declaration-index"
+import { DeclarationLibraries } from "./declaration-libraries"
 import { resolveDeclarationImport } from "./package-declarations"
 
 export type DeclarationRecord = {
   node: Declaration | VariableDeclarator
   comment: ApiComment
+  module: DeclarationModule
 }
 
 type Binding = { name: string; request?: string }
@@ -33,6 +36,8 @@ export type DeclarationModule = {
   dependencies: Map<string, DeclarationModule>
   typeReferences: TSTypeReference[]
   genericScopes: Array<TSConstructorType | TSFunctionType>
+  isExternalModule: boolean
+  references: DeclarationReference[]
 }
 
 export type ResolvedDeclaration = {
@@ -45,8 +50,21 @@ export class DeclarationReader {
   readonly modules = new Map<string, DeclarationModule>()
   readonly diagnostics: ApiExtractionDiagnostic[] = []
   private readonly missingImports = new Set<string>()
+  private readonly libraries = new DeclarationLibraries()
 
   constructor(private readonly options: DeclarationExtractionOptions = {}) {}
+
+  async loadLibraries(): Promise<void> {
+    await this.libraries.load(this.options.libFiles ?? [], this)
+  }
+
+  isLibrary(module: DeclarationModule): boolean {
+    return this.libraries.has(module)
+  }
+
+  globalType(name: string): ResolvedDeclaration | undefined {
+    return this.libraries.resolve(name)
+  }
 
   async read(file: string): Promise<DeclarationModule> {
     if (!/\.d\.(?:ts|mts|cts)$/u.test(file)) {

@@ -5,6 +5,7 @@ import { parseSync, Severity, Visitor } from "oxc-parser"
 import type { DeclarationModule } from "./declaration-project"
 
 import { readComment } from "./comments"
+import { readDeclarationReferences } from "./declaration-libraries"
 
 type Reporter = (message: string) => void
 
@@ -30,6 +31,22 @@ export function createDeclarationModule(
     dependencies: new Map(),
     typeReferences: [],
     genericScopes: [],
+    isExternalModule:
+      /\.d\.(?:mts|cts)$/u.test(file) ||
+      parsed.program.body.some(
+        (statement) =>
+          /^(?:Import|Export)/u.test(statement.type) ||
+          [
+            "TSImportEqualsDeclaration",
+            "TSExportAssignment",
+            "TSNamespaceExportDeclaration",
+          ].includes(statement.type)
+      ),
+    references: readDeclarationReferences(
+      source,
+      parsed.comments,
+      parsed.program.body.at(0)?.start ?? source.length
+    ),
   }
   for (const statement of parsed.program.body) indexStatement(statement, module, report)
   new Visitor({
@@ -137,7 +154,7 @@ function addDeclaration(
     const name = declaration.id?.type === "Identifier" ? declaration.id.name : options.fallback
     if (name == null) continue
     const records = module.declarations.get(name) ?? []
-    records.push({ node: declaration, comment })
+    records.push({ node: declaration, comment, module })
     module.declarations.set(name, records)
     names.push(name)
   }

@@ -7,14 +7,14 @@ import type {
 } from "./declaration-project"
 import type { Properties } from "./members"
 import type { TypeContext, TypeValue } from "./source"
+import type { Reference } from "./type-bindings"
 import type { ApiProperty } from "./types"
 
 import { mergeProperties, readClassMembers, readMembers } from "./members"
 import { resolveCallables } from "./signatures"
 import { annotationOf, formatType } from "./source"
-import { bindArguments } from "./type-bindings"
+import { baseReferences, bindArguments } from "./type-bindings"
 
-type Reference = { name: string; args: TSType[] }
 const unexpanded = new Set([
   "TSUnionType",
   "TSConditionalType",
@@ -79,8 +79,13 @@ export class TypeProperties {
     const next = new Set(seen).add(key)
     const parts: Properties[] = []
     for (const record of resolved.records)
-      parts.push(await this.definition(record.node, context, next))
-    return mergeProperties(parts)
+      parts.push(await this.definition(record.node, { ...context, module: record.module }, next))
+    return mergeProperties(
+      parts,
+      resolved.records.every((record) => record.node.type === "TSInterfaceDeclaration")
+        ? "overloads"
+        : "override"
+    )
   }
 
   private async definition(
@@ -97,7 +102,7 @@ export class TypeProperties {
         : this.of({ ...context, node: annotation }, seen)
     }
     const inherited: Properties[] = []
-    for (const reference of basesOf(node, context))
+    for (const reference of baseReferences(node, context))
       inherited.push(await this.reference(reference, context, seen))
     const own =
       node.type === "TSInterfaceDeclaration"
@@ -119,17 +124,20 @@ export class TypeProperties {
   ): Promise<Properties> {
     const bound = context.bindings.get(reference.name)
     if (bound != null) return this.of(bound, seen)
-    const resolved = await this.reader.resolve(context.module, reference.name)
+    let resolved = this.reader.isLibrary(context.module)
+      ? undefined
+      : await this.reader.resolve(context.module, reference.name)
+    if (resolved == null && !context.module.imports.has(reference.name)) {
+      const utility = await this.utility(reference, context, seen)
+      if (utility != null) return utility
+      resolved = this.reader.globalType(reference.name)
+    }
     if (resolved != null)
       return this.declaration(
         resolved,
         { module: resolved.module, bindings: bindArguments(resolved, reference.args, context) },
         seen
       )
-    if (!context.module.imports.has(reference.name)) {
-      const utility = await this.utility(reference, context, seen)
-      if (utility != null) return utility
-    }
     return this.incomplete(context, `Could not expand properties of ${reference.name}.`)
   }
 
@@ -240,7 +248,14 @@ export class TypeProperties {
     if (node.typeName.type !== "Identifier") return undefined
     const bound = context.bindings.get(node.typeName.name)
     if (bound != null) return this.literalKeys(bound.node, bound, seen)
-    const resolved = await this.reader.resolve(context.module, node.typeName.name)
+    const local = this.reader.isLibrary(context.module)
+      ? undefined
+      : await this.reader.resolve(context.module, node.typeName.name)
+    const resolved =
+      local ??
+      (context.module.imports.has(node.typeName.name)
+        ? undefined
+        : this.reader.globalType(node.typeName.name))
     const alias = resolved?.records.at(0)?.node
     if (resolved == null || alias?.type !== "TSTypeAliasDeclaration") return undefined
     const key = `${resolved.module.file}:${resolved.name}`
@@ -282,19 +297,6 @@ export class TypeProperties {
     this.reader.report(context.module, message)
     return { items: [], complete: false }
   }
-}
-
-function basesOf(node: DeclarationRecord["node"], context: TypeContext): Reference[] {
-  if (node.type === "TSInterfaceDeclaration")
-    return node.extends.map((base) => ({
-      name: formatType(base.expression, context),
-      args: base.typeArguments?.params ?? [],
-    }))
-  if (node.type === "ClassDeclaration" && node.superClass != null)
-    return [
-      { name: formatType(node.superClass, context), args: node.superTypeArguments?.params ?? [] },
-    ]
-  return []
 }
 
 function isIndexKey(node: TSType): boolean {

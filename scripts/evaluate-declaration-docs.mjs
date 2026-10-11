@@ -137,8 +137,18 @@ async function evaluate(profile, directory) {
   )
   const oracle = await app.convert()
   if (oracle == null) throw new Error(`TypeDoc did not convert ${profile.name}.`)
+  const compilerFiles = execFileSync(compiler, ["--project", tsconfig, "--listFilesOnly"], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 60_000,
+  }).split(/\r?\n/u)
+  const coreLib = compilerFiles.find((file) => path.basename(file) === "lib.es5.d.ts")
+  const libFiles = compilerFiles.filter(
+    (file) => coreLib != null && path.dirname(file) === path.dirname(coreLib)
+  )
   const extracted = await extractDeclarations([declaration], {
     packageRoot: profile.config ? path.dirname(path.join(root, profile.config)) : undefined,
+    libFiles,
   })
   const declarationRoot = profile.config
     ? path.join(directory, "declarations")
@@ -159,6 +169,7 @@ async function evaluate(profile, directory) {
         }),
     exports: items.size,
     declarationFiles: extracted.files.length,
+    compilerLibFiles: libFiles.map((file) => path.basename(file)),
     typedocDeclarations: references.size,
     typedocOnlyDeclarations: [...references.keys()].filter((name) => !items.has(name)),
     extractorOnlyDeclarations: [...items.keys()].filter((name) => !references.has(name)),

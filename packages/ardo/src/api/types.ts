@@ -20,6 +20,12 @@ export type DeclarationExtractionOptions = {
    * is outside the project. Resolution first checks beside each declaration.
    */
   packageRoot?: string
+  /**
+   * Compiler lib declaration files selected by the project's compiler settings.
+   * Header lib/path references are followed and global type declarations are
+   * merged for inherited properties. Libraries do not become public API pages.
+   */
+  libFiles?: string[]
 }
 
 export type ApiComment = {
