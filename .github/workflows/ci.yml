@@ -57,7 +57,11 @@ jobs:
         run: pnpm exec vitest --run packages/ardo/src/api --config vitest.config.ts
 
       - name: Run integration tests
-        run: pnpm test:integration
+        run: |
+          if [ "${{ matrix.node-version }}" = "24" ]; then
+            export ARDO_DECLARATION_TSC="$RUNNER_TEMP/ardo-native-ts/node_modules/typescript/bin/tsc"
+          fi
+          pnpm test:integration
 
       - name: Build docs site and check performance budgets
         if: matrix.node-version == '22'

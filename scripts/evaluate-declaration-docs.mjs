@@ -5,6 +5,8 @@ import os from "node:os"
 import path from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 
+import { globalArrayNames, typeShape as syntaxShape } from "./declaration-type-shape.mjs"
+
 // Opt-in research: differences are observations, not a coverage score or CI gate.
 const [output, ...extra] = process.argv.slice(2)
 if (extra.length > 0)
@@ -73,6 +75,8 @@ try {
       "TypeDoc declarations": profile.typedocDeclarations,
       "Property tables compared": profile.propertyTablesCompared,
       "Members compared": profile.membersCompared,
+      "Normalized matches": profile.normalizedMemberMatches,
+      "Spelling differences normalized": profile.normalizedTypeSpellings.length,
       "Observed differences": profile.differences.length,
       "Additional tables": profile.additionalTables.length,
       Diagnostics: profile.diagnostics.length,
@@ -175,6 +179,10 @@ async function evaluate(profile, directory) {
     extractorOnlyDeclarations: [...items.keys()].filter((name) => !references.has(name)),
     propertyTablesCompared: 0,
     membersCompared: 0,
+    exactMemberMatches: 0,
+    normalizedMemberMatches: 0,
+    normalizationArrayNames: await comparisonArrays(extracted.files, libFiles),
+    normalizedTypeSpellings: [],
     callableTypeSignaturesCompared: 0,
     callableTypeParametersCompared: 0,
     callableTypes: [],
@@ -226,6 +234,17 @@ async function evaluate(profile, directory) {
     compareMembers(result, item, owner)
   }
   return result
+}
+
+async function comparisonArrays(files, libraries) {
+  const modules = files.filter((file) => !libraries.includes(file))
+  const programs = await Promise.all(
+    modules.map(
+      async (file) =>
+        parseSync(file, await fs.readFile(file, "utf8"), { lang: "dts", astType: "ts" }).program
+    )
+  )
+  return globalArrayNames(programs)
 }
 
 function dereference(reflection) {
@@ -340,6 +359,8 @@ function compareMembers(result, item, owner) {
   for (const [key, property] of actual) {
     const child = expected.get(key)
     if (child == null) continue
+    const before = result.differences.length
+    const spellingsBefore = result.normalizedTypeSpellings.length
     result.membersCompared++
     const name = `${item.name}.${property.name}`
     const flags = {
@@ -369,6 +390,10 @@ function compareMembers(result, item, owner) {
       const expectedType = (child.type ?? child.getSignature?.type)?.toString()
       if (expectedType != null) compareType(result, name, property.type, expectedType)
     }
+    if (result.differences.length === before) {
+      result.normalizedMemberMatches++
+      if (result.normalizedTypeSpellings.length === spellingsBefore) result.exactMemberMatches++
+    }
   }
 }
 
@@ -387,7 +412,15 @@ function compareSummary(result, item, actual, comment) {
 function compareType(result, item, actual, expected) {
   const actualShape = typeShape(actual)
   const expectedShape = typeShape(expected)
-  if (actualShape == null || expectedShape == null || actualShape !== expectedShape)
+  if (actualShape != null && expectedShape != null && actualShape === expectedShape) return
+  const options = { normalize: true, arrayNames: result.normalizationArrayNames }
+  if (
+    actualShape != null &&
+    expectedShape != null &&
+    typeShape(actual, options) === typeShape(expected, options)
+  ) {
+    result.normalizedTypeSpellings.push({ item, extractor: actual, typedoc: expected })
+  } else
     result.differences.push({
       item,
       field:
@@ -397,25 +430,14 @@ function compareType(result, item, actual, expected) {
     })
 }
 
-// Ignore only trivia and parentheses. Ordering, aliases, modifiers, and rest
-// parameters remain visible; unequal syntax does not imply unequal semantics.
-function typeShape(value) {
+// Raw and normalized comparisons share the same parser. Normalization is a
+// presentation rule, not general type equivalence; modifiers and calls survive.
+function typeShape(value, options) {
   const result = parseSync("compare.d.ts", `type Compared = ${value};`, {
     lang: "dts",
     astType: "ts",
   })
   const declaration = result.program.body[0]
   if (result.errors.length || declaration?.type !== "TSTypeAliasDeclaration") return undefined
-  return JSON.stringify(shape(declaration.typeAnnotation))
-}
-
-function shape(value) {
-  if (Array.isArray(value)) return value.map(shape)
-  if (value == null || typeof value !== "object") return value
-  if (value.type === "TSParenthesizedType") return shape(value.typeAnnotation)
-  return Object.fromEntries(
-    Object.entries(value)
-      .filter(([key]) => !["start", "end", "raw"].includes(key))
-      .map(([key, item]) => [key, shape(item)])
-  )
+  return JSON.stringify(syntaxShape(declaration.typeAnnotation, options))
 }

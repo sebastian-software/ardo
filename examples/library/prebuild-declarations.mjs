@@ -4,9 +4,17 @@ import { fileURLToPath } from "node:url"
 import { generateDeclarationDocs } from "ardo/api"
 
 const cwd = fileURLToPath(new URL(".", import.meta.url))
-const compiler = process.env.ARDO_DECLARATION_TSC ?? "tsc"
+const arguments_ = process.argv.slice(2)
+const workspaceCompiler = arguments_.length === 1 && arguments_[0] === "--workspace-compiler"
+if (arguments_.length > 0 && !workspaceCompiler)
+  throw new Error("Usage: node prebuild-declarations.mjs [--workspace-compiler]")
+const compiler =
+  process.env.ARDO_DECLARATION_TSC ??
+  (workspaceCompiler
+    ? fileURLToPath(new URL("../../node_modules/typescript/bin/tsc", import.meta.url))
+    : "tsc")
 const version = execFileSync(compiler, ["--version"], { cwd, encoding: "utf8" }).trim()
-if (!/^Version 7\./u.test(version)) {
+if (!workspaceCompiler && !/^Version 7\./u.test(version)) {
   throw new Error(
     "This prototype uses native TypeScript 7. Set ARDO_DECLARATION_TSC to its tsc executable."
   )

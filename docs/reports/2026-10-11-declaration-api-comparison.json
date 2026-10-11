@@ -79,35 +79,35 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 51,
       "membersCompared": 201,
-      "callableTypeSignaturesCompared": 0,
-      "callableTypeParametersCompared": 0,
-      "callableTypes": [],
-      "differences": [
+      "exactMemberMatches": 197,
+      "normalizedMemberMatches": 201,
+      "normalizationArrayNames": ["Array", "ReadonlyArray"],
+      "normalizedTypeSpellings": [
         {
           "item": "TypeDocConfig.sort",
-          "field": "type-syntax",
           "extractor": "Array<\"alphabetical\" | \"enum-value-ascending\" | \"enum-value-descending\" | \"required-first\" | \"source-order\" | \"visibility\">",
           "typedoc": "(\"alphabetical\" | \"enum-value-ascending\" | \"enum-value-descending\" | \"required-first\" | \"source-order\" | \"visibility\")[]"
         },
         {
           "item": "TypeDocConfig.sidebar",
-          "field": "type-syntax",
           "extractor": "{\n        title?: string;\n        position?: number;\n        collapsed?: boolean;\n    }",
           "typedoc": "{ collapsed?: boolean; position?: number; title?: string }"
         },
         {
           "item": "TypeDocConfig.markdown",
-          "field": "type-syntax",
           "extractor": "{\n        breadcrumbs?: boolean;\n        hierarchy?: boolean;\n        sourceLinks?: boolean;\n        sourceBaseUrl?: string;\n        codeBlocks?: boolean;\n    }",
           "typedoc": "{ breadcrumbs?: boolean; codeBlocks?: boolean; hierarchy?: boolean; sourceBaseUrl?: string; sourceLinks?: boolean }"
         },
         {
           "item": "ArdoSiteConfig.lastUpdated",
-          "field": "type-syntax",
           "extractor": "{\n        enabled?: boolean;\n        text?: string;\n        formatOptions?: Intl.DateTimeFormatOptions;\n    }",
           "typedoc": "{ enabled?: boolean; formatOptions?: Intl.DateTimeFormatOptions; text?: string }"
         }
       ],
+      "callableTypeSignaturesCompared": 0,
+      "callableTypeParametersCompared": 0,
+      "callableTypes": [],
+      "differences": [],
       "additionalTables": [
         {
           "item": "MarkdownConfig",
@@ -292,7 +292,7 @@
       "typedocCompiler": "6.0.3",
       "entry": "examples/library/src/index.ts",
       "input": "fresh declaration emit from source",
-      "exports": 5,
+      "exports": 11,
       "declarationFiles": 64,
       "compilerLibFiles": [
         "lib.es5.d.ts",
@@ -359,16 +359,152 @@
         "lib.decorators.legacy.d.ts",
         "lib.es2022.full.d.ts"
       ],
-      "typedocDeclarations": 5,
+      "typedocDeclarations": 11,
       "typedocOnlyDeclarations": [],
       "extractorOnlyDeclarations": [],
-      "propertyTablesCompared": 2,
-      "membersCompared": 8,
-      "callableTypeSignaturesCompared": 0,
-      "callableTypeParametersCompared": 0,
-      "callableTypes": [],
-      "differences": [],
-      "additionalTables": [],
+      "propertyTablesCompared": 6,
+      "membersCompared": 12,
+      "exactMemberMatches": 10,
+      "normalizedMemberMatches": 11,
+      "normalizationArrayNames": ["Array", "ReadonlyArray"],
+      "normalizedTypeSpellings": [
+        {
+          "item": "DocumentReader (call 2).names",
+          "extractor": "ReadonlyArray<string>",
+          "typedoc": "readonly string[]"
+        },
+        {
+          "item": "DocumentReader (call 2).return",
+          "extractor": "ReadonlyArray<string>",
+          "typedoc": "readonly string[]"
+        },
+        {
+          "item": "RenderResult.state",
+          "extractor": "{\n        kind: \"ready\";\n        content: string;\n    } | {\n        kind: \"failed\";\n        message: string;\n    }",
+          "typedoc": "{ content: string; kind: \"ready\" } | { kind: \"failed\"; message: string }"
+        }
+      ],
+      "callableTypeSignaturesCompared": 3,
+      "callableTypeParametersCompared": 4,
+      "callableTypes": [
+        {
+          "item": "DocumentRenderer",
+          "signatures": [
+            {
+              "text": "(source: string, options?: DocumentationOptions): string",
+              "parameters": [
+                {
+                  "name": "source",
+                  "rest": false,
+                  "optional": false,
+                  "type": "string",
+                  "description": "The document source"
+                },
+                {
+                  "name": "options",
+                  "rest": false,
+                  "optional": true,
+                  "type": "DocumentationOptions",
+                  "description": "Optional rendering configuration"
+                }
+              ],
+              "returnType": "string",
+              "comment": {
+                "description": "Renders a document with the shared options.",
+                "tags": [
+                  {
+                    "name": "param",
+                    "text": "source - The document source"
+                  },
+                  {
+                    "name": "param",
+                    "text": "options - Optional rendering configuration"
+                  },
+                  {
+                    "name": "returns",
+                    "text": "The rendered document"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "item": "DocumentReader",
+          "signatures": [
+            {
+              "text": "(name: string): string",
+              "parameters": [
+                {
+                  "name": "name",
+                  "rest": false,
+                  "optional": false,
+                  "type": "string",
+                  "description": "The document name"
+                }
+              ],
+              "returnType": "string",
+              "comment": {
+                "description": "Reads a single document.",
+                "tags": [
+                  {
+                    "name": "param",
+                    "text": "name - The document name"
+                  },
+                  {
+                    "name": "returns",
+                    "text": "The document source"
+                  }
+                ]
+              }
+            },
+            {
+              "text": "(names: ReadonlyArray<string>): ReadonlyArray<string>",
+              "parameters": [
+                {
+                  "name": "names",
+                  "rest": false,
+                  "optional": false,
+                  "type": "ReadonlyArray<string>",
+                  "description": "The document names"
+                }
+              ],
+              "returnType": "ReadonlyArray<string>",
+              "comment": {
+                "description": "Reads several documents in order.",
+                "tags": [
+                  {
+                    "name": "param",
+                    "text": "names - The document names"
+                  },
+                  {
+                    "name": "returns",
+                    "text": "The document sources"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "differences": [
+        {
+          "item": "RenderResult.title",
+          "field": "type-syntax",
+          "extractor": "PageMetadata[\"title\"]",
+          "typedoc": "string | undefined"
+        }
+      ],
+      "additionalTables": [
+        {
+          "item": "DocumentationOptions",
+          "members": ["uppercase", "separator", "maxLength", "plugins", "sections", "transform"]
+        },
+        {
+          "item": "DocumentationPanel",
+          "members": ["uppercase", "separator", "maxLength", "plugins", "sections", "transform"]
+        }
+      ],
       "incompleteTables": [],
       "diagnostics": []
     },
@@ -450,6 +586,61 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 15,
       "membersCompared": 97,
+      "exactMemberMatches": 87,
+      "normalizedMemberMatches": 97,
+      "normalizationArrayNames": ["Array", "ReadonlyArray"],
+      "normalizedTypeSpellings": [
+        {
+          "item": "JsxResult.esm",
+          "extractor": "Array<{ value: string; start: number; end: number }>",
+          "typedoc": "{ end: number; start: number; value: string }[]"
+        },
+        {
+          "item": "JsxResult.codeBlocks",
+          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
+          "typedoc": "{ code: string; language?: string; meta?: string }[]"
+        },
+        {
+          "item": "JsxResult.frontMatterSpan",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxResult.omittedTitleHeadingSpan",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxResult.mappings",
+          "extractor": "Array<{\n    generatedLine: number;\n    generatedColumn: number;\n    sourceLine: number;\n    sourceColumn: number;\n  }>",
+          "typedoc": "{ generatedColumn: number; generatedLine: number; sourceColumn: number; sourceLine: number }[]"
+        },
+        {
+          "item": "JsxModuleResult.codeBlocks",
+          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
+          "typedoc": "{ code: string; language?: string; meta?: string }[]"
+        },
+        {
+          "item": "JsxModuleResult.frontMatterSpan",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxModuleResult.omittedTitleHeadingSpan",
+          "extractor": "{ start: number; end: number }",
+          "typedoc": "{ end: number; start: number }"
+        },
+        {
+          "item": "JsxCompilerOptions.theme",
+          "extractor": "JsxTheme | { light: JsxTheme; dark: JsxTheme }",
+          "typedoc": "JsxTheme | { dark: JsxTheme; light: JsxTheme }"
+        },
+        {
+          "item": "JsxCompilerOptions.assets",
+          "extractor": "{\n    /** Load a complete local standard asset directory instead of the release CDN/cache. */\n    assetRoot?: string;\n    remote?: boolean;\n    baseUrl?: string;\n    cacheDir?: string;\n    commit?: string;\n  }",
+          "typedoc": "{ assetRoot?: string; baseUrl?: string; cacheDir?: string; commit?: string; remote?: boolean }"
+        }
+      ],
       "callableTypeSignaturesCompared": 1,
       "callableTypeParametersCompared": 3,
       "callableTypes": [
@@ -490,68 +681,7 @@
           ]
         }
       ],
-      "differences": [
-        {
-          "item": "JsxResult.esm",
-          "field": "type-syntax",
-          "extractor": "Array<{ value: string; start: number; end: number }>",
-          "typedoc": "{ end: number; start: number; value: string }[]"
-        },
-        {
-          "item": "JsxResult.codeBlocks",
-          "field": "type-syntax",
-          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
-          "typedoc": "{ code: string; language?: string; meta?: string }[]"
-        },
-        {
-          "item": "JsxResult.frontMatterSpan",
-          "field": "type-syntax",
-          "extractor": "{ start: number; end: number }",
-          "typedoc": "{ end: number; start: number }"
-        },
-        {
-          "item": "JsxResult.omittedTitleHeadingSpan",
-          "field": "type-syntax",
-          "extractor": "{ start: number; end: number }",
-          "typedoc": "{ end: number; start: number }"
-        },
-        {
-          "item": "JsxResult.mappings",
-          "field": "type-syntax",
-          "extractor": "Array<{\n    generatedLine: number;\n    generatedColumn: number;\n    sourceLine: number;\n    sourceColumn: number;\n  }>",
-          "typedoc": "{ generatedColumn: number; generatedLine: number; sourceColumn: number; sourceLine: number }[]"
-        },
-        {
-          "item": "JsxModuleResult.codeBlocks",
-          "field": "type-syntax",
-          "extractor": "Array<{ code: string; language?: string; meta?: string }>",
-          "typedoc": "{ code: string; language?: string; meta?: string }[]"
-        },
-        {
-          "item": "JsxModuleResult.frontMatterSpan",
-          "field": "type-syntax",
-          "extractor": "{ start: number; end: number }",
-          "typedoc": "{ end: number; start: number }"
-        },
-        {
-          "item": "JsxModuleResult.omittedTitleHeadingSpan",
-          "field": "type-syntax",
-          "extractor": "{ start: number; end: number }",
-          "typedoc": "{ end: number; start: number }"
-        },
-        {
-          "item": "JsxCompilerOptions.theme",
-          "field": "type-syntax",
-          "extractor": "JsxTheme | { light: JsxTheme; dark: JsxTheme }",
-          "typedoc": "JsxTheme | { dark: JsxTheme; light: JsxTheme }"
-        },
-        {
-          "item": "JsxCompilerOptions.assets",
-          "field": "type-syntax",
-          "extractor": "{\n    /** Load a complete local standard asset directory instead of the release CDN/cache. */\n    assetRoot?: string;\n    remote?: boolean;\n    baseUrl?: string;\n    cacheDir?: string;\n    commit?: string;\n  }",
-          "typedoc": "{ assetRoot?: string; baseUrl?: string; cacheDir?: string; commit?: string; remote?: boolean }"
-        }
-      ],
+      "differences": [],
       "additionalTables": [
         {
           "item": "CompileJsxOptions",
@@ -808,6 +938,31 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 20,
       "membersCompared": 142,
+      "exactMemberMatches": 123,
+      "normalizedMemberMatches": 127,
+      "normalizationArrayNames": ["Array", "ReadonlyArray"],
+      "normalizedTypeSpellings": [
+        {
+          "item": "HighlightOptions.structure",
+          "extractor": "\"classic\" | \"inline\"",
+          "typedoc": "\"inline\" | \"classic\""
+        },
+        {
+          "item": "DecorationItem.start",
+          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
+          "typedoc": "number | { character: number; line: number }"
+        },
+        {
+          "item": "DecorationItem.end",
+          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
+          "typedoc": "number | { character: number; line: number }"
+        },
+        {
+          "item": "CssVariablesThemeOptions.variableDefaults",
+          "extractor": "{\n    foreground?: string;\n    background?: string;\n  }",
+          "typedoc": "{ background?: string; foreground?: string }"
+        }
+      ],
       "callableTypeSignaturesCompared": 0,
       "callableTypeParametersCompared": 0,
       "callableTypes": [],
@@ -817,24 +972,6 @@
           "field": "type-syntax",
           "extractor": "\"dark\" | \"light\" | string",
           "typedoc": "string"
-        },
-        {
-          "item": "HighlightOptions.structure",
-          "field": "type-syntax",
-          "extractor": "\"classic\" | \"inline\"",
-          "typedoc": "\"inline\" | \"classic\""
-        },
-        {
-          "item": "DecorationItem.start",
-          "field": "type-syntax",
-          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
-          "typedoc": "number | { character: number; line: number }"
-        },
-        {
-          "item": "DecorationItem.end",
-          "field": "type-syntax",
-          "extractor": "| number\n    | {\n        line: number;\n        character: number;\n      }",
-          "typedoc": "number | { character: number; line: number }"
         },
         {
           "item": "DecorationItem.transform",
@@ -925,12 +1062,6 @@
           "field": "type-syntax",
           "extractor": "\"dark\" | \"light\" | string",
           "typedoc": "string"
-        },
-        {
-          "item": "CssVariablesThemeOptions.variableDefaults",
-          "field": "type-syntax",
-          "extractor": "{\n    foreground?: string;\n    background?: string;\n  }",
-          "typedoc": "{ background?: string; foreground?: string }"
         }
       ],
       "additionalTables": [],

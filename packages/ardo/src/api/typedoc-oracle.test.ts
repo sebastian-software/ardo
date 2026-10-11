@@ -11,6 +11,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 
 import type { ApiDeclaration, DeclarationProject } from "./types"
 
+import { typeShape as syntaxShape } from "../../../../scripts/declaration-type-shape.mjs"
 import { extractDeclarations } from "./index"
 
 const source = `
@@ -121,6 +122,42 @@ type ShadowMapper<T> = <T>(value: T) => T;
 export type ShadowCallback = ShadowMapper<string>;
 export type IntersectionCalls = ((value: string) => string) & ((value: number) => number);
 export declare const namedCallback: GenericCallback<number>;
+export interface ArraySpellings {
+  mutable: Array<string>;
+  frozen: ReadonlyArray<number>;
+  matrix: Array<ReadonlyArray<string | number>>;
+  transforms: Array<(value: number) => string>;
+  span: { start: number; end: number };
+}
+export interface NestedOptions extends Readonly<Required<Pick<Base<Array<number>>, 'value' | 'label'>>> {
+  environment: 'server' | 'client';
+}
+export interface Overrides extends Base<number> {
+  /** Replacement value. */
+  value: number;
+  /** Required label. */
+  label: string;
+}
+interface LeftBase extends Base<number> { left: boolean; }
+interface RightBase extends Base<number> { right: boolean; }
+export interface Diamond extends LeftBase, RightBase { own: boolean; }
+interface Defaults<T, Values = T[]> { value: T; values: Values; }
+export interface DependentDefaults extends Defaults<number> {}
+export interface RecursiveNode {
+  name: string;
+  children: ReadonlyArray<RecursiveNode>;
+  parent?: RecursiveNode;
+}
+export interface DictionaryOptions extends Readonly<Record<string, unknown>> { title?: string; }
+export type TupleCallback = <T>(...args: [first: T, second?: T]) => ReadonlyArray<T>;
+export type AsyncLoader<T = string> = (key: string, options?: { timeout?: number }) => Promise<ReadonlyArray<T>>;
+interface GenericMethods<T> { read<T>(value: T): T; fallback: T; }
+export interface SpecializedMethods extends GenericMethods<string> {}
+export interface IndexedLeaf { value: Base<number>['value']; }
+type Remap<T> = { [Key in keyof T as \`on\${Capitalize<string & Key>}\`]: (value: T[Key]) => void };
+export interface RemappedProps extends Remap<{ change: string }> {}
+export type UnionProps = { kind: 'text'; value: string } | { kind: 'count'; value: number };
+export function UnionWidget(props: UnionProps) { return String(props.value); }
 `
 
 let temporary: string
@@ -258,19 +295,7 @@ function typeShape(value: string): unknown {
   const declaration = result.program.body.at(0)
   if (result.errors.length > 0 || declaration?.type !== "TSTypeAliasDeclaration")
     throw new Error(`Cannot compare the type expression ${value}.`)
-  return shape(declaration.typeAnnotation)
-}
-
-function shape(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map((item) => shape(item))
-  if (value == null || typeof value !== "object") return value
-  if ("type" in value && value.type === "TSParenthesizedType" && "typeAnnotation" in value)
-    return shape(value.typeAnnotation)
-  return Object.fromEntries(
-    Object.entries(value)
-      .filter(([key]) => !["start", "end", "raw"].includes(key))
-      .map(([key, item]) => [key, shape(item)])
-  )
+  return syntaxShape(declaration.typeAnnotation, { normalize: true })
 }
 
 type ComparedProperty = {
@@ -365,6 +390,8 @@ describe("TypeDoc declaration oracle", () => {
     "InlineReader",
     "CallableInterface",
     "IntersectionCalls",
+    "TupleCallback",
+    "AsyncLoader",
   ])("matches callable parameters, modifiers, and returns for %s", (name) => {
     const { actual, expected } = comparedSignatures(name)
     expect(actual.length).toBeGreaterThan(0)
@@ -451,9 +478,68 @@ describe("TypeDoc declaration oracle", () => {
     "IntersectionProps",
     "ChildClass",
     "Accessors",
+    "ArraySpellings",
+    "NestedOptions",
+    "Overrides",
+    "Diamond",
+    "DependentDefaults",
+    "RecursiveNode",
+    "DictionaryOptions",
   ])("matches properties, types, modifiers, and comments for %s", (name) => {
     expect(extractedDeclaration(name).propertiesComplete).toBe(true)
     expect(extractedProperties(name)).toStrictEqual(oracleProperties(name))
+  })
+
+  it("retains a method's own generic parameter instead of substituting the interface parameter", () => {
+    expect(extractedProperties("SpecializedMethods")).toStrictEqual(
+      oracleProperties("SpecializedMethods")
+    )
+    expect(
+      extractedDeclaration("SpecializedMethods").properties.find((item) => item.name === "fallback")
+        ?.type
+    ).toBe("string")
+    const actual = extractedDeclaration("SpecializedMethods").properties.find(
+      (item) => item.name === "read"
+    )
+    const expected = oracleDeclaration("SpecializedMethods").children?.find(
+      (item) => item.name === "read"
+    )?.signatures?.[0]
+    expect(actual?.signatures[0]).toMatchObject({
+      text: "read<T>(value: T): T",
+      parameters: [{ name: "value", type: "T" }],
+      returnType: "T",
+    })
+    expect(typeShape(actual?.signatures[0].parameters[0].type ?? "unknown")).toStrictEqual(
+      typeShape(expected?.parameters?.[0].type?.toString() ?? "unknown")
+    )
+    expect(typeShape(actual?.signatures[0].returnType ?? "unknown")).toStrictEqual(
+      typeShape(expected?.type?.toString() ?? "unknown")
+    )
+  })
+
+  it("preserves an indexed-access leaf while TypeDoc resolves its type", () => {
+    expect(extractedDeclaration("IndexedLeaf").propertiesComplete).toBe(true)
+    expect(extractedDeclaration("IndexedLeaf").properties[0].type).toBe("Base<number>['value']")
+    expect(oracleDeclaration("IndexedLeaf").children?.[0].type?.toString()).toBe("number")
+    expect(extractedProperties("IndexedLeaf")).not.toStrictEqual(oracleProperties("IndexedLeaf"))
+  })
+
+  it("reports a component union instead of presenting a complete flattened props table", () => {
+    const component = extractedDeclaration("UnionWidget")
+    expect(component).toMatchObject({
+      kind: "component",
+      propertiesComplete: false,
+      properties: [],
+    })
+    expect(component.signatures[0].parameters[0].type).toBe("UnionProps")
+    expect(oracleDeclaration("UnionWidget").signatures?.[0].parameters?.[0].type?.toString()).toBe(
+      "UnionProps"
+    )
+    expect(
+      extracted.diagnostics.some(
+        (item) => item.message.includes("not supported") && item.message.includes("kind:")
+      )
+    ).toBe(true)
   })
 
   it("retains inline inherited package documentation that TypeDoc omits", () => {
@@ -485,6 +571,7 @@ describe("TypeDoc declaration oracle", () => {
   it.each([
     { name: "MappedProps", expression: "keyof", names: ["callback", "label", "value"] },
     { name: "ConditionalProps", expression: " extends ", names: ["value"] },
+    { name: "RemappedProps", expression: "Capitalize", names: ["onChange"] },
   ])(
     "reports the effective-member gap TypeDoc can resolve for $name",
     ({ name, expression, names }) => {

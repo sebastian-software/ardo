@@ -178,9 +178,11 @@ pnpm --dir examples/library exec react-router build
 ```
 
 If native `tsc` is already on `PATH`, the environment variable can be omitted.
-The workspace currently pins TypeScript 6, so its existing `tsc` should not be
-used for this native-compiler experiment. The declaration and generated route
-directories are ignored by Git.
+The workspace currently pins TypeScript 6. Pass `--workspace-compiler` to explicitly
+allow that compiler for a baseline comparison. The integration tests use this
+flag and honor `ARDO_DECLARATION_TSC`; CI selects native TypeScript for the full
+integration run on Node.js 24 and the workspace compiler on Node.js 22 and 26.
+The declaration and generated route directories are ignored by Git.
 
 Applications with existing declaration output need the optional parser and the
 extraction step:
@@ -219,14 +221,15 @@ The native emission experiments used official `typescript@7.0.2` outside the
 repository. OXC was the workspace's existing `0.127.0`. The checker comparison
 used `typescript@7.1.0-dev.20261010.1` as a test reference, separately from Ardo.
 
-| Check                                                    | Result                                             | What it establishes                                                                      |
-| -------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Library native declaration emit and extraction           | 5 exports, 6 pages, no extraction diagnostics      | Functions, an options interface, and a class retain types and documentation              |
-| Library production site build                            | All 6 new pages prerendered as HTML                | The generated Markdown works with Ardo's routing, Markdown compilation, and prerendering |
-| Native declaration emit for Ardo                         | Succeeded with type checking and `noEmitOnError`   | The experiment uses real inferred declarations rather than unchecked source syntax       |
-| Ardo public entry point                                  | 85 exports; 27 API files and 61 compiler lib files | The reader loads public declarations and required bases, including Ferromark and globals |
-| Component property names against the native checker      | All 31 component lists match; 97 properties total  | Common Ardo component props can be enumerated accurately in this sample                  |
-| Built extractor with TypeDoc/TypeScript imports rejected | Extraction and generation succeed                  | The new entry point does not load either module                                          |
+| Check                                                    | Result                                             | What it establishes                                                                                                  |
+| -------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Library native declaration emit and extraction           | 11 exports, 12 pages, no extraction diagnostics    | Functions, composed options, dictionaries, callable types, and a class retain types and documentation                |
+| Library production site build                            | All 12 new pages prerendered as HTML               | Integration assertions cover inherited descriptions, overload docs, dictionaries, and preserved union/indexed leaves |
+| Native declaration emit for Ardo                         | Succeeded with type checking and `noEmitOnError`   | The experiment uses real inferred declarations rather than unchecked source syntax                                   |
+| Ardo public entry point                                  | 85 exports; 27 API files and 61 compiler lib files | The reader loads public declarations and required bases, including Ferromark and globals                             |
+| Component property names against the native checker      | All 31 component lists match; 97 properties total  | Common Ardo component props can be enumerated accurately in this sample                                              |
+| Built extractor with TypeDoc/TypeScript imports rejected | Extraction and generation succeed                  | The new entry point does not load either module                                                                      |
+| Ardo's own documentation site                            | All 86 declaration pages prerendered as HTML       | Ardo's real public API works through its own Markdown and site pipeline                                              |
 
 The component comparison checks property **names**, not semantic equivalence of
 every property type, all documentation tags, source links, or arbitrary library
@@ -240,6 +243,14 @@ all 33 properties: four Ardo fields and 29 options inherited through
 options to Markdown and checks an inherited description. `PageFrontmatter`
 includes its inherited `[key: string]: unknown` index signature.
 
+For the own-site experiment, native TypeScript emitted the public source entry
+point with the package's tsconfig and Vite ambient declarations. The resulting
+declarations, source package directory, and selected compiler libraries generated
+the ignored `docs/app/routes/api-declarations/` routes before `pnpm docs:build`.
+Every generated page was checked against its HTML output. The `MarkdownConfig`
+HTML contains all 33 property rows and inherited Ferromark documentation. This is
+an opt-in validation; the normal docs configuration still uses TypeDoc.
+
 ### TypeDoc as a differential oracle
 
 [`typedoc-oracle.test.ts`](../../packages/ardo/src/api/typedoc-oracle.test.ts)
@@ -247,27 +258,32 @@ converts the same TypeScript source through TypeDoc and through real declaration
 emit followed by OXC. The comparison checks property names, type syntax,
 optionality, readonly flags, and summaries. Callable cases additionally compare
 parameter types, optional/rest flags, return types, and parameter/return
-documentation. Type syntax is compared as parsed
-trees, ignoring whitespace, quote style, and outer parentheses; this is not a
-proof of semantic equivalence for arbitrary types.
+documentation. Type syntax is compared as parsed trees with bounded presentation
+normalization, described below; this is not a proof of semantic equivalence for
+arbitrary types.
 
-| Fixture group                                                                           | Observed result                                                                                                               |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Generic defaults, identity aliases, and multiple inheritance levels                     | Property types, modifiers, and inherited comments match                                                                       |
-| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`                                   | All five interface cases match                                                                                                |
-| Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`                        | All six cases match, including empty property sets and generic value substitution                                             |
-| Intersections, generic class inheritance, and getter/setter pairs                       | Match, including member comments and visibility filtering                                                                     |
-| External generic bases, namespace imports, and class inheritance                        | Names, types, modifiers, and comments match across real package declaration boundaries                                        |
-| Standard `Error`/`TypeError` inheritance and selected error options                     | All three cases match after loading and merging the compiler's selected libraries                                             |
-| Direct/generic callable aliases, overloaded objects, inherited calls, and intersections | Parameters, optional/rest flags, and returns match in five cases; two cases also match effective documentation                |
-| Private callable helpers and a specialized generic callable variable                    | The prototype expands two aliases that TypeDoc retains as expressions and specializes a reference whose target still uses `T` |
-| External subpath base with inline member JSDoc                                          | Names, types, and modifiers match; the prototype retains one inherited description TypeDoc omits                              |
-| `Readonly<Record<'open' \| 'closed', boolean>>`                                         | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                                      |
-| Custom mapped and conditional helpers                                                   | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion               |
-| A public `Partial<Base<string>>` alias                                                  | TypeDoc retains the alias without child properties; the prototype also supplies a property table                              |
+| Fixture group                                                                           | Observed result                                                                                                                |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Generic defaults, identity aliases, and multiple inheritance levels                     | Property types, modifiers, and inherited comments match                                                                        |
+| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`                                   | All five interface cases match                                                                                                 |
+| Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`                        | All six cases match, including empty property sets and generic value substitution                                              |
+| Intersections, generic class inheritance, and getter/setter pairs                       | Match, including member comments and visibility filtering                                                                      |
+| External generic bases, namespace imports, and class inheritance                        | Names, types, modifiers, and comments match across real package declaration boundaries                                         |
+| Standard `Error`/`TypeError` inheritance and selected error options                     | All three cases match after loading and merging the compiler's selected libraries                                              |
+| Direct/generic callable aliases, overloaded objects, inherited calls, and intersections | Parameters, optional/rest flags, and returns match in five cases; two cases also match effective documentation                 |
+| Private callable helpers and a specialized generic callable variable                    | The prototype expands two aliases that TypeDoc retains as expressions and specializes a reference whose target still uses `T`  |
+| External subpath base with inline member JSDoc                                          | Names, types, and modifiers match; the prototype retains one inherited description TypeDoc omits                               |
+| `Readonly<Record<'open' \| 'closed', boolean>>`                                         | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                                       |
+| Custom mapped and conditional helpers                                                   | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion                |
+| A public `Partial<Base<string>>` alias                                                  | TypeDoc retains the alias without child properties; the prototype also supplies a property table                               |
+| Nested utility options, diamond inheritance, overrides, and dependent generic defaults  | Names, types, modifiers, and inherited descriptions match in four new inheritance cases                                        |
+| Nested array spellings, recursive leaves, and readonly dictionary options               | The normalized property comparisons match; recursion through leaf references is preserved                                      |
+| Generic tuple-rest and async callbacks, and a specialized inherited generic method      | Parameters and returns match; the method's own `T` stays generic while an outer `T` property becomes `string`                  |
+| Indexed-access leaves, union component props, and remapped keys using `Capitalize`      | The expression stays visible; requested union/remapped member expansion reports incomplete results instead of a complete table |
 
-The thirty exact comparisons and eight explicit difference cases are assertions in the
-test suite. The readonly difference is checked against the compiler with a
+The forty matching comparisons and eleven explicit difference cases are assertions
+in the test suite. These include thirteen new compiler-backed cases. The readonly
+difference is checked against the compiler with a
 `@ts-expect-error` assignment: declaration emission fails if the compiler stops
 rejecting writes. TypeDoc serves as a comparison tool, not an assumption that
 every detail in its reflection model is correct or required for documentation.
@@ -283,13 +299,50 @@ compiler's inferred type for an actual invocation. CI runs all declaration tests
 again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
-All 96 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 360 tests across 68 files, and all 32 integration
-tests also passed during hardening;
+All 132 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 396 tests across 69 files, and all 35 integration
+tests also passed, including the native-compiler library build;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
 intentional declaration and output paths. No end-to-end speed or dependency-size
 benchmark was performed.
+
+### Presentation normalization
+
+TypeScript's compiler API exposes
+[`TypeFormatFlags.WriteArrayAsGenericType`](https://github.com/microsoft/TypeScript/blob/v6.0.3/src/compiler/types.ts#L5514)
+to print `Array<T>` instead of `T[]`. This is not a declaration-emission option
+in the [tsconfig reference](https://www.typescriptlang.org/tsconfig/). TypeDoc
+uses its own model and renderer: its
+[`ArrayType` stringifier](https://github.com/TypeStrong/typedoc/blob/4350aec3c835aecb487204a14b2612c9ffe85fbc/src/lib/models/types.ts#L250)
+prints bracket syntax, and its
+[documented output options](https://typedoc.org/documents/Options.Output.html)
+do not expose an array style switch. `typePrintWidth` controls wrapping, not array
+spelling.
+
+The shared comparison helper
+[`declaration-type-shape.mjs`](../../scripts/declaration-type-shape.mjs) now treats
+these presentation differences consistently in the curated and real API oracles:
+
+- `Array<T>` and `T[]`, including nested arrays and function element types.
+- `ReadonlyArray<T>` and `readonly T[]`, retaining the readonly modifier.
+- Different orderings of unique, noncomputed properties in plain object types.
+- Different orderings of unions containing only literals and primitive keywords.
+- Whitespace, quote style, and redundant parentheses, as before.
+
+The real comparison disables each array-name rewrite if a non-library input
+declares or imports a type with that name, including generic parameters. The
+helper has 23 focused tests. Negative cases preserve readonly/optional flags,
+rest parameters, tuple/parameter order, overload and callable-intersection order,
+duplicate property names, shadowed array names, and literal alternatives that
+TypeDoc absorbs into `string`. Mixed unions, indexed accesses, arbitrary aliases,
+and mapped/conditional types are not evaluated by normalization.
+
+Normalization affects the comparison only. Extraction and generated documentation
+retain the compiler's original type expressions. The JSON keeps both raw and
+normalized member-match counts, records each normalized spelling separately,
+and keeps the remaining observations. A style match must not hide a missing
+modifier or a different signature.
 
 ### Comparing real public APIs
 
@@ -316,27 +369,42 @@ The [recorded native result](./2026-10-11-declaration-api-comparison.json) uses
 TypeScript 7.0.2 for emission and TypeDoc 0.28.20 with TypeScript 6.0.3 for the
 oracle:
 
-| Public API             | Extracted exports | Compared member occurrences | Remaining observations                                                           |
-| ---------------------- | ----------------- | --------------------------- | -------------------------------------------------------------------------------- |
-| Ardo                   | 85                | 201                         | Four type-spelling differences; no expansion diagnostics                         |
-| Library example        | 5                 | 8                           | No differences in the compared fields                                            |
-| Ferromark 3.4.0        | 32                | 97                          | Ten type-spelling differences; callback parameters and return match              |
-| `@ferriki/core` 0.13.0 | 43                | 142                         | Nineteen type-spelling differences and a symbol member; both error classes match |
+| Public API             | Extracted exports | Compared members | Raw matches | Normalized matches | Remaining observations                                           |
+| ---------------------- | ----------------- | ---------------- | ----------- | ------------------ | ---------------------------------------------------------------- |
+| Ardo                   | 85                | 201              | 197         | 201                | No differences in the compared fields                            |
+| Library example        | 11                | 12               | 10          | 11                 | One indexed-access leaf remains an expression                    |
+| Ferromark 3.4.0        | 32                | 97               | 87          | 97                 | No differences in the compared fields                            |
+| `@ferriki/core` 0.13.0 | 43                | 142              | 123         | 127                | Fifteen type-syntax differences and one additional symbol member |
 
-The 448 compared member occurrences include repeated props declarations and
+The 452 compared member occurrences across 171 extracted public exports include repeated props declarations and
 their component uses. The comparison covers available property/method names,
 optional/readonly flags, descriptions, property type syntax, and signature
 counts. It additionally compares structured parameters and returns of callable
 type aliases and interfaces when a corresponding TypeDoc signature is available.
-In this sample, that covers `JsxCodeRenderer`: all three parameter types and
-optional/rest flags, its return type, and available parameter/return descriptions
-match. It does not compare index signatures, constructors, every function or
+In this sample, that covers `JsxCodeRenderer`, `DocumentRenderer`, and both
+`DocumentReader` overloads: all seven parameter types and optional/rest flags,
+their return types, and available parameter/return descriptions match after
+presentation normalization. It does not compare index signatures, constructors, every function or
 method parameter and return, all tags, source links, or fully expanded semantics. Tables
 without a corresponding TypeDoc member owner are listed separately: Ardo has 16
 and Ferromark has eight. Some refer to local unexported props or utility aliases
-whose type expression TypeDoc retains without an available member table.
+whose type expression TypeDoc retains without an available member table. The
+expanded library example has two such additional tables for its composed options
+and their component use.
 Ferromark's additional TypeDoc declaration, `JsxRenderOptionKey`, is a local
 unexported helper rather than a missing public export.
+
+Across those compared members, raw matching syntax and fields account for
+417/452 (92.3%); bounded presentation normalization raises that to 436/452 (96.5%).
+Ardo's own compared members match 201/201 (100%). On the earlier, unchanged
+448-member input, normalization alone raised 415/448 (92.6%) to 433/448 (96.7%).
+The larger sample deliberately adds an indexed-access leaf that TypeDoc resolves
+but the extractor preserves. These are measured comparison fractions, not a
+claim of 95% coverage of TypeScript or all documentation requirements. Missing
+and additional names are reported separately from the denominator of members
+present in both models. All four profiles retain no incomplete tables or
+extraction diagnostics, and both native and workspace compiler runs agree on
+these comparison results.
 
 The real inputs exposed five problems that now have reproducing regression
 tests and fixes:
@@ -365,8 +433,9 @@ signatures were already supported by the extractor. The curated oracle separatel
 records references whose targets are unavailable or retain unbound generic
 parameters, rather than assuming that every preserved alias is a missing call.
 
-Ardo's four remaining type-spelling differences are `Array<T>` versus `T[]` and
-object member order. Ferriki also shows union order, an indexed-access expression
+Ardo's four previous type-spelling differences are `Array<T>` versus `T[]` and
+object member order; all four are now recorded as normalized spellings.
+Ferromark's ten previous spellings normalize too. Ferriki still shows mixed union order, an indexed-access expression
 versus its expanded type, and the original `"dark" | "light" | string` versus
 TypeDoc's simplified `string`. The extractor preserves rest parameters and a
 nested readonly modifier that TypeDoc's printed property types omit. This is

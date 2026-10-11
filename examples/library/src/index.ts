@@ -120,3 +120,62 @@ export function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
 }
+
+/** Options shared by the documentation renderer and panel. */
+export type DocumentationOptions = Readonly<Partial<FormatOptions>> & {
+  /** Ordered plugins used while rendering a page. */
+  readonly plugins: ReadonlyArray<{ name: string; priority?: number }>
+  /** Sections included in the page. */
+  sections: Array<"guide" | "reference">
+  /** An optional transformation applied to the source. */
+  transform?: (value: string) => string
+}
+
+/** Page metadata with arbitrary readonly extension fields. */
+export interface PageMetadata extends Readonly<Record<string, unknown>> {
+  /** Title displayed above the document. */
+  readonly title?: string
+}
+
+/**
+ * Renders a document with the shared options.
+ * @param source - The document source
+ * @param options - Optional rendering configuration
+ * @returns The rendered document
+ */
+export type DocumentRenderer = (source: string, options?: DocumentationOptions) => string
+
+/** A reader that accepts either a single document or a batch. */
+export interface DocumentReader {
+  /** Name displayed in the reader selection. */
+  readonly label: string
+  /**
+   * Reads a single document.
+   * @param name - The document name
+   * @returns The document source
+   */
+  (name: string): string
+  /**
+   * Reads several documents in order.
+   * @param names - The document names
+   * @returns The document sources
+   */
+  (names: ReadonlyArray<string>): ReadonlyArray<string>
+}
+
+/** Result metadata whose state remains an explicit discriminated union. */
+export interface RenderResult {
+  /** Successful content or a failure message. */
+  state: { kind: "ready"; content: string } | { kind: "failed"; message: string }
+  /** The optional title from the page metadata. */
+  title: PageMetadata["title"]
+}
+
+/**
+ * Displays the selected documentation sections.
+ * @param props - The shared rendering options
+ * @returns The section names
+ */
+export function DocumentationPanel(props: DocumentationOptions): string {
+  return props.sections.join(", ")
+}
