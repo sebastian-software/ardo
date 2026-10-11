@@ -1,3 +1,5 @@
+import type { SignatureReflection, SomeType } from "typedoc"
+
 import { execFileSync } from "node:child_process"
 import fs from "node:fs/promises"
 import os from "node:os"
@@ -12,7 +14,7 @@ import type { ApiDeclaration, DeclarationProject } from "./types"
 import { extractDeclarations } from "./index"
 
 const source = `
-import type { Base as PackageBase } from '@ardo-oracle/base';
+import type { Base as PackageBase, Callable as PackageCallable } from '@ardo-oracle/base';
 import type { ScopedBase } from '@ardo-oracle/base/child';
 import type * as PackageNamespace from '@ardo-oracle/base';
 import { Parent as PackageParent } from '@ardo-oracle/base';
@@ -96,6 +98,29 @@ export interface MappedProps extends Mapped<Base<string>> {}
 type Conditional<T> = T extends Base<infer Value> ? { value: Value } : never;
 export interface ConditionalProps extends Conditional<Base<number>> {}
 export type AliasProps = Partial<Base<string>>;
+/** Render content.
+ * @param code - Source text.
+ * @param language - Optional language.
+ * @param values - Additional values.
+ * @returns Rendered content.
+ */
+export type Renderer = (code: string, language?: string | null, ...values: number[]) => string | undefined;
+export type GenericCallback<T> = (value: T) => T[];
+export type InlineReader = {
+  /** Read text. @param value - The text value. @returns Read text. */
+  (value: string): string;
+  /** Read a number. @param value - The numeric value. @returns Read number. */
+  (value: number): number;
+  readonly label: string;
+};
+export interface CallableInterface extends PackageCallable<number> { enabled: boolean; }
+declare function chooseCallback(value: string): string;
+declare function chooseCallback(value: number): number;
+export type TypeofAlias = typeof chooseCallback;
+type ShadowMapper<T> = <T>(value: T) => T;
+export type ShadowCallback = ShadowMapper<string>;
+export type IntersectionCalls = ((value: string) => string) & ((value: number) => number);
+export declare const namedCallback: GenericCallback<number>;
 `
 
 let temporary: string
@@ -136,6 +161,10 @@ beforeAll(async () => {
       /** Stored package value. */ value: T;
       protected hidden: string;
       constructor(value: T);
+    }
+    export interface Callable<T> {
+      (value: T): T[];
+      readonly label: string;
     }
   `
   )
@@ -285,7 +314,119 @@ function extractedProperties(name: string): ComparedProperty[] {
     .sort((left, right) => left.name.localeCompare(right.name))
 }
 
+function callSignatures(
+  reflection: DeclarationReflection,
+  seen = new Set<DeclarationReflection>()
+): SignatureReflection[] {
+  if (seen.has(reflection)) return []
+  const next = new Set(seen).add(reflection)
+  return reflection.signatures ?? typeCallSignatures(reflection.type, next)
+}
+
+function typeCallSignatures(
+  type: SomeType | undefined,
+  seen: Set<DeclarationReflection>
+): SignatureReflection[] {
+  if (type?.type === "reflection") return callSignatures(type.declaration, seen)
+  if (type?.type === "reference" && type.reflection instanceof DeclarationReflection)
+    return callSignatures(type.reflection, seen)
+  if (type?.type === "query") return typeCallSignatures(type.queryType, seen)
+  if (type?.type === "intersection")
+    return type.types.flatMap((part) => typeCallSignatures(part, seen))
+  return []
+}
+
+function comparedSignatures(name: string) {
+  const actual = extractedDeclaration(name).signatures.map((signature) => ({
+    parameters: signature.parameters.map((parameter) => ({
+      name: parameter.name,
+      type: typeShape(parameter.type),
+      optional: parameter.optional,
+      rest: parameter.rest,
+    })),
+    returns: typeShape(signature.returnType),
+  }))
+  const expected = callSignatures(oracleDeclaration(name)).map((signature) => ({
+    parameters: (signature.parameters ?? []).map((parameter) => ({
+      name: parameter.name,
+      type: typeShape(parameter.type?.toString() ?? "unknown"),
+      optional: parameter.flags.isOptional,
+      rest: parameter.flags.isRest,
+    })),
+    returns: typeShape(signature.type?.toString() ?? "unknown"),
+  }))
+  return { actual, expected }
+}
+
 describe("TypeDoc declaration oracle", () => {
+  it.each([
+    "Renderer",
+    "GenericCallback",
+    "InlineReader",
+    "CallableInterface",
+    "IntersectionCalls",
+  ])("matches callable parameters, modifiers, and returns for %s", (name) => {
+    const { actual, expected } = comparedSignatures(name)
+    expect(actual.length).toBeGreaterThan(0)
+    expect(actual).toStrictEqual(expected)
+  })
+
+  it.each([
+    { name: "TypeofAlias", expression: "typeof chooseCallback", returns: ["string", "number"] },
+    { name: "ShadowCallback", expression: "ShadowMapper<string>", returns: ["T"] },
+  ])(
+    "expands private callable helpers while TypeDoc preserves $name as an expression",
+    ({ name, expression, returns }) => {
+      expect(oracleDeclaration(name).type?.toString()).toBe(expression)
+      expect(callSignatures(oracleDeclaration(name))).toStrictEqual([])
+      expect(
+        extractedDeclaration(name).signatures.map((signature) => signature.returnType)
+      ).toStrictEqual(returns)
+    }
+  )
+
+  it("specializes a callable variable whose TypeDoc reference retains generic parameters", () => {
+    expect(oracleDeclaration("namedCallback").type?.toString()).toBe("GenericCallback<number>")
+    const { actual, expected } = comparedSignatures("namedCallback")
+    expect(actual).toStrictEqual([
+      {
+        parameters: [{ name: "value", type: typeShape("number"), optional: false, rest: false }],
+        returns: typeShape("number[]"),
+      },
+    ])
+    expect(expected).toStrictEqual([
+      {
+        parameters: [{ name: "value", type: typeShape("T"), optional: false, rest: false }],
+        returns: typeShape("T[]"),
+      },
+    ])
+  })
+
+  it.each(["Renderer", "InlineReader"])("matches callable documentation for %s", (name) => {
+    const actual = extractedDeclaration(name).signatures.map((signature) => ({
+      summary: summary(signature.comment.description),
+      parameters: signature.parameters.map((parameter) => summary(parameter.description)),
+      returns: summary(signature.comment.tags.find((tag) => tag.name === "returns")?.text ?? ""),
+    }))
+    const expected = callSignatures(oracleDeclaration(name)).map((signature) => ({
+      summary: summary(
+        (signature.comment != null && signature.comment.summary.length > 0
+          ? signature.comment.summary
+          : (oracleDeclaration(name).comment?.summary ?? [])
+        )
+          .map((part) => part.text)
+          .join("")
+      ),
+      parameters: (signature.parameters ?? []).map((parameter) =>
+        summary((parameter.comment?.summary ?? []).map((part) => part.text).join(""))
+      ),
+      returns: summary(
+        (signature.comment?.getTag("@returns")?.content ?? []).map((part) => part.text).join("")
+      ),
+    }))
+    expect(actual).toStrictEqual(expected)
+  })
+
   it.each([
     "ExternalChild",
     "ExternalSelection",

@@ -6,12 +6,11 @@ import type {
   TSMethodSignature,
 } from "oxc-parser"
 
-import type { DeclarationReader, DeclarationRecord } from "./declaration-project"
 import type { TypeContext } from "./source"
 import type { ApiComment, ApiParameter, ApiSignature } from "./types"
 
 import { getParameterDescription } from "./comments"
-import { annotationOf, formatType, parameterType } from "./source"
+import { formatType, parameterType } from "./source"
 
 export type Callable =
   | OxcFunction
@@ -19,35 +18,6 @@ export type Callable =
   | TSConstructSignatureDeclaration
   | TSFunctionType
   | TSMethodSignature
-type ResolvedCallable = { node: Callable; context: TypeContext; comment: ApiComment }
-
-export async function resolveCallables(
-  record: DeclarationRecord,
-  context: TypeContext,
-  options: { reader: DeclarationReader; seen?: Set<string> }
-): Promise<ResolvedCallable[]> {
-  const { node, comment } = record
-  if (node.type === "TSDeclareFunction" || node.type === "FunctionDeclaration")
-    return [{ node, context, comment }]
-  if (node.type !== "VariableDeclarator") return []
-  const type = annotationOf(node.id)
-  if (type?.type === "TSFunctionType") return [{ node: type, context, comment }]
-  if (type?.type !== "TSTypeQuery") return []
-  const target = await options.reader.resolve(context.module, formatType(type.exprName, context))
-  if (target == null) return []
-  const key = `${target.module.file}:${target.name}`
-  if (options.seen?.has(key)) return []
-  const local = { module: target.module, bindings: new Map() }
-  const result: ResolvedCallable[] = []
-  for (const item of target.records)
-    result.push(
-      ...(await resolveCallables(item, local, {
-        reader: options.reader,
-        seen: new Set(options.seen).add(key),
-      }))
-    )
-  return result
-}
 
 export function readSignature(
   node: Callable,

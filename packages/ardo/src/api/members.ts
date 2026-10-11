@@ -17,6 +17,19 @@ import { annotationOf, formatType } from "./source"
 
 export type Properties = { items: ApiProperty[]; complete: boolean }
 
+export function recordMember(name: string, type: string, kind: "index" | "property"): ApiProperty {
+  return {
+    name,
+    kind,
+    type,
+    optional: false,
+    readonly: false,
+    static: false,
+    comment: { description: "", tags: [] },
+    signatures: [],
+  }
+}
+
 export function readMembers(
   members: TSSignature[],
   context: TypeContext,
@@ -35,6 +48,7 @@ function readMember(
 ): Properties {
   const comment = readComment(context.module.source, context.module.comments, member.start)
   if (isInternal(comment)) return { items: [], complete: true }
+  if (member.type === "TSCallSignatureDeclaration") return { items: [], complete: true }
   if (member.type === "TSIndexSignature")
     return { items: [readIndexSignature(member, context, comment)], complete: true }
   if (member.type !== "TSPropertySignature" && member.type !== "TSMethodSignature") {

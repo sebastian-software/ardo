@@ -8,12 +8,11 @@ import type {
 import type { Properties } from "./members"
 import type { TypeContext, TypeValue } from "./source"
 import type { Reference } from "./type-bindings"
-import type { ApiProperty } from "./types"
 
-import { mergeProperties, readClassMembers, readMembers } from "./members"
-import { resolveCallables } from "./signatures"
+import { resolveCallables } from "./callables"
+import { mergeProperties, readClassMembers, readMembers, recordMember } from "./members"
 import { annotationOf, formatType } from "./source"
-import { baseReferences, bindArguments } from "./type-bindings"
+import { ArgumentBindings, baseReferences } from "./type-bindings"
 
 const unexpanded = new Set([
   "TSUnionType",
@@ -24,6 +23,7 @@ const unexpanded = new Set([
 ])
 
 export class TypeProperties {
+  private readonly bindings = new ArgumentBindings()
   constructor(private readonly reader: DeclarationReader) {}
 
   async of(value: TypeValue, seen = new Set<string>()): Promise<Properties> {
@@ -123,7 +123,7 @@ export class TypeProperties {
     seen: Set<string>
   ): Promise<Properties> {
     const bound = context.bindings.get(reference.name)
-    if (bound != null) return this.of(bound, seen)
+    if (bound != null) return this.of(bound, this.bindings.scope(bound, seen))
     let resolved = this.reader.isLibrary(context.module)
       ? undefined
       : await this.reader.resolve(context.module, reference.name)
@@ -135,7 +135,10 @@ export class TypeProperties {
     if (resolved != null)
       return this.declaration(
         resolved,
-        { module: resolved.module, bindings: bindArguments(resolved, reference.args, context) },
+        {
+          module: resolved.module,
+          bindings: this.bindings.bind(resolved, { args: reference.args, context }, seen),
+        },
         seen
       )
     return this.incomplete(context, `Could not expand properties of ${reference.name}.`)
@@ -247,7 +250,7 @@ export class TypeProperties {
   ): Promise<string[] | undefined> {
     if (node.typeName.type !== "Identifier") return undefined
     const bound = context.bindings.get(node.typeName.name)
-    if (bound != null) return this.literalKeys(bound.node, bound, seen)
+    if (bound != null) return this.literalKeys(bound.node, bound, this.bindings.scope(bound, seen))
     const local = this.reader.isLibrary(context.module)
       ? undefined
       : await this.reader.resolve(context.module, node.typeName.name)
@@ -264,7 +267,11 @@ export class TypeProperties {
       alias.typeAnnotation,
       {
         module: resolved.module,
-        bindings: bindArguments(resolved, node.typeArguments?.params ?? [], context),
+        bindings: this.bindings.bind(
+          resolved,
+          { args: node.typeArguments?.params ?? [], context },
+          seen
+        ),
       },
       new Set(seen).add(key)
     )
@@ -302,17 +309,4 @@ export class TypeProperties {
 function isIndexKey(node: TSType): boolean {
   if (["TSStringKeyword", "TSNumberKeyword", "TSSymbolKeyword"].includes(node.type)) return true
   return node.type === "TSUnionType" && node.types.every((type) => isIndexKey(type))
-}
-
-function recordMember(name: string, type: string, kind: "index" | "property"): ApiProperty {
-  return {
-    name,
-    kind,
-    type,
-    optional: false,
-    readonly: false,
-    static: false,
-    comment: { description: "", tags: [] },
-    signatures: [],
-  }
 }

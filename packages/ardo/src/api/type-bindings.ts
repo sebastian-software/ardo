@@ -7,6 +7,26 @@ import { formatType } from "./source"
 
 export type Reference = { name: string; args: TSType[] }
 
+/** Explicit type arguments retain their caller's expansion scope. */
+export class ArgumentBindings {
+  private readonly scopes = new WeakMap<TypeValue, Set<string>>()
+
+  bind(
+    resolved: ResolvedDeclaration,
+    value: { args: TSType[]; context: TypeContext },
+    seen: Set<string>
+  ): Map<string, TypeValue> {
+    const bindings = bindArguments(resolved, value.args, value.context)
+    for (const argument of bindings.values())
+      if (value.args.includes(argument.node)) this.scopes.set(argument, seen)
+    return bindings
+  }
+
+  scope(value: TypeValue, fallback: Set<string>): Set<string> {
+    return this.scopes.get(value) ?? fallback
+  }
+}
+
 export function baseReferences(node: DeclarationRecord["node"], context: TypeContext): Reference[] {
   if (node.type === "TSInterfaceDeclaration")
     return node.extends.map((base) => ({

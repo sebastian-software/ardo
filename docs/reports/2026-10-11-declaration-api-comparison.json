@@ -79,6 +79,9 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 51,
       "membersCompared": 201,
+      "callableTypeSignaturesCompared": 0,
+      "callableTypeParametersCompared": 0,
+      "callableTypes": [],
       "differences": [
         {
           "item": "TypeDocConfig.sort",
@@ -361,6 +364,9 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 2,
       "membersCompared": 8,
+      "callableTypeSignaturesCompared": 0,
+      "callableTypeParametersCompared": 0,
+      "callableTypes": [],
       "differences": [],
       "additionalTables": [],
       "incompleteTables": [],
@@ -444,13 +450,47 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 15,
       "membersCompared": 97,
-      "differences": [
+      "callableTypeSignaturesCompared": 1,
+      "callableTypeParametersCompared": 3,
+      "callableTypes": [
         {
           "item": "JsxCodeRenderer",
-          "field": "call-signature-count",
-          "extractor": 0,
-          "typedoc": 1
-        },
+          "signatures": [
+            {
+              "text": "(code: string, language?: string | null, meta?: string | null): string | null | undefined",
+              "parameters": [
+                {
+                  "name": "code",
+                  "rest": false,
+                  "optional": false,
+                  "type": "string",
+                  "description": ""
+                },
+                {
+                  "name": "language",
+                  "rest": false,
+                  "optional": true,
+                  "type": "string | null",
+                  "description": ""
+                },
+                {
+                  "name": "meta",
+                  "rest": false,
+                  "optional": true,
+                  "type": "string | null",
+                  "description": ""
+                }
+              ],
+              "returnType": "string | null | undefined",
+              "comment": {
+                "description": "A trusted hook may replace an entire code block with JSX. Exceptions propagate.",
+                "tags": []
+              }
+            }
+          ]
+        }
+      ],
+      "differences": [
         {
           "item": "JsxResult.esm",
           "field": "type-syntax",
@@ -768,6 +808,9 @@
       "extractorOnlyDeclarations": [],
       "propertyTablesCompared": 20,
       "membersCompared": 142,
+      "callableTypeSignaturesCompared": 0,
+      "callableTypeParametersCompared": 0,
+      "callableTypes": [],
       "differences": [
         {
           "item": "ThemeRegistration.type",
@@ -876,24 +919,6 @@
           "field": "type-syntax",
           "extractor": "(...themes: SyncRegistrationInput<ThemeInput>[]) => void",
           "typedoc": "(themes: SyncRegistrationInput<ThemeInput>[]) => void"
-        },
-        {
-          "item": "createHighlighterCore",
-          "field": "call-signature-count",
-          "extractor": 1,
-          "typedoc": 0
-        },
-        {
-          "item": "createShikiPrimitiveAsync",
-          "field": "call-signature-count",
-          "extractor": 1,
-          "typedoc": 0
-        },
-        {
-          "item": "getSingletonHighlighterCore",
-          "field": "call-signature-count",
-          "extractor": 1,
-          "typedoc": 0
         },
         {
           "item": "CssVariablesThemeOptions.type",

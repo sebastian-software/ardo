@@ -175,6 +175,9 @@ async function evaluate(profile, directory) {
     extractorOnlyDeclarations: [...items.keys()].filter((name) => !references.has(name)),
     propertyTablesCompared: 0,
     membersCompared: 0,
+    callableTypeSignaturesCompared: 0,
+    callableTypeParametersCompared: 0,
+    callableTypes: [],
     differences: [],
     additionalTables: [],
     incompleteTables: extracted.items
@@ -188,7 +191,7 @@ async function evaluate(profile, directory) {
   for (const [name, item] of items) {
     const reference = references.get(name)
     if (reference == null) continue
-    const signatures = reference.signatures ?? typeOwner(reference.type)?.signatures ?? []
+    const signatures = callSignatures(reference)
     compareSummary(
       result,
       name,
@@ -202,6 +205,8 @@ async function evaluate(profile, directory) {
         extractor: item.signatures.length,
         typedoc: signatures.length,
       })
+    if (["type", "interface"].includes(item.kind) && item.signatures.length > 0)
+      compareCallableType(result, item, signatures)
     const owner =
       item.kind === "component"
         ? typeOwner(signatures[0]?.parameters?.[0]?.type)
@@ -240,6 +245,69 @@ function typeOwner(type, seen = new Set()) {
   )
     return reflection
   return typeOwner(reflection?.type, seen)
+}
+
+function callSignatures(reflection, seen = new Set()) {
+  const resolved = dereference(reflection)
+  if (resolved == null || seen.has(resolved)) return []
+  const next = new Set(seen).add(resolved)
+  return resolved.signatures ?? typeCallSignatures(resolved.type, next)
+}
+
+function typeCallSignatures(type, seen) {
+  if (type?.type === "reflection") return callSignatures(type.declaration, seen)
+  if (type?.type === "reference") return callSignatures(type.reflection, seen)
+  if (type?.type === "query") return typeCallSignatures(type.queryType, seen)
+  if (type?.type === "intersection")
+    return type.types.flatMap((part) => typeCallSignatures(part, seen))
+  return []
+}
+
+function compareCallableType(result, item, signatures) {
+  result.callableTypes.push({ item: item.name, signatures: item.signatures })
+  for (const [index, signature] of item.signatures.entries()) {
+    const expected = signatures[index]
+    if (expected == null) continue
+    result.callableTypeSignaturesCompared++
+    const name = `${item.name} (call ${index + 1})`
+    const parameters = expected.parameters ?? []
+    if (signature.parameters.length !== parameters.length)
+      result.differences.push({
+        item: name,
+        field: "parameter-count",
+        extractor: signature.parameters.length,
+        typedoc: parameters.length,
+      })
+    for (const [parameterIndex, parameter] of signature.parameters.entries()) {
+      const reference = parameters[parameterIndex]
+      if (reference == null) continue
+      result.callableTypeParametersCompared++
+      const parameterName = `${name}.${parameter.name}`
+      for (const [field, value] of Object.entries({
+        name: reference.name,
+        optional: reference.flags.isOptional,
+        rest: reference.flags.isRest,
+      }))
+        if (parameter[field] !== value)
+          result.differences.push({
+            item: parameterName,
+            field,
+            extractor: parameter[field],
+            typedoc: value,
+          })
+      if (reference.type != null)
+        compareType(result, parameterName, parameter.type, reference.type.toString())
+      compareSummary(result, parameterName, parameter.description, reference.comment)
+    }
+    if (expected.type != null)
+      compareType(result, `${name}.return`, signature.returnType, expected.type.toString())
+    compareSummary(
+      result,
+      `${name}.returns-description`,
+      signature.comment.tags.find((tag) => ["returns", "return"].includes(tag.name))?.text ?? "",
+      { summary: expected.comment?.getTag("@returns")?.content ?? [] }
+    )
+  }
 }
 
 function compareMembers(result, item, owner) {

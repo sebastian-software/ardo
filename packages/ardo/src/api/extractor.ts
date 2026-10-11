@@ -8,10 +8,11 @@ import type {
   DeclarationProject,
 } from "./types"
 
+import { resolveCallables } from "./callables"
 import { isInternal } from "./comments"
 import { DeclarationReader } from "./declaration-project"
 import { TypeProperties } from "./properties"
-import { readSignature, resolveCallables } from "./signatures"
+import { readSignature } from "./signatures"
 import { annotationOf, formatType, parameterType } from "./source"
 
 /** Read public declarations without importing TypeDoc or the TypeScript compiler. */
@@ -56,7 +57,14 @@ class DeclarationExtractor {
     for (const item of records)
       callables.push(...(await resolveCallables(item, context, { reader: this.reader })))
     const signatures = callables.map((item) =>
-      readSignature(item.node, item.context, { name, comment: item.comment })
+      readSignature(item.node, item.context, {
+        name:
+          record.node.type === "TSTypeAliasDeclaration" ||
+          record.node.type === "TSInterfaceDeclaration"
+            ? ""
+            : name,
+        comment: item.comment,
+      })
     )
     const kind = declarationKind(record.node, name, signatures)
     if (kind == null) {
@@ -119,6 +127,8 @@ function declarationKind(
   name: string,
   signatures: ApiSignature[]
 ): ApiDeclaration["kind"] | undefined {
+  if (node.type === "TSTypeAliasDeclaration") return "type"
+  if (node.type === "TSInterfaceDeclaration") return "interface"
   if (signatures.length > 0)
     return /^[A-Z]/u.test(name) && !/(?:Props|Options|Config)$/u.test(name)
       ? "component"
@@ -138,11 +148,12 @@ function declarationSignature(
   context: TypeContext,
   metadata: { name: string; signatures: ApiSignature[] }
 ): string {
-  if (metadata.signatures.length > 0) return metadata.signatures.map((item) => item.text).join("\n")
+  if (node.type === "TSTypeAliasDeclaration") return formatType(node, context)
   if (node.type === "TSInterfaceDeclaration" || node.type === "ClassDeclaration")
     return formatType({ start: node.start, end: node.body.start }, context)
       .replace(/^declare\s+/u, "")
       .trim()
+  if (metadata.signatures.length > 0) return metadata.signatures.map((item) => item.text).join("\n")
   if (node.type === "VariableDeclarator") {
     const annotation = annotationOf(node.id)
     return `const ${metadata.name}: ${annotation == null ? "/* type not declared */" : formatType(annotation, context)}`

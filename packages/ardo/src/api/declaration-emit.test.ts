@@ -40,6 +40,54 @@ afterEach(async () => {
 })
 
 describe("compiler declaration emit to documentation", () => {
+  it("documents callable aliases and verifies their specialized return against compiler inference", async () => {
+    await fs.writeFile(
+      path.join(temporary, "api.ts"),
+      [
+        "/** Map a value. @param value - The input value. @returns Mapped values. */",
+        "export type Mapper<T = string> = (value: T) => T[];",
+        "export type Numbers = Mapper<number>;",
+        "export type Strings = Mapper;",
+        "export const mapNumbers: Numbers = (value) => [value];",
+        "export const mapped = mapNumbers(1);",
+      ].join("\n")
+    )
+    execFileSync(compiler, ["--project", path.join(temporary, "tsconfig.json")], {
+      cwd: temporary,
+      encoding: "utf8",
+      timeout: 15_000,
+    })
+    const entry = path.join(temporary, "declarations/api.d.ts")
+    const emitted = await fs.readFile(entry, "utf8")
+    expect(emitted).toContain("mapped: number[]")
+    const result = await generateDeclarationDocs(
+      { entryPoints: [entry] },
+      path.join(temporary, "routes")
+    )
+    expect(result.diagnostics).toStrictEqual([])
+    expect(result.items.find((item) => item.name === "Numbers")).toMatchObject({
+      kind: "type",
+      signature: "type Numbers = Mapper<number>;",
+      signatures: [
+        {
+          parameters: [{ type: "number", description: "The input value." }],
+          returnType: "number[]",
+        },
+      ],
+    })
+    expect(result.items.find((item) => item.name === "Strings")?.signatures[0].returnType).toBe(
+      "string[]"
+    )
+    expect(result.items.find((item) => item.name === "mapNumbers")).toMatchObject({
+      kind: "function",
+      signatures: [{ returnType: "number[]" }],
+    })
+    const page = result.pages.find((item) => item.path === "types/numbers.md")?.content
+    expect(page).toContain("## Call signature")
+    expect(page).toContain("The input value.")
+    expect(page).toContain("Mapped values.")
+  }, 20_000)
+
   it("extracts inferred signatures and retained JSDoc from freshly compiled source", async () => {
     await fs.writeFile(
       path.join(temporary, "api.ts"),

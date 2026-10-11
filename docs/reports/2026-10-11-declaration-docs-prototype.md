@@ -47,8 +47,9 @@ them; a leaf property keeps its type expression without loading that dependency'
 entire declaration graph.
 
 The extractor supports public functions, classes, interfaces, type aliases,
-variables, and enums. Uppercase callable exports are treated as components using
-the existing Ardo naming convention. Local and imported interfaces and aliases can supply
+variables, and enums. Uppercase callable functions and variables are treated as
+components using the existing Ardo naming convention. Callable type aliases and
+interfaces retain their own categories. Local and imported interfaces and aliases can supply
 their props, including inherited generic members and selected compositions:
 
 - Intersections and local generic type arguments.
@@ -130,6 +131,28 @@ module/global augmentation blocks, library replacement packages, `reference
 types` packages, and global value queries remain outside this subset. Unsupported
 ambient package references produce a diagnostic. The extractor still only reads
 files; it does not import a compiler or consume tsconfig itself.
+
+### Callable types
+
+[`callables.ts`](../../packages/ardo/src/api/callables.ts) reads function type
+aliases, explicit object call signatures, inherited interface signatures, and
+intersections of callable types. Local and imported aliases can supply generic
+arguments and defaults, while a signature's own generic parameters retain their
+scope. Callable variables can reference these aliases, and `typeof` can reference
+local or imported function overloads. Finite nested aliases retain their caller's
+argument scope; cyclic aliases still stop expansion.
+
+Type pages retain the original declaration and add call signature, parameter,
+and return sections. Callable objects also retain their named property tables.
+Each overload keeps its own documentation. Alias-specific parameter and return
+tags take precedence over inherited tags, and internal call signatures are
+excluded from the structured sections. Uppercase type names do not create component pages.
+
+Union and conditional types, constructor signatures, and generic instantiation
+queries such as `typeof factory<number>` retain their expressions without
+synthesized call signatures. `propertiesComplete` still describes member
+expansion only; it does not promise complete callable semantics. This subset
+does not calculate compatible arguments for unions or evaluate arbitrary types.
 
 The output writer is shared with the TypeDoc path. It retains the generated-file
 sentinel and refuses to replace a nonempty handwritten output directory. Parsing
@@ -222,24 +245,28 @@ includes its inherited `[key: string]: unknown` index signature.
 [`typedoc-oracle.test.ts`](../../packages/ardo/src/api/typedoc-oracle.test.ts)
 converts the same TypeScript source through TypeDoc and through real declaration
 emit followed by OXC. The comparison checks property names, type syntax,
-optionality, readonly flags, and summaries. Type syntax is compared as parsed
+optionality, readonly flags, and summaries. Callable cases additionally compare
+parameter types, optional/rest flags, return types, and parameter/return
+documentation. Type syntax is compared as parsed
 trees, ignoring whitespace, quote style, and outer parentheses; this is not a
 proof of semantic equivalence for arbitrary types.
 
-| Fixture group                                                       | Observed result                                                                                                 |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Generic defaults, identity aliases, and multiple inheritance levels | Property types, modifiers, and inherited comments match                                                         |
-| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`               | All five interface cases match                                                                                  |
-| Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`    | All six cases match, including empty property sets and generic value substitution                               |
-| Intersections, generic class inheritance, and getter/setter pairs   | Match, including member comments and visibility filtering                                                       |
-| External generic bases, namespace imports, and class inheritance    | Names, types, modifiers, and comments match across real package declaration boundaries                          |
-| Standard `Error`/`TypeError` inheritance and selected error options | All three cases match after loading and merging the compiler's selected libraries                               |
-| External subpath base with inline member JSDoc                      | Names, types, and modifiers match; the prototype retains one inherited description TypeDoc omits                |
-| `Readonly<Record<'open' \| 'closed', boolean>>`                     | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                        |
-| Custom mapped and conditional helpers                               | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion |
-| A public `Partial<Base<string>>` alias                              | TypeDoc retains the alias without child properties; the prototype also supplies a property table                |
+| Fixture group                                                                           | Observed result                                                                                                               |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Generic defaults, identity aliases, and multiple inheritance levels                     | Property types, modifiers, and inherited comments match                                                                       |
+| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`                                   | All five interface cases match                                                                                                |
+| Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`                        | All six cases match, including empty property sets and generic value substitution                                             |
+| Intersections, generic class inheritance, and getter/setter pairs                       | Match, including member comments and visibility filtering                                                                     |
+| External generic bases, namespace imports, and class inheritance                        | Names, types, modifiers, and comments match across real package declaration boundaries                                        |
+| Standard `Error`/`TypeError` inheritance and selected error options                     | All three cases match after loading and merging the compiler's selected libraries                                             |
+| Direct/generic callable aliases, overloaded objects, inherited calls, and intersections | Parameters, optional/rest flags, and returns match in five cases; two cases also match effective documentation                |
+| Private callable helpers and a specialized generic callable variable                    | The prototype expands two aliases that TypeDoc retains as expressions and specializes a reference whose target still uses `T` |
+| External subpath base with inline member JSDoc                                          | Names, types, and modifiers match; the prototype retains one inherited description TypeDoc omits                              |
+| `Readonly<Record<'open' \| 'closed', boolean>>`                                         | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                                      |
+| Custom mapped and conditional helpers                                                   | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion               |
+| A public `Partial<Base<string>>` alias                                                  | TypeDoc retains the alias without child properties; the prototype also supplies a property table                              |
 
-The twenty-three exact matches and five explicit difference cases are assertions in the
+The thirty exact comparisons and eight explicit difference cases are assertions in the
 test suite. The readonly difference is checked against the compiler with a
 `@ts-expect-error` assignment: declaration emission fails if the compiler stops
 rejecting writes. TypeDoc serves as a comparison tool, not an assumption that
@@ -251,11 +278,13 @@ aliases, overloads, inherited props, JSDoc tags, and internal filtering from
 freshly compiled source. Comments must actually survive declaration emission;
 the extractor cannot recover comments the compiler omitted. Both compiler-backed
 tests use the workspace compiler by default. `ARDO_DECLARATION_TSC` selects another
-CLI, and CI runs all declaration tests again with isolated `typescript@7.0.2` on
+CLI. A specialized callback's `number[]` return is also checked against the
+compiler's inferred type for an actual invocation. CI runs all declaration tests
+again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
-All 75 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 339 tests across 67 files, and all 32 integration
+All 96 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 360 tests across 68 files, and all 32 integration
 tests also passed during hardening;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
@@ -287,25 +316,29 @@ The [recorded native result](./2026-10-11-declaration-api-comparison.json) uses
 TypeScript 7.0.2 for emission and TypeDoc 0.28.20 with TypeScript 6.0.3 for the
 oracle:
 
-| Public API             | Extracted exports | Compared member occurrences | Remaining observations                                                         |
-| ---------------------- | ----------------- | --------------------------- | ------------------------------------------------------------------------------ |
-| Ardo                   | 85                | 201                         | Four type-spelling differences; no expansion diagnostics                       |
-| Library example        | 5                 | 8                           | No differences in the compared fields                                          |
-| Ferromark 3.4.0        | 32                | 97                          | Ten type-spelling differences; callback alias lacks a structured signature     |
-| `@ferriki/core` 0.13.0 | 43                | 142                         | Type spelling, callable aliases, and a symbol member; both error classes match |
+| Public API             | Extracted exports | Compared member occurrences | Remaining observations                                                           |
+| ---------------------- | ----------------- | --------------------------- | -------------------------------------------------------------------------------- |
+| Ardo                   | 85                | 201                         | Four type-spelling differences; no expansion diagnostics                         |
+| Library example        | 5                 | 8                           | No differences in the compared fields                                            |
+| Ferromark 3.4.0        | 32                | 97                          | Ten type-spelling differences; callback parameters and return match              |
+| `@ferriki/core` 0.13.0 | 43                | 142                         | Nineteen type-spelling differences and a symbol member; both error classes match |
 
 The 448 compared member occurrences include repeated props declarations and
 their component uses. The comparison covers available property/method names,
 optional/readonly flags, descriptions, property type syntax, and signature
-counts. It does not compare index signatures, constructors, every call parameter
-and return type, all tags, source links, or fully expanded semantics. Tables
+counts. It additionally compares structured parameters and returns of callable
+type aliases and interfaces when a corresponding TypeDoc signature is available.
+In this sample, that covers `JsxCodeRenderer`: all three parameter types and
+optional/rest flags, its return type, and available parameter/return descriptions
+match. It does not compare index signatures, constructors, every function or
+method parameter and return, all tags, source links, or fully expanded semantics. Tables
 without a corresponding TypeDoc member owner are listed separately: Ardo has 16
 and Ferromark has eight. Some refer to local unexported props or utility aliases
 whose type expression TypeDoc retains without an available member table.
 Ferromark's additional TypeDoc declaration, `JsxRenderOptionKey`, is a local
 unexported helper rather than a missing public export.
 
-The real inputs exposed four problems that now have reproducing regression
+The real inputs exposed five problems that now have reproducing regression
 tests and fixes:
 
 - Ferromark places lint comments between JSDoc and several exports. Searching
@@ -321,6 +354,16 @@ tests and fixes:
   from the package's declarations. Reading and merging ES5/ES2022 libraries adds
   all four inherited fields to each class. Both classes now match TypeDoc on
   every field this comparison checks, with no expansion diagnostics.
+- Ferromark's `JsxCodeRenderer` originally retained only its type declaration.
+  It now also supplies structured call metadata and renders parameter and return
+  sections while staying on a type page.
+
+The comparison script now follows TypeDoc's callable reference targets instead
+of treating an available function reference as having zero signatures. This
+removes three false call-count differences for Ferriki's factory exports; their
+signatures were already supported by the extractor. The curated oracle separately
+records references whose targets are unavailable or retain unbound generic
+parameters, rather than assuming that every preserved alias is a missing call.
 
 Ardo's four remaining type-spelling differences are `Array<T>` versus `T[]` and
 object member order. Ferriki also shows union order, an indexed-access expression
@@ -345,9 +388,11 @@ barrels, nested dependency versions, and out-of-tree emission.
 
 The compiler-library increment removes the two missing-member observations and
 both incomplete tables in Ferriki. All four real API profiles now have no
-extraction diagnostics. Structured callable type aliases, such as Ferromark's
-`JsxCodeRenderer`, remain a smaller follow-up: their full
-type text is already present, but dedicated parameter/return sections are absent.
+extraction diagnostics. The callable increment also removes Ferromark's missing
+call-signature observation. A nested generic fixture exposed a shared expansion
+bug: finite nesting was mistaken for recursion. Explicit arguments now retain
+their caller's expansion scope in both call and property resolution, while
+genuinely recursive aliases remain bounded.
 
 ## Remaining limits and migration implications
 
@@ -366,8 +411,8 @@ type text is already present, but dedicated parameter/return sections are absent
   declaration are preserved as written.
 - Source locations currently refer to declarations. Declaration-map lookup and
   original repository source links are not implemented.
-- Component detection remains a naming heuristic. React wrappers and callable
-  object types require further evaluation.
+- Component detection remains a naming heuristic. React wrappers and more
+  intricate callable compositions require further evaluation.
 - TypeDoc plugin compatibility, categories/groups, `@inheritDoc`, and full TSDoc
   semantics are outside this prototype.
 

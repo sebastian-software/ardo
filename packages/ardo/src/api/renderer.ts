@@ -48,10 +48,7 @@ function renderPage(
     codeBlock(item.signature),
     "",
   ]
-  for (const signature of item.signatures) {
-    if (item.signatures.length > 1) lines.push("## Overload", "", codeBlock(signature.text), "")
-    lines.push(...renderSignature(signature, links))
-  }
+  appendCallSignatures(lines, item, links)
   const properties = item.properties.filter((property) => property.kind === "property")
   if (properties.length > 0)
     lines.push(
@@ -68,6 +65,22 @@ function renderPage(
   appendIndexSignatures(lines, item, links)
   appendMethods(lines, item, links)
   return { path: options.path, content: lines.join("\n"), frontmatter: { title: item.name } }
+}
+
+function appendCallSignatures(
+  lines: string[],
+  item: ApiDeclaration,
+  links: Map<string, string>
+): void {
+  for (const signature of item.signatures) {
+    const typeCall = item.kind === "type" || item.kind === "interface"
+    if (item.signatures.length > 1) lines.push("## Overload", "")
+    else if (typeCall) lines.push("## Call signature", "")
+    if (signature.comment.description !== item.comment.description)
+      lines.push(...renderComment(signature.comment, links))
+    if (item.signatures.length > 1 || typeCall) lines.push(codeBlock(signature.text), "")
+    lines.push(...renderSignature(signature, links))
+  }
 }
 
 function appendIndexSignatures(
