@@ -4,14 +4,21 @@ import path from "node:path"
 import { performance } from "node:perf_hooks"
 import { createRequire } from "node:module"
 import { fileURLToPath, pathToFileURL } from "node:url"
+import { parseArgs } from "node:util"
 
 // Run separately from timing benchmarks: SDK collection and hooks add overhead.
 const root = fileURLToPath(new URL("../", import.meta.url))
-const name = process.argv[2] ?? "ardo"
-if (!["ardo", "library"].includes(name) || process.argv.length > 4)
-  throw new Error("Usage: node scripts/profile-native-api.mjs [ardo|library] [DIST]")
-const dist = path.resolve(process.argv[3] ?? path.join(root, "packages/ardo/dist"))
-const profile =
+const { values, positionals } = parseArgs({
+  allowPositionals: true,
+  options: { profiles: { type: "string" } },
+})
+const name = positionals[0] ?? "ardo"
+if ((!values.profiles && !["ardo", "library"].includes(name)) || positionals.length > 2)
+  throw new Error(
+    "Usage: node scripts/profile-native-api.mjs [ardo|library|NAME] [DIST] [--profiles=FILE]"
+  )
+const dist = path.resolve(positionals[1] ?? path.join(root, "packages/ardo/dist"))
+let profile =
   name === "ardo"
     ? {
         entry: "packages/ardo/src/index.ts",
@@ -25,13 +32,20 @@ const profile =
         sourceRoot: "examples/library/src",
         ambient: [],
       }
+let base = root
+if (values.profiles) {
+  const file = path.resolve(values.profiles)
+  base = path.dirname(file)
+  profile = JSON.parse(await fs.readFile(file, "utf8")).find((value) => value.name === name)
+  if (!profile) throw new Error(`Unknown input profile: ${name}`)
+}
 const require = createRequire(path.join(root, "packages/ardo/package.json"))
 const directory = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-api-phases-"))
 const config = path.join(directory, "tsconfig.json")
 await fs.writeFile(
   config,
   JSON.stringify({
-    extends: path.join(root, profile.config),
+    extends: path.resolve(base, profile.config),
     compilerOptions: {
       noEmit: false,
       emitDeclarationOnly: true,
@@ -40,13 +54,18 @@ await fs.writeFile(
       removeComments: false,
       noEmitOnError: true,
       incremental: false,
-      typeRoots: [path.join(root, "node_modules/@types")],
-      rootDir: path.join(root, profile.sourceRoot),
+      ...(profile.typeRoots
+        ? { typeRoots: profile.typeRoots.map((value) => path.resolve(base, value)) }
+        : !values.profiles
+          ? { typeRoots: [path.join(root, "node_modules/@types")] }
+          : {}),
+      rootDir: path.resolve(base, profile.sourceRoot),
       outDir: path.join(directory, "declarations"),
+      declarationDir: path.join(directory, "declarations"),
     },
     files: [
-      path.join(root, profile.entry),
-      ...profile.ambient.map((file) => path.join(root, file)),
+      path.resolve(base, profile.entry),
+      ...(profile.ambient ?? []).map((file) => path.resolve(base, file)),
     ],
     include: [],
   })
@@ -100,7 +119,7 @@ for (const method of [
 ])
   wrap(sdk.Program.prototype, method)
 const project = new ardo.NativeApiProject({
-  entryPoints: [path.join(root, profile.entry)],
+  entryPoints: [path.resolve(base, profile.entry)],
   tsconfig: config,
 })
 project.client = sdk

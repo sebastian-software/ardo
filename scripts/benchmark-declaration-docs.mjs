@@ -27,6 +27,8 @@ async function benchmark() {
       warmups: { type: "string", default: "1" },
       modes: { type: "string" },
       baseline: { type: "string" },
+      profiles: { type: "string" },
+      "allow-incomplete": { type: "boolean", default: false },
       "profile-dir": { type: "string" },
     },
   })
@@ -40,6 +42,8 @@ async function benchmark() {
         "Native-api modes use the pinned async Node API.\n" +
         "Baseline modes require --baseline=/path/to/old/dist.\n" +
         "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
+        "--profiles=FILE selects JSON input profiles; paths are relative to that file.\n" +
+        "--allow-incomplete records extraction gaps for performance research instead of rejecting them.\n" +
         "--profile-dir=DIR records CPU profiles; use --runs=1 --warmups=0 for diagnosis, not timing claims."
     )
     return
@@ -55,7 +59,7 @@ async function benchmark() {
   if (!/^Version 7\./u.test(version))
     throw new Error(`Expected native TypeScript 7; got ${version}.`)
   const require = createRequire(path.join(root, "packages/ardo/package.json"))
-  const profiles = [
+  const defaultProfiles = [
     {
       name: "ardo",
       entry: "packages/ardo/src/index.ts",
@@ -70,6 +74,39 @@ async function benchmark() {
       sourceRoot: "examples/library/src",
     },
   ]
+  const profileFile = values.profiles ? path.resolve(values.profiles) : undefined
+  const selectedProfiles = profileFile
+    ? JSON.parse(await fs.readFile(profileFile, "utf8"))
+    : defaultProfiles
+  if (!Array.isArray(selectedProfiles) || !selectedProfiles.length)
+    throw new Error("Profiles must be a nonempty JSON array.")
+  const profileNames = new Set()
+  const profiles = selectedProfiles.map((profile) => {
+    if (
+      !profile ||
+      typeof profile.name !== "string" ||
+      !/^[a-z0-9][a-z0-9-]*$/u.test(profile.name) ||
+      profileNames.has(profile.name) ||
+      ["entry", "config", "sourceRoot"].some((key) => typeof profile[key] !== "string")
+    )
+      throw new Error("Profiles need unique safe names, entry, config, and sourceRoot paths.")
+    profileNames.add(profile.name)
+    const base = profileFile ? path.dirname(profileFile) : root
+    return {
+      ...profile,
+      entry: path.resolve(base, profile.entry),
+      config: path.resolve(base, profile.config),
+      sourceRoot: path.resolve(base, profile.sourceRoot),
+      packageRoot: path.resolve(base, profile.packageRoot ?? path.dirname(profile.config)),
+      ambient: (profile.ambient ?? []).map((file) => path.resolve(base, file)),
+      // The historical repository profiles explicitly use workspace @types.
+      typeRoots: profile.typeRoots
+        ? profile.typeRoots.map((directory) => path.resolve(base, directory))
+        : profileFile
+          ? undefined
+          : [path.join(root, "node_modules/@types")],
+    }
+  })
   const defaults = [
     "typedoc",
     "native-two-pass",
@@ -152,6 +189,7 @@ async function benchmark() {
       runs,
       warmups,
       cpuProfiling: Boolean(profileDirectory),
+      allowIncomplete: values["allow-incomplete"],
       boundary: "Fresh Node process launch through written Markdown pages and process exit",
       order: "Sequential; rotate mode order each round; no concurrent benchmark jobs",
       cache:
@@ -180,6 +218,7 @@ async function benchmark() {
       const cache = await setup(profile, path.join(directory, "cache"), true)
       const prepared = compile(compiler, cache.config, true)
       const libFiles = libraries(prepared.files)
+      const projectSource = await sourceStats(profile.sourceRoot, prepared.files)
       const results = Object.fromEntries(modes.map((mode) => [mode, []]))
       let ordinal = 0
       for (let roundIndex = -warmups; roundIndex < runs; roundIndex++) {
@@ -201,8 +240,9 @@ async function benchmark() {
                   : compiler,
             dist: mode.endsWith("baseline") ? baselineDist : currentDist,
             input,
-            entry: path.join(root, profile.entry),
-            packageRoot: path.dirname(path.join(root, profile.config)),
+            entry: profile.entry,
+            packageRoot: profile.packageRoot,
+            allowIncomplete: values["allow-incomplete"],
             libFiles,
             routes: path.join(runDirectory, "routes"),
           }
@@ -262,6 +302,13 @@ async function benchmark() {
       report.profiles.push({
         name: profile.name,
         entry: profile.entry,
+        provenance: profile.provenance ?? null,
+        input: {
+          projectSource,
+          compilerProjectFiles: prepared.files.length,
+          compilerLibFiles: libFiles.length,
+          baseConfig: await fs.readFile(profile.config, "utf8"),
+        },
         modes: modes.map((mode) => {
           const samples = results[mode]
           const output = new Set(samples.map((sample) => sample.markdownSha256))
@@ -323,7 +370,7 @@ async function benchmark() {
 
 async function apiImplementationHashes(directory) {
   const chunks = (await fs.readdir(directory)).filter((file) =>
-    /^(?:native-project|generated-docs)-.*\.js$/u.test(file)
+    /^(?:native-project|generated-docs|generator|renderer)-.*\.js$/u.test(file)
   )
   return Promise.all(
     ["api/index.js", ...chunks].sort().map(async (file) => ({
@@ -342,7 +389,7 @@ async function setup(profile, directory, incremental = false) {
   await fs.writeFile(
     config,
     JSON.stringify({
-      extends: path.join(root, profile.config),
+      extends: profile.config,
       compilerOptions: {
         noEmit: false,
         emitDeclarationOnly: true,
@@ -350,20 +397,30 @@ async function setup(profile, directory, incremental = false) {
         declarationMap: true,
         removeComments: false,
         noEmitOnError: true,
-        typeRoots: [path.join(root, "node_modules/@types")],
-        rootDir: path.join(root, profile.sourceRoot),
+        ...(profile.typeRoots ? { typeRoots: profile.typeRoots } : {}),
+        rootDir: profile.sourceRoot,
         outDir: declarations,
+        // An upstream declarationDir would otherwise bypass this run's output directory.
+        declarationDir: declarations,
         incremental,
         ...(incremental ? { tsBuildInfoFile: path.join(directory, "state.tsbuildinfo") } : {}),
       },
-      files: [
-        path.join(root, profile.entry),
-        ...(profile.ambient ?? []).map((file) => path.join(root, file)),
-      ],
+      files: [profile.entry, ...profile.ambient],
       include: [],
     })
   )
-  return { config, declarations, entry: path.join(declarations, "index.d.ts") }
+  return {
+    config,
+    declarations,
+    entry: path.join(
+      declarations,
+      path
+        .relative(profile.sourceRoot, profile.entry)
+        .replace(/\.(?:tsx?|mts|cts)$/u, (extension) =>
+          extension === ".mts" ? ".d.mts" : extension === ".cts" ? ".d.cts" : ".d.ts"
+        )
+    ),
+  }
 }
 
 async function worker(options) {
@@ -426,9 +483,13 @@ async function worker(options) {
         )
   const generateMs = performance.now() - generateStart
   const pages = typedoc ? result : result.pages
-  if (!pages.length) throw new Error("No pages were generated.")
+  if (pages.length < 2 || (!typedoc && result.items.length === 0))
+    throw new Error(
+      "No public API pages were generated; an index alone is not a documentation workload."
+    )
   if (
     !typedoc &&
+    !options.allowIncomplete &&
     (result.diagnostics.length || result.items.some((item) => !item.propertiesComplete))
   )
     throw new Error(`Incomplete extraction: ${JSON.stringify(result.diagnostics)}`)
@@ -444,6 +505,17 @@ async function worker(options) {
         compilerLibFiles: typedoc || nativeApi ? null : libFiles.length,
         extractedFiles: typedoc ? null : result.files.length,
         exports: typedoc ? null : result.items.length,
+        extraction: typedoc
+          ? null
+          : {
+              diagnostics: result.diagnostics.map((diagnostic) => ({
+                file: path.relative(options.input.declarations, diagnostic.file),
+                message: diagnostic.message,
+              })),
+              incompleteExports: result.items
+                .filter((item) => !item.propertiesComplete)
+                .map((item) => item.name),
+            },
         pages: pages.length,
         pagePaths: pages.map((page) => page.path),
       })
@@ -496,6 +568,35 @@ async function declarationStats(directory) {
   let bytes = 0
   for (const file of declarations) bytes += (await fs.stat(path.join(directory, file))).size
   return { files: declarations.length, bytes }
+}
+
+async function sourceStats(sourceRoot, files) {
+  const sources = files
+    .map((file) => ({ file, relative: path.relative(sourceRoot, file) }))
+    .filter(
+      ({ file, relative }) =>
+        relative !== ".." &&
+        !relative.startsWith(`..${path.sep}`) &&
+        !path.isAbsolute(relative) &&
+        /\.[cm]?tsx?$/u.test(file) &&
+        !/\.d\.[cm]?ts$/u.test(file)
+    )
+    .sort((left, right) => left.relative.localeCompare(right.relative))
+  const hash = createHash("sha256")
+  let bytes = 0
+  let linesIncludingCommentsAndBlanks = 0
+  for (const { file, relative } of sources) {
+    const content = await fs.readFile(file)
+    bytes += content.length
+    linesIncludingCommentsAndBlanks += content.toString("utf8").split("\n").length
+    hash.update(relative).update("\0").update(content).update("\0")
+  }
+  return {
+    files: sources.length,
+    bytes,
+    linesIncludingCommentsAndBlanks,
+    sha256: hash.digest("hex"),
+  }
 }
 
 function summarize(values) {
