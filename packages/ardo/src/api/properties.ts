@@ -7,6 +7,7 @@ import type {
 } from "./declaration-project"
 import type { Properties } from "./members"
 import type { TypeContext, TypeValue } from "./source"
+import type { ApiProperty } from "./types"
 
 import { mergeProperties, readClassMembers, readMembers } from "./members"
 import { resolveCallables } from "./signatures"
@@ -88,7 +89,7 @@ export class TypeProperties {
       node.type === "TSInterfaceDeclaration"
         ? readMembers(node.body.body, context, this.reader)
         : node.type === "ClassDeclaration"
-          ? readClassMembers(node, context, this.reader)
+          ? readClassMembers(node, context)
           : { items: [], complete: true }
     const bases = inherited.map((base) => ({
       ...base,
@@ -122,9 +123,15 @@ export class TypeProperties {
     const first = reference.args.at(0)
     if (first == null) return undefined
     if (reference.name === "ReturnType") return this.returnType(first, context, seen)
+    if (reference.name === "Record") return this.record(reference, context)
     if (!["Pick", "Omit", "Partial", "Required", "Readonly"].includes(reference.name))
       return undefined
     const source = this.of({ ...context, node: first }, seen)
+    if (reference.name !== "Readonly" && source.items.some((item) => item.kind === "index"))
+      return this.incomplete(
+        context,
+        `Cannot safely apply ${reference.name} to index signatures; its type expression is preserved.`
+      )
     if (reference.name === "Pick" || reference.name === "Omit") {
       const keys = literalKeys(reference.args.at(1))
       if (keys == null)
@@ -152,6 +159,27 @@ export class TypeProperties {
         readonly: reference.name === "Readonly" ? true : item.readonly,
       })),
     }
+  }
+
+  private record(reference: Reference, context: TypeContext): Properties {
+    const keys = reference.args.at(0)
+    const value = reference.args.at(1)
+    if (keys == null || value == null)
+      return this.incomplete(context, "Record requires both key and value types.")
+    if (keys.type === "TSNeverKeyword") return { items: [], complete: true }
+    const names = literalKeys(keys)
+    const type = formatType(value, context)
+    if (names != null)
+      return { items: names.map((name) => recordMember(name, type, "property")), complete: true }
+    if (isIndexKey(keys))
+      return {
+        items: [recordMember(`[key: ${formatType(keys, context)}]`, type, "index")],
+        complete: true,
+      }
+    return this.incomplete(
+      context,
+      "Only literal names and primitive index keys are supported in Record."
+    )
   }
 
   private returnType(node: TSType, context: TypeContext, seen: Set<string>): Properties {
@@ -219,10 +247,28 @@ function literalKeys(node: TSType | undefined): string[] | undefined {
   if (
     node?.type === "TSLiteralType" &&
     node.literal.type === "Literal" &&
-    typeof node.literal.value === "string"
+    (typeof node.literal.value === "string" || typeof node.literal.value === "number")
   )
-    return [node.literal.value]
+    return [String(node.literal.value)]
   if (node?.type !== "TSUnionType") return undefined
   const keys = node.types.map((type) => literalKeys(type))
   return keys.every((key) => key != null) ? keys.flat() : undefined
+}
+
+function isIndexKey(node: TSType): boolean {
+  if (["TSStringKeyword", "TSNumberKeyword", "TSSymbolKeyword"].includes(node.type)) return true
+  return node.type === "TSUnionType" && node.types.every((type) => isIndexKey(type))
+}
+
+function recordMember(name: string, type: string, kind: "index" | "property"): ApiProperty {
+  return {
+    name,
+    kind,
+    type,
+    optional: false,
+    readonly: false,
+    static: false,
+    comment: { description: "", tags: [] },
+    signatures: [],
+  }
 }

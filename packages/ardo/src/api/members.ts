@@ -1,4 +1,10 @@
-import type { Class, ClassElement, MethodDefinition, TSSignature } from "oxc-parser"
+import type {
+  Class,
+  ClassElement,
+  MethodDefinition,
+  TSIndexSignature,
+  TSSignature,
+} from "oxc-parser"
 
 import type { DeclarationReader } from "./declaration-project"
 import type { TypeContext } from "./source"
@@ -28,6 +34,8 @@ function readMember(
 ): Properties {
   const comment = readComment(context.module.source, context.module.comments, member.start)
   if (isInternal(comment)) return { items: [], complete: true }
+  if (member.type === "TSIndexSignature")
+    return { items: [readIndexSignature(member, context, comment)], complete: true }
   if (member.type !== "TSPropertySignature" && member.type !== "TSMethodSignature") {
     reader.report(
       context.module,
@@ -60,24 +68,67 @@ function readMember(
   }
 }
 
-export function readClassMembers(
-  node: Class,
-  context: TypeContext,
-  reader: DeclarationReader
-): Properties {
+export function readClassMembers(node: Class, context: TypeContext): Properties {
   const items: ApiProperty[] = []
-  let complete = true
+  const accessors = new Map<string, number>()
   for (const member of node.body.body) {
     if (member.type === "StaticBlock") continue
     if (member.type === "TSIndexSignature") {
-      reader.report(context.module, "Class index signatures are preserved but not expanded.")
-      complete = false
+      const comment = readComment(context.module.source, context.module.comments, member.start)
+      if (!isInternal(comment)) items.push(readIndexSignature(member, context, comment))
       continue
     }
     const property = readClassMember(member, context)
-    if (property != null) items.push(property)
+    if (property != null)
+      appendClassMember(items, property, {
+        accessors,
+        accessor: isAccessor(member),
+      })
   }
-  return mergeProperties([{ items, complete }], "overloads")
+  return mergeProperties([{ items, complete: true }], "overloads")
+}
+
+function readIndexSignature(
+  member: TSIndexSignature,
+  context: TypeContext,
+  comment: ApiProperty["comment"]
+): ApiProperty {
+  const annotation = annotationOf(member)
+  return {
+    name: `[${member.parameters.map((parameter) => formatType(parameter, context)).join(", ")}]`,
+    kind: "index",
+    type: annotation == null ? "/* type not declared */" : formatType(annotation, context),
+    optional: false,
+    readonly: member.readonly,
+    static: member.static,
+    comment,
+    signatures: [],
+  }
+}
+
+function appendClassMember(
+  items: ApiProperty[],
+  property: ApiProperty,
+  options: { accessors: Map<string, number>; accessor: boolean }
+): void {
+  const key = `${property.static}:${property.name}`
+  const index = options.accessor ? options.accessors.get(key) : undefined
+  if (index == null) {
+    if (options.accessor) options.accessors.set(key, items.length)
+    items.push(property)
+    return
+  }
+  const previous = items[index]
+  const getter = previous.readonly ? previous : property
+  const setter = previous.readonly ? property : previous
+  items[index] = {
+    ...getter,
+    readonly: previous.readonly && property.readonly,
+    comment:
+      getter.comment.description !== "" || getter.comment.tags.length > 0
+        ? getter.comment
+        : setter.comment,
+  }
 }
 
 function readClassMember(
@@ -133,6 +184,10 @@ function readClassMethod(
 
 function isMethod(member: ClassElement): member is MethodDefinition {
   return member.type === "MethodDefinition" || member.type === "TSAbstractMethodDefinition"
+}
+
+function isAccessor(member: ClassElement): boolean {
+  return isMethod(member) && (member.kind === "get" || member.kind === "set")
 }
 
 export function mergeProperties(

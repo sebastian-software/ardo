@@ -40,11 +40,41 @@ jobs:
       - name: Type check
         run: pnpm typecheck
 
+      - name: Diagnose OXC type resolution on failure
+        if: failure() && matrix.node-version == '24'
+        working-directory: packages/ardo
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import { createRequire } from 'node:module';
+          const require = createRequire(path.resolve('src/api/index.ts'));
+          const ts = require('typescript');
+          const config = ts.readConfigFile('tsconfig.json', ts.sys.readFile);
+          const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, process.cwd());
+          for (const file of ['src/api/comments.ts', 'src/vite/mdx-scope.ts']) {
+            console.log(file, ts.resolveModuleName('oxc-parser', path.resolve(file), parsed.options, ts.sys));
+          }
+          const entry = require.resolve('oxc-parser');
+          console.log({ entry, adjacentTypes: fs.existsSync(entry.replace(/\.js$/, '.d.ts')) });
+          console.log(fs.readFileSync(path.resolve(path.dirname(entry), '../package.json'), 'utf8'));
+          NODE
+
       - name: Lint
         run: pnpm lint
 
       - name: Run unit tests with coverage
         run: pnpm test:coverage
+
+      - name: Install native TypeScript for declaration documentation tests
+        if: matrix.node-version == '24'
+        run: npm install --prefix "$RUNNER_TEMP/ardo-native-ts" --no-package-lock --ignore-scripts --no-audit --no-fund typescript@7.0.2
+
+      - name: Test documentation from native TypeScript declarations
+        if: matrix.node-version == '24'
+        env:
+          ARDO_DECLARATION_TSC: ${{ runner.temp }}/ardo-native-ts/node_modules/typescript/bin/tsc
+        run: pnpm exec vitest --run packages/ardo/src/api --config vitest.config.ts
 
       - name: Run integration tests
         run: pnpm test:integration

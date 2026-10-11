@@ -43,6 +43,8 @@ their props, including inherited generic members and selected compositions:
 - Intersections and local generic type arguments.
 - `Pick` and `Omit` with literal property names.
 - `Partial`, `Required`, and `Readonly`.
+- `Record` with finite literal keys or primitive dictionary keys, and interface
+  and class index signatures.
 - `typeof` function aliases and `ReturnType` of a resolvable concrete function.
 
 This is bounded syntax processing, with explicit diagnostics for unsupported
@@ -54,6 +56,8 @@ includes summaries, `@param`, `@returns`/`@return`, `@remarks`, `@example`,
 `@deprecated`, `@default`/`@defaultValue`, and local `{@link ...}` references.
 `@internal` declarations and private/protected class members are excluded.
 Inherited property descriptions are obtained from the referenced declaration.
+Getter/setter pairs share one property, retain getter documentation, and report
+mutability independently of their declaration order.
 
 The output writer is shared with the TypeDoc path. It retains the generated-file
 sentinel and refuses to replace a nonempty handwritten output directory. Parsing
@@ -127,15 +131,51 @@ APIs. It does not establish 95% coverage. Tests separately check property type
 substitution, modifiers, preserved expressions, comments, overloads, re-exports,
 and output protection.
 
-The remaining expansion diagnostics on Ardo's entry point are an external
-`CompileJsxOptions` base in `MarkdownConfig` and `Record<string, unknown>` in
-`PageFrontmatter`. Own properties and the original declarations remain visible.
+The remaining expansion diagnostic on Ardo's entry point is an external
+`CompileJsxOptions` base in `MarkdownConfig`. Own properties and the original
+declaration remain visible. `PageFrontmatter` now includes its inherited
+`[key: string]: unknown` index signature.
 
-Validation completed with 28 tests across the new extractor, existing output
-guards, route ordering, and Markdown compilation. Package type checking, lint,
-format checking, the package build, and the library site build also passed. Lint
-retains filesystem-path heuristic warnings for the intentional declaration and
-output paths. No end-to-end speed or dependency-size benchmark was performed.
+### TypeDoc as a differential oracle
+
+[`typedoc-oracle.test.ts`](../../packages/ardo/src/api/typedoc-oracle.test.ts)
+converts the same TypeScript source through TypeDoc and through real declaration
+emit followed by OXC. The comparison checks property names, type syntax,
+optionality, readonly flags, and summaries. Type syntax is compared as parsed
+trees, ignoring whitespace, quote style, and outer parentheses; this is not a
+proof of semantic equivalence for arbitrary types.
+
+| Fixture group                                                     | Observed result                                                                                                 |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Generic defaults and multiple inheritance levels                  | Property types, modifiers, and inherited comments match                                                         |
+| `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`             | All five interface cases match                                                                                  |
+| Intersections, generic class inheritance, and getter/setter pairs | Match, including member comments and visibility filtering                                                       |
+| `Readonly<Record<'open' \| 'closed', boolean>>`                   | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                        |
+| Custom mapped and conditional helpers                             | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion |
+| A public `Partial<Base<string>>` alias                            | TypeDoc retains the alias without child properties; the prototype also supplies a property table                |
+
+The ten exact matches and four explicit difference cases are assertions in the
+test suite. The readonly difference is checked against the compiler with a
+`@ts-expect-error` assignment: declaration emission fails if the compiler stops
+rejecting writes. TypeDoc serves as a comparison tool, not an assumption that
+every detail in its reflection model is correct or required for documentation.
+
+[`declaration-emit.test.ts`](../../packages/ardo/src/api/declaration-emit.test.ts)
+also checks inferred default parameters, object and async returns, callable
+aliases, overloads, inherited props, JSDoc tags, and internal filtering from
+freshly compiled source. Comments must actually survive declaration emission;
+the extractor cannot recover comments the compiler omitted. Both compiler-backed
+tests use the workspace compiler by default. `ARDO_DECLARATION_TSC` selects another
+CLI, and CI runs all declaration tests again with isolated `typescript@7.0.2` on
+Node.js 24 without changing the workspace compiler or production dependencies.
+
+All 29 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 271 tests across 63 files, and all 32 integration
+tests also passed during hardening;
+package type checking, lint, formatting, package builds, and the library site
+build passed locally. Lint retains filesystem-path heuristic warnings for the
+intentional declaration and output paths. No end-to-end speed or dependency-size
+benchmark was performed.
 
 ## Remaining limits and migration implications
 
@@ -143,9 +183,10 @@ output paths. No end-to-end speed or dependency-size benchmark was performed.
   resolved. An external reference can be displayed, but its properties cannot be
   expanded by this prototype.
 - Conditional, mapped, indexed-access, and union types retain their expressions.
-  They do not become a synthesized flat property table. Index signatures and
-  unsupported declaration forms such as namespaces/CommonJS exports emit
-  diagnostics.
+  They do not become a synthesized flat property table. Utility transformations
+  such as `Partial` or `Pick` over open index signatures report a limit rather
+  than inventing effective dictionary types. Unsupported declaration forms such
+  as namespaces/CommonJS exports also emit diagnostics.
 - Default expressions disappear during declaration emit. Displaying them needs
   `@defaultValue` or a separate source lookup. Enum expressions that remain in a
   declaration are preserved as written.

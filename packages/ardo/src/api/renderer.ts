@@ -65,12 +65,31 @@ function renderPage(
       "> Additional members may be defined by the type expression above; this table shows the members that could be expanded.",
       ""
     )
+  appendIndexSignatures(lines, item, links)
   appendMethods(lines, item, links)
   return { path: options.path, content: lines.join("\n"), frontmatter: { title: item.name } }
 }
 
+function appendIndexSignatures(
+  lines: string[],
+  item: ApiDeclaration,
+  links: Map<string, string>
+): void {
+  const indexes = item.properties.filter((property) => property.kind === "index")
+  if (indexes.length === 0) return
+  lines.push("## Index signatures", "")
+  for (const index of indexes)
+    lines.push(
+      ...renderComment(index.comment, links),
+      codeBlock(`${index.readonly ? "readonly " : ""}${index.name}: ${index.type};`),
+      ""
+    )
+}
+
 function appendMethods(lines: string[], item: ApiDeclaration, links: Map<string, string>): void {
-  for (const method of item.properties.filter((property) => property.kind !== "property")) {
+  for (const method of item.properties.filter(
+    (property) => property.kind === "method" || property.kind === "constructor"
+  )) {
     lines.push(`## ${method.name}`, "", ...renderComment(method.comment, links))
     for (const signature of method.signatures)
       lines.push(codeBlock(signature.text), "", ...renderSignature(signature, links))

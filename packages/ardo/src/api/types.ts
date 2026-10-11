@@ -36,7 +36,7 @@ export type ApiSignature = {
 
 export type ApiProperty = {
   name: string
-  kind: "constructor" | "method" | "property"
+  kind: "constructor" | "index" | "method" | "property"
   type: string
   optional: boolean
   readonly: boolean
