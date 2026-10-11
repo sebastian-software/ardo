@@ -2,6 +2,11 @@
 
 October 11, 2026. Follow-up to the [isolated watch/API probes](./2026-10-11-native-typescript-watch-api.md).
 
+The later [startup-cost investigation](./2026-10-11-native-api-startup-cost.md)
+separates SDK loading and request work, removes two-stage import resolution, and
+records a paired before/after benchmark. The timings below describe the initial
+integration before that change.
+
 The source documentation backend now uses the official asynchronous native
 TypeScript API for both builds and development. The library example and Ardo's
 own documentation select this backend through `ardo({ api: ... })`. They no

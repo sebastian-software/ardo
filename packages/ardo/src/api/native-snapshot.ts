@@ -1,3 +1,4 @@
+import type { StringLiteralLikeNode } from "@typescript/native/ast"
 import type * as NativeCompiler from "@typescript/native/async"
 
 import fs from "node:fs/promises"
@@ -204,18 +205,16 @@ async function resolveCompilerImport(
 ): Promise<NativeCompiler.ResolvedModule | undefined> {
   const { request, fallbackMode } = options
   const source = await program.getSourceFile(file)
-  const imports = source?.imports ?? []
-  const indices = imports.flatMap((node, index) =>
-    "text" in node && node.text === request ? [index] : []
+  const { isStringLiteralLikeNode } = await import("@typescript/native/ast")
+  const specifiers = (source?.imports ?? []).filter(
+    (node): node is StringLiteralLikeNode => isStringLiteralLikeNode(node) && node.text === request
   )
-  if (indices.length === 0) return program.getResolvedModule(file, request, fallbackMode)
+  if (specifiers.length === 0) return program.getResolvedModule(file, request, fallbackMode)
+  // The compiler selects the original import's mode while resolving its target,
+  // avoiding a separate mode query without losing explicit resolution attributes.
   const resolved = await Promise.all(
-    indices.map(async (index) =>
-      program.getResolvedModule(
-        file,
-        request,
-        await program.getModeForResolutionAtIndex(file, index)
-      )
+    specifiers.map(async (specifier) =>
+      program.getResolvedModuleFromModuleSpecifier(specifier, file)
     )
   )
   const candidates = new Map(

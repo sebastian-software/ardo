@@ -36,7 +36,8 @@ async function benchmark() {
         "Build Ardo first. Set ARDO_DECLARATION_TSC to a native TypeScript 7 tsc executable.\n" +
         "Runs sequential fresh Node processes on Ardo and the library example; installs nothing.\n" +
         "--modes=NAME,... selects scenarios. Additional modes: native-baseline, declarations-baseline,\n" +
-        "workspace-one-pass, native-binary, native-api. Native-api uses the pinned async Node API.\n" +
+        "workspace-one-pass, native-binary, native-api, native-api-baseline.\n" +
+        "Native-api modes use the pinned async Node API.\n" +
         "Baseline modes require --baseline=/path/to/old/dist.\n" +
         "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
         "--profile-dir=DIR records CPU profiles; use --runs=1 --warmups=0 for diagnosis, not timing claims."
@@ -83,6 +84,7 @@ async function benchmark() {
     "workspace-one-pass",
     "native-binary",
     "native-api",
+    "native-api-baseline",
   ]
   const modes = values.modes ? values.modes.split(",") : defaults
   if (
@@ -121,6 +123,7 @@ async function benchmark() {
         .update(await fs.readFile(path.join(currentDist, "api/index.js")))
         .digest("hex"),
       currentApiChunks: await apiImplementationHashes(currentDist),
+      baselineApiChunks: baselineDist ? await apiImplementationHashes(baselineDist) : null,
       baselineApiSha256: baselineDist
         ? createHash("sha256")
             .update(await fs.readFile(path.join(baselineDist, "api/index.js")))
@@ -267,8 +270,8 @@ async function benchmark() {
           return {
             mode,
             scenario:
-              mode === "native-api"
-                ? "Native async API checked in-memory emit, compiler resolution, OXC, Markdown, and session disposal; compiler included in generateMs"
+              mode === "native-api" || mode === "native-api-baseline"
+                ? `Native async API${mode.endsWith("baseline") ? " baseline" : ""} checked in-memory emit, compiler resolution, OXC, Markdown, and session disposal; compiler included in generateMs`
                 : mode === "workspace-one-pass"
                   ? "Workspace JavaScript TypeScript full emit and library discovery, then OXC"
                   : mode === "native-binary"
@@ -366,7 +369,7 @@ async function setup(profile, directory, incremental = false) {
 async function worker(options) {
   const start = performance.now()
   const typedoc = options.mode === "typedoc"
-  const nativeApi = options.mode === "native-api"
+  const nativeApi = options.mode === "native-api" || options.mode === "native-api-baseline"
   const api = await import(
     pathToFileURL(path.join(options.dist, `${typedoc ? "typedoc" : "api"}/index.js`))
   )
