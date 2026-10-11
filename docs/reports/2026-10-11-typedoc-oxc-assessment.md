@@ -8,6 +8,10 @@ implements and validates the file-based path described here. This assessment
 retains the initial research observations; the prototype report records the
 implementation and its remaining limits.
 
+Main later replaced the OXC-based MDX scope reader with Ferromark module output.
+The repository observations below describe the stated baseline; the prototype
+declares OXC as an optional peer specifically for API extraction.
+
 OXC is a credible foundation for an Ardo-owned API extractor. Ardo already owns
 the Markdown renderer, page structure, and component presentation. The main
 replacement work is building the documentation model currently supplied by
@@ -36,7 +40,7 @@ emit and the new API in `7.1.0-dev.20261010.1`, installed in a temporary directo
 - [The Markdown pipeline](../../packages/ardo/src/typedoc/generator-docs.ts) and
   the surrounding page generators own page grouping, paths, indexes, navigation,
   frontmatter, and output. The generator also owns output-directory protection.
-- [The MDX scope reader](../../packages/ardo/src/vite/mdx-scope.ts) uses OXC to
+- [The baseline MDX scope reader](https://github.com/sebastian-software/ardo/blob/c2cfd62/packages/ardo/src/vite/mdx-scope.ts) uses OXC to
   parse individual ESM blocks and generated TSX, collect identifiers, and avoid
   naming collisions. It does not resolve imported declarations across files or
   extract API documentation. It currently uses the AST and errors, rather than

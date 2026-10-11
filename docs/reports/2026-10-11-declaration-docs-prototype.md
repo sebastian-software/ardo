@@ -9,8 +9,15 @@ reads those declarations, and Ardo generates Markdown that its normal site build
 renders as HTML. The new extractor imports neither TypeDoc nor TypeScript.
 
 This is an experimental, opt-in path exposed as `ardo/api`. The existing TypeDoc
-integration and dependency remain in place. No compiler version or lockfile was
-changed, and the prototype adds no runtime dependency.
+integration and dependency remain in place, and the workspace compiler version
+is unchanged. OXC is an optional peer dependency for this entry point and a
+development dependency for its tests; applications using declaration extraction
+must install it. The prototype adds no mandatory runtime dependency to Ardo.
+
+The initial research used baseline `c2cfd62`, where MDX compilation already used
+OXC. Main subsequently moved that work into Ferromark and removed the direct OXC
+dependency. The prototype keeps OXC available explicitly for API extraction
+without restoring the previous MDX implementation.
 
 ## Boundary and implementation
 
@@ -72,7 +79,8 @@ The configuration preserves comments and rejects declaration emit on type errors
 The script checks that the selected compiler is TypeScript 7, emits declarations,
 then generates a separate `api-declarations` route tree.
 
-With dependencies installed and Ardo built, run from the repository root:
+The repository development dependencies include OXC. With dependencies installed
+and Ardo built, run from the repository root:
 
 ```sh
 pnpm --filter ardo build
@@ -85,7 +93,12 @@ The workspace currently pins TypeScript 6, so its existing `tsc` should not be
 used for this native-compiler experiment. The declaration and generated route
 directories are ignored by Git.
 
-Applications with existing declaration output only need the extraction step:
+Applications with existing declaration output need the optional parser and the
+extraction step:
+
+```sh
+pnpm add -D oxc-parser@^0.127.0
+```
 
 ```ts
 import { generateDeclarationDocs } from "ardo/api"
@@ -170,7 +183,7 @@ CLI, and CI runs all declaration tests again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
 All 29 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 271 tests across 63 files, and all 32 integration
+suite with coverage passes all 293 tests across 65 files, and all 32 integration
 tests also passed during hardening;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the

@@ -3,8 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
+  # Stacked PRs need the same checks before their base merges.
   pull_request:
-    branches: [main]
 
 jobs:
   test:
@@ -39,26 +39,6 @@ jobs:
 
       - name: Type check
         run: pnpm typecheck
-
-      - name: Diagnose OXC type resolution on failure
-        if: failure() && matrix.node-version == '24'
-        working-directory: packages/ardo
-        run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
-          import { createRequire } from 'node:module';
-          const require = createRequire(path.resolve('src/api/index.ts'));
-          const ts = require('typescript');
-          const config = ts.readConfigFile('tsconfig.json', ts.sys.readFile);
-          const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, process.cwd());
-          for (const file of ['src/api/comments.ts', 'src/vite/mdx-scope.ts']) {
-            console.log(file, ts.resolveModuleName('oxc-parser', path.resolve(file), parsed.options, ts.sys));
-          }
-          const entry = require.resolve('oxc-parser');
-          console.log({ entry, adjacentTypes: fs.existsSync(entry.replace(/\.js$/, '.d.ts')) });
-          console.log(fs.readFileSync(path.resolve(path.dirname(entry), '../package.json'), 'utf8'));
-          NODE
 
       - name: Lint
         run: pnpm lint

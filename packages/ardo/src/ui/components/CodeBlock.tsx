@@ -56,7 +56,9 @@ export type ArdoCodeBlockProps = {
   highlightLines?: number[]
   /** Code as children — supports template literals with auto-outdent */
   children?: React.ReactNode
-  /** Pre-rendered Ferriki HTML injected by the literal TSX codeblock prepass */
+  /** Native fence metadata used by the literal TSX prepass. */
+  meta?: string
+  /** Compatibility input for callers of the public HTML-returning highlightCode helper. */
   __html?: string
 }
 
@@ -79,7 +81,7 @@ function CodeBlockContent({
   lineNumbers: boolean
   children?: React.ReactNode
 }) {
-  // The Ardo build plugin injects Ferriki-generated HTML here. Runtime code samples and custom children render through React instead.
+  // Preserve the public HTML compatibility input. Native build output uses React children.
   if (hasHtml) return <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
   if (hasCustomChildren) return <>{children}</>
   return (

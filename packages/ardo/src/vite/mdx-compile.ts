@@ -1,83 +1,109 @@
-import { compileJsx, JsxCompiler, type JsxResult } from "ferromark"
+import type { JsxModuleMap, JsxModuleResult } from "ferromark"
 
 import type { ArdoConfig } from "../config/types"
-import type { NativeMap } from "./mdx-types"
 
 import {
-  getNativeMarkdownCompileOptions,
+  createNativeMarkdownMetadata,
   type NativeMarkdownFormat,
-  readNativeMarkdownMetadata,
+  type NativeMarkdownMetadata,
+  prepareNativeMarkdown,
 } from "../markdown/native-metadata"
-import { createMdxModule } from "./mdx-module"
-import { allocateModuleNames, readModuleScope } from "./mdx-scope"
+import { buildToc } from "../markdown/toc"
 
-const jsxCompilers = new Map<string, JsxCompiler>()
+/** What the document's ESM exports and binds at the top level, as Ferromark reports it. */
+type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
 
+/**
+ * Names the code appended to Ferromark's module declares. Ferromark rejects an
+ * authored declaration of one of them, so no pass over the document is needed
+ * to find free names.
+ */
+const routeBindings = [
+  "_ArdoMermaid",
+  "_ArdoPageDataProvider",
+  "_ardoFrontmatter",
+  "_ardoRoute",
+  "_ardoToc",
+]
+
+/**
+ * Compile a Markdown or MDX route with Ferromark's MDX module output and append
+ * Ardo's route exports. Ferromark owns the module contract: authored ESM, the
+ * layout, component resolution, and the source map. Appended imports are
+ * hoisted, so `result.map` stays valid for the whole module.
+ */
 export function compileMdxRouteModule(input: {
   format: NativeMarkdownFormat
   id: string
   markdownConfig: ArdoConfig["markdown"]
   source: string
-}): { code: string; map: NativeMap } {
-  const initial = compileJsx(
+}): { code: string; map: JsxModuleMap } {
+  const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
     input.source,
-    getNativeMarkdownCompileOptions(input.markdownConfig, { format: input.format })
+    input.format,
+    input.markdownConfig
   )
-  const scope = readModuleScope({
-    body: initial.body,
-    entries: initial.esm,
+  const { componentPrefix: _componentPrefix, ...moduleOptions } = renderOptions
+  const result = prepared.renderModule({
+    ...moduleOptions,
+    codeBlockComponent: "_components.CodeBlock",
+    providerImportSource: "ardo/mdx-provider",
     filename: input.id,
-    source: input.source,
+    defaultExport: false,
+    reservedBindings: routeBindings,
   })
-  const names = allocateModuleNames(scope)
-  const metadata = readNativeMarkdownMetadata(input.source, input.format, input.markdownConfig)
-  const result = compileFinalJsx({
-    format: input.format,
-    markdownConfig: input.markdownConfig,
-    names,
-    source: input.source,
-    title: typeof metadata.frontmatter.title === "string" ? metadata.frontmatter.title : "",
-  })
-  return createMdxModule({
-    id: input.id,
-    markdownConfig: input.markdownConfig,
-    metadata,
-    moduleScope: scope,
-    names,
-    result,
-    source: input.source,
-  })
-}
-
-function compileFinalJsx(input: {
-  format: NativeMarkdownFormat
-  markdownConfig: ArdoConfig["markdown"]
-  names: ReturnType<typeof allocateModuleNames>
-  source: string
-  title: string
-}): JsxResult {
-  const options = getNativeMarkdownCompileOptions(input.markdownConfig, {
-    componentPrefix: input.names.components,
-    codeBlockComponent: `${input.names.components}.CodeBlock`,
-    format: input.format,
-  })
-  options.codeComponents = { mermaid: input.names.mermaid }
-  const compileOptions =
-    input.title === "" ? options : { ...options, omitTitleHeading: input.title }
-  return getJsxCompiler(input.markdownConfig).compile(input.source, compileOptions)
-}
-
-function getJsxCompiler(markdownConfig: ArdoConfig["markdown"]): JsxCompiler {
-  const theme = markdownConfig?.theme
-  const lineNumbers = markdownConfig?.lineNumbers ?? false
-  const cacheKey = `${theme === undefined ? "default-pair" : JSON.stringify(theme)}\u0000${lineNumbers}`
-  let compiler = jsxCompilers.get(cacheKey)
-  if (compiler == null) {
-    compiler = new JsxCompiler({
-      ...(theme === undefined ? {} : { theme }),
-      lineNumbers,
-    })
-    jsxCompilers.set(cacheKey, compiler)
+  const metadata = createNativeMarkdownMetadata(input.source, frontmatter, result)
+  return {
+    code: result.code + createRouteCode({ markdownConfig: input.markdownConfig, metadata, result }),
+    map: result.map,
   }
-  return compiler
+}
+
+function createRouteCode(input: {
+  markdownConfig: ArdoConfig["markdown"]
+  metadata: NativeMarkdownMetadata
+  result: JsxModuleResult
+}): string {
+  const scope: AuthoredScope = {
+    bindings: new Set(input.result.bindings),
+    exports: new Set(input.result.exports),
+  }
+  const toc = buildToc(input.metadata.headings, input.markdownConfig?.toc?.level ?? [2, 3])
+  const usesMermaid = input.result.codeBlocks.some(
+    (block) => block.language?.toLowerCase() === "mermaid"
+  )
+  const frontmatter = scope.bindings.has("frontmatter")
+    ? "frontmatter"
+    : JSON.stringify(input.metadata.frontmatter)
+  const lines = [
+    `import { ArdoPageDataProvider as _ArdoPageDataProvider } from "ardo/runtime";`,
+    ...(usesMermaid ? [`import { ArdoMermaid as _ArdoMermaid } from "ardo/ui";`] : []),
+    `const _ardoFrontmatter = ${frontmatter};`,
+    `const _ardoToc = ${JSON.stringify(toc)};`,
+    ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
+    ...createDataExport("toc", "_ardoToc", scope),
+    ...createHandleExport(input.metadata.frontmatter.layout, scope),
+    `function _ardoRoute(props = {}) {`,
+    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
+    `}`,
+    `export default _ardoRoute;`,
+  ]
+  return `\n${lines.join("\n")}\n`
+}
+
+/** Export Ardo's value unless the document exports or binds the name itself. */
+function createDataExport(
+  name: "frontmatter" | "toc",
+  local: string,
+  scope: AuthoredScope
+): string[] {
+  if (scope.exports.has(name)) return []
+  if (scope.bindings.has(name)) return [`export { ${name} };`]
+  return [`export { ${local} as ${name} };`]
+}
+
+function createHandleExport(layout: unknown, scope: AuthoredScope): string[] {
+  if ((layout !== "bare" && layout !== "default") || scope.exports.has("handle")) return []
+  if (scope.bindings.has("handle")) return ["export { handle };"]
+  return [`export const handle = ${JSON.stringify({ layout })};`]
 }

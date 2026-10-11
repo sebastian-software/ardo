@@ -23,8 +23,10 @@ Ferromark's reusable native `JsxCompiler` owns Ferriki and highlights Markdown
 fences as part of JSX rendering. It loads and caches theme and grammar assets
 on first use. Ardo configures the theme, line numbers, and generic codeblock
 component; the component receives highlighted JSX children and original code
-for copying. Literal `ArdoCodeBlock` usages in TSX use the direct Ferriki
-prepass. Existing title, label, highlighted-line, line-number, and component
+for copying. Literal `ArdoCodeBlock` usages in TSX use the same native fence renderer
+through a cached compiler. The direct Ferriki dependency remains for the public
+HTML-returning `highlightCode` compatibility helper and the configuration
+`ThemeInput` type. The public `__html` component input remains supported. Existing title, label, highlighted-line, line-number, and component
 override behavior remains part of the content contract.
 
 Configuration exposes the supported ordered native Ferromark passes. The

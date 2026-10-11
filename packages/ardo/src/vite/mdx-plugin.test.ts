@@ -157,7 +157,7 @@ describe("createMdxPlugin", () => {
     expect(view).toContain("unicode-owned")
   })
 
-  it("allocates compiler bindings around authored JSX names and route props", async () => {
+  it("resolves underscore-prefixed authored components and route props", async () => {
     const { default: route } = await loadRoute("<_ardoComponents />\n\n<props.Foo />")
     const view = renderToStaticMarkup(
       createElement(route, {
@@ -170,6 +170,29 @@ describe("createMdxPlugin", () => {
 
     expect(view).toContain("authored-root")
     expect(view).toContain("route-prop")
+  })
+
+  it.each([
+    ["a Ferromark binding", "export const MDXContent = 1\n\ncontent"],
+    ["an Ardo route binding", "export const _ardoRoute = 1\n\ncontent"],
+  ])("rejects an authored declaration of %s", async (_name, source) => {
+    await expect(loadRoute(source)).rejects.toThrow(/is reserved in MDX module output/u)
+  })
+
+  it("replaces the provider wrapper with an authored layout", async () => {
+    const { default: route } = await loadRoute(
+      'export default ({ children }) => <article data-layout="authored">{children}</article>;\n\ncontent'
+    )
+    const view = renderToStaticMarkup(createElement(route))
+
+    expect(view).toContain('<article data-layout="authored">')
+    expect(view).not.toContain("<section>")
+  })
+
+  it("names an undefined component when it renders", async () => {
+    const { default: route } = await loadRoute("<Missing />")
+
+    expect(() => renderToStaticMarkup(createElement(route))).toThrow(/`Missing`/u)
   })
 
   it("leaves raw Markdown imports to Vite's asset handling", async () => {
@@ -200,6 +223,28 @@ describe("createMdxPlugin", () => {
 
     expect(module.frontmatter).toStrictEqual({ title: "Authored" })
     expect(view).toContain('data-frontmatter-title="Authored"')
+  })
+
+  it("re-exports imported frontmatter and keeps the generated outline in page data", async () => {
+    await fs.writeFile(
+      path.join(tempDirectory, "data.mjs"),
+      'export const frontmatter = { title: "Local" };\nexport const toc = [];\n'
+    )
+    const module = await loadRoute(
+      'import { frontmatter, toc } from "./data.mjs";\n\n## Section\n\nText'
+    )
+    const view = renderToStaticMarkup(createElement(module.default))
+
+    expect(module.frontmatter).toStrictEqual({ title: "Local" })
+    expect(module.toc).toStrictEqual([])
+    expect(view).toContain('data-frontmatter-title="Local"')
+    expect(view).toContain('data-toc="section"')
+  })
+
+  it("exports a route handle for a frontmatter layout", async () => {
+    const module = await loadRoute("---\nlayout: bare\n---\nText")
+
+    expect(module.handle).toStrictEqual({ layout: "bare" })
   })
 
   it("maps authored ESM through Oxc using UTF-16 columns after Unicode text", async () => {
@@ -244,6 +289,7 @@ function getRunningServer(): ViteDevServer {
 type RouteModule = {
   default: ComponentType<Record<string, unknown>>
   frontmatter?: Record<string, unknown>
+  handle?: unknown
   toc?: unknown[]
 }
 

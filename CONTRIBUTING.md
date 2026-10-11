@@ -68,12 +68,11 @@ Read them before changing routing, public exports, theming, build output, or rel
 
 ### Coordinated native-engine development
 
-The Ardo 5 migration requires Ferromark's new `compileJsx`/`JsxCompiler` APIs, scheduled for
-Ferromark 3.1. Until that release exists, the previous registry lockfile cannot
-install the new dependency graph with `--frozen-lockfile`. Release Ferromark
-first, regenerate this lockfile with `pnpm install --no-frozen-lockfile`, then
-release Ardo 5 and update the engine homepages' registry lockfiles. Package
-versions in source stay under their existing release workflows.
+Ardo uses the published Ferromark 3.4 native module and prepared-document APIs.
+The registry lockfile includes matching native sidecars and supports frozen
+installation. Release an upstream engine before updating Ardo's manifest and
+regenerate the lockfile from the registry; final package metadata must not rely
+on a local engine build. Package versions stay under their release workflows.
 
 To verify the coordinated changes before publication, build and pack the
 Ferromark and Ferriki Node facades and the matching native platform packages
@@ -105,7 +104,10 @@ engine builds too. For homepage verification, also pack Ardo and add its
 tarball to the homepage's temporary workspace overrides.
 
 Ferromark's native JSX compiler owns Ferriki for Markdown fences; Ardo uses
-the direct Ferriki facade for literal TSX codeblocks. Both download verified
+the same native fence renderer for literal TSX codeblocks. The direct Ferriki
+facade remains for the public HTML-returning `highlightCode` helper and its
+`ThemeInput` configuration type; upgrading it does not change the Ferriki
+version compiled into Ferromark. Both download verified
 standard assets on first use and share a content-addressed cache. Persist it and
 set `FERRIKI_CACHE_DIR` and `FERRIKI_ASSETS_REMOTE=0` for subsequent offline
 checks. Restore the original workspace config and lockfile after local
