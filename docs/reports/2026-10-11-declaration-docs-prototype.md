@@ -116,9 +116,10 @@ Error` are excluded from instance inheritance. Local and imported type names
 retain precedence, and the supported built-in utility types keep their bounded
 expansion. Library declarations do not become public API pages.
 
-The example and evaluation script use the selected compiler's `--listFilesOnly`
-output to find its physical library directory and the files selected by the
-project configuration. This also works with TypeScript 7's platform package;
+The example and evaluation script use the selected compiler's `--listFiles`
+output to emit declarations and discover its physical library directory in one
+project invocation. When evaluating published declarations that need no emit,
+the evaluation script uses `--listFilesOnly`. This also works with TypeScript 7's platform package;
 its libraries are not beside the JavaScript CLI shim. An unrelated package's
 `lib.d.ts` must not be mistaken for a compiler library. The oracle fixture and
 the real Ardo comparison cover that boundary. Explicitly supplied missing,
@@ -304,8 +305,10 @@ suite with coverage passes all 396 tests across 69 files, and all 35 integration
 tests also passed, including the native-compiler library build;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
-intentional declaration and output paths. No end-to-end speed or dependency-size
-benchmark was performed.
+intentional declaration and output paths. The follow-up
+[pipeline benchmark](./2026-10-11-declaration-docs-performance.md) includes native
+declaration emit, extraction, rendering, and writing. Dependency size and the
+subsequent Vite/HTML build are not benchmarked.
 
 ### Presentation normalization
 

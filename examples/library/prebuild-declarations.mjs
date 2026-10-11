@@ -20,10 +20,9 @@ if (!workspaceCompiler && !/^Version 7\./u.test(version)) {
   )
 }
 
-execFileSync(compiler, ["--project", "tsconfig.declarations.json"], { cwd, stdio: "inherit" })
 const compilerFiles = execFileSync(
   compiler,
-  ["--project", "tsconfig.declarations.json", "--listFilesOnly"],
+  ["--project", "tsconfig.declarations.json", "--listFiles"],
   { cwd, encoding: "utf8" }
 ).split(/\r?\n/u)
 const coreLib = compilerFiles.find((file) => path.basename(file) === "lib.es5.d.ts")

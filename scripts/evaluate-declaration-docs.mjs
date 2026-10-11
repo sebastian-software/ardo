@@ -120,12 +120,11 @@ async function evaluate(profile, directory) {
         files: [entry],
       }
   await fs.writeFile(tsconfig, JSON.stringify(config))
-  if (profile.config)
-    execFileSync(compiler, ["--project", tsconfig], {
-      cwd: root,
-      stdio: "inherit",
-      timeout: 60_000,
-    })
+  const compilerFiles = execFileSync(
+    compiler,
+    ["--project", tsconfig, profile.config ? "--listFiles" : "--listFilesOnly"],
+    { cwd: root, encoding: "utf8", timeout: 60_000 }
+  ).split(/\r?\n/u)
   const declaration = profile.config ? path.join(directory, "declarations/index.d.ts") : entry
   const app = await Application.bootstrapWithPlugins(
     {
@@ -141,11 +140,6 @@ async function evaluate(profile, directory) {
   )
   const oracle = await app.convert()
   if (oracle == null) throw new Error(`TypeDoc did not convert ${profile.name}.`)
-  const compilerFiles = execFileSync(compiler, ["--project", tsconfig, "--listFilesOnly"], {
-    cwd: root,
-    encoding: "utf8",
-    timeout: 60_000,
-  }).split(/\r?\n/u)
   const coreLib = compilerFiles.find((file) => path.basename(file) === "lib.es5.d.ts")
   const libFiles = compilerFiles.filter(
     (file) => coreLib != null && path.dirname(file) === path.dirname(coreLib)
