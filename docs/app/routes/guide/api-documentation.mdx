@@ -111,5 +111,7 @@ the extractor reports incomplete expansion rather than selecting a potentially
 incorrect declaration.
 
 Existing projects can continue using the [TypeDoc integration](/guide/typedoc)
-while preparing a migration. The native path uses the official TypeScript Node
-client and does not require custom Go bindings.
+while preparing a migration. The native integration is opt-in; the `typedoc`
+option and `ardo/typedoc` API remain available in this release. Removing TypeDoc
+will be a separate breaking change. The native path uses the official TypeScript
+Node client and does not require custom Go bindings.
