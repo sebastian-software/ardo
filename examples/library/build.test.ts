@@ -23,13 +23,6 @@ describe("examples/library build", () => {
   let buildSucceeded = false
 
   beforeAll(() => {
-    // Run prebuild (TypeDoc generation)
-    execSync("node prebuild.mjs", {
-      cwd: __dirname,
-      stdio: "pipe",
-      timeout: 60_000,
-    })
-
     // Run react-router build
     execSync("npx react-router build", {
       cwd: __dirname,
@@ -56,31 +49,85 @@ describe("examples/library build", () => {
     expect(fs.existsSync(gsHtml)).toBe(true)
   })
 
-  it("generates TypeDoc API markdown in app/routes", () => {
+  it("generates native API markdown in app/routes", () => {
     const apiContentDir = path.join(__dirname, "app", "routes", "api-reference")
     expect(fs.existsSync(apiContentDir)).toBe(true)
     const mdFiles = collectFiles(apiContentDir, ".md")
     expect(mdFiles.length).toBeGreaterThan(0)
   })
 
-  it("generates TypeDoc API HTML pages in build", () => {
+  it("generates native API HTML pages in build", () => {
     const apiDistDir = path.join(__dirname, "build", "client", "api-reference")
     expect(fs.existsSync(apiDistDir)).toBe(true)
     const htmlFiles = collectFiles(apiDistDir, ".html")
     expect(htmlFiles.length).toBeGreaterThan(0)
   })
 
-  it("uses package name instead of 'index' for src/index.ts modules (#54)", () => {
-    // Regression test: TypeDoc should resolve the module name from package.json
-    // instead of using the literal filename "index" for src/index.ts entry points.
-    const apiIndexMd = path.join(__dirname, "app", "routes", "api-reference", "index.md")
-    expect(fs.existsSync(apiIndexMd)).toBe(true)
-    const content = fs.readFileSync(apiIndexMd, "utf-8")
+  it("prerenders every declaration page, including callable types and overload documentation", () => {
+    const markdownDir = path.join(__dirname, "app", "routes", "api-reference")
+    const htmlDir = path.join(__dirname, "build", "client", "api-reference")
+    const pages = collectFiles(markdownDir, ".md")
+    expect(pages).toHaveLength(12)
+    for (const page of pages) {
+      expect(fs.readFileSync(page, "utf8"), page).not.toContain("Additional members may be defined")
+      const route = path.relative(markdownDir, page).replace(/\.md$/u, "")
+      const html = route === "index" ? "index.html" : path.join(route, "index.html")
+      expect(fs.existsSync(path.join(htmlDir, html)), route).toBe(true)
+    }
+    const renderer = fs.readFileSync(
+      path.join(htmlDir, "types", "documentrenderer", "index.html"),
+      "utf8"
+    )
+    expect(renderer).toContain("The document source")
+    expect(renderer).toContain("Optional rendering configuration")
+    expect(renderer).toContain("The rendered document")
+    const reader = fs.readFileSync(
+      path.join(htmlDir, "interfaces", "documentreader", "index.html"),
+      "utf8"
+    )
+    expect(reader).toContain("Reads a single document.")
+    expect(reader).toContain("Reads several documents in order.")
+    expect(reader).toContain("The document sources")
+  })
 
-    // Should contain the package name as module name
-    expect(content).toContain("ardo-example-library")
+  it("renders inherited component options and their documentation", () => {
+    const panel = fs.readFileSync(
+      path.join(
+        __dirname,
+        "build",
+        "client",
+        "api-reference",
+        "components",
+        "documentationpanel",
+        "index.html"
+      ),
+      "utf8"
+    )
+    expect(panel).toContain("Whether to use uppercase")
+    expect(panel).toContain("Custom separator character")
+    expect(panel).toContain("Ordered plugins used while rendering a page.")
+    expect(panel).toContain("Sections included in the page.")
+  })
 
-    // Should NOT contain "index" as a standalone module name in links
+  it("preserves readonly dictionaries, unions, and indexed leaf expressions in rendered docs", () => {
+    const directory = path.join(__dirname, "build", "client", "api-reference", "interfaces")
+    const metadata = fs.readFileSync(path.join(directory, "pagemetadata", "index.html"), "utf8")
+    expect(metadata).toContain("Index signatures")
+    expect(metadata).toContain("unknown")
+    const result = fs.readFileSync(path.join(directory, "renderresult", "index.html"), "utf8")
+    expect(result).toContain("Successful content or a failure message.")
+    expect(result).toContain("PageMetadata")
+    expect(result).toContain("failed")
+    expect(result).toContain("ready")
+  })
+
+  it("uses an API index with named exports", () => {
+    const content = fs.readFileSync(
+      path.join(__dirname, "app", "routes", "api-reference", "index.md"),
+      "utf8"
+    )
+    expect(content).toContain("API Reference")
+    expect(content).toContain("FormatOptions")
     expect(content).not.toMatch(/\[index\]\(/)
   })
 

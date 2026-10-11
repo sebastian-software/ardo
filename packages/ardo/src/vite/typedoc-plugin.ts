@@ -4,7 +4,6 @@ import path from "node:path"
 
 import type { TypeDocConfig } from "../typedoc/types"
 
-import { generateApiDocs } from "../typedoc/generator"
 import { findPackageRoot } from "./git-utils"
 import { resolveRoutesDir } from "./path-utils"
 import { writeRoutesFileSync } from "./routes-core"
@@ -49,6 +48,7 @@ export function createTypeDocPlugin(
     const startTime = Date.now()
 
     try {
+      const { generateApiDocs } = await import("../typedoc/generator")
       const docs = await generateApiDocs(typedocConfig, routesDir)
       writeGeneratedRoutesFile(root, routesDir)
       logTypeDocSuccess(docs.length, startTime)

@@ -37,12 +37,12 @@ const budgets = {
     baseline: "≈56 KB (2026-07)",
   },
   eagerJsGzip: {
-    // JS referenced from prerendered HTML (script src + modulepreload):
-    // what visitors actually download. Lazy chunks (e.g. Mermaid) are
-    // excluded because they only load on pages that use them.
+    // Union of JS referenced from all prerendered pages (script src +
+    // modulepreload). This grows with route content, rather than measuring
+    // one page's initial download. Lazy chunks (e.g. Mermaid) are excluded.
     label: "eager client JS gzip",
-    budget: 380_000,
-    baseline: "≈309 KB (2026-07, after the v4.0 content growth)",
+    budget: 530_000,
+    baseline: "≈425 KB (2026-10, 86 native API pages instead of 47 TypeDoc pages)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
@@ -106,9 +106,9 @@ async function measureTotalJs(jsFiles) {
 
 /**
  * Sums the gzip size of every JS file referenced from prerendered HTML
- * via <script src> or <link rel="modulepreload"> — the code visitors
- * actually download. Lazily imported chunks are not referenced in HTML
- * and are therefore excluded.
+ * via <script src> or <link rel="modulepreload"> across all pages. Each
+ * chunk counts once, so this is an aggregate route-content metric, not
+ * one visitor's initial download. Lazily imported chunks are excluded.
  */
 async function measureEagerJs(jsFiles) {
   const htmlFiles = await collectFiles(clientDir, ".html")

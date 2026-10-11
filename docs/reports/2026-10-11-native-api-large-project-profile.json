@@ -1,0 +1,1556 @@
+{
+  "recordedAt": "2026-10-11T18:52:01.584Z",
+  "instrumented": true,
+  "implementation": {
+    "currentApiSha256": "9a14e6668e705b907b525d09b27060fd382ce8e05505c1b7e20262079f69aeee",
+    "currentApiChunks": [
+      {
+        "file": "api/index.js",
+        "sha256": "9a14e6668e705b907b525d09b27060fd382ce8e05505c1b7e20262079f69aeee"
+      },
+      {
+        "file": "generated-docs-CqrWnM3Z.js",
+        "sha256": "46e80c1c81d2626cb0b6b38cd442693b534c504a65efeebdb41d768c6e98eee6"
+      },
+      {
+        "file": "generator-CS4BO5rp.js",
+        "sha256": "b60cf232755f5b2cae6832b06080584c954ff92dd2904f392d6bc696ae483eee"
+      },
+      {
+        "file": "generator-xCGCl_Er.js",
+        "sha256": "195ede908327b0c74c6a3ead0973524b7e83524fba6522a4f68f2fd0640c7c7e"
+      },
+      {
+        "file": "native-project-Ch4mXAXU.js",
+        "sha256": "f578563642ef593ac6f8bbf993f7392c64f87f1c174b62bbe69c58990bf39f51"
+      },
+      {
+        "file": "renderer-BPEFBQob.js",
+        "sha256": "9897845238a1a5a41b13b7c907d6ce314ad29b76138429da80521982f40b7ba5"
+      }
+    ],
+    "baselineApiChunks": null,
+    "baselineApiSha256": null
+  },
+  "warning": "Separate from timing benchmarks. Method durations overlap; timing collection adds overhead.",
+  "profiles": [
+    {
+      "name": "ardo",
+      "samples": [
+        {
+          "name": "ardo",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 15.096625,
+            "sdkImport": 48.363917,
+            "readConfigFile": 40.854292,
+            "createSnapshot": 67.068292,
+            "getSourceFileNames": 0.9275000000000091,
+            "getConfigFileNames": 0.3009169999999983,
+            "emitToString": 147.473875,
+            "getSourceFileMetadata": 4242.236118999995,
+            "getSourceFile": 5.69850200000019,
+            "getResolvedModuleFromModuleSpecifier": 11.616580999999655,
+            "extractSnapshot": 421.333083,
+            "generation": 450.77925000000005,
+            "renderAndWrite": 29.44616700000006,
+            "close": 1.180833000000007
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 686,
+            "getSourceFile": 26,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 667,
+            "getSourceFile": 7,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 34.569333,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 2.2541669999999954,
+              "bytesReceived": 731
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 66.72154199999999,
+              "bytesReceived": 2302
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.7315000000000111,
+              "bytesReceived": 95226
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.24554200000000037,
+              "bytesReceived": 151
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 146.617167,
+              "bytesReceived": 197981
+            },
+            "batchRequests": {
+              "calls": 20,
+              "ms": 6.602459000000238,
+              "bytesReceived": 186934
+            },
+            "getSourceFileMetadata": {
+              "calls": 7,
+              "ms": 1.3232490000000325,
+              "bytesReceived": 1190
+            },
+            "getSourceFile": {
+              "calls": 7,
+              "ms": 4.151834000000008,
+              "bytesReceived": 214533
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 7,
+              "ms": 0.9515000000000668,
+              "bytesReceived": 1733
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.6374999999999318,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 47,
+              "roundTripMs": 264.16829300000035,
+              "bytesSent": 220383,
+              "bytesReceived": 700895,
+              "serverTimeMs": 218.80704300000005,
+              "transportOverheadMs": 45.3612500000003,
+              "nodesMaterialized": 174,
+              "sourceFilesFetched": 7,
+              "nodesFetched": 3920
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.10941700000000765,
+                "bytesSent": 300,
+                "bytesReceived": 223,
+                "timestamp": 1791744714670,
+                "serverTimeMs": 0.006458,
+                "transportOverheadMs": 0.10295900000000764
+              },
+              {
+                "method": "batchRequests",
+                "roundTripMs": 0.12145900000001575,
+                "bytesSent": 690,
+                "bytesReceived": 543,
+                "timestamp": 1791744714670,
+                "serverTimeMs": 0.018333,
+                "transportOverheadMs": 0.10312600000001575
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.1307080000000269,
+                "bytesSent": 190,
+                "bytesReceived": 170,
+                "timestamp": 1791744714672,
+                "serverTimeMs": 0.008,
+                "transportOverheadMs": 0.1227080000000269
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.17216700000000174,
+                "bytesSent": 190,
+                "bytesReceived": 8635,
+                "timestamp": 1791744714672,
+                "serverTimeMs": 0.064542,
+                "transportOverheadMs": 0.10762500000000173
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.13341600000001108,
+                "bytesSent": 291,
+                "bytesReceived": 447,
+                "timestamp": 1791744714672,
+                "serverTimeMs": 0.005875,
+                "transportOverheadMs": 0.1275410000000111
+              }
+            ]
+          },
+          "output": {
+            "pages": 86,
+            "exports": 85,
+            "diagnostics": 0
+          }
+        },
+        {
+          "name": "ardo",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 10.853542000000001,
+            "sdkImport": 34.755374999999994,
+            "readConfigFile": 12.6755,
+            "createSnapshot": 61.88633300000001,
+            "getSourceFileNames": 1.1174999999999784,
+            "getConfigFileNames": 0.28745799999998667,
+            "emitToString": 139.185458,
+            "getSourceFileMetadata": 4371.195028999999,
+            "getSourceFile": 3.649084000000073,
+            "getResolvedModuleFromModuleSpecifier": 10.774453000000165,
+            "extractSnapshot": 368.717041,
+            "generation": 400.141,
+            "renderAndWrite": 31.423959000000025,
+            "close": 1.171875
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 686,
+            "getSourceFile": 26,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 667,
+            "getSourceFile": 7,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 8.02987499999999,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5613340000000022,
+              "bytesReceived": 731
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 61.56558300000002,
+              "bytesReceived": 2302
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.901332999999994,
+              "bytesReceived": 95226
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.23387500000001182,
+              "bytesReceived": 151
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 138.335,
+              "bytesReceived": 197981
+            },
+            "batchRequests": {
+              "calls": 20,
+              "ms": 6.751459000000011,
+              "bytesReceived": 186934
+            },
+            "getSourceFileMetadata": {
+              "calls": 7,
+              "ms": 1.194249999999954,
+              "bytesReceived": 1190
+            },
+            "getSourceFile": {
+              "calls": 7,
+              "ms": 2.145208999999909,
+              "bytesReceived": 214533
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 7,
+              "ms": 0.8620820000000435,
+              "bytesReceived": 1733
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.6548329999999964,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 47,
+              "roundTripMs": 220.57999999999993,
+              "bytesSent": 220383,
+              "bytesReceived": 700895,
+              "serverTimeMs": 201.12933199999995,
+              "transportOverheadMs": 19.45066799999998,
+              "nodesMaterialized": 174,
+              "sourceFilesFetched": 7,
+              "nodesFetched": 3920
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.10445800000002237,
+                "bytesSent": 300,
+                "bytesReceived": 223,
+                "timestamp": 1791744715174,
+                "serverTimeMs": 0.004,
+                "transportOverheadMs": 0.10045800000002236
+              },
+              {
+                "method": "batchRequests",
+                "roundTripMs": 0.15004200000004175,
+                "bytesSent": 690,
+                "bytesReceived": 543,
+                "timestamp": 1791744715174,
+                "serverTimeMs": 0.02025,
+                "transportOverheadMs": 0.12979200000004176
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.13137499999999136,
+                "bytesSent": 190,
+                "bytesReceived": 170,
+                "timestamp": 1791744715176,
+                "serverTimeMs": 0.004417,
+                "transportOverheadMs": 0.12695799999999136
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.17370799999997644,
+                "bytesSent": 190,
+                "bytesReceived": 8635,
+                "timestamp": 1791744715176,
+                "serverTimeMs": 0.058875,
+                "transportOverheadMs": 0.11483299999997644
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.14587499999998954,
+                "bytesSent": 291,
+                "bytesReceived": 447,
+                "timestamp": 1791744715176,
+                "serverTimeMs": 0.005125,
+                "transportOverheadMs": 0.14074999999998955
+              }
+            ]
+          },
+          "output": {
+            "pages": 86,
+            "exports": 85,
+            "diagnostics": 0
+          }
+        },
+        {
+          "name": "ardo",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 11.516082999999998,
+            "sdkImport": 35.6815,
+            "readConfigFile": 12.866,
+            "createSnapshot": 61.85050000000001,
+            "getSourceFileNames": 1.1112919999999917,
+            "getConfigFileNames": 0.3578329999999994,
+            "emitToString": 145.559291,
+            "getSourceFileMetadata": 4319.773813000003,
+            "getSourceFile": 3.4523329999998964,
+            "getResolvedModuleFromModuleSpecifier": 10.502169000000094,
+            "extractSnapshot": 372.384542,
+            "generation": 403.301375,
+            "renderAndWrite": 30.916832999999997,
+            "close": 1.1580000000000155
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 686,
+            "getSourceFile": 26,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 667,
+            "getSourceFile": 7,
+            "getResolvedModuleFromModuleSpecifier": 56,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 8.312624999999997,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5490000000000066,
+              "bytesReceived": 731
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 61.490959000000004,
+              "bytesReceived": 2302
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.8950000000000102,
+              "bytesReceived": 95226
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.3020830000000103,
+              "bytesReceived": 151
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 144.71325,
+              "bytesReceived": 197981
+            },
+            "batchRequests": {
+              "calls": 20,
+              "ms": 6.470621999999935,
+              "bytesReceived": 186934
+            },
+            "getSourceFileMetadata": {
+              "calls": 7,
+              "ms": 1.2321660000000634,
+              "bytesReceived": 1190
+            },
+            "getSourceFile": {
+              "calls": 7,
+              "ms": 2.07325000000003,
+              "bytesReceived": 214533
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 7,
+              "ms": 0.8362489999999525,
+              "bytesReceived": 1733
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.6299999999999955,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 47,
+              "roundTripMs": 226.875204,
+              "bytesSent": 220383,
+              "bytesReceived": 700895,
+              "serverTimeMs": 207.25641199999993,
+              "transportOverheadMs": 19.61879200000007,
+              "nodesMaterialized": 174,
+              "sourceFilesFetched": 7,
+              "nodesFetched": 3920
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.09654100000000199,
+                "bytesSent": 300,
+                "bytesReceived": 223,
+                "timestamp": 1791744715688,
+                "serverTimeMs": 0.004541,
+                "transportOverheadMs": 0.09200000000000198
+              },
+              {
+                "method": "batchRequests",
+                "roundTripMs": 0.1123330000000351,
+                "bytesSent": 690,
+                "bytesReceived": 543,
+                "timestamp": 1791744715688,
+                "serverTimeMs": 0.014792,
+                "transportOverheadMs": 0.0975410000000351
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.12100000000003774,
+                "bytesSent": 190,
+                "bytesReceived": 170,
+                "timestamp": 1791744715690,
+                "serverTimeMs": 0.007709,
+                "transportOverheadMs": 0.11329100000003775
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.18633300000004738,
+                "bytesSent": 190,
+                "bytesReceived": 8635,
+                "timestamp": 1791744715690,
+                "serverTimeMs": 0.072959,
+                "transportOverheadMs": 0.11337400000004738
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.1293749999999818,
+                "bytesSent": 291,
+                "bytesReceived": 447,
+                "timestamp": 1791744715690,
+                "serverTimeMs": 0.007083,
+                "transportOverheadMs": 0.1222919999999818
+              }
+            ]
+          },
+          "output": {
+            "pages": 86,
+            "exports": 85,
+            "diagnostics": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "rxjs",
+      "samples": [
+        {
+          "name": "rxjs",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 10.520458999999999,
+            "sdkImport": 34.93004199999999,
+            "readConfigFile": 12.667957999999999,
+            "createSnapshot": 34.034167,
+            "getSourceFileNames": 0.48920900000000245,
+            "getConfigFileNames": 0.49737500000000523,
+            "emitToString": 155.74620799999997,
+            "getSourceFileMetadata": 146.6594619999987,
+            "getSourceFile": 9.44211899999965,
+            "getResolvedModuleFromModuleSpecifier": 29.537537999999756,
+            "extractSnapshot": 445.06904199999997,
+            "generation": 524.1945,
+            "renderAndWrite": 79.12545799999998,
+            "close": 0.8950419999999895
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 285,
+            "getSourceFile": 190,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 118,
+            "getSourceFile": 23,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 7.882583000000011,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5046250000000043,
+              "bytesReceived": 597
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 33.70400000000001,
+              "bytesReceived": 1790
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.3757499999999965,
+              "bytesReceived": 38276
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.44145799999999724,
+              "bytesReceived": 145
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 153.437167,
+              "bytesReceived": 664338
+            },
+            "batchRequests": {
+              "calls": 5,
+              "ms": 1.613999999999919,
+              "bytesReceived": 18406
+            },
+            "getSourceFileMetadata": {
+              "calls": 23,
+              "ms": 6.229709999999841,
+              "bytesReceived": 3979
+            },
+            "getSourceFile": {
+              "calls": 23,
+              "ms": 6.02816799999988,
+              "bytesReceived": 559537
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 186,
+              "ms": 22.194209000000228,
+              "bytesReceived": 42012
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.3585000000000491,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 243,
+              "roundTripMs": 232.41166999999987,
+              "bytesSent": 99392,
+              "bytesReceived": 1329194,
+              "serverTimeMs": 187.53420999999994,
+              "transportOverheadMs": 44.87745999999993,
+              "nodesMaterialized": 502,
+              "sourceFilesFetched": 23,
+              "nodesFetched": 9447
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.09083400000002939,
+                "bytesSent": 311,
+                "bytesReceived": 213,
+                "timestamp": 1791744716272,
+                "serverTimeMs": 0.007333,
+                "transportOverheadMs": 0.08350100000002939
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.16245799999995825,
+                "bytesSent": 192,
+                "bytesReceived": 173,
+                "timestamp": 1791744716274,
+                "serverTimeMs": 0.007417,
+                "transportOverheadMs": 0.15504099999995824
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.48383400000000165,
+                "bytesSent": 192,
+                "bytesReceived": 75703,
+                "timestamp": 1791744716274,
+                "serverTimeMs": 0.220916,
+                "transportOverheadMs": 0.26291800000000165
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.10691600000001245,
+                "bytesSent": 295,
+                "bytesReceived": 220,
+                "timestamp": 1791744716274,
+                "serverTimeMs": 0.007417,
+                "transportOverheadMs": 0.09949900000001244
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.09695799999997234,
+                "bytesSent": 294,
+                "bytesReceived": 218,
+                "timestamp": 1791744716275,
+                "serverTimeMs": 0.007167,
+                "transportOverheadMs": 0.08979099999997234
+              }
+            ]
+          },
+          "output": {
+            "pages": 229,
+            "exports": 228,
+            "diagnostics": 17
+          }
+        },
+        {
+          "name": "rxjs",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 10.932959,
+            "sdkImport": 34.47429199999999,
+            "readConfigFile": 12.403499999999994,
+            "createSnapshot": 37.526792,
+            "getSourceFileNames": 0.47537499999999966,
+            "getConfigFileNames": 0.2873750000000115,
+            "emitToString": 183.53079200000002,
+            "getSourceFileMetadata": 144.83618600000045,
+            "getSourceFile": 8.665915999999811,
+            "getResolvedModuleFromModuleSpecifier": 27.632542000000285,
+            "extractSnapshot": 460.13700000000006,
+            "generation": 537.104167,
+            "renderAndWrite": 76.9671669999999,
+            "close": 0.8716670000000022
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 285,
+            "getSourceFile": 190,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 118,
+            "getSourceFile": 23,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 7.8543750000000045,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5187920000000048,
+              "bytesReceived": 597
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 37.209041,
+              "bytesReceived": 1790
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.3694579999999945,
+              "bytesReceived": 38276
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.23799999999999955,
+              "bytesReceived": 145
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 181.27175,
+              "bytesReceived": 664338
+            },
+            "batchRequests": {
+              "calls": 5,
+              "ms": 1.4632919999999103,
+              "bytesReceived": 18406
+            },
+            "getSourceFileMetadata": {
+              "calls": 23,
+              "ms": 3.0336629999998195,
+              "bytesReceived": 3979
+            },
+            "getSourceFile": {
+              "calls": 23,
+              "ms": 5.454458999999815,
+              "bytesReceived": 559537
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 186,
+              "ms": 21.604840999999624,
+              "bytesReceived": 42012
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.34608400000001893,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 243,
+              "roundTripMs": 259.01767099999915,
+              "bytesSent": 99392,
+              "bytesReceived": 1329194,
+              "serverTimeMs": 218.39500799999988,
+              "transportOverheadMs": 40.62266299999928,
+              "nodesMaterialized": 502,
+              "sourceFilesFetched": 23,
+              "nodesFetched": 9447
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.09224999999992178,
+                "bytesSent": 311,
+                "bytesReceived": 213,
+                "timestamp": 1791744716919,
+                "serverTimeMs": 0.007375,
+                "transportOverheadMs": 0.08487499999992179
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.15495799999996507,
+                "bytesSent": 192,
+                "bytesReceived": 173,
+                "timestamp": 1791744716921,
+                "serverTimeMs": 0.007625,
+                "transportOverheadMs": 0.14733299999996508
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.5003329999999551,
+                "bytesSent": 192,
+                "bytesReceived": 75703,
+                "timestamp": 1791744716922,
+                "serverTimeMs": 0.255333,
+                "transportOverheadMs": 0.2449999999999551
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.1045409999999265,
+                "bytesSent": 295,
+                "bytesReceived": 220,
+                "timestamp": 1791744716922,
+                "serverTimeMs": 0.008083,
+                "transportOverheadMs": 0.09645799999992649
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.1055829999999105,
+                "bytesSent": 294,
+                "bytesReceived": 218,
+                "timestamp": 1791744716922,
+                "serverTimeMs": 0.009375,
+                "transportOverheadMs": 0.0962079999999105
+              }
+            ]
+          },
+          "output": {
+            "pages": 229,
+            "exports": 228,
+            "diagnostics": 17
+          }
+        },
+        {
+          "name": "rxjs",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 11.191375,
+            "sdkImport": 34.609166,
+            "readConfigFile": 12.228875000000002,
+            "createSnapshot": 34.329916999999995,
+            "getSourceFileNames": 0.5309579999999983,
+            "getConfigFileNames": 0.28179200000001003,
+            "emitToString": 153.11483399999997,
+            "getSourceFileMetadata": 143.49391600000058,
+            "getSourceFile": 8.378994999999577,
+            "getResolvedModuleFromModuleSpecifier": 27.8552490000003,
+            "extractSnapshot": 424.15208300000006,
+            "generation": 500.44137500000005,
+            "renderAndWrite": 76.28929199999999,
+            "close": 0.8822920000000067
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 285,
+            "getSourceFile": 190,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 118,
+            "getSourceFile": 23,
+            "getResolvedModuleFromModuleSpecifier": 194,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 7.791250000000005,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5396669999999943,
+              "bytesReceived": 597
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 34.01424999999999,
+              "bytesReceived": 1790
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.42208300000000065,
+              "bytesReceived": 38276
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.2217500000000001,
+              "bytesReceived": 145
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 150.83358300000003,
+              "bytesReceived": 664338
+            },
+            "batchRequests": {
+              "calls": 5,
+              "ms": 1.494875000000036,
+              "bytesReceived": 18406
+            },
+            "getSourceFileMetadata": {
+              "calls": 23,
+              "ms": 2.9447509999999966,
+              "bytesReceived": 3979
+            },
+            "getSourceFile": {
+              "calls": 23,
+              "ms": 5.178877999999941,
+              "bytesReceived": 559537
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 186,
+              "ms": 20.937996000000226,
+              "bytesReceived": 42012
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.3543329999999969,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 243,
+              "roundTripMs": 224.3790830000002,
+              "bytesSent": 99392,
+              "bytesReceived": 1329194,
+              "serverTimeMs": 184.70749300000014,
+              "transportOverheadMs": 39.671590000000066,
+              "nodesMaterialized": 502,
+              "sourceFilesFetched": 23,
+              "nodesFetched": 9447
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.08966600000002245,
+                "bytesSent": 311,
+                "bytesReceived": 213,
+                "timestamp": 1791744717529,
+                "serverTimeMs": 0.006542,
+                "transportOverheadMs": 0.08312400000002244
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.14958400000000438,
+                "bytesSent": 192,
+                "bytesReceived": 173,
+                "timestamp": 1791744717531,
+                "serverTimeMs": 0.008166,
+                "transportOverheadMs": 0.14141800000000437
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 0.506917000000044,
+                "bytesSent": 192,
+                "bytesReceived": 75703,
+                "timestamp": 1791744717531,
+                "serverTimeMs": 0.231958,
+                "transportOverheadMs": 0.27495900000004403
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.11354200000005221,
+                "bytesSent": 295,
+                "bytesReceived": 220,
+                "timestamp": 1791744717531,
+                "serverTimeMs": 0.010209,
+                "transportOverheadMs": 0.10333300000005222
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.13108299999998962,
+                "bytesSent": 294,
+                "bytesReceived": 218,
+                "timestamp": 1791744717532,
+                "serverTimeMs": 0.012875,
+                "transportOverheadMs": 0.11820799999998963
+              }
+            ]
+          },
+          "output": {
+            "pages": 229,
+            "exports": 228,
+            "diagnostics": 17
+          }
+        }
+      ]
+    },
+    {
+      "name": "effect-core-annotated",
+      "samples": [
+        {
+          "name": "effect-core-annotated",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 10.507583,
+            "sdkImport": 33.831625,
+            "readConfigFile": 12.231167,
+            "createSnapshot": 56.478624999999994,
+            "getSourceFileNames": 0.6354999999999791,
+            "getConfigFileNames": 0.2999590000000012,
+            "emitToString": 683.295125,
+            "getSourceFileMetadata": 393.67341099999794,
+            "getSourceFile": 31.901125000000093,
+            "getResolvedModuleFromModuleSpecifier": 1.6347489999998288,
+            "extractSnapshot": 1134.884834,
+            "generation": 1217.89175,
+            "renderAndWrite": 83.00691600000005,
+            "close": 0.9144169999999576
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 192,
+            "getSourceFile": 5,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 189,
+            "getSourceFile": 2,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 7.933209000000005,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5122909999999905,
+              "bytesReceived": 624
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 56.12941599999999,
+              "bytesReceived": 2014
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.5201670000000149,
+              "bytesReceived": 39775
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.24608299999999872,
+              "bytesReceived": 147
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 644.713208,
+              "bytesReceived": 8681508
+            },
+            "batchRequests": {
+              "calls": 1,
+              "ms": 1.4201659999999947,
+              "bytesReceived": 43504
+            },
+            "getSourceFileMetadata": {
+              "calls": 2,
+              "ms": 0.6190000000000282,
+              "bytesReceived": 384
+            },
+            "getSourceFile": {
+              "calls": 2,
+              "ms": 22.648165999999833,
+              "bytesReceived": 5298690
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 5,
+              "ms": 1.332208999999807,
+              "bytesReceived": 1085
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.428916000000072,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 16,
+              "roundTripMs": 736.0739149999997,
+              "bytesSent": 60062,
+              "bytesReceived": 14067845,
+              "serverTimeMs": 669.786916,
+              "transportOverheadMs": 66.2869989999997,
+              "nodesMaterialized": 96,
+              "sourceFilesFetched": 2,
+              "nodesFetched": 81632
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.17745899999999892,
+                "bytesSent": 303,
+                "bytesReceived": 213,
+                "timestamp": 1791744718681,
+                "serverTimeMs": 0.009125,
+                "transportOverheadMs": 0.16833399999999893
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.38012499999990723,
+                "bytesSent": 303,
+                "bytesReceived": 217,
+                "timestamp": 1791744718829,
+                "serverTimeMs": 0.054375,
+                "transportOverheadMs": 0.3257499999999072
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.2447500000000673,
+                "bytesSent": 197,
+                "bytesReceived": 192,
+                "timestamp": 1791744718832,
+                "serverTimeMs": 0.019,
+                "transportOverheadMs": 0.2257500000000673
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 1.828249999999798,
+                "bytesSent": 197,
+                "bytesReceived": 354391,
+                "timestamp": 1791744718835,
+                "serverTimeMs": 0.863875,
+                "transportOverheadMs": 0.9643749999997981
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.19466699999998127,
+                "bytesSent": 305,
+                "bytesReceived": 216,
+                "timestamp": 1791744718835,
+                "serverTimeMs": 0.021583,
+                "transportOverheadMs": 0.17308399999998128
+              }
+            ]
+          },
+          "output": {
+            "pages": 240,
+            "exports": 239,
+            "diagnostics": 9
+          }
+        },
+        {
+          "name": "effect-core-annotated",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 10.870958000000002,
+            "sdkImport": 34.45404200000001,
+            "readConfigFile": 12.638916000000009,
+            "createSnapshot": 60.883584,
+            "getSourceFileNames": 0.5098339999999837,
+            "getConfigFileNames": 0.33695800000000986,
+            "emitToString": 651.595875,
+            "getSourceFileMetadata": 390.94566400000053,
+            "getSourceFile": 30.693917000000056,
+            "getResolvedModuleFromModuleSpecifier": 1.658249000000069,
+            "extractSnapshot": 1096.932125,
+            "generation": 1179.810125,
+            "renderAndWrite": 82.87799999999993,
+            "close": 0.9006660000000011
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 192,
+            "getSourceFile": 5,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 189,
+            "getSourceFile": 2,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 8.02225,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5279159999999905,
+              "bytesReceived": 624
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 60.53887499999999,
+              "bytesReceived": 2014
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.38800000000000523,
+              "bytesReceived": 39775
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.2722079999999778,
+              "bytesReceived": 147
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 619.268542,
+              "bytesReceived": 8681508
+            },
+            "batchRequests": {
+              "calls": 1,
+              "ms": 1.4244999999999663,
+              "bytesReceived": 43504
+            },
+            "getSourceFileMetadata": {
+              "calls": 2,
+              "ms": 0.7829159999997728,
+              "bytesReceived": 384
+            },
+            "getSourceFile": {
+              "calls": 2,
+              "ms": 22.103166999999985,
+              "bytesReceived": 5298690
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 5,
+              "ms": 1.3164999999999054,
+              "bytesReceived": 1085
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.3673749999998108,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 16,
+              "roundTripMs": 714.6448739999996,
+              "bytesSent": 60062,
+              "bytesReceived": 14067845,
+              "serverTimeMs": 655.067833,
+              "transportOverheadMs": 59.57704099999967,
+              "nodesMaterialized": 96,
+              "sourceFilesFetched": 2,
+              "nodesFetched": 81632
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.15570800000000418,
+                "bytesSent": 303,
+                "bytesReceived": 213,
+                "timestamp": 1791744719984,
+                "serverTimeMs": 0.007166,
+                "transportOverheadMs": 0.14854200000000417
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.3660419999998794,
+                "bytesSent": 303,
+                "bytesReceived": 217,
+                "timestamp": 1791744720129,
+                "serverTimeMs": 0.045875,
+                "transportOverheadMs": 0.3201669999998794
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.2981659999998101,
+                "bytesSent": 197,
+                "bytesReceived": 192,
+                "timestamp": 1791744720133,
+                "serverTimeMs": 0.01125,
+                "transportOverheadMs": 0.2869159999998101
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 1.7940419999999904,
+                "bytesSent": 197,
+                "bytesReceived": 354391,
+                "timestamp": 1791744720135,
+                "serverTimeMs": 0.905209,
+                "transportOverheadMs": 0.8888329999999903
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.1697919999999158,
+                "bytesSent": 305,
+                "bytesReceived": 216,
+                "timestamp": 1791744720136,
+                "serverTimeMs": 0.012833,
+                "transportOverheadMs": 0.15695899999991578
+              }
+            ]
+          },
+          "output": {
+            "pages": 240,
+            "exports": 239,
+            "diagnostics": 9
+          }
+        },
+        {
+          "name": "effect-core-annotated",
+          "dist": "/Users/sebastian/Workspace/ardo/packages/ardo/dist",
+          "methodDurationsCanOverlap": true,
+          "durations": {
+            "ardoImport": 11.791500000000003,
+            "sdkImport": 35.750083000000004,
+            "readConfigFile": 12.667333,
+            "createSnapshot": 57.565250000000006,
+            "getSourceFileNames": 0.9495000000000005,
+            "getConfigFileNames": 0.3664589999999919,
+            "emitToString": 661.30075,
+            "getSourceFileMetadata": 391.46779900000047,
+            "getSourceFile": 31.09791700000028,
+            "getResolvedModuleFromModuleSpecifier": 2.173332000000073,
+            "extractSnapshot": 1108.883084,
+            "generation": 1194.887584,
+            "renderAndWrite": 86.00450000000001,
+            "close": 0.8640419999999267
+          },
+          "calls": {
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 192,
+            "getSourceFile": 5,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "extractSnapshot": 1
+          },
+          "logicalRequests": {
+            "initialize": 1,
+            "readConfigFile": 1,
+            "createSnapshot": 1,
+            "getSourceFileNames": 1,
+            "getConfigFileNames": 1,
+            "emitToString": 1,
+            "getSourceFileMetadata": 189,
+            "getSourceFile": 2,
+            "getResolvedModuleFromModuleSpecifier": 5,
+            "release": 1
+          },
+          "rpc": {
+            "initialize": {
+              "calls": 1,
+              "ms": 7.788958000000008,
+              "bytesReceived": 114
+            },
+            "readConfigFile": {
+              "calls": 1,
+              "ms": 0.5105829999999969,
+              "bytesReceived": 624
+            },
+            "createSnapshot": {
+              "calls": 1,
+              "ms": 57.16304199999999,
+              "bytesReceived": 2014
+            },
+            "getSourceFileNames": {
+              "calls": 1,
+              "ms": 0.7572910000000093,
+              "bytesReceived": 39775
+            },
+            "getConfigFileNames": {
+              "calls": 1,
+              "ms": 0.26908299999999485,
+              "bytesReceived": 147
+            },
+            "emitToString": {
+              "calls": 1,
+              "ms": 628.120458,
+              "bytesReceived": 8681508
+            },
+            "batchRequests": {
+              "calls": 1,
+              "ms": 1.3150830000000724,
+              "bytesReceived": 43504
+            },
+            "getSourceFileMetadata": {
+              "calls": 2,
+              "ms": 0.5725839999998925,
+              "bytesReceived": 384
+            },
+            "getSourceFile": {
+              "calls": 2,
+              "ms": 22.332208000000037,
+              "bytesReceived": 5298690
+            },
+            "getResolvedModuleFromModuleSpecifier": {
+              "calls": 5,
+              "ms": 1.3889589999999998,
+              "bytesReceived": 1085
+            },
+            "release": {
+              "calls": 1,
+              "ms": 0.3657500000001619,
+              "bytesReceived": 4
+            }
+          },
+          "timing": {
+            "enabled": true,
+            "totals": {
+              "requestCount": 16,
+              "roundTripMs": 720.218249,
+              "bytesSent": 60062,
+              "bytesReceived": 14067845,
+              "serverTimeMs": 655.300166,
+              "transportOverheadMs": 64.91808300000002,
+              "nodesMaterialized": 96,
+              "sourceFilesFetched": 2,
+              "nodesFetched": 81632
+            },
+            "recentRequests": [
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.14716599999997015,
+                "bytesSent": 303,
+                "bytesReceived": 213,
+                "timestamp": 1791744721296,
+                "serverTimeMs": 0.011959,
+                "transportOverheadMs": 0.13520699999997016
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.3875000000000455,
+                "bytesSent": 303,
+                "bytesReceived": 217,
+                "timestamp": 1791744721442,
+                "serverTimeMs": 0.031583,
+                "transportOverheadMs": 0.35591700000004545
+              },
+              {
+                "method": "getSourceFileMetadata",
+                "roundTripMs": 0.21004199999993034,
+                "bytesSent": 197,
+                "bytesReceived": 192,
+                "timestamp": 1791744721445,
+                "serverTimeMs": 0.012583,
+                "transportOverheadMs": 0.19745899999993033
+              },
+              {
+                "method": "getSourceFile",
+                "roundTripMs": 1.9191670000000158,
+                "bytesSent": 197,
+                "bytesReceived": 354391,
+                "timestamp": 1791744721448,
+                "serverTimeMs": 0.704708,
+                "transportOverheadMs": 1.2144590000000157
+              },
+              {
+                "method": "getResolvedModuleFromModuleSpecifier",
+                "roundTripMs": 0.33054199999992306,
+                "bytesSent": 305,
+                "bytesReceived": 216,
+                "timestamp": 1791744721448,
+                "serverTimeMs": 0.0225,
+                "transportOverheadMs": 0.30804199999992304
+              }
+            ]
+          },
+          "output": {
+            "pages": 240,
+            "exports": 239,
+            "diagnostics": 9
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-10-11T18:36:31.707Z",
+  "node": "v24.21.0",
+  "profiles": [
+    {
+      "name": "effect-original",
+      "provenance": {
+        "package": "effect",
+        "version": "4.0.3",
+        "tarball": "https://registry.npmjs.org/effect/-/effect-4.0.3.tgz",
+        "integrity": "sha512-LoWn/Uwwx0JjHSDmBAAahx8sB+klzM6vsZovnbYowBNw6B4QScJLRLBByO61plvNiycx7HPN8FnsWUCu0eXW5w==",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Effect-TS/effect.git",
+          "directory": "packages/effect"
+        },
+        "entryScope": "Effect.ts public module and its transitive source graph"
+      },
+      "baseConfig": {
+        "compilerOptions": {
+          "target": "ES2022",
+          "lib": ["ES2022", "DOM", "DOM.Iterable"],
+          "module": "NodeNext",
+          "moduleResolution": "NodeNext",
+          "rewriteRelativeImportExtensions": true,
+          "verbatimModuleSyntax": true,
+          "strict": true,
+          "exactOptionalPropertyTypes": true,
+          "noImplicitOverride": true,
+          "skipLibCheck": true,
+          "types": ["node"],
+          "typeRoots": ["/Users/sebastian/Workspace/ardo/node_modules/@types"]
+        }
+      },
+      "compilerOptions": {
+        "rootDir": "/private/tmp/ardo-large-api-lpLqWU/projects/effect/src",
+        "noEmit": false,
+        "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true,
+        "noEmitOnError": true,
+        "incremental": false,
+        "removeComments": false
+      },
+      "results": [
+        {
+          "name": "native",
+          "version": "Version 7.1.0-dev.20261011.1",
+          "exitCode": 1,
+          "diagnostics": "src/SchemaAST.ts(3109,51): error TS2345: Argument of type '(exit: Exit<unknown, Issue>) => Effect<Record<PropertyKey, unknown>, Issue, any> | Exit<void, Issue>' is not assignable to parameter of type '(a: Exit<unknown, Issue>) => Effect<Record<PropertyKey, unknown>, Issue, any>'.\n  Type 'Effect<Record<PropertyKey, unknown>, Issue, any> | Exit<void, Issue>' is not assignable to type 'Effect<Record<PropertyKey, unknown>, Issue, any>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.\n    Type 'Failure<void, Issue>' is not assignable to type 'Effect<Record<PropertyKey, unknown>, Issue, any>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.\n      Types of property '[TypeId]' are incompatible.\n        Type 'Variance<void, Issue, never>' is not assignable to type 'Variance<Record<PropertyKey, unknown>, Issue, any>'.\n          Type 'void' is not assignable to type 'Record<PropertyKey, unknown>'.\n"
+        },
+        {
+          "name": "javascript",
+          "version": "Version 6.0.3",
+          "exitCode": 0,
+          "diagnostics": ""
+        }
+      ]
+    }
+  ]
+}

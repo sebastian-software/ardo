@@ -1,0 +1,314 @@
+import type { TSType } from "oxc-parser"
+
+import type {
+  DeclarationReader,
+  DeclarationRecord,
+  ResolvedDeclaration,
+} from "./declaration-project"
+import type { Properties } from "./members"
+import type { TypeContext, TypeValue } from "./source"
+import type { Reference } from "./type-bindings"
+
+import { resolveCallables } from "./callables"
+import { mergeProperties, readClassMembers, readMembers, recordMember } from "./members"
+import { annotationOf, formatType } from "./source"
+import { ArgumentBindings, baseReferences } from "./type-bindings"
+
+const unexpanded = new Set([
+  "TSUnionType",
+  "TSConditionalType",
+  "TSMappedType",
+  "TSIndexedAccessType",
+  "TSImportType",
+])
+
+export class TypeProperties {
+  private readonly bindings = new ArgumentBindings()
+  constructor(private readonly reader: DeclarationReader) {}
+
+  async of(value: TypeValue, seen = new Set<string>()): Promise<Properties> {
+    const { node } = value
+    if (node.type === "TSTypeLiteral") return readMembers(node.members, value, this.reader)
+    if (node.type === "TSParenthesizedType")
+      return this.of({ ...value, node: node.typeAnnotation }, seen)
+    if (node.type === "TSIntersectionType") {
+      const parts: Properties[] = []
+      for (const type of node.types) parts.push(await this.of({ ...value, node: type }, seen))
+      return mergeProperties(parts, "intersection")
+    }
+    if (node.type === "TSTypeReference")
+      return this.reference(
+        {
+          name:
+            node.typeName.type === "Identifier"
+              ? node.typeName.name
+              : formatType(node.typeName, value),
+          args: node.typeArguments?.params ?? [],
+        },
+        value,
+        seen
+      )
+    if (node.type === "TSTypeQuery") return this.query(node, value, seen)
+    if (unexpanded.has(node.type))
+      return this.incomplete(
+        value,
+        `Property expansion is not supported for ${formatType(node, value)}; its type expression is preserved.`
+      )
+    return { items: [], complete: true }
+  }
+
+  private async query(
+    node: Extract<TSType, { type: "TSTypeQuery" }>,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
+    const resolved = await this.reader.resolve(context.module, formatType(node.exprName, context))
+    return resolved == null
+      ? this.incomplete(context, `Could not expand ${formatType(node, context)}.`)
+      : this.declaration(resolved, { module: resolved.module, bindings: new Map() }, seen)
+  }
+
+  async declaration(
+    resolved: ResolvedDeclaration,
+    context: TypeContext,
+    seen = new Set<string>()
+  ): Promise<Properties> {
+    const key = `${resolved.module.file}:${resolved.name}`
+    if (seen.has(key))
+      return this.incomplete(context, `Recursive expansion of ${resolved.name} was stopped.`)
+    const next = new Set(seen).add(key)
+    const parts: Properties[] = []
+    for (const record of resolved.records)
+      parts.push(await this.definition(record.node, { ...context, module: record.module }, next))
+    return mergeProperties(
+      parts,
+      resolved.records.every((record) => record.node.type === "TSInterfaceDeclaration")
+        ? "overloads"
+        : "override"
+    )
+  }
+
+  private async definition(
+    node: DeclarationRecord["node"],
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
+    if (node.type === "TSTypeAliasDeclaration")
+      return this.of({ ...context, node: node.typeAnnotation }, seen)
+    if (node.type === "VariableDeclarator") {
+      const annotation = annotationOf(node.id)
+      return annotation == null
+        ? { items: [], complete: true }
+        : this.of({ ...context, node: annotation }, seen)
+    }
+    const inherited: Properties[] = []
+    for (const reference of baseReferences(node, context))
+      inherited.push(await this.reference(reference, context, seen))
+    const own =
+      node.type === "TSInterfaceDeclaration"
+        ? readMembers(node.body.body, context, this.reader)
+        : node.type === "ClassDeclaration"
+          ? readClassMembers(node, context)
+          : { items: [], complete: true }
+    const bases = inherited.map((base) => ({
+      ...base,
+      items: base.items.filter((item) => item.kind !== "constructor"),
+    }))
+    return mergeProperties([...bases, own])
+  }
+
+  private async reference(
+    reference: Reference,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
+    const bound = context.bindings.get(reference.name)
+    if (bound != null) return this.of(bound, this.bindings.scope(bound, seen))
+    let resolved =
+      this.reader.isLibrary(context.module) && !context.module.isExternalModule
+        ? undefined
+        : await this.reader.resolve(context.module, reference.name)
+    if (resolved == null && !context.module.imports.has(reference.name)) {
+      const utility = await this.utility(reference, context, seen)
+      if (utility != null) return utility
+      resolved = this.reader.globalType(reference.name)
+    }
+    if (resolved != null)
+      return this.declaration(
+        resolved,
+        {
+          module: resolved.module,
+          bindings: this.bindings.bind(resolved, { args: reference.args, context }, seen),
+        },
+        seen
+      )
+    return this.incomplete(context, `Could not expand properties of ${reference.name}.`)
+  }
+
+  private async utility(
+    reference: Reference,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties | undefined> {
+    const first = reference.args.at(0)
+    if (first == null) return undefined
+    if (reference.name === "ReturnType") return this.returnType(first, context, seen)
+    if (reference.name === "Record") return this.record(reference, context)
+    if (!["Pick", "Omit", "Partial", "Required", "Readonly"].includes(reference.name))
+      return undefined
+    const source = await this.of({ ...context, node: first }, seen)
+    if (reference.name !== "Readonly" && source.items.some((item) => item.kind === "index"))
+      return this.incomplete(
+        context,
+        `Cannot safely apply ${reference.name} to index signatures; its type expression is preserved.`
+      )
+    if (reference.name === "Pick" || reference.name === "Omit") {
+      const keys = await this.literalKeys(reference.args.at(1), context)
+      if (keys == null)
+        return this.incomplete(
+          context,
+          `Only literal property names are supported in ${reference.name}.`
+        )
+      return {
+        ...source,
+        items: source.items.filter(
+          (item) => keys.includes(item.name) === (reference.name === "Pick")
+        ),
+      }
+    }
+    return {
+      ...source,
+      items: source.items.map((item) => ({
+        ...item,
+        optional:
+          reference.name === "Partial"
+            ? true
+            : reference.name === "Required"
+              ? false
+              : item.optional,
+        readonly: reference.name === "Readonly" ? true : item.readonly,
+      })),
+    }
+  }
+
+  private async record(reference: Reference, context: TypeContext): Promise<Properties> {
+    const keys = reference.args.at(0)
+    const value = reference.args.at(1)
+    if (keys == null || value == null)
+      return this.incomplete(context, "Record requires both key and value types.")
+    const names = await this.literalKeys(keys, context)
+    const type = formatType(value, context)
+    if (names != null)
+      return { items: names.map((name) => recordMember(name, type, "property")), complete: true }
+    if (isIndexKey(keys))
+      return {
+        items: [recordMember(`[key: ${formatType(keys, context)}]`, type, "index")],
+        complete: true,
+      }
+    return this.incomplete(
+      context,
+      "Only literal names and primitive index keys are supported in Record."
+    )
+  }
+
+  private async literalKeys(
+    node: TSType | undefined,
+    context: TypeContext,
+    seen = new Set<string>()
+  ): Promise<string[] | undefined> {
+    if (node == null) return undefined
+    if (node.type === "TSNeverKeyword") return []
+    if (node.type === "TSParenthesizedType")
+      return this.literalKeys(node.typeAnnotation, context, seen)
+    if (
+      node.type === "TSLiteralType" &&
+      node.literal.type === "Literal" &&
+      (typeof node.literal.value === "string" || typeof node.literal.value === "number")
+    )
+      return [String(node.literal.value)]
+    if (node.type === "TSUnionType") return this.unionKeys(node.types, context, seen)
+    return node.type === "TSTypeReference" ? this.referencedKeys(node, context, seen) : undefined
+  }
+
+  private async unionKeys(
+    nodes: TSType[],
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<string[] | undefined> {
+    const names: string[] = []
+    for (const node of nodes) {
+      const keys = await this.literalKeys(node, context, seen)
+      if (keys == null) return undefined
+      names.push(...keys)
+    }
+    return [...new Set(names)]
+  }
+
+  private async referencedKeys(
+    node: Extract<TSType, { type: "TSTypeReference" }>,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<string[] | undefined> {
+    if (node.typeName.type !== "Identifier") return undefined
+    const bound = context.bindings.get(node.typeName.name)
+    if (bound != null) return this.literalKeys(bound.node, bound, this.bindings.scope(bound, seen))
+    const local =
+      this.reader.isLibrary(context.module) && !context.module.isExternalModule
+        ? undefined
+        : await this.reader.resolve(context.module, node.typeName.name)
+    const resolved =
+      local ??
+      (context.module.imports.has(node.typeName.name)
+        ? undefined
+        : this.reader.globalType(node.typeName.name))
+    const alias = resolved?.records.at(0)?.node
+    if (resolved == null || alias?.type !== "TSTypeAliasDeclaration") return undefined
+    const key = `${resolved.module.file}:${resolved.name}`
+    if (seen.has(key)) return undefined
+    return this.literalKeys(
+      alias.typeAnnotation,
+      {
+        module: resolved.module,
+        bindings: this.bindings.bind(
+          resolved,
+          { args: node.typeArguments?.params ?? [], context },
+          seen
+        ),
+      },
+      new Set(seen).add(key)
+    )
+  }
+
+  private async returnType(
+    node: TSType,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
+    const resolved =
+      node.type === "TSTypeQuery"
+        ? await this.reader.resolve(context.module, formatType(node.exprName, context))
+        : undefined
+    const record = resolved?.records.at(-1)
+    if (record != null && resolved != null) {
+      const callables = await resolveCallables(
+        record,
+        { module: resolved.module, bindings: new Map() },
+        { reader: this.reader }
+      )
+      const callable = callables.at(-1)
+      if (callable?.node.returnType != null)
+        return this.of({ ...callable.context, node: callable.node.returnType.typeAnnotation }, seen)
+    }
+    return this.incomplete(context, "Could not expand this ReturnType expression.")
+  }
+
+  private incomplete(context: TypeContext, message: string): Properties {
+    this.reader.report(context.module, message)
+    return { items: [], complete: false }
+  }
+}
+
+function isIndexKey(node: TSType): boolean {
+  if (["TSStringKeyword", "TSNumberKeyword", "TSSymbolKeyword"].includes(node.type)) return true
+  return node.type === "TSUnionType" && node.types.every((type) => isIndexKey(type))
+}

@@ -46,8 +46,22 @@ jobs:
       - name: Run unit tests with coverage
         run: pnpm test:coverage
 
+      - name: Install native TypeScript for declaration documentation tests
+        if: matrix.node-version == '24'
+        run: npm install --prefix "$RUNNER_TEMP/ardo-native-ts" --no-package-lock --ignore-scripts --no-audit --no-fund typescript@7.0.2
+
+      - name: Test documentation from native TypeScript declarations
+        if: matrix.node-version == '24'
+        env:
+          ARDO_DECLARATION_TSC: ${{ runner.temp }}/ardo-native-ts/node_modules/typescript/bin/tsc
+        run: pnpm exec vitest --run packages/ardo/src/api --config vitest.config.ts
+
       - name: Run integration tests
-        run: pnpm test:integration
+        run: |
+          if [ "${{ matrix.node-version }}" = "24" ]; then
+            export ARDO_DECLARATION_TSC="$RUNNER_TEMP/ardo-native-ts/node_modules/typescript/bin/tsc"
+          fi
+          pnpm test:integration
 
       - name: Build docs site and check performance budgets
         if: matrix.node-version == '22'

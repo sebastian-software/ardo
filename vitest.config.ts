@@ -23,6 +23,8 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
       include: [
+        "packages/ardo/src/api/**/*.ts",
+        "packages/ardo/src/generated-docs.ts",
         "packages/ardo/src/markdown/**/*.{ts,tsx}",
         "packages/ardo/src/runtime/**/*.{ts,tsx}",
         "packages/ardo/src/typedoc/**/*.{ts,tsx}",

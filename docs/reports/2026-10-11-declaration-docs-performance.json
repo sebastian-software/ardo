@@ -1,0 +1,1634 @@
+{
+  "recordedAt": "2026-10-11T13:29:23.090Z",
+  "sourceRevision": "04876956600bcdd408e673582d81d7bea276ab9a",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "27.0.0",
+    "cpu": "Apple M1 Ultra",
+    "logicalCpus": 20,
+    "memoryGiB": 64,
+    "declarationCompiler": "Version 7.0.2",
+    "typedoc": "0.28.20",
+    "typedocCompiler": "6.0.3",
+    "oxc": "0.127.0"
+  },
+  "methodology": {
+    "runs": 7,
+    "warmups": 1,
+    "boundary": "Fresh Node process launch through written Markdown pages and process exit",
+    "order": "Sequential; rotate mode order each round; no concurrent benchmark jobs",
+    "cache": "OS caches are uncontrolled. No-change incremental state and existing declarations are prepared separately.",
+    "included": "Module imports, native CLI version check, complete project emit with type checking, library discovery, extraction, rendering, and writing",
+    "excluded": "Dependency installation, package build, temporary config setup, result verification, cleanup, and the subsequent Vite/HTML site build",
+    "nativeOptions": "emitDeclarationOnly, declaration, declarationMap, removeComments=false, noEmitOnError",
+    "typedocOptions": "Actual ardo/typedoc generator, plugin=[], excludeInternal/Private/Protected=true, sourceLinks=false; default breadcrumbs and hierarchy",
+    "output": "The renderers produce different page trees and content. Output counts and bytes accompany each result; this is not feature parity or correctness evidence.",
+    "phases": "Worker phase durations exclude Node startup. Parent wallMs includes process startup and exit; phase medians need not sum to the wall median."
+  },
+  "profiles": [
+    {
+      "name": "ardo",
+      "entry": "packages/ardo/src/index.ts",
+      "modes": [
+        {
+          "mode": "typedoc",
+          "scenario": "TypeDoc from source",
+          "summary": {
+            "wallMs": {
+              "min": 2114.49,
+              "median": 2136.12,
+              "max": 2201
+            },
+            "importMs": {
+              "min": 239.87,
+              "median": 242.39,
+              "max": 246.31
+            },
+            "compilerVersionMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "compilerMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "generateMs": {
+              "min": 1811.25,
+              "median": 1835.23,
+              "max": 1889.75
+            }
+          },
+          "samples": [
+            {
+              "importMs": 241.38,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1811.25,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2114.49,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 242.39,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1838.01,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2144.38,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 239.87,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1835.23,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2136.12,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 242.81,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1812.33,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2118.19,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 241.44,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1833.28,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2134.45,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 243.18,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1884.73,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2189.64,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 246.31,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 1889.75,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 47,
+              "wallMs": 2201,
+              "markdownBytes": 26929,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-two-pass",
+          "scenario": "Native full emit, then a second CLI project scan, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 754.51,
+              "median": 759.72,
+              "max": 798.83
+            },
+            "importMs": {
+              "min": 6.61,
+              "median": 6.94,
+              "max": 7.57
+            },
+            "compilerVersionMs": {
+              "min": 55.99,
+              "median": 58.22,
+              "max": 59.79
+            },
+            "compilerMs": {
+              "min": 398.6,
+              "median": 404.96,
+              "max": 421.04
+            },
+            "generateMs": {
+              "min": 234.05,
+              "median": 238.78,
+              "max": 267.95
+            }
+          },
+          "samples": [
+            {
+              "importMs": 7.57,
+              "compilerVersionMs": 58.29,
+              "compilerMs": 404.96,
+              "generateMs": 234.05,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 756.68,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.76,
+              "compilerVersionMs": 56.51,
+              "compilerMs": 406.72,
+              "generateMs": 237.07,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 759.72,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.2,
+              "compilerVersionMs": 58.22,
+              "compilerMs": 415.05,
+              "generateMs": 267.95,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 798.83,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.69,
+              "compilerVersionMs": 59.79,
+              "compilerMs": 398.6,
+              "generateMs": 238.78,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 756.32,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.94,
+              "compilerVersionMs": 57.27,
+              "compilerMs": 401.14,
+              "generateMs": 248.37,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 765.92,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.61,
+              "compilerVersionMs": 55.99,
+              "compilerMs": 401.81,
+              "generateMs": 235.93,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 754.51,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.56,
+              "compilerVersionMs": 58.81,
+              "compilerMs": 421.04,
+              "generateMs": 240.38,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 780.76,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-one-pass",
+          "scenario": "Native full emit and library discovery in one project invocation, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 631.61,
+              "median": 642.59,
+              "max": 667.48
+            },
+            "importMs": {
+              "min": 6.63,
+              "median": 6.95,
+              "max": 7.37
+            },
+            "compilerVersionMs": {
+              "min": 55.9,
+              "median": 56.76,
+              "max": 58.62
+            },
+            "compilerMs": {
+              "min": 280.64,
+              "median": 293.92,
+              "max": 310.64
+            },
+            "generateMs": {
+              "min": 234.25,
+              "median": 235.6,
+              "max": 240.29
+            }
+          },
+          "samples": [
+            {
+              "importMs": 6.98,
+              "compilerVersionMs": 56.76,
+              "compilerMs": 289.3,
+              "generateMs": 236.47,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 641.83,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.7,
+              "compilerVersionMs": 57.28,
+              "compilerMs": 280.64,
+              "generateMs": 234.85,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 631.61,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.63,
+              "compilerVersionMs": 56.64,
+              "compilerMs": 296.55,
+              "generateMs": 235.6,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 646.13,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.64,
+              "compilerVersionMs": 55.9,
+              "compilerMs": 292.75,
+              "generateMs": 234.84,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 641.02,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.95,
+              "compilerVersionMs": 56.03,
+              "compilerMs": 293.92,
+              "generateMs": 234.25,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 642.59,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.37,
+              "compilerVersionMs": 58.62,
+              "compilerMs": 300.96,
+              "generateMs": 240.29,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 659.14,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.13,
+              "compilerVersionMs": 58.33,
+              "compilerMs": 310.64,
+              "generateMs": 239.54,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 667.48,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-incremental",
+          "scenario": "Native no-change incremental build with existing output and build info, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 478.09,
+              "median": 483.55,
+              "max": 506.69
+            },
+            "importMs": {
+              "min": 6.68,
+              "median": 6.8,
+              "max": 7.47
+            },
+            "compilerVersionMs": {
+              "min": 56.66,
+              "median": 57.56,
+              "max": 60.22
+            },
+            "compilerMs": {
+              "min": 127.72,
+              "median": 128.67,
+              "max": 134.87
+            },
+            "generateMs": {
+              "min": 233.46,
+              "median": 236.06,
+              "max": 260.82
+            }
+          },
+          "samples": [
+            {
+              "importMs": 6.68,
+              "compilerVersionMs": 56.66,
+              "compilerMs": 134.87,
+              "generateMs": 236.06,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 487.4,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.72,
+              "compilerVersionMs": 57.56,
+              "compilerMs": 128.67,
+              "generateMs": 233.46,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 478.09,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.93,
+              "compilerVersionMs": 57.02,
+              "compilerMs": 128.32,
+              "generateMs": 238.76,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 481.77,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.8,
+              "compilerVersionMs": 58.95,
+              "compilerMs": 127.72,
+              "generateMs": 235.13,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 480.33,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.76,
+              "compilerVersionMs": 58.68,
+              "compilerMs": 131.65,
+              "generateMs": 233.89,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 483.55,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.47,
+              "compilerVersionMs": 57.16,
+              "compilerMs": 128.4,
+              "generateMs": 260.82,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 506.69,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.39,
+              "compilerVersionMs": 60.22,
+              "compilerMs": 129.75,
+              "generateMs": 247.4,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 746,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 498.08,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            }
+          ]
+        },
+        {
+          "mode": "declarations",
+          "scenario": "OXC from existing declarations and supplied library paths; no compiler",
+          "summary": {
+            "wallMs": {
+              "min": 295.87,
+              "median": 297.68,
+              "max": 307.86
+            },
+            "importMs": {
+              "min": 6.69,
+              "median": 7.05,
+              "max": 7.53
+            },
+            "compilerVersionMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "compilerMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "generateMs": {
+              "min": 235.83,
+              "median": 238.14,
+              "max": 247.34
+            }
+          },
+          "samples": [
+            {
+              "importMs": 6.85,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 238.14,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 297.29,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.69,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 239.7,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 298.23,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.05,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 235.83,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 295.87,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.3,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 238.12,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 296.5,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 6.84,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 237.69,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 297.68,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.53,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 240.3,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 299.92,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            },
+            {
+              "importMs": 7.36,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 247.34,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 61,
+              "extractedFiles": 88,
+              "exports": 85,
+              "pages": 86,
+              "wallMs": 307.86,
+              "markdownBytes": 70183,
+              "declarationOutput": {
+                "files": 172,
+                "bytes": 156486
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "library-example",
+      "entry": "examples/library/src/index.ts",
+      "modes": [
+        {
+          "mode": "typedoc",
+          "scenario": "TypeDoc from source",
+          "summary": {
+            "wallMs": {
+              "min": 595.8,
+              "median": 603.03,
+              "max": 785.33
+            },
+            "importMs": {
+              "min": 241.3,
+              "median": 244.55,
+              "max": 252.29
+            },
+            "compilerVersionMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "compilerMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "generateMs": {
+              "min": 297.46,
+              "median": 303.17,
+              "max": 485.87
+            }
+          },
+          "samples": [
+            {
+              "importMs": 245.69,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 485.87,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 785.33,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 252.29,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 310.94,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 619.18,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 241.3,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 301.27,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 597.32,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 243.77,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 303.17,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 603.03,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 243.52,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 297.46,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 595.8,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 244.55,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 298.76,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 598.73,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            },
+            {
+              "importMs": 246.25,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 342.77,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": null,
+              "extractedFiles": null,
+              "exports": null,
+              "pages": 14,
+              "wallMs": 643.61,
+              "markdownBytes": 8007,
+              "declarationOutput": {
+                "files": 0,
+                "bytes": 0
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-two-pass",
+          "scenario": "Native full emit, then a second CLI project scan, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 486.19,
+              "median": 503.37,
+              "max": 527.08
+            },
+            "importMs": {
+              "min": 6.73,
+              "median": 7.23,
+              "max": 7.82
+            },
+            "compilerVersionMs": {
+              "min": 57.46,
+              "median": 58.22,
+              "max": 60.13
+            },
+            "compilerMs": {
+              "min": 168.07,
+              "median": 169.49,
+              "max": 180.19
+            },
+            "generateMs": {
+              "min": 200.31,
+              "median": 217.33,
+              "max": 239.46
+            }
+          },
+          "samples": [
+            {
+              "importMs": 7.49,
+              "compilerVersionMs": 57.79,
+              "compilerMs": 170.56,
+              "generateMs": 239.46,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 527.08,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.37,
+              "compilerVersionMs": 58.86,
+              "compilerMs": 180.19,
+              "generateMs": 218.44,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 517.44,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.15,
+              "compilerVersionMs": 58.37,
+              "compilerMs": 169.92,
+              "generateMs": 210.76,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 497.84,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.82,
+              "compilerVersionMs": 60.13,
+              "compilerMs": 168.48,
+              "generateMs": 217.33,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 506.31,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.93,
+              "compilerVersionMs": 58.07,
+              "compilerMs": 169.49,
+              "generateMs": 200.31,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 486.19,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.73,
+              "compilerVersionMs": 58.22,
+              "compilerMs": 168.46,
+              "generateMs": 213.09,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 498.91,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.23,
+              "compilerVersionMs": 57.46,
+              "compilerMs": 168.07,
+              "generateMs": 218.35,
+              "compilerProjectInvocations": 2,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 503.37,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-one-pass",
+          "scenario": "Native full emit and library discovery in one project invocation, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 407.34,
+              "median": 419.19,
+              "max": 542.59
+            },
+            "importMs": {
+              "min": 6.71,
+              "median": 7.19,
+              "max": 7.96
+            },
+            "compilerVersionMs": {
+              "min": 57.2,
+              "median": 59.39,
+              "max": 60.51
+            },
+            "compilerMs": {
+              "min": 82.75,
+              "median": 85.14,
+              "max": 177.41
+            },
+            "generateMs": {
+              "min": 204.12,
+              "median": 214.48,
+              "max": 244.94
+            }
+          },
+          "samples": [
+            {
+              "importMs": 7.56,
+              "compilerVersionMs": 58.94,
+              "compilerMs": 177.41,
+              "generateMs": 244.94,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 542.59,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.19,
+              "compilerVersionMs": 60.15,
+              "compilerMs": 84.87,
+              "generateMs": 218.21,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 422.93,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.71,
+              "compilerVersionMs": 59.39,
+              "compilerMs": 82.75,
+              "generateMs": 216.45,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 416.88,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.96,
+              "compilerVersionMs": 59.94,
+              "compilerMs": 90.03,
+              "generateMs": 214.48,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 423.53,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.9,
+              "compilerVersionMs": 58.46,
+              "compilerMs": 84.01,
+              "generateMs": 212.87,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 413.4,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.84,
+              "compilerVersionMs": 57.2,
+              "compilerMs": 85.14,
+              "generateMs": 204.12,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 407.34,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.88,
+              "compilerVersionMs": 60.51,
+              "compilerMs": 86.59,
+              "generateMs": 213.93,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 419.19,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            }
+          ]
+        },
+        {
+          "mode": "native-incremental",
+          "scenario": "Native no-change incremental build with existing output and build info, then OXC",
+          "summary": {
+            "wallMs": {
+              "min": 402.4,
+              "median": 409.68,
+              "max": 444.74
+            },
+            "importMs": {
+              "min": 6.9,
+              "median": 7.67,
+              "max": 8.34
+            },
+            "compilerVersionMs": {
+              "min": 57.37,
+              "median": 57.87,
+              "max": 60.63
+            },
+            "compilerMs": {
+              "min": 81.96,
+              "median": 83.63,
+              "max": 84.8
+            },
+            "generateMs": {
+              "min": 200.23,
+              "median": 206.02,
+              "max": 231.9
+            }
+          },
+          "samples": [
+            {
+              "importMs": 7.67,
+              "compilerVersionMs": 60.63,
+              "compilerMs": 83.39,
+              "generateMs": 231.9,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 444.74,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.69,
+              "compilerVersionMs": 58.87,
+              "compilerMs": 84.8,
+              "generateMs": 209.33,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 411.8,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 8.05,
+              "compilerVersionMs": 57.87,
+              "compilerMs": 83.78,
+              "generateMs": 202.2,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 404.93,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 6.9,
+              "compilerVersionMs": 57.64,
+              "compilerMs": 84.71,
+              "generateMs": 200.23,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 402.4,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 8.34,
+              "compilerVersionMs": 60.32,
+              "compilerMs": 81.96,
+              "generateMs": 206.02,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 409.68,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.08,
+              "compilerVersionMs": 57.76,
+              "compilerMs": 83.63,
+              "generateMs": 213.75,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 412.69,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.41,
+              "compilerVersionMs": 57.37,
+              "compilerMs": 83.19,
+              "generateMs": 204.76,
+              "compilerProjectInvocations": 1,
+              "compilerProjectFiles": 64,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 405.14,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            }
+          ]
+        },
+        {
+          "mode": "declarations",
+          "scenario": "OXC from existing declarations and supplied library paths; no compiler",
+          "summary": {
+            "wallMs": {
+              "min": 261.81,
+              "median": 272.25,
+              "max": 306.48
+            },
+            "importMs": {
+              "min": 7.17,
+              "median": 7.49,
+              "max": 9.46
+            },
+            "compilerVersionMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "compilerMs": {
+              "min": 0,
+              "median": 0,
+              "max": 0
+            },
+            "generateMs": {
+              "min": 202.39,
+              "median": 213.49,
+              "max": 245.96
+            }
+          },
+          "samples": [
+            {
+              "importMs": 7.86,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 208.51,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 268.53,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.49,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 245.96,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 306.48,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.49,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 215.72,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 277.04,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.17,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 226.81,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 287.36,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 9.46,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 203.89,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 267.5,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.17,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 202.39,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 261.81,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            },
+            {
+              "importMs": 7.27,
+              "compilerVersionMs": 0,
+              "compilerMs": 0,
+              "generateMs": 213.49,
+              "compilerProjectInvocations": 0,
+              "compilerProjectFiles": 0,
+              "compilerLibFiles": 63,
+              "extractedFiles": 64,
+              "exports": 11,
+              "pages": 12,
+              "wallMs": 272.25,
+              "markdownBytes": 8555,
+              "declarationOutput": {
+                "files": 2,
+                "bytes": 6464
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
