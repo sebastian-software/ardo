@@ -11,7 +11,7 @@ export async function generateDeclarationDocs(
 ): Promise<DeclarationDocsResult> {
   const out = config.out ?? "api-reference"
   resolveGeneratedDocsDirectory(routesDir, out, "api.out")
-  const project = await extractDeclarations(config.entryPoints)
+  const project = await extractDeclarations(config.entryPoints, config)
   const pages = renderDeclarationDocs(project.items, out, config.title ?? "API Reference")
   await writeGeneratedDocs({ outputDir: routesDir, out, configKey: "api.out" }, pages)
   return { ...project, pages }

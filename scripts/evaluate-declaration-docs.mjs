@@ -137,7 +137,12 @@ async function evaluate(profile, directory) {
   )
   const oracle = await app.convert()
   if (oracle == null) throw new Error(`TypeDoc did not convert ${profile.name}.`)
-  const extracted = await extractDeclarations([declaration])
+  const extracted = await extractDeclarations([declaration], {
+    packageRoot: profile.config ? path.dirname(path.join(root, profile.config)) : undefined,
+  })
+  const declarationRoot = profile.config
+    ? path.join(directory, "declarations")
+    : path.dirname(await fs.realpath(entry))
   const references = new Map((oracle.children ?? []).map((item) => [item.name, dereference(item)]))
   const items = new Map(extracted.items.map((item) => [item.name, item]))
   const result = {
@@ -153,6 +158,7 @@ async function evaluate(profile, directory) {
           ).version,
         }),
     exports: items.size,
+    declarationFiles: extracted.files.length,
     typedocDeclarations: references.size,
     typedocOnlyDeclarations: [...references.keys()].filter((name) => !items.has(name)),
     extractorOnlyDeclarations: [...items.keys()].filter((name) => !references.has(name)),
@@ -164,10 +170,7 @@ async function evaluate(profile, directory) {
       .filter((item) => !item.propertiesComplete)
       .map((item) => item.name),
     diagnostics: extracted.diagnostics.map((diagnostic) => ({
-      file: path.relative(
-        profile.config ? path.join(directory, "declarations") : path.dirname(entry),
-        diagnostic.file
-      ),
+      file: path.relative(declarationRoot, diagnostic.file),
       message: diagnostic.message,
     })),
   }

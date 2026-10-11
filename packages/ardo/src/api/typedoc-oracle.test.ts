@@ -12,6 +12,19 @@ import type { ApiDeclaration, DeclarationProject } from "./types"
 import { extractDeclarations } from "./index"
 
 const source = `
+import type { Base as PackageBase } from '@ardo-oracle/base';
+import type { ScopedBase } from '@ardo-oracle/base/child';
+import type * as PackageNamespace from '@ardo-oracle/base';
+import { Parent as PackageParent } from '@ardo-oracle/base';
+export interface ExternalChild extends PackageBase<number[]> { /** Own flag. */ own: boolean; }
+export interface ExternalSelection extends Pick<PackageNamespace.Base<number>, 'value'> {}
+export interface ExternalSubpath extends ScopedBase<string> {}
+export class ExternalClass extends PackageParent<number> {
+  readonly own = true;
+  readonly label = 'constant';
+  readonly count = -2;
+  readonly large = 42n;
+}
 export interface Base<T = string> {
   /** The stored value. */
   readonly value: T;
@@ -88,6 +101,41 @@ beforeAll(async () => {
   temporary = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-api-oracle-"))
   const entry = path.join(temporary, "api.ts")
   const tsconfig = path.join(temporary, "tsconfig.json")
+  const dependency = path.join(temporary, "node_modules/@ardo-oracle/base")
+  await fs.mkdir(dependency, { recursive: true })
+  await fs.writeFile(
+    path.join(dependency, "package.json"),
+    JSON.stringify({
+      name: "@ardo-oracle/base",
+      type: "module",
+      exports: {
+        ".": { types: "./index.d.mts", default: "./runtime.mjs" },
+        "./child": { types: "./child.d.mts", default: "./child.mjs" },
+      },
+    })
+  )
+  await fs.writeFile(
+    path.join(dependency, "index.d.mts"),
+    `
+    export interface Base<T = string> {
+      /** The package value. */ readonly value: T;
+      /** Optional package label. */ label?: string;
+      /** Package callback. */ callback: (value: T) => T;
+    }
+    export declare class Parent<T> {
+      /** Stored package value. */ value: T;
+      protected hidden: string;
+      constructor(value: T);
+    }
+  `
+  )
+  await fs.writeFile(
+    path.join(dependency, "child.d.mts"),
+    `
+    import type { Base } from './index.mjs';
+    export interface ScopedBase<T> extends Base<T> { /** Package identifier. */ readonly id: string; }
+  `
+  )
   await fs.writeFile(entry, source)
   await fs.writeFile(
     tsconfig,
@@ -96,6 +144,7 @@ beforeAll(async () => {
         strict: true,
         target: "ES2022",
         module: "ESNext",
+        moduleResolution: "bundler",
         lib: ["ES2022"],
         types: [],
         declaration: true,
@@ -217,6 +266,9 @@ function extractedProperties(name: string): ComparedProperty[] {
 
 describe("TypeDoc declaration oracle", () => {
   it.each([
+    "ExternalChild",
+    "ExternalSelection",
+    "ExternalClass",
     "GenericChild",
     "DefaultChild",
     "OptionalProps",
@@ -237,6 +289,21 @@ describe("TypeDoc declaration oracle", () => {
   ])("matches properties, types, modifiers, and comments for %s", (name) => {
     expect(extractedDeclaration(name).propertiesComplete).toBe(true)
     expect(extractedProperties(name)).toStrictEqual(oracleProperties(name))
+  })
+
+  it("retains inline inherited package documentation that TypeDoc omits", () => {
+    const properties = extractedProperties("ExternalSubpath")
+    const reference = oracleProperties("ExternalSubpath")
+    expect(extractedDeclaration("ExternalSubpath").propertiesComplete).toBe(true)
+    expect(properties.find((property) => property.name === "id")?.summary).toBe(
+      "Package identifier."
+    )
+    expect(reference.find((property) => property.name === "id")?.summary).toBe("")
+    expect(
+      properties.map((property) =>
+        property.name === "id" ? { ...property, summary: "" } : property
+      )
+    ).toStrictEqual(reference)
   })
 
   it("preserves compiler-checked readonly Record members that TypeDoc renders without the flag", () => {

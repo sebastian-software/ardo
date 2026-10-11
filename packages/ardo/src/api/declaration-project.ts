@@ -10,9 +10,10 @@ import type {
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { ApiComment, ApiExtractionDiagnostic } from "./types"
+import type { ApiComment, ApiExtractionDiagnostic, DeclarationExtractionOptions } from "./types"
 
 import { createDeclarationModule } from "./declaration-index"
+import { resolveDeclarationImport } from "./package-declarations"
 
 export type DeclarationRecord = {
   node: Declaration | VariableDeclarator
@@ -43,33 +44,26 @@ export type ResolvedDeclaration = {
 export class DeclarationReader {
   readonly modules = new Map<string, DeclarationModule>()
   readonly diagnostics: ApiExtractionDiagnostic[] = []
+  private readonly missingImports = new Set<string>()
+
+  constructor(private readonly options: DeclarationExtractionOptions = {}) {}
 
   async read(file: string): Promise<DeclarationModule> {
-    const absolute = path.resolve(file)
-    const existing = this.modules.get(absolute)
-    if (existing != null) return existing
-    if (!/\.d\.(?:ts|mts|cts)$/u.test(absolute)) {
+    if (!/\.d\.(?:ts|mts|cts)$/u.test(file)) {
       throw new Error(
         `[ardo] Expected a declaration entry point (.d.ts, .d.mts, or .d.cts): ${file}`
       )
     }
+
+    const absolute = await fs.realpath(path.resolve(file))
+    const existing = this.modules.get(absolute)
+    if (existing != null) return existing
 
     const source = await fs.readFile(absolute, "utf8")
     const module = createDeclarationModule(absolute, source, (message) => {
       this.report({ file: absolute }, message)
     })
     this.modules.set(absolute, module)
-    const requests = new Set([
-      ...module.stars,
-      ...[...module.imports.values(), ...module.exports.values()].flatMap((binding) =>
-        binding.request == null ? [] : [binding.request]
-      ),
-    ])
-    for (const request of requests) {
-      if (!request.startsWith(".")) continue
-      const dependency = await resolveRelativeDeclaration(absolute, request)
-      if (dependency != null) module.dependencies.set(request, await this.read(dependency))
-    }
     return module
   }
 
@@ -79,23 +73,26 @@ export class DeclarationReader {
     }
   }
 
-  exportsOf(module: DeclarationModule, seen = new Set<string>()): Map<string, ResolvedDeclaration> {
+  async exportsOf(
+    module: DeclarationModule,
+    seen = new Set<string>()
+  ): Promise<Map<string, ResolvedDeclaration>> {
     if (seen.has(module.file)) return new Map()
     const next = new Set(seen).add(module.file)
     const result = new Map<string, ResolvedDeclaration>()
     for (const [name, binding] of module.exports) {
-      const declaration = this.resolveBinding(module, binding, new Set())
+      const declaration = await this.resolveBinding(module, binding, new Set())
       if (declaration == null) this.report(module, `Could not resolve public export ${name}.`)
       else result.set(name, declaration)
     }
     const ambiguous = new Set<string>()
     for (const request of module.stars) {
-      const dependency = module.dependencies.get(request)
+      const dependency = await this.dependency(module, request)
       if (dependency == null) {
         this.report(module, `Could not expand export * from ${JSON.stringify(request)}.`)
         continue
       }
-      this.appendWildcard(module, this.exportsOf(dependency, next), { result, ambiguous })
+      this.appendWildcard(module, await this.exportsOf(dependency, next), { result, ambiguous })
     }
     return result
   }
@@ -116,11 +113,11 @@ export class DeclarationReader {
     }
   }
 
-  resolve(
+  async resolve(
     module: DeclarationModule,
     name: string,
     seen = new Set<string>()
-  ): ResolvedDeclaration | undefined {
+  ): Promise<ResolvedDeclaration | undefined> {
     const key = `${module.file}:${name}`
     if (seen.has(key)) return undefined
     const next = new Set(seen).add(key)
@@ -132,17 +129,17 @@ export class DeclarationReader {
     const member = name.split(".").at(1)
     const namespaceBinding = module.imports.get(namespace)
     if (member != null && namespaceBinding?.name === "*" && namespaceBinding.request != null) {
-      const dependency = module.dependencies.get(namespaceBinding.request)
+      const dependency = await this.dependency(module, namespaceBinding.request)
       if (dependency != null) return this.resolveExport(dependency, member, next)
     }
     return undefined
   }
 
-  private resolveExport(
+  private async resolveExport(
     module: DeclarationModule,
     name: string,
     seen: Set<string>
-  ): ResolvedDeclaration | undefined {
+  ): Promise<ResolvedDeclaration | undefined> {
     const key = `${module.file}:export:${name}`
     if (seen.has(key)) return undefined
     const next = new Set(seen).add(key)
@@ -150,9 +147,9 @@ export class DeclarationReader {
     if (binding != null) return this.resolveBinding(module, binding, next)
     const candidates: ResolvedDeclaration[] = []
     for (const request of module.stars) {
-      const dependency = module.dependencies.get(request)
+      const dependency = await this.dependency(module, request)
       if (dependency == null || name === "default") continue
-      const resolved = this.resolveExport(dependency, name, next)
+      const resolved = await this.resolveExport(dependency, name, next)
       if (
         resolved != null &&
         !candidates.some((item) => item.module === resolved.module && item.name === resolved.name)
@@ -163,55 +160,34 @@ export class DeclarationReader {
     return candidates.length === 1 ? candidates[0] : undefined
   }
 
-  private resolveBinding(
+  private async resolveBinding(
     module: DeclarationModule,
     binding: Binding,
     seen: Set<string>
-  ): ResolvedDeclaration | undefined {
+  ): Promise<ResolvedDeclaration | undefined> {
     if (binding.request == null) return this.resolve(module, binding.name, seen)
-    const dependency = module.dependencies.get(binding.request)
+    const dependency = await this.dependency(module, binding.request)
     return dependency == null ? undefined : this.resolveExport(dependency, binding.name, seen)
   }
-}
 
-async function resolveRelativeDeclaration(
-  file: string,
-  request: string
-): Promise<string | undefined> {
-  const base = path.resolve(path.dirname(file), request)
-  const candidates = declarationCandidates(base)
-  for (const candidate of candidates) {
-    try {
-      const stat = await fs.stat(candidate)
-      if (stat.isFile()) return candidate
-    } catch (error) {
-      if (
-        !(error instanceof Error) ||
-        !("code" in error) ||
-        (error.code !== "ENOENT" && error.code !== "ENOTDIR")
-      )
-        throw error
+  private async dependency(
+    module: DeclarationModule,
+    request: string
+  ): Promise<DeclarationModule | undefined> {
+    const existing = module.dependencies.get(request)
+    const key = `${module.file}:${request}`
+    if (existing != null || this.missingImports.has(key)) return existing
+    const file = await resolveDeclarationImport(module.file, request, this.options.packageRoot)
+    if (file == null) {
+      this.missingImports.add(key)
+      return undefined
     }
+    const dependency = await this.read(file)
+    module.dependencies.set(request, dependency)
+    return dependency
   }
-  return undefined
 }
 
 function sameDeclaration(left: ResolvedDeclaration, right: ResolvedDeclaration): boolean {
   return left.module === right.module && left.name === right.name
-}
-
-function declarationCandidates(base: string): string[] {
-  if (/\.d\.(?:ts|mts|cts)$/u.test(base)) return [base]
-  const extensions = new Map([
-    [".js", ".d.ts"],
-    [".mjs", ".d.mts"],
-    [".cjs", ".d.cts"],
-    [".ts", ".d.ts"],
-    [".mts", ".d.mts"],
-    [".cts", ".d.cts"],
-  ])
-  const extension = path.extname(base)
-  const declarationExtension = extensions.get(extension)
-  if (declarationExtension != null) return [base.slice(0, -extension.length) + declarationExtension]
-  return [`${base}.d.ts`, `${base}.d.mts`, `${base}.d.cts`, path.join(base, "index.d.ts")]
 }

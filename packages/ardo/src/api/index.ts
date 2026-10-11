@@ -9,5 +9,6 @@ export type {
   ApiSignature,
   DeclarationDocsConfig,
   DeclarationDocsResult,
+  DeclarationExtractionOptions,
   DeclarationProject,
 } from "./types"

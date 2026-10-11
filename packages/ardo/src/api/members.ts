@@ -1,6 +1,7 @@
 import type {
   Class,
   ClassElement,
+  Expression,
   MethodDefinition,
   TSIndexSignature,
   TSSignature,
@@ -149,13 +150,32 @@ function readClassMember(
   return {
     name,
     kind: "property",
-    type: annotation == null ? "/* type not declared */" : formatType(annotation, context),
+    type:
+      annotation == null
+        ? literalPropertyType(member.value, context)
+        : formatType(annotation, context),
     optional: member.optional ?? false,
     readonly: member.readonly ?? false,
     static: member.static,
     comment,
     signatures: [],
   }
+}
+
+function literalPropertyType(value: Expression | null, context: TypeContext): string {
+  // Declaration emit retains literal initializers for readonly class properties.
+  if (
+    value?.type === "Literal" &&
+    ["bigint", "boolean", "number", "string"].includes(typeof value.value)
+  )
+    return formatType(value, context)
+  if (
+    value?.type === "UnaryExpression" &&
+    value.operator === "-" &&
+    value.argument.type === "Literal"
+  )
+    return formatType(value, context)
+  return "/* type not declared */"
 }
 
 function readClassMethod(

@@ -12,6 +12,14 @@ export type DeclarationDocsConfig = {
    * @default "API Reference"
    */
   title?: string
+} & DeclarationExtractionOptions
+
+export type DeclarationExtractionOptions = {
+  /**
+   * Project directory used to locate installed packages when declaration output
+   * is outside the project. Resolution first checks beside each declaration.
+   */
+  packageRoot?: string
 }
 
 export type ApiComment = {

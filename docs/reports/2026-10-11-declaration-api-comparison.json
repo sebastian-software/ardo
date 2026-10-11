@@ -10,6 +10,7 @@
       "entry": "packages/ardo/src/index.ts",
       "input": "fresh declaration emit from source",
       "exports": 85,
+      "declarationFiles": 27,
       "typedocDeclarations": 85,
       "typedocOnlyDeclarations": [],
       "extractorOnlyDeclarations": [],
@@ -44,7 +45,41 @@
       "additionalTables": [
         {
           "item": "MarkdownConfig",
-          "members": ["theme", "lineNumbers", "anchor", "toc"]
+          "members": [
+            "theme",
+            "lineNumbers",
+            "anchor",
+            "toc",
+            "tableAttributes",
+            "headingAttributes",
+            "cjkEmphasis",
+            "imageAttributes",
+            "imageCaptions",
+            "extendedAttributes",
+            "bracketedSpans",
+            "blockquoteAttributions",
+            "insertions",
+            "guillemetDigraphs",
+            "tables",
+            "mergedTableCells",
+            "strikethrough",
+            "superscript",
+            "subscript",
+            "taskLists",
+            "autolinkLiterals",
+            "footnotes",
+            "highlight",
+            "inlineFootnotes",
+            "allowLinkRefs",
+            "headingOffset",
+            "headingIdPrefix",
+            "math",
+            "callouts",
+            "definitionLists",
+            "lineComments",
+            "typography",
+            "passes"
+          ]
         },
         {
           "item": "PageFrontmatter",
@@ -183,13 +218,8 @@
           "members": ["label"]
         }
       ],
-      "incompleteTables": ["MarkdownConfig"],
-      "diagnostics": [
-        {
-          "file": "config/markdown.d.ts",
-          "message": "Could not expand properties of CompileJsxOptions."
-        }
-      ]
+      "incompleteTables": [],
+      "diagnostics": []
     },
     {
       "name": "library-example",
@@ -197,6 +227,7 @@
       "entry": "examples/library/src/index.ts",
       "input": "fresh declaration emit from source",
       "exports": 5,
+      "declarationFiles": 1,
       "typedocDeclarations": 5,
       "typedocOnlyDeclarations": [],
       "extractorOnlyDeclarations": [],
@@ -214,6 +245,7 @@
       "input": "published declarations",
       "version": "3.4.0",
       "exports": 32,
+      "declarationFiles": 1,
       "typedocDeclarations": 33,
       "typedocOnlyDeclarations": ["JsxRenderOptionKey"],
       "extractorOnlyDeclarations": [],
@@ -472,6 +504,7 @@
       "input": "published declarations",
       "version": "0.13.0",
       "exports": 43,
+      "declarationFiles": 2,
       "typedocDeclarations": 43,
       "typedocOnlyDeclarations": [],
       "extractorOnlyDeclarations": [],

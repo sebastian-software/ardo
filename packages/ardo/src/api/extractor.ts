@@ -1,7 +1,12 @@
 import type { DeclarationRecord, ResolvedDeclaration } from "./declaration-project"
 import type { Properties } from "./members"
 import type { TypeContext, TypeValue } from "./source"
-import type { ApiDeclaration, ApiSignature, DeclarationProject } from "./types"
+import type {
+  ApiDeclaration,
+  ApiSignature,
+  DeclarationExtractionOptions,
+  DeclarationProject,
+} from "./types"
 
 import { isInternal } from "./comments"
 import { DeclarationReader } from "./declaration-project"
@@ -10,20 +15,23 @@ import { readSignature, resolveCallables } from "./signatures"
 import { annotationOf, formatType, parameterType } from "./source"
 
 /** Read public declarations without importing TypeDoc or the TypeScript compiler. */
-export async function extractDeclarations(entryPoints: string[]): Promise<DeclarationProject> {
+export async function extractDeclarations(
+  entryPoints: string[],
+  options: DeclarationExtractionOptions = {}
+): Promise<DeclarationProject> {
   if (entryPoints.length === 0)
     throw new Error("[ardo] At least one declaration entry point is required.")
-  const reader = new DeclarationReader()
+  const reader = new DeclarationReader(options)
   const extractor = new DeclarationExtractor(reader)
   const items: ApiDeclaration[] = []
   const added = new Set<string>()
   for (const entryPoint of entryPoints) {
     const module = await reader.read(entryPoint)
-    for (const [name, resolved] of reader.exportsOf(module)) {
+    for (const [name, resolved] of await reader.exportsOf(module)) {
       const key = `${resolved.module.file}:${resolved.name}:${name}`
       if (added.has(key)) continue
       added.add(key)
-      const item = extractor.extract(name, resolved)
+      const item = await extractor.extract(name, resolved)
       if (item != null) items.push(item)
     }
   }
@@ -36,16 +44,16 @@ class DeclarationExtractor {
     this.properties = new TypeProperties(reader)
   }
 
-  extract(name: string, resolved: ResolvedDeclaration): ApiDeclaration | undefined {
+  async extract(name: string, resolved: ResolvedDeclaration): Promise<ApiDeclaration | undefined> {
     const records = resolved.records.filter((item) => !isInternal(item.comment))
     const record = records.at(0)
     if (record == null) return undefined
     const context: TypeContext = { module: resolved.module, bindings: new Map() }
     const comment =
       records.find((item) => item.comment.description.length > 0)?.comment ?? record.comment
-    const callables = records.flatMap((item) =>
-      resolveCallables(item, context, { reader: this.reader })
-    )
+    const callables = []
+    for (const item of records)
+      callables.push(...(await resolveCallables(item, context, { reader: this.reader })))
     const signatures = callables.map((item) =>
       readSignature(item.node, item.context, { name, comment: item.comment })
     )
@@ -57,7 +65,7 @@ class DeclarationExtractor {
       )
       return undefined
     }
-    const properties = this.itemProperties({ ...resolved, records }, context, kind)
+    const properties = await this.itemProperties({ ...resolved, records }, context, kind)
     return {
       name,
       kind,
@@ -73,11 +81,11 @@ class DeclarationExtractor {
     }
   }
 
-  private itemProperties(
+  private async itemProperties(
     resolved: ResolvedDeclaration,
     context: TypeContext,
     kind: ApiDeclaration["kind"]
-  ): Properties {
+  ): Promise<Properties> {
     const node = resolved.records.at(0)?.node
     if (node == null) return { items: [], complete: true }
     if (node.type === "TSTypeAliasDeclaration")
@@ -85,7 +93,10 @@ class DeclarationExtractor {
     if (kind === "class" || kind === "interface")
       return this.properties.declaration(resolved, context)
     if (kind === "component") {
-      const callable = resolveCallables(resolved.records[0], context, { reader: this.reader }).at(0)
+      const callables = await resolveCallables(resolved.records[0], context, {
+        reader: this.reader,
+      })
+      const callable = callables.at(0)
       const parameter = callable?.node.params.at(0)
       const annotation = parameter == null ? undefined : parameterType(parameter)
       if (callable != null && annotation != null)
@@ -94,7 +105,7 @@ class DeclarationExtractor {
     return { items: [], complete: true }
   }
 
-  private aliasProperties(value: TypeValue): Properties {
+  private async aliasProperties(value: TypeValue): Promise<Properties> {
     // A union is already documented by its alternatives in the declaration.
     // Components still request property expansion and report union limitations.
     if (value.node.type === "TSUnionType") return { items: [], complete: true }

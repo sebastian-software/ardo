@@ -12,6 +12,7 @@ import type { ApiProperty } from "./types"
 import { mergeProperties, readClassMembers, readMembers } from "./members"
 import { resolveCallables } from "./signatures"
 import { annotationOf, formatType } from "./source"
+import { bindArguments } from "./type-bindings"
 
 type Reference = { name: string; args: TSType[] }
 const unexpanded = new Set([
@@ -25,16 +26,16 @@ const unexpanded = new Set([
 export class TypeProperties {
   constructor(private readonly reader: DeclarationReader) {}
 
-  of(value: TypeValue, seen = new Set<string>()): Properties {
+  async of(value: TypeValue, seen = new Set<string>()): Promise<Properties> {
     const { node } = value
     if (node.type === "TSTypeLiteral") return readMembers(node.members, value, this.reader)
     if (node.type === "TSParenthesizedType")
       return this.of({ ...value, node: node.typeAnnotation }, seen)
-    if (node.type === "TSIntersectionType")
-      return mergeProperties(
-        node.types.map((type) => this.of({ ...value, node: type }, seen)),
-        "intersection"
-      )
+    if (node.type === "TSIntersectionType") {
+      const parts: Properties[] = []
+      for (const type of node.types) parts.push(await this.of({ ...value, node: type }, seen))
+      return mergeProperties(parts, "intersection")
+    }
     if (node.type === "TSTypeReference")
       return this.reference(
         {
@@ -47,12 +48,7 @@ export class TypeProperties {
         value,
         seen
       )
-    if (node.type === "TSTypeQuery") {
-      const resolved = this.reader.resolve(value.module, formatType(node.exprName, value))
-      if (resolved != null)
-        return this.declaration(resolved, { module: resolved.module, bindings: new Map() }, seen)
-      return this.incomplete(value, `Could not expand ${formatType(node, value)}.`)
-    }
+    if (node.type === "TSTypeQuery") return this.query(node, value, seen)
     if (unexpanded.has(node.type))
       return this.incomplete(
         value,
@@ -61,25 +57,37 @@ export class TypeProperties {
     return { items: [], complete: true }
   }
 
-  declaration(
+  private async query(
+    node: Extract<TSType, { type: "TSTypeQuery" }>,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
+    const resolved = await this.reader.resolve(context.module, formatType(node.exprName, context))
+    return resolved == null
+      ? this.incomplete(context, `Could not expand ${formatType(node, context)}.`)
+      : this.declaration(resolved, { module: resolved.module, bindings: new Map() }, seen)
+  }
+
+  async declaration(
     resolved: ResolvedDeclaration,
     context: TypeContext,
     seen = new Set<string>()
-  ): Properties {
+  ): Promise<Properties> {
     const key = `${resolved.module.file}:${resolved.name}`
     if (seen.has(key))
       return this.incomplete(context, `Recursive expansion of ${resolved.name} was stopped.`)
     const next = new Set(seen).add(key)
-    return mergeProperties(
-      resolved.records.map((record) => this.definition(record.node, context, next))
-    )
+    const parts: Properties[] = []
+    for (const record of resolved.records)
+      parts.push(await this.definition(record.node, context, next))
+    return mergeProperties(parts)
   }
 
-  private definition(
+  private async definition(
     node: DeclarationRecord["node"],
     context: TypeContext,
     seen: Set<string>
-  ): Properties {
+  ): Promise<Properties> {
     if (node.type === "TSTypeAliasDeclaration")
       return this.of({ ...context, node: node.typeAnnotation }, seen)
     if (node.type === "VariableDeclarator") {
@@ -88,9 +96,9 @@ export class TypeProperties {
         ? { items: [], complete: true }
         : this.of({ ...context, node: annotation }, seen)
     }
-    const inherited = basesOf(node, context).map((reference) =>
-      this.reference(reference, context, seen)
-    )
+    const inherited: Properties[] = []
+    for (const reference of basesOf(node, context))
+      inherited.push(await this.reference(reference, context, seen))
     const own =
       node.type === "TSInterfaceDeclaration"
         ? readMembers(node.body.body, context, this.reader)
@@ -104,10 +112,14 @@ export class TypeProperties {
     return mergeProperties([...bases, own])
   }
 
-  private reference(reference: Reference, context: TypeContext, seen: Set<string>): Properties {
+  private async reference(
+    reference: Reference,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
     const bound = context.bindings.get(reference.name)
     if (bound != null) return this.of(bound, seen)
-    const resolved = this.reader.resolve(context.module, reference.name)
+    const resolved = await this.reader.resolve(context.module, reference.name)
     if (resolved != null)
       return this.declaration(
         resolved,
@@ -115,31 +127,31 @@ export class TypeProperties {
         seen
       )
     if (!context.module.imports.has(reference.name)) {
-      const utility = this.utility(reference, context, seen)
+      const utility = await this.utility(reference, context, seen)
       if (utility != null) return utility
     }
     return this.incomplete(context, `Could not expand properties of ${reference.name}.`)
   }
 
-  private utility(
+  private async utility(
     reference: Reference,
     context: TypeContext,
     seen: Set<string>
-  ): Properties | undefined {
+  ): Promise<Properties | undefined> {
     const first = reference.args.at(0)
     if (first == null) return undefined
     if (reference.name === "ReturnType") return this.returnType(first, context, seen)
     if (reference.name === "Record") return this.record(reference, context)
     if (!["Pick", "Omit", "Partial", "Required", "Readonly"].includes(reference.name))
       return undefined
-    const source = this.of({ ...context, node: first }, seen)
+    const source = await this.of({ ...context, node: first }, seen)
     if (reference.name !== "Readonly" && source.items.some((item) => item.kind === "index"))
       return this.incomplete(
         context,
         `Cannot safely apply ${reference.name} to index signatures; its type expression is preserved.`
       )
     if (reference.name === "Pick" || reference.name === "Omit") {
-      const keys = this.literalKeys(reference.args.at(1), context)
+      const keys = await this.literalKeys(reference.args.at(1), context)
       if (keys == null)
         return this.incomplete(
           context,
@@ -167,12 +179,12 @@ export class TypeProperties {
     }
   }
 
-  private record(reference: Reference, context: TypeContext): Properties {
+  private async record(reference: Reference, context: TypeContext): Promise<Properties> {
     const keys = reference.args.at(0)
     const value = reference.args.at(1)
     if (keys == null || value == null)
       return this.incomplete(context, "Record requires both key and value types.")
-    const names = this.literalKeys(keys, context)
+    const names = await this.literalKeys(keys, context)
     const type = formatType(value, context)
     if (names != null)
       return { items: names.map((name) => recordMember(name, type, "property")), complete: true }
@@ -187,11 +199,11 @@ export class TypeProperties {
     )
   }
 
-  private literalKeys(
+  private async literalKeys(
     node: TSType | undefined,
     context: TypeContext,
     seen = new Set<string>()
-  ): string[] | undefined {
+  ): Promise<string[] | undefined> {
     if (node == null) return undefined
     if (node.type === "TSNeverKeyword") return []
     if (node.type === "TSParenthesizedType")
@@ -202,22 +214,33 @@ export class TypeProperties {
       (typeof node.literal.value === "string" || typeof node.literal.value === "number")
     )
       return [String(node.literal.value)]
-    if (node.type === "TSUnionType") {
-      const keys = node.types.map((type) => this.literalKeys(type, context, seen))
-      return keys.every((key) => key != null) ? [...new Set(keys.flat())] : undefined
-    }
+    if (node.type === "TSUnionType") return this.unionKeys(node.types, context, seen)
     return node.type === "TSTypeReference" ? this.referencedKeys(node, context, seen) : undefined
   }
 
-  private referencedKeys(
+  private async unionKeys(
+    nodes: TSType[],
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<string[] | undefined> {
+    const names: string[] = []
+    for (const node of nodes) {
+      const keys = await this.literalKeys(node, context, seen)
+      if (keys == null) return undefined
+      names.push(...keys)
+    }
+    return [...new Set(names)]
+  }
+
+  private async referencedKeys(
     node: Extract<TSType, { type: "TSTypeReference" }>,
     context: TypeContext,
     seen: Set<string>
-  ): string[] | undefined {
+  ): Promise<string[] | undefined> {
     if (node.typeName.type !== "Identifier") return undefined
     const bound = context.bindings.get(node.typeName.name)
     if (bound != null) return this.literalKeys(bound.node, bound, seen)
-    const resolved = this.reader.resolve(context.module, node.typeName.name)
+    const resolved = await this.reader.resolve(context.module, node.typeName.name)
     const alias = resolved?.records.at(0)?.node
     if (resolved == null || alias?.type !== "TSTypeAliasDeclaration") return undefined
     const key = `${resolved.module.file}:${resolved.name}`
@@ -232,18 +255,23 @@ export class TypeProperties {
     )
   }
 
-  private returnType(node: TSType, context: TypeContext, seen: Set<string>): Properties {
+  private async returnType(
+    node: TSType,
+    context: TypeContext,
+    seen: Set<string>
+  ): Promise<Properties> {
     const resolved =
       node.type === "TSTypeQuery"
-        ? this.reader.resolve(context.module, formatType(node.exprName, context))
+        ? await this.reader.resolve(context.module, formatType(node.exprName, context))
         : undefined
     const record = resolved?.records.at(-1)
     if (record != null && resolved != null) {
-      const callable = resolveCallables(
+      const callables = await resolveCallables(
         record,
         { module: resolved.module, bindings: new Map() },
         { reader: this.reader }
-      ).at(-1)
+      )
+      const callable = callables.at(-1)
       if (callable?.node.returnType != null)
         return this.of({ ...callable.context, node: callable.node.returnType.typeAnnotation }, seen)
     }
@@ -267,30 +295,6 @@ function basesOf(node: DeclarationRecord["node"], context: TypeContext): Referen
       { name: formatType(node.superClass, context), args: node.superTypeArguments?.params ?? [] },
     ]
   return []
-}
-
-function bindArguments(
-  resolved: ResolvedDeclaration,
-  args: TSType[],
-  context: TypeContext
-): Map<string, TypeValue> {
-  const bindings = new Map<string, TypeValue>()
-  const declaration = resolved.records.at(0)?.node
-  const parameters =
-    declaration != null && "typeParameters" in declaration
-      ? (declaration.typeParameters?.params ?? [])
-      : []
-  for (const [index, parameter] of parameters.entries()) {
-    const argument = args.at(index)
-    if (argument != null) bindings.set(parameter.name.name, { ...context, node: argument })
-    else if (parameter.default != null)
-      bindings.set(parameter.name.name, {
-        module: resolved.module,
-        bindings: new Map(bindings),
-        node: parameter.default,
-      })
-  }
-  return bindings
 }
 
 function isIndexKey(node: TSType): boolean {

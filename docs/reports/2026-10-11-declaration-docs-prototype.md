@@ -41,10 +41,14 @@ properties, documentation comments, and declaration locations. The reader follow
 relative imports and exports, including `.js` specifiers pointing to `.d.ts`
 files, aliases, type-only exports, wildcard exports, and cyclic barrels. Internal
 helpers remain available for resolving public types without becoming API pages.
+Installed package declarations can also supply inherited properties and utility
+inputs. Imports are loaded when export resolution or member expansion needs
+them; a leaf property keeps its type expression without loading that dependency's
+entire declaration graph.
 
 The extractor supports public functions, classes, interfaces, type aliases,
 variables, and enums. Uppercase callable exports are treated as components using
-the existing Ardo naming convention. Local interfaces and aliases can supply
+the existing Ardo naming convention. Local and imported interfaces and aliases can supply
 their props, including inherited generic members and selected compositions:
 
 - Intersections and local generic type arguments.
@@ -68,6 +72,36 @@ Getter/setter pairs share one property, retain getter documentation, and report
 mutability independently of their declaration order. Lint comments between JSDoc
 and a declaration do not hide its documentation. Overloaded methods retain the
 first available member description and each signature's own parameter comments.
+Readonly class fields whose declarations retain literal initializers are
+documented with their literal type, including strings, booleans, numbers, and
+bigints.
+
+### Installed package bases
+
+[`package-declarations.ts`](../../packages/ardo/src/api/package-declarations.ts)
+locates declarations through ancestor `node_modules` directories, including
+scoped packages and symlinked package dependencies. It reads `exports` with
+ordinary `types`, `node`, `import`, and `default` conditions; `.d.cts` selects
+`require` instead of `import`. Exact and wildcard subpaths, nested conditions,
+and blocked exports are handled. Packages without `exports` can use `types`,
+`typings`, declaration siblings of `main`, or an index declaration. Package
+JavaScript is never imported or executed. The supported subset follows the
+[TypeScript package-resolution reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports).
+
+For declaration output outside its project, pass the source project's directory
+as `packageRoot` to `extractDeclarations(entryPoints, { packageRoot })` or in the
+configuration for `generateDeclarationDocs`. Lookup beside the declaration
+takes precedence, so a package's own installed dependency is preserved.
+Dependency-only helpers supply property tables without becoming public API
+pages unless the entry point explicitly re-exports them.
+
+This resolver does not consume tsconfig settings. `.d.ts` imports use the ESM
+condition set, and custom conditions, `typesVersions`, versioned `types@...`
+exports, `@types` fallback packages, package self-references/`imports`, and
+ambient/global declarations are outside this increment. Version-dependent
+branches and unavailable or blocked package declarations leave expansion
+incomplete rather than silently choosing an unrelated fallback. These limits
+are covered by explicit diagnostics at the expansion/export boundary.
 
 The output writer is shared with the TypeDoc path. It retains the generated-file
 sentinel and refuses to replace a nonempty handwritten output directory. Parsing
@@ -132,14 +166,14 @@ The native emission experiments used official `typescript@7.0.2` outside the
 repository. OXC was the workspace's existing `0.127.0`. The checker comparison
 used `typescript@7.1.0-dev.20261010.1` as a test reference, separately from Ardo.
 
-| Check                                                    | Result                                             | What it establishes                                                                      |
-| -------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Library native declaration emit and extraction           | 5 exports, 6 pages, no extraction diagnostics      | Functions, an options interface, and a class retain types and documentation              |
-| Library production site build                            | All 6 new pages prerendered as HTML                | The generated Markdown works with Ardo's routing, Markdown compilation, and prerendering |
-| Native declaration emit for Ardo                         | Succeeded with type checking and `noEmitOnError`   | The experiment uses real inferred declarations rather than unchecked source syntax       |
-| Ardo public entry point                                  | 85 exports, 86 pages, 40 declaration files visited | The reader traverses Ardo's actual public declaration graph                              |
-| Component property names against the native checker      | All 31 component lists match; 97 properties total  | Common Ardo component props can be enumerated accurately in this sample                  |
-| Built extractor with TypeDoc/TypeScript imports rejected | Extraction and generation succeed                  | The new entry point does not load either module                                          |
+| Check                                                    | Result                                            | What it establishes                                                                      |
+| -------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Library native declaration emit and extraction           | 5 exports, 6 pages, no extraction diagnostics     | Functions, an options interface, and a class retain types and documentation              |
+| Library production site build                            | All 6 new pages prerendered as HTML               | The generated Markdown works with Ardo's routing, Markdown compilation, and prerendering |
+| Native declaration emit for Ardo                         | Succeeded with type checking and `noEmitOnError`  | The experiment uses real inferred declarations rather than unchecked source syntax       |
+| Ardo public entry point                                  | 85 exports; 27 declaration files visited          | The reader loads public declarations and required bases, including Ferromark             |
+| Component property names against the native checker      | All 31 component lists match; 97 properties total | Common Ardo component props can be enumerated accurately in this sample                  |
+| Built extractor with TypeDoc/TypeScript imports rejected | Extraction and generation succeed                 | The new entry point does not load either module                                          |
 
 The component comparison checks property **names**, not semantic equivalence of
 every property type, all documentation tags, source links, or arbitrary library
@@ -147,10 +181,11 @@ APIs. It does not establish 95% coverage. Tests separately check property type
 substitution, modifiers, preserved expressions, comments, overloads, re-exports,
 and output protection.
 
-The remaining expansion diagnostic on Ardo's entry point is an external
-`CompileJsxOptions` base in `MarkdownConfig`. Own properties and the original
-declaration remain visible. `PageFrontmatter` now includes its inherited
-`[key: string]: unknown` index signature.
+Ardo's entry point now has no expansion diagnostics. `MarkdownConfig` contains
+all 33 properties: four Ardo fields and 29 options inherited through
+`Pick<CompileJsxOptions, ...>`. The package-boundary test also renders those
+options to Markdown and checks an inherited description. `PageFrontmatter`
+includes its inherited `[key: string]: unknown` index signature.
 
 ### TypeDoc as a differential oracle
 
@@ -167,11 +202,13 @@ proof of semantic equivalence for arbitrary types.
 | `Partial`, `Required`, `Pick`, `Omit`, and `Readonly`               | All five interface cases match                                                                                  |
 | Aliased/generic keys and `never` in `Pick`, `Omit`, and `Record`    | All six cases match, including empty property sets and generic value substitution                               |
 | Intersections, generic class inheritance, and getter/setter pairs   | Match, including member comments and visibility filtering                                                       |
+| External generic bases, namespace imports, and class inheritance    | Names, types, modifiers, and comments match across real package declaration boundaries                          |
+| External subpath base with inline member JSDoc                      | Names, types, and modifiers match; the prototype retains one inherited description TypeDoc omits                |
 | `Readonly<Record<'open' \| 'closed', boolean>>`                     | Names and types match; the prototype preserves readonly flags that TypeDoc 0.28.20 omits                        |
 | Custom mapped and conditional helpers                               | TypeDoc resolves the effective members; the prototype preserves the expression and reports incomplete expansion |
 | A public `Partial<Base<string>>` alias                              | TypeDoc retains the alias without child properties; the prototype also supplies a property table                |
 
-The seventeen exact matches and four explicit difference cases are assertions in the
+The twenty exact matches and five explicit difference cases are assertions in the
 test suite. The readonly difference is checked against the compiler with a
 `@ts-expect-error` assignment: declaration emission fails if the compiler stops
 rejecting writes. TypeDoc serves as a comparison tool, not an assumption that
@@ -186,8 +223,8 @@ tests use the workspace compiler by default. `ARDO_DECLARATION_TSC` selects anot
 CLI, and CI runs all declaration tests again with isolated `typescript@7.0.2` on
 Node.js 24 without changing the workspace compiler or production dependencies.
 
-All 38 declaration tests pass with native TypeScript 7.0.2. The repository unit
-suite with coverage passes all 302 tests across 65 files, and all 32 integration
+All 56 declaration tests pass with native TypeScript 7.0.2. The repository unit
+suite with coverage passes all 320 tests across 66 files, and all 32 integration
 tests also passed during hardening;
 package type checking, lint, formatting, package builds, and the library site
 build passed locally. Lint retains filesystem-path heuristic warnings for the
@@ -220,7 +257,7 @@ oracle:
 
 | Public API             | Extracted exports | Compared member occurrences | Remaining observations                                                                   |
 | ---------------------- | ----------------- | --------------------------- | ---------------------------------------------------------------------------------------- |
-| Ardo                   | 85                | 201                         | Four type-spelling differences; unresolved external `CompileJsxOptions` base             |
+| Ardo                   | 85                | 201                         | Four type-spelling differences; no expansion diagnostics                                 |
 | Library example        | 5                 | 8                           | No differences in the compared fields                                                    |
 | Ferromark 3.4.0        | 32                | 97                          | Ten type-spelling differences; callback alias lacks a structured signature               |
 | `@ferriki/core` 0.13.0 | 43                | 134                         | Type spelling, callable aliases, a symbol member, and inherited standard `Error` members |
@@ -257,19 +294,31 @@ nested readonly modifier that TypeDoc's printed property types omit. This is
 another reason to inspect oracle differences rather than treating them all as
 extractor defects.
 
-The strongest next improvement for Ardo is external member expansion:
-`MarkdownConfig` inherits Ferromark's `CompileJsxOptions`, so the current table
-lists only Ardo's own fields. Ferriki's error classes similarly omit inherited
-standard `Error` fields. A bounded package-declaration lookup or targeted native
-checker query would address actual missing members. Structured callable type
+The package-base increment adds all 29 selected Ferromark fields to
+`MarkdownConfig` without introducing a runtime dependency. That additional table
+is recorded separately because TypeDoc retains the public intersection alias
+without a corresponding flat member owner. The same 440 member occurrences
+remain comparable, with no new observed differences.
+
+The external class fixture exposed a separate declaration-emission detail:
+literal readonly field initializers can remain without a type annotation.
+Extracting their literal types now matches both compiler outputs and TypeDoc.
+Package fixtures also cover lazy imports, defaults and overrides, ESM/CommonJS
+conditions, scoped subpaths, blocked exports, private declarations, cyclic
+barrels, nested dependency versions, and out-of-tree emission.
+
+Ferriki's error classes still omit inherited standard `Error` fields. Loading
+the emitter's selected standard-library declarations or a targeted native
+checker query could address that remaining gap. Structured callable type
 aliases, such as Ferromark's `JsxCodeRenderer`, are a smaller follow-up: their full
 type text is already present, but dedicated parameter/return sections are absent.
 
 ## Remaining limits and migration implications
 
-- Package imports, tsconfig aliases, and external wildcard exports are not
-  resolved. An external reference can be displayed, but its properties cannot be
-  expanded by this prototype.
+- Package declaration imports and external wildcard exports now resolve within
+  the supported package lookup subset described above. Standard-library/global
+  bases, tsconfig aliases, custom/versioned package resolution, and `@types`
+  fallback packages still need additional resolution context.
 - Conditional, mapped, indexed-access, and union types retain their expressions.
   They do not become a synthesized flat property table. Utility transformations
   such as `Partial` or `Pick` over open index signatures report a limit rather
