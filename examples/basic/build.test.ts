@@ -57,4 +57,14 @@ describe("examples/basic build", () => {
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
   })
+
+  it("bundles UI dependencies into the consumer SSR graph", () => {
+    const serverDir = path.join(__dirname, "build/server")
+    const files = fs.readdirSync(serverDir, { recursive: true }).map(String)
+    for (const file of files.filter((file) => file.endsWith(".js"))) {
+      expect(fs.readFileSync(path.join(serverDir, file), "utf8")).not.toMatch(
+        /^\s*import[^;\n]*from ["'](?:lucide-react|@base-ui\/react)(?:\/[^"']*)?["']/m
+      )
+    }
+  })
 })

@@ -27,6 +27,19 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
 }
 
 describe("ardoPlugin", () => {
+  it("bundles React-based UI dependencies during SSR and preserves consumer options", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      vite: { ssr: { noExternal: ["consumer-ui"], target: "webworker" } },
+    })
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+    expect(config.ssr?.noExternal).toStrictEqual(
+      expect.arrayContaining(["ardo", "lucide-react", "@base-ui/react", "consumer-ui"])
+    )
+    expect(config.ssr?.target).toBe("webworker")
+  })
+
   it("merges the public vite config option into the returned Vite config", () => {
     const plugin = getMainPlugin({
       githubPages: false,

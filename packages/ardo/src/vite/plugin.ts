@@ -204,7 +204,9 @@ function createMainConfig(
   const config: UserConfig = {
     define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    ssr: { noExternal: ["ardo"] },
+    // Bundle React-based UI dependencies in the consumer's SSR graph. Node's
+    // external resolution can otherwise load React from an ancestor checkout.
+    ssr: { noExternal: ["ardo", "lucide-react", "@base-ui/react"] },
   }
 
   const baseResult = resolveVersionedMainBase({
