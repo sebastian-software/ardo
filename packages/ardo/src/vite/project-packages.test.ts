@@ -29,7 +29,10 @@ describe("documentation package ownership", () => {
   it("rejects a declared package installed only in an ancestor", () => {
     writePackage("node_modules/dependency", { name: "dependency" })
     writePackage("docs", { dependencies: { dependency: "1" } })
-    expect(() => new ProjectPackages(root)).toThrow(/not installed.*docs\/node_modules/u)
+    const packages = new ProjectPackages(root)
+    expect(() => packages.checkImport("dependency", path.join(root, "entry.js"))).toThrow(
+      /not installed.*docs\/node_modules/u
+    )
   })
 
   it("rejects undeclared application imports even when the package is transitive", () => {
@@ -73,7 +76,12 @@ describe("documentation package ownership", () => {
     writePackage("docs", { dependencies: { components: "workspace:*" } })
     mkdirSync(path.join(root, "node_modules"))
     symlinkSync(outside, path.join(root, "node_modules/components"), "dir")
-    expect(() => new ProjectPackages(root)).toThrow(/links to workspace source/u)
+    expect(() => {
+      new ProjectPackages(root).checkFile(
+        path.join(root, "node_modules/components/index.js"),
+        path.join(root, "entry.js")
+      )
+    }).toThrow(/Import outside the documentation package/u)
   })
 
   it("allows missing optional packages until an import actually needs them", () => {

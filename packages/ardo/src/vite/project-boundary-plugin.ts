@@ -23,16 +23,12 @@ export function createProjectBoundaryPlugin(): Plugin {
         }
       }
     },
-    async resolveId(id, importer) {
+    async resolveId(id, importer, options) {
       if (id.startsWith("\0") || id.startsWith("virtual:") || isBuiltin(id)) return
-      if (id.startsWith(".")) {
-        if (importer != null && path.isAbsolute(importer)) {
-          packages.checkFile(path.resolve(path.dirname(importer), id), importer)
-        }
-      } else if (!id.startsWith("/") && !packages.checkImport(id, importer)) {
+      const resolved = await this.resolve(id, importer, { ...options, skipSelf: true })
+      if (!id.startsWith("/") && !packages.checkImport(id, importer)) {
         return optionalPrefix + id
       }
-      const resolved = await this.resolve(id, importer, { skipSelf: true })
       if (resolved != null) packages.checkFile(resolved.id, importer)
       return resolved
     },
@@ -47,7 +43,7 @@ export function createProjectBoundaryPlugin(): Plugin {
         })
         for (const id of external) {
           packages.checkImport(id, undefined)
-          packages.checkFile(id)
+          packages.checkFile(id, path.join(packages.root, "package.json"))
         }
       }
     },

@@ -12,60 +12,47 @@ type Manifest = {
   peerDependencies?: Record<string, string>
   peerDependenciesMeta?: Record<string, { optional?: boolean }>
 }
-
-type PackageOwner = {
-  root: string
-  manifest: Manifest
-  dependencies: Set<string>
-}
+type PackageOwner = { root: string; manifest: Manifest }
 
 export const SHARED_RUNTIME = ["react", "react-dom", "react-router"]
 
 export function importedPackageName(id: string): string | undefined {
   if (/^(?:[./#\0]|[\w-]+:)/u.test(id)) return undefined
-  const parts = id.split("/")
-  if (id.startsWith("@")) return parts.slice(0, 2).join("/")
-  return parts[0]
+  return id
+    .split("/")
+    .slice(0, id.startsWith("@") ? 2 : 1)
+    .join("/")
 }
 
-/** Own the docs package's installed dependency tree without ancestor fallback. */
+/** Check each resolved import against local installations without walking the dependency graph. */
 export class ProjectPackages {
   readonly root: string
   private readonly project: PackageOwner
-  private readonly packages = new Map<string, PackageOwner>()
-  private readonly directPackages = new Set<string>()
-  private readonly owners: PackageOwner[] = []
+  private readonly manifests = new Map<string, Manifest>()
+  private readonly resolvedPackages = new Set<string>()
+  private readonly frameworkRoot: string
 
   constructor(root: string) {
     this.root = realpathSync(root)
-    const manifest = readManifest(this.root)
-    this.project = {
-      root: this.root,
-      manifest,
-      dependencies: dependencyNames(manifest, true),
-    }
-    this.collectPackages()
-    this.owners = [...this.packages.values()].sort(
-      (left, right) => right.root.length - left.root.length
-    )
+    this.project = this.owner(this.root)
+    this.frameworkRoot = canonicalPath(path.join(this.root, "node_modules/ardo"))
   }
 
   checkImport(id: string, importer: string | undefined): boolean {
     const name = importedPackageName(id)
     if (name == null) return true
     const owner = this.ownerOf(importer) ?? this.project
-    if (name !== owner.manifest.name && !owner.dependencies.has(name)) {
+    if (name === owner.manifest.name) return true
+    if (!dependencyNames(owner, this.root).includes(name)) {
       throw new Error(
         `[ardo] Undeclared dependency "${name}" in ${owner.root}. Add it to that package's package.json; ancestor dependencies are not inherited.`
       )
     }
-    if (name !== owner.manifest.name && this.installedPackage(owner, name) == null) {
-      if (owner !== this.project && isOptional(owner.manifest, name)) return false
-      throw new Error(
-        `[ardo] Dependency "${name}" is not installed for ${owner.root}. Install it in the documentation project; Ardo will not search ancestor node_modules.`
-      )
-    }
-    return true
+    if (this.installedPackage(owner, name) != null) return true
+    if (owner.root !== this.root && isOptional(owner.manifest, name)) return false
+    throw new Error(
+      `[ardo] Dependency "${name}" is not installed in ${owner.root}/node_modules. Install it in the documentation project; Ardo will not search ancestor node_modules.`
+    )
   }
 
   checkFile(id: string, importer?: string): void {
@@ -73,10 +60,29 @@ export class ProjectPackages {
     const file = cleanId.startsWith("file:") ? fileURLToPath(cleanId) : cleanId
     if (!path.isAbsolute(file)) return
     const canonical = canonicalPath(file)
-    const owner = this.ownerOf(canonical)
-    if (importer != null) this.checkDirectPackage(owner, importer)
-    if (isPathInsideDirectory(canonical, this.root)) return
-    if (owner != null && this.isPackageFile(canonical, owner)) return
+    const target = this.ownerOf(canonical)
+    const origin = this.ownerOf(importer) ?? this.project
+    if (target?.root === this.root) return
+    if (
+      target != null &&
+      (target.root === origin.root || (importer == null && this.resolvedPackages.has(target.root)))
+    )
+      return
+    if (
+      target != null &&
+      dependencyNames(origin, this.root).some((name) => {
+        const installed = this.installedPackage(origin, name)
+        return installed != null && canonicalPath(installed) === target.root
+      })
+    ) {
+      this.resolvedPackages.add(target.root)
+      return
+    }
+    if (target != null && origin.root === this.root) {
+      throw new Error(
+        `[ardo] Undeclared application dependency "${target.manifest.name}". Declare and install it in the docs package instead of importing a transitive or ancestor package by path or alias.`
+      )
+    }
     throw new Error(
       `[ardo] Import outside the documentation package: ${file}. Keep component source inside ${this.root}, or install a packaged dependency there.`
     )
@@ -85,102 +91,59 @@ export class ProjectPackages {
   private ownerOf(id: string | undefined): PackageOwner | undefined {
     if (id == null || !path.isAbsolute(id)) return undefined
     const file = canonicalPath(id.split("?", 1)[0])
-    const owner = this.owners.find((entry) => isPathInsideDirectory(file, entry.root))
-    if (owner != null) return owner
+    const marker = `${path.sep}node_modules${path.sep}`
+    const index = file.lastIndexOf(marker)
+    if (index !== -1) {
+      const name = importedPackageName(
+        file
+          .slice(index + marker.length)
+          .split(path.sep)
+          .join("/")
+      )
+      if (name != null) return this.owner(path.join(file.slice(0, index), "node_modules", name))
+    }
     if (isPathInsideDirectory(file, this.root)) return this.project
+    // Only Ardo's published files may cross a workspace source boundary.
+    if (isPathInsideDirectory(file, path.join(this.frameworkRoot, "dist"))) {
+      return this.owner(this.frameworkRoot)
+    }
     return undefined
   }
 
-  private checkDirectPackage(owner: PackageOwner | undefined, importer: string): void {
-    if (owner == null || owner === this.project || this.directPackages.has(owner.root)) return
-    if ((this.ownerOf(importer) ?? this.project) !== this.project) return
-    throw new Error(
-      `[ardo] Undeclared application dependency "${owner.manifest.name}". Add it to the documentation package's package.json instead of importing a transitive or ancestor package by path or alias.`
-    )
-  }
-
-  private isPackageFile(file: string, owner: PackageOwner): boolean {
-    if (
-      owner.manifest.name !== "ardo" ||
-      owner.root.includes(`${path.sep}node_modules${path.sep}`)
-    ) {
-      return true
+  private owner(root: string): PackageOwner {
+    let manifest = this.manifests.get(root)
+    if (manifest == null) {
+      const parsed: unknown = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"))
+      if (parsed == null || typeof parsed !== "object")
+        throw new Error(`[ardo] Invalid package manifest: ${root}`)
+      manifest = parsed
+      this.manifests.set(root, manifest)
     }
-    // Ardo's own workspace link is needed when developing the framework. Only
-    // its published dist files belong to the consumer's application graph.
-    return isPathInsideDirectory(file, path.join(owner.root, "dist"))
+    return { root, manifest }
   }
 
   private installedPackage(owner: PackageOwner, name: string): string | undefined {
+    const local = path.join(this.root, "node_modules", name)
     const candidates = [path.join(owner.root, "node_modules", name)]
-    if (owner !== this.project) {
-      let parent = path.dirname(owner.root)
-      while (parent !== path.dirname(parent)) {
-        if (path.basename(parent) === "node_modules") {
-          candidates.push(path.join(parent, name))
-          break
-        }
-        parent = path.dirname(parent)
-      }
-      candidates.push(path.join(this.root, "node_modules", name))
+    if (owner.root !== this.root) {
+      const marker = `${path.sep}node_modules${path.sep}`
+      const index = owner.root.lastIndexOf(marker)
+      if (index !== -1) candidates.push(path.join(owner.root.slice(0, index), "node_modules", name))
+      candidates.push(local)
     }
+    // Shared runtimes must match Vite's dedupe setting and the prerender host.
+    if (SHARED_RUNTIME.includes(name)) candidates.unshift(local)
     return candidates.find((candidate) => existsSync(path.join(candidate, "package.json")))
-  }
-
-  private collectPackages(): void {
-    const pending = [this.project]
-    for (const owner of pending) {
-      for (const name of owner.dependencies) {
-        const dependency = this.readInstalledPackage(owner, name)
-        if (dependency != null) pending.push(dependency)
-      }
-    }
-  }
-
-  private readInstalledPackage(owner: PackageOwner, name: string): PackageOwner | undefined {
-    const installed = this.installedPackage(owner, name)
-    if (installed == null) {
-      this.checkMissingInstallation(owner, name)
-      return undefined
-    }
-    const packageRoot = realpathSync(installed)
-    if (owner === this.project) this.directPackages.add(packageRoot)
-    if (this.packages.has(packageRoot)) return undefined
-    if (
-      name !== "ardo" &&
-      !isPathInsideDirectory(packageRoot, this.root) &&
-      !packageRoot.includes(`${path.sep}node_modules${path.sep}`)
-    ) {
-      throw new Error(
-        `[ardo] Dependency "${name}" links to workspace source outside the documentation package: ${packageRoot}. Keep components in the docs project or install a published package.`
-      )
-    }
-    const manifest = readManifest(packageRoot)
-    const dependency = { root: packageRoot, manifest, dependencies: dependencyNames(manifest) }
-    this.packages.set(packageRoot, dependency)
-    return dependency
-  }
-
-  private checkMissingInstallation(owner: PackageOwner, name: string): void {
-    if (owner === this.project && !isOptional(owner.manifest, name)) {
-      throw new Error(
-        `[ardo] Dependency "${name}" is not installed in ${this.root}/node_modules. Install the documentation package's dependencies; ancestor installations are not used.`
-      )
-    }
   }
 }
 
-function dependencyNames(manifest: Manifest, includeDevelopment = false): Set<string> {
-  const names = Object.keys({
-    ...manifest.dependencies,
-    ...manifest.peerDependencies,
-    ...manifest.optionalDependencies,
-    ...(includeDevelopment ? manifest.devDependencies : {}),
+function dependencyNames(owner: PackageOwner, projectRoot: string): string[] {
+  return Object.keys({
+    ...owner.manifest.dependencies,
+    ...owner.manifest.peerDependencies,
+    ...owner.manifest.optionalDependencies,
+    ...(owner.root === projectRoot ? owner.manifest.devDependencies : {}),
   })
-  for (const name of names) {
-    if (importedPackageName(name) !== name) throw new Error(`[ardo] Invalid package name: ${name}`)
-  }
-  return new Set(names)
 }
 
 function isOptional(manifest: Manifest, name: string): boolean {
@@ -190,18 +153,8 @@ function isOptional(manifest: Manifest, name: string): boolean {
   )
 }
 
-function readManifest(directory: string): Manifest {
-  const file = path.join(directory, "package.json")
-  const manifest: unknown = JSON.parse(readFileSync(file, "utf8"))
-  if (manifest == null || typeof manifest !== "object") {
-    throw new Error(`[ardo] Invalid package manifest: ${file}`)
-  }
-  return manifest
-}
-
 function canonicalPath(file: string): string {
   if (existsSync(file)) return realpathSync(file)
   const parent = path.dirname(file)
-  if (parent === file) return file
-  return path.join(canonicalPath(parent), path.basename(file))
+  return parent === file ? file : path.join(canonicalPath(parent), path.basename(file))
 }
