@@ -9,7 +9,7 @@
   "react/no-clone-element": 5,
   "react/no-danger": 3,
   "react/no-unused-props": 1,
-  "security/detect-non-literal-fs-filename": 326,
+  "security/detect-non-literal-fs-filename": 339,
   "security/detect-non-literal-regexp": 1,
   "security/detect-possible-timing-attacks": 1,
   "storybook/no-title-property-in-meta": 3

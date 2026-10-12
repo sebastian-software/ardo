@@ -27,6 +27,21 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
 }
 
 describe("ardoPlugin", () => {
+  it("isolates the docs dependency graph and preserves consumer options", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      vite: { ssr: { noExternal: ["consumer-ui"], target: "webworker" } },
+    })
+    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+    expect(config.ssr?.noExternal).toBe(true)
+    expect(config.ssr?.external).toBeUndefined()
+    expect(config.resolve?.dedupe).toBeUndefined()
+    expect(config.environments?.ssr).toMatchObject({ optimizeDeps: { noDiscovery: false } })
+    expect(config.server?.fs).toMatchObject({ strict: true, allow: ["/project"] })
+    expect(config.ssr?.target).toBe("webworker")
+  })
+
   it("merges the public vite config option into the returned Vite config", () => {
     const plugin = getMainPlugin({
       githubPages: false,
