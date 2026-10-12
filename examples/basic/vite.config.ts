@@ -12,6 +12,7 @@ export default defineConfig({
         neutral: "slate",
       },
       githubPages: false,
+      seo: { sitemap: { exclude: ["/kit"] } },
     }),
   ],
 })

@@ -224,6 +224,26 @@ describe("resolveConfig", () => {
     )
   })
 
+  it.each(["/kit", ["kit"], ["/kit?preview"], ["/kit#section"], [12]])(
+    "rejects invalid sitemap exclusion prefixes: %j",
+    (exclude) => {
+      expect(() =>
+        resolveConfig(
+          {
+            title: "Test",
+            seo: {
+              sitemap: {
+                // @ts-expect-error Invalid runtime input exercises configuration validation.
+                exclude,
+              },
+            },
+          },
+          "/project"
+        )
+      ).toThrow("seo.sitemap.exclude")
+    }
+  )
+
   it("rejects sitemap priorities outside the sitemap range", () => {
     expect(() =>
       resolveConfig({ title: "Test", seo: { sitemap: { priority: 2 } } }, "/project")

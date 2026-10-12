@@ -57,4 +57,12 @@ describe("examples/basic build", () => {
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
   })
+
+  it("omits excluded TSX routes from the sitemap while retaining the pages", () => {
+    const clientDir = path.join(__dirname, "build/client")
+    const sitemap = fs.readFileSync(path.join(clientDir, "sitemap.xml"), "utf8")
+    expect(sitemap).not.toContain("/kit</loc>")
+    expect(sitemap).toContain("/kitchen</loc>")
+    expect(fs.existsSync(path.join(clientDir, "kit/index.html"))).toBe(true)
+  })
 })

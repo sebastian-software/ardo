@@ -251,6 +251,8 @@ export type LlmsConfig = {
 }
 
 export type SitemapConfig = {
+  /** Route path prefixes to omit, independent of deployment base, version, and locale. */
+  exclude?: string[]
   changefreq?: SitemapChangefreq
   priority?: number
 }

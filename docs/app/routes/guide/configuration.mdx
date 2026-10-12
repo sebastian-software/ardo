@@ -193,10 +193,10 @@ Set `seo.llms: false` if you want to manage these files yourself from `public/`.
 
 ### seo.sitemap
 
-- **Type:** `boolean | { changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never"; priority?: number }`
+- **Type:** `boolean | { changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never"; priority?: number; exclude?: string[] }`
 - **Default:** `true`
 
-Generates `/sitemap.xml` from Markdown and MDX routes. Ardo combines `siteUrl`, `base`, and each
+Generates `/sitemap.xml` from Markdown, MDX, and TSX routes. Ardo combines `siteUrl`, `base`, and each
 route path so subpath deployments still produce absolute URLs.
 
 ```ts
@@ -208,13 +208,19 @@ ardo({
     sitemap: {
       changefreq: "weekly",
       priority: 0.7,
+      exclude: ["/kit"],
     },
   },
 })
 ```
 
 Set `seo.sitemap: false` to skip sitemap generation. Set `sitemap: false` in page frontmatter to
-exclude a single Markdown route.
+exclude a single Markdown route. Use `seo.sitemap.exclude` for route path prefixes,
+including TSX routes: `/kit` excludes `/kit` and `/kit/buttons`, while `/kitchen`
+remains included. A trailing slash is optional. Prefixes refer to route paths
+before deployment base, version, and locale prefixes are added. This only controls
+sitemap inclusion; set the page's robots metadata separately when it should be
+`noindex`.
 
 ### seo.robots
 

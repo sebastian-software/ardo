@@ -40,6 +40,7 @@ import { resolveBrandThemeHues } from "./brand"
 import { isArdoConfig } from "./guards"
 import { resolveI18nConfig } from "./i18n"
 import { validateOpenApiConfig } from "./openapi"
+import { validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 type ConfigModule = {
@@ -202,14 +203,7 @@ function validateConfig(config: ArdoConfig): void {
   validateI18nConfig(config, errors)
   validateOpenApiConfig(config, errors)
 
-  const sitemapPriority =
-    typeof config.seo?.sitemap === "object" ? config.seo.sitemap.priority : undefined
-  if (
-    sitemapPriority !== undefined &&
-    (!Number.isFinite(sitemapPriority) || sitemapPriority < 0 || sitemapPriority > 1)
-  ) {
-    errors.push("seo.sitemap.priority must be between 0 and 1.")
-  }
+  validateSitemapConfig(config, errors)
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
