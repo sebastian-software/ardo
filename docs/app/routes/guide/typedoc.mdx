@@ -85,10 +85,10 @@ some paths differ, so check links to individual API pages after regeneration.
 
 For several packages, configure an array of projects with distinct output
 directories, as shown in [Native API Documentation](/guide/api-documentation).
-The [monorepo example](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo)
+The [version-matched monorepo reference](/guide/reference-projects#monorepo-documentation)
 uses separate configurations for Alpha and Beta in normal builds and development.
 
-## Update programmatic hosts and scaffolding
+## Update Programmatic Hosts and Setup
 
 Replace `generateApiDocs` from `ardo/typedoc` with the one-shot native API:
 
@@ -105,11 +105,10 @@ For a custom watcher, reuse `NativeApiProject`, pass absolute changed, created,
 and deleted file paths to `extract` or `generate`, and close the project on
 shutdown. The normal Vite integration owns this lifecycle for you.
 
-The scaffolder now accepts `--api` and `--no-api` instead of `--typedoc` and
-`--no-typedoc`. Library scaffolds include the native tools, a public-source
-configuration, and a small documented source example. Existing customized Vite
-configuration requires the manual migration above; the upgrade command preserves
-that configuration.
+Ardo 6 retires `create-ardo`. Use [Agent Instructions](/guide/agent-instructions)
+and the version-matched library reference for the native tools, source
+configuration, and documented API example. Apply the migration above to
+customized Vite configuration rather than replacing it.
 
 ## Verify the migration
 

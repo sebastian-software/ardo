@@ -36,7 +36,7 @@ pnpm docs:dev
 ```
 ardo/
 ├── packages/
-│   ├── ardo/          # Main framework package (published to npm)
+│   └── ardo/          # Main framework package (published to npm)
 │   │   ├── src/
 │   │   │   ├── config/      # Configuration utilities
 │   │   │   ├── icons/       # Built-in icon assets and helpers
@@ -48,9 +48,6 @@ ardo/
 │   │   │   ├── api/     # native API documentation integration
 │   │   │   └── vite/        # Vite plugin
 │   │   └── package.json
-│   └── create-ardo/   # Scaffolding CLI and project template
-│       ├── src/       # CLI, prompts, upgrade, and scaffold logic
-│       └── templates/ # Generated project files
 ├── docs/              # Documentation site (dogfooding)
 │   ├── app/           # React Router app and markdown routes
 │   │   └── routes/    # Documentation pages and generated API routes
@@ -63,7 +60,7 @@ ardo/
 
 The architecture decision records in [`docs/adr/`](./docs/adr/) explain the major framework
 decisions: React Router migration, static prerendering, native API documentation integration, Vanilla Extract,
-context-aware UI, public API naming, Storybook, Tailwind in the scaffold, and release conventions.
+context-aware UI, public API naming, Storybook, agent instructions, and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
 
 ### Coordinated native-engine development
@@ -97,7 +94,7 @@ manifest and temporary lockfile differ, use
 `pnpm --config.verifyDepsBeforeRun=false <command>` to run an installed tool
 without an automatic reinstall.
 
-The packed-scaffold integration suite starts a separate consumer installation.
+The packed-reference integration suite starts separate basic and library consumer installations.
 Set `ARDO_TEST_ENGINE_OVERRIDES` to a JSON file containing the same package-name
 to `file:/absolute/path/to/tarball.tgz` map, so that consumer uses the tested
 engine builds too. For homepage verification, also pack Ardo and add its

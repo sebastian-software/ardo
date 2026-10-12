@@ -12,5 +12,12 @@
     "capturedAt": "2026-10-12",
     "note": "Built from the last main commit before the Ardo 5 compiler migration, using its frozen lockfile.",
     "sha256": "51f860fb2f45adb8f0c7ad930aebbfb1259f952fd5e040bd93f7d7589e9c5d6c"
+  },
+  "v5": {
+    "sourceCommit": "c2cfd62956298c366d0df72d20488a3ce47a0e4a",
+    "sourceTag": "ardo-v5.0.0",
+    "capturedAt": "2026-10-12",
+    "note": "Rebuilt the release tag with its frozen lockfile because no retained Pages artifact was available. Includes 70 HTML pages, bundled assets, and version-scoped text exports; the llms.txt full-document link points to /v5/llms-full.txt.",
+    "sha256": "1e9276dfbdd161c2d54dfb9636bdc902e249062770a69ab37e34ca2c715a9fbd"
   }
 }

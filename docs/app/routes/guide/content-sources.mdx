@@ -64,4 +64,4 @@ const recipes = getCollection<{ title: string }>("recipes")
 
 Collections remain local and static: the schema runs during the build, while the generated route pages continue through the normal sidebar, search, sitemap, redirect, and LLM pipelines. Source paths are project-relative, so the virtual module does not expose an author's absolute filesystem paths.
 
-The [external content and collections reference](https://github.com/sebastian-software/ardo/tree/main/examples/content-sources) builds this complete shape: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.
+The [version-matched content sources reference](/guide/reference-projects#content-owned-elsewhere) builds this complete shape: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.

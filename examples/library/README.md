@@ -7,6 +7,7 @@ Use this project when a TypeScript library needs guide pages and generated API r
 - `src/index.ts` is the small public API read by the native TypeScript compiler.
 - `tsconfig.api.json` defines the API-documentation compiler boundary.
 - `vite.config.ts` enables Ardo's opt-in native API documentation integration.
+- `package.json` declares both optional API peers: the native compiler alias and `oxc-parser`.
 - `app/routes.ts` and generated API routes are build output, not handwritten source.
 
 The public API also includes documentation-oriented fixtures: composed readonly

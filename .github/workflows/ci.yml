@@ -83,6 +83,7 @@ jobs:
         if: matrix.node-version == '22'
         env:
           ARDO_E2E_PREBUILT_DOCS: "true"
+          ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
 
       - name: Build Storybook
