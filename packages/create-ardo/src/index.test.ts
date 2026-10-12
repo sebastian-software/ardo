@@ -9,7 +9,9 @@ let tmpDir: string
 
 beforeEach(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-cli-"))
-  vi.spyOn(console, "log").mockImplementation(() => undefined)
+  vi.spyOn(console, "log").mockImplementation(() => {
+    /* Silence expected test output. */
+  })
 })
 
 afterEach(() => {
