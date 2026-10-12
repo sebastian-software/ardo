@@ -50,6 +50,11 @@ function generatedSection(section: string, to = `/${section}`) {
   )
 }
 
+const headerClass = (view: string) => {
+  const header = (view.match(/<div [^>]*>/g) ?? []).find((tag) => tag.includes("sidebarNodeHeader"))
+  return /class="([^"]*)"/.exec(header ?? "")?.[1] ?? ""
+}
+
 describe("ArdoSidebar", () => {
   it("connects collapsed generated group toggles to inert content", () => {
     const view = renderSidebar(generatedSection("guide"))
@@ -80,13 +85,6 @@ describe("ArdoSidebar", () => {
   })
 
   it("marks a linked generated group node active only on its own page", () => {
-    const headerClass = (view: string) => {
-      const header = (view.match(/<div [^>]*>/g) ?? []).find((tag) =>
-        tag.includes("sidebarNodeHeader")
-      )
-      return /class="([^"]*)"/.exec(header ?? "")?.[1] ?? ""
-    }
-
     const onOverview = headerClass(renderSidebar(generatedSection("adr"), "/adr"))
     expect(onOverview.split(/\s+/)).toContain("active")
 

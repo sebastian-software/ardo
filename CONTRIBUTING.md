@@ -128,6 +128,26 @@ verification; do not commit tarball paths or invented registry integrity data.
 | `pnpm format`     | Format code with Prettier      |
 | `pnpm typecheck`  | Run TypeScript type checking   |
 
+### Lint warning budgets
+
+`pnpm lint` runs the existing package-source ESLint checks and enforces the per-rule
+ceilings in `scripts/lint-warning-budget.json`. Every lint error fails the check.
+A warning category without a budget also fails, and one category cannot borrow
+unused budget from another. CI uses this same command.
+
+Known warnings remain active. `pnpm lint:raw` prints every file, line, and message.
+The current budgets retain dynamic filesystem-path warnings, browser-compatibility
+warnings (including Node-only API use), JSX composition and library export
+warnings, and compatibility exports. The four remaining spelling warnings are
+localized test text and intentionally misspelled frontmatter keys; they are not
+added to the general dictionary. The JSX composition contract is recorded in
+[ADR 0008](docs/adr/0008-children-based-composition.md).
+
+Fix errors and behavior risks before adjusting a budget. When a warning is removed,
+lower its rule's ceiling in the same PR. An intentional new warning needs a reviewed
+explanation of its source and impact; do not automatically regenerate or raise the
+budgets to make CI pass. No lint rule is disabled by the budget checker.
+
 ### Performance Budgets
 
 The docs site build is guarded by performance budgets (`pnpm docs:budgets`, runs in CI). The check builds the docs site and fails on material regressions in:

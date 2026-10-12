@@ -107,7 +107,9 @@ describe("withArdoGitHubPages", () => {
     const processOnce = captureProcessExitListener((listener) => {
       exitListener = listener
     })
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined)
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {
+      /* Silence expected test output. */
+    })
 
     try {
       process.exitCode = undefined

@@ -166,7 +166,9 @@ sidebar: false
   })
 
   it("skips malformed leaf frontmatter without dropping the rest of the sidebar", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+      /* Silence expected test output. */
+    })
     await writeRoute("guide/visible.mdx", "---\ntitle: Visible\n---\n")
     await writeRoute("guide/broken.mdx", "---\n: bad\n---\n")
 
@@ -183,7 +185,9 @@ sidebar: false
   })
 
   it("keeps child pages when directory index metadata is malformed", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+      /* Silence expected test output. */
+    })
     await writeRoute("guide/index.mdx", "---\n: bad\n---\n")
     await writeRoute("guide/intro.mdx", "---\ntitle: Intro\n---\n")
 
