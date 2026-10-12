@@ -53,6 +53,40 @@ async function project(source: string): Promise<NativeApiProject> {
 }
 
 describe("native compiler API documentation", () => {
+  it("retains compiler-emitted literal initializers, explicit types, and variable mutability", async () => {
+    const session = await project(`
+export const message = "hello";
+export const amount = 42;
+export const negative = -42;
+export const count = 10n;
+export const debt = -10n;
+export const enabled = true;
+export const disabled = false;
+export const nothing = null;
+export const missing = undefined;
+export const label: string = "wide";
+export let mutable = "hello";
+export var legacy = 1;
+`)
+    const result = await session.extract()
+    expect(result.diagnostics).toStrictEqual([])
+    expect(
+      Object.fromEntries(result.items.map((item) => [item.name, item.signature]))
+    ).toStrictEqual({
+      message: 'const message: "hello"',
+      amount: "const amount: 42",
+      negative: "const negative: -42",
+      count: "const count: 10n",
+      debt: "const debt: -10n",
+      enabled: "const enabled: true",
+      disabled: "const disabled: false",
+      nothing: "const nothing: null",
+      missing: "const missing: undefined",
+      label: "const label: string",
+      mutable: "let mutable: string",
+      legacy: "var legacy: number",
+    })
+  })
   it("extracts a virtual declaration graph without declaration files on disk", async () => {
     const entry = path.join(temporary, "virtual/index.d.ts")
     const base = path.join(temporary, "virtual/base.d.ts")

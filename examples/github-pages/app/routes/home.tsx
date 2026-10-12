@@ -9,7 +9,7 @@ export default function HomePage() {
       <ArdoHero
         name="Ardo GitHub Pages Example"
         text="Documentation Made Simple"
-        tagline="A GitHub Pages documentation site built with Ardo — no TypeDoc, just Markdown."
+        tagline="A GitHub Pages documentation site built with Ardo — no API generation, just Markdown."
         actions={[{ text: "Get Started", link: "/guide/getting-started", theme: "brand" }]}
       />
       <ArdoFeatures>

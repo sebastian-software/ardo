@@ -71,7 +71,7 @@ async function writeGeneratedPage(
 export function resolveGeneratedDocsDirectory(
   outputDir: string,
   out: string,
-  configKey = "typedoc.out"
+  configKey = "api.out"
 ): string {
   const resolvedOutputDir = path.resolve(outputDir)
   const resolvedApiDirectory = path.resolve(resolvedOutputDir, out)

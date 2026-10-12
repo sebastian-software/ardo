@@ -7,12 +7,12 @@ import type { ArdoRoutesPluginOptions } from "./routes-plugin"
 
 export type PressConfigOptions = Omit<
   ArdoPluginOptions,
-  "api" | "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir" | "typedoc"
+  "api" | "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir"
 >
 
 export type ArdoPluginOptions = {
-  /** Generate source API documentation using the native TypeScript 7.1 API. */
-  api?: NativeApiDocsConfig | true
+  /** Generate native API documentation. Multiple projects need separate output directories. */
+  api?: NativeApiDocsConfig | NativeApiDocsConfig[] | true
   /** Options for the routes generator plugin */
   routes?: ArdoRoutesPluginOptions | false
   /**

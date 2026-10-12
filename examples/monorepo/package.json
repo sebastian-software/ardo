@@ -6,7 +6,7 @@
   "author": "Sebastian Software GmbH",
   "scripts": {
     "dev": "react-router dev",
-    "build": "node prebuild.mjs && react-router build",
+    "build": "react-router build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "typescript": "^6.0.3",
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "@typescript/native": "npm:typescript@7.1.0-dev.20261011.1"
   }
 }

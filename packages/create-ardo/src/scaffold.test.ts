@@ -17,11 +17,77 @@ afterEach(() => {
 })
 
 describe("createProjectStructure", () => {
+  it("creates a buildable native API scaffold with explicit optional tools and a public-source boundary", () => {
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "Library",
+      projectName: "library",
+      api: true,
+      githubPages: false,
+      description: "Library docs",
+    })
+    const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, "package.json"), "utf8"))
+    expect(pkg.devDependencies["@typescript/native"]).toBe("npm:typescript@7.1.0-dev.20261011.1")
+    expect(pkg.devDependencies["oxc-parser"]).toBe("^0.127.0")
+    expect(pkg.dependencies.typedoc).toBeUndefined()
+    expect(fs.readFileSync(path.join(tmpDir, "vite.config.ts"), "utf8")).toContain(
+      'tsconfig: "./tsconfig.api.json"'
+    )
+    expect(
+      JSON.parse(fs.readFileSync(path.join(tmpDir, "tsconfig.api.json"), "utf8"))
+    ).toStrictEqual({
+      extends: "./tsconfig.json",
+      files: ["src/index.ts"],
+      include: [],
+    })
+    expect(fs.readFileSync(path.join(tmpDir, "src/index.ts"), "utf8")).toContain(
+      "export function greet"
+    )
+    expect(fs.readFileSync(path.join(tmpDir, "pnpm-workspace.yaml"), "utf8")).toContain(
+      '"@typescript/typescript-linux-x64@7.1.0-dev.20261011.1"'
+    )
+  })
+
+  it("keeps native compiler and parser optional for general documentation scaffolds", () => {
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "Docs",
+      projectName: "docs",
+      api: false,
+      githubPages: false,
+      description: "Docs",
+    })
+    const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, "package.json"), "utf8"))
+    expect(pkg.devDependencies["@typescript/native"]).toBeUndefined()
+    expect(pkg.devDependencies["oxc-parser"]).toBeUndefined()
+    expect(fs.existsSync(path.join(tmpDir, "tsconfig.api.json"))).toBe(false)
+    expect(fs.readFileSync(path.join(tmpDir, "vite.config.ts"), "utf8")).not.toContain("api:")
+  })
+
+  it("preserves customized API source, package metadata, and pnpm policy when overwrite is disabled", () => {
+    fs.mkdirSync(path.join(tmpDir, "src"), { recursive: true })
+    fs.writeFileSync(path.join(tmpDir, "src/index.ts"), "export const custom = 1;\n")
+    fs.writeFileSync(path.join(tmpDir, "package.json"), '{"name":"custom"}\n')
+    fs.writeFileSync(path.join(tmpDir, "pnpm-workspace.yaml"), 'packages: ["."]\n')
+    createProjectStructure(tmpDir, "minimal", {
+      siteTitle: "Library",
+      projectName: "library",
+      api: true,
+      githubPages: false,
+      description: "Docs",
+      overwriteExisting: false,
+    })
+    expect(fs.readFileSync(path.join(tmpDir, "src/index.ts"), "utf8")).toBe(
+      "export const custom = 1;\n"
+    )
+    expect(fs.readFileSync(path.join(tmpDir, "package.json"), "utf8")).toBe('{"name":"custom"}\n')
+    expect(fs.readFileSync(path.join(tmpDir, "pnpm-workspace.yaml"), "utf8")).toBe(
+      'packages: ["."]\n'
+    )
+  })
   it("escapes prompt values before writing TypeScript and JSON templates", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: `It's a "test" & more`,
       projectName: "test-project",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: `Bob's "docs"`,
     })
@@ -40,7 +106,7 @@ describe("createProjectStructure", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "{{ARDO_VERSION}}",
       projectName: "test-project",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: "{{PROJECT_NAME}}",
     })
@@ -59,7 +125,7 @@ describe("createProjectStructure", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",
       projectName: "test-project",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: "Built with Ardo",
       overwriteExisting: false,
@@ -74,7 +140,7 @@ describe("createProjectStructure", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",
       projectName: "docs-site",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: "Built with Ardo",
       packageManager: "bun",
@@ -96,7 +162,7 @@ describe("createProjectStructure", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",
       projectName: "docs-site",
-      typedoc: false,
+      api: false,
       githubPages: true,
       description: "Built with Ardo",
     })
@@ -112,7 +178,7 @@ describe("createProjectStructure", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",
       projectName: "docs-site",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: "Built with Ardo",
       packageManager: "pnpm",
@@ -147,7 +213,7 @@ describe("upgradeProject", () => {
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Docs",
       projectName: "test-project",
-      typedoc: false,
+      api: false,
       githubPages: false,
       description: "Built with Ardo",
     })

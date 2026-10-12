@@ -85,47 +85,6 @@ export type HeadConfig = {
   children?: string
 }
 
-// =============================================================================
-// TypeDoc Config
-// =============================================================================
-
-export type TypeDocConfig = {
-  enabled?: boolean
-  entryPoints: string[]
-  tsconfig?: string
-  out?: string
-  readme?: string
-  plugin?: string[]
-  exclude?: string[]
-  excludeExternals?: boolean
-  excludePrivate?: boolean
-  excludeProtected?: boolean
-  excludeInternal?: boolean
-  sort?: Array<
-    | "alphabetical"
-    | "enum-value-ascending"
-    | "enum-value-descending"
-    | "required-first"
-    | "source-order"
-    | "visibility"
-  >
-  categoryOrder?: string[]
-  groupOrder?: string[]
-  watch?: boolean
-  sidebar?: {
-    title?: string
-    position?: number
-    collapsed?: boolean
-  }
-  markdown?: {
-    breadcrumbs?: boolean
-    hierarchy?: boolean
-    sourceLinks?: boolean
-    sourceBaseUrl?: string
-    codeBlocks?: boolean
-  }
-}
-
 export type OpenApiConfig = {
   /** Local OpenAPI 3.0/3.1 JSON or YAML file. Remote URLs are intentionally unsupported. */
   spec: string
@@ -250,12 +209,6 @@ export type ArdoConfig = {
    * than serving an implicit fallback.
    */
   i18n?: false | I18nConfig
-  /**
-   * TypeDoc API documentation generation.
-   * - `true`: Enable with defaults (./src/index.ts → content/api-reference/)
-   * - `{ ... }`: Enable with custom config
-   */
-  typedoc?: true | TypeDocConfig
   /** Static OpenAPI 3.0/3.1 reference generation. */
   openapi?: OpenApiConfig
   /** Custom Vite configuration */
@@ -423,15 +376,11 @@ export type ResolvedConfig = {
   deploymentBase: string
   project: ProjectMeta
   vite?: Record<string, unknown>
-  typedoc?: TypeDocConfig
   root: string
   contentDir: string
   /** Optional for compatibility with manually constructed test/config fixtures. */
   validation?: ContentValidationConfig
   openapi?: OpenApiConfig
 } & Required<
-  Omit<
-    ArdoConfig,
-    "buildHash" | "buildTime" | "openapi" | "project" | "typedoc" | "validation" | "vite"
-  >
+  Omit<ArdoConfig, "buildHash" | "buildTime" | "openapi" | "project" | "validation" | "vite">
 >

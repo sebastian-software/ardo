@@ -23,13 +23,6 @@ describe("examples/monorepo build", () => {
   let buildSucceeded = false
 
   beforeAll(() => {
-    // Run prebuild (TypeDoc generation for both packages)
-    execSync("node prebuild.mjs", {
-      cwd: __dirname,
-      stdio: "pipe",
-      timeout: 60_000,
-    })
-
     // Run react-router build
     execSync("npx react-router build", {
       cwd: __dirname,
@@ -93,5 +86,28 @@ describe("examples/monorepo build", () => {
     const cssFiles = files.filter((f) => f.endsWith(".css"))
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
+  })
+
+  it("keeps both native project outputs complete, with signatures and retained JSDoc", () => {
+    const base = path.join(__dirname, "build/client/api-reference")
+    for (const [project, functions] of [
+      ["alpha", ["add", "subtract", "multiply", "divide", "clamp"]],
+      ["beta", ["capitalize", "slugify", "truncate", "repeat"]],
+    ] as const) {
+      for (const name of functions) {
+        const page = fs.readFileSync(
+          path.join(base, project, "functions", name, "index.html"),
+          "utf8"
+        )
+        expect(page).toContain(name)
+        expect(page).not.toContain("type not declared")
+      }
+    }
+    expect(fs.readFileSync(path.join(base, "alpha/functions/add/index.html"), "utf8")).toContain(
+      "First number"
+    )
+    expect(
+      fs.readFileSync(path.join(base, "beta/interfaces/repeatoptions/index.html"), "utf8")
+    ).toContain("The separator between repetitions")
   })
 })

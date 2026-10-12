@@ -4,6 +4,7 @@ import type {
   TSConstructorType,
   TSFunctionType,
   TSTypeReference,
+  VariableDeclaration,
   VariableDeclarator,
 } from "oxc-parser"
 
@@ -21,6 +22,7 @@ export type DeclarationRecord = {
   node: Declaration | VariableDeclarator
   comment: ApiComment
   module: DeclarationModule
+  variableKind?: VariableDeclaration["kind"]
 }
 
 type Binding = { name: string; request?: string }

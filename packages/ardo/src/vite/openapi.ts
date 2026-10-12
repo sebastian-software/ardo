@@ -4,7 +4,7 @@ import { parse } from "yaml"
 
 import type { OpenApiConfig } from "../config/types"
 
-import { prepareGeneratedDocsDirectory } from "../typedoc/generator"
+import { prepareGeneratedDocsDirectory } from "../generated-docs"
 
 type OpenApiDocument = {
   info?: { description?: string; title?: string; version?: string }

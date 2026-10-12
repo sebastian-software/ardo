@@ -9,18 +9,18 @@ export default function HomePage() {
       <ArdoHero
         name="Ardo Library Example"
         text="Library Documentation"
-        tagline="Demonstrates Ardo with TypeDoc integration for automatic API reference generation."
+        tagline="Demonstrates Ardo with native API generation in builds and development."
         actions={[
           { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
           { text: "API Reference", link: "/api-reference", theme: "alt" },
         ]}
       />
       <ArdoFeatures>
-        <ArdoFeatureCard title="TypeDoc" icon="📚">
+        <ArdoFeatureCard title="Native API" icon="📚">
           Auto-generated API docs from TypeScript source code
         </ArdoFeatureCard>
-        <ArdoFeatureCard title="Prebuild" icon="🔧">
-          TypeDoc runs before the build via prebuild.mjs
+        <ArdoFeatureCard title="Build and Watch" icon="🔧">
+          API pages update through the normal Vite integration
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Deployable" icon="🚀">
           Ready to deploy on Vercel as a static site

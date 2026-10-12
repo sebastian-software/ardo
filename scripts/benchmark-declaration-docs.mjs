@@ -27,6 +27,7 @@ async function benchmark() {
       warmups: { type: "string", default: "1" },
       modes: { type: "string" },
       baseline: { type: "string" },
+      "typedoc-dist": { type: "string" },
       profiles: { type: "string" },
       "allow-incomplete": { type: "boolean", default: false },
       "profile-dir": { type: "string" },
@@ -41,6 +42,7 @@ async function benchmark() {
         "workspace-one-pass, native-binary, native-api, native-api-baseline.\n" +
         "Native-api modes use the pinned async Node API.\n" +
         "Baseline modes require --baseline=/path/to/old/dist.\n" +
+        "TypeDoc comparisons require --modes=typedoc,... --typedoc-dist=/path/to/pre-removal/dist.\n" +
         "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
         "--profiles=FILE selects JSON input profiles; paths are relative to that file.\n" +
         "--allow-incomplete records extraction gaps for performance research instead of rejecting them.\n" +
@@ -108,7 +110,7 @@ async function benchmark() {
     }
   })
   const defaults = [
-    "typedoc",
+    "native-api",
     "native-two-pass",
     "native-one-pass",
     "native-incremental",
@@ -116,11 +118,11 @@ async function benchmark() {
   ]
   const supported = [
     ...defaults,
+    "typedoc",
     "native-baseline",
     "declarations-baseline",
     "workspace-one-pass",
     "native-binary",
-    "native-api",
     "native-api-baseline",
   ]
   const modes = values.modes ? values.modes.split(",") : defaults
@@ -131,6 +133,14 @@ async function benchmark() {
   )
     throw new Error(`Select unique modes from: ${supported.join(", ")}.`)
   const currentDist = path.join(root, "packages/ardo/dist")
+  const typedocDist = values["typedoc-dist"] ? path.resolve(values["typedoc-dist"]) : undefined
+  if (modes.includes("typedoc")) {
+    if (!typedocDist)
+      throw new Error(
+        "TypeDoc mode requires --typedoc-dist pointing to a preserved pre-removal build."
+      )
+    await fs.access(path.join(typedocDist, "typedoc/index.js"))
+  }
   const baselineDist = values.baseline ? path.resolve(values.baseline) : undefined
   if (modes.some((mode) => mode.endsWith("baseline")) && !baselineDist)
     throw new Error(
@@ -156,6 +166,12 @@ async function benchmark() {
       execFileSync("git", ["status", "--porcelain"], { cwd: root, encoding: "utf8" }).trim()
     ),
     implementation: {
+      typedocDist: typedocDist ?? null,
+      typedocEntrySha256: typedocDist
+        ? createHash("sha256")
+            .update(await fs.readFile(path.join(typedocDist, "typedoc/index.js")))
+            .digest("hex")
+        : null,
       currentApiSha256: createHash("sha256")
         .update(await fs.readFile(path.join(currentDist, "api/index.js")))
         .digest("hex"),
@@ -201,7 +217,7 @@ async function benchmark() {
       nativeOptions:
         "emitDeclarationOnly, declaration, declarationMap, removeComments=false, noEmitOnError",
       typedocOptions:
-        "Actual ardo/typedoc generator, plugin=[], excludeInternal/Private/Protected=true, sourceLinks=false; default breadcrumbs and hierarchy",
+        "Preserved pre-removal ardo/typedoc generator, plugin=[], excludeInternal/Private/Protected=true, sourceLinks=false; default breadcrumbs and hierarchy",
       output:
         "Native scenarios must produce identical page paths and Markdown bytes across runs and implementations. TypeDoc and the workspace compiler are reported separately. Counts alone are not feature parity or correctness evidence.",
       phases:
@@ -238,7 +254,12 @@ async function benchmark() {
                 : mode === "workspace-one-pass"
                   ? path.join(root, "node_modules/typescript/bin/tsc")
                   : compiler,
-            dist: mode.endsWith("baseline") ? baselineDist : currentDist,
+            dist:
+              mode === "typedoc"
+                ? typedocDist
+                : mode.endsWith("baseline")
+                  ? baselineDist
+                  : currentDist,
             input,
             entry: profile.entry,
             packageRoot: profile.packageRoot,

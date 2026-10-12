@@ -4,7 +4,7 @@ Use this project when one workspace owns several TypeScript packages and their d
 
 ## Contract
 
-- `packages/*/src` contains package APIs that TypeDoc consumes.
+- `packages/*/src` contains package APIs that the native compiler checks.
 - `tsconfig.json` and `vite.config.ts` define the workspace-aware documentation build.
 - `app/root.tsx` is an adaptation seam; preserve project-specific providers and UI.
 - `app/routes.ts` and generated API routes are build output, not handwritten source.

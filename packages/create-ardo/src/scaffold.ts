@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
+import { nativeApiDependencies, writeNativeApiScaffold } from "./native-api-scaffold"
 import { getPackageManagerCommands, type PackageManager } from "./package-manager"
 
 const __dirname = import.meta.dirname
@@ -25,7 +26,7 @@ export const templates = [
 export type ScaffoldOptions = {
   siteTitle: string
   projectName: string
-  typedoc: boolean
+  api: boolean
   githubPages: boolean
   description: string
   overwriteExisting?: boolean
@@ -57,9 +58,9 @@ export function createProjectStructure(root: string, template: string, options: 
     PM_DEV_COMMAND: commands.dev,
     PM_INSTALL_COMMAND: commands.install,
     PM_PREVIEW_COMMAND: commands.preview,
-    TYPEDOC_CONFIG: options.typedoc
-      ? "typedoc: true,"
-      : "// typedoc: true, // Uncomment to enable API docs",
+    API_CONFIG: options.api
+      ? 'api: { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.api.json" },'
+      : "",
     GITHUB_PAGES_CONFIG: options.githubPages
       ? "// GitHub Pages: base path auto-detected from git remote"
       : "githubPages: false, // Disabled for non-GitHub Pages deployment",
@@ -72,11 +73,26 @@ export function createProjectStructure(root: string, template: string, options: 
     DESCRIPTION: escapeTemplateValue(options.description),
   }
 
+  const overwriteExisting = options.overwriteExisting ?? true
+  const writePackage = overwriteExisting || !fs.existsSync(path.join(root, "package.json"))
+  const writeWorkspace = overwriteExisting || !fs.existsSync(path.join(root, "pnpm-workspace.yaml"))
   copyDir(templateDir, root, {
     packageManager,
     vars,
-    overwriteExisting: options.overwriteExisting ?? true,
+    overwriteExisting,
   })
+  if (options.api) {
+    writeNativeApiScaffold(root, { overwriteExisting, packageManager, writeWorkspace })
+    if (writePackage) writeNativeApiDependencies(root)
+  }
+}
+
+function writeNativeApiDependencies(root: string): void {
+  const packagePath = path.join(root, "package.json")
+  const pkg = readJsonObject(packagePath)
+  if (pkg == null) throw new Error("Could not parse the API documentation package.json")
+  Object.assign(ensureStringRecord(pkg, "devDependencies"), nativeApiDependencies)
+  fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
 }
 
 function copyDir(src: string, dest: string, context: CopyContext) {

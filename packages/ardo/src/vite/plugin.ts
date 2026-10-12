@@ -25,7 +25,6 @@ import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-u
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
-import { createTypeDocPlugin, resolveTypedocConfig } from "./typedoc-plugin"
 import { resolveVersionedMainBase } from "./versioning"
 import {
   loadVirtualModule,
@@ -55,13 +54,16 @@ export { detectGitHubBasename } from "./git-utils"
 export type { ArdoPluginOptions } from "./plugin-options"
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
+  if ("typedoc" in options)
+    throw new Error(
+      "[ardo] The typedoc option was removed. Configure api instead; see the TypeDoc migration guide."
+    )
   const {
     content,
     collections,
     icons = {},
     openapi,
     routes,
-    typedoc,
     api,
     githubPages = true,
     routesDir: routesDirOption,
@@ -85,8 +87,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     routesDirOption
   )
   addRoutesPlugin(plugins, routes, routesDirOption)
-  addTypeDocPlugin(plugins, typedoc, routesDirOption)
-  addApiPlugin(plugins, { api, typedoc, routesDirOption })
+  addApiPlugin(plugins, { api, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
   plugins.push(createMdxPlugin(pressConfig.markdown))
@@ -124,17 +125,6 @@ function addRoutesPlugin(
 
   const routePluginOptions = routes ?? {}
   plugins.push(ardoRoutesPlugin({ routesDir: routesDirOption, ...routePluginOptions }))
-}
-
-function addTypeDocPlugin(
-  plugins: Plugin[],
-  typedoc: ArdoPluginOptions["typedoc"],
-  routesDirOption: string | undefined
-): void {
-  const typedocConfig = resolveTypedocConfig(typedoc)
-  if (typedocConfig != null) {
-    plugins.unshift(createTypeDocPlugin(typedocConfig, routesDirOption))
-  }
 }
 
 function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {

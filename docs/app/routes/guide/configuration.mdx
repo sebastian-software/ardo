@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: Configure Ardo's Vite plugin, generated routes, Markdown pipeline, TypeDoc output, and React UI.
+description: Configure Ardo's Vite plugin, generated routes, Markdown pipeline, API output, and React UI.
 order: 10
 ---
 
@@ -8,7 +8,7 @@ order: 10
 
 Ardo keeps configuration split where React teams expect it:
 
-- **Build behavior** lives in the `ardo()` Vite plugin: site metadata, routes, Markdown, TypeDoc, and deployment helpers.
+- **Build behavior** lives in the `ardo()` Vite plugin: site metadata, routes, Markdown, API documentation, and deployment helpers.
 - **UI behavior** lives in React: `ArdoRoot`, header/sidebar/footer props, component overrides, and runtime hooks.
 
 This page documents the build-time options first, then points to the React-side UI hooks and components.
@@ -652,184 +652,19 @@ Ardo manages document format, YAML frontmatter, React component bindings, and re
 
 ---
 
-## Native API Documentation
-
-The experimental `api` option generates source API documentation through the
-native TypeScript 7.1 API in builds and development. See
-[Native API Documentation](/guide/api-documentation) for installation,
-configuration, and current limits. Configure one of `api` or `typedoc`.
-
-## TypeDoc
-
-Enable TypeDoc API documentation generation. Pass `true` for defaults or an object for fine-grained control.
-
-```ts
-ardo({
-  title: "My Docs",
-  typedoc: true, // Enable with defaults (./src/index.ts)
-})
-```
-
-### typedoc (boolean shorthand)
-
-- **Type:** `true`
-
-Enables TypeDoc with default settings — reads from the package `src/index.ts` and generates route
-files under `app/routes/api-reference/` in the default React Router scaffold.
-
-### typedoc.enabled
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-Explicitly enable or disable TypeDoc generation.
-
-### typedoc.entryPoints
-
-- **Type:** `string[]`
-- **Required** (when using object config)
-
-Entry point files for TypeDoc.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts", "./src/utils.ts"],
-}
-```
-
-### typedoc.tsconfig
-
-- **Type:** `string`
-- **Default:** auto-detected
-
-Path to the TypeScript configuration file for TypeDoc.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  tsconfig: "./tsconfig.api.json",
-}
-```
-
-### typedoc.out
-
-- **Type:** `string`
-- **Default:** `"api-reference"`
-
-Output route directory for generated API documentation, relative to the configured routes directory.
-
-### typedoc.readme
-
-- **Type:** `string`
-
-Path to a README file TypeDoc should use as the generated project overview.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  readme: "./README.md",
-}
-```
-
-### typedoc.plugin
-
-- **Type:** `string[]`
-
-Additional TypeDoc plugin package names to load during API generation.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  plugin: ["typedoc-plugin-mdn-links"],
-}
-```
-
-### typedoc.exclude
-
-- **Type:** `string[]`
-
-Glob patterns for files to exclude from documentation.
-
-### typedoc.excludeExternals
-
-- **Type:** `boolean`
-
-Exclude external modules from documentation.
-
-### typedoc.excludePrivate
-
-- **Type:** `boolean`
-
-Exclude private members from documentation.
-
-### typedoc.excludeProtected
-
-- **Type:** `boolean`
-
-Exclude protected members from documentation.
-
-### typedoc.excludeInternal
-
-- **Type:** `boolean`
-
-Exclude `@internal` tagged items from documentation.
-
-### typedoc.sort
-
-- **Type:** `Array<"source-order" | "alphabetical" | "enum-value-ascending" | "enum-value-descending" | "required-first" | "visibility">`
-
-Sorting strategy for documented items.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  sort: ["alphabetical", "required-first"],
-}
-```
-
-### typedoc.categoryOrder
-
-- **Type:** `string[]`
-
-Preferred order for TypeDoc categories.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  categoryOrder: ["Components", "Hooks", "Utilities"],
-}
-```
-
-### typedoc.groupOrder
-
-- **Type:** `string[]`
-
-Preferred order for TypeDoc groups.
-
-```ts
-typedoc: {
-  entryPoints: ["./src/index.ts"],
-  groupOrder: ["Functions", "Classes", "Interfaces", "Type Aliases"],
-}
-```
-
-### typedoc.watch
-
-- **Type:** `boolean`
-
-Enable watch mode for TypeDoc during development.
-
-### typedoc.sidebar
-
-- **Type:** `{ title?: string; position?: number; collapsed?: boolean }`
-
-Sidebar configuration for the generated API reference section.
-
-### typedoc.markdown
-
-- **Type:** `{ breadcrumbs?: boolean; hierarchy?: boolean; sourceLinks?: boolean; sourceBaseUrl?: string; codeBlocks?: boolean }`
-
-Options controlling the generated markdown output.
+## API Documentation
+
+The `api` option generates source API documentation through native TypeScript
+and OXC during builds and development. Pass `true` for `src/index.ts` and
+`tsconfig.json`, an object for one project, or an array for multiple projects.
+Object configuration requires `entryPoints` and `tsconfig`; `out` defaults to
+`api-reference` and `title` to `API Reference`. Multiple outputs must be distinct
+and must not contain one another.
+
+See [Native API Documentation](/guide/api-documentation) for installation,
+configuration, programmatic use, and current limits. The previous `typedoc`
+option and package exports have been removed; see the
+[TypeDoc migration guide](/guide/typedoc).
 
 ---
 
@@ -843,21 +678,20 @@ header, footer, and sidebar-section reference.
 
 Ardo keeps browser-safe runtime imports separate from build-time Node.js imports:
 
-| Import path               | Use it for                                                                                    |
-| ------------------------- | --------------------------------------------------------------------------------------------- |
-| `ardo`                    | Client-safe config types, runtime hooks, sidebar helpers, and UI exports.                     |
-| `ardo/config`             | Config helpers and config-related types.                                                      |
-| `ardo/vite`               | The `ardo()` Vite plugin, route plugin, GitHub Pages basename helper, and icon build options. |
-| `ardo/typedoc`            | Programmatic TypeDoc generation and the standalone TypeDoc Vite plugin.                       |
-| `ardo/typedoc/components` | React components used by generated TypeDoc pages.                                             |
-| `ardo/runtime`            | React providers, runtime hooks, and sidebar prev/next helpers.                                |
-| `ardo/ui`                 | Default UI components, layout components, MDX components, and icon registration helpers.      |
-| `ardo/icons`              | Built-in icon asset metadata.                                                                 |
-| `ardo/theme`              | Vanilla Extract theme tokens and brand-theme helpers.                                         |
-| `ardo/mdx-provider`       | The MDX provider used to auto-register Ardo's MDX components.                                 |
-| `ardo/virtual`            | Type declarations for Ardo virtual modules.                                                   |
-| `ardo/ui/styles.css`      | The default Ardo UI stylesheet.                                                               |
-| `ardo/press.css`          | Compatibility alias for `ardo/ui/styles.css`.                                                 |
+| Import path          | Use it for                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `ardo`               | Client-safe config types, runtime hooks, sidebar helpers, and UI exports.                     |
+| `ardo/api`           | Native API projects, one-shot generation, declaration extraction, and documentation types.    |
+| `ardo/config`        | Config helpers and config-related types.                                                      |
+| `ardo/vite`          | The `ardo()` Vite plugin, route plugin, GitHub Pages basename helper, and icon build options. |
+| `ardo/runtime`       | React providers, runtime hooks, and sidebar prev/next helpers.                                |
+| `ardo/ui`            | Default UI components, layout components, MDX components, and icon registration helpers.      |
+| `ardo/icons`         | Built-in icon asset metadata.                                                                 |
+| `ardo/theme`         | Vanilla Extract theme tokens and brand-theme helpers.                                         |
+| `ardo/mdx-provider`  | The MDX provider used to auto-register Ardo's MDX components.                                 |
+| `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                   |
+| `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                               |
+| `ardo/press.css`     | Compatibility alias for `ardo/ui/styles.css`.                                                 |
 
 ---
 

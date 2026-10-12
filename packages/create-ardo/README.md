@@ -30,11 +30,11 @@ pnpm create ardo@latest my-docs
 
 ```bash
 pnpm create ardo@latest my-docs minimal --yes
-pnpm create ardo@latest my-docs minimal --title "Product Docs" --typedoc --no-github-pages
+pnpm create ardo@latest my-docs minimal --title "Product Docs" --api --no-github-pages
 ```
 
 `--yes` uses defaults for every prompt. Non-interactive shells also use defaults automatically.
-Use `--typedoc` or `--no-typedoc`, `--github-pages` or `--no-github-pages`, and `--title` to make
+Use `--api` or `--no-api`, `--github-pages` or `--no-github-pages`, and `--title` to make
 scripted scaffolds explicit.
 
 ## What gets created

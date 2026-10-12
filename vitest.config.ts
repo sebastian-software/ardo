@@ -27,14 +27,9 @@ export default defineConfig({
         "packages/ardo/src/generated-docs.ts",
         "packages/ardo/src/markdown/**/*.{ts,tsx}",
         "packages/ardo/src/runtime/**/*.{ts,tsx}",
-        "packages/ardo/src/typedoc/**/*.{ts,tsx}",
         "packages/ardo/src/vite/**/*.{ts,tsx}",
       ],
-      exclude: [
-        "**/*.stories.{ts,tsx}",
-        "**/*.test.{ts,tsx}",
-        "packages/ardo/src/typedoc/components/**",
-      ],
+      exclude: ["**/*.stories.{ts,tsx}", "**/*.test.{ts,tsx}"],
       thresholds: {
         branches: 18,
         functions: 18,

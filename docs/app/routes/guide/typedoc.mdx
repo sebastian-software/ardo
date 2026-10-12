@@ -1,272 +1,31 @@
 ---
-title: TypeDoc Integration
-description: Generate API reference pages from the TypeScript source your users already depend on.
-order: 5
+title: Migrate from TypeDoc
+description: Move API documentation to native TypeScript and OXC in the next major release.
 ---
 
-# TypeDoc Integration
+# Migrate from TypeDoc
 
-For the new native compiler path, see [Native API Documentation](/guide/api-documentation).
-This guide describes the existing TypeDoc integration.
+The next major release removes the TypeDoc integration. Source API documentation
+uses native TypeScript for checked declarations and OXC for Markdown extraction.
+This affects the `typedoc` option, `TypeDocConfig`, `ardo/typedoc`,
+`ardo/typedoc/components`, and the scaffolder's TypeDoc flags.
 
-For React libraries and design systems, prose is only half the documentation. Users also need to inspect props, functions, types, and exports. Ardo's built-in TypeDoc integration generates linked API reference pages from your TypeScript source during the docs build.
+## Install the native tools
 
-## Quick Start
-
-### 1. Configure TypeDoc
-
-Add the `typedoc` configuration to your `vite.config.ts`:
-
-```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
-
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "My Library",
-
-      typedoc: {
-        enabled: true,
-        entryPoints: ["../src/index.ts"],
-        tsconfig: "../tsconfig.json",
-        out: "api",
-      },
-    }),
-  ],
-})
-```
-
-The TypeDoc plugin is automatically included when `typedoc` config is provided.
-
-This quick start uses `../src/index.ts` because many docs apps live beside the package they
-document. See the [library example](https://github.com/sebastian-software/ardo/tree/main/examples/library)
-and [monorepo example](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo) for
-runnable setups with relative entry points.
-
-### 2. Run the Build
-
-The API documentation will be automatically generated when you build your site:
+Install the supported compiler and parser in your documentation project:
 
 ```bash
-pnpm build
+pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
 ```
 
-## Configuration Options
+The alias keeps the native compiler separate from your existing TypeScript build
+tools. This compiler is a pinned nightly. General documentation sites do not
+need these optional packages. Remove direct TypeDoc dependencies and plugins
+that were used only by this integration.
 
-### entryPoints
+## Replace the Vite configuration
 
-- Type: `string[]`
-- Required: Yes
-
-The entry points for TypeDoc to process. These are typically your library's main export files.
-
-```ts
-typedoc: {
-  entryPoints: ['./src/index.ts', './src/utils/index.ts'],
-}
-```
-
-### tsconfig
-
-- Type: `string`
-
-Path to your `tsconfig.json` file.
-
-```ts
-typedoc: {
-  tsconfig: './tsconfig.json',
-}
-```
-
-### out
-
-- Type: `string`
-- Default: `'api-reference'`
-
-Output route directory for generated markdown files, relative to the configured routes directory. In the default scaffold, `out: "api"` writes API pages under `app/routes/api`.
-
-```ts
-typedoc: {
-  out: 'reference/api',
-}
-```
-
-### readme
-
-- Type: `string`
-
-Use a README file as the generated API reference overview:
-
-```ts
-typedoc: {
-  readme: "../README.md",
-}
-```
-
-### plugin
-
-- Type: `string[]`
-
-Load additional TypeDoc plugins by package name:
-
-```ts
-typedoc: {
-  plugin: ["typedoc-plugin-mdn-links"],
-}
-```
-
-### Filtering Options
-
-Control what gets documented:
-
-```ts
-typedoc: {
-  excludeExternals: true,    // Exclude external modules
-  excludePrivate: true,      // Exclude private members
-  excludeProtected: false,   // Include protected members
-  excludeInternal: true,     // Exclude @internal members
-  exclude: ['**/*.test.ts'], // Exclude patterns
-}
-```
-
-### Sorting
-
-Control the order of documented members:
-
-```ts
-typedoc: {
-  sort: ['source-order'],
-  // Or: ['alphabetical', 'required-first', 'visibility']
-}
-```
-
-Use `categoryOrder` and `groupOrder` when your source uses TypeDoc categories or you want groups to
-appear in a deliberate order:
-
-```ts
-typedoc: {
-  categoryOrder: ["Components", "Hooks", "Utilities"],
-  groupOrder: ["Functions", "Classes", "Interfaces", "Type Aliases"],
-}
-```
-
-### Sidebar Configuration
-
-Customize how the API docs appear in the sidebar:
-
-```ts
-typedoc: {
-  sidebar: {
-    title: 'API Reference',
-    position: 100,
-    collapsed: false,
-  },
-}
-```
-
-### Markdown Options
-
-Control the generated markdown:
-
-```ts
-typedoc: {
-  markdown: {
-    breadcrumbs: true,
-    hierarchy: true,
-    sourceLinks: true,
-    sourceBaseUrl: 'https://github.com/user/repo/blob/main',
-    codeBlocks: true,
-  },
-}
-```
-
-## Source Links
-
-To enable links to your source code on GitHub, configure the `sourceBaseUrl`:
-
-```ts
-typedoc: {
-  markdown: {
-    sourceLinks: true,
-    sourceBaseUrl: 'https://github.com/your-username/your-repo/blob/main',
-  },
-}
-```
-
-## Watch Mode
-
-Enable watch mode for development to regenerate docs when source files change:
-
-```ts
-typedoc: {
-  watch: true,
-}
-```
-
-## Generated Output
-
-TypeDoc generates markdown files that include:
-
-- **Module/Namespace pages** - Overview of exports
-- **Class pages** - Properties, methods, constructors
-- **Interface pages** - Properties with types
-- **Type alias pages** - Type definitions
-- **Function pages** - Signatures, parameters, return types
-- **Enum pages** - Member values
-
-### Example Output
-
-For a function like:
-
-````ts
-/**
- * Greets a user by name.
- *
- * @param name - The name of the user
- * @returns A greeting message
- *
- * @example
- * ```ts
- * greet('World') // 'Hello, World!'
- * ```
- */
-export function greet(name: string): string {
-  return `Hello, ${name}!`
-}
-````
-
-TypeDoc generates:
-
-```markdown
-# Function: greet
-
-Greets a user by name.
-
-## Signature
-
-function greet(name: string): string
-
-### Parameters
-
-| Name | Type     | Description          |
-| ---- | -------- | -------------------- |
-| name | `string` | The name of the user |
-
-### Returns
-
-`string`
-
-A greeting message
-
-## Examples
-
-greet('World') // 'Hello, World!'
-```
-
-## Full Example
-
-Here's a complete configuration example:
+Replace `typedoc` with `api` and supply an explicit TypeScript configuration:
 
 ```ts
 import { defineConfig } from "vite"
@@ -275,51 +34,94 @@ import { ardo } from "ardo/vite"
 export default defineConfig({
   plugins: [
     ardo({
-      title: "My Library Docs",
-      description: "Documentation for my awesome library",
-
-      typedoc: {
-        enabled: true,
-        entryPoints: ["../packages/my-lib/src/index.ts"],
-        tsconfig: "../packages/my-lib/tsconfig.json",
-        out: "api",
-
-        excludePrivate: true,
-        excludeInternal: true,
-        sort: ["source-order"],
-
-        sidebar: {
-          title: "API Reference",
-          position: 50,
-        },
-
-        markdown: {
-          breadcrumbs: true,
-          hierarchy: true,
-          sourceLinks: true,
-          sourceBaseUrl: "https://github.com/my-org/my-lib/blob/main/packages/my-lib",
-        },
+      api: {
+        entryPoints: ["./src/index.ts"],
+        tsconfig: "./tsconfig.api.json",
+        out: "api-reference",
+        title: "API Reference",
       },
     }),
   ],
 })
 ```
 
-## Programmatic Usage
+A configuration containing `typedoc`, including `typedoc: false`, now throws a
+migration error. To disable generation, remove the option. `api: true` uses
+`src/index.ts` and `tsconfig.json`; an explicit project boundary is useful when
+the documentation app and library source share a directory:
 
-You can also use the TypeDoc generator programmatically:
+```json
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/index.ts"],
+  "include": []
+}
+```
+
+Include required ambient declarations in `files` as well. Ardo applies checked
+declaration emission and retained comments in memory without rewriting your
+configuration or writing declaration files to disk. Compiler errors fail the
+initial build. Development errors retain the last successful pages and appear
+in the Vite overlay; fixing them resumes generation.
+
+## Map existing customization
+
+| Previous setting or API                                              | Migration                                                                                            |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `typedoc.entryPoints`, `tsconfig`, `out`                             | Use the corresponding `api` fields. `tsconfig` is required in object configuration.                  |
+| `typedoc.sidebar.title`                                              | Use `api.title` for the index heading. Configure navigation with the normal Ardo sidebar components. |
+| `typedoc.enabled: false`                                             | Remove API configuration.                                                                            |
+| `typedoc.watch` or a prebuild script                                 | Use the Vite integration for initial generation and development updates.                             |
+| `typedoc.readme`                                                     | Keep authored introductory content outside the generated directory.                                  |
+| TypeDoc plugins, sorting, category/group order, and Markdown options | Remove these settings. They are not native configuration fields.                                     |
+| `TypeDocConfig`                                                      | Import `NativeApiDocsConfig` from `ardo/api` for native project configuration.                       |
+| `ardo/typedoc/components`                                            | Replace custom `ApiItem` or `ApiSignature` usage with maintained Markdown, MDX, or React content.    |
+
+The extractor honors `@internal` comments and omits private/protected member
+expansion. Use your public entry points to select documented exports. Review
+existing TypeDoc-specific exclusions and grouping requirements rather than
+assuming the native renderer reproduces them. Generated page organization and
+some paths differ, so check links to individual API pages after regeneration.
+
+For several packages, configure an array of projects with distinct output
+directories, as shown in [Native API Documentation](/guide/api-documentation).
+The [monorepo example](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo)
+uses separate configurations for Alpha and Beta in normal builds and development.
+
+## Update programmatic hosts and scaffolding
+
+Replace `generateApiDocs` from `ardo/typedoc` with the one-shot native API:
 
 ```ts
-import { generateApiDocs } from "ardo/typedoc"
+import { generateNativeDocs } from "ardo/api"
 
-const docs = await generateApiDocs(
-  {
-    enabled: true,
-    entryPoints: ["./src/index.ts"],
-    tsconfig: "./tsconfig.json",
-  },
-  "./app/routes/api"
+await generateNativeDocs(
+  { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.api.json" },
+  "./app/routes"
 )
-
-console.log(`Generated ${docs.length} documentation pages`)
 ```
+
+For a custom watcher, reuse `NativeApiProject`, pass absolute changed, created,
+and deleted file paths to `extract` or `generate`, and close the project on
+shutdown. The normal Vite integration owns this lifecycle for you.
+
+The scaffolder now accepts `--api` and `--no-api` instead of `--typedoc` and
+`--no-typedoc`. Library scaffolds include the native tools, a public-source
+configuration, and a small documented source example. Existing customized Vite
+configuration requires the manual migration above; the upgrade command preserves
+that configuration.
+
+## Verify the migration
+
+Run your project's typecheck and build, inspect generated API pages and links,
+and check a source or JSDoc edit in development. Keep handwritten content outside
+the generated directory. Existing Ardo-generated pages are updated in place and
+obsolete pages are removed; unmarked handwritten directories are protected.
+
+The native compiler can reject code accepted by JavaScript TypeScript, and the
+current extractor does not cover every TypeDoc feature. Namespace pages,
+original-source links, full TSDoc semantics, and arbitrary mapped/conditional
+member expansion remain limits documented in the
+[native guide](/guide/api-documentation). Unsupported expansion retains the type
+expression and reports diagnostics. Review those diagnostics for your own API.
+To defer this breaking change, keep your previous Ardo version and configuration.

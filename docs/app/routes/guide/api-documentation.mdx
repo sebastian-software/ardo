@@ -5,7 +5,7 @@ description: Generate API documentation from source using native TypeScript and 
 
 # Native API Documentation
 
-The experimental `api` option generates Markdown documentation from your public
+The `api` option generates Markdown documentation from your public
 TypeScript entry points. It includes inferred types, signatures, overloads,
 JSDoc, and supported inherited or composed properties. Ardo's own documentation
 and the library example use this integration.
@@ -15,7 +15,7 @@ and the library example use this integration.
 The current integration uses a pinned TypeScript 7.1 nightly and the OXC parser:
 
 ```bash
-pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser
+pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
 ```
 
 `@typescript/native` is an npm alias for the official `typescript` package. The
@@ -45,7 +45,7 @@ export default defineConfig({
 
 Paths are relative to the Vite project root. `out` must be a child directory of
 your routes directory. `api: true` uses `./src/index.ts`, `./tsconfig.json`, and
-the default output and title shown above. Configure one of `api` or `typedoc`.
+the default output and title shown above. The `api` option is the source API documentation backend.
 
 Choose a TypeScript configuration that includes your public entry points and
 their dependencies. You can limit documentation checking to the public graph:
@@ -62,6 +62,34 @@ Add required ambient declaration files to `files` as well. Ardo enables checked
 declaration emission and retains comments in memory, including when your
 configuration uses `noEmit` or `removeComments`. Your configuration file is not
 rewritten. Declaration files do not need to be generated on disk.
+
+## Multiple packages
+
+Pass an array when packages need different TypeScript configurations or separate
+API route prefixes:
+
+```ts
+ardo({
+  api: [
+    {
+      entryPoints: ["./packages/alpha/src/index.ts"],
+      tsconfig: "./packages/alpha/tsconfig.json",
+      out: "api-reference/alpha",
+    },
+    {
+      entryPoints: ["./packages/beta/src/index.ts"],
+      tsconfig: "./packages/beta/tsconfig.json",
+      out: "api-reference/beta",
+    },
+  ],
+})
+```
+
+Output directories must remain distinct when ignoring letter case and must not
+contain one another. Each
+project participates in initial route discovery and development updates. An
+initial failure closes all compiler sessions started by that configuration
+attempt. This does not provide TypeScript solution-builder orchestration.
 
 ## Build and development
 
@@ -100,9 +128,8 @@ native compiler backend for both initial generation and updates.
 
 This integration preserves type expressions and reports unsupported property
 expansion. Arbitrary mapped or conditional types, complete TSDoc behavior,
-namespace pages, and original-source links remain migration work. It currently
-opens one configured project; TypeScript solution-builder behavior is not
-provided.
+namespace pages, and original-source links remain migration work. Each project has its own compiler session; TypeScript solution-builder behavior
+is not provided.
 
 Place member JSDoc on its own line before the member. The compiler can omit
 comments after the opening brace on the same line. If the same package request
@@ -110,8 +137,6 @@ resolves to different declarations in import and require modes within one file,
 the extractor reports incomplete expansion rather than selecting a potentially
 incorrect declaration.
 
-Existing projects can continue using the [TypeDoc integration](/guide/typedoc)
-while preparing a migration. The native integration is opt-in; the `typedoc`
-option and `ardo/typedoc` API remain available in this release. Removing TypeDoc
-will be a separate breaking change. The native path uses the official TypeScript
-Node client and does not require custom Go bindings.
+Projects using the removed TypeDoc integration should follow the
+[TypeDoc migration guide](/guide/typedoc). The native path uses the official
+TypeScript Node client and does not require custom Go bindings.

@@ -42,13 +42,13 @@ feat(scaffold): ...  # Don't do this
 - `packages/create-ardo/templates/minimal/` - Scaffold template
 - `docs/` - Ardo documentation site
 
-## TypeDoc
+## Native API Documentation
 
-TypeDoc is integrated directly into the `ardo()` plugin:
+Native API documentation is integrated directly into the `ardo()` plugin:
 
 ```ts
 ardo({
-  typedoc: true, // Enable with defaults (./src/index.ts)
+  api: true, // Enable with defaults (./src/index.ts)
 })
 ```
 

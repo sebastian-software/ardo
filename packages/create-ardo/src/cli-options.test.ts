@@ -10,7 +10,7 @@ describe("parseCreateArdoArgs", () => {
       "--yes",
       "--title",
       "Product Docs",
-      "--typedoc",
+      "--api",
       "--no-github-pages",
       "--package-manager",
       "npm",
@@ -37,9 +37,16 @@ describe("parseCreateArdoArgs", () => {
   })
 
   it("rejects unknown flags and package managers", () => {
+    expect(() => parseCreateArdoArgs(["--typedoc"])).toThrow('Unknown option "--typedoc"')
+    expect(() => parseCreateArdoArgs(["--no-typedoc"])).toThrow('Unknown option "--no-typedoc"')
     expect(() => parseCreateArdoArgs(["--wat"])).toThrow('Unknown option "--wat"')
     expect(() => parseCreateArdoArgs(["--package-manager", "deno"])).toThrow(
       'Unsupported package manager "deno"'
     )
+  })
+
+  it("lets the last API flag choose the documentation type", () => {
+    expect(parseCreateArdoArgs(["--api", "--no-api"]).docType).toBe("general")
+    expect(parseCreateArdoArgs(["--no-api", "--api"]).docType).toBe("library")
   })
 })

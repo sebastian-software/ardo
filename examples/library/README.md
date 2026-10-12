@@ -12,8 +12,7 @@ Use this project when a TypeScript library needs guide pages and generated API r
 The public API also includes documentation-oriented fixtures: composed readonly
 options, inherited component props, dictionaries, callable aliases and overloads,
 and preserved union/indexed leaf types. They exercise native declaration
-extraction and rendering. Ardo also retains its existing TypeDoc integration
-for projects that have not migrated.
+extraction and rendering.
 
 ## Validate
 

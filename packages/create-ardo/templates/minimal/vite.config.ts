@@ -9,7 +9,7 @@ export default defineConfig({
       title: '{{SITE_TITLE}}',
       description: '{{DESCRIPTION}}',
 
-      {{TYPEDOC_CONFIG}}
+      {{API_CONFIG}}
 
       {{GITHUB_PAGES_CONFIG}}
     }),

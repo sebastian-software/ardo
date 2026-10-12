@@ -34,7 +34,6 @@ import type {
   SocialLink,
   SponsorConfig,
   TOCItem,
-  TypeDocConfig,
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
@@ -79,7 +78,6 @@ export type {
   SocialLink,
   SponsorConfig,
   TOCItem,
-  TypeDocConfig,
 }
 
 export function defineConfig(config: ArdoConfig): ArdoConfig {
@@ -188,6 +186,8 @@ function resolveDefaultConfig(root: string): ResolvedConfig {
 
 function validateConfig(config: ArdoConfig): void {
   const errors: string[] = []
+  if ("typedoc" in config)
+    errors.push("The typedoc option was removed. Configure api in ardo() instead.")
 
   if (config.base !== undefined && !isValidBasePath(config.base)) {
     errors.push('base must start and end with "/" (for example "/docs/").')
