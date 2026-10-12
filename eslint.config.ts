@@ -13,15 +13,4 @@ config.push({
 configureRule(config, "complexity", [20])
 configureRule(config, "max-lines-per-function", [{ max: 100 }])
 
-configureRule(config, "@cspell/spellchecker", [
-  {
-    checkComments: true,
-    checkIdentifiers: true,
-    checkStrings: false,
-    cspell: {
-      words: ["Ardo", "Ferriki", "Ferromark", "Mintlify", "lede", "prepass", "unlocalized", "apos"],
-    },
-  },
-])
-
 export default config
