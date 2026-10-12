@@ -17,7 +17,7 @@ export default defineConfig({
     environment: "node",
     fileParallelism: true,
     setupFiles: ["./vitest.setup.ts"],
-    include: ["packages/**/*.test.ts", "packages/**/*.test.tsx"],
+    include: ["packages/**/*.test.ts", "packages/**/*.test.tsx", "scripts/**/*.test.ts"],
     exclude: ["**/node_modules/**", "packages/create-ardo/src/scaffold.integration.test.ts"],
     coverage: {
       provider: "v8",

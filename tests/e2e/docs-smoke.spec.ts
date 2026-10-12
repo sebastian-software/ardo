@@ -120,3 +120,17 @@ test("native Markdown fences render visible line numbers and highlighted lines",
   expect.soft(highlightedStyles.borderLeftWidth).toBe("3px")
   expect.soft(highlightedStyles.borderLeftStyle).toBe("solid")
 })
+
+test("consumer CSS overrides Ardo even before its stylesheet and after navigation", async ({
+  page,
+}) => {
+  await page.goto(gettingStartedPath)
+  const override = await page.addStyleTag({
+    content: ".ardo-footer { background-color: rgb(12, 34, 56); }",
+  })
+  await override.evaluate((element) => document.head.prepend(element))
+  await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
+  await page.locator('a[href="/v5/guide/markdown"]').first().click()
+  await expect(page).toHaveURL(/\/v5\/guide\/markdown$/)
+  await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
+})

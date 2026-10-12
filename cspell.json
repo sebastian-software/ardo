@@ -13,15 +13,22 @@
     ".git"
   ],
   "words": [
+    "apos",
     "ardo",
+    "Ferriki",
+    "Ferromark",
+    "lede",
     "llms",
+    "Mintlify",
+    "oklch",
+    "prepass",
     "rehype",
     "remark",
     "shiki",
     "tailwindcss",
     "typedoc",
+    "unlocalized",
     "vite",
-    "vitest",
-    "oklch"
+    "vitest"
   ]
 }

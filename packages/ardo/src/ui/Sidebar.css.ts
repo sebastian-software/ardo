@@ -252,7 +252,7 @@ export const sidebarLink = style({
       background: `color-mix(in oklch, ${vars.color.brand} 9%, transparent)`,
       fontWeight: 500,
     },
-    // A linked parent whose child is active: emphasised, but not the full
+    // A linked parent whose child is active: emphasized, but not the full
     // active fill — only the exact child gets that.
     "&.child-active": {
       color: vars.color.text,
