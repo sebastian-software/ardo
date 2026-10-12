@@ -11,4 +11,4 @@ const config = {
   prerender: true,
 } satisfies Config
 
-export default withArdoVersioning(config, { basename: "/v5/" })
+export default withArdoVersioning(config, { basename: "/v6/" })

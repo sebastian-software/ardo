@@ -3,7 +3,7 @@
 GitHub Pages replaces the full published artifact on every deployment. The current build contains
 one major version; older versions must be retained as immutable static snapshots.
 
-This repository stores compressed snapshots in `v3.tar.gz` and `v4.tar.gz`. Each archive contains only
+This repository stores compressed snapshots in `v3.tar.gz`, `v4.tar.gz`, and `v5.tar.gz`. Each archive contains only
 its own version folder, including pre-rendered HTML and all referenced versioned assets.
 `snapshots.json` records the source commit and SHA-256 checksum. No historical build or network
 download is required during deployment.
@@ -12,6 +12,10 @@ download is required during deployment.
   Ardo 4.2 documentation with an outdated URL version. Keep its existing URLs and content intact.
 - `v4` was built from `2a7b43a5bcddaba285ec5cbbf62b9c4183f4d963`, the last `main` commit before the
   Ardo 5 compiler migration, with its frozen lockfile. Its configuration already uses `/v4/`.
+
+- `v5` was rebuilt from `ardo-v5.0.0` (`c2cfd62956298c366d0df72d20488a3ce47a0e4a`) with its frozen lockfile. It contains 70 HTML pages, bundled assets, and version-scoped `llms.txt` and `llms-full.txt`. The archived index points to `/v5/llms-full.txt`. The previous Pages artifact was unavailable.
+
+CI browser tests use the complete Pages artifact to verify retained pages, assets, and search navigation alongside the current v6 site. They also verify the v5 text exports; the historical v3 and v4 archives did not include these exports.
 
 ## Prepare the Complete Artifact
 

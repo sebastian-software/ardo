@@ -171,6 +171,11 @@ Generates LLM-friendly text artifacts alongside the other build outputs:
 - `/llms.txt` is a concise Markdown index with links to Markdown and MDX routes.
 - `/llms-full.txt` is the same documentation content as one Markdown file.
 
+With documentation versioning enabled, Ardo also emits both files under the current version's
+path, such as `/v6/llms.txt` and `/v6/llms-full.txt`. The versioned index links to its versioned
+full-text file. Preserve these files with older HTML snapshots; the root files remain aliases for
+the current documentation version.
+
 Ardo uses page frontmatter titles and descriptions when available, skips TSX routes, and strips MDX
 imports, exports, and JSX component tags from the full export. Set `llms: false` in page
 frontmatter to exclude a Markdown page from both files.

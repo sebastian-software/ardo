@@ -1,18 +1,18 @@
 ---
 title: Tailwind CSS
-description: Tailwind CSS v4 is included by default — style your components and pages with utility classes, zero setup required.
+description: Add optional Tailwind CSS v4 utility classes to your Ardo content without replacing the framework's styling.
 order: 6
 ---
 
 # Tailwind CSS
 
-Every Ardo project ships with [Tailwind CSS v4](https://tailwindcss.com/) ready to use. It is there for the pieces that should move fast: custom landing pages, one-off examples, component demos, and MDX content that needs a little structure.
+[Tailwind CSS v4](https://tailwindcss.com/) is an optional integration for custom landing pages, examples, component demos, and MDX content. Retain your existing styling setup when adopting Ardo.
 
 Ardo handles the framework UI with Vanilla Extract. Tailwind is for _your_ content, so you can style without leaving React or adding a second theme system.
 
-## What's included
+## Setup
 
-The `create-ardo` scaffold sets up three things so you don't have to:
+To add Tailwind, install `tailwindcss` and `@tailwindcss/vite` as development dependencies and configure:
 
 1. **`@tailwindcss/vite`** plugin in `vite.config.ts` (before the `ardo()` plugin)
 2. **`tailwindcss`** as a devDependency
@@ -24,7 +24,7 @@ The `create-ardo` scaffold sets up three things so you don't have to:
 @import "tailwindcss/utilities.css" layer(utilities);
 ```
 
-This file is imported in `app/root.tsx` before Ardo's own styles, so the CSS layer order is correct.
+Import this file in `app/root.tsx` before Ardo's own styles to establish the CSS layer order. The [manual installation guide](/guide/getting-started#manual-installation) shows this integration.
 
 ## Examples
 
