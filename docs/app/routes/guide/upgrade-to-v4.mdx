@@ -68,11 +68,15 @@ it into the Pages artifact during deployment.
 For this repository, older major snapshots live under `docs/version-snapshots/`:
 
 ```text
-docs/version-snapshots/v3/
+docs/version-snapshots/v3.tar.gz
+docs/version-snapshots/snapshots.json
 ```
 
-The Pages workflow fails if `versions.json` lists an older major version that is missing from both
-the current build and `docs/version-snapshots/`. This protects stable URLs such as `/v3/...` from
+Run `pnpm docs:prepare-pages` after building the docs to combine the current build with retained
+snapshots. Both CI and the Pages workflow fail if `versions.json` lists an older major version that
+is missing from the current build and `docs/version-snapshots/`. Archives include the complete major
+folder and are verified against the SHA-256 checksums in `snapshots.json`. Unpacked version folders
+are also supported. This protects stable URLs such as `/v3/...` from
 being deleted by the first `/v4/` deployment.
 
 ## Check Existing Links

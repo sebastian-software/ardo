@@ -67,6 +67,10 @@ jobs:
         if: matrix.node-version == '22'
         run: pnpm docs:budgets
 
+      - name: Validate complete GitHub Pages artifact
+        if: matrix.node-version == '22'
+        run: pnpm docs:prepare-pages
+
       - name: Build examples
         if: matrix.node-version == '22'
         run: pnpm --filter './examples/*' build
