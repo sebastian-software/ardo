@@ -1,4 +1,5 @@
 import { cpSync, mkdtempSync, mkdirSync, realpathSync, rmSync, writeFileSync } from "node:fs"
+import { isBuiltin } from "node:module"
 import os from "node:os"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
@@ -23,7 +24,7 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
         }
       )
     }
-    for (const name of ["react", "react-dom", "react-router"]) {
+    for (const name of ["react", "react-dom"]) {
       cpSync(
         realpathSync(path.join(packageModules, name)),
         path.join(consumer, "node_modules", name),
@@ -39,7 +40,6 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
         dependencies: {
           react: "19",
           "react-dom": "19",
-          "react-router": "8",
           "lucide-react": "1",
           "docs-widget": "1",
         },
@@ -112,20 +112,18 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
       path.join(consumer, "node_modules/lucide-react"),
       { recursive: true }
     )
-    await build(isolated)
+    const bundle = await build(isolated)
+    if (Array.isArray(bundle) || !("output" in bundle)) {
+      throw new Error("Expected a single SSR bundle")
+    }
+    const imports = bundle.output.flatMap((entry) =>
+      entry.type === "chunk" ? [...entry.imports, ...entry.dynamicImports] : []
+    )
+    expect(imports.every((id) => isBuiltin(id))).toBe(true)
     const output = await import(pathToFileURL(path.join(consumer, "build/entry.js")).href)
     expect(output.html).toContain("<svg")
     expect(output.html).toContain("lucide-monitor")
     expect(output.html).toContain("docs-widget")
-    const React = await import(
-      pathToFileURL(path.join(consumer, "node_modules/react/index.js")).href
-    )
-    const renderer = await import(
-      pathToFileURL(path.join(consumer, "node_modules/react-dom/server.node.js")).href
-    )
-    expect(renderer.renderToStaticMarkup(React.createElement(output.Component))).toContain(
-      "docs-widget"
-    )
   } finally {
     rmSync(parent, { recursive: true, force: true })
   }

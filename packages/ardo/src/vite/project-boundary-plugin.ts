@@ -3,7 +3,7 @@ import type { Plugin } from "vite"
 import { isBuiltin } from "node:module"
 import path from "node:path"
 
-import { importedPackageName, ProjectPackages, SHARED_RUNTIME } from "./project-packages"
+import { ProjectPackages } from "./project-packages"
 
 /** Apply the docs package boundary to development and production module graphs. */
 export function createProjectBoundaryPlugin(): Plugin {
@@ -14,14 +14,6 @@ export function createProjectBoundaryPlugin(): Plugin {
     enforce: "pre",
     configResolved(config) {
       packages = new ProjectPackages(config.root)
-      // Explicit externals may bypass normal graph loading. They must still
-      // belong to the docs package so Node cannot borrow an ancestor's copy.
-      if (Array.isArray(config.ssr.external)) {
-        for (const id of config.ssr.external) {
-          if (SHARED_RUNTIME.includes(importedPackageName(id) ?? ""))
-            packages.checkImport(id, undefined)
-        }
-      }
     },
     async resolveId(id, importer, options) {
       if (id.startsWith("\0") || id.startsWith("virtual:") || isBuiltin(id)) return

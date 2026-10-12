@@ -60,10 +60,11 @@ and builds. Workspace package links to component source also fail. Install a pub
 when you need a packaged component library. Ardo's own workspace link is supported for framework
 development, using its built `dist` files.
 
-Ardo configures SSR bundling and shares the docs project's React, ReactDOM, and React Router
-installations with the prerender host automatically. There is no per-component `ssr.noExternal`
-list to maintain. A missing dependency produces an `[ardo]` error rather than falling back to a
-parent installation.
+Ardo bundles the application's dependencies for SSR, including its React and routing runtime.
+Components and the server renderer use that same bundled runtime. There is no per-component
+`ssr.noExternal` list to maintain. A missing dependency produces an `[ardo]` error rather than
+falling back to a parent installation. During development, Vite automatically optimizes SSR
+dependencies so CommonJS libraries can run in the same module graph.
 
 This boundary applies to the application module graph. Explicit native API and content-source
 inputs can still be read to generate documentation; they do not make outside component source

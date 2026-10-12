@@ -14,9 +14,7 @@ type Manifest = {
 }
 type PackageOwner = { root: string; manifest: Manifest }
 
-export const SHARED_RUNTIME = ["react", "react-dom", "react-router"]
-
-export function importedPackageName(id: string): string | undefined {
+function importedPackageName(id: string): string | undefined {
   if (/^(?:[./#\0]|[\w-]+:)/u.test(id)) return undefined
   return id
     .split("/")
@@ -131,8 +129,6 @@ export class ProjectPackages {
       if (index !== -1) candidates.push(path.join(owner.root.slice(0, index), "node_modules", name))
       candidates.push(local)
     }
-    // Shared runtimes must match Vite's dedupe setting and the prerender host.
-    if (SHARED_RUNTIME.includes(name)) candidates.unshift(local)
     return candidates.find((candidate) => existsSync(path.join(candidate, "package.json")))
   }
 }

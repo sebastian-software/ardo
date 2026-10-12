@@ -24,7 +24,6 @@ import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { createProjectBoundaryPlugin } from "./project-boundary-plugin"
 import { readProjectMeta } from "./project-meta"
-import { SHARED_RUNTIME } from "./project-packages"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
 import { resolveVersionedMainBase } from "./versioning"
@@ -209,11 +208,11 @@ function createMainConfig(
   const config: UserConfig = {
     define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    // Process the full docs dependency graph while sharing the docs package's
-    // React and router runtimes with the prerender host.
-    resolve: { dedupe: SHARED_RUNTIME },
+    // Bundle components and their server renderer in the same dependency graph.
     server: { fs: { strict: true, allow: [root] } },
-    ssr: { noExternal: true, external: SHARED_RUNTIME },
+    ssr: { noExternal: true },
+    // Transform CommonJS dependencies before the development SSR module runner loads them.
+    environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
   }
 
   const baseResult = resolveVersionedMainBase({
