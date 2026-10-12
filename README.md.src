@@ -59,7 +59,7 @@ pnpm dev
 Open `http://localhost:5173`. Add an `.mdx` file to `app/routes/`, and Ardo adds it to the
 generated sidebar.
 
-Use this convenience scaffold only when its default shape fits. For an existing workspace, TypeDoc
+Use this convenience scaffold only when its default shape fits. For an existing workspace, API documentation
 setup, theming, and deployment, use the
 [Getting Started guide](https://ardo-docs.dev/v4/guide/getting-started).
 
@@ -68,8 +68,8 @@ setup, theming, and deployment, use the
 Runnable examples live in this repository:
 
 - [Basic docs site](./examples/basic) - minimal React Router + Ardo project.
-- [Library docs](./examples/library) - TypeDoc for a single package.
-- [Monorepo docs](./examples/monorepo) - TypeDoc across multiple workspace packages.
+- [Library docs](./examples/library) - Native API documentation for a single package.
+- [Monorepo docs](./examples/monorepo) - Native API documentation across workspace packages.
 - [Content sources](./examples/content-sources) - external Markdown materialized as routes and static React data.
 
 ## Packages

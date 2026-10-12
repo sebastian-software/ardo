@@ -197,8 +197,89 @@ describe("native API build and development plugin", () => {
     expect(ws.send.mock.calls.filter(([message]) => message.type === "full-reload")).toHaveLength(1)
   })
 
-  it("rejects simultaneous source API and TypeDoc backends", () => {
-    expect(() => ardoPlugin({ api: true, typedoc: true })).toThrow("Configure api or typedoc")
+  it("rejects the removed TypeDoc option instead of silently omitting API documentation", () => {
+    for (const typedoc of [true, false, { entryPoints: ["./src/index.ts"] }]) {
+      // @ts-expect-error TypeDoc configuration was removed in the major migration.
+      expect(() => ardoPlugin({ typedoc })).toThrow("The typedoc option was removed")
+    }
+  })
+
+  it("generates separate native projects before scanning their combined routes", async () => {
+    const selected = ardoPlugin({
+      githubPages: false,
+      api: [
+        { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.json", out: "api/alpha" },
+        { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.json", out: "api/beta" },
+      ],
+    })
+    const routesIndex = selected.findIndex((plugin) => plugin.name === "ardo:routes")
+    const sources = selected.filter((plugin) => plugin.name === "ardo:api")
+    expect(sources).toHaveLength(2)
+    for (const source of sources) {
+      expect(selected.indexOf(source)).toBeLessThan(routesIndex)
+      await configure(source, "build")
+    }
+    await configure(selected[routesIndex], "build")
+    const routes = await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")
+    expect(routes).toContain("api/alpha/functions/read")
+    expect(routes).toContain("api/beta/functions/read")
+  })
+
+  it.each([
+    ["api", "api"],
+    ["api", "api/alpha"],
+    ["api/alpha", "api/alpha/../alpha"],
+    ["api/alpha", "API/ALPHA"],
+  ])(
+    "rejects overlapping outputs %s and %s before compiler startup or writes",
+    async (first, second) => {
+      const extract = vi.spyOn(NativeApiProject.prototype, "extract")
+      const selected = ardoPlugin({
+        api: [first, second].map((out) => ({
+          entryPoints: ["./src/index.ts"],
+          tsconfig: "./tsconfig.json",
+          out,
+        })),
+      })
+      const source = selected.find((plugin) => plugin.name === "ardo:api")!
+      await expect(configure(source, "build")).rejects.toThrow("non-overlapping api.out")
+      expect(extract).not.toHaveBeenCalled()
+      await expect(fs.access(path.join(temporary, "app/routes/api"))).rejects.toMatchObject({
+        code: "ENOENT",
+      })
+    }
+  )
+
+  it("rejects an empty project list", () => {
+    expect(() => ardoPlugin({ api: [] })).toThrow("at least one project")
+  })
+
+  it("closes earlier development sessions if a later project fails during initialization", async () => {
+    await fs.writeFile(
+      path.join(temporary, "src/broken.ts"),
+      'export const value: number = "wrong";'
+    )
+    await fs.writeFile(
+      path.join(temporary, "valid.json"),
+      JSON.stringify({ extends: "./tsconfig.json", files: ["src/index.ts"], include: [] })
+    )
+    const extraction = vi.spyOn(NativeApiProject.prototype, "extract")
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    const sources = ardoPlugin({
+      api: [
+        { entryPoints: ["./src/index.ts"], tsconfig: "./valid.json", out: "api/valid" },
+        { entryPoints: ["./src/broken.ts"], tsconfig: "./tsconfig.json", out: "api/invalid" },
+      ],
+    }).filter((plugin) => plugin.name === "ardo:api")
+    await configure(sources[0], "serve")
+    await expect(configure(sources[1], "serve")).rejects.toThrow("not assignable")
+    for (const project of extraction.mock.contexts) expect(close.mock.contexts).toContain(project)
+    await fs.writeFile(path.join(temporary, "src/broken.ts"), 'export const value = "fixed";')
+    await configure(sources[0], "serve")
+    await configure(sources[1], "serve")
+    expect(
+      await fs.readFile(path.join(temporary, "app/routes/api/invalid/variables/value.md"), "utf8")
+    ).toContain("fixed")
   })
 })
 

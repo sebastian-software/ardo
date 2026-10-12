@@ -233,7 +233,12 @@ function addDeclaration(
     const name = declaration.id?.type === "Identifier" ? declaration.id.name : options.fallback
     if (name == null) continue
     const records = declarations.get(name) ?? []
-    records.push({ node: declaration, comment, module })
+    records.push({
+      node: declaration,
+      comment,
+      module,
+      variableKind: node.type === "VariableDeclaration" ? node.kind : undefined,
+    })
     declarations.set(name, records)
     names.push(name)
   }

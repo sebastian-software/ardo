@@ -59,22 +59,23 @@ function readEngineOverrides(): Record<string, string> | undefined {
 
 describe("scaffold integration build", () => {
   let tmpDir: string
+  let generalDir: string | undefined
   let buildSucceeded = false
 
   beforeAll(() => {
     // 1. Create temp directory
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-integration-"))
 
-    // 2. Scaffold project with the real library-docs TypeDoc path enabled.
+    // 2. Scaffold project with the real library-docs native API path enabled.
     createProjectStructure(tmpDir, "minimal", {
       siteTitle: "Integration Test Docs",
       projectName: "test-project",
-      typedoc: true,
+      api: true,
       githubPages: false,
       description: "Built with Ardo",
     })
 
-    // 3. Add pseudo API source for TypeDoc testing (src/index.ts is the default entry point)
+    // 3. Add pseudo API source for native API testing (src/index.ts is the default entry point)
     const srcDir = path.join(tmpDir, "src")
     fs.mkdirSync(srcDir, { recursive: true })
 
@@ -148,6 +149,7 @@ export function greet(name: string, config?: GreeterConfig): string {
     if (tmpDir) {
       fs.rmSync(tmpDir, { recursive: true, force: true })
     }
+    if (generalDir != null) fs.rmSync(generalDir, { recursive: true, force: true })
   })
 
   it("completes build successfully", () => {
@@ -173,14 +175,14 @@ export function greet(name: string, config?: GreeterConfig): string {
     expect(content).toContain("<!DOCTYPE html>")
   })
 
-  it("generates TypeDoc API markdown in app/routes directory", () => {
+  it("generates native API markdown in app/routes directory", () => {
     const apiContentDir = path.join(tmpDir, "app", "routes", "api-reference")
     expect(fs.existsSync(apiContentDir)).toBe(true)
     const mdFiles = collectFiles(apiContentDir, ".md")
     expect(mdFiles.length).toBeGreaterThan(0)
   })
 
-  it("generates TypeDoc API HTML pages in build", () => {
+  it("generates native API HTML pages in build", () => {
     const apiDistDir = path.join(tmpDir, "build", "client", "api-reference")
     expect(fs.existsSync(apiDistDir)).toBe(true)
     const htmlFiles = collectFiles(apiDistDir, ".html")
@@ -197,4 +199,47 @@ export function greet(name: string, config?: GreeterConfig): string {
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
   })
+
+  it("installs and builds the native API consumer without the removed TypeDoc dependency or exports", () => {
+    const packageRoot = path.join(tmpDir, "node_modules/ardo")
+    const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"))
+    expect(pkg.dependencies.typedoc).toBeUndefined()
+    expect(pkg.exports["./typedoc"]).toBeUndefined()
+    expect(pkg.exports["./typedoc/components"]).toBeUndefined()
+    expect(fs.existsSync(path.join(packageRoot, "dist/typedoc"))).toBe(false)
+    expect(fs.existsSync(path.join(tmpDir, "node_modules/typedoc"))).toBe(false)
+    const greeting = fs.readFileSync(
+      path.join(tmpDir, "build/client/api-reference/functions/greet/index.html"),
+      "utf8"
+    )
+    expect(greeting).toContain("Creates a greeting message.")
+    expect(greeting).toContain("Optional configuration")
+    expect(greeting).toContain("GreeterConfig")
+  })
+
+  it("builds a general documentation consumer without the optional compiler or parser", () => {
+    const general = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-general-integration-"))
+    generalDir = general
+    createProjectStructure(general, "minimal", {
+      siteTitle: "General Docs",
+      projectName: "general-docs",
+      api: false,
+      githubPages: false,
+      description: "Guides",
+    })
+    const file = path.join(general, "package.json")
+    const pkg = JSON.parse(fs.readFileSync(file, "utf8"))
+    pkg.dependencies.ardo = JSON.parse(
+      fs.readFileSync(path.join(tmpDir, "package.json"), "utf8")
+    ).dependencies.ardo
+    fs.writeFileSync(file, JSON.stringify(pkg, null, 2))
+    execSync("pnpm install --no-lockfile --prefer-offline && pnpm exec react-router build", {
+      cwd: general,
+      stdio: "pipe",
+      timeout: 240_000,
+    })
+    expect(fs.existsSync(path.join(general, "node_modules/@typescript/native"))).toBe(false)
+    expect(fs.existsSync(path.join(general, "node_modules/oxc-parser"))).toBe(false)
+    expect(fs.existsSync(path.join(general, "build/client/index.html"))).toBe(true)
+  }, 300_000)
 })

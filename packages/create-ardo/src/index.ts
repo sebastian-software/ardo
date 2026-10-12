@@ -158,7 +158,7 @@ function getNewProjectPrompts(targetDir: string, root: string, options: CreateAr
       name: "docType",
       message: reset("What are you documenting?"),
       choices: [
-        { title: `Code library ${dim("- includes TypeDoc API generation")}`, value: "library" },
+        { title: `Code library ${dim("- includes native API generation")}`, value: "library" },
         { title: `General documentation ${dim("- guides, manuals, etc.")}`, value: "general" },
       ],
     },
@@ -212,7 +212,7 @@ function createScaffoldOptions(input: NewProjectFlowInput, response: NewProjectR
   return {
     siteTitle: response.siteTitle,
     projectName: toPackageName(input.targetDir, input.root),
-    typedoc: response.docType === "library",
+    api: response.docType === "library",
     githubPages: response.githubPages,
     description: detectProjectDescription(input.root) ?? "Built with Ardo",
     overwriteExisting: response.overwrite !== "ignore",

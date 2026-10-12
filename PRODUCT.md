@@ -15,7 +15,7 @@ Two audiences, one product:
 
 ## Product Purpose
 
-Ardo is a static documentation framework for React teams: React 19, React Router, Vite, MDX, TypeDoc, Vanilla Extract. It exists because there was no modern, lightweight, React-native docs solution — the founder looked for one and it simply wasn't there. Success: a React team scaffolds a site, the default theme looks like someone cared, and they ship without touching a single style — yet can re-theme everything from three hue numbers.
+Ardo is a static documentation framework for React teams: React 19, React Router, Vite, MDX, native API documentation, Vanilla Extract. I started it because I could not find a modern, lightweight documentation solution for React teams. Success: a React team scaffolds a site, the default theme looks like someone cared, and they ship without touching a single style — yet can re-theme everything from three hue numbers.
 
 ## Brand Personality
 

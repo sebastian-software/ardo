@@ -108,8 +108,8 @@ export default function HomePage() {
             </p>
             <p>
               Ardo is the tool I wanted that week: <strong>React Router and Vite</strong> doing what
-              they already do best, MDX for writing, TypeDoc for API pages, and static files at the
-              end. No second component model, no cloud platform, no sales call.
+              they already do best, MDX for writing, generated API reference pages, and static files
+              at the end. No second component model, no cloud platform, no sales call.
             </p>
             <p>
               It&rsquo;s open source and self-hosted. If your team builds in React, your docs can be
@@ -134,7 +134,7 @@ export default function HomePage() {
           static HTML and assets, ready for any host that serves files.
         </ArdoFeatureCard>
         <ArdoFeatureCard
-          title="TypeDoc, zero config"
+          title="API docs from source"
           icon={<BookOpen size={28} strokeWidth={1.5} />}
         >
           Point Ardo at your TypeScript source and generate linked API reference pages during the
@@ -260,8 +260,8 @@ export default function HomePage() {
                 Ardo <span className={styles.compareTag}>React + Vite</span>
               </div>
               <p className={styles.compareNote}>
-                Your React components, TypeDoc API pages, and static output. No platform, no second
-                UI model.
+                Your React components, generated API pages, and static output. No platform, no
+                second UI model.
               </p>
             </li>
             <li className={styles.compareRow}>

@@ -45,7 +45,7 @@ ardo/
 │   │   │   ├── runtime/     # React hooks and providers
 │   │   │   ├── ui/          # React UI components and styles
 │   │   │   │   └── theme/   # Theme token helpers
-│   │   │   ├── typedoc/     # TypeDoc integration
+│   │   │   ├── api/     # native API documentation integration
 │   │   │   └── vite/        # Vite plugin
 │   │   └── package.json
 │   └── create-ardo/   # Scaffolding CLI and project template
@@ -62,7 +62,7 @@ ardo/
 ### Architecture
 
 The architecture decision records in [`docs/adr/`](./docs/adr/) explain the major framework
-decisions: React Router migration, static prerendering, TypeDoc integration, Vanilla Extract,
+decisions: React Router migration, static prerendering, native API documentation integration, Vanilla Extract,
 context-aware UI, public API naming, Storybook, Tailwind in the scaffold, and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
 

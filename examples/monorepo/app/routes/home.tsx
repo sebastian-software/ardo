@@ -9,7 +9,7 @@ export default function HomePage() {
       <ArdoHero
         name="Ardo Monorepo Example"
         text="Multi-Package Documentation"
-        tagline="Demonstrates Ardo with multiple TypeDoc entry points from a monorepo structure."
+        tagline="Demonstrates Ardo with multiple native API projects from a monorepo structure."
         actions={[
           { text: "Get Started", link: "/guide/getting-started", theme: "brand" },
           { text: "Alpha API", link: "/api-reference/alpha", theme: "alt" },

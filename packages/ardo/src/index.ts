@@ -21,7 +21,6 @@ export type {
   SidebarItem,
   SocialLink,
   TOCItem,
-  TypeDocConfig,
 } from "./config"
 
 // Runtime (React hooks and context - client-safe)
@@ -95,9 +94,9 @@ export type {
 
 // ===========================================================================
 // Server-only exports are NOT re-exported from the main entry.
-// They pull in heavy Node.js dependencies (Vite, Rolldown, TypeDoc, etc.)
+// They pull in heavy Node.js dependencies (Vite, Rolldown, native compiler, etc.)
 // that break client-side bundling. Use the dedicated subpath exports instead:
 //
 //   import { ardo } from "ardo/vite"         — Vite plugin & build utilities
-//   import { generateApiDocs } from "ardo/typedoc"  — TypeDoc integration
+//   import { generateNativeDocs } from "ardo/api"  — native API documentation
 // ===========================================================================

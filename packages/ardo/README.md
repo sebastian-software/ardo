@@ -8,7 +8,7 @@ Ardo is a React-first static documentation framework built on React 19, React Ro
 
 - **Use real React components in docs** - import your app components, design system, providers, and examples directly in MDX.
 - **Ship static docs anywhere** - Ardo prerenders HTML and assets that work on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any file server.
-- **Generate API docs from TypeScript** - TypeDoc integration creates linked API reference pages during build.
+- **Generate API docs from TypeScript** - Native TypeScript and OXC create linked API reference pages during builds and development.
 - **Start with a complete theme** - responsive layout, sidebar, TOC, search, dark mode, code highlighting, callouts, tabs, Tailwind v4, and typed design tokens.
 - **Keep control** - configuration is code, UI is React, output is static, and the package is open source.
 
@@ -52,7 +52,7 @@ export default defineConfig({
 })
 ```
 
-The `ardo()` plugin handles build-time behavior: route generation, MDX processing, TypeDoc generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and JSX components.
+The `ardo()` plugin handles build-time behavior: route generation, MDX processing, native API generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and JSX components.
 
 Use `brand` for the common theme setup: primary color, accent color, neutral chrome tone, and the
 default header logo. Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and
@@ -116,13 +116,14 @@ function PageTitle() {
 
 ## Exports
 
-| Export               | Description                        |
-| -------------------- | ---------------------------------- |
-| `ardo/vite`          | Vite plugin                        |
-| `ardo/runtime`       | React hooks and providers          |
-| `ardo/ui`            | Default UI components              |
-| `ardo/theme`         | Vanilla Extract tokens and theming |
-| `ardo/ui/styles.css` | Default theme styles               |
+| Export               | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `ardo/api`           | Native API projects and declaration documentation |
+| `ardo/vite`          | Vite plugin                                       |
+| `ardo/runtime`       | React hooks and providers                         |
+| `ardo/ui`            | Default UI components                             |
+| `ardo/theme`         | Vanilla Extract tokens and theming                |
+| `ardo/ui/styles.css` | Default theme styles                              |
 
 ## Documentation
 

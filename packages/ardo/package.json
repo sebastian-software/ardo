@@ -32,17 +32,9 @@
       "types": "./dist/icons/index.d.ts",
       "import": "./dist/icons/index.js"
     },
-    "./typedoc": {
-      "types": "./dist/typedoc/index.d.ts",
-      "import": "./dist/typedoc/index.js"
-    },
     "./api": {
       "types": "./dist/api/index.d.ts",
       "import": "./dist/api/index.js"
-    },
-    "./typedoc/components": {
-      "types": "./dist/typedoc/components/index.d.ts",
-      "import": "./dist/typedoc/components/index.js"
     },
     "./mdx-provider": {
       "types": "./dist/mdx/provider.d.ts",
@@ -86,7 +78,6 @@
     "ferromark": "^3.4.0",
     "minisearch": "^7.2.0",
     "read-package-up": "^12.0.0",
-    "typedoc": "^0.28.20",
     "yaml": "^2.9.0"
   },
   "peerDependencies": {
@@ -129,6 +120,7 @@
     "react-dom": "^19.2.8",
     "react-router": "^8.3.0",
     "tsdown": "^0.22.14",
+    "typedoc": "^0.28.20",
     "typescript": "^6.0.3",
     "vite": "^8.2.1",
     "vitest": "^4.1.10"
@@ -139,7 +131,6 @@
     "react",
     "react-router",
     "mdx",
-    "typedoc",
     "markdown",
     "docs"
   ],

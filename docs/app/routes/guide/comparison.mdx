@@ -18,7 +18,7 @@ That makes the comparison more specific than "which docs tool is best?" Docusaur
 | UI model                 | React 19                       | React               | Astro                    | Vue               | Next.js      | React                      | Hosted platform    |
 | Build model              | Vite 8 + React Router          | Webpack             | Astro/Vite               | Vite              | Next.js      | Depends on React framework | SaaS/Git workflow  |
 | React component reuse    | Native                         | Native              | Via islands              | No                | Native       | Native                     | Platform-dependent |
-| TypeScript API docs      | TypeDoc built in               | Plugin              | Plugin                   | External          | TSDoc        | Type tables/OpenAPI        | API tooling        |
+| TypeScript API docs      | Native TypeScript + OXC        | Plugin              | Plugin                   | External          | TSDoc        | Type tables/OpenAPI        | API tooling        |
 | Ownership                | Open source, self-hosted files | Open source         | Open source              | Open source       | Open source  | Open source                | Hosted SaaS        |
 | Measured Ardo first page | ~155 KB gzip including assets  | Heavier React stack | Lighter non-React stack  | Lighter Vue stack | Next runtime | Depends on setup           | Platform hosted    |
 
@@ -77,7 +77,7 @@ Choose Nextra if your docs should be a first-class Next.js app.
 
 **Where it fits:** design-system-heavy teams, docs teams that want headless/composable primitives, and projects that need advanced content blocks such as OpenAPI, Storybook-style component docs, or custom sources.
 
-**Where Ardo differs:** Ardo is intentionally narrower. It gives you a complete static docs product around React Router, Vite, MDX, and TypeDoc, with fewer architectural choices to make.
+**Where Ardo differs:** Ardo is intentionally narrower. It gives you a complete static docs product around React Router, Vite, MDX, and native API documentation, with fewer architectural choices to make.
 
 Choose Fumadocs if you want a docs framework toolkit. Choose Ardo if you want a ready-to-ship static React docs site.
 

@@ -3,26 +3,26 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { prepareGeneratedDocsDirectory, resolveGeneratedDocsDirectory } from "./generator"
+import { prepareGeneratedDocsDirectory, resolveGeneratedDocsDirectory } from "./generated-docs"
 
 let tempDir: string
 
 beforeEach(async () => {
-  tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-typedoc-"))
+  tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-generated-"))
 })
 
 afterEach(async () => {
   await fs.rm(tempDir, { force: true, recursive: true })
 })
 
-describe("typedoc generator filesystem guards", () => {
+describe("generated documentation filesystem guards", () => {
   it("resolves generated docs inside the routes directory", () => {
     expect(resolveGeneratedDocsDirectory(tempDir, "api")).toBe(path.join(tempDir, "api"))
     expect(() => resolveGeneratedDocsDirectory(tempDir, ".")).toThrow(
-      "typedoc.out must resolve inside the routes directory"
+      "api.out must resolve inside the routes directory"
     )
     expect(() => resolveGeneratedDocsDirectory(tempDir, "../api")).toThrow(
-      "typedoc.out must resolve inside the routes directory"
+      "api.out must resolve inside the routes directory"
     )
   })
 

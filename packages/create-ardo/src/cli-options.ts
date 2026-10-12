@@ -36,13 +36,13 @@ const flagHandlers = new Map<string, (options: CreateArdoArgs) => void>([
     },
   ],
   [
-    "--no-typedoc",
+    "--no-api",
     (options) => {
       options.docType = "general"
     },
   ],
   [
-    "--typedoc",
+    "--api",
     (options) => {
       options.docType = "library"
     },

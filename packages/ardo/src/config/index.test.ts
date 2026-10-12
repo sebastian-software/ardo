@@ -31,6 +31,10 @@ describe("defineConfig", () => {
 })
 
 describe("resolveConfig", () => {
+  it("rejects removed TypeDoc configuration supplied through a config file", () => {
+    const legacy = { title: "Test", typedoc: true }
+    expect(() => resolveConfig(legacy, "/project")).toThrow("The typedoc option was removed")
+  })
   it("resolves config with defaults", () => {
     const config = {
       title: "Test",

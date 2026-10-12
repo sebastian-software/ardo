@@ -78,7 +78,11 @@ class DeclarationExtractor {
     return {
       name,
       kind,
-      signature: declarationSignature(record.node, context, { name, signatures }),
+      signature: declarationSignature(record.node, context, {
+        name,
+        signatures,
+        variableKind: record.variableKind,
+      }),
       comment,
       signatures,
       properties: properties.items,
@@ -146,7 +150,11 @@ function declarationKind(
 function declarationSignature(
   node: DeclarationRecord["node"],
   context: TypeContext,
-  metadata: { name: string; signatures: ApiSignature[] }
+  metadata: {
+    name: string
+    signatures: ApiSignature[]
+    variableKind?: NonNullable<DeclarationRecord["variableKind"]>
+  }
 ): string {
   if (node.type === "TSTypeAliasDeclaration") return formatType(node, context)
   if (node.type === "TSInterfaceDeclaration" || node.type === "ClassDeclaration")
@@ -155,8 +163,26 @@ function declarationSignature(
       .trim()
   if (metadata.signatures.length > 0) return metadata.signatures.map((item) => item.text).join("\n")
   if (node.type === "VariableDeclarator") {
-    const annotation = annotationOf(node.id)
-    return `const ${metadata.name}: ${annotation == null ? "/* type not declared */" : formatType(annotation, context)}`
+    return `${metadata.variableKind ?? "const"} ${metadata.name}: ${variableType(node, context)}`
   }
   return formatType(node, context).replace(/^declare\s+/u, "")
+}
+
+function variableType(
+  node: Extract<DeclarationRecord["node"], { type: "VariableDeclarator" }>,
+  context: TypeContext
+): string {
+  const annotation = annotationOf(node.id)
+  if (annotation != null) return formatType(annotation, context)
+  const initializer = node.init
+  if (
+    initializer != null &&
+    ((initializer.type === "Literal" && !("regex" in initializer)) ||
+      (initializer.type === "UnaryExpression" &&
+        initializer.operator === "-" &&
+        initializer.argument.type === "Literal" &&
+        (typeof initializer.argument.value === "number" || "bigint" in initializer.argument)))
+  )
+    return formatType(initializer, context)
+  return "/* type not declared */"
 }
