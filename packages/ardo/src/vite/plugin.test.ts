@@ -27,16 +27,17 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
 }
 
 describe("ardoPlugin", () => {
-  it("bundles React-based UI dependencies during SSR and preserves consumer options", () => {
+  it("isolates the docs dependency graph and preserves consumer options", () => {
     const plugin = getMainPlugin({
       githubPages: false,
       title: "Docs",
       vite: { ssr: { noExternal: ["consumer-ui"], target: "webworker" } },
     })
     const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
-    expect(config.ssr?.noExternal).toStrictEqual(
-      expect.arrayContaining(["ardo", "lucide-react", "@base-ui/react", "consumer-ui"])
-    )
+    expect(config.ssr?.noExternal).toBe(true)
+    expect(config.ssr?.external).toStrictEqual(["react", "react-dom", "react-router"])
+    expect(config.resolve?.dedupe).toStrictEqual(["react", "react-dom", "react-router"])
+    expect(config.server?.fs).toMatchObject({ strict: true, allow: ["/project"] })
     expect(config.ssr?.target).toBe("webworker")
   })
 

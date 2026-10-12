@@ -43,6 +43,32 @@ export default defineConfig({
 })
 ```
 
+### Documentation package boundary
+
+Ardo treats the Vite project root as an independent documentation package. Keep its own
+`package.json` and install its declared dependencies in that project's `node_modules`.
+An installation in an ancestor or monorepo root does not satisfy a missing local installation.
+
+Direct application imports must be declared in the docs package, even when another dependency
+already uses that package. Dependencies may use their own declared transitive dependencies.
+Normal pnpm links to packages in its virtual store are supported; the store location does not
+change package ownership.
+
+Keep custom components inside the docs project, for example in `app/components/`. Relative imports,
+Vite aliases, and symlinks to component source in sibling workspace packages fail in development
+and builds. Workspace package links to component source also fail. Install a published package
+when you need a packaged component library. Ardo's own workspace link is supported for framework
+development, using its built `dist` files.
+
+Ardo configures SSR bundling and shares the docs project's React, ReactDOM, and React Router
+installations with the prerender host automatically. There is no per-component `ssr.noExternal`
+list to maintain. A missing dependency produces an `[ardo]` error rather than falling back to a
+parent installation.
+
+This boundary applies to the application module graph. Explicit native API and content-source
+inputs can still be read to generate documentation; they do not make outside component source
+available to application imports.
+
 ### TypeScript Errors in Routes
 
 If you see type errors in generated route files, try:

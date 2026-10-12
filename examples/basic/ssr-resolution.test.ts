@@ -23,7 +23,7 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
         }
       )
     }
-    for (const name of ["react", "react-dom"]) {
+    for (const name of ["react", "react-dom", "react-router"]) {
       cpSync(
         realpathSync(path.join(packageModules, name)),
         path.join(consumer, "node_modules", name),
@@ -32,13 +32,44 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
         }
       )
     }
-    writeFileSync(path.join(consumer, "package.json"), JSON.stringify({ type: "module" }))
+    writeFileSync(
+      path.join(consumer, "package.json"),
+      JSON.stringify({
+        type: "module",
+        dependencies: {
+          react: "19",
+          "react-dom": "19",
+          "react-router": "8",
+          "lucide-react": "1",
+          "docs-widget": "1",
+        },
+      })
+    )
+    const widget = path.join(consumer, "node_modules/docs-widget")
+    mkdirSync(widget)
+    writeFileSync(
+      path.join(widget, "package.json"),
+      JSON.stringify({
+        name: "docs-widget",
+        type: "module",
+        exports: "./index.js",
+        peerDependencies: { react: "19" },
+      })
+    )
+    writeFileSync(
+      path.join(widget, "index.js"),
+      'import { createContext, createElement, useContext } from "react";\n' +
+        'const Context = createContext("owned");\n' +
+        'export function Widget() { return createElement("span", { className: "docs-widget" }, useContext(Context)); }\n'
+    )
     writeFileSync(
       path.join(consumer, "entry.mjs"),
       'import { createElement } from "react";\n' +
         'import { renderToStaticMarkup } from "react-dom/server";\n' +
         'import { Monitor } from "lucide-react";\n' +
-        "export const html = renderToStaticMarkup(createElement(Monitor));\n"
+        'import { Widget } from "docs-widget";\n' +
+        'export const Component = () => createElement("section", null, createElement(Monitor), createElement(Widget));\n' +
+        "export const html = renderToStaticMarkup(createElement(Component));\n"
     )
     const plugin = ardo({ title: "SSR fixture", githubPages: false }).find(
       (entry) => entry.name === "ardo"
@@ -63,16 +94,38 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
       import(pathToFileURL(path.join(consumer, "before/entry.js")).href)
     ).rejects.toThrow(/useContext/)
 
-    await build({
+    const boundary = ardo({ routes: false, icons: false }).find(
+      (entry) => entry.name === "ardo:project-boundary"
+    )
+    if (boundary == null) throw new Error("Ardo package boundary is unavailable")
+    const isolated: UserConfig = {
       ...config,
       configFile: false,
       root: consumer,
+      plugins: [boundary],
       logLevel: "silent",
       build: { ssr: path.join(consumer, "entry.mjs"), outDir: "build", minify: false },
-    })
+    }
+    await expect(build(isolated)).rejects.toThrow(/not installed.*node_modules/u)
+    cpSync(
+      realpathSync(path.join(packageModules, "lucide-react")),
+      path.join(consumer, "node_modules/lucide-react"),
+      { recursive: true }
+    )
+    await build(isolated)
     const output = await import(pathToFileURL(path.join(consumer, "build/entry.js")).href)
     expect(output.html).toContain("<svg")
     expect(output.html).toContain("lucide-monitor")
+    expect(output.html).toContain("docs-widget")
+    const React = await import(
+      pathToFileURL(path.join(consumer, "node_modules/react/index.js")).href
+    )
+    const renderer = await import(
+      pathToFileURL(path.join(consumer, "node_modules/react-dom/server.node.js")).href
+    )
+    expect(renderer.renderToStaticMarkup(React.createElement(output.Component))).toContain(
+      "docs-widget"
+    )
   } finally {
     rmSync(parent, { recursive: true, force: true })
   }

@@ -22,7 +22,9 @@ import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
+import { createProjectBoundaryPlugin } from "./project-boundary-plugin"
 import { readProjectMeta } from "./project-meta"
+import { SHARED_RUNTIME } from "./project-packages"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
 import { resolveVersionedMainBase } from "./versioning"
@@ -78,7 +80,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
     routesDirOption,
   }
-  const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  const plugins: Plugin[] = [
+    createMainPlugin(state, mainPluginOptions),
+    createProjectBoundaryPlugin(),
+  ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
   addContentSourcePlugin(
@@ -204,9 +209,11 @@ function createMainConfig(
   const config: UserConfig = {
     define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    // Bundle React-based UI dependencies in the consumer's SSR graph. Node's
-    // external resolution can otherwise load React from an ancestor checkout.
-    ssr: { noExternal: ["ardo", "lucide-react", "@base-ui/react"] },
+    // Process the full docs dependency graph while sharing the docs package's
+    // React and router runtimes with the prerender host.
+    resolve: { dedupe: SHARED_RUNTIME },
+    server: { fs: { strict: true, allow: [root] } },
+    ssr: { noExternal: true, external: SHARED_RUNTIME },
   }
 
   const baseResult = resolveVersionedMainBase({
