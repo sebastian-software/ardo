@@ -57,4 +57,13 @@ describe("examples/basic build", () => {
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
   })
+
+  it("prerenders a plain bare route with only its own chrome and skip link", () => {
+    const html = fs.readFileSync(path.join(__dirname, "build/client/bare/index.html"), "utf8")
+    expect(html).toContain('<main id="main-content">')
+    expect(html).toContain('href="#bare-content"')
+    expect(html).not.toContain('href="#main-content"')
+    expect(html).not.toContain('class="ardo-header ')
+    expect(html).not.toContain('class="ardo-footer ')
+  })
 })
