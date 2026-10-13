@@ -1,5 +1,4 @@
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { ardo, defineConfig } from "ardo/vite"
 
 export default defineConfig({
   plugins: [

@@ -1,5 +1,5 @@
 import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
-import type { MetaFunction } from "react-router"
+import type { MetaFunction } from "ardo/router"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Library Example" }]
 

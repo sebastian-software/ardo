@@ -1,3 +1,4 @@
+import type { ReactNode } from "ardo/react"
 import {
   ArdoFooter,
   ArdoGeneratedSidebar,
@@ -10,12 +11,12 @@ import {
   ArdoSidebarSection,
 } from "ardo/ui"
 import config from "virtual:ardo/config"
-import type { MetaFunction } from "react-router"
+import type { MetaFunction } from "ardo/router"
 import "ardo/ui/styles.css"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Library Example" }]
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
 

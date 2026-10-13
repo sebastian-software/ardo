@@ -18,7 +18,7 @@ When upgrading from another major, read that major's documentation and the targe
 
 ## Inspect the Repository
 
-Check the package manager, workspace layout, Node.js version, dependency versions, Vite configuration, React Router configuration, application root, routes, styles, and deployment workflow. Ardo needs Node.js 22.13.0 or newer and a supported native target with optional dependencies enabled.
+Check the package manager, workspace layout, Node.js version, dependency versions, `ardo.config.*`, Vite configuration, React Router configuration, application root, routes, styles, and deployment workflow. Ardo needs Node.js 22.22.0 or newer and a supported native target with optional dependencies enabled.
 
 Choose the closest [reference project](/guide/reference-projects):
 
@@ -35,13 +35,13 @@ Read the reference README, manifest, configuration, app entry files, and build t
 
 State the chosen reference, files to add or change, validation commands, and unresolved choices before editing. Follow the repository's instructions and the requested scope. Ask for direction when a necessary change affects existing application behavior or deployment ownership.
 
-For a **new site**, adapt the basic reference into the requested directory. Replace `workspace:*` with an explicit released Ardo 6 dependency, retain compatible dependency versions from the selected tag, and use the chosen package manager's lockfile. Workspace references use `workspace:*` only inside Ardo's own repository. With pnpm, allow esbuild's build script as shown in [manual installation](/guide/getting-started#manual-installation); do not copy Ardo's entire workspace policy. Configure the site's title and authored routes, then adapt the deployment configuration to the requested host.
+For a **new site**, adapt the basic reference into the requested directory. Replace `workspace:*` with an explicit released Ardo 6 dependency, let Ardo manage its React, router, and Vite versions, and use the chosen package manager's lockfile. Workspace references use `workspace:*` only inside Ardo's own repository. With pnpm, allow esbuild's build script as shown in [manual installation](/guide/getting-started#manual-installation); do not copy Ardo's entire workspace policy. Set a custom site title in optional `ardo.config.ts`, add the authored routes, then adapt the deployment configuration to the requested host.
 
-For an **existing project**, introduce Ardo around documentation routes. Merge the necessary dependencies and plugin configuration. Preserve customized root/layout code, providers, component systems, styles, routes, workspace policy, and deployment choices. See [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
+For an **existing project**, introduce Ardo around documentation routes. Merge the necessary dependencies and move Ardo's options into optional `ardo.config.ts` with `defineArdoConfig` from `ardo/config`. Preserve custom Vite plugins and settings in `vite.config.ts`; the Ardo CLI adds its own framework integration without an `ardo()` plugin call. Preserve customized root/layout code, providers, component systems, styles, routes, workspace policy, and deployment choices. See [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
 
 For an **upgrade**, update the dependency and documented integration changes. Compare the existing setup with the matching target reference. Preserve authored content and application-specific behavior; do not replace framework entry files wholesale.
 
-`app/routes.ts`, generated API routes, and materialized collection routes are build output. Do not edit them by hand. Native API documentation is opt-in; add its native compiler alias, `oxc-parser` dependency, and API configuration only when the project needs it. Follow [Native API Documentation](/guide/api-documentation) for the matching dependency versions. Tailwind is optional; retain the repository's styling choice.
+`app/routes.ts`, generated API routes, and materialized collection routes are build output. Do not edit them by hand. Native API documentation is opt-in; add its native compiler alias, `oxc-parser` dependency, and API configuration only when the project needs it. Follow [Native API Documentation](/guide/api-documentation) for the matching dependency versions. Use `ardo dev`, `ardo build`, and `ardo preview` for the managed toolchain. Import React APIs from `ardo/react`, router APIs from `ardo/router`, Vite configuration helpers from `ardo/vite`, and the `ReactRouterConfig` type from `ardo/config`. Set `jsxImportSource` to `ardo` and use `ardo/vite/client` in TypeScript's `types` list. The basic reference only requires Ardo at runtime; TypeScript remains a development tool. The default client entry comes from React Router. The server entry re-exports `default` and `streamTimeout` from `ardo/entry.server`; retain it so React Router does not add `isbot` to the project. Tailwind is optional; retain the repository's styling choice.
 
 ## Validate and Report
 

@@ -18,11 +18,13 @@ export {
 } from "./flatten-plugin"
 export { type ArdoIconOptions } from "./icons"
 
-// Vite Plugin
 export { ardoPlugin as ardo, ardoPlugin, type ArdoPluginOptions } from "./plugin"
 export { ardoPlugin as default } from "./plugin"
 export { detectGitHubBasename } from "./plugin"
-
+export { createArdoProjectViteConfig } from "./project-config"
 export { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 export { generateSearchIndex, type SearchDoc } from "./search-index"
+
+// Vite Plugin
+export { defineConfig, type UserConfig } from "vite"

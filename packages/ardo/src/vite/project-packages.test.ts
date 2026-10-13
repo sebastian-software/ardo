@@ -77,10 +77,9 @@ describe("documentation package ownership", () => {
     mkdirSync(path.join(root, "node_modules"))
     symlinkSync(outside, path.join(root, "node_modules/components"), "dir")
     expect(() => {
-      new ProjectPackages(root).checkFile(
-        path.join(root, "node_modules/components/index.js"),
-        path.join(root, "entry.js")
-      )
+      new ProjectPackages(root).checkFile(path.join(root, "node_modules/components/index.js"), {
+        importer: path.join(root, "entry.js"),
+      })
     }).toThrow(/Import outside the documentation package/u)
   })
 
@@ -90,5 +89,121 @@ describe("documentation package ownership", () => {
     expect(() => {
       packages.checkImport("optional", path.join(root, "entry.js"))
     }).toThrow(/not installed/u)
+  })
+
+  it("allows only Ardo-owned runtime packages through the docs boundary", () => {
+    const ardo = writePackage("framework", {
+      name: "ardo",
+      dependencies: { react: "19" },
+    })
+    const managedReact = writePackage("framework/node_modules/react", { name: "react" })
+    writePackage("docs", { dependencies: { react: "20" } })
+    const appReact = writePackage("docs/node_modules/react", { name: "react" })
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+    const importer = path.join(root, "entry.js")
+
+    expect(() => packages.checkImport("react/jsx-runtime", importer)).not.toThrow()
+    expect(() => {
+      packages.checkFile(path.join(managedReact, "index.js"), { importer, managedName: "react" })
+    }).not.toThrow()
+    expect(() => {
+      packages.checkFile(path.join(managedReact, "index.js"), { importer })
+    }).not.toThrow()
+    expect(() => {
+      packages.checkFile(path.join(appReact, "index.js"), { importer, managedName: "react" })
+    }).toThrow(/resolved outside Ardo's own installation/u)
+    expect(() => packages.checkImport("unmanaged-package", importer)).toThrow(
+      /Undeclared dependency "unmanaged-package"/u
+    )
+  })
+
+  it("rejects the docs React package even when a dependency or alias points to it", () => {
+    const ardo = writePackage("framework", {
+      name: "ardo",
+      dependencies: { react: "19" },
+    })
+    writePackage("framework/node_modules/react", { name: "react" })
+    writePackage("docs", { dependencies: { react: "20" } })
+    const appReact = writePackage("docs/node_modules/react", { name: "react" })
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+
+    expect(() => {
+      packages.checkFile(path.join(appReact, "index.js"), {
+        importer: path.join(root, "app/route.js"),
+      })
+    }).toThrow(/Managed runtime package "react" resolved outside Ardo's own installation/u)
+    expect(() => {
+      packages.checkFile(path.join(appReact, "index.js"))
+    }).toThrow(/Managed runtime package "react" resolved outside Ardo's own installation/u)
+  })
+
+  it("rechecks optimizer cache IDs against the source validated at resolution", () => {
+    const ardo = writePackage("framework", {
+      name: "ardo",
+      dependencies: { react: "19" },
+    })
+    const managedReact = writePackage("framework/node_modules/react", { name: "react" })
+    const docsReact = writePackage("docs/node_modules/react", { name: "react" })
+    const optimizedReact = path.join(root, "node_modules/.vite/deps/react.js")
+    mkdirSync(path.dirname(optimizedReact), { recursive: true })
+    writeFileSync(optimizedReact, "export const version = 'optimized'")
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+    const importer = path.join(root, "entry.js")
+
+    expect(() => {
+      packages.checkFile(optimizedReact, {
+        importer,
+        managedName: "react",
+        managedSourcePath: path.join(managedReact, "index.js"),
+      })
+    }).not.toThrow()
+    expect(() => {
+      packages.checkFile(optimizedReact)
+    }).not.toThrow()
+    expect(() => {
+      new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true }).checkFile(
+        optimizedReact,
+        { importer, managedName: "react", managedSourcePath: path.join(docsReact, "index.js") }
+      )
+    }).toThrow(/resolved outside Ardo's own installation/u)
+  })
+
+  it("does not treat an Ardo peer as an owned runtime package", () => {
+    const ardo = writePackage("framework", {
+      name: "ardo",
+      peerDependencies: { react: "19" },
+    })
+    writePackage("framework/node_modules/react", { name: "react" })
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+
+    expect(() => packages.checkImport("react", path.join(root, "entry.js"))).toThrow(
+      /Undeclared dependency "react"/u
+    )
+  })
+
+  it("allows no-importer framework files only for direct Ardo dependencies", () => {
+    const ardo = writePackage("framework", {
+      name: "ardo",
+      // cspell:ignore minisearch
+      dependencies: { minisearch: "7", react: "19" },
+    })
+    writePackage("framework/node_modules/react", { name: "react" })
+    const frameworkMiniSearch = writePackage("framework/node_modules/minisearch", {
+      name: "minisearch",
+    })
+    const appMiniSearch = writePackage("docs/node_modules/minisearch", { name: "minisearch" })
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+
+    expect(() => {
+      packages.checkFile(path.join(frameworkMiniSearch, "index.js"))
+    }).not.toThrow()
+    expect(() => {
+      packages.checkFile(path.join(appMiniSearch, "index.js"))
+    }).toThrow(/Undeclared application dependency "minisearch"/u)
+    expect(() => {
+      packages.checkFile(path.join(appMiniSearch, "index.js"), {
+        importer: path.join(root, "entry.js"),
+      })
+    }).toThrow(/Undeclared application dependency "minisearch"/u)
   })
 })

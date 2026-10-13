@@ -39,6 +39,23 @@ export function resolveVersionedMainBase(input: VersionedMainBaseInput): Version
   return { deploymentBase, logMessages, viteBase }
 }
 
+export function resolveVersionedPreviewBase(input: {
+  deploymentBase: string
+  versioning: ArdoConfig["versioning"]
+  userBase: string | undefined
+  viteBase: unknown
+}): string | undefined {
+  if (
+    input.versioning == null ||
+    input.versioning === false ||
+    input.userBase != null ||
+    typeof input.viteBase === "string"
+  ) {
+    return undefined
+  }
+  return input.deploymentBase
+}
+
 function resolveGitHubPagesBase(input: VersionedMainBaseInput): string | undefined {
   if (!input.githubPages || input.command !== "build" || input.userBase != null) {
     return undefined

@@ -1,10 +1,14 @@
 import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { createRequire } from "node:module"
 import os from "node:os"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 import { ardo } from "ardo/vite"
-import { build, createServer, type UserConfig } from "vite"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
+
+const appRequire = createRequire(import.meta.url)
+const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
+const { build, createServer } = ardoRequire("vite")
 
 let parent: string
 let root: string
@@ -20,7 +24,7 @@ function writePackage(relative: string, manifest: object, source = "export const
   return directory
 }
 
-function config(): UserConfig {
+function config() {
   const boundary = ardo({ routes: false, icons: false }).find(
     (plugin) => plugin.name === "ardo:project-boundary"
   )
@@ -62,7 +66,11 @@ describe("Ardo documentation import boundary", () => {
       await build({ ...external, plugins: [], build: { ...external.build, outDir: "before" } })
       const result = await import(pathToFileURL(path.join(root, "before/entry.js")).href)
       expect(result.value).toBe(1)
-      await expect(build(external)).rejects.toThrow(/Undeclared dependency/u)
+      const expectedError =
+        name === "react"
+          ? /Framework-managed package "react" cannot remain external/u
+          : /Undeclared dependency/u
+      await expect(build(external)).rejects.toThrow(expectedError)
     }
   )
 

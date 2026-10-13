@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- Node.js >= 22.13.0
+- Node.js >= 22.22.0
 - pnpm >= 9.0.0
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 

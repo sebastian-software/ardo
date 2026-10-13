@@ -23,8 +23,8 @@ describe("examples/library build", () => {
   let buildSucceeded = false
 
   beforeAll(() => {
-    // Run react-router build
-    execSync("npx react-router build", {
+    // Run the Ardo-owned CLI without allowing npx to fetch a separate toolchain.
+    execSync("pnpm exec ardo build", {
       cwd: __dirname,
       stdio: "pipe",
       timeout: 120_000,

@@ -13,7 +13,7 @@ This example demonstrates how to use Ardo to document a TypeScript library with 
 1. Library source code lives in `src/index.ts`
 2. The `api` option in `vite.config.ts` enables checked declaration generation in memory
 3. Ardo reads the declarations and generates Markdown files into `app/routes/api-reference/`
-4. React Router picks them up as routes automatically
+4. Ardo's route integration picks them up automatically
 
 The same integration updates API documentation during development.
 
@@ -49,13 +49,13 @@ pnpm dev
 
 ## Building for Production
 
-The normal React Router build generates the API reference before route discovery:
+Ardo's build command generates the API reference before route discovery:
 
 ```bash
 pnpm build
 ```
 
-This executes `react-router build`; no separate prebuild step is required.
+This executes `ardo build`; no separate prebuild step is required.
 
 ## Adding Your Own Library
 

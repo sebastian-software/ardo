@@ -1,4 +1,4 @@
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig as Config } from "ardo/config"
 
 import { withArdoVersioning } from "ardo/vite"
 
