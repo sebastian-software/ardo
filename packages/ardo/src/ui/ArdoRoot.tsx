@@ -234,6 +234,8 @@ export function ArdoRoot({
       <ArdoProvider config={config} sidebar={sidebarItems}>
         <ArdoLayout
           className={resolveLayoutClassName(className, isBareLayout)}
+          bare={isBareLayout}
+          showSkipLink={showChrome}
           header={resolvedHeader}
           sidebar={resolvedSidebar}
           footer={resolvedFooter}
