@@ -37,7 +37,7 @@ async function benchmark() {
     console.log(
       "Usage: node scripts/benchmark-declaration-docs.mjs [OUTPUT.json] [--runs=7] [--warmups=1]\n" +
         "Build Ardo first. Set ARDO_DECLARATION_TSC to a native TypeScript 7 tsc executable.\n" +
-        "Runs sequential fresh Node processes on Ardo and the library example; installs nothing.\n" +
+        "Runs sequential fresh Node processes on Ardo and the native API fixture; installs nothing.\n" +
         "--modes=NAME,... selects scenarios. Additional modes: native-baseline, declarations-baseline,\n" +
         "workspace-one-pass, native-binary, native-api, native-api-baseline.\n" +
         "Native-api modes use the pinned async Node API.\n" +
@@ -71,9 +71,9 @@ async function benchmark() {
     },
     {
       name: "library-example",
-      entry: "examples/library/src/index.ts",
-      config: "examples/library/tsconfig.api.json",
-      sourceRoot: "examples/library/src",
+      entry: "tests/fixtures/native-api/src/index.ts",
+      config: "tests/fixtures/native-api/tsconfig.api.json",
+      sourceRoot: "tests/fixtures/native-api/src",
     },
   ]
   const profileFile = values.profiles ? path.resolve(values.profiles) : undefined

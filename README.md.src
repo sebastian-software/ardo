@@ -21,7 +21,7 @@
 [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions) ·
 [Getting Started](https://ardo-docs.dev/v6/guide/getting-started) ·
 [API Reference](https://ardo-docs.dev/v6/api-reference) ·
-[Reference Projects](https://ardo-docs.dev/v6/guide/reference-projects)
+[Basic Example](https://ardo-docs.dev/v6/guide/reference-projects)
 
 
 ---
@@ -49,14 +49,15 @@ For a new site, an existing repository, or an upgrade, give your coding agent:
 ```text
 Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
 then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the
-project and adapt the closest tested reference from the matching Ardo
+project and adapt the tested Basic example from the matching Ardo
 release tag. Preserve existing application behavior and deployment choices.
 Run the applicable typecheck, tests, and production build, and report the results.
 ```
 
 The [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions) cover version selection,
-new sites, integration, and upgrades. Reference projects are integration-tested; the basic and library
-references also install, typecheck, and build against a packed Ardo package outside the workspace.
+new sites, integration, and upgrades. The Basic example and optional feature recipes share one
+application setup. Integration tests check focused fixtures; Basic and its optional API configuration
+also install, typecheck, and build against a packed Ardo package outside the workspace.
 Use the reference from the installed version's `ardo-v<version>` tag, or the same checkout revision
 when developing Ardo. The unversioned `llms.txt` follows the current major.
 
@@ -64,14 +65,14 @@ For setup without an agent, follow
 [manual installation](https://ardo-docs.dev/v6/guide/getting-started#manual-installation).
 Ardo 6 retires `create-ardo`; existing sites continue to use the framework normally.
 
-## Examples
+## Example
 
-Runnable examples live in this repository:
-
-- [Basic docs site](./examples/basic) - minimal React Router + Ardo project.
-- [Library docs](./examples/library) - Native API documentation for a single package.
-- [Monorepo docs](./examples/monorepo) - Native API documentation across workspace packages.
-- [Content sources](./examples/content-sources) - external Markdown materialized as routes and static React data.
+[Basic docs site](./examples/basic) is the single runnable setup reference: Markdown/MDX,
+a small React component, and static output. Add
+[API documentation](https://ardo-docs.dev/v6/guide/api-documentation),
+[external content](https://ardo-docs.dev/v6/guide/content-sources), or
+[deployment settings](https://ardo-docs.dev/v6/guide/deployment) as needed.
+Internal regression projects live under `tests/fixtures/`.
 
 ## Package
 

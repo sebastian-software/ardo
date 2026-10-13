@@ -16,6 +16,7 @@
     "test:integration": "vitest --run --config vitest.integration.config.ts",
     "test:coverage": "vitest --run --coverage --config vitest.config.ts",
     "test:e2e": "playwright test",
+    "test:e2e:examples": "playwright test --config tests/e2e/examples/playwright.config.ts",
     "test:watch": "vitest",
     "lint": "node scripts/check-lint-budget.mjs",
     "lint:raw": "eslint packages/*/src",
@@ -69,7 +70,6 @@
     "prettier": "^3.9.6",
     "storybook": "^10.5.7",
     "typescript": "^6.0.3",
-    "vercel": "^58.7.1",
     "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
   },

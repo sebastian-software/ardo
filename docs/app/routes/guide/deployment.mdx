@@ -14,18 +14,32 @@ The build output is located in `build/client/` and can be deployed to any static
 
 ### Step 1: Configure Base Path and Basename
 
-Ardo automatically detects your GitHub repository name from the git remote and sets Vite's `base` path for you. No manual `base` configuration is needed in `vite.config.ts`.
+The Basic example serves from the domain root. For a GitHub Pages project site,
+enable repository subpath detection in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  githubPages: true,
+})
+```
+
+Ardo derives the repository name from the GitHub remote and sets the build's
+base path. A GitHub remote identifies the repository, not the hosting target;
+enable this option only when publishing a Pages project site.
 
 For client-side routing and prerendered HTML to work correctly under the subdirectory (e.g. `https://username.github.io/my-docs/`), wrap your React Router config with `withArdoGitHubPages()`:
 
 ```ts
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig } from "ardo/config"
 import { withArdoGitHubPages } from "ardo/vite"
 
 const config = {
   ssr: false,
   prerender: true,
-} satisfies Config
+} satisfies ReactRouterConfig
 
 export default withArdoGitHubPages(config)
 ```
@@ -43,17 +57,12 @@ For a GitHub Pages site behind a custom domain, disable GitHub Pages subpath det
 React Router config unwrapped. The site is served from the domain root:
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "My Docs",
-      siteUrl: "https://docs.example.com",
-      githubPages: false,
-    }),
-  ],
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  githubPages: false,
 })
 ```
 
@@ -69,39 +78,35 @@ versions deployed as static folders:
 /versions.json
 ```
 
-Configure Ardo's versioning in `vite.config.ts`:
+Configure Ardo's versioning in `ardo.config.ts`:
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "My Docs",
-      siteUrl: "https://docs.example.com",
-      versioning: {
-        current: "v3",
-        versions: [
-          { id: "v3", label: "3.x", path: "/v3/" },
-          { id: "v2", label: "2.x", path: "/v2/" },
-        ],
-      },
-    }),
-  ],
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  githubPages: false,
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
 })
 ```
 
 Set the matching React Router basename without GitHub Pages flattening:
 
 ```ts
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig } from "ardo/config"
 import { withArdoVersioning } from "ardo/vite"
 
 const config = {
   ssr: false,
   prerender: true,
-} satisfies Config
+} satisfies ReactRouterConfig
 
 export default withArdoVersioning(config, { basename: "/v3/" })
 ```
@@ -205,9 +210,8 @@ Netlify requires no workflow file. Connect your Git repository in the Netlify da
 
 Netlify automatically detects the Node.js version from your `package.json` engines field or an `.nvmrc` file.
 
-For subdirectory deployments, set `base` in `vite.config.ts` only when your Netlify site is served
-from a subpath. The GitHub Pages auto-detection above is specific to GitHub remotes and is not
-needed for the default Netlify root deployment.
+For a root deployment, keep `githubPages: false` as in Basic. Set `base` in
+`ardo.config.ts` only when your site is served from a subpath.
 
 ## Vercel
 

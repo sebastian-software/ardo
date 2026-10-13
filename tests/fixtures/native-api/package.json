@@ -1,0 +1,13 @@
+{
+  "name": "ardo-test-native-api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "ardo": "workspace:*"
+  },
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@7.1.0-dev.20261011.1",
+    "oxc-parser": "^0.127.0",
+    "typescript": "^6.0.3"
+  }
+}

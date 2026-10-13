@@ -52,7 +52,8 @@ ardo/
 │   ├── app/           # React Router app and markdown routes
 │   │   └── routes/    # Documentation pages and generated API routes
 │   └── public/        # Static assets and generated text outputs
-├── examples/          # Runnable example projects used by tests/docs
+├── examples/          # The public Basic setup example
+├── tests/             # Integration/browser tests and focused fixture overlays
 └── package.json       # Monorepo root
 ```
 
@@ -94,9 +95,9 @@ manifest and temporary lockfile differ, use
 `pnpm --config.verifyDepsBeforeRun=false <command>` to run an installed tool
 without an automatic reinstall.
 
-The packed-reference integration suite starts separate basic and library consumer installations.
+The packed-reference integration suite starts isolated Basic and optional API consumer installations.
 Set `ARDO_TEST_ENGINE_OVERRIDES` to a JSON file containing the same package-name
-to `file:/absolute/path/to/tarball.tgz` map, so that consumer uses the tested
+to `file:/absolute/path/to/tarball.tgz` map, so those consumers use the tested
 engine builds too. For homepage verification, also pack Ardo and add its
 tarball to the homepage's temporary workspace overrides.
 

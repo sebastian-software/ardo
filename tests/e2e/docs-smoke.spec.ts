@@ -18,8 +18,16 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   expect(await index.text()).toContain("https://ardo-docs.dev/v6/llms-full.txt")
   const full = await request.get(`${docsBasePath}/llms-full.txt`)
   expect(full.ok()).toBe(true)
-  expect(await full.text()).toContain("## Match the Version First")
-  expect(await full.text()).toContain("examples/basic")
+  const instructions = await full.text()
+  expect(instructions).toContain("## Match the Version First")
+  expect(instructions).toContain("examples/basic")
+  for (const removed of ["library", "monorepo", "content-sources", "github-pages"]) {
+    expect(instructions).not.toContain(`examples/${removed}`)
+  }
+
+  await page.goto(`${docsBasePath}/guide/reference-projects`)
+  await expect(page.getByRole("heading", { level: 1, name: "Basic Example" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 2, name: "Multiple Packages" })).toBeVisible()
 })
 
 test("built docs site hydrates and supports search and theme interactions", async ({ page }) => {

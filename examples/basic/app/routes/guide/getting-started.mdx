@@ -6,7 +6,7 @@ order: 1
 
 # Getting Started
 
-Welcome to the **Ardo Basic Example**. This is a minimal documentation site that demonstrates Ardo as a pure static site generator — no API generation, no library code, just Markdown.
+Welcome to the **Ardo Basic Example**. Start with Markdown pages and a small React component. Add optional API documentation, external content, or deployment settings to this same setup when needed.
 
 ## What's Included
 
@@ -17,7 +17,7 @@ This example shows:
 - Built-in search
 - Dark mode support
 - Static pre-rendering
-- An interactive counter that demonstrates the shared React runtime
+- An interactive counter that demonstrates React interactivity
 
 ## Project Structure
 
@@ -34,10 +34,11 @@ examples/basic/
 │   │       └── markdown-features.mdx
 ├── ardo.config.ts
 ├── react-router.config.ts
+├── tsconfig.json
 └── package.json
 ```
 
-The example's `ardo.config.ts` sets its title, theme, and deployment defaults; Ardo can also run
+The example's `ardo.config.ts` sets its title and deployment defaults; Ardo can also run
 without this optional file. It reexports Ardo's server entry from `app/entry.server.tsx`. React
 Router's default client entry handles browser hydration.
 
@@ -53,4 +54,4 @@ pnpm dev
 pnpm build
 ```
 
-The output will be in `build/client/`, ready for static hosting on Vercel, Netlify, or any other platform.
+The output will be in `build/client/`, ready for your static hosting provider.

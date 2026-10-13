@@ -11,16 +11,11 @@ Use content sources when the Markdown you want to publish already belongs elsewh
 ## Map a Directory
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "Workspace Docs",
-      content: [{ from: "../../adr", to: "decisions" }],
-    }),
-  ],
+export default defineArdoConfig({
+  title: "Workspace Docs",
+  content: [{ from: "../../adr", to: "decisions" }],
 })
 ```
 
@@ -43,7 +38,8 @@ Content sources intentionally do not fetch remote URLs, act as a CMS, or transfo
 Use `collections` when the same local Markdown set should both materialize into routes and be available to a custom React route as typed build data:
 
 ```ts
-import { ardo, defineCollection } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
+import { defineCollection } from "ardo/vite"
 
 const recipes = defineCollection<{ title: string }>({
   from: "../../recipes",
@@ -51,7 +47,7 @@ const recipes = defineCollection<{ title: string }>({
   schema: (data) => ({ title: String(data.title) }),
 })
 
-ardo({ title: "Docs", collections: { recipes } })
+export default defineArdoConfig({ title: "Docs", collections: { recipes } })
 ```
 
 Import `getCollection<T>()` from `virtual:ardo/collections` in a custom route to read typed generated records:
@@ -64,4 +60,4 @@ const recipes = getCollection<{ title: string }>("recipes")
 
 Collections remain local and static: the schema runs during the build, while the generated route pages continue through the normal sidebar, search, sitemap, redirect, and LLM pipelines. Source paths are project-relative, so the virtual module does not expose an author's absolute filesystem paths.
 
-The [version-matched content sources reference](/guide/reference-projects#content-owned-elsewhere) builds this complete shape: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.
+Add these options to the version-matched [Basic example](/guide/reference-projects#content-owned-elsewhere). The internal collection fixture checks the complete flow: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.
