@@ -1,4 +1,4 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
 
@@ -15,8 +15,11 @@ export const layoutContainer = style({
   display: "flex",
   flex: 1,
   width: "100%",
-  paddingTop: vars.layout.headerHeight,
   minHeight: 0,
+})
+
+export const withHeader = style({
+  paddingTop: vars.layout.headerHeight,
 })
 
 export const main = style({
@@ -42,21 +45,11 @@ export const home = style({
   height: "auto",
   minHeight: "100vh",
   overflow: "visible",
+  background: "transparent",
 })
 
 export const homeMain = style({
   paddingTop: vars.layout.headerHeight,
-})
-
-// No card styling on home page
-globalStyle(`${home} .${main}`, {
-  marginLeft: 0,
-  padding: 0,
-  margin: 0,
-  borderRadius: 0,
-  border: "none",
-  background: vars.color.bg,
-  overflow: "visible",
 })
 
 export const skipLink = style({

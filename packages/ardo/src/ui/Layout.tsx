@@ -109,6 +109,10 @@ export type ArdoLayoutProps = {
   footer?: ReactNode
   /** Main content */
   children: ReactNode
+  /** Render a plain main element with document scrolling for bare routes. */
+  bare?: boolean
+  /** Render the built-in skip link. Disable when the host owns navigation chrome. */
+  showSkipLink?: boolean
   /** Additional CSS classes */
   className?: string
 }
@@ -127,17 +131,34 @@ export type ArdoLayoutProps = {
  * </Layout>
  * ```
  */
-export function ArdoLayout({ header, sidebar, footer, children, className }: ArdoLayoutProps) {
+export function ArdoLayout({
+  header,
+  sidebar,
+  footer,
+  children,
+  className,
+  bare = false,
+  showSkipLink = true,
+}: ArdoLayoutProps) {
   const labels = useArdoLabels()
+  const hasHeader = header != null && header !== false
+  const containerClass = bare
+    ? hasHeader
+      ? styles.withHeader
+      : undefined
+    : `${styles.layoutContainer}${hasHeader ? ` ${styles.withHeader}` : ""}`
+  const layoutClass = className ?? `${styles.layout}${bare ? ` ${styles.home}` : ""}`
   return (
-    <div className={className ?? styles.layout}>
-      <a href="#main-content" className={styles.skipLink}>
-        {labels.layout.skipToContent}
-      </a>
+    <div className={layoutClass}>
+      {showSkipLink && (
+        <a href="#main-content" className={styles.skipLink}>
+          {labels.layout.skipToContent}
+        </a>
+      )}
       {header}
-      <div className={styles.layoutContainer}>
+      <div className={containerClass}>
         {sidebar}
-        <main id="main-content" className={styles.main}>
+        <main id="main-content" className={bare ? undefined : styles.main}>
           {children}
           {footer}
         </main>

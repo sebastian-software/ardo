@@ -71,6 +71,15 @@ describe("examples/basic build", () => {
     ).toBe(true)
   })
 
+  it("prerenders a plain bare route with only its own chrome and skip link", () => {
+    const html = fs.readFileSync(path.join(__dirname, "build/client/bare/index.html"), "utf8")
+    expect(html).toContain('<main id="main-content">')
+    expect(html).toContain('href="#bare-content"')
+    expect(html).not.toContain('href="#main-content"')
+    expect(html).not.toContain('class="ardo-header ')
+    expect(html).not.toContain('class="ardo-footer ')
+  })
+
   it("publishes one complete, layered stylesheet without component CSS imports", () => {
     const packageDir = path.resolve(__dirname, "../../packages/ardo/dist")
     const files = fs.readdirSync(packageDir, { recursive: true }).map(String)

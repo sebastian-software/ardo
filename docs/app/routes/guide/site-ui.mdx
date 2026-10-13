@@ -200,3 +200,13 @@ export const handle = { layout: "bare", chrome: false }
 
 `chrome: false` removes header and footer for that route. `layout: "bare"` removes sidebar and rail
 rendering.
+
+### Bare routes with custom chrome
+
+Use `export const handle = { layout: "bare", chrome: false }` on a route that owns
+its site header and footer. Ardo reserves no space for an absent header, renders
+no additional skip link, and leaves the main element's padding, background, and
+overflow to your site. Provide your own skip link for keyboard navigation.
+
+Bare routes that retain Ardo's header keep its offset and built-in skip link.
+Documentation routes retain the existing inner-scroll layout.
