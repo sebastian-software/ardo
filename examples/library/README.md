@@ -24,7 +24,7 @@ pnpm install
 pnpm build
 ```
 
-The normal Vite build generates 12 API pages in `app/routes/api-reference/` and prerenders their
+Ardo's build command generates 12 API pages in `app/routes/api-reference/` and prerenders their
 HTML. Development generation and updates also run through the Vite integration:
 
 ```bash
@@ -41,4 +41,4 @@ Both paths use the official TypeScript Node client with the pinned native
 compiler and emit checked declarations with retained JSDoc in memory. A separate
 prebuild step is not required for `pnpm dev` or `pnpm build`. The integration
 tests verify the normal build's HTML, inherited descriptions, callable
-documentation, and preserved type expressions on Node.js 22, 24, and 26.
+documentation, and preserved type expressions on Node.js 22.22+, 24, and 26.

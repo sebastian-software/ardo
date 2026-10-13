@@ -1,54 +1,64 @@
-import { cpSync, mkdtempSync, mkdirSync, realpathSync, rmSync, writeFileSync } from "node:fs"
-import { isBuiltin } from "node:module"
+import {
+  cpSync,
+  mkdirSync,
+  mkdtempSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs"
+import { createRequire, isBuiltin } from "node:module"
 import os from "node:os"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 import { ardo } from "ardo/vite"
-import { build, type UserConfig } from "vite"
 import { expect, it } from "vitest"
 
-it("renders Lucide with the consumer React when an ancestor has another copy", async () => {
+const appRequire = createRequire(import.meta.url)
+const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
+const { build } = ardoRequire("vite")
+
+it("keeps app, Ardo UI, widgets, and SSR on Ardo's React despite consumer and ancestor copies", async () => {
   const parent = mkdtempSync(path.join(os.tmpdir(), "ardo-ssr-resolution-"))
   const consumer = path.join(parent, "worktree")
-  const packageModules = path.resolve(import.meta.dirname, "../../packages/ardo/node_modules")
+  const ardoRoot = realpathSync(path.resolve(import.meta.dirname, "../../packages/ardo"))
+  const ardoModules = path.join(ardoRoot, "node_modules")
+  const ancestorModules = path.join(parent, "node_modules")
+  const consumerModules = path.join(consumer, "node_modules")
+
   try {
-    // Lucide is installed only in the ancestor, with a separate React instance.
-    mkdirSync(path.join(parent, "node_modules"), { recursive: true })
-    mkdirSync(path.join(consumer, "node_modules"), { recursive: true })
-    for (const name of ["lucide-react", "react"]) {
-      cpSync(
-        realpathSync(path.join(packageModules, name)),
-        path.join(parent, "node_modules", name),
-        {
-          recursive: true,
-        }
-      )
-    }
-    for (const name of ["react", "react-dom"]) {
-      cpSync(
-        realpathSync(path.join(packageModules, name)),
-        path.join(consumer, "node_modules", name),
-        {
-          recursive: true,
-        }
-      )
-    }
+    mkdirSync(ancestorModules, { recursive: true })
+    mkdirSync(consumerModules, { recursive: true })
+    symlinkSync(ardoRoot, path.join(consumerModules, "ardo"), "dir")
+
+    // The app's dependency tree contains independent React copies. A managed
+    // runtime resolver must route both widgets' bare imports back to Ardo.
+    const reactPackage = realpathSync(path.join(ardoModules, "react"))
+    cpSync(reactPackage, path.join(ancestorModules, "react"), { recursive: true })
+    cpSync(reactPackage, path.join(consumerModules, "react"), { recursive: true })
+
     writeFileSync(
       path.join(consumer, "package.json"),
       JSON.stringify({
         type: "module",
         dependencies: {
-          react: "19",
-          "react-dom": "19",
-          "lucide-react": "1",
+          ardo: "workspace:*",
+          "ancestor-widget": "1",
           "docs-widget": "1",
         },
       })
     )
-    const widget = path.join(consumer, "node_modules/docs-widget")
-    mkdirSync(widget)
+
+    const widgetSource = `import { createElement, useContext } from "react";
+
+export function Widget({ context, className }) {
+  return createElement("span", { className }, useContext(context));
+}
+`
+    const docsWidget = path.join(consumerModules, "docs-widget")
+    mkdirSync(docsWidget)
     writeFileSync(
-      path.join(widget, "package.json"),
+      path.join(docsWidget, "package.json"),
       JSON.stringify({
         name: "docs-widget",
         type: "module",
@@ -56,75 +66,92 @@ it("renders Lucide with the consumer React when an ancestor has another copy", a
         peerDependencies: { react: "19" },
       })
     )
+    writeFileSync(path.join(docsWidget, "index.js"), widgetSource)
+
+    const ancestorWidget = path.join(ancestorModules, "ancestor-widget")
+    mkdirSync(ancestorWidget)
     writeFileSync(
-      path.join(widget, "index.js"),
-      'import { createContext, createElement, useContext } from "react";\n' +
-        'const Context = createContext("owned");\n' +
-        'export function Widget() { return createElement("span", { className: "docs-widget" }, useContext(Context)); }\n'
+      path.join(ancestorWidget, "package.json"),
+      JSON.stringify({
+        name: "ancestor-widget",
+        type: "module",
+        exports: "./index.js",
+        peerDependencies: { react: "19" },
+      })
     )
+    writeFileSync(path.join(ancestorWidget, "index.js"), widgetSource)
+    symlinkSync(ancestorWidget, path.join(consumerModules, "ancestor-widget"), "dir")
+
     writeFileSync(
       path.join(consumer, "entry.mjs"),
-      'import { createElement } from "react";\n' +
-        'import { renderToStaticMarkup } from "react-dom/server";\n' +
-        'import { Monitor } from "lucide-react";\n' +
-        'import { Widget } from "docs-widget";\n' +
-        'export const Component = () => createElement("section", null, createElement(Monitor), createElement(Widget));\n' +
-        "export const html = renderToStaticMarkup(createElement(Component));\n"
-    )
-    const plugin = ardo({ title: "SSR fixture", githubPages: false }).find(
-      (entry) => entry.name === "ardo"
-    )
-    if (plugin == null || typeof plugin.config !== "function") {
-      throw new Error("Ardo configuration hook is unavailable")
-    }
-    const config = (await plugin.config.call(
-      {} as never,
-      { root: consumer },
-      { command: "build", mode: "production" }
-    )) as UserConfig
-    await build({
-      ...config,
-      configFile: false,
-      root: consumer,
-      logLevel: "silent",
-      ssr: { noExternal: ["ardo"] },
-      build: { ssr: path.join(consumer, "entry.mjs"), outDir: "before", minify: false },
-    })
-    await expect(
-      import(pathToFileURL(path.join(consumer, "before/entry.js")).href)
-    ).rejects.toThrow(/useContext/)
+      `import { createContext, createElement } from "ardo/react";
+import { renderToStaticMarkup } from "ardo/react-dom/server";
+import { ArdoFeatureCard, ArdoThemeToggle } from "ardo/ui";
+import { Widget as ConsumerWidget } from "docs-widget";
+import { Widget as AncestorWidget } from "ancestor-widget";
 
-    const boundary = ardo({ routes: false, icons: false }).find(
-      (entry) => entry.name === "ardo:project-boundary"
+const Context = createContext("outside");
+
+export const Component = () =>
+  createElement(
+    Context.Provider,
+    { value: "shared-runtime" },
+    createElement(
+      "section",
+      null,
+      createElement(ArdoFeatureCard, { title: "Ardo UI" }, "Framework component"),
+      createElement(ArdoThemeToggle),
+      createElement(ConsumerWidget, { context: Context, className: "docs-widget" }),
+      createElement(AncestorWidget, { context: Context, className: "ancestor-widget" })
     )
-    if (boundary == null) throw new Error("Ardo package boundary is unavailable")
-    const isolated: UserConfig = {
-      ...config,
+  );
+
+export const html = renderToStaticMarkup(createElement(Component));
+`
+    )
+
+    const plugins = ardo({ routes: false, icons: false })
+    const main = plugins.find((plugin) => plugin.name === "ardo")
+    const boundary = plugins.find((plugin) => plugin.name === "ardo:project-boundary")
+    const managedRuntime = plugins.find((plugin) => plugin.name === "ardo:managed-runtime")
+    if (main == null || boundary == null || managedRuntime == null) {
+      throw new Error("Ardo runtime plugins are unavailable")
+    }
+
+    const config = (pluginList: Array<(typeof plugins)[number]>, outDir: string) => ({
       configFile: false,
       root: consumer,
-      plugins: [boundary],
-      logLevel: "silent",
-      build: { ssr: path.join(consumer, "entry.mjs"), outDir: "build", minify: false },
-    }
-    await expect(build(isolated)).rejects.toThrow(/not installed.*node_modules/u)
-    cpSync(
-      realpathSync(path.join(packageModules, "lucide-react")),
-      path.join(consumer, "node_modules/lucide-react"),
-      { recursive: true }
+      plugins: pluginList,
+      logLevel: "silent" as const,
+      ssr: { noExternal: true },
+      build: { ssr: path.join(consumer, "entry.mjs"), outDir, minify: false },
+    })
+
+    // Without the managed resolver, the project boundary catches the widget
+    // resolving React from either its local or ancestor node_modules folder.
+    await expect(build(config([main, boundary], "unmanaged"))).rejects.toThrow(
+      /Managed runtime package "react" resolved outside Ardo's own installation/u
     )
-    const bundle = await build(isolated)
+
+    const bundle = await build(config([main, boundary, managedRuntime], "managed"))
     if (Array.isArray(bundle) || !("output" in bundle)) {
       throw new Error("Expected a single SSR bundle")
     }
-    const imports = bundle.output.flatMap((entry) =>
+    type BundleEntry =
+      { type: "chunk"; imports: string[]; dynamicImports: string[] } | { type: "asset" }
+    const bundleEntries = (bundle as { output: BundleEntry[] }).output
+    const imports: string[] = bundleEntries.flatMap((entry) =>
       entry.type === "chunk" ? [...entry.imports, ...entry.dynamicImports] : []
     )
     expect(imports.every((id) => isBuiltin(id))).toBe(true)
-    const output = await import(pathToFileURL(path.join(consumer, "build/entry.js")).href)
-    expect(output.html).toContain("<svg")
-    expect(output.html).toContain("lucide-monitor")
+
+    const output = await import(pathToFileURL(path.join(consumer, "managed/entry.js")).href)
+    expect(output.html).toContain("shared-runtime")
     expect(output.html).toContain("docs-widget")
+    expect(output.html).toContain("ancestor-widget")
+    expect(output.html).toContain('aria-label="Toggle theme"')
+    expect(output.html).toContain("Ardo UI")
   } finally {
     rmSync(parent, { recursive: true, force: true })
   }
-}, 30_000)
+}, 60_000)

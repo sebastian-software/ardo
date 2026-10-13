@@ -1,4 +1,4 @@
-import { defineConfig } from "vite"
+import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({

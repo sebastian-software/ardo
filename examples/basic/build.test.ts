@@ -1,9 +1,14 @@
 import { describe, it, expect, beforeAll } from "vitest"
 import fs from "node:fs"
+import { createRequire } from "node:module"
 import path from "node:path"
 import { execSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
-import { createServer } from "vite"
+import { prepareProjectConfig } from "../../packages/ardo/src/cli/project-config"
+
+const appRequire = createRequire(import.meta.url)
+const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
+const { createServer } = ardoRequire("vite")
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -11,7 +16,7 @@ describe("examples/basic build", () => {
   let buildSucceeded = false
 
   beforeAll(() => {
-    execSync("npx react-router build", {
+    execSync("pnpm exec ardo build", {
       cwd: __dirname,
       stdio: "pipe",
       timeout: 120_000,
@@ -29,6 +34,8 @@ describe("examples/basic build", () => {
     expect(fs.existsSync(indexHtml)).toBe(true)
     const content = fs.readFileSync(indexHtml, "utf-8")
     expect(content).toContain("<!DOCTYPE html>")
+    expect(content).toContain('data-testid="runtime-counter"')
+    expect(content.replace(/<!--.*?-->/gs, "")).toContain("Count: 0")
   })
 
   it("generates getting-started page", () => {
@@ -57,6 +64,11 @@ describe("examples/basic build", () => {
     const cssFiles = files.filter((f) => f.endsWith(".css"))
     expect(jsFiles.length).toBeGreaterThan(0)
     expect(cssFiles.length).toBeGreaterThan(0)
+    expect(
+      jsFiles.some((file) =>
+        fs.readFileSync(path.join(assetsDir, file), "utf-8").includes("runtime-counter")
+      )
+    ).toBe(true)
   })
 
   it("publishes one complete, layered stylesheet without component CSS imports", () => {
@@ -94,9 +106,10 @@ describe("examples/basic build", () => {
   })
 
   it("renders a development SSR request with bundled CommonJS dependencies", async () => {
+    const configFile = await prepareProjectConfig(__dirname)
     const server = await createServer({
       root: __dirname,
-      configFile: path.join(__dirname, "vite.config.ts"),
+      configFile,
       logLevel: "silent",
       environments: { ssr: { optimizeDeps: { force: true } } },
       server: { port: 0, host: "127.0.0.1", hmr: false, watch: null },

@@ -86,6 +86,12 @@ jobs:
           ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
 
+      - name: Verify Basic development and preview hydration
+        if: matrix.node-version == '22'
+        run: |
+          pnpm exec playwright test --config examples/basic/playwright.config.mjs
+          ARDO_BASIC_BROWSER_SERVER=preview pnpm exec playwright test --config examples/basic/playwright.config.mjs
+
       - name: Build Storybook
         if: matrix.node-version == '22'
         run: pnpm storybook:build

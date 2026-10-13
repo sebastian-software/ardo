@@ -1,5 +1,6 @@
 import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
-import type { MetaFunction } from "react-router"
+import type { MetaFunction } from "ardo/router"
+import { RuntimeCounter } from "../Counter"
 
 export const meta: MetaFunction = () => [{ title: "Ardo Basic Example" }]
 
@@ -21,6 +22,10 @@ export default function HomePage() {
         </ArdoFeatureCard>
         <ArdoFeatureCard title="Search" icon="🔍">
           Built-in full-text search with MiniSearch
+        </ArdoFeatureCard>
+        <ArdoFeatureCard title="React runtime" icon="⚛️">
+          Ardo, the app, and the renderer share the same React runtime.
+          <RuntimeCounter />
         </ArdoFeatureCard>
       </ArdoFeatures>
     </>

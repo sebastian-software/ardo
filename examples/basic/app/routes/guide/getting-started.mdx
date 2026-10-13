@@ -17,24 +17,29 @@ This example shows:
 - Built-in search
 - Dark mode support
 - Static pre-rendering
+- An interactive counter that demonstrates the shared React runtime
 
 ## Project Structure
 
 ```
 examples/basic/
 ├── app/
+│   ├── Counter.tsx
+│   ├── entry.server.tsx
+│   ├── root.tsx
 │   ├── routes/
 │   │   ├── home.tsx
 │   │   └── guide/
 │   │       ├── getting-started.mdx
 │   │       └── markdown-features.mdx
-│   ├── root.tsx
-│   ├── entry.client.tsx
-│   └── entry.server.tsx
-├── vite.config.ts
+├── ardo.config.ts
 ├── react-router.config.ts
 └── package.json
 ```
+
+The example's `ardo.config.ts` sets its title, theme, and deployment defaults; Ardo can also run
+without this optional file. It reexports Ardo's server entry from `app/entry.server.tsx`. React
+Router's default client entry handles browser hydration.
 
 ## Running Locally
 

@@ -5,7 +5,10 @@ import { describe, expect, it } from "vitest"
 import { ardoPlugin } from "./plugin"
 
 type ArdoPluginHooks = {
-  config: (config: UserConfig, env: { command: "build" | "serve"; mode: string }) => UserConfig
+  config: (
+    config: UserConfig,
+    env: { command: "build" | "serve"; isPreview?: boolean; mode: string }
+  ) => UserConfig
   configResolved: (config: { base: string; build: { ssr: boolean }; root: string }) => void
   load: (id: string) => Promise<string | undefined>
 }
@@ -27,6 +30,22 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
 }
 
 describe("ardoPlugin", () => {
+  it("installs managed runtime resolution before the remaining app plugins", () => {
+    const plugins = ardoPlugin({ routes: false, icons: false })
+    const names = plugins.map((plugin) => plugin.name)
+    const boundaryIndex = names.indexOf("ardo:project-boundary")
+    const resolverIndex = names.indexOf("ardo:managed-runtime")
+    const config = getMainPlugin({ githubPages: false, title: "Docs" }).config(
+      { root: "/project" },
+      { command: "serve", mode: "development" }
+    )
+
+    expect(boundaryIndex).toBeGreaterThan(-1)
+    expect(resolverIndex).toBeGreaterThan(boundaryIndex)
+    expect(config.optimizeDeps?.exclude).toStrictEqual(["ardo/ui/styles.css"])
+    expect(config.environments?.ssr.optimizeDeps?.exclude).toBeUndefined()
+  })
+
   it("isolates the docs dependency graph and preserves consumer options", () => {
     const plugin = getMainPlugin({
       githubPages: false,
@@ -82,6 +101,53 @@ describe("ardoPlugin", () => {
     const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
 
     expect(config.base).toBe("/v3/")
+  })
+
+  it("uses the deployment base for versioned preview output", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", path: "/v3/" }],
+      },
+    })
+
+    const config = plugin.config(
+      { root: "/project" },
+      { command: "serve", isPreview: true, mode: "production" }
+    )
+
+    expect(config.base).toBe("/")
+  })
+
+  it("preserves an explicit Vite base for versioned preview output", () => {
+    const plugin = getMainPlugin({
+      githubPages: false,
+      title: "Docs",
+      versioning: {
+        current: "v3",
+        versions: [{ id: "v3", path: "/v3/" }],
+      },
+    })
+
+    const config = plugin.config(
+      { root: "/project", base: "/custom/" },
+      { command: "serve", isPreview: true, mode: "production" }
+    )
+
+    expect(config.base).toBeUndefined()
+  })
+
+  it("uses the build-time GitHub Pages base when Vite loads config for preview", () => {
+    const plugin = getMainPlugin({ githubPages: true, title: "Docs" })
+
+    const config = plugin.config(
+      { root: process.cwd() },
+      { command: "serve", isPreview: true, mode: "production" }
+    )
+
+    expect(config.base).toBe("/ardo/")
   })
 
   it("keeps the Vite base at the version root when i18n is active", () => {
