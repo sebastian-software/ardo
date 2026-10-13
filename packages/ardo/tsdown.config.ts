@@ -1,14 +1,9 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin"
-import {
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  writeFileSync,
-} from "node:fs"
-import { dirname, join, resolve } from "node:path"
+import { copyFileSync, mkdirSync, readdirSync } from "node:fs"
+import { join } from "node:path"
 import { defineConfig } from "tsdown"
+
+import { uiStylesPlugin } from "./ui-styles-plugin.ts"
 
 export default defineConfig({
   entry: {
@@ -22,6 +17,18 @@ export default defineConfig({
     "mdx/provider": "src/mdx/provider.tsx",
     "theme/index": "src/ui/theme/index.ts",
     "ui/styles": "src/ui/styles.css.ts",
+    "cli/index": "src/cli/index.ts",
+    "react/index": "src/react/index.ts",
+    "react/jsx-runtime": "src/react/jsx-runtime.ts",
+    "react/jsx-dev-runtime": "src/react/jsx-dev-runtime.ts",
+    "react-dom/index": "src/react-dom/index.ts",
+    "react-dom/client": "src/react-dom/client.ts",
+    "react-dom/server": "src/react-dom/server.ts",
+    "react-dom/static": "src/react-dom/static.ts",
+    "router/index": "src/router/index.ts",
+    "router/dom": "src/router/dom.ts",
+    "router/routes": "src/router/routes.ts",
+    "entries/server": "src/entries/server.tsx",
   },
   format: ["esm"],
   dts: true,
@@ -55,6 +62,7 @@ export default defineConfig({
     vanillaExtractPlugin({
       identifiers: "short",
     }) as any,
+    uiStylesPlugin(),
   ],
   hooks: {
     "build:done": async () => {
@@ -65,18 +73,6 @@ export default defineConfig({
         if (file.endsWith(".svg")) {
           copyFileSync(join(iconsDir, file), join(destIconsDir, file))
         }
-      }
-
-      const stylesEntryPath = join("dist", "ui", "styles.js")
-      const stylesOutputPath = join("dist", "ui", "styles.css")
-      if (existsSync(stylesEntryPath)) {
-        const stylesEntry = readFileSync(stylesEntryPath, "utf8")
-        const cssChunks = [...stylesEntry.matchAll(/import\s+"(.+?\.css)";/g)]
-          .map((match) => resolve(dirname(stylesEntryPath), match[1]))
-          .filter((filePath) => existsSync(filePath))
-
-        const bundledCss = cssChunks.map((filePath) => readFileSync(filePath, "utf8")).join("\n")
-        writeFileSync(stylesOutputPath, bundledCss)
       }
 
       console.log("Copied SVG icons to dist/ui/icons/")

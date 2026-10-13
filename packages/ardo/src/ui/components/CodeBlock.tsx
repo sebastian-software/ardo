@@ -31,11 +31,12 @@ function outdent(text: string): string {
   const lines = trimmed.split("\n")
 
   // Find minimum indentation (ignoring empty lines)
-  const indent = lines.reduce((min, line) => {
-    if (line.trim().length === 0) return min
+  let indent = Infinity
+  for (const line of lines) {
+    if (line.trim().length === 0) continue
     const match = /^(\s*)/.exec(line)
-    return match ? Math.min(min, match[1].length) : min
-  }, Infinity)
+    if (match) indent = Math.min(indent, match[1].length)
+  }
 
   if (indent === 0 || indent === Infinity) return trimmed
   return lines.map((line) => line.slice(indent)).join("\n")

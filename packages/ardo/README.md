@@ -9,23 +9,30 @@ Ardo is a React-first static documentation framework built on React 19, React Ro
 - **Use real React components in docs** - import your app components, design system, providers, and examples directly in MDX.
 - **Ship static docs anywhere** - Ardo prerenders HTML and assets that work on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any file server.
 - **Generate API docs from TypeScript** - Native TypeScript and OXC create linked API reference pages during builds and development.
-- **Start with a complete theme** - responsive layout, sidebar, TOC, search, dark mode, code highlighting, callouts, tabs, Tailwind v4, and typed design tokens.
+- **Start with a complete theme** - responsive layout, sidebar, TOC, search, dark mode, code highlighting, callouts, tabs, and typed design tokens. Tailwind v4 is optional.
 - **Keep control** - configuration is code, UI is React, output is static, and the package is open source.
 
 ## Quick start
 
-```bash
-pnpm create ardo@latest my-docs
-cd my-docs
-pnpm install
-pnpm dev
+Give your coding agent the repository and this instruction:
+
+```text
+Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
+then follow https://ardo-docs.dev/v6/guide/agent-instructions. Adapt the
+closest tested reference from the matching Ardo release tag, preserve
+existing application behavior, and run the applicable checks and build.
 ```
+
+The versioned instructions cover new sites, adoption, and upgrades. Use the
+reference from the installed package's `ardo-v<version>` tag; for development,
+use the instructions and built package from the same checkout revision.
+Ardo 6 retires `create-ardo`.
 
 ## Manual installation
 
 ```bash
-pnpm add ardo react react-dom react-router isbot
-pnpm add -D @react-router/dev @tailwindcss/vite tailwindcss typescript vite @types/react @types/react-dom
+pnpm add ardo@6 react@19 react-dom@19 react-router@8 isbot@5
+pnpm add -D @react-router/dev@8 @tailwindcss/vite@4 tailwindcss@4 typescript@6 vite@8 @types/react@19 @types/react-dom@19
 ```
 
 ## Vite configuration
@@ -127,9 +134,11 @@ function PageTitle() {
 
 ## Documentation
 
-Full documentation: [ardo-docs.dev](https://ardo-docs.dev)
+Full documentation: [Ardo 6](https://ardo-docs.dev/v6/)
 
-LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/llms-full.txt)
+Agent instructions: [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions)
+
+LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/v6/llms-full.txt)
 
 Changelog: [CHANGELOG.md](./CHANGELOG.md)
 

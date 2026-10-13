@@ -14,54 +14,55 @@
 [![npm downloads](https://img.shields.io/npm/dm/ardo.svg)](https://www.npmjs.com/package/ardo)
 [![License](https://img.shields.io/npm/l/ardo.svg)](https://github.com/sebastian-software/ardo/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Node](https://img.shields.io/badge/Node-%3E%3D22.13.0-green.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-%3E%3D22.22.0-green.svg)](https://nodejs.org/)
 <!-- mdtheme:badges:end -->
 
-[Documentation](https://ardo-docs.dev/v4/) ·
-[Adopt with an agent](https://ardo-docs.dev/v4/guide/adopt-ardo) ·
-[Getting Started](https://ardo-docs.dev/v4/guide/getting-started) ·
-[API Reference](https://ardo-docs.dev/v4/api-reference) ·
-[Examples](https://github.com/sebastian-software/ardo/tree/main/examples)
+[Documentation](https://ardo-docs.dev/v6/) ·
+[Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions) ·
+[Getting Started](https://ardo-docs.dev/v6/guide/getting-started) ·
+[API Reference](https://ardo-docs.dev/v6/api-reference) ·
+[Reference Projects](https://ardo-docs.dev/v6/guide/reference-projects)
 
 
 ---
 
 Ardo is a static documentation framework built on React 19, React Router 8, Vite 8, Ferromark,
 Ferriki, TypeScript, and Vanilla Extract. It gives React teams VitePress-style simplicity without leaving
-React or moving docs into a closed platform.
+React or moving docs into a closed platform. Ardo owns the React and build-tool versions and
+provides `ardo dev`, `ardo build`, and `ardo preview`; the basic site only depends on Ardo at runtime.
 
 The full product overview, comparison, configuration reference, deployment notes, and roadmap live
 on the documentation site:
 
-- [What is Ardo?](https://ardo-docs.dev/v4/guide/what-is-ardo)
-- [Getting Started](https://ardo-docs.dev/v4/guide/getting-started)
-- [Adopt Ardo in an Existing Project](https://ardo-docs.dev/v4/guide/adopt-ardo)
-- [Comparison](https://ardo-docs.dev/v4/guide/comparison)
-- [Configuration](https://ardo-docs.dev/v4/guide/configuration)
-- [Deployment](https://ardo-docs.dev/v4/guide/deployment)
-- [Feature Status](https://ardo-docs.dev/v4/guide/status-roadmap)
+- [What is Ardo?](https://ardo-docs.dev/v6/guide/what-is-ardo)
+- [Getting Started](https://ardo-docs.dev/v6/guide/getting-started)
+- [Adopt Ardo in an Existing Project](https://ardo-docs.dev/v6/guide/adopt-ardo)
+- [Comparison](https://ardo-docs.dev/v6/guide/comparison)
+- [Configuration](https://ardo-docs.dev/v6/guide/configuration)
+- [Deployment](https://ardo-docs.dev/v6/guide/deployment)
+- [Feature Status](https://ardo-docs.dev/v6/guide/status-roadmap)
 
-## Adopt an existing project
+## Get started with an agent
 
-Give your coding agent `https://ardo-docs.dev/llms.txt` and the
-[adoption guide](https://ardo-docs.dev/v4/guide/adopt-ardo). It will inspect the repository, select
-the closest reference project, and propose the smallest change before editing files.
+For a new site, an existing repository, or an upgrade, give your coding agent:
 
-## Empty-directory quick start
-
-```bash
-pnpm create ardo@latest my-docs
-cd my-docs
-pnpm install
-pnpm dev
+```text
+Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
+then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the
+project and adapt the closest tested reference from the matching Ardo
+release tag. Preserve existing application behavior and deployment choices.
+Run the applicable typecheck, tests, and production build, and report the results.
 ```
 
-Open `http://localhost:5173`. Add an `.mdx` file to `app/routes/`, and Ardo adds it to the
-generated sidebar.
+The [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions) cover version selection,
+new sites, integration, and upgrades. Reference projects are integration-tested; the basic and library
+references also install, typecheck, and build against a packed Ardo package outside the workspace.
+Use the reference from the installed version's `ardo-v<version>` tag, or the same checkout revision
+when developing Ardo. The unversioned `llms.txt` follows the current major.
 
-Use this convenience scaffold only when its default shape fits. For an existing workspace, API documentation
-setup, theming, and deployment, use the
-[Getting Started guide](https://ardo-docs.dev/v4/guide/getting-started).
+For setup without an agent, follow
+[manual installation](https://ardo-docs.dev/v6/guide/getting-started#manual-installation).
+Ardo 6 retires `create-ardo`; existing sites continue to use the framework normally.
 
 ## Examples
 
@@ -72,16 +73,10 @@ Runnable examples live in this repository:
 - [Monorepo docs](./examples/monorepo) - Native API documentation across workspace packages.
 - [Content sources](./examples/content-sources) - external Markdown materialized as routes and static React data.
 
-## Packages
+## Package
 
-| Package                                   | Description                                                  | Version                                                                                           |
-| ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| [**ardo**](./packages/ardo)               | Core framework: Vite plugin, runtime hooks, theme components | [![npm](https://img.shields.io/npm/v/ardo.svg)](https://www.npmjs.com/package/ardo)               |
-| [**create-ardo**](./packages/create-ardo) | Scaffolding CLI for new projects                             | [![npm](https://img.shields.io/npm/v/create-ardo.svg)](https://www.npmjs.com/package/create-ardo) |
-
-The packages are released together with linked versions. Release history is kept in
-[packages/ardo/CHANGELOG.md](./packages/ardo/CHANGELOG.md) and
-[packages/create-ardo/CHANGELOG.md](./packages/create-ardo/CHANGELOG.md).
+[**ardo**](./packages/ardo) contains the Vite plugin, runtime hooks, and theme components.
+Release history is kept in [packages/ardo/CHANGELOG.md](./packages/ardo/CHANGELOG.md).
 
 ## Development
 

@@ -1,7 +1,26 @@
 import { expect, test } from "@playwright/test"
 
-const docsBasePath = "/v5"
+const docsBasePath = "/v6"
 const gettingStartedPath = `${docsBasePath}/guide/getting-started`
+
+test("versioned agent onboarding is available in HTML and machine-readable documentation", async ({
+  page,
+  request,
+}) => {
+  await page.goto(gettingStartedPath)
+  await page.getByRole("link", { name: "Agent Instructions", exact: true }).last().click()
+  await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions`)
+  await expect(page.getByRole("heading", { level: 1, name: "Agent Instructions" })).toBeVisible()
+
+  const index = await request.get(`${docsBasePath}/llms.txt`)
+  expect(index.ok()).toBe(true)
+  expect(await index.text()).toContain("https://ardo-docs.dev/v6/guide/agent-instructions")
+  expect(await index.text()).toContain("https://ardo-docs.dev/v6/llms-full.txt")
+  const full = await request.get(`${docsBasePath}/llms-full.txt`)
+  expect(full.ok()).toBe(true)
+  expect(await full.text()).toContain("## Match the Version First")
+  expect(await full.text()).toContain("examples/basic")
+})
 
 test("built docs site hydrates and supports search and theme interactions", async ({ page }) => {
   const consoleErrors: string[] = []
@@ -22,7 +41,7 @@ test("built docs site hydrates and supports search and theme interactions", asyn
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/v5\/guide\/configuration#markdown$/)
+  await expect(page).toHaveURL(/\/v6\/guide\/configuration#markdown$/)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
@@ -38,7 +57,7 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
 
   await menu.getByRole("link", { name: "Markdown Features" }).click()
 
-  await expect(page).toHaveURL(/\/v5\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v6\/guide\/markdown/)
   await expect(menu).toBeHidden()
 })
 
@@ -119,4 +138,18 @@ test("native Markdown fences render visible line numbers and highlighted lines",
   expect.soft(highlightedStyles.borderLeftColor).not.toBe(ordinaryStyles.borderLeftColor)
   expect.soft(highlightedStyles.borderLeftWidth).toBe("3px")
   expect.soft(highlightedStyles.borderLeftStyle).toBe("solid")
+})
+
+test("consumer CSS overrides Ardo even before its stylesheet and after navigation", async ({
+  page,
+}) => {
+  await page.goto(gettingStartedPath)
+  const override = await page.addStyleTag({
+    content: ".ardo-footer { background-color: rgb(12, 34, 56); }",
+  })
+  await override.evaluate((element) => document.head.prepend(element))
+  await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
+  await page.locator(`a[href="${docsBasePath}/guide/markdown"]`).first().click()
+  await expect(page).toHaveURL(new RegExp(`${docsBasePath}/guide/markdown$`))
+  await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
 })

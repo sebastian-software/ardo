@@ -8,20 +8,30 @@ order: 2.6
 
 Ardo keeps four small reference projects in the repository. They are maintained as product contracts: each is integration-tested, readable in isolation, and a better starting point for a human or coding agent than a generic generator template.
 
+## Use the Matching Release
+
+Open the [Git tag](https://github.com/sebastian-software/ardo/tags) matching your exact installed version: `ardo-v<version>`. Read the paths below in that tag. For Ardo development, use the references and built package from the same checkout revision as these instructions. Do not combine released packages with examples from `main`.
+
+Replace the references' `ardo: workspace:*` dependency with the selected released version when creating an independent project. Keep compatible dependency versions from that tag and use your own package manager's lockfile. [Agent Instructions](/guide/agent-instructions) cover setup and adaptation.
+
 ## Product Documentation
 
-The [basic reference](https://github.com/sebastian-software/ardo/tree/main/examples/basic) is for one React app that publishes guides, Markdown/MDX pages, search, and static output.
+`examples/basic` is for a new site or one React app that publishes guides, Markdown/MDX pages, search, and static output.
 
 ## TypeScript Library Documentation
 
-The [library reference](https://github.com/sebastian-software/ardo/tree/main/examples/library) pairs guide pages with native API output from a small TypeScript package.
+`examples/library` pairs guide pages with native API output from a small TypeScript package.
 
 ## Monorepo Documentation
 
-The [monorepo reference](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo) keeps docs and several workspace packages in one repository.
+`examples/monorepo` keeps docs and several workspace packages in one repository.
 
 ## Content Owned Elsewhere
 
-The [content sources reference](https://github.com/sebastian-software/ardo/tree/main/examples/content-sources) maps Markdown from outside `app/routes/` into generated pages and exposes the same static records to a custom React route.
+`examples/content-sources` maps Markdown from outside `app/routes/` into generated pages and exposes the same static records to a custom React route.
 
-Each reference README declares its intended shape, required files, configurable seams, generated-file boundary, and validation commands. When using an agent, link it to [Adopt Ardo in an Existing Project](/guide/adopt-ardo) first and ask it to select the closest reference before proposing changes.
+Each reference README declares its intended shape, required files, configurable seams, generated-file boundary, and validation commands.
+
+## Validation
+
+`pnpm test:integration` builds the reference projects and checks their static output in CI on Node.js 22, 24, and 26. The basic and library references also install, typecheck, and build as isolated consumers of the packed Ardo package. This checks the package boundary as well as workspace integration. Run the applicable checks in your own repository after adapting a reference.

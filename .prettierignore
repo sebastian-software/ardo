@@ -1,6 +1,3 @@
-# Template files contain placeholders that aren't valid syntax
-packages/create-ardo/templates/
-
 # Build outputs
 dist/
 build/

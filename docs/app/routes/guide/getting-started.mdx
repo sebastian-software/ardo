@@ -1,41 +1,40 @@
 ---
 title: Getting Started
-description: Add static React documentation with Ardo, either through an agent-guided adoption or a small standalone project.
+description: Set up Ardo 6 with versioned agent instructions and tested reference projects, or follow the manual installation guide.
 order: 2
 ---
 
 # Getting Started
 
-For an existing repository, start with [Adopt Ardo in an Existing Project](/guide/adopt-ardo). It gives a coding agent a safe, reference-project-based path without replacing your application setup. The standalone CLI remains useful for an empty directory when its default shape is already what you want.
+Start with [Agent Instructions](/guide/agent-instructions) for a new site, an existing React repository, or an upgrade. The instructions use [tested reference projects](/guide/reference-projects) matched to your Ardo version. Ardo 6 retires the `create-ardo` starter.
 
-## Existing project
+## Set Up with an Agent
 
-Give your coding agent the URL `https://ardo-docs.dev/llms.txt` and the [adoption guide](/guide/adopt-ardo). It will inspect the repository, select the closest reference project, and propose the smallest change before editing files.
+Give your coding agent this instruction together with the repository:
+
+```text
+Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
+then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the
+project and adapt the closest tested reference from the matching Ardo
+release tag. Preserve existing application behavior and deployment choices.
+Run the applicable typecheck, tests, and production build, and report the results.
+```
+
+Use `/v6/llms-full.txt` when the agent needs the complete documentation as Markdown. The unversioned text files follow the current major; use the versioned URLs for a repeatable setup. For development before a release, use the instructions, references, and built package from the same checkout revision.
+
+The basic reference covers a new site or product docs. Choose the library, monorepo, or content sources reference when that matches your repository. For an existing app, see [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
 
 ## Prerequisites
 
 You'll need:
 
-- [Node.js](https://nodejs.org/) version 22.13.0 or higher
+- [Node.js](https://nodejs.org/) version 22.22.0 or higher
 - Linux or Windows on x64/arm64, or macOS on Apple Silicon, with optional native package dependencies enabled
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
-## Empty-directory convenience
-
-Use `create-ardo` only when you want its opinionated, complete starter shape — configuration, example content, and a GitHub Pages workflow — in a new empty directory.
-
-```bash
-pnpm create ardo@latest my-docs
-cd my-docs
-pnpm install
-pnpm dev
-```
-
-Open `http://localhost:5173` and you'll see your site. Add an MDX file to `app/routes/`, and Ardo includes it in the generated navigation.
-
 ## Manual Installation
 
-If you want to add Ardo to an existing workspace or understand the scaffold, follow the manual setup. The split is simple: Vite handles build-time configuration, React handles UI configuration.
+For setup without an agent, follow these steps and the matching [reference project](/guide/reference-projects). In an existing workspace, merge the required configuration into your application rather than creating a replacement shell. Ardo's CLI supplies the build integration; React handles UI configuration.
 
 ### 1. Create a new project
 
@@ -48,25 +47,25 @@ pnpm init
 ### 2. Install dependencies
 
 ```bash
-pnpm add ardo lucide-react react react-dom react-router isbot
-pnpm add -D @react-router/dev @tailwindcss/vite tailwindcss typescript vite @types/react @types/react-dom
+pnpm add ardo@6
+pnpm add -D typescript@6
 ```
 
 ### 3. Add package scripts
 
-React Router owns the dev server, production build, and local preview commands:
+Ardo manages React, React DOM, React Router, and Vite as its own dependencies. Its CLI starts the development server, builds the static site, and previews the generated client output:
 
 ```json
 {
   "scripts": {
-    "dev": "react-router dev",
-    "build": "react-router build",
-    "preview": "vite preview"
+    "dev": "ardo dev",
+    "build": "ardo build",
+    "preview": "ardo preview"
   }
 }
 ```
 
-When you use pnpm, add the same build-script allowlist that the scaffold ships so esbuild can
+When you use pnpm, add a build-script allowlist so esbuild can
 prepare Vite's native dependency:
 
 ```yaml
@@ -78,42 +77,38 @@ allowBuilds:
   esbuild: true
 ```
 
-### 4. Create Vite configuration
+### 4. Add optional Ardo configuration
 
-The `ardo()` plugin handles build-time configuration. UI configuration (navigation, sidebar, footer) is done via JSX props in `root.tsx`:
+Ardo works without a configuration file. Add `ardo.config.ts` when you want to set site metadata, theme, deployment, or content options. UI configuration (navigation, sidebar, footer) stays in JSX props in `root.tsx`:
 
 ```ts
-import { defineConfig } from "vite"
-import tailwindcss from "@tailwindcss/vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    ardo({
-      title: "My Documentation",
-      description: "My awesome documentation site",
-    }),
-  ],
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "My awesome documentation site",
 })
 ```
+
+Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
+adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.
 
 ### 5. Create React Router configuration
 
 Ardo uses React Router 8 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
 
 ```ts
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig } from "ardo/config"
 
 export default {
   ssr: false,
   prerender: true,
-} satisfies Config
+} satisfies ReactRouterConfig
 ```
 
 ### 6. Create app files
 
-These are standard React Router entry files plus Ardo's root component. If you've worked with React Router before, the shape should feel familiar.
+Create an Ardo root component. React Router supplies the default client entry. The server entry delegates to Ardo, which renders the complete page with its shared runtime. Customized entry files remain supported.
 
 **`app/root.tsx`**:
 
@@ -128,11 +123,11 @@ import {
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
+import type { ReactNode } from "ardo/react"
 import config from "virtual:ardo/config"
-import "./app.css"
 import "ardo/ui/styles.css"
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
 
@@ -155,69 +150,43 @@ export default function Root() {
 }
 ```
 
-**`app/app.css`**:
-
-```css
-@layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
-```
-
-**`app/entry.client.tsx`**:
-
-```tsx
-import { startTransition, StrictMode } from "react"
-import { hydrateRoot } from "react-dom/client"
-import { HydratedRouter } from "react-router/dom"
-
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <HydratedRouter />
-    </StrictMode>
-  )
-})
-```
-
 **`app/entry.server.tsx`**:
 
 ```tsx
-import type { EntryContext } from "react-router"
-import { ServerRouter } from "react-router"
-import { renderToReadableStream } from "react-dom/server"
-import { isbot } from "isbot"
+export { default, streamTimeout } from "ardo/entry.server"
+```
 
-export default async function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  routerContext: EntryContext
-) {
-  const userAgent = request.headers.get("user-agent")
+**`tsconfig.json`**:
 
-  const stream = await renderToReadableStream(
-    <ServerRouter context={routerContext} url={request.url} />,
-    {
-      onError(error: unknown) {
-        console.error(error)
-        responseStatusCode = 500
-      },
-    }
-  )
-
-  if (userAgent && isbot(userAgent)) {
-    await stream.allReady
-  }
-
-  responseHeaders.set("Content-Type", "text/html")
-
-  return new Response(stream, {
-    status: responseStatusCode,
-    headers: responseHeaders,
-  })
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "ardo",
+    "types": ["ardo/vite/client", "ardo/virtual"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["app/**/*", "*.ts"]
 }
 ```
+
+Import hooks and React types from `ardo/react` and routing APIs from `ardo/router`.
+These public entry points provide types without separate React or router dependencies.
+Ardo also resolves bare React and router imports to its own runtime during development
+and builds, including imports in installed component libraries. Components and the
+renderer therefore use the same React installation even if an ancestor package has
+another version. Other application dependencies must still be declared and installed
+in the documentation package.
+
+For portals and other React DOM APIs, use `ardo/react-dom`. For custom client or server
+entries, use `ardo/react-dom/client`, `ardo/react-dom/server`, and `ardo/router/dom`. Tailwind and other Vite plugins
+are optional; install them in the documentation package when you use them.
 
 ### 7. Create your first document
 
@@ -236,8 +205,8 @@ Welcome to your documentation site!
 That's it. Run `pnpm dev` and you've got a documentation site.
 
 <Tip>
-  The `create-ardo` CLI generates all of these files automatically — use it when you want to skip
-  the boilerplate and get straight to writing.
+  The tested reference projects contain the complete app entry files and configuration. Use the
+  version-matched reference and Agent Instructions when adapting this setup to your repository.
 </Tip>
 
 ## Development
@@ -275,30 +244,24 @@ my-docs/
 │   │   ├── guide/
 │   │   │   └── getting-started.mdx
 │   │   └── home.tsx             # Home page
-│   ├── root.tsx                 # Root layout
-│   ├── entry.client.tsx         # Client entry
-│   ├── entry.server.tsx         # Server entry
-│   └── app.css                  # Tailwind v4 utility layers
-├── vite.config.ts               # Vite + Ardo configuration
+│   ├── entry.server.tsx         # Delegates to Ardo
+│   └── root.tsx                 # Root layout
+├── ardo.config.ts               # Optional site configuration
+├── vite.config.ts               # Optional extra Vite plugins or settings
 ├── react-router.config.ts       # React Router configuration
 ├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
 ├── tsconfig.json
 └── package.json
 ```
 
-The repository also includes runnable examples for common layouts:
-[basic](https://github.com/sebastian-software/ardo/tree/main/examples/basic),
-[library](https://github.com/sebastian-software/ardo/tree/main/examples/library), and
-[monorepo](https://github.com/sebastian-software/ardo/tree/main/examples/monorepo). For Markdown
-owned outside `app/routes/`, start with the
-[content sources reference](https://github.com/sebastian-software/ardo/tree/main/examples/content-sources).
+Choose a [tested reference project](/guide/reference-projects) from the Git tag matching your installed Ardo version. References cover basic sites, libraries, monorepos, and externally owned Markdown.
 
 ## Next Steps
 
 Your site is running. Now make it yours:
 
 - Write richer content with [Markdown Features](/guide/markdown)
-- Style your pages with [Tailwind CSS](/guide/tailwind) — included by default, ready to use
+- Add optional utility classes with [Tailwind CSS](/guide/tailwind)
 - Customize the look with [Custom Theme](/guide/custom-theme)
 - Style with type-safe tokens using [Vanilla Extract](/guide/custom-theme#vanilla-extract-tokens) — `.css.ts` files work out of the box
 - [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel

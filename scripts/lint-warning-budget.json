@@ -1,0 +1,16 @@
+{
+  "@cspell/spellchecker": 4,
+  "@typescript-eslint/no-deprecated": 4,
+  "compat/compat": 20,
+  "react-refresh/only-export-components": 15,
+  "react/no-children-count": 1,
+  "react/no-children-map": 1,
+  "react/no-children-to-array": 9,
+  "react/no-clone-element": 5,
+  "react/no-danger": 3,
+  "react/no-unused-props": 1,
+  "security/detect-non-literal-fs-filename": 339,
+  "security/detect-non-literal-regexp": 1,
+  "security/detect-possible-timing-attacks": 1,
+  "storybook/no-title-property-in-meta": 3
+}

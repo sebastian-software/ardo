@@ -43,6 +43,8 @@ import { validateOpenApiConfig } from "./openapi"
 import { validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
+export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
+
 type ConfigModule = {
   default?: unknown
 }
@@ -326,3 +328,4 @@ function isValidUrl(value: string): boolean {
     return false
   }
 }
+export type { Config as ReactRouterConfig } from "@react-router/dev/config"

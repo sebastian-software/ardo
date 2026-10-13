@@ -1,37 +1,54 @@
 ---
 title: Configuration
-description: Configure Ardo's Vite plugin, generated routes, Markdown pipeline, API output, and React UI.
+description: Configure Ardo's CLI, generated routes, Markdown pipeline, API output, and React UI.
 order: 10
 ---
 
 # Configuration
 
-Ardo keeps configuration split where React teams expect it:
+Ardo's CLI reads optional site configuration from `ardo.config.ts`. Most sites do not need a Vite
+configuration file: `ardo dev`, `ardo build`, and `ardo preview` provide the framework integration.
+Keep UI behavior in React: `ArdoRoot`, header/sidebar/footer props, component overrides, and runtime
+hooks.
 
-- **Build behavior** lives in the `ardo()` Vite plugin: site metadata, routes, Markdown, API documentation, and deployment helpers.
-- **UI behavior** lives in React: `ArdoRoot`, header/sidebar/footer props, component overrides, and runtime hooks.
-
-This page documents the build-time options first, then points to the React-side UI hooks and components.
+This page documents Ardo's site and build options, then points to the React-side UI hooks and
+components. Existing Vite projects can continue to use the `ardo()` plugin API while migrating.
 For a broader capability matrix, including planned features that are not yet configurable, see
 [Feature Status](/guide/status-roadmap).
 
 ## Basic Setup
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "My Documentation",
-      description: "My awesome docs",
-    }),
-  ],
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "My awesome docs",
 })
 ```
 
-The `ardo()` function accepts an options object that combines site configuration (from `ArdoConfig`) with plugin-specific settings.
+The `defineArdoConfig()` function accepts the same Ardo options that the Vite plugin supports. Add a
+`vite.config.ts` only for extra Vite plugins or Vite-specific settings; the CLI supplies Ardo's
+plugins automatically.
+
+For example, configure the development server without adding an `ardo()` call:
+
+```ts
+import { defineConfig } from "ardo/vite"
+
+export default defineConfig({
+  server: { port: 4000 },
+})
+```
+
+`defineConfig` is re-exported by Ardo, so this does not require a direct Vite dependency.
+
+Both files can export an object, a promise, or a callback that receives Vite's configuration
+environment. Changes to existing config files restart the development server automatically.
+Restart `ardo dev` after adding or removing either file.
+
+When migrating a project, move options from `ardo({...})` into `ardo.config.ts` before removing the
+plugin. Ardo reports an error if both configuration forms remain active for one project.
 
 ---
 
@@ -42,9 +59,10 @@ These options control the identity and basic behavior of your documentation site
 ### title
 
 - **Type:** `string`
-- **Required**
+- **Default:** `"Ardo"`
 
-The site title, used in the default `<title>` meta tag and displayed in the header.
+The site title, used in the default `<title>` meta tag and displayed in the header. Set it in
+`ardo.config.ts` when you want a custom title.
 
 ```ts
 ardo({
@@ -96,7 +114,7 @@ ardo({
 
 <Tip>
   When deploying to GitHub Pages, Ardo auto-detects the repository name and sets the base path for
-  you. See the `githubPages` plugin option below.
+  you. See the `githubPages` option below.
 </Tip>
 
 ### siteUrl
@@ -170,6 +188,11 @@ Generates LLM-friendly text artifacts alongside the other build outputs:
 
 - `/llms.txt` is a concise Markdown index with links to Markdown and MDX routes.
 - `/llms-full.txt` is the same documentation content as one Markdown file.
+
+With documentation versioning enabled, Ardo also emits both files under the current version's
+path, such as `/v6/llms.txt` and `/v6/llms-full.txt`. The versioned index links to its versioned
+full-text file. Preserve these files with older HTML snapshots; the root files remain aliases for
+the current documentation version.
 
 Ardo uses page frontmatter titles and descriptions when available, skips TSX routes, and strips MDX
 imports, exports, and JSX component tags from the full export. Set `llms: false` in page
@@ -461,8 +484,8 @@ Legacy static head tags. Prefer React Router's `meta` export and route-level met
 
 - **Type:** `Record<string, unknown>`
 
-Reserved for Vite-adjacent integration data. Most projects should configure Vite directly in
-`vite.config.ts` instead of nesting options here.
+Reserved for Vite-adjacent integration data. Configure Vite-specific settings in an optional
+`vite.config.ts`; Ardo's CLI merges that file with its own integration.
 
 ### project
 
@@ -473,9 +496,11 @@ from `package.json` when possible.
 
 ---
 
-## Plugin Options
+## Integration Options
 
-These options are specific to the `ardo()` Vite plugin and are **not** part of `ArdoConfig`.
+These options control route generation and other build integrations. Set them in `ardo.config.ts`
+with `defineArdoConfig()`. Existing Vite projects can keep passing the same options to `ardo()` while
+they migrate.
 
 ### routes
 
@@ -707,7 +732,10 @@ Per-page configuration is done through frontmatter in your MDX files. See the de
 
 ---
 
-## Full Example
+## Vite Plugin Compatibility Example
+
+This form remains supported for projects that manage Vite directly. New Ardo sites should use
+`ardo.config.ts` and only add a Vite config for custom Vite integrations.
 
 ```ts
 import { defineConfig } from "vite"

@@ -257,6 +257,17 @@ globalStyle(".ardo-content a", {
 })
 ```
 
+### Stylesheet ownership and cascade
+
+Import `ardo/ui/styles.css` once in your root module. It includes the complete UI,
+reset, and theme styles in the named `ardo` cascade layer. Component imports do
+not load another copy of the stylesheet.
+
+Normal unlayered app CSS takes precedence over Ardo's normal layered rules,
+regardless of stylesheet load order. You can override `.ardo-footer` directly
+without adding extra selectors. If your app uses layers, declare their order
+before importing the stylesheets, for example `@layer ardo, app;`.
+
 ### Stable override hooks
 
 Ardo's generated Vanilla Extract class names are implementation details. Use the stable hook classes

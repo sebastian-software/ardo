@@ -1,6 +1,6 @@
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig } from "ardo/config"
 
 export default {
   ssr: false,
   prerender: true,
-} satisfies Config
+} satisfies ReactRouterConfig

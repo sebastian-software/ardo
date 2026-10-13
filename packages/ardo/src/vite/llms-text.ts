@@ -1,6 +1,7 @@
 import type { LlmsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
+import { getCurrentVersion } from "../config/versioning"
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
 import { buildPublicPath } from "./route-identity"
 
@@ -70,6 +71,24 @@ export function createLlmsTextAssets(
       fileName: llmsAssets.fullFileName,
       source: generateLlmsFullTxt(entries, config),
     })
+  }
+
+  const version = config.versioning === false ? undefined : getCurrentVersion(config.versioning)
+  if (version != null) {
+    const versionFolder = version.path.slice(config.deploymentBase.length, -1)
+    if (versionFolder !== "") {
+      const versionedConfig = { ...config, deploymentBase: version.path }
+      assets.push({
+        fileName: `${versionFolder}/${llmsAssets.indexFileName}`,
+        source: generateLlmsTxt(entries, versionedConfig),
+      })
+      if (llmsAssets.includeFull) {
+        assets.push({
+          fileName: `${versionFolder}/${llmsAssets.fullFileName}`,
+          source: generateLlmsFullTxt(entries, versionedConfig),
+        })
+      }
+    }
   }
 
   return assets

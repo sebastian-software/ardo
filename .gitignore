@@ -1,5 +1,6 @@
 # Dependencies
 node_modules
+.pnpm-store/
 
 # Build outputs
 dist
@@ -25,6 +26,7 @@ Thumbs.db
 
 # Test
 coverage
+test-results/
 
 # Environment
 .env
