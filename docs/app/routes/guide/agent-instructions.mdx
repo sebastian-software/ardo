@@ -1,6 +1,6 @@
 ---
 title: Agent Instructions
-description: Set up, adopt, or upgrade Ardo 6 using version-matched instructions and integration-tested reference projects.
+description: Set up, adopt, or upgrade Ardo 6 using version-matched instructions and a tested Basic example.
 order: 2.4
 ---
 
@@ -12,7 +12,7 @@ These instructions cover Ardo 6. Use them for a new documentation site, an exist
 
 Read the repository's manifest and lockfile to identify its installed Ardo version. For a new site, target Ardo 6 explicitly. Use `https://ardo-docs.dev/v6/llms.txt` as the documentation index and `https://ardo-docs.dev/v6/llms-full.txt` for the complete Markdown instructions. The unversioned text files follow the current documentation version and can change when another major is released.
 
-Read the reference project from the matching `ardo-v<exact-version>` Git tag in [Ardo's repository](https://github.com/sebastian-software/ardo/tags). For example, Ardo `6.0.0` uses `ardo-v6.0.0`. Do not combine a released package with examples from `main`. During development, use the instructions, examples, and built package from the same checkout revision.
+Read `examples/basic` from the matching `ardo-v<exact-version>` Git tag in [Ardo's repository](https://github.com/sebastian-software/ardo/tags). For example, Ardo `6.0.0` uses `ardo-v6.0.0`. Do not combine a released package with examples from `main`. During development, use the instructions, examples, and built package from the same checkout revision.
 
 When upgrading from another major, read that major's documentation and the target major's migration guidance before changing configuration. If a matching release tag or instruction is unavailable, report the gap rather than guessing from a different version.
 
@@ -20,26 +20,38 @@ When upgrading from another major, read that major's documentation and the targe
 
 Check the package manager, workspace layout, Node.js version, dependency versions, `ardo.config.*`, Vite configuration, React Router configuration, application root, routes, styles, and deployment workflow. Ardo needs Node.js 22.22.0 or newer and a supported native target with optional dependencies enabled.
 
-Choose the closest [reference project](/guide/reference-projects):
+Use the version-matched [Basic example](/guide/reference-projects) at
+`examples/basic` as the shared application setup. Read its README, manifest,
+configuration, and app files. Its README identifies the authored source,
+generated files, and commands for both workspace and independent use.
 
-| Task                                                | Reference path in the matching Git tag |
-| --------------------------------------------------- | -------------------------------------- |
-| New site or product documentation in one React app  | `examples/basic`                       |
-| TypeScript library with generated API documentation | `examples/library`                     |
-| Documentation for multiple workspace packages       | `examples/monorepo`                    |
-| Markdown owned outside the route tree               | `examples/content-sources`             |
+Select optional features by the project's needs:
 
-Read the reference README, manifest, configuration, app entry files, and build test. Its contract identifies the authored source and generated files. References describe working project shapes; adapt them to the target repository.
+| Need                                                      | Configuration guide                                             |
+| --------------------------------------------------------- | --------------------------------------------------------------- |
+| API reference for one TypeScript project                  | [Native API Documentation](/guide/api-documentation)            |
+| API reference for multiple packages                       | [Multiple packages](/guide/api-documentation#multiple-packages) |
+| Markdown outside the route tree or static collection data | [Content Sources](/guide/content-sources)                       |
+| Hosting and base-path settings                            | [Deployment](/guide/deployment)                                 |
+
+A monorepo changes API inputs, not the documentation application's runtime
+boundary. Declare and install the docs package's dependencies locally. Import
+workspace components through an installed packaged dependency, not sibling
+source paths. API generation can read separately configured TypeScript projects.
+
+A setup skill should use these versioned instructions and the same Basic
+example, then add the selected feature configuration. Keep setup rules here
+instead of maintaining separate skill templates.
 
 ## Make the Smallest Compatible Change
 
-State the chosen reference, files to add or change, validation commands, and unresolved choices before editing. Follow the repository's instructions and the requested scope. Ask for direction when a necessary change affects existing application behavior or deployment ownership.
+State the example revision, files to add or change, validation commands, and unresolved choices before editing. Follow the repository's instructions and the requested scope. Ask for direction when a necessary change affects existing application behavior or deployment ownership.
 
-For a **new site**, adapt the basic reference into the requested directory. Replace `workspace:*` with an explicit released Ardo 6 dependency, let Ardo manage its React, router, and Vite versions, and use the chosen package manager's lockfile. Workspace references use `workspace:*` only inside Ardo's own repository. With pnpm, allow esbuild's build script as shown in [manual installation](/guide/getting-started#manual-installation); do not copy Ardo's entire workspace policy. Set a custom site title in optional `ardo.config.ts`, add the authored routes, then adapt the deployment configuration to the requested host.
+For a **new site**, adapt the basic reference into the requested directory. Replace `workspace:*` with an explicit released Ardo 6 dependency, let Ardo manage its React, router, and Vite versions, and use the chosen package manager's lockfile. The workspace example uses `workspace:*` only inside Ardo's own repository. With pnpm, allow esbuild's build script as shown in [manual installation](/guide/getting-started#manual-installation); do not copy Ardo's entire workspace policy. Set a custom site title in optional `ardo.config.ts`, add the authored routes, then adapt the deployment configuration to the requested host.
 
 For an **existing project**, introduce Ardo around documentation routes. Merge the necessary dependencies and move Ardo's options into optional `ardo.config.ts` with `defineArdoConfig` from `ardo/config`. Preserve custom Vite plugins and settings in `vite.config.ts`; the Ardo CLI adds its own framework integration without an `ardo()` plugin call. Preserve customized root/layout code, providers, component systems, styles, routes, workspace policy, and deployment choices. See [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
 
-For an **upgrade**, update the dependency and documented integration changes. Compare the existing setup with the matching target reference. Preserve authored content and application-specific behavior; do not replace framework entry files wholesale.
+For an **upgrade**, update the dependency and documented integration changes. Compare the existing setup with the matching target example. Preserve authored content and application-specific behavior; do not replace framework entry files wholesale.
 
 `app/routes.ts`, generated API routes, and materialized collection routes are build output. Do not edit them by hand. Native API documentation is opt-in; add its native compiler alias, `oxc-parser` dependency, and API configuration only when the project needs it. Follow [Native API Documentation](/guide/api-documentation) for the matching dependency versions. Use `ardo dev`, `ardo build`, and `ardo preview` for the managed toolchain. Import React APIs from `ardo/react`, router APIs from `ardo/router`, Vite configuration helpers from `ardo/vite`, and the `ReactRouterConfig` type from `ardo/config`. Set `jsxImportSource` to `ardo` and use `ardo/vite/client` in TypeScript's `types` list. The basic reference only requires Ardo at runtime; TypeScript remains a development tool. The default client entry comes from React Router. The server entry re-exports `default` and `streamTimeout` from `ardo/entry.server`; retain it so React Router does not add `isbot` to the project. Tailwind is optional; retain the repository's styling choice.
 
@@ -51,4 +63,4 @@ Inspect the generated HTML for the home page and an authored documentation route
 
 Report the files changed, dependency version, selected reference tag or checkout revision, validation results, and any remaining gaps. Do not deploy or change hosted-service ownership unless requested.
 
-The reference projects are built and their output is checked by `pnpm test:integration` in Ardo's CI. The basic and library references also run as isolated consumers of the packed Ardo package, including a typecheck and production build. These checks validate the reference setup; they do not evaluate every agent's interpretation of these instructions.
+Ardo's CI runs `pnpm test:integration` against Basic and focused internal feature fixtures. Basic and its optional API configuration also install, typecheck, and build against the packed Ardo package outside the workspace. Browser checks cover development and preview. These checks validate the executable setup; they do not evaluate every agent's interpretation of these instructions.

@@ -71,10 +71,6 @@ jobs:
         if: matrix.node-version == '22'
         run: pnpm docs:prepare-pages
 
-      - name: Build examples
-        if: matrix.node-version == '22'
-        run: pnpm --filter './examples/*' build
-
       - name: Install Playwright browsers
         if: matrix.node-version == '22'
         run: pnpm exec playwright install --with-deps chromium
@@ -86,11 +82,11 @@ jobs:
           ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
 
-      - name: Verify Basic development and preview hydration
+      - name: Verify Basic and runtime fixture development and preview hydration
         if: matrix.node-version == '22'
         run: |
-          pnpm exec playwright test --config examples/basic/playwright.config.mjs
-          ARDO_BASIC_BROWSER_SERVER=preview pnpm exec playwright test --config examples/basic/playwright.config.mjs
+          pnpm test:e2e:examples
+          ARDO_EXAMPLE_BROWSER_SERVER=preview pnpm test:e2e:examples
 
       - name: Build Storybook
         if: matrix.node-version == '22'

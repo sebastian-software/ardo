@@ -46,6 +46,7 @@ pnpm-debug.log*
 /docs/content/api-reference
 **/app/routes/api-reference
 **/app/routes.ts
+**/.react-router/
 
 # Impeccable critique cache (local tooling artifact)
 .impeccable/

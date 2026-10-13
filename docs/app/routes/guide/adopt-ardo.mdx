@@ -9,22 +9,26 @@ order: 2.5
 Ardo fits into an existing React, Vite, and React Router repository. Do not regenerate the project or replace its component system. Give a coding agent this instruction together with the repository:
 
 ```text
-Add Ardo 6 documentation to this repository. Read https://ardo-docs.dev/v6/llms.txt first, then follow https://ardo-docs.dev/v6/guide/agent-instructions and the adoption guide. Inspect the project, adapt the closest tested reference from the matching Ardo release tag, preserve existing routing, components, styles, and deployment choices, and run the applicable checks.
+Add Ardo 6 documentation to this repository. Read https://ardo-docs.dev/v6/llms.txt first, then follow https://ardo-docs.dev/v6/guide/agent-instructions and the adoption guide. Inspect the project, adapt the tested Basic example from the matching Ardo release tag, preserve existing routing, components, styles, and deployment choices, and run the applicable checks.
 ```
 
 `/v6/llms.txt` is a concise map of the Ardo 6 documentation; `/v6/llms-full.txt` contains the complete Markdown context. Both are generated with the versioned docs build. The unversioned aliases follow the current major. [Agent Instructions](/guide/agent-instructions) define the shared setup and upgrade workflow.
 
-## Choose a Reference Project
+## Start from the Basic Example
 
-Choose the matching release tag and reference path listed in [Reference Projects](/guide/reference-projects). The basic reference covers product docs; library and monorepo references add native API documentation; content sources covers Markdown owned outside the route tree.
+Read the version-matched [Basic example](/guide/reference-projects) for the common
+application setup. Add [API documentation](/guide/api-documentation),
+[external content](/guide/content-sources), or [deployment settings](/guide/deployment)
+only when the project needs them.
 
-References are target shapes, not files to copy wholesale. Their READMEs identify required files, configurable seams, generated-file boundaries, and validation commands.
+The example's README identifies editable files, generated-file boundaries, and
+validation commands. Preserve customized application behavior while adapting it.
 
 ## Agent Workflow
 
 1. Inspect `package.json`, the workspace layout, `ardo.config.*`, `vite.config.*`, `react-router.config.*`, the app root, existing routes, and deployment workflow.
-2. Read this guide, [Getting Started](/guide/getting-started), [Configuration](/guide/configuration), and the closest reference project.
-3. State a plan naming every file to add or change, the selected reference, and any assumption that cannot be verified.
+2. Read this guide, [Getting Started](/guide/getting-started), [Configuration](/guide/configuration), and the Basic example.
+3. State a plan naming every file to add or change, the example revision, and any assumption that cannot be verified.
 4. Follow the repository's instructions and requested scope, resolve choices that change application behavior or deployment ownership, and make the smallest compatible change.
 5. Run the repository's applicable validation commands and report their results.
 
@@ -59,4 +63,4 @@ pnpm test
 pnpm build
 ```
 
-Run only commands the repository defines; report missing checks. Use `CI=true` for non-interactive pnpm environments. Ardo 6 uses the same versioned instructions and references for new sites and existing projects.
+Run only commands the repository defines; report missing checks. Use `CI=true` for non-interactive pnpm environments. Ardo 6 uses the same versioned instructions and Basic example for new sites and existing projects.

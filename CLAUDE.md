@@ -2,10 +2,10 @@
 
 ## Project Structure
 
-This workspace contains the framework, documentation, and tested reference projects:
+This workspace contains the framework, documentation, and one tested Basic example:
 
 - `packages/ardo` - The main documentation framework
-- `examples/` - Reference projects used by versioned Agent Instructions
+- `examples/` - The public Basic example used by versioned Agent Instructions
 
 ## Commit Convention
 
@@ -40,7 +40,8 @@ feat(scaffold): ...  # Don't do this
 - `packages/ardo/src/vite/plugin.ts` - Main Vite plugin
 - `packages/ardo/src/vite/routes-plugin.ts` - Route generation
 - `docs/app/routes/guide/agent-instructions.mdx` - Versioned setup, adoption, and upgrade instructions
-- `examples/` - Integration-tested project contracts
+- `examples/` - The public Basic setup reference
+- `tests/fixtures/` - Internal API, content, deployment, and runtime regression inputs
 - `docs/` - Ardo documentation site
 
 ## Native API Documentation
@@ -55,9 +56,9 @@ ardo({
 
 ## Testing
 
-Integration tests build references and install basic/library references against the packed package:
+Integration tests build Basic with focused fixtures and install Basic and its optional API configuration against the packed package:
 
 ```
-examples/packed-reference.test.ts
+tests/integration/examples/packed-reference.test.ts
 pnpm test:integration
 ```

@@ -53,8 +53,8 @@ export default function HomePage() {
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>Give your coding agent a real starting point</h2>
           <p className={styles.sectionSubtitle}>
-            Start from the project you already have. Ardo&apos;s agent guide, llms.txt, and
-            reference projects make the existing architecture the source of truth.
+            Start from the project you already have. Ardo&apos;s agent guide, llms.txt, and one
+            tested Basic example make the existing architecture the source of truth.
           </p>
 
           <div className={styles.terminal}>
@@ -70,8 +70,7 @@ export default function HomePage() {
                 <span className={styles.terminalPrompt}>$</span> Ask your agent to read the adoption
                 guide
                 <br />
-                <span className={styles.terminalPrompt}>$</span> Choose the closest reference
-                project
+                <span className={styles.terminalPrompt}>$</span> Read the Basic example
                 <br />
                 <br />
                 <span className={styles.terminalSuccess}>✓</span> A focused plan for your repository
@@ -182,7 +181,7 @@ export default function HomePage() {
               language="mdx"
               title="getting-started.mdx"
               code={
-                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo lucide-react react react-dom\n```\n\n<Tip>\n  Start from the reference project closest to your repository.\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
+                '---\ntitle: Getting Started\n---\n\n# Getting Started\n\nInstall Ardo with your favorite package manager:\n\n```bash\npnpm add ardo\n```\n\n<Tip>\n  Start from the tested Basic example and add the features your project needs.\n</Tip>\n\n<CustomAlert type="info">\n  You can use **any React component** in your docs.\n</CustomAlert>'
               }
             />
           </div>
@@ -313,10 +312,10 @@ export default function HomePage() {
       {/* Examples Section */}
       <section className={`${styles.section} ${styles.examplesSection}`}>
         <div className={styles.sectionContainer}>
-          <h2 className={styles.sectionTitle}>Choose your starting shape</h2>
+          <h2 className={styles.sectionTitle}>Start with one small example</h2>
           <p className={styles.sectionSubtitle}>
-            First-party references for an agent or a team. Inspect the closest shape and adapt it to
-            your repository instead of generating a generic project.
+            The same Basic setup works for guides and generated reference. Add API documentation,
+            external content, or deployment settings when your project needs them.
           </p>
 
           <div className={styles.examplesGrid}>
@@ -328,43 +327,23 @@ export default function HomePage() {
             >
               <h3 className={styles.exampleTitle}>Basic docs site</h3>
               <p className={styles.exampleDescription}>
-                A small static documentation site with the default Ardo setup, React Router shell,
-                Tailwind layer, and deploy-ready build output.
+                A small static documentation site with Markdown, a React component, and the managed
+                Ardo toolchain.
               </p>
               <span className={styles.exampleLink}>
                 Open example <span aria-hidden="true">→</span>
               </span>
             </a>
-            <a
-              className={styles.exampleCard}
-              href="https://github.com/sebastian-software/ardo/tree/main/examples/library"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <h3 className={styles.exampleTitle}>Library documentation</h3>
+            <Link className={styles.exampleCard} to="/guide/reference-projects">
+              <h3 className={styles.exampleTitle}>Add the features you need</h3>
               <p className={styles.exampleDescription}>
-                A React library docs setup with generated TypeScript API reference pages. Use this
-                shape when your users need both guides and exported types.
+                Configure API reference, multiple TypeScript projects, external content, and hosting
+                on the same application setup.
               </p>
               <span className={styles.exampleLink}>
-                Open example <span aria-hidden="true">→</span>
+                Read the recipes <span aria-hidden="true">→</span>
               </span>
-            </a>
-            <a
-              className={styles.exampleCard}
-              href="https://github.com/sebastian-software/ardo/tree/main/examples/monorepo"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <h3 className={styles.exampleTitle}>Monorepo documentation</h3>
-              <p className={styles.exampleDescription}>
-                A workspace-oriented setup for teams that keep packages and docs together. Useful
-                when documentation should build from the same repository as the code.
-              </p>
-              <span className={styles.exampleLink}>
-                Open example <span aria-hidden="true">→</span>
-              </span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>

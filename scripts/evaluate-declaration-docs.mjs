@@ -41,9 +41,9 @@ const profiles = [
   },
   {
     name: "library-example",
-    entry: "examples/library/src/index.ts",
-    config: "examples/library/tsconfig.api.json",
-    sourceRoot: "examples/library/src",
+    entry: "tests/fixtures/native-api/src/index.ts",
+    config: "tests/fixtures/native-api/tsconfig.api.json",
+    sourceRoot: "tests/fixtures/native-api/src",
   },
   { name: "ferromark", entry: "packages/ardo/node_modules/ferromark/index.d.mts" },
   { name: "@ferriki/core", entry: "packages/ardo/node_modules/@ferriki/core/index.d.mts" },

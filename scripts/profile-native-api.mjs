@@ -27,9 +27,9 @@ let profile =
         ambient: ["packages/ardo/src/vite-env.d.ts"],
       }
     : {
-        entry: "examples/library/src/index.ts",
-        config: "examples/library/tsconfig.api.json",
-        sourceRoot: "examples/library/src",
+        entry: "tests/fixtures/native-api/src/index.ts",
+        config: "tests/fixtures/native-api/tsconfig.api.json",
+        sourceRoot: "tests/fixtures/native-api/src",
         ambient: [],
       }
 let base = root

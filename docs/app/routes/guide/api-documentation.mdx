@@ -7,8 +7,9 @@ description: Generate API documentation from source using native TypeScript and 
 
 The `api` option generates Markdown documentation from your public
 TypeScript entry points. It includes inferred types, signatures, overloads,
-JSDoc, and supported inherited or composed properties. Ardo's own documentation
-and the library example use this integration.
+JSDoc, and supported inherited or composed properties. Add this optional
+integration to the [Basic example](/guide/reference-projects). Ardo's own
+documentation and internal API fixtures exercise the same generation path.
 
 ## Installation
 
@@ -26,24 +27,20 @@ nightly; it is not a released 7.1 beta.
 ## Configuration
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      api: {
-        entryPoints: ["./src/index.ts"],
-        tsconfig: "./tsconfig.api.json",
-        out: "api-reference",
-        title: "API Reference",
-      },
-    }),
-  ],
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.api.json",
+    out: "api-reference",
+    title: "API Reference",
+  },
 })
 ```
 
-Paths are relative to the Vite project root. `out` must be a child directory of
+Put this configuration in `ardo.config.ts`. Paths are relative to the docs
+project root. `out` must be a child directory of
 your routes directory. `api: true` uses `./src/index.ts`, `./tsconfig.json`, and
 the default output and title shown above. The `api` option is the source API documentation backend.
 
@@ -69,7 +66,9 @@ Pass an array when packages need different TypeScript configurations or separate
 API route prefixes:
 
 ```ts
-ardo({
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
   api: [
     {
       entryPoints: ["./packages/alpha/src/index.ts"],
@@ -93,8 +92,8 @@ attempt. This does not provide TypeScript solution-builder orchestration.
 
 ## Build and development
 
-The regular Vite or React Router build generates API Markdown before route
-discovery. An initial compiler error fails generation. In development, source,
+`ardo build` generates API Markdown before route discovery. No separate
+declaration prebuild or on-disk declaration output is required. An initial compiler error fails generation. In development, source,
 dependency, and configuration changes update the documentation through the
 running native compiler session. Type errors appear in the development overlay
 and retain the last successful pages. Fixing the errors resumes generation.

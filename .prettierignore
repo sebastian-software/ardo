@@ -9,8 +9,7 @@ node_modules/
 # Auto-generated files (TypeDoc API reference)
 docs/app/routes/api-reference/
 docs/app/routes/api-declarations/
-examples/library/.api-declarations/
-examples/library/app/routes/api-declarations/
+tests/fixtures/native-api/.api-declarations/
 CHANGELOG.md
 pnpm-lock.yaml
 

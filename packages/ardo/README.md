@@ -19,7 +19,7 @@ Give your coding agent the repository and this instruction:
 ```text
 Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
 then follow https://ardo-docs.dev/v6/guide/agent-instructions. Adapt the
-closest tested reference from the matching Ardo release tag, preserve
+tested Basic example from the matching Ardo release tag, preserve
 existing application behavior, and run the applicable checks and build.
 ```
 
@@ -31,35 +31,32 @@ Ardo 6 retires `create-ardo`.
 ## Manual installation
 
 ```bash
-pnpm add ardo@6 react@19 react-dom@19 react-router@8 isbot@5
-pnpm add -D @react-router/dev@8 @tailwindcss/vite@4 tailwindcss@4 typescript@6 vite@8 @types/react@19 @types/react-dom@19
+pnpm add ardo@6
+pnpm add -D typescript@6
 ```
 
-## Vite configuration
+Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Ardo
+manages the React, React Router, and Vite dependencies. Follow the
+[Basic example](../../examples/basic) for app files, TypeScript configuration,
+and the minimal pnpm esbuild build-script policy.
+
+## Ardo configuration
+
+Put optional site settings in `ardo.config.ts`:
 
 ```ts
-import { defineConfig } from "vite"
-import tailwindcss from "@tailwindcss/vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    ardo({
-      title: "My Documentation",
-      description: "Docs for my React library",
-      brand: {
-        color: "blue",
-        accent: "teal",
-        neutral: "slate",
-        logo: "./app/assets/logo.svg",
-      },
-    }),
-  ],
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "Docs for my React library",
+  githubPages: false,
 })
 ```
 
-The `ardo()` plugin handles build-time behavior: route generation, MDX processing, native API generation, search data, and static build metadata. UI configuration stays in React through `ArdoRoot` and JSX components.
+The Ardo CLI supplies build integration. Keep `vite.config.ts` only for additional
+Vite plugins or settings. UI configuration stays in React through `ArdoRoot`
+and JSX components.
 
 Use `brand` for the common theme setup: primary color, accent color, neutral chrome tone, and the
 default header logo. Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and
@@ -80,10 +77,11 @@ import {
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
+import type { ReactNode } from "ardo/react"
 import config from "virtual:ardo/config"
 import "ardo/ui/styles.css"
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout>{children}</ArdoRootLayout>
 }
 
@@ -142,7 +140,7 @@ LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/v6/llms-full.
 
 Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
-Examples: [basic](../../examples/basic), [library](../../examples/library), [monorepo](../../examples/monorepo)
+Example: [Basic](../../examples/basic). Optional [API](https://ardo-docs.dev/v6/guide/api-documentation), [content](https://ardo-docs.dev/v6/guide/content-sources), and [deployment](https://ardo-docs.dev/v6/guide/deployment) recipes extend the same setup.
 
 ## License
 
