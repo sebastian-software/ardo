@@ -3,6 +3,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { execSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
+import { createServer } from "vite"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -81,4 +82,36 @@ describe("examples/basic build", () => {
     )
     expect(ardoStylesheets).toHaveLength(1)
   })
+
+  it("bundles components and their runtime into the consumer SSR graph", () => {
+    const serverDir = path.join(__dirname, "build/server")
+    const files = fs.readdirSync(serverDir, { recursive: true }).map(String)
+    for (const file of files.filter((file) => file.endsWith(".js"))) {
+      expect(fs.readFileSync(path.join(serverDir, file), "utf8")).not.toMatch(
+        /^\s*import[^;\n]*from ["'](?:react(?:-dom|-router)?|lucide-react|@base-ui\/react)(?:\/[^"']*)?["']/m
+      )
+    }
+  })
+
+  it("renders a development SSR request with bundled CommonJS dependencies", async () => {
+    const server = await createServer({
+      root: __dirname,
+      configFile: path.join(__dirname, "vite.config.ts"),
+      logLevel: "silent",
+      environments: { ssr: { optimizeDeps: { force: true } } },
+      server: { port: 0, host: "127.0.0.1", hmr: false, watch: null },
+    })
+    try {
+      await server.listen()
+      const address = server.httpServer?.address()
+      if (address == null || typeof address === "string") throw new Error("No HTTP address")
+      const response = await fetch(`http://127.0.0.1:${address.port}/`, {
+        signal: AbortSignal.timeout(20_000),
+      })
+      expect(response.status).toBe(200)
+      expect(await response.text()).toContain("Ardo Basic Example")
+    } finally {
+      await server.close()
+    }
+  }, 30_000)
 })

@@ -22,6 +22,7 @@ import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
+import { createProjectBoundaryPlugin } from "./project-boundary-plugin"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
@@ -78,7 +79,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
     routesDirOption,
   }
-  const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  const plugins: Plugin[] = [
+    createMainPlugin(state, mainPluginOptions),
+    createProjectBoundaryPlugin(),
+  ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
   addContentSourcePlugin(
@@ -204,7 +208,11 @@ function createMainConfig(
   const config: UserConfig = {
     define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    ssr: { noExternal: ["ardo"] },
+    // Bundle components and their server renderer in the same dependency graph.
+    server: { fs: { strict: true, allow: [root] } },
+    ssr: { noExternal: true },
+    // Transform CommonJS dependencies before the development SSR module runner loads them.
+    environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
   }
 
   const baseResult = resolveVersionedMainBase({
