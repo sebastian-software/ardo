@@ -17,12 +17,12 @@ type Story = StoryObj<typeof meta>
 export const Group: Story = {
   args: {
     title: "How do I install Ardo?",
-    children: "Run pnpm create ardo to scaffold a new project.",
+    children: "Follow the versioned Agent Instructions and adapt a tested reference project.",
   },
   render: () => (
     <ArdoAccordionGroup onlyOneOpen>
       <ArdoAccordion title="How do I install Ardo?" icon={<span>⚡</span>} defaultOpen>
-        Run <code>pnpm create ardo</code> to scaffold a new project.
+        Follow the versioned Agent Instructions and adapt a tested reference project.
       </ArdoAccordion>
       <ArdoAccordion title="Can I use it with existing projects?" icon={<span>🧩</span>}>
         Yes, Ardo can be added to an existing React Router project.

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
+import { resolveConfig } from "../config"
 import { createLlmsTextAssets, generateLlmsFullTxt, generateLlmsTxt } from "./llms-text"
 import { createPageMetadata } from "./page-metadata"
 import { createCurrentRouteIdentity } from "./route-identity"
@@ -100,6 +101,52 @@ describe("llms-text", () => {
     expect(createLlmsTextAssets([], config).map((asset) => asset.fileName)).toStrictEqual([
       "llms.txt",
       "llms-full.txt",
+    ])
+  })
+
+  it("emits versioned instructions with a versioned full-text link alongside the latest aliases", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        versioning: {
+          current: "v6",
+          versions: [
+            { id: "v6", path: "/v6/" },
+            { id: "v5", path: "/v5/" },
+          ],
+        },
+      },
+      "/tmp"
+    )
+    const assets = createLlmsTextAssets([], versionedConfig)
+    expect(assets.map((asset) => asset.fileName)).toStrictEqual([
+      "llms.txt",
+      "llms-full.txt",
+      "v6/llms.txt",
+      "v6/llms-full.txt",
+    ])
+    expect(assets.find((asset) => asset.fileName === "llms.txt")?.source).toContain(
+      "https://example.com/docs/llms-full.txt"
+    )
+    expect(assets.find((asset) => asset.fileName === "v6/llms.txt")?.source).toContain(
+      "https://example.com/docs/v6/llms-full.txt"
+    )
+  })
+
+  it("respects custom filenames and disabled full text in versioned output", () => {
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
+        seo: { llms: { indexFileName: "agent/index.txt", includeFull: false } },
+      },
+      "/tmp"
+    )
+    expect(createLlmsTextAssets([], versionedConfig).map((asset) => asset.fileName)).toStrictEqual([
+      "agent/index.txt",
+      "v6/agent/index.txt",
     ])
   })
 })

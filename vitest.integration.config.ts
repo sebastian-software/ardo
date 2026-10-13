@@ -7,7 +7,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
     fileParallelism: false,
-    include: ["examples/**/*.test.ts", "packages/create-ardo/src/scaffold.integration.test.ts"],
+    include: ["examples/**/*.test.ts"],
     testTimeout: 120_000,
   },
 })

@@ -8,6 +8,14 @@ import { compileMdxRouteModule } from "./mdx-compile"
 
 afterEach(() => vi.restoreAllMocks())
 
+const compileWithTitle = (title: string) =>
+  compileMdxRouteModule({
+    source: `---\ntitle: ${title}\n---\n\n# ${title}\n\n## ${title}`,
+    markdownConfig: undefined,
+    format: "md",
+    id: "same.md",
+  }).code
+
 describe("prepared route compilation", () => {
   it("prepares once and derives the TOC from the final module heading plan", () => {
     const prepare = vi.spyOn(JsxCompiler.prototype, "prepare")
@@ -36,15 +44,8 @@ describe("prepared route compilation", () => {
   })
 
   it("reads changed YAML and heading IDs on every transform of the same file", () => {
-    const compile = (title: string) =>
-      compileMdxRouteModule({
-        source: `---\ntitle: ${title}\n---\n\n# ${title}\n\n## ${title}`,
-        markdownConfig: undefined,
-        format: "md",
-        id: "same.md",
-      }).code
-    expect(compile("Before")).toContain('"id":"before"')
-    const changed = compile("After")
+    expect(compileWithTitle("Before")).toContain('"id":"before"')
+    const changed = compileWithTitle("After")
     expect(changed).toContain('"title":"After"')
     expect(changed).toContain('"id":"after"')
     expect(changed).not.toContain('"before"')

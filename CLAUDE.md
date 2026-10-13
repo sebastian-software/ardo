@@ -2,10 +2,10 @@
 
 ## Project Structure
 
-This is a monorepo with two packages:
+This workspace contains the framework, documentation, and tested reference projects:
 
 - `packages/ardo` - The main documentation framework
-- `packages/create-ardo` - CLI scaffold tool (`pnpm create ardo`)
+- `examples/` - Reference projects used by versioned Agent Instructions
 
 ## Commit Convention
 
@@ -24,7 +24,7 @@ feat(ardo): ...      # Don't do this
 feat(scaffold): ...  # Don't do this
 ```
 
-**Reason:** Release-please uses `linked-versions` to keep both packages synchronized. Commits without scope are attributed to all packages, ensuring correct changelog entries for both.
+**Reason:** The repository uses unscoped conventional commits for Ardo's release history.
 
 ## Commands
 
@@ -39,7 +39,8 @@ feat(scaffold): ...  # Don't do this
 
 - `packages/ardo/src/vite/plugin.ts` - Main Vite plugin
 - `packages/ardo/src/vite/routes-plugin.ts` - Route generation
-- `packages/create-ardo/templates/minimal/` - Scaffold template
+- `docs/app/routes/guide/agent-instructions.mdx` - Versioned setup, adoption, and upgrade instructions
+- `examples/` - Integration-tested project contracts
 - `docs/` - Ardo documentation site
 
 ## Native API Documentation
@@ -54,8 +55,9 @@ ardo({
 
 ## Testing
 
-Integration test scaffolds a project and builds it:
+Integration tests build references and install basic/library references against the packed package:
 
 ```
-packages/create-ardo/src/scaffold.integration.test.ts
+examples/packed-reference.test.ts
+pnpm test:integration
 ```

@@ -25,7 +25,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   const labels = useArdoLabels()
   const [activeId, setActiveId] = useState<string>("")
   const scrollContainerRef = useRef<HTMLElement | null>(null)
-  const isClickScrolling = useRef(false)
+  const isClickScrollingRef = useRef(false)
 
   const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
 
@@ -34,7 +34,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   }, [])
 
   useEffect(() => {
-    if (toc.length === 0) return
+    if (toc.length === 0 || typeof globalThis.IntersectionObserver !== "function") return
 
     const scrollContainer = scrollContainerRef.current
     if (!scrollContainer) return
@@ -44,7 +44,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isClickScrolling.current) return
+        if (isClickScrollingRef.current) return
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
@@ -67,15 +67,13 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     }
 
     return () => {
-      for (const element of headingElements) {
-        if (element !== null) observer.unobserve(element)
-      }
+      observer.disconnect()
     }
   }, [toc])
 
   const handleClickItem = (id: string) => {
     setActiveId(id)
-    isClickScrolling.current = true
+    isClickScrollingRef.current = true
     const element = document.getElementById(id)
     const container = scrollContainerRef.current
     if (element) {
@@ -88,16 +86,16 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     // Re-enable observer after scroll finishes
     if (container) {
       const onScrollEnd = () => {
-        isClickScrolling.current = false
+        isClickScrollingRef.current = false
         container.removeEventListener("scrollend", onScrollEnd)
       }
       container.addEventListener("scrollend", onScrollEnd, { once: true })
       // Fallback for browsers without scrollend
       setTimeout(() => {
-        isClickScrolling.current = false
+        isClickScrollingRef.current = false
       }, 1000)
     } else {
-      isClickScrolling.current = false
+      isClickScrollingRef.current = false
     }
   }
 

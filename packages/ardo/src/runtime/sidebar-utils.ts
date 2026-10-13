@@ -39,8 +39,9 @@ export function getPrevNextLinks(
     return {}
   }
 
-  const prev = currentIndex > 0 ? flatItems[currentIndex - 1] : undefined
-  const next = currentIndex < flatItems.length - 1 ? flatItems[currentIndex + 1] : undefined
+  let prev: SidebarItem | undefined
+  if (currentIndex > 0) prev = flatItems[currentIndex - 1]
+  const next = flatItems.at(currentIndex + 1)
 
   return { prev, next }
 }

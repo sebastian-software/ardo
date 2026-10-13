@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR 0018](0018-agent-instructions-and-reference-projects.md) for Ardo 6.
 
 ## Context
 

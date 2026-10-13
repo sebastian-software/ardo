@@ -1,4 +1,4 @@
-import type { Config } from "@react-router/dev/config"
+import type { ReactRouterConfig as Config } from "ardo/config"
 
 import { withArdoVersioning } from "ardo/vite"
 
@@ -11,4 +11,4 @@ const config = {
   prerender: true,
 } satisfies Config
 
-export default withArdoVersioning(config, { basename: "/v5/" })
+export default withArdoVersioning(config, { basename: "/v6/" })

@@ -67,6 +67,10 @@ jobs:
         if: matrix.node-version == '22'
         run: pnpm docs:budgets
 
+      - name: Validate complete GitHub Pages artifact
+        if: matrix.node-version == '22'
+        run: pnpm docs:prepare-pages
+
       - name: Build examples
         if: matrix.node-version == '22'
         run: pnpm --filter './examples/*' build
@@ -79,7 +83,14 @@ jobs:
         if: matrix.node-version == '22'
         env:
           ARDO_E2E_PREBUILT_DOCS: "true"
+          ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
+
+      - name: Verify Basic development and preview hydration
+        if: matrix.node-version == '22'
+        run: |
+          pnpm exec playwright test --config examples/basic/playwright.config.mjs
+          ARDO_BASIC_BROWSER_SERVER=preview pnpm exec playwright test --config examples/basic/playwright.config.mjs
 
       - name: Build Storybook
         if: matrix.node-version == '22'

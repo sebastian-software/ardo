@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- Node.js >= 22.13.0
+- Node.js >= 22.22.0
 - pnpm >= 9.0.0
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
@@ -36,7 +36,7 @@ pnpm docs:dev
 ```
 ardo/
 ├── packages/
-│   ├── ardo/          # Main framework package (published to npm)
+│   └── ardo/          # Main framework package (published to npm)
 │   │   ├── src/
 │   │   │   ├── config/      # Configuration utilities
 │   │   │   ├── icons/       # Built-in icon assets and helpers
@@ -48,9 +48,6 @@ ardo/
 │   │   │   ├── api/     # native API documentation integration
 │   │   │   └── vite/        # Vite plugin
 │   │   └── package.json
-│   └── create-ardo/   # Scaffolding CLI and project template
-│       ├── src/       # CLI, prompts, upgrade, and scaffold logic
-│       └── templates/ # Generated project files
 ├── docs/              # Documentation site (dogfooding)
 │   ├── app/           # React Router app and markdown routes
 │   │   └── routes/    # Documentation pages and generated API routes
@@ -63,7 +60,7 @@ ardo/
 
 The architecture decision records in [`docs/adr/`](./docs/adr/) explain the major framework
 decisions: React Router migration, static prerendering, native API documentation integration, Vanilla Extract,
-context-aware UI, public API naming, Storybook, Tailwind in the scaffold, and release conventions.
+context-aware UI, public API naming, Storybook, agent instructions, and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
 
 ### Coordinated native-engine development
@@ -97,7 +94,7 @@ manifest and temporary lockfile differ, use
 `pnpm --config.verifyDepsBeforeRun=false <command>` to run an installed tool
 without an automatic reinstall.
 
-The packed-scaffold integration suite starts a separate consumer installation.
+The packed-reference integration suite starts separate basic and library consumer installations.
 Set `ARDO_TEST_ENGINE_OVERRIDES` to a JSON file containing the same package-name
 to `file:/absolute/path/to/tarball.tgz` map, so that consumer uses the tested
 engine builds too. For homepage verification, also pack Ardo and add its
@@ -127,6 +124,26 @@ verification; do not commit tarball paths or invented registry integrity data.
 | `pnpm lint`       | Run ESLint                     |
 | `pnpm format`     | Format code with Prettier      |
 | `pnpm typecheck`  | Run TypeScript type checking   |
+
+### Lint warning budgets
+
+`pnpm lint` runs the existing package-source ESLint checks and enforces the per-rule
+ceilings in `scripts/lint-warning-budget.json`. Every lint error fails the check.
+A warning category without a budget also fails, and one category cannot borrow
+unused budget from another. CI uses this same command.
+
+Known warnings remain active. `pnpm lint:raw` prints every file, line, and message.
+The current budgets retain dynamic filesystem-path warnings, browser-compatibility
+warnings (including Node-only API use), JSX composition and library export
+warnings, and compatibility exports. The four remaining spelling warnings are
+localized test text and intentionally misspelled frontmatter keys; they are not
+added to the general dictionary. The JSX composition contract is recorded in
+[ADR 0008](docs/adr/0008-children-based-composition.md).
+
+Fix errors and behavior risks before adjusting a budget. When a warning is removed,
+lower its rule's ceiling in the same PR. An intentional new warning needs a reviewed
+explanation of its source and impact; do not automatically regenerate or raise the
+budgets to make CI pass. No lint rule is disabled by the budget checker.
 
 ### Performance Budgets
 

@@ -6,7 +6,7 @@ order: 9
 
 # Troubleshooting
 
-Most Ardo issues come from the boundary between three systems: Vite build configuration, React Router routes, and Markdown/MDX content. Start with the section that matches the symptom, then verify the project still follows the scaffolded structure.
+Most Ardo issues come from the boundary between Ardo's CLI configuration, React Router routes, and Markdown/MDX content. Start with the section that matches the symptom, then compare the integration with a [version-matched reference project](/guide/reference-projects).
 
 ## Installation Issues
 
@@ -15,12 +15,12 @@ Most Ardo issues come from the boundary between three systems: Vite build config
 Make sure you have installed all required dependencies:
 
 ```bash
-pnpm add ardo react react-dom react-router isbot
+pnpm add ardo@6
 ```
 
 ### Node.js Version Error
 
-Ardo requires Node.js 22.13.0 or higher. Check your version:
+Ardo requires Node.js 22.22.0 or higher. Check your version:
 
 ```bash
 node --version
@@ -32,16 +32,47 @@ If you need to upgrade, consider using [nvm](https://github.com/nvm-sh/nvm) or [
 
 ### `Failed to resolve import`
 
-Ensure your `vite.config.ts` has the Ardo plugin configured:
+Ardo's CLI adds its build integration automatically. Put site settings in optional `ardo.config.ts`:
 
 ```typescript
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [ardo({/* config */})],
+export default defineArdoConfig({
+  title: "My Documentation",
 })
 ```
+
+Use `vite.config.ts` only when you need additional Vite plugins or Vite-specific settings; the Ardo
+CLI supplies its own integration.
+
+### Documentation package boundary
+
+Ardo treats the Vite project root as an independent documentation package. Keep its own
+`package.json` and install its declared dependencies in that project's `node_modules`.
+An installation in an ancestor or monorepo root does not satisfy a missing local installation.
+
+Ardo owns the React, React DOM, React Router, Vite, and default icon installations.
+Imports of these managed packages resolve to Ardo's dependency tree. Other direct application
+imports must be declared in the docs package, even when another dependency already uses that
+package. Dependencies may use their own declared transitive dependencies.
+Normal pnpm links to packages in its virtual store are supported; the store location does not
+change package ownership.
+
+Keep custom components inside the docs project, for example in `app/components/`. Relative imports,
+Vite aliases, and symlinks to component source in sibling workspace packages fail in development
+and builds. Workspace package links to component source also fail. Install a published package
+when you need a packaged component library. Ardo's own workspace link is supported for framework
+development, using its built `dist` files.
+
+Ardo bundles the application's dependencies for SSR, including its React and routing runtime.
+Components and the server renderer use that same bundled runtime. There is no per-component
+`ssr.noExternal` list to maintain. A missing dependency produces an `[ardo]` error rather than
+falling back to a parent installation. During development, Vite automatically optimizes SSR
+dependencies so CommonJS libraries can run in the same module graph.
+
+This boundary applies to the application module graph. Explicit native API and content-source
+inputs can still be read to generate documentation; they do not make outside component source
+available to application imports.
 
 ### TypeScript Errors in Routes
 
@@ -105,7 +136,7 @@ See [Ferriki's standard assets](https://github.com/sebastian-software/ferriki/bl
 
 ### Native Engine or Asset Loading Fails
 
-Ardo requires Node.js 22.13 or newer and native binaries for Linux or Windows on x64/arm64, or macOS on Apple Silicon. Keep optional dependencies enabled when installing packages.
+Ardo requires Node.js 22.22 or newer and native binaries for Linux or Windows on x64/arm64, or macOS on Apple Silicon. Keep optional dependencies enabled when installing packages.
 
 Ferriki downloads standard language and theme assets on first use. For offline CI, populate and persist a cache beforehand, then set `FERRIKI_CACHE_DIR` to its location and `FERRIKI_ASSETS_REMOTE=0` to disable downloads. A missing theme or native binary fails the build; see [Ferriki troubleshooting](https://github.com/sebastian-software/ferriki/blob/main/docs/troubleshooting.md).
 
@@ -148,12 +179,13 @@ For static hosting (GitHub Pages, Netlify, etc.), ensure your hosting is configu
 
 ### Base Path Issues
 
-If deploying to a subdirectory, set the `base` option in `vite.config.ts`:
+If deploying to a subdirectory, set the `base` option in `ardo.config.ts`:
 
 ```typescript
-export default defineConfig({
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
   base: "/my-docs/",
-  plugins: [ardo({/* config */})],
 })
 ```
 

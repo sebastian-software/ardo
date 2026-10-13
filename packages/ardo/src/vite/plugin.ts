@@ -18,6 +18,7 @@ import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { reportLinkDiagnostics } from "./link-diagnostics"
+import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
@@ -25,7 +26,7 @@ import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-u
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
-import { resolveVersionedMainBase } from "./versioning"
+import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
 import {
   loadVirtualModule,
   RESOLVED_IDS,
@@ -39,6 +40,7 @@ type PluginState = {
   collections?: CollectionsConfig
   deploymentBase?: string
   isSsrBuild?: boolean
+  previewBase?: string
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -78,7 +80,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
     routesDirOption,
   }
-  const plugins: Plugin[] = [createMainPlugin(state, mainPluginOptions)]
+  const plugins: Plugin[] = [
+    createMainPlugin(state, mainPluginOptions),
+    ...createRuntimeBoundaryPlugins(),
+  ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo)))
   addContentSourcePlugin(
@@ -134,7 +139,8 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     config(userConfig, env): UserConfig {
       return createMainConfig(state, {
         userConfig,
-        command: env.command,
+        command: env.isPreview ? "build" : env.command,
+        isPreview: env.isPreview === true,
         githubPages: options.githubPages,
         pressConfig: options.pressConfig,
         routesDirOption: options.routesDirOption,
@@ -192,19 +198,23 @@ function createMainConfig(
   input: {
     command: string
     githubPages: boolean
+    isPreview: boolean
     pressConfig: PressConfigOptions
     routesDirOption: string | undefined
     userConfig: UserConfig
   }
 ): UserConfig {
-  const { command, githubPages, pressConfig, routesDirOption, userConfig } = input
+  const { command, githubPages, isPreview, pressConfig, routesDirOption, userConfig } = input
   const root = userConfig.root ?? process.cwd()
   state.routesDir = resolveRoutesDir(root, routesDirOption)
-
   const config: UserConfig = {
     define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    ssr: { noExternal: ["ardo"] },
+    // Bundle components and their server renderer in the same dependency graph.
+    server: { fs: { strict: true, allow: [root] } },
+    ssr: { noExternal: true },
+    // Transform CommonJS dependencies before the development SSR module runner loads them.
+    environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
   }
 
   const baseResult = resolveVersionedMainBase({
@@ -215,8 +225,14 @@ function createMainConfig(
     userBase: userConfig.base,
   })
   state.deploymentBase = baseResult.deploymentBase
+  state.previewBase = resolveVersionedPreviewBase({
+    deploymentBase: baseResult.deploymentBase,
+    versioning: pressConfig.versioning,
+    userBase: userConfig.base,
+    viteBase: pressConfig.vite?.base,
+  })
   if (baseResult.viteBase != null && userConfig.base == null) {
-    config.base = baseResult.viteBase
+    config.base = isPreview ? (state.previewBase ?? baseResult.viteBase) : baseResult.viteBase
   }
   for (const message of baseResult.logMessages) {
     console.log(message)
