@@ -71,6 +71,14 @@ describe("examples/basic build", () => {
     ).toBe(true)
   })
 
+  it("omits excluded TSX routes from the sitemap while retaining the pages", () => {
+    const clientDir = path.join(__dirname, "build/client")
+    const sitemap = fs.readFileSync(path.join(clientDir, "sitemap.xml"), "utf8")
+    expect(sitemap).not.toContain("/kit</loc>")
+    expect(sitemap).toContain("/kitchen</loc>")
+    expect(fs.existsSync(path.join(clientDir, "kit/index.html"))).toBe(true)
+  })
+
   it("prerenders a plain bare route with only its own chrome and skip link", () => {
     const html = fs.readFileSync(path.join(__dirname, "build/client/bare/index.html"), "utf8")
     expect(html).toContain('<main id="main-content">')

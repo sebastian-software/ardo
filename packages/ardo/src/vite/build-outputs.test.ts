@@ -86,6 +86,41 @@ function entry(
 }
 
 describe("build outputs", () => {
+  it("excludes TSX path prefixes without excluding similarly named routes", () => {
+    const config = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        seo: { sitemap: { exclude: ["/kit/"] } },
+        versioning: { current: "v3", versions: [{ id: "v3", path: "/v3/" }] },
+      },
+      "/site"
+    )
+    const routes = ["/kit", "/kit/buttons", "/kitchen", "/guide"].map((routePath) =>
+      entry(config, {
+        anchors: [],
+        content: "",
+        filePath: `/site/app/routes${routePath}.tsx`,
+        frontmatter: {},
+        lastmod: new Date("2026-01-02T03:04:05.000Z"),
+        routePath,
+        source: "tsx",
+      })
+    )
+    const sitemap = generateSitemap(routes, config)
+    expect(sitemap).not.toContain("/kit</loc>")
+    expect(sitemap).not.toContain("/kit/buttons")
+    expect(sitemap).toContain("https://example.com/docs/v3/kitchen</loc>")
+    expect(sitemap).toContain("https://example.com/docs/v3/guide</loc>")
+  })
+
+  it("can exclude the root subtree and keeps frontmatter opt-outs", () => {
+    const config = resolveConfig({ title: "Docs", seo: { sitemap: { exclude: ["/"] } } }, "/site")
+    expect(generateSitemap(createEntries(config), config)).not.toContain("<url>")
+    expect(generateSitemap(entries, baseConfig)).not.toContain("/hidden")
+  })
+
   it("generates sitemap and robots content from route entries and config", () => {
     expect(generateSitemap(entries, baseConfig)).toContain(
       "<loc>https://example.com/docs/guide</loc>"

@@ -9,4 +9,9 @@ export default defineArdoConfig({
     neutral: "slate",
   },
   githubPages: false,
+  seo: {
+    sitemap: {
+      exclude: ["/kit"],
+    },
+  },
 })
