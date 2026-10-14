@@ -95,18 +95,20 @@ describe("ArdoSidebar", () => {
     expect(onChild.split(/\s+/)).not.toContain("active")
   })
 
-  it("keeps generated flat lists plain, without group nodes or a trunk", () => {
+  it("keeps generated flat lists plain, without group headings", () => {
     const view = renderSidebar(generatedSection("flat", "/intro"), "/intro")
 
     expect(view).not.toContain("sidebarTrunk")
     expect(view).not.toContain("sidebarNodeHeader")
   })
 
-  it("adds generated group nodes and a trunk when the list contains a group", () => {
+  it("uses typographic group headings without repeated tree icons", () => {
     const view = renderSidebar(generatedSection("api", "/api-reference"), "/api-reference")
 
-    expect(view).toContain("sidebarTrunk")
     expect(view).toContain("sidebarNodeHeader")
+    expect(view).not.toContain("sidebarTrunk")
+    expect(view).not.toContain("lucide-folder")
+    expect(view).not.toContain("lucide-file-text")
   })
 
   it("renders section tabs with visible labels and catalog icons", () => {

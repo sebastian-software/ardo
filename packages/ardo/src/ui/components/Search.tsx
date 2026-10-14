@@ -6,7 +6,7 @@ import searchDocs from "virtual:ardo/search-index"
 import type { ArdoLabels } from "../labels"
 
 import { useArdoLabels } from "../../runtime/hooks"
-import { SearchIcon } from "../icons"
+import { ChromeIcon } from "../chrome-icons"
 import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
 import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
 import * as styles from "./Search.css"
@@ -113,7 +113,7 @@ function SearchInput({
 }) {
   return (
     <div className={styles.searchField}>
-      <SearchIcon size={18} />
+      <ChromeIcon name="search" />
       <input
         ref={setInputRef}
         type="text"
@@ -144,7 +144,7 @@ function SearchInput({
           }}
           aria-label={labels.clear}
         >
-          ×
+          <ChromeIcon name="close" />
         </button>
       )}
       <span className={styles.searchKbd}>

@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react"
 
-import { MonitorIcon, MoonIcon, SunIcon } from "../icons"
+import { ChromeIcon } from "../chrome-icons"
 import {
   applyThemeMode,
   type ArdoThemeMode,
@@ -39,7 +39,7 @@ export function ArdoThemeToggle() {
     return (
       <button type="button" className={styles.themeToggle} aria-label="Toggle theme">
         <span className={styles.themeIcon}>
-          <SunIcon size={20} />
+          <ChromeIcon name="light-theme" />
         </span>
       </button>
     )
@@ -58,9 +58,9 @@ export function ArdoThemeToggle() {
       }
     >
       <span className={styles.themeIcon}>
-        {resolvedTheme === "light" && <SunIcon size={20} />}
-        {resolvedTheme === "dark" && <MoonIcon size={20} />}
-        {resolvedTheme === "system" && <MonitorIcon size={20} />}
+        {resolvedTheme === "light" && <ChromeIcon name="light-theme" />}
+        {resolvedTheme === "dark" && <ChromeIcon name="dark-theme" />}
+        {resolvedTheme === "system" && <ChromeIcon name="system-theme" />}
       </span>
     </button>
   )

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ardo chrome icon review</title>
+    <style>
+      :root {
+        font:
+          14px/1.4 system-ui,
+          sans-serif;
+        color: #222;
+      }
+      body {
+        margin: 24px;
+        background: #f5f5f5;
+      }
+      h1 {
+        margin: 0 0 8px;
+      }
+      p {
+        margin: 0 0 24px;
+      }
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 12px;
+      }
+      article {
+        border: 1px solid #d4d4d4;
+        border-radius: 10px;
+        background: white;
+        overflow: hidden;
+      }
+      h2 {
+        margin: 0;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+      .samples {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .sample {
+        min-height: 58px;
+        display: grid;
+        place-items: center;
+        border-top: 1px solid #e5e5e5;
+        text-align: center;
+      }
+      .sample.dark {
+        background: #1a1a1a;
+        color: white;
+      }
+      .sample.dark img {
+        filter: invert(1);
+      }
+      .sample img {
+        display: block;
+        margin: 0 auto 3px;
+      }
+      .sample small {
+        font-size: 10px;
+        color: #777;
+      }
+      .sample.dark small {
+        color: #bbb;
+      }
+      .right img {
+        transform: rotate(-90deg);
+      }
+      .left img {
+        transform: scaleX(-1);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Chrome icons</h1>
+    <p>
+      Core Line on its 14 px grid. Header: 14/16 px. Inline: 12/14 px. Callouts: 14/18 px. Copy:
+      14/16 px.
+    </p>
+    <main id="icons"></main>
+    <script>
+      const icons = [
+        ["Search", "search", [14, 16]],
+        ["Close", "close", [14, 16]],
+        ["Menu", "menu", [14, 16]],
+        ["Sidebar toggle", "sidebar-toggle", [14, 16]],
+        ["Light theme", "light-theme", [14, 16]],
+        ["Dark theme", "dark-theme", [14, 16]],
+        ["System theme", "system-theme", [14, 16]],
+        ["Language", "language", [14, 16]],
+        ["External link", "external-link", [12, 14]],
+        ["Chevron", "chevron", [12, 14]],
+        ["Breadcrumb separator", "chevron", [12, 14], "right"],
+        ["Previous / next", "previous-next", [14, 14], ["left", "next"]],
+        ["Tip", "tip", [14, 18]],
+        ["Info", "info", [14, 18]],
+        ["Note", "note", [14, 18]],
+        ["Warning", "warning", [14, 18]],
+        ["Danger", "danger", [14, 18]],
+        ["Copy", "copy", [14, 16]],
+        ["Copied", "copied", [14, 16]],
+        ["Edit", "edit", [14, 14]],
+        ["Last updated", "last-updated", [14, 14]],
+        ["Heading link", "heading-link", [14, 14]],
+      ]
+      const grid = document.querySelector("#icons")
+      for (const [label, filename, sizes, direction] of icons) {
+        const card = document.createElement("article")
+        const heading = document.createElement("h2")
+        heading.textContent = label
+        card.append(heading)
+        const samples = document.createElement("div")
+        samples.className = "samples"
+        for (const [index, size] of sizes.entries()) {
+          const orientation = Array.isArray(direction) ? direction[index] : direction
+          for (const dark of [false, true]) {
+            const sample = document.createElement("div")
+            sample.className = `sample ${dark ? "dark" : ""} ${orientation ?? ""}`
+            sample.innerHTML = `<div><img src="${filename}.svg" width="${size}" height="${size}" alt=""><small>${size}px${orientation ? ` ${orientation}` : ""}</small></div>`
+            samples.append(sample)
+          }
+        }
+        card.append(samples)
+        grid.append(card)
+      }
+    </script>
+  </body>
+</html>

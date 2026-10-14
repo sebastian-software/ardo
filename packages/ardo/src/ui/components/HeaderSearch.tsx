@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router"
 
 import { useArdoLabels } from "../../runtime/hooks"
-import { SearchIcon, XIcon } from "../icons"
+import { ChromeIcon } from "../chrome-icons"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch, type ArdoSearchProps } from "./Search"
@@ -51,7 +51,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
           setOverlayOpen(true)
         }}
       >
-        <SearchIcon size={20} />
+        <ChromeIcon name="search" />
       </button>
 
       {overlayOpen && (
@@ -73,7 +73,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
               aria-label={labels.search.closeOverlay}
               onClick={closeOverlay}
             >
-              <XIcon size={20} />
+              <ChromeIcon name="close" />
             </button>
           </div>
         </div>
