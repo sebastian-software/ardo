@@ -16,11 +16,11 @@ export type ArdoContainerProps = {
 }
 
 const icons: Record<ArdoContainerType, ReactNode> = {
-  tip: <ChromeIcon name="tip" />,
-  warning: <ChromeIcon name="warning" />,
-  danger: <ChromeIcon name="danger" />,
-  info: <ChromeIcon name="info" />,
-  note: <ChromeIcon name="note" />,
+  tip: <ChromeIcon name="tip" size={16} />,
+  warning: <ChromeIcon name="warning" size={16} />,
+  danger: <ChromeIcon name="danger" size={16} />,
+  info: <ChromeIcon name="info" size={16} />,
+  note: <ChromeIcon name="note" size={16} />,
 }
 
 /**
