@@ -98,7 +98,7 @@ Useful scripts:
 
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./packages/ardo/ICONS-LICENSE.md).
 
 ## Maintaining this README
 

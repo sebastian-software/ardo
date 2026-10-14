@@ -58,7 +58,12 @@ export default function Root() {
 
       <ArdoFooter
         sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
-        message="Released under the MIT License."
+        message={
+          <>
+            Released under the MIT License. Section icons by{" "}
+            <a href="https://streamlinehq.com">Streamline</a>.
+          </>
+        }
         copyright="Copyright 2026 Sebastian Software GmbH"
       />
     </ArdoRoot>

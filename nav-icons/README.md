@@ -1,6 +1,6 @@
 # Navigation icon selection
 
-This directory contains 20 proposed [Streamline Core Line](https://www.streamlinehq.com/icons/core-line) icons for the sidebar categories in [issue #341](https://github.com/sebastian-software/ardo/issues/341). They are staged at the repository root for design and license review. The runtime does not consume them yet.
+This directory contains 20 proposed [Streamline Core Line](https://www.streamlinehq.com/icons/core-line) icons for the sidebar categories in [issue #341](https://github.com/sebastian-software/ardo/issues/341). Ardo draws them on its sidebar section tabs; `packages/ardo/src/ui/section-icons.tsx` carries their path data.
 
 All SVGs were exported from the full Core Line set on its native 14 × 14 grid, with a 1 px editable stroke, `currentColor`, and no outline or flattening. The filenames identify Ardo categories; the original Streamline SVG metadata is retained. Open [preview.html](preview.html) to review all 20 at their intended 14 px size, upright and rotated, on light and dark backgrounds.
 
@@ -29,6 +29,6 @@ All SVGs were exported from the full Core Line set on its native 14 × 14 grid, 
 
 ## Attribution and license
 
-Icons © [Streamline Design Inc.](https://streamlinehq.com). The SVGs are governed by the [Streamline Premium License](https://help.streamlinehq.com/en/articles/5354366-streamline-premium-licenses), not the repository's MIT license. Streamline requires attribution and a link for open-source projects. This selection contains 20 icons, below the license's 100-icon project limit. The license also restricts asset redistribution, so the exact npm bundling and site-credit requirements should be clarified with Streamline before these files are wired into Ardo's published package; see issue #341.
+Icons © [Streamline Design Inc.](https://streamlinehq.com). The SVGs are governed by the [Streamline Premium License](https://help.streamlinehq.com/en/articles/5354366-streamline-premium-licenses), not the repository's MIT license. Streamline requires attribution and a link for open-source projects. This selection contains 20 icons, below the license's 100-icon project limit. The license allows building the icons into software and extending them to its users, but not offering them as standalone design resources. [ICONS-LICENSE.md](../packages/ardo/ICONS-LICENSE.md) states what that means for Ardo, its users, and its forks.
 
 The proposed alternatives are names from the same Core Line set. They are not included in this directory or in the 20-icon count.

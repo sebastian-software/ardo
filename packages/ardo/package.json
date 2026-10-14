@@ -103,6 +103,7 @@
     "*.css.js"
   ],
   "files": [
+    "ICONS-LICENSE.md",
     "dist",
     "virtual.d.ts",
     "vite-client.d.ts",
