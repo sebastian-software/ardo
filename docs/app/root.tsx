@@ -3,14 +3,10 @@ import {
   ArdoRootLayout,
   ArdoRoot,
   ArdoFooter,
-  ArdoGeneratedSidebar,
   ArdoHeader,
   ArdoHeaderActions,
-  ArdoNav,
-  ArdoNavLink,
   ArdoOwlMark,
   ArdoSidebar,
-  ArdoSidebarSection,
   ArdoSocialLink,
   registerIcons,
 } from "ardo/ui"
@@ -52,33 +48,13 @@ export default function Root() {
       }}
     >
       <ArdoHeader logo={brandLogo} searchPlaceholder="Search documentation...">
-        <ArdoNav>
-          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
-          <ArdoNavLink to="/api-reference">API</ArdoNavLink>
-        </ArdoNav>
         <ArdoHeaderActions>
           <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />
         </ArdoHeaderActions>
       </ArdoHeader>
 
-      <ArdoSidebar>
-        <ArdoSidebarSection
-          id="guide"
-          label="Guide"
-          to="/guide/getting-started"
-          icon={<Rocket size={18} strokeWidth={1.8} />}
-        >
-          <ArdoGeneratedSidebar section="guide" />
-        </ArdoSidebarSection>
-        <ArdoSidebarSection
-          id="api-reference"
-          label="API"
-          to="/api-reference"
-          icon={<Code2 size={18} strokeWidth={1.8} />}
-        >
-          <ArdoGeneratedSidebar section="api-reference" />
-        </ArdoSidebarSection>
-      </ArdoSidebar>
+      {/* Sections come from the top-level route folders: guide, api-reference. */}
+      <ArdoSidebar />
 
       <ArdoFooter
         sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}

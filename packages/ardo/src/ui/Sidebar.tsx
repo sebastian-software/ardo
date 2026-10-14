@@ -20,8 +20,9 @@ import type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 import { useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import { ChevronDownIcon, FileTextIcon, FolderIcon } from "./icons"
+import { resolveSectionIcon } from "./section-catalog"
 import * as styles from "./Sidebar.css"
-import { SidebarRail, type SidebarRailItem } from "./SidebarRail"
+import { type SidebarTabItem, SidebarTabs } from "./SidebarTabs"
 
 /** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
 type RoutePath = ComponentProps<typeof NavLink>["to"]
@@ -45,7 +46,10 @@ function useSidebarContext() {
 // =============================================================================
 
 export type ArdoSidebarProps = {
-  /** Sidebar sections. Each section contributes one rail item and one panel. */
+  /**
+   * Sidebar sections. Each section contributes one tab and one panel. Inside
+   * `ArdoRoot`, leave this empty to get one section per top-level route folder.
+   */
   children?: ReactNode
   /** Content rendered above navigation (e.g. search) */
   header?: ReactNode
@@ -56,20 +60,24 @@ export type ArdoSidebarProps = {
 export type ArdoSidebarSectionProps = {
   /** Stable section id, usually matching a top-level route segment. */
   id: string
-  /** Accessible label and rail tooltip text. */
+  /** Visible tab label. */
   label: string
-  /** Landing route for the section rail item. */
+  /** Landing route for the section tab. */
   to: RoutePath
-  /** Optional custom rail icon. */
+  /**
+   * Tab icon. Defaults to the catalog icon for known section ids such as
+   * `guide`, `api` or `adr`; other ids get a text-only tab. Pass `null` to
+   * drop the icon.
+   */
   icon?: ReactNode
   /** Optional active-route override. Defaults to matching the first segment of `to`. */
-  match?: RegExp | string
+  match?: ((pathname: string) => boolean) | RegExp | string
   /** Sidebar content for this section. */
   children?: ReactNode
 }
 
 /**
- * Marker component for declaring one rail item and panel inside `ArdoSidebar`.
+ * Marker component for declaring one section tab and panel inside `ArdoSidebar`.
  *
  * `ArdoSidebar` reads this element's props before React renders it. When used
  * outside `ArdoSidebar`, it only renders its children.
@@ -116,13 +124,14 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
     sections.length === 0
       ? undefined
       : (findMatchingSidebarSection(sections, pathname) ?? sections[0])
-  const railItems = sections.map((section) => sectionToRailItem(section, section === activeSection))
+  const tabItems = sections.map((section) => sectionToTabItem(section, section === activeSection))
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
 
   return (
     <SidebarContext value={contextValue}>
       <aside className={joinClassNames("ardo-sidebar", className ?? styles.sidebar)}>
-        <SidebarRail items={railItems} />
+        {/* A single section needs no switcher; its tree gets the full width. */}
+        {tabItems.length > 1 && <SidebarTabs items={tabItems} />}
         <div className={styles.sidebarPanel}>
           {header != null && <div className={styles.sidebarHeader}>{header}</div>}
           <nav aria-label={labels.sidebar.mainNavigation} className={styles.sidebarNav}>
@@ -619,6 +628,7 @@ function sidebarSectionMatchesPath(
   pathname: string
 ): boolean {
   const { match, to } = section.props
+  if (typeof match === "function") return match(pathname)
   if (match != null) {
     return typeof match === "string" ? pathname.startsWith(match) : match.test(pathname)
   }
@@ -633,12 +643,12 @@ function sidebarSectionMatchesPath(
   return pathname === root || pathname.startsWith(`${root}/`)
 }
 
-function sectionToRailItem(
+function sectionToTabItem(
   section: ReactElement<ArdoSidebarSectionProps>,
   active: boolean
-): SidebarRailItem {
+): SidebarTabItem {
   const { icon, id, label, to } = section.props
-  return { active, icon, key: id, label, to }
+  return { active, icon: icon === undefined ? resolveSectionIcon(id) : icon, key: id, label, to }
 }
 
 function sidebarSectionListClassName(children: ReactNode): string {

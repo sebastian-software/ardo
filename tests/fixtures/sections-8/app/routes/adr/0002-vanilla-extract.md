@@ -1,0 +1,16 @@
+---
+title: 0002 Vanilla Extract
+order: 2
+---
+
+# 0002 Vanilla Extract
+
+Part of the `adr` section.
+
+## Overview
+
+This page is fixture content for the section tabs prototype.
+
+## Details
+
+It exists so the generated sidebar has a realistic number of entries.

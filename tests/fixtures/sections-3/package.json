@@ -1,0 +1,17 @@
+{
+  "name": "ardo-test-sections-3",
+  "private": true,
+  "type": "module",
+  "author": "Sebastian Software GmbH",
+  "scripts": {
+    "dev": "ardo dev",
+    "build": "ardo build",
+    "preview": "ardo preview"
+  },
+  "dependencies": {
+    "ardo": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

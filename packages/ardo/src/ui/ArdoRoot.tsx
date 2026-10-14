@@ -14,11 +14,12 @@ import type { ArdoConfig } from "../config/types"
 import { createBrandThemeCss } from "../config/brand"
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { ArdoFooter } from "./Footer"
+import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { type ArdoLabelsInput, resolveArdoLabels } from "./labels"
 import { ArdoLayout } from "./Layout"
 import * as layoutStyles from "./Layout.css"
-import { isArdoSidebarElement, resolveArdoSidebarItems } from "./Sidebar"
+import { ArdoSidebar, isArdoSidebarElement, resolveArdoSidebarItems } from "./Sidebar"
 
 // =============================================================================
 // ArdoRoot Component
@@ -202,16 +203,20 @@ export function ArdoRoot({
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
   const showChrome = routeChrome !== false
-  // Bare layout: no sidebar, no rail — used for the home page and any other
-  // marketing-style routes (TSX or MDX). Falls back to the legacy hardcoded
-  // home detection if a route hasn't opted in via `handle.layout`.
+  // Bare layout: no sidebar, no section tabs — used for the home page and any
+  // other marketing-style routes (TSX or MDX). Falls back to the legacy
+  // hardcoded home detection if a route hasn't opted in via `handle.layout`.
   const isBareLayout = layout === "bare" || location.pathname === "/" || location.pathname === ""
+  const sidebar = useMemo(
+    (): ReactNode => withGeneratedSections(chrome.sidebar, config, location.pathname),
+    [chrome.sidebar, config, location.pathname]
+  )
   const sidebarItems = useMemo(
-    () => resolveArdoSidebarItems(chrome.sidebar, location.pathname),
-    [chrome.sidebar, location.pathname]
+    () => resolveArdoSidebarItems(sidebar, location.pathname),
+    [sidebar, location.pathname]
   )
   // Search lives in the header now. The sidebar no longer carries it.
-  const resolvedSidebar = isBareLayout ? undefined : chrome.sidebar
+  const resolvedSidebar = isBareLayout ? undefined : sidebar
   const resolvedHeader = showChrome
     ? resolveRootHeader(config, chrome.header, isBareLayout ? undefined : resolvedSidebar)
     : null
@@ -255,6 +260,24 @@ export function ArdoRoot({
     <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
   ) : (
     content
+  )
+}
+
+/**
+ * `<ArdoSidebar />` without children gets one section per top-level route
+ * folder. A sidebar with explicit children is left exactly as written.
+ */
+function withGeneratedSections(
+  sidebar: ReactNode,
+  config: ArdoConfig,
+  pathname: string
+): ReactNode {
+  if (!isArdoSidebarElement(sidebar) || sidebar.props.children != null) {
+    return sidebar
+  }
+
+  return (
+    <ArdoSidebar {...sidebar.props}>{createGeneratedSidebarSections(config, pathname)}</ArdoSidebar>
   )
 }
 

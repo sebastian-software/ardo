@@ -4,6 +4,7 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { generateContextSidebars, generateSidebar } from "./sidebar-index"
+import { generateContextSectionIndexes } from "./sidebar-section-indexes"
 
 let routesDir: string
 const routeMetadataKeys = new Set(["localeId", "publicPath", "routePath", "versionId"])
@@ -305,6 +306,27 @@ sidebar: leaf
         items: [{ text: "Changelog", link: "/v1.md/changelog" }],
       },
     ])
+  })
+})
+
+describe("generateContextSectionIndexes", () => {
+  it("links only the section folders that have their own index page", async () => {
+    await writeRoute("api-reference/index.md", "---\ntitle: API Reference\n---\n")
+    await writeRoute("api-reference/functions/define-config.md", "---\ntitle: defineConfig\n---\n")
+    await writeRoute("guide/getting-started.mdx", "---\ntitle: Getting Started\n---\n")
+
+    await expect(generateContextSectionIndexes(routesDir)).resolves.toStrictEqual({
+      "api-reference": "/api-reference",
+    })
+  })
+
+  it("keys localized section indexes by locale", async () => {
+    await writeRoute("en/guide/index.md", "---\ntitle: Guide\n---\n")
+    await writeRoute("de/guide/index.md", "---\ntitle: Anleitung\n---\n")
+
+    await expect(
+      generateContextSectionIndexes(routesDir, { localeIds: ["en", "de"] })
+    ).resolves.toStrictEqual({ "de:guide": "/de/guide", "en:guide": "/en/guide" })
   })
 })
 

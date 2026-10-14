@@ -108,7 +108,7 @@ async function generateLocalizedContextSidebars(
   return sidebars
 }
 
-async function readDirectoryEntries(directory: string): Promise<Dirent[]> {
+export async function readDirectoryEntries(directory: string): Promise<Dirent[]> {
   try {
     return await fs.readdir(directory, { withFileTypes: true })
   } catch {
@@ -221,7 +221,7 @@ async function createMarkdownNode(
   }
 }
 
-function createSidebarRouteIdentity(
+export function createSidebarRouteIdentity(
   routePath: string,
   options: RouteManifestOptions
 ): RouteIdentity {
@@ -233,7 +233,7 @@ function createSidebarRouteIdentity(
   })
 }
 
-function toSidebarRouteFields(
+export function toSidebarRouteFields(
   identity: RouteIdentity,
   localePrefix?: string
 ): Partial<RouteIdentity> & Pick<SidebarNode, "link"> {
@@ -246,7 +246,9 @@ function toSidebarRouteFields(
   }
 }
 
-async function readDirectoryIndexMetadata(fullPath: string): Promise<null | SidebarFrontmatter> {
+export async function readDirectoryIndexMetadata(
+  fullPath: string
+): Promise<null | SidebarFrontmatter> {
   for (const indexFileName of ["index.mdx", "index.md"]) {
     const metadata = await readFrontmatterFile(path.join(fullPath, indexFileName))
     if (metadata != null) {

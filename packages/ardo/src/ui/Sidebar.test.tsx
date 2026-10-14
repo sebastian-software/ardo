@@ -5,10 +5,12 @@ import { MemoryRouter } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
+import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoGeneratedSidebar } from "./GeneratedSidebar"
 import { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
 
 vi.mock("virtual:ardo/generated-sidebars", () => ({
+  sectionIndexes: { api: "/api-reference" },
   default: {
     adr: [
       {
@@ -107,7 +109,7 @@ describe("ArdoSidebar", () => {
     expect(view).toContain("sidebarNodeHeader")
   })
 
-  it("renders the rail from sidebar sections", () => {
+  it("renders section tabs with visible labels and catalog icons", () => {
     const view = renderSidebar(
       <>
         {generatedSection("guide")}
@@ -116,10 +118,74 @@ describe("ArdoSidebar", () => {
     )
 
     expect(view).toContain('aria-label="Documentation sections"')
-    expect(view).toContain('href="/guide"')
-    expect(view).toContain('aria-label="guide"')
-    expect(view).toContain('href="/api-reference"')
-    expect(view).toContain('aria-label="api"')
+    expect(view).toMatch(/<a [^>]*aria-current="true"[^>]*href="\/guide"/)
+    expect(view).toMatch(
+      /href="\/api-reference"[^>]*>.*?<svg[^>]*data-icon="api".*?<span>api<\/span>/
+    )
+    expect(view).toMatch(/href="\/guide"[^>]*>.*?<svg[^>]*data-icon="guide".*?<span>guide<\/span>/)
+  })
+
+  it("renders unknown sections as text-only tabs", () => {
+    const view = renderSidebar(
+      <>
+        {generatedSection("guide")}
+        {generatedSection("flat", "/intro")}
+      </>
+    )
+
+    expect(view).toMatch(/href="\/intro"[^>]*><span[^>]*><span>flat<\/span>/)
+  })
+
+  it("lets an explicit icon replace or drop the catalog icon", () => {
+    const view = renderSidebar(
+      <>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide" icon={<i data-icon="custom" />}>
+          <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+        </ArdoSidebarSection>
+        <ArdoSidebarSection id="api" label="API" to="/api-reference" icon={null}>
+          <ArdoSidebarLink to="/api-reference">API Reference</ArdoSidebarLink>
+        </ArdoSidebarSection>
+      </>
+    )
+
+    expect(view).toContain('data-icon="custom"')
+    expect(view).not.toContain('data-icon="guide"')
+    expect(view).not.toContain('data-icon="api"')
+  })
+
+  it("generates one section per route folder in catalog order", () => {
+    const view = renderSidebar(createGeneratedSidebarSections({}, "/guide/getting-started"))
+    const tabs = view.slice(0, view.indexOf("</nav>"))
+    const labels = [...tabs.matchAll(/<span>([^<]+)<\/span><\/span><\/a>/g)].map(
+      (match) => match[1]
+    )
+
+    expect(labels).toStrictEqual(["Guide", "API", "ADRs", "Flat"])
+    expect(tabs).toContain('href="/guide/getting-started"')
+    expect(tabs).toContain('href="/adr"')
+  })
+
+  it("puts sidebar.sectionOrder ahead of the catalog order", () => {
+    const view = renderSidebar(
+      createGeneratedSidebarSections(
+        { sidebar: { sectionOrder: ["flat"] } },
+        "/guide/getting-started"
+      )
+    )
+    const tabs = view.slice(0, view.indexOf("</nav>"))
+    const labels = [...tabs.matchAll(/<span>([^<]+)<\/span><\/span><\/a>/g)].map(
+      (match) => match[1]
+    )
+
+    expect(labels).toStrictEqual(["Flat", "Guide", "API", "ADRs"])
+    expect(tabs).toMatch(/aria-current="true"[^>]*href="\/guide\/getting-started"/)
+  })
+
+  it("leaves out the tabs when there is only one section", () => {
+    const view = renderSidebar(generatedSection("guide"))
+
+    expect(view).not.toContain('aria-label="Documentation sections"')
+    expect(view).toContain("Getting Started")
   })
 
   it("switches the sidebar panel to the active section", () => {

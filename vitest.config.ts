@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [vanillaExtractPlugin()],
   resolve: {
     alias: {
+      "virtual:ardo/generated-sidebars": fileURLToPath(
+        new URL("./.storybook/mocks/generated-sidebars.ts", import.meta.url)
+      ),
       "virtual:ardo/search-index": fileURLToPath(
         new URL("./.storybook/mocks/search-index.ts", import.meta.url)
       ),
