@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" height="14" width="14">
+  <g id="folder-exchange--folder-exchange-transfer-move">
+    <path id="vector" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M6.63892 5.56523c0 0.24012 -0.19465 0.43477 -0.43476 0.43477H1.43477c-0.11531 0 -0.2259 -0.04581 -0.30743 -0.12734S1 5.68054 1 5.56523V1.43495c0 -0.11531 0.04581 -0.22589 0.12734 -0.30743 0.08153 -0.08153 0.19212 -0.12734 0.30743 -0.12734h1.85429c0.09931 -0.002889 0.19662 0.02832 0.27573 0.08844 0.0791 0.06012 0.13523 0.14552 0.15903 0.24199l0.12174 0.78911h2.3586c0.1153 0 0.22589 0.0458 0.30742 0.12734 0.08154 0.08153 0.12734 0.19212 0.12734 0.30742z" stroke-width="1"></path>
+    <path id="vector_2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M13.0139 12.5652c0 0.2401 -0.1946 0.4348 -0.4347 0.4348H7.80977c-0.11531 0 -0.2259 -0.0458 -0.30743 -0.1273 -0.08153 -0.0816 -0.12734 -0.1922 -0.12734 -0.3075V8.43495c0 -0.11531 0.04581 -0.22589 0.12734 -0.30743 0.08153 -0.08153 0.19212 -0.12734 0.30743 -0.12734h1.85429c0.09931 -0.00289 0.19662 0.02832 0.27573 0.08844s0.13521 0.14552 0.15901 0.24199l0.1218 0.78911h2.3586c0.1153 0 0.2258 0.0458 0.3074 0.12734 0.0815 0.08153 0.1273 0.19212 0.1273 0.30742z" stroke-width="1"></path>
+    <path id="Vector 3205" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M13 5.5v-1c0 -1.10457 -0.8954 -2 -2 -2H8.5" stroke-width="1"></path>
+    <path id="Vector 3212" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M10 1 8.5 2.5 10 4" stroke-width="1"></path>
+    <path id="Vector 3206" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 8.5v1c0 1.1046 0.89543 2 2 2h2.5" stroke-width="1"></path>
+    <path id="Vector 3211" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m4 10 1.5 1.5L4 13" stroke-width="1"></path>
+  </g>
+</svg>
