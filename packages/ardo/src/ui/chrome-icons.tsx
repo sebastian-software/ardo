@@ -1,5 +1,5 @@
 // Streamline Core Line icons for Ardo-owned UI chrome, selected for
-// https://github.com/sebastian-software/ardo/issues/345. SVG sources and
+// https://github.com/sebastian-software/ardo/issues/345 and #347. SVG sources and
 // alternates are in /chrome-icons at the repository root.
 //
 // Icons © Streamline Design Inc. (https://streamlinehq.com), under the
@@ -24,17 +24,17 @@ const chromeIconPaths = {
     "M4.5 6 3 6",
     "M1 12V2c0 -0.55228 0.44772 -1 1 -1h10c0.5523 0 1 0.44772 1 1v10c0 0.5523 -0.4477 1 -1 1H2c-0.55228 0 -1 -0.4477 -1 -1Z",
   ],
-  // Sun Haze
+  // Brightness 1
   "light-theme": [
-    "M7 1v1",
-    "M13 7h-1",
-    "M2 7H1",
-    "m3.46443 3.46492 -0.70711 -0.70711",
-    "m11.2428 2.75774 -0.7072 0.7071",
-    "M10 7c0 -1.65685 -1.34315 -3 -3 -3S4 5.34315 4 7",
-    "M1 13h9",
-    "M1 9h9",
-    "M13 11H4",
+    "M6.99999 8.99803c1.10345 0 1.99798 -0.89453 1.99798 -1.99798s-0.89453 -1.99797 -1.99798 -1.99797 -1.99798 0.89452 -1.99798 1.99797 0.89453 1.99798 1.99798 1.99798Z",
+    "M7 0.5v1",
+    "M7 12.5v1",
+    "M13.5 7h-1",
+    "M1.5 7h-1",
+    "m11.6 2.40002 -0.71 0.71",
+    "m3.11002 10.89 -0.71 0.71",
+    "m11.6 11.6 -0.71 -0.71",
+    "m3.11002 3.11002 -0.71 -0.71",
   ],
   // Angled Moon
   "dark-theme": [
@@ -62,8 +62,8 @@ const chromeIconPaths = {
     "M10 0.5h3.5V4",
     "m13.5 0.5 -5 5",
   ],
-  // Chevron Arrow Down
-  chevron: ["M7 13 1 7l0 -6 6 6 6 -6 0 6 -6 6Z"],
+  // Tailless Line Arrow Down 1
+  chevron: ["m0.5 4 6.14645 6.1464c0.19526 0.1953 0.51184 0.1953 0.7071 0L13.5 4"],
   // Line Arrow Right 1
   "previous-next": ["M0.5 7h13", "m9.5 11 4 -4 -4 -4"],
   // Content Insight Idea Trivia
