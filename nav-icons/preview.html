@@ -74,8 +74,7 @@
   <body>
     <h1>Navigation icons</h1>
     <p>
-      Core Line at 12 px and 14 px, upright and rotated −90°; each size is shown on light and dark
-      backgrounds.
+      Core Line at its intended 14 px size, upright and rotated −90°, on light and dark backgrounds.
     </p>
     <main id="icons"></main>
     <script>
@@ -101,12 +100,6 @@
         ["Changelog", "changelog", "Reset Clock"],
         ["Archive", "archive", "Archive Box"],
       ]
-      const variants = [
-        [12, false],
-        [12, true],
-        [14, false],
-        [14, true],
-      ]
       const grid = document.querySelector("#icons")
       for (const [category, filename, streamlineName] of icons) {
         const card = document.createElement("article")
@@ -115,11 +108,11 @@
         card.append(title)
         const rows = document.createElement("div")
         rows.className = "rows"
-        for (const [size, rotated] of variants) {
+        for (const rotated of [false, true]) {
           for (const dark of [false, true]) {
             const sample = document.createElement("div")
             sample.className = `sample ${rotated ? "rotated" : ""}`
-            sample.innerHTML = `<div><img src="${filename}.svg" width="${size}" height="${size}" alt=""><small>${size}px ${rotated ? "rotated" : "upright"}</small></div>`
+            sample.innerHTML = `<div><img src="${filename}.svg" width="14" height="14" alt=""><small>14px ${rotated ? "rotated" : "upright"}</small></div>`
             rows.append(sample)
           }
         }

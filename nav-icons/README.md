@@ -2,7 +2,7 @@
 
 This directory contains 20 proposed [Streamline Core Line](https://www.streamlinehq.com/icons/core-line) icons for the sidebar categories in [issue #341](https://github.com/sebastian-software/ardo/issues/341). They are staged at the repository root for design and license review. The runtime does not consume them yet.
 
-All SVGs were exported from the full Core Line set on its native 14 × 14 grid, with a 1 px editable stroke, `currentColor`, and no outline or flattening. The filenames identify Ardo categories; the original Streamline SVG metadata is retained. Open [preview.html](preview.html) to compare all 20 at 12 px and 14 px, upright and rotated, on light and dark backgrounds.
+All SVGs were exported from the full Core Line set on its native 14 × 14 grid, with a 1 px editable stroke, `currentColor`, and no outline or flattening. The filenames identify Ardo categories; the original Streamline SVG metadata is retained. Open [preview.html](preview.html) to review all 20 at their intended 14 px size, upright and rotated, on light and dark backgrounds.
 
 | Category         | SVG                                          | Streamline primary             | Alternate to discuss          |
 | ---------------- | -------------------------------------------- | ------------------------------ | ----------------------------- |
