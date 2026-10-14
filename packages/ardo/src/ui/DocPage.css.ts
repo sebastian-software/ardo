@@ -110,6 +110,9 @@ export const pageRailTitle = style({
 })
 
 export const pageRailText = style({
+  display: "flex",
+  alignItems: "center",
+  gap: vars.space.xs,
   fontSize: vars.fontSize.sm,
   lineHeight: 1.5,
   color: vars.color.textLight,
@@ -118,6 +121,7 @@ export const pageRailText = style({
 export const pageRailLink = style({
   display: "inline-flex",
   alignItems: "center",
+  gap: vars.space.xs,
   color: vars.color.text,
   textDecoration: "none",
   fontSize: vars.fontSize.sm,

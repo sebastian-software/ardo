@@ -43,91 +43,39 @@ export const sidebarList = style({
   listStyle: "none",
 })
 
-export const sidebarList0 = style({
-  position: "relative",
-})
-
-/**
- * Trunk line that threads the top-level group nodes together. Added only to
- * lists that actually render nodes, so lists without nodes stay line-free.
- */
-export const sidebarTrunk = style({
-  selectors: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      left: "17px",
-      top: "22px",
-      bottom: "22px",
-      width: "1.5px",
-      background: vars.color.divider,
-    },
-  },
-})
+export const sidebarList0 = style({})
 
 export const sidebarList1 = style({
   marginTop: "2px",
-  // Align child text flush under the group title (past the node circle).
-  paddingLeft: "33px",
+  paddingLeft: vars.space.md,
 })
 
 export const sidebarItem = style({})
 
-/** Header row for a top-level group: node + title + chevron, as one capsule. */
+/** Typographic heading for a top-level group. */
 export const sidebarNodeHeader = style({
   display: "flex",
   alignItems: "center",
   gap: vars.space.sm,
-  padding: `4px ${vars.space.sm} 4px 0`,
-  border: "1px solid transparent",
-  borderRadius: "999px",
-  transition: `background ${vars.transition.fast}, border-color ${vars.transition.fast}`,
+  padding: `4px ${vars.space.sm}`,
+  borderRadius: vars.radius.sm,
+  transition: `background ${vars.transition.fast}`,
   selectors: {
     "&.active, &.child-active": {
       background: `color-mix(in oklch, ${vars.color.brand} 6%, transparent)`,
-      borderColor: `color-mix(in oklch, ${vars.color.brand} 30%, transparent)`,
     },
   },
 })
-
-/**
- * Circular node that sits on the trunk line next to a top-level group. Its
- * opaque panel-coloured fill masks the trunk behind it, so the line reads as
- * threading through a bead.
- */
-export const sidebarNode = style({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexShrink: 0,
-  width: "28px",
-  height: "28px",
-  marginLeft: "4px",
-  borderRadius: "50%",
-  border: `1px solid ${vars.color.divider}`,
-  background: vars.color.sidebarBg,
-  color: vars.color.textLighter,
-  position: "relative",
-  zIndex: 1,
-  transition: `border-color ${vars.transition.fast}, color ${vars.transition.fast}`,
-  selectors: {
-    [`${sidebarNodeHeader}.active &, ${sidebarNodeHeader}.child-active &`]: {
-      borderColor: `color-mix(in oklch, ${vars.color.brand} 45%, transparent)`,
-      color: vars.color.brand,
-    },
-  },
-})
-
-/** Group title inside a node header — carries no pill of its own; the capsule provides it. */
+/** Group title aligned with the list below it. */
 export const sidebarNodeTitle = style({
   flex: 1,
   minWidth: 0,
   display: "block",
   color: vars.color.text,
   textDecoration: "none",
-  fontWeight: 600,
+  fontWeight: 700,
   fontSize: vars.fontSize.sm,
-  letterSpacing: "-0.005em",
+  letterSpacing: "0.01em",
   padding: "2px 0",
   background: "none",
   border: "none",

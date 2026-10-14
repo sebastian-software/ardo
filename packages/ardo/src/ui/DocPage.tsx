@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
+import { ChromeIcon } from "./chrome-icons"
 import { ArdoContent } from "./Content"
 import * as styles from "./DocPage.css"
 import { ArdoLayout } from "./Layout"
@@ -136,11 +137,14 @@ function ArdoPageRail({
               rel="noopener noreferrer"
               className={styles.pageRailLink}
             >
+              <ChromeIcon name="edit" />
               {edit.text}
+              <ChromeIcon name="external-link" size={12} />
             </a>
           )}
           {updated.show && (
             <p className={styles.pageRailText}>
+              <ChromeIcon name="last-updated" />
               {updated.label}: {updated.text}
             </p>
           )}

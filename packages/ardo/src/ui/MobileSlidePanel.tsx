@@ -2,11 +2,11 @@ import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } fr
 import { Link } from "react-router"
 
 import { useArdoLabels } from "../runtime/hooks"
+import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import { type ArdoLogo, HeaderLogo } from "./HeaderLogo"
-import { XIcon } from "./icons"
 import { focusInitialElement, trapFocus } from "./mobile-drawer-a11y"
 
 export function MobileSlidePanel({
@@ -61,7 +61,7 @@ export function MobileSlidePanel({
               onClick={onClose}
               aria-label={labels.mobilePanel.closeMenu}
             >
-              <XIcon size={20} />
+              <ChromeIcon name="close" />
             </button>
           </div>
         </div>

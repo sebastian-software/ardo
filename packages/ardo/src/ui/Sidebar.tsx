@@ -18,8 +18,8 @@ import type { SidebarItem as SidebarItemType } from "../config/types"
 import type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 
 import { useArdoLabels } from "../runtime/hooks"
+import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
-import { ChevronDownIcon, FileTextIcon, FolderIcon } from "./icons"
 import { resolveSectionIcon } from "./section-catalog"
 import * as styles from "./Sidebar.css"
 import { type SidebarTabItem, SidebarTabs } from "./SidebarTabs"
@@ -136,7 +136,7 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
           {header != null && <div className={styles.sidebarHeader}>{header}</div>}
           <nav aria-label={labels.sidebar.mainNavigation} className={styles.sidebarNav}>
             {activeSection != null ? (
-              <ul className={sidebarSectionListClassName(activeSection.props.children)}>
+              <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>
                 {activeSection.props.children}
               </ul>
             ) : children != null && sections.length === 0 ? (
@@ -258,7 +258,7 @@ export function ArdoSidebarGroup({
             aria-expanded={!collapsed}
             aria-controls={contentId}
           >
-            <ChevronDownIcon size={16} />
+            <ChromeIcon name="chevron" />
           </button>
         )}
       </div>
@@ -327,14 +327,10 @@ type SidebarItemsProps = {
 }
 
 export function SidebarItems({ items, depth }: SidebarItemsProps) {
-  // The tree treatment (icon-circle nodes threaded on a trunk line) only kicks
-  // in for top-level lists that actually contain groups. Flat lists of single
-  // links stay plain — the circles are a group marker, not a per-link bullet.
+  // Top-level groups use typographic headings. Flat lists stay plain.
   const treeMode = depth === 0 && items.some((item) => (item.items?.length ?? 0) > 0)
   const depthClass = depth === 0 ? styles.sidebarList0 : styles.sidebarList1
-  const listClassName = [styles.sidebarList, depthClass, treeMode && styles.sidebarTrunk]
-    .filter(Boolean)
-    .join(" ")
+  const listClassName = [styles.sidebarList, depthClass].join(" ")
   return (
     <ul className={listClassName}>
       <SidebarItemListItems items={items} depth={depth} treeMode={treeMode} />
@@ -450,7 +446,7 @@ function CollapseButton({
       aria-expanded={!collapsed}
       aria-controls={contentId}
     >
-      <ChevronDownIcon size={16} />
+      <ChromeIcon name="chevron" />
     </button>
   )
 }
@@ -478,23 +474,19 @@ function SidebarItemChildren({
 }
 
 /**
- * Top-level entry in tree mode: an icon circle plus title, wrapped in a capsule
- * that highlights when the section (or one of its children) is active.
+ * Top-level entry in tree mode: a typographic group heading that highlights
+ * when the section (or one of its children) is active.
  */
 function SidebarGroupNode({ item, depth }: ItemProps) {
   const state = useSidebarItem(item)
   const { collapsed, toggle, contentId, hasChildren, hasActiveChild, hasItemLink, isSelfActive } =
     state
-  const NodeIcon = hasChildren ? FolderIcon : FileTextIcon
   const capsuleState = isSelfActive ? "active" : hasActiveChild ? "child-active" : ""
   const headerClassName = [styles.sidebarNodeHeader, capsuleState].filter(Boolean).join(" ")
 
   return (
     <li className={sidebarItemClass(hasChildren)}>
       <div className={headerClassName}>
-        <span className={styles.sidebarNode} aria-hidden="true">
-          <NodeIcon size={15} strokeWidth={1.8} />
-        </span>
         {hasItemLink ? (
           <NavLink to={item.link ?? "/"} end className={styles.sidebarNodeTitle}>
             {item.text}
@@ -577,7 +569,7 @@ function CollapseChevron({ collapsed }: { collapsed: boolean }) {
       className={[styles.sidebarToggleChevron, collapsed && "collapsed"].filter(Boolean).join(" ")}
       aria-hidden="true"
     >
-      <ChevronDownIcon size={16} />
+      <ChromeIcon name="chevron" />
     </span>
   )
 }
@@ -649,25 +641,6 @@ function sectionToTabItem(
 ): SidebarTabItem {
   const { icon, id, label, to } = section.props
   return { active, icon: icon === undefined ? resolveSectionIcon(id) : icon, key: id, label, to }
-}
-
-function sidebarSectionListClassName(children: ReactNode): string {
-  return [
-    styles.sidebarList,
-    styles.sidebarList0,
-    sectionUsesGeneratedTree(children) && styles.sidebarTrunk,
-  ]
-    .filter(Boolean)
-    .join(" ")
-}
-
-function sectionUsesGeneratedTree(children: ReactNode): boolean {
-  return flattenSidebarChildren(children).some(
-    (child) =>
-      isValidElement(child) &&
-      isGeneratedSidebarElement(child) &&
-      generatedSidebarItemsFromElement(child).some((item) => (item.items?.length ?? 0) > 0)
-  )
 }
 
 function routePathToString(to: RoutePath | undefined): string | undefined {

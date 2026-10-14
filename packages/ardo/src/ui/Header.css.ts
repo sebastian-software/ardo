@@ -149,23 +149,6 @@ export const mobileMenuButton = style({
   },
 })
 
-export const hamburger = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: vars.space.xs,
-  pointerEvents: "none",
-})
-
-globalStyle(`${hamburger} span`, {
-  display: "block",
-  width: "1.25rem",
-  height: "2px",
-  background: vars.color.text,
-  borderRadius: "1px",
-  pointerEvents: "none",
-  transition: `all ${vars.transition.fast}`,
-})
-
 export const desktopNav = style({
   display: "flex",
   alignItems: "center",
@@ -178,8 +161,9 @@ export const desktopNav = style({
 
 export const versionSwitcher = style({
   height: "2rem",
-  maxWidth: "5.5rem",
-  padding: `0 ${vars.space.xs}`,
+  maxWidth: "7rem",
+  padding: "0 1.5rem 0 0.5rem",
+  appearance: "none",
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   background: vars.color.bg,
@@ -200,10 +184,34 @@ export const versionSwitcher = style({
   },
   "@media": {
     "(max-width: 480px)": {
-      maxWidth: "4.75rem",
+      maxWidth: "6rem",
       fontSize: vars.fontSize.xs,
     },
   },
+})
+
+export const selectControl = style({
+  position: "relative",
+  display: "inline-flex",
+  alignItems: "center",
+})
+
+export const localeSwitcher = style({
+  paddingLeft: "1.65rem",
+})
+
+export const selectLeading = style({
+  position: "absolute",
+  left: "0.4rem",
+  color: vars.color.textLight,
+  pointerEvents: "none",
+})
+
+export const selectChevron = style({
+  position: "absolute",
+  right: "0.3rem",
+  color: vars.color.textLight,
+  pointerEvents: "none",
 })
 
 // =============================================================================

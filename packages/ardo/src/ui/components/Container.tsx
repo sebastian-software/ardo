@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 
 import { useArdoLabels } from "../../runtime/hooks"
-import { AlertTriangleIcon, FileTextIcon, InfoIcon, LightbulbIcon, XCircleIcon } from "../icons"
+import { ChromeIcon } from "../chrome-icons"
 import * as styles from "./Container.css"
 
 export type ArdoContainerType = "danger" | "info" | "note" | "tip" | "warning"
@@ -16,11 +16,11 @@ export type ArdoContainerProps = {
 }
 
 const icons: Record<ArdoContainerType, ReactNode> = {
-  tip: <LightbulbIcon size={18} />,
-  warning: <AlertTriangleIcon size={18} />,
-  danger: <XCircleIcon size={18} />,
-  info: <InfoIcon size={18} />,
-  note: <FileTextIcon size={18} />,
+  tip: <ChromeIcon name="tip" />,
+  warning: <ChromeIcon name="warning" />,
+  danger: <ChromeIcon name="danger" />,
+  info: <ChromeIcon name="info" />,
+  note: <ChromeIcon name="note" />,
 }
 
 /**

@@ -142,6 +142,9 @@ export const contentMeta = style({
 })
 
 export const editLink = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: vars.space.xs,
   color: vars.color.accent,
   textDecoration: "none",
   fontWeight: 500,
@@ -151,6 +154,12 @@ export const editLink = style({
       opacity: 0.8,
     },
   },
+})
+
+export const updatedText = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: vars.space.xs,
 })
 
 export const prevNext = style({
@@ -181,12 +190,23 @@ export const prevLink = style([prevNextLinkBase])
 export const nextLink = style([prevNextLinkBase, { textAlign: "right" }])
 
 export const prevNextLabel = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: vars.space.xs,
   fontSize: vars.fontSize.xs,
   fontWeight: 500,
   color: vars.color.textLighter,
   textTransform: "uppercase",
   letterSpacing: "0.05em",
   marginBottom: vars.space.xs,
+})
+
+export const nextLabel = style({
+  justifyContent: "flex-end",
+})
+
+export const previousArrow = style({
+  transform: "scaleX(-1)",
 })
 
 export const prevNextTitle = style({

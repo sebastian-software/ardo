@@ -4,6 +4,7 @@ import type { SidebarItem } from "../config/types"
 
 import { useArdoLabels, useArdoSidebar } from "../runtime/hooks"
 import * as styles from "./Breadcrumb.css"
+import { ChromeIcon } from "./chrome-icons"
 
 type BreadcrumbResult = {
   section?: string
@@ -50,7 +51,7 @@ export function ArdoBreadcrumb() {
         <>
           <span>{section}</span>
           <span className={styles.breadcrumbSeparator} aria-hidden>
-            ›
+            <ChromeIcon name="chevron" size={12} />
           </span>
         </>
       )}

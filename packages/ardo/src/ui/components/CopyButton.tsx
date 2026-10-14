@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { useArdoLabels } from "../../runtime/hooks"
-import { CheckIcon, CopyIcon } from "../icons"
+import { ChromeIcon } from "../chrome-icons"
 import * as styles from "./CopyButton.css"
 
 type CopyButtonProps = {
@@ -33,7 +33,7 @@ export function ArdoCopyButton({ code }: CopyButtonProps) {
       }}
       aria-label={copied ? labels.copyButton.copied : labels.copyButton.copyCode}
     >
-      {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
+      <ChromeIcon name={copied ? "copied" : "copy"} />
       <span className={styles.copyText}>
         {copied ? labels.copyButton.copied : labels.copyButton.copy}
       </span>

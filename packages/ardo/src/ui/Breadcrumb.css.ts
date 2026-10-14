@@ -17,7 +17,9 @@ export const breadcrumb = style({
 })
 
 export const breadcrumbSeparator = style({
+  display: "inline-flex",
   color: vars.color.textLighter,
+  transform: "rotate(-90deg)",
 })
 
 export const breadcrumbCurrent = style({

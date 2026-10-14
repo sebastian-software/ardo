@@ -13,6 +13,7 @@ import {
 import { Link, useLocation } from "react-router"
 
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
@@ -164,11 +165,7 @@ export function ArdoHeader({
                 aria-label={labels.header.toggleMenu}
                 aria-expanded={mobileMenuOpen}
               >
-                <span className={styles.hamburger}>
-                  <span />
-                  <span />
-                  <span />
-                </span>
+                <ChromeIcon name="menu" />
               </button>
             )}
             <Link to="/" className={styles.logoLink}>
@@ -229,19 +226,23 @@ function ArdoLocaleSwitcher() {
   }
 
   return (
-    <select
-      aria-label="Documentation language"
-      className={styles.versionSwitcher}
-      onChange={handleChange}
-      title="Documentation language"
-      value={currentLocale}
-    >
-      {i18n.locales.map((locale) => (
-        <option key={locale.id} value={locale.id}>
-          {locale.label ?? locale.id}
-        </option>
-      ))}
-    </select>
+    <span className={styles.selectControl}>
+      <ChromeIcon name="language" className={styles.selectLeading} />
+      <select
+        aria-label="Documentation language"
+        className={joinClassNames(styles.versionSwitcher, styles.localeSwitcher)}
+        onChange={handleChange}
+        title="Documentation language"
+        value={currentLocale}
+      >
+        {i18n.locales.map((locale) => (
+          <option key={locale.id} value={locale.id}>
+            {locale.label ?? locale.id}
+          </option>
+        ))}
+      </select>
+      <ChromeIcon name="chevron" className={styles.selectChevron} />
+    </span>
   )
 }
 
@@ -273,19 +274,22 @@ function ArdoVersionSwitcher() {
   }
 
   return (
-    <select
-      aria-label="Documentation version"
-      className={styles.versionSwitcher}
-      onChange={handleChange}
-      title="Documentation version"
-      value={activeVersion.id}
-    >
-      {activeVersioning.versions.map((version) => (
-        <option key={version.id} value={version.id}>
-          {version.label ?? version.id}
-        </option>
-      ))}
-    </select>
+    <span className={styles.selectControl}>
+      <select
+        aria-label="Documentation version"
+        className={styles.versionSwitcher}
+        onChange={handleChange}
+        title="Documentation version"
+        value={activeVersion.id}
+      >
+        {activeVersioning.versions.map((version) => (
+          <option key={version.id} value={version.id}>
+            {version.label ?? version.id}
+          </option>
+        ))}
+      </select>
+      <ChromeIcon name="chevron" className={styles.selectChevron} />
+    </span>
   )
 }
 

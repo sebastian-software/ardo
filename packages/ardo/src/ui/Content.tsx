@@ -5,6 +5,7 @@ import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/h
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { useBareContent } from "./BareContent"
 import { ArdoBreadcrumb } from "./Breadcrumb"
+import { ChromeIcon } from "./chrome-icons"
 import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
@@ -195,11 +196,14 @@ function ContentMeta({
           rel="noopener noreferrer"
           className={footerStyles.editLink}
         >
+          <ChromeIcon name="edit" />
           {edit.text}
+          <ChromeIcon name="external-link" size={12} />
         </a>
       )}
       {updated.show && (
-        <span>
+        <span className={footerStyles.updatedText}>
+          <ChromeIcon name="last-updated" />
           {updated.label}: {updated.text}
         </span>
       )}
@@ -224,7 +228,10 @@ function ContentPrevNext({
     <nav className={footerStyles.prevNext} aria-label="Page navigation">
       {hasPrev ? (
         <Link to={prevLink} className={footerStyles.prevLink}>
-          <span className={footerStyles.prevNextLabel}>Previous</span>
+          <span className={footerStyles.prevNextLabel}>
+            <ChromeIcon name="previous-next" className={footerStyles.previousArrow} />
+            Previous
+          </span>
           <span className={footerStyles.prevNextTitle}>{prev?.text}</span>
         </Link>
       ) : (
@@ -232,7 +239,10 @@ function ContentPrevNext({
       )}
       {hasNext ? (
         <Link to={nextLink} className={footerStyles.nextLink}>
-          <span className={footerStyles.prevNextLabel}>Next</span>
+          <span className={`${footerStyles.prevNextLabel} ${footerStyles.nextLabel}`}>
+            Next
+            <ChromeIcon name="previous-next" />
+          </span>
           <span className={footerStyles.prevNextTitle}>{next?.text}</span>
         </Link>
       ) : (

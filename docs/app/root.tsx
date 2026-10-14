@@ -60,8 +60,7 @@ export default function Root() {
         sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
         message={
           <>
-            Released under the MIT License. Section icons by{" "}
-            <a href="https://streamlinehq.com">Streamline</a>.
+            Code under the MIT License. Icons by <a href="https://streamlinehq.com">Streamline</a>.
           </>
         }
         copyright="Copyright 2026 Sebastian Software GmbH"
