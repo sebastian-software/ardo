@@ -295,10 +295,6 @@ globalStyle(`${mobilePanelSidebar} > aside`, {
   borderRight: "none",
 })
 
-globalStyle(`${mobilePanelSidebar} nav[aria-label="Documentation sections"]`, {
-  display: "none",
-})
-
 // Legacy - keep for backwards compat but unused
 export const mobileMenu = style({ display: "none" })
 export const mobileTopNav = style({ display: "none" })

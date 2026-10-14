@@ -292,6 +292,26 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
+  tests/fixtures/sections-3:
+    dependencies:
+      ardo:
+        specifier: workspace:*
+        version: link:../../../packages/ardo
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  tests/fixtures/sections-8:
+    dependencies:
+      ardo:
+        specifier: workspace:*
+        version: link:../../../packages/ardo
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
 packages:
 
   '@adobe/css-tools@4.5.0':

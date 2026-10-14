@@ -14,6 +14,8 @@ declare module "virtual:ardo/generated-sidebars" {
 
   const sidebars: Record<string, SidebarItem[]>
   export default sidebars
+  /** Index-page route per section folder that has one, keyed like the sidebars. */
+  export const sectionIndexes: Record<string, string>
 }
 
 declare module "virtual:ardo/search-index" {
