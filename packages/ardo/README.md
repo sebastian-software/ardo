@@ -144,4 +144,4 @@ Example: [Basic](../../examples/basic). Optional [API](https://ardo-docs.dev/v6/
 
 ## License
 
-[MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de)
+[MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./ICONS-LICENSE.md).

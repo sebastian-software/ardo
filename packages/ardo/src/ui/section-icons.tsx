@@ -4,8 +4,8 @@
 // 14 × 14 grid with a 1 px stroke and render at exactly that size.
 //
 // Icons © Streamline Design Inc. (https://streamlinehq.com), under the
-// Streamline Premium License, not Ardo's MIT license. Do not release them in
-// the npm package until Streamline confirms the bundling and credit terms.
+// Streamline Premium License, not Ardo's MIT license. They may only be used
+// as part of Ardo; see ICONS-LICENSE.md in the package root.
 
 import type { ArdoSectionKind } from "./section-catalog"
 
