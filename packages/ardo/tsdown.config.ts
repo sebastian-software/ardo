@@ -1,6 +1,4 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin"
-import { copyFileSync, mkdirSync, readdirSync } from "node:fs"
-import { join } from "node:path"
 import { defineConfig } from "tsdown"
 
 import { uiStylesPlugin } from "./ui-styles-plugin.ts"
@@ -63,18 +61,4 @@ export default defineConfig({
     }) as any,
     uiStylesPlugin(),
   ],
-  hooks: {
-    "build:done": async () => {
-      const iconsDir = join("src", "ui", "icons")
-      const destIconsDir = join("dist", "ui", "icons")
-      mkdirSync(destIconsDir, { recursive: true })
-      for (const file of readdirSync(iconsDir)) {
-        if (file.endsWith(".svg")) {
-          copyFileSync(join(iconsDir, file), join(destIconsDir, file))
-        }
-      }
-
-      console.log("Copied SVG icons to dist/ui/icons/")
-    },
-  },
 })

@@ -115,7 +115,8 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "icons:generate": "svgr --out-dir src/ui/icons/sections .icon-sources/sections && svgr --out-dir src/ui/icons/chrome .icon-sources/chrome && eslint --fix src/ui/icons/sections src/ui/icons/chrome && prettier --write src/ui/icons"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -155,6 +156,7 @@
     "@jridgewell/sourcemap-codec": "^1.5.5",
     "@storybook/react": "^10.5.7",
     "@storybook/react-vite": "^10.5.7",
+    "@svgr/cli": "8.1.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
     "@types/node": "^26.1.2",
@@ -192,5 +194,27 @@
   },
   "bin": {
     "ardo": "./bin/ardo.js"
+  },
+  "svgr": {
+    "typescript": true,
+    "jsxRuntime": "automatic",
+    "dimensions": false,
+    "svgo": true,
+    "svgoConfig": {
+      "plugins": [
+        {
+          "name": "preset-default",
+          "params": {
+            "overrides": {
+              "removeViewBox": false,
+              "removeDesc": {
+                "removeAny": true
+              }
+            }
+          }
+        },
+        "removeXMLNS"
+      ]
+    }
   }
 }
