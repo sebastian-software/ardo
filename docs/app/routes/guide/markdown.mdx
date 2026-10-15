@@ -91,7 +91,7 @@ Ferromark compiles each route into an MDX module, following the same contract as
 - A component you import is used as imported. Every other component comes from Ardo's components, then from the `components` prop. An undefined component fails with an error that names it.
 - An `export default` becomes the page layout and replaces Ardo's content wrapper, so the page renders inside your layout instead of `ArdoDocContent`.
 - JSX inside a JavaScript expression, such as `{items.map((item) => <Card />)}`, does not see Ardo's components. Import the component you use there.
-- Generated code reserves `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoMermaid`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute`, and `_ardoToc`. Declaring one of them is a compile error.
+- Generated code reserves `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute`, and `_ardoToc`. Declaring one of them is a compile error.
 
 ```typescript
 interface User {
@@ -137,34 +137,6 @@ Add a title to your code block:
 export function greet(name: string) {
   return `Hello, ${name}!`
 }
-```
-
-## Mermaid Diagrams
-
-Use `mermaid` code fences for flowcharts, sequence diagrams, state machines, and other [Mermaid](https://mermaid.js.org/) diagram types. Diagrams follow the site theme in light and dark mode, and the Mermaid library is loaded lazily — pages without diagrams never download it.
-
-````markdown
-```mermaid
-graph TD
-    A[Write docs] --> B{Need a diagram?}
-    B -->|Yes| C[Add a mermaid fence]
-    B -->|No| D[Ship it]
-    C --> D
-```
-````
-
-```mermaid
-graph TD
-    A[Write docs] --> B{Need a diagram?}
-    B -->|Yes| C[Add a mermaid fence]
-    B -->|No| D[Ship it]
-    C --> D
-```
-
-Mermaid is an optional dependency — install it once in your docs project:
-
-```bash
-pnpm add mermaid
 ```
 
 ## Badge Component

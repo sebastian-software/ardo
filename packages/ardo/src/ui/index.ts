@@ -19,7 +19,6 @@ export {
   ArdoHero,
   ArdoIcon,
   ArdoInfo,
-  ArdoMermaid,
   ArdoNote,
   ArdoSearch,
   ArdoSteps,
@@ -44,7 +43,6 @@ export type {
   ArdoCardGroupProps,
   ArdoCardProps,
   ArdoIconProps,
-  ArdoMermaidProps,
 } from "./components"
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 

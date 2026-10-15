@@ -92,7 +92,6 @@ export function getNativeMarkdownCompileOptions(
     frontMatter: true,
     headingIds: options.headingIds ?? markdownConfig.anchor ?? true,
     calloutComponents: defaultCalloutComponents,
-    codeComponents: { mermaid: "_ArdoMermaid" },
     ...(options.codeBlockComponent == null
       ? {}
       : { codeBlockComponent: options.codeBlockComponent }),

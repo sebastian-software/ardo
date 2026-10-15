@@ -25,7 +25,6 @@ These capabilities are available in the current package line.
 | SEO build outputs       | Shipped | Sitemap, robots output, LLM text artifacts, link checking, and static redirects are supported.                         |
 | Theme hue overrides     | Shipped | Brand, accent, and neutral hue custom properties can retint the default color ramp from CSS.                           |
 | Core content components | Shipped | `Badge`, `Card`, `CardGroup`, `Tabs`, `Accordion`, `AccordionGroup`, callouts, steps, code blocks, hero, and features. |
-| Mermaid diagrams        | Shipped | Theme-aware, lazily loaded rendering of `mermaid` code fences; pages without diagrams load no Mermaid code.            |
 | Performance budgets     | Shipped | CI checks docs build duration, client bundle gzip sizes, and search-index size against documented budgets.             |
 | Storybook playground    | Shipped | Default UI components have a local and static Storybook workflow.                                                      |
 
@@ -45,10 +44,11 @@ These areas work, but the API or maintenance story may still evolve.
 
 These are useful, but not part of the shipped core yet.
 
-| Area                | Tracking issue                                                | Notes                                                                        |
-| ------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Migration guides    | [#134](https://github.com/sebastian-software/ardo/issues/134) | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed. |
-| Lint warning budget | [#179](https://github.com/sebastian-software/ardo/issues/179) | Known warnings need to become an explicit quality budget.                    |
+| Area                | Tracking issue                                                              | Notes                                                                                     |
+| ------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Migration guides    | [#134](https://github.com/sebastian-software/ardo/issues/134)               | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed.              |
+| Lint warning budget | [#179](https://github.com/sebastian-software/ardo/issues/179)               | Known warnings need to become an explicit quality budget.                                 |
+| Mermaid diagrams    | [ferromark#531](https://github.com/sebastian-software/ferromark/issues/531) | Static SVG rendering at compile time. Until then, `mermaid` fences render as code blocks. |
 
 ## Nice To Have
 

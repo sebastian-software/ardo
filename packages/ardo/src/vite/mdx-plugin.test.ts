@@ -25,7 +25,6 @@ beforeEach(async () => {
       alias: [
         { find: "ardo/mdx-provider", replacement: path.join(tempDirectory, "provider.mjs") },
         { find: "ardo/runtime", replacement: path.join(tempDirectory, "runtime.mjs") },
-        { find: "ardo/ui", replacement: path.join(tempDirectory, "ui.mjs") },
       ],
     },
     root: packageRoot,
@@ -74,7 +73,7 @@ describe("createMdxPlugin", () => {
     expect(view).toContain("content")
   })
 
-  it("compiles Mermaid JSX and uses CodeBlock and wrapper overrides from provider props", async () => {
+  it("renders Mermaid fences as code blocks and uses provider overrides", async () => {
     const { default: route } = await loadRoute(
       '```mermaid\ngraph TD\n  A --> B\n```\n\n```ts title="source.ts"\nconst answer = 42\n```'
     )
@@ -89,7 +88,7 @@ describe("createMdxPlugin", () => {
     )
 
     expect(view).toContain('<article data-provider-wrapper="true">')
-    expect(view).toContain('<pre data-mermaid="true">graph TD\n  A --&gt; B\n</pre>')
+    expect(view).toContain("<mark>graph TD\n  A --&gt; B\n</mark>")
     expect(view).toContain("<mark>const answer = 42\n</mark>")
   })
 
@@ -328,11 +327,6 @@ async function writeHarnessModules(): Promise<void> {
         `export function ArdoPageDataProvider({ children, frontmatter, toc }) { ` +
         `return jsx("div", { "data-frontmatter-title": frontmatter.title ?? "", ` +
         `"data-toc": toc.map((item) => item.id).join(","), children }); }\n`
-    ),
-    fs.writeFile(
-      path.join(tempDirectory, "ui.mjs"),
-      `import { jsx } from "react/jsx-runtime";\n` +
-        `export function ArdoMermaid({ code, children }) { return jsx("pre", { "data-mermaid": true, children: code ?? children }); }\n`
     ),
   ])
 }
