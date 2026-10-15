@@ -9,7 +9,7 @@ const brandHaloStrong = `color-mix(in oklch, ${vars.color.brand} 36%, transparen
 const sectionRule = `color-mix(in oklch, ${vars.color.brand} 18%, ${vars.color.border})`
 const pageSurface = vars.color.bg
 const softSurface = `color-mix(in oklch, ${vars.color.brand} 2%, ${vars.color.bgSoft})`
-const inkOnBrand = "oklch(0.985 0.002 356)"
+const brandHover = `linear-gradient(135deg, ${vars.color.brandDark} 0%, ${vars.color.brand} 100%)`
 
 export const homeHero = style({
   position: "relative",
@@ -82,11 +82,11 @@ globalStyle(`${homeHero} p:first-of-type`, {
 })
 
 globalStyle(`${homeHero} a:first-child`, {
-  background: `linear-gradient(135deg, ${vars.color.brand} 0%, color-mix(in oklch, ${vars.color.brand} 80%, oklch(0.58 0.09 24)) 100%)`,
+  background: vars.color.brandGradient,
 })
 
 globalStyle(`${homeHero} a:first-child:hover`, {
-  background: `linear-gradient(135deg, ${vars.color.brandDark} 0%, color-mix(in oklch, ${vars.color.brand} 74%, oklch(0.55 0.1 24)) 100%)`,
+  background: brandHover,
 })
 
 export const section = style({
@@ -614,13 +614,13 @@ export const ctaPrimary = style({
   fontWeight: 600,
   textDecoration: "none",
   borderRadius: vars.radius.base,
-  background: `linear-gradient(135deg, ${vars.color.brand} 0%, color-mix(in oklch, ${vars.color.brand} 80%, oklch(0.58 0.09 24)) 100%)`,
-  color: inkOnBrand,
+  background: vars.color.brandGradient,
+  color: vars.color.brandInk,
   boxShadow: `0 4px 14px ${brandHalo}`,
   transition: `all ${vars.transition.base}`,
   selectors: {
     "&:hover": {
-      background: `linear-gradient(135deg, ${vars.color.brandDark} 0%, color-mix(in oklch, ${vars.color.brand} 74%, oklch(0.55 0.1 24)) 100%)`,
+      background: brandHover,
       boxShadow: `0 6px 20px ${brandHaloStrong}`,
       transform: "translateY(-2px)",
     },

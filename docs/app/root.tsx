@@ -13,6 +13,7 @@ import { Code2, Rocket, Zap } from "lucide-react"
 import config from "virtual:ardo/config"
 import type { MetaFunction } from "react-router"
 import "ardo/ui/styles.css"
+import "./theme.css"
 
 import logo from "./assets/logo.svg"
 
