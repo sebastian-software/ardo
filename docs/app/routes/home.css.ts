@@ -49,9 +49,9 @@ globalStyle(`${homeHero} > div`, {
   zIndex: 1,
 })
 
-// The hero shows the Ardo mascot, the full-color owl artwork.
+// The hero shows the felt Ardo owl. Smaller places use the flat logo.
 export const heroOwl = style({
-  width: "clamp(160px, 20vw, 240px)",
+  width: "clamp(180px, 22vw, 260px)",
   height: "auto",
   marginBottom: "28px",
   filter: "drop-shadow(0 18px 28px rgb(64 74 42 / 0.22))",
