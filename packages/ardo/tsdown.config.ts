@@ -54,7 +54,6 @@ export default defineConfig({
       /^@typescript\/native(?:\/|$)/,
       "tailwindcss",
       "lucide-react",
-      "mermaid",
       /^virtual:ardo\//,
     ],
   },

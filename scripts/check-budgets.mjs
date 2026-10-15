@@ -39,7 +39,7 @@ const budgets = {
   eagerJsGzip: {
     // Union of JS referenced from all prerendered pages (script src +
     // modulepreload). This grows with route content, rather than measuring
-    // one page's initial download. Lazy chunks (e.g. Mermaid) are excluded.
+    // one page's initial download. Lazily loaded chunks are excluded.
     label: "eager client JS gzip",
     budget: 530_000,
     baseline: "≈425 KB (2026-10, 86 native API pages instead of 47 TypeDoc pages)",
@@ -49,7 +49,7 @@ const budgets = {
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
     budget: 1_500_000,
-    baseline: "≈1.23 MB (2026-07, ≈930 KB of it lazy Mermaid chunks)",
+    baseline: "≈433 KB (2026-10, no lazy chunks since Mermaid moved out of Ardo)",
   },
   searchIndexGzip: {
     label: "search index gzip",

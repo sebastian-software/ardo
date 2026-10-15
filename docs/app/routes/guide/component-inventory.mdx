@@ -41,7 +41,6 @@ Available today, usable from MDX without imports, theme-aware, with docs and Sto
 | Accordions                     | `Accordion`, `AccordionGroup` (Base UI)       | [Markdown Features](/guide/markdown#accordions)            |
 | Badges and status pills        | `Badge` with semantic variants                | [Markdown Features](/guide/markdown#badge-component)       |
 | Cards and link cards           | `Card`, `CardGroup`                           | [Markdown Features](/guide/markdown#cards)                 |
-| Mermaid diagrams               | ` ```mermaid ` fences, lazy + theme-aware     | [Markdown Features](/guide/markdown#mermaid-diagrams)      |
 | Icons                          | `Icon` with registered and Lucide icons       | [Markdown Features](/guide/markdown#icons)                 |
 | Hero and features              | `Hero`, `Features`, `FeatureCard`             | [Site UI Configuration](/guide/site-ui)                    |
 | Reusable snippets              | MDX snippet imports and `ArdoBareContent`     | [Markdown Features](/guide/markdown#reusable-mdx-snippets) |
@@ -51,13 +50,14 @@ Available today, usable from MDX without imports, theme-aware, with docs and Sto
 
 Valuable, but intentionally not in the current release. Deferred blocks have a clear home when they land: interactive ones go through the Base UI boundary above.
 
-| Block                | Status                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Tooltip              | Likely first follow-up on the Base UI layer ([#81](https://github.com/sebastian-software/ardo/issues/81)). |
-| File tree block      | Deferred — setup and project-structure docs currently use code fences.                                     |
-| Package manager tabs | Deferred convenience — npm/pnpm/yarn/bun instructions work today with `Tabs` + `CodeGroup`.                |
-| Example/demo frame   | Deferred — interactive React examples need a sandboxing and hydration story first.                         |
-| Math notation        | Deferred ([#68](https://github.com/sebastian-software/ardo/issues/68)); MathML-first approach preferred.   |
+| Block                | Status                                                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tooltip              | Likely first follow-up on the Base UI layer ([#81](https://github.com/sebastian-software/ardo/issues/81)).                                                           |
+| File tree block      | Deferred — setup and project-structure docs currently use code fences.                                                                                               |
+| Package manager tabs | Deferred convenience — npm/pnpm/yarn/bun instructions work today with `Tabs` + `CodeGroup`.                                                                          |
+| Example/demo frame   | Deferred — interactive React examples need a sandboxing and hydration story first.                                                                                   |
+| Math notation        | Deferred ([#68](https://github.com/sebastian-software/ardo/issues/68)); MathML-first approach preferred.                                                             |
+| Mermaid diagrams     | Planned as static SVG in Ferromark ([ferromark#531](https://github.com/sebastian-software/ferromark/issues/531)); `mermaid` fences render as code blocks until then. |
 
 ## Intentionally out of scope
 

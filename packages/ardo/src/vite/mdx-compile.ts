@@ -18,13 +18,7 @@ type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
  * authored declaration of one of them, so no pass over the document is needed
  * to find free names.
  */
-const routeBindings = [
-  "_ArdoMermaid",
-  "_ArdoPageDataProvider",
-  "_ardoFrontmatter",
-  "_ardoRoute",
-  "_ardoToc",
-]
+const routeBindings = ["_ArdoPageDataProvider", "_ardoFrontmatter", "_ardoRoute", "_ardoToc"]
 
 /**
  * Compile a Markdown or MDX route with Ferromark's MDX module output and append
@@ -69,15 +63,11 @@ function createRouteCode(input: {
     exports: new Set(input.result.exports),
   }
   const toc = buildToc(input.metadata.headings, input.markdownConfig?.toc?.level ?? [2, 3])
-  const usesMermaid = input.result.codeBlocks.some(
-    (block) => block.language?.toLowerCase() === "mermaid"
-  )
   const frontmatter = scope.bindings.has("frontmatter")
     ? "frontmatter"
     : JSON.stringify(input.metadata.frontmatter)
   const lines = [
     `import { ArdoPageDataProvider as _ArdoPageDataProvider } from "ardo/runtime";`,
-    ...(usesMermaid ? [`import { ArdoMermaid as _ArdoMermaid } from "ardo/ui";`] : []),
     `const _ardoFrontmatter = ${frontmatter};`,
     `const _ardoToc = ${JSON.stringify(toc)};`,
     ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
