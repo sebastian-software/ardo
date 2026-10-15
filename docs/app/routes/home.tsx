@@ -1,4 +1,4 @@
-import { ArdoHero, ArdoFeatures, ArdoFeatureCard, ArdoCodeBlock, ArdoOwlMark } from "ardo/ui"
+import { ArdoHero, ArdoFeatures, ArdoFeatureCard, ArdoCodeBlock } from "ardo/ui"
 import { Link } from "react-router"
 import type { MetaFunction } from "react-router"
 
@@ -26,6 +26,7 @@ import {
   Terminal,
   Github,
 } from "ardo/icons"
+import mascot from "../assets/mascot.svg"
 import * as styles from "./home.css"
 
 export default function HomePage() {
@@ -37,7 +38,7 @@ export default function HomePage() {
         name="Ardo"
         text="Docs that live in your React stack"
         tagline="Static documentation built on React Router, Vite, and MDX. Write guides with your own components, generate API reference from your TypeScript source, and deploy plain files anywhere."
-        image={<ArdoOwlMark className={styles.heroOwl} title="Ardo" />}
+        image={<img src={mascot} alt="" className={styles.heroOwl} />}
         actions={[
           { text: "Adopt Ardo with your agent", link: "/guide/adopt-ardo", theme: "brand" },
           {

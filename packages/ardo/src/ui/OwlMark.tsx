@@ -5,39 +5,30 @@ export type ArdoOwlMarkProps = {
   title?: string
 } & Omit<ComponentProps<"svg">, "children">
 
+// One-color silhouette of the Ardo owl logo: face, pupils and beak are cut
+// out, so whatever sits behind the mark shows through.
+const OWL_PATH =
+  "M465 994.6c-33.1 19-67.2 38.2-103.3 50.9a90 90 0 0 1-29.7 6.9 24.4 24.4 0 0 1-23.8-19.6l-1.2-5q-13.5 6-17 7.3c-16 6.1-41.4 10-54.2-5.4-12.3-14.8-1.7-33.4 9.9-45.4q-21.5-1-39.6-7.8a72 72 0 0 1-31.2-20.3c-6.9-8.5-9.2-20-2.4-29.2 8.4-11.3 24.4-17.1 38.1-20.4l13.7-2.7a70 70 0 0 1-21.2-17c-12.3-14.8-14.1-35.4 2.4-48.1 20-15.5 49.6-4.7 68.6 6.4q9 5.3 18 11.3a401 401 0 0 1 76.9-162A350 350 0 0 1 491 596l17.6-8.5c-4.6-3-12.2-7.4-17.3-11.3-28.2-21-45.2-53-50.6-87.7q-9-57 13.2-108.7c25-58.6 75.5-99.3 132.3-126.8-30.8-14.3-48.4-41.4-45.7-74.8q2.2-27.4 20-52.2c2.9-4 5-7 8-9.7 4.2-3.8 10.5-3.8 12.8 2.2a150 150 0 0 0 52 68.4c37.7 27.6 83.3 42.1 128 56.1a477 477 0 0 1 95.7 41q49.5 28.6 86.7 72.3c7.4 8.5 15.5 18.2 23.2 25.2q25.6 23.4 58.2 32.4c28.4 8 59.1 6.8 89 1.1q9-1.7 9.7 7.7.2 2.2-2 8.1a107 107 0 0 1-35 48.7 73 73 0 0 1-68.5 13.3c6.3 26 9 50.7 6.3 76.5a182 182 0 0 1-86.9 137.6 133 133 0 0 1-63.9 18.7l-13.3.5a186 186 0 0 1 18.4 34.8c21.3 57-6 117-44.7 159a76 76 0 0 1-27.5 19.4 208 208 0 0 1-40.7 39.2 361 361 0 0 1-66.8 38v.1a38 38 0 0 1 20.7 16l3 4.6c26.5 2.7 51 16.7 57 43.4q1.2 5.3-.2 11.7c-2.3 11-10.9 16.4-22.2 13.8-9-2-17.5-8-24.5-12.3-.6 11.3-4 24.3-14.8 29-9.6 4.3-20.5-2.8-27.4-10l-14.5-15a32 32 0 0 0-16.9-9.2l-12-1.5q-4.8-.5-10-4.4a13 13 0 0 1-5-10c-.8-12.3 10.1-23 21.8-26.7a54 54 0 0 1 7.4-14.5c-6.4 1.5-13.3 3.4-19 4.3a124 124 0 0 1-55.4-4.2q-1.5.4-2.5 2.4a59 59 0 0 1 5.3 15.9 84 84 0 0 1 31.3 23 44 44 0 0 1 10.5 32.9c-1.3 8.9-7 14.3-16.2 12.6-6.7-1.3-12.3-5-18.6-9-2.2 10.1-5 17.9-14.3 21.7-15.6 6.5-31-11.4-40.2-21.5-7.6-8.2-14-12.3-24.6-9.5q-10.8 3-16.5 4c-12.5 2.4-19.1-7-17.3-18.5 3.3-20.2 22.3-32.9 41-36.7l3.6-8a96 96 0 0 1-63.7-46.3M739.4 325a120 120 0 0 0-91.5-39q-20.6 0-40.6 5.8c-32.7 9.4-60.7 28-81 52.3a146 146 0 0 0-29 133.9c10.9 39.4 37.3 70.2 71.6 92.3 30.6 19.7 61.2 32 87 55.1a136 136 0 0 1 26.2 32.6 116 116 0 0 1 45.3-2.3c20 3 33 7.5 57.8 15a212 212 0 0 0 45.2 8 150 150 0 0 0 159.1-158.5 138 138 0 0 0-28.5-79 119 119 0 0 0-19.6-19.1 101 101 0 0 0-83.5-17.4c-34 7.6-63.8 29.1-89.9 52.5 7-46.5 3.4-96-28.6-132.2m-57.7 51.6c22.5 21 22.2 58-.7 82.5-23 24.5-59.8 27.3-82.3 6.2a54 54 0 0 1-16.7-40 64 64 0 0 1 17.4-42.6c23-24.5 59.8-27.2 82.3-6.1m-16.2 33.6a17 17 0 0 0 8.3-21.6 17 17 0 0 0-9.8-9.4c-8.7-3-18.2 1.6-21.3 10.4-3 8.7 1.5 18.3 10.1 21.3a16 16 0 0 0 12.7-.7m231.6 78.2a51 51 0 0 1 20 35.4 59 59 0 0 1-11.5 41.2c-18.5 25-52.4 31.5-75.7 14.3a51 51 0 0 1-20-35.4 59 59 0 0 1 11.5-41.2c18.5-25 52.4-31.5 75.7-14.3m-8.3 7.5a16 16 0 0 0-11.5-4.7 16 16 0 0 0-16.1 16.1 16 16 0 0 0 16.1 16.2 16 16 0 0 0 16.2-16.1 16 16 0 0 0-4.7-11.5m-196 97.8c-3-2-4.7-13.3-5.6-18.4a1955 1955 0 0 1-7.5-48.3c-1-6.6 2.2-10.8 7-15.5a65 65 0 0 1 36-18.7q19.1-3 30.7 12.2a60 60 0 0 1 12 38.9c-.2 4.6-1.2 10.7-4.6 14.2a1750 1750 0 0 1-58.3 35.8q-5 3-9.7-.2"
+
 /**
- * Decorative line-art owl, drawn in `currentColor`. Used by the default
- * error and empty states. Set `color` on the parent (or `style.color`)
- * to recolor; set `title` to give it accessible meaning.
+ * The Ardo owl as a solid silhouette, drawn in `currentColor`. Used by the
+ * default error and empty states and the "Built with Ardo" footer link. Set
+ * `color` on the parent (or `style.color`) to recolor; set `title` to give
+ * it accessible meaning.
  */
-export function ArdoOwlMark({ size = 96, title, style, ...props }: ArdoOwlMarkProps) {
+export function ArdoOwlMark({ size = 96, title, ...props }: ArdoOwlMarkProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 600 600"
+      viewBox="136 113 1020 1020"
       width={size}
       height={size}
-      // Caller style is merged, not replaced, so passing `color` to tint the
-      // mark (it draws in currentColor) keeps the round line caps intact.
-      style={{ strokeLinecap: "round", strokeLinejoin: "round", ...style }}
       role={title == null ? "presentation" : "img"}
       aria-hidden={title == null ? true : undefined}
       {...props}
     >
       {title == null ? null : <title>{title}</title>}
-      <defs>
-        <symbol id="ardo-owl-eye" overflow="visible">
-          <path d="M300 300 151 128l2 178-41 94h93c-35 32-55 68-63 107m63-106 95 81m-32-96 28 88" />
-          <ellipse cx="222" cy="327" rx="20" ry="33" fill="currentColor" opacity="0.6" />
-          <circle cx="227" cy="324" r="71" />
-        </symbol>
-      </defs>
-      <g fill="none" stroke="currentColor" strokeWidth="16">
-        <path d="M155 318c2-70 66-126 145-126s143 56 145 126" />
-        <circle cx="300" cy="290" r="270" />
-        <use href="#ardo-owl-eye" />
-        <use href="#ardo-owl-eye" transform="matrix(-1 0 0 1 600 0)" />
-      </g>
+      <path fill="currentColor" d={OWL_PATH} />
     </svg>
   )
 }
