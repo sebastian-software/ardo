@@ -50,3 +50,6 @@ pnpm-debug.log*
 
 # Impeccable critique cache (local tooling artifact)
 .impeccable/
+
+# Streamline icon exports, input for `pnpm --filter ardo icons:generate`
+packages/ardo/.icon-sources/
