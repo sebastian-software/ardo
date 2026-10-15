@@ -26,7 +26,7 @@ import {
   Terminal,
   Github,
 } from "ardo/icons"
-import mascot from "../assets/mascot.svg"
+import mascot from "../assets/mascot.webp"
 import * as styles from "./home.css"
 
 export default function HomePage() {
@@ -38,7 +38,7 @@ export default function HomePage() {
         name="Ardo"
         text="Docs that live in your React stack"
         tagline="Static documentation built on React Router, Vite, and MDX. Write guides with your own components, generate API reference from your TypeScript source, and deploy plain files anywhere."
-        image={<img src={mascot} alt="" className={styles.heroOwl} />}
+        image={<img src={mascot} alt="" width={720} height={747} className={styles.heroOwl} />}
         actions={[
           { text: "Adopt Ardo with your agent", link: "/guide/adopt-ardo", theme: "brand" },
           {
