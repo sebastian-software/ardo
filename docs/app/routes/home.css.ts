@@ -49,14 +49,12 @@ globalStyle(`${homeHero} > div`, {
   zIndex: 1,
 })
 
-// The hero owl is an inline SVG mark (ArdoOwlMark) drawn in currentColor, so
-// it follows the live brand color across themes and custom hues.
+// The hero shows the Ardo mascot, the full-color owl artwork.
 export const heroOwl = style({
-  width: "clamp(128px, 16vw, 190px)",
+  width: "clamp(160px, 20vw, 240px)",
   height: "auto",
-  marginBottom: "36px",
-  color: vars.color.brand,
-  filter: `drop-shadow(0 22px 34px color-mix(in oklch, ${vars.color.brand} 26%, transparent))`,
+  marginBottom: "28px",
+  filter: "drop-shadow(0 18px 28px rgb(64 74 42 / 0.22))",
 })
 
 globalStyle(`${homeHero} h1`, {
