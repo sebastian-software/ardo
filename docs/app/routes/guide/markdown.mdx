@@ -131,12 +131,17 @@ const third = 3
 
 ### Title
 
-Add a title to your code block:
+Add a title to your code block. It combines with line highlighting:
 
-```typescript title="utils/greeting.ts"
-export function greet(name: string) {
-  return `Hello, ${name}!`
-}
+```typescript title="ardo.config.ts" {4-7}
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    title: "API Reference",
+  },
+})
 ```
 
 ## Badge Component

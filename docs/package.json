@@ -8,6 +8,9 @@
     "preview": "ardo preview"
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/caveat": "^5.3.0",
+    "@fontsource-variable/figtree": "^5.3.0",
     "ardo": "workspace:*",
     "isbot": "^5.2.1",
     "lucide-react": "^1.29.0",

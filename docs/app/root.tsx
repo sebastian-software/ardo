@@ -53,13 +53,20 @@ export default function Root() {
       <ArdoSidebar />
 
       <ArdoFooter
-        sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
+        sponsor={{ text: "Sebastian Software", link: "https://oss.sebastian-software.com" }}
         message={
           <>
             Code under the MIT License. Icons by <a href="https://streamlinehq.com">Streamline</a>.
+            Logos belong to their projects.
           </>
         }
-        copyright="Copyright 2026 Sebastian Software GmbH"
+        copyright={
+          <>
+            © 2026 Sebastian Software GmbH, Mainz, Germany ·{" "}
+            <a href="https://sebastian-software.com/imprint">Imprint</a> ·{" "}
+            <a href="https://sebastian-software.com/privacy-policy">Privacy</a>
+          </>
+        }
       />
     </ArdoRoot>
   )
