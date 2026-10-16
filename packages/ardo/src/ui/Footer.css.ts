@@ -31,7 +31,8 @@ globalStyle(`main > .${footer}`, {
   },
 })
 
-globalStyle(`.${layoutStyles.home} .${layoutStyles.main} > .${footer}`, {
+// Bare layouts render a plain <main> without the docs main class, so match the element.
+globalStyle(`.${layoutStyles.home} main > .${footer}`, {
   width: "100%",
   marginRight: 0,
   marginBottom: 0,
@@ -118,6 +119,18 @@ export const footerCopyright = style({
   margin: 0,
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
+})
+
+// Links inside the message and copyright follow the text color instead of the
+// browser's default blue, which disappears on dark footers.
+globalStyle(`${footerMessage} a, ${footerCopyright} a`, {
+  color: "inherit",
+  textDecoration: "underline",
+  textUnderlineOffset: "2px",
+})
+
+globalStyle(`${footerMessage} a:hover, ${footerCopyright} a:hover`, {
+  color: vars.color.brand,
 })
 
 export const footerBuildTime = style({
