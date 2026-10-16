@@ -1,5 +1,57 @@
 # Changelog
 
+## [6.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v5.0.0...ardo-v6.0.0) (2026-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* ardo/ui no longer exports ArdoMermaid or ArdoMermaidProps, and mermaid code fences render as code blocks instead of diagrams. Ardo no longer has an optional mermaid peer dependency, so projects can uninstall mermaid.
+* Ardo owns the framework versions and resolves React and router imports to its managed runtime. Node.js 22.22 or newer is required. Projects without direct framework dependencies can use the Ardo runtime exports and jsxImportSource: "ardo".
+* Documentation app imports must come from its own declared and installed dependency tree. Keep embedded component source inside the docs package or install a published dependency.
+* replace create-ardo with versioned agent onboarding
+* Remove typedoc configuration, TypeDocConfig, ardo/typedoc, ardo/typedoc/components, and the --typedoc/--no-typedoc scaffold flags. Configure api and install the optional native compiler/parser; use --api/--no-api for new projects. See the TypeDoc migration guide.
+
+### Features
+
+* add native API documentation alongside TypeDoc ([#330](https://github.com/sebastian-software/ardo/issues/330)) ([9acec7b](https://github.com/sebastian-software/ardo/commit/9acec7bf88bc5c0160e1e77ded1bc2083db0ff59))
+* add Streamline Core Line chrome icons ([555efce](https://github.com/sebastian-software/ardo/commit/555efce095a7b485239fed135918a9f60c9dcf1b))
+* compile MDX modules with prepared Ferromark documents ([#326](https://github.com/sebastian-software/ardo/issues/326)) ([30f2ea1](https://github.com/sebastian-software/ardo/commit/30f2ea11431c735186c01d8fe818abc988d444e2))
+* compile MDX routes with Ferromark's module output ([6c527f5](https://github.com/sebastian-software/ardo/commit/6c527f5835e9d54803362bf0428b1a09d5f34506)), closes [#325](https://github.com/sebastian-software/ardo/issues/325)
+* manage React and Vite through Ardo ([#339](https://github.com/sebastian-software/ardo/issues/339)) ([cb8bb06](https://github.com/sebastian-software/ardo/commit/cb8bb06446f31ad3f412237fbb1bc5c9cdb43c6f))
+* remove built-in Mermaid diagram rendering ([d3c4892](https://github.com/sebastian-software/ardo/commit/d3c4892fc76b13ba21d080ab9570cf74138386b1))
+* replace create-ardo with versioned agent onboarding ([4f0de6d](https://github.com/sebastian-software/ardo/commit/4f0de6d8b14027c0ea3b25012c1f4520d9c80de3))
+* replace the line-art owl with the new Ardo owl ([3187968](https://github.com/sebastian-software/ardo/commit/31879686b89ad4ff07038cf6cab49e47b6a4ae62))
+* replace the sidebar rail with vertical section tabs ([#343](https://github.com/sebastian-software/ardo/issues/343)) ([f552231](https://github.com/sebastian-software/ardo/commit/f55223169a8ed9d716c3fe4bf62da7b118cfa14d))
+* replace TypeDoc with native API documentation ([007ba83](https://github.com/sebastian-software/ardo/commit/007ba8304cc44335ee58cb15dcee124aad736fcf))
+
+
+### Bug Fixes
+
+* emit UI styles once in the ardo cascade layer ([2b4d846](https://github.com/sebastian-software/ardo/commit/2b4d8462d341559a21cc84484f49de80d2722fc4))
+* isolate documentation imports within their package ([#334](https://github.com/sebastian-software/ardo/issues/334)) ([70da8aa](https://github.com/sebastian-software/ardo/commit/70da8aa239ea098aef4821a42ea93e455abb21ce))
+* keep the footer inside bare layouts and style its links ([a8fb40f](https://github.com/sebastian-software/ardo/commit/a8fb40f38d0c9c408c7ea492b2597fbcc3404699))
+* leave bare routes to their own site chrome ([#335](https://github.com/sebastian-software/ardo/issues/335)) ([b0184c8](https://github.com/sebastian-software/ardo/commit/b0184c8d468c0b8982ff4b155e9d0f8b89b97a53))
+* refine chrome chevron and light theme icons ([b93c364](https://github.com/sebastian-software/ardo/commit/b93c364cb0c077b408abbcd8a9671b20c6357046))
+* support sitemap exclusions for TSX routes ([#336](https://github.com/sebastian-software/ardo/issues/336)) ([4264002](https://github.com/sebastian-software/ardo/commit/426400285e4dc2980efd635f71a93b5d3c77c5a9))
+
+
+### Performance
+
+* prepare native routes once with published Ferromark ([40a79de](https://github.com/sebastian-software/ardo/commit/40a79dee83b534ce1c37f5f2c939c0f1d74e3d14))
+
+
+### Code Refactoring
+
+* generate built-in icons with SVGR next to the UI code ([8e1bcbd](https://github.com/sebastian-software/ardo/commit/8e1bcbd15d76037b442b43c466d90f018ac27440))
+* keep one public Basic example ([73f0e4e](https://github.com/sebastian-software/ardo/commit/73f0e4eb0889c6001eb0cc58af1b26e5eb99d30f))
+* render literal TSX code blocks with Ferromark ([#327](https://github.com/sebastian-software/ardo/issues/327)) ([91c31a2](https://github.com/sebastian-software/ardo/commit/91c31a2854e0464e608cf5da826f786bdc719b8a))
+* render literal TSX fences with Ferromark ([c97b685](https://github.com/sebastian-software/ardo/commit/c97b6852147c8644f6ef926193d9a98e88b40eaa))
+
+
+### Documentation
+
+* add the section icon license and credit Streamline ([4b636aa](https://github.com/sebastian-software/ardo/commit/4b636aa8f7f74a47cc77617e1f4cc84c4345fca6))
+
 ## [5.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.2.0...ardo-v5.0.0) (2026-10-03)
 
 
