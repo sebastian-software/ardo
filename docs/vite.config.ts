@@ -1,7 +1,21 @@
+import { createRequire } from "node:module"
+import path from "node:path"
+
 import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
 
+// Ardo's dev server only serves files inside the docs folder. In this pnpm
+// workspace the home page fonts resolve to the shared store at the repository
+// root, so their packages are allowed explicitly.
+const require = createRequire(import.meta.url)
+const fontPackages = [
+  "@fontsource-variable/bricolage-grotesque",
+  "@fontsource-variable/caveat",
+  "@fontsource-variable/figtree",
+].map((name) => path.dirname(require.resolve(`${name}/package.json`)))
+
 export default defineConfig({
+  server: { fs: { allow: fontPackages } },
   plugins: [
     ardo({
       title: "Ardo",

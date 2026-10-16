@@ -1,5 +1,5 @@
 // The docs try the owl palette from the new logo: olive brand, terracotta
-// accent, mustard highlights and paper backgrounds. Ardo's default theme stays
+// accent, mustard highlights and an off-white page. Ardo's default theme stays
 // as it is. The owl colors are much less saturated than the default chroma
 // curve, so the colors are set directly instead of derived from the hues.
 import { globalStyle } from "@vanilla-extract/css"
@@ -9,6 +9,8 @@ const olive = 123
 const terracotta = 38
 const paper = 86
 const mustard = 85
+// A barely warm off-white: the cream paper tone read too yellow on large areas.
+const offWhite = 95
 
 applyBrandTheme({
   primary: olive,
@@ -29,26 +31,25 @@ applyBrandTheme({
       accentLight: `oklch(0.64 0.19 ${terracotta})`,
       accentDark: `oklch(0.42 0.13 ${terracotta})`,
       accentSubtle: `oklch(0.955 0.025 50)`,
-      bg: `oklch(0.985 0.012 ${paper})`,
-      bgSoft: `oklch(0.97 0.02 ${paper})`,
-      bgMute: `oklch(0.95 0.026 ${paper})`,
-      bgAlt: `oklch(0.925 0.03 ${paper})`,
+      bg: `oklch(0.99 0.003 ${offWhite})`,
+      bgSoft: `oklch(0.978 0.005 ${offWhite})`,
+      bgMute: `oklch(0.96 0.007 ${offWhite})`,
+      bgAlt: `oklch(0.94 0.009 ${offWhite})`,
       // #181817, the owl's pupils
       text: `oklch(0.21 0.008 100)`,
       textLight: `oklch(0.41 0.02 90)`,
       textLighter: `oklch(0.48 0.02 90)`,
-      border: `oklch(0.87 0.03 ${paper})`,
-      borderLight: `oklch(0.915 0.024 ${paper})`,
-      divider: `oklch(0.885 0.026 ${paper})`,
-      // #fcf2dc, the owl's face
-      sidebarBg: `oklch(0.963 0.031 ${paper})`,
-      sidebarRailBg: `oklch(0.935 0.036 ${paper})`,
-      sidebarBorder: `oklch(0.87 0.032 ${paper})`,
-      codeBg: `oklch(0.965 0.022 ${paper})`,
-      codeBorder: `oklch(0.875 0.03 ${paper})`,
-      headerBg: `oklch(0.985 0.012 ${paper} / 0.82)`,
-      surfaceCard: `linear-gradient(180deg, oklch(0.99 0.01 ${paper}) 0%, oklch(0.975 0.016 ${paper}) 100%)`,
-      heroWash: `radial-gradient(90rem 42rem at 50% -12rem, oklch(0.92 0.05 115 / 0.55) 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, oklch(0.93 0.08 ${mustard} / 0.5) 0%, transparent 58%), linear-gradient(180deg, oklch(0.975 0.016 ${paper}) 0%, oklch(0.985 0.012 ${paper}) 100%)`,
+      border: `oklch(0.89 0.01 ${offWhite})`,
+      borderLight: `oklch(0.925 0.008 ${offWhite})`,
+      divider: `oklch(0.9 0.009 ${offWhite})`,
+      sidebarBg: `oklch(0.975 0.006 ${offWhite})`,
+      sidebarRailBg: `oklch(0.955 0.008 ${offWhite})`,
+      sidebarBorder: `oklch(0.9 0.009 ${offWhite})`,
+      codeBg: `oklch(0.973 0.006 ${offWhite})`,
+      codeBorder: `oklch(0.9 0.009 ${offWhite})`,
+      headerBg: `oklch(0.99 0.003 ${offWhite} / 0.85)`,
+      surfaceCard: `linear-gradient(180deg, oklch(0.995 0.002 ${offWhite}) 0%, oklch(0.982 0.004 ${offWhite}) 100%)`,
+      heroWash: `radial-gradient(90rem 42rem at 50% -12rem, oklch(0.92 0.05 115 / 0.55) 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, oklch(0.93 0.08 ${mustard} / 0.5) 0%, transparent 58%), linear-gradient(180deg, oklch(0.982 0.004 ${offWhite}) 0%, oklch(0.99 0.003 ${offWhite}) 100%)`,
       heroGrid: `radial-gradient(circle at 1px 1px, oklch(0.52 0.07 ${olive} / 0.2) 1px, transparent 1.5px)`,
       // Warnings take the mustard, so they don't read as the terracotta accent.
       warning: `oklch(0.5 0.1 72)`,
