@@ -19,12 +19,17 @@ To add Tailwind, install `tailwindcss` and `@tailwindcss/vite` as development de
 3. **`app/app.css`** with Tailwind's theme and utility layers
 
 ```css title="app/app.css"
-@layer theme, base, components, utilities;
+@layer theme, base, ardo, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
+
+/* Follow Ardo's theme toggle, which sets the .dark class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
 ```
 
-Import this file in `app/root.tsx` before Ardo's own styles to establish the CSS layer order. The [manual installation guide](/guide/getting-started#manual-installation) shows this integration.
+Import this file in `app/root.tsx` before Ardo's own styles to establish the CSS layer order. Ardo ships its styles in the `ardo` cascade layer. Naming it before `components` and `utilities` lets your utility classes win over Ardo's content styles. Without it, the `ardo` layer is registered last and beats utilities. The [manual installation guide](/guide/getting-started#manual-installation) shows this integration.
+
+Tailwind's `dark:` variant follows the operating system by default. The `@custom-variant` line makes it follow Ardo's theme toggle instead, so `dark:` classes switch together with the rest of the site.
 
 ## Examples
 
@@ -111,12 +116,13 @@ Ardo provides its own base styles for documentation content — typography, head
 If you're building a heavily custom site where you control all styling, you can opt in to Preflight by adding one line to `app/app.css`:
 
 ```css title="app/app.css"
-@layer theme, base, components, utilities;
+@layer theme, base, ardo, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 ```
 
 Ardo's content styles set list markers, table borders, code styles, and spacing explicitly, so
-Markdown content stays readable even when a host reset clears browser defaults. Utility classes still
-win where you apply them in your own components.
+Markdown content stays readable even when a host reset clears browser defaults. Because the `ardo`
+layer sits after `base`, Preflight cannot undo Ardo's styles, and because it sits before `utilities`,
+your utility classes still win where you apply them.
