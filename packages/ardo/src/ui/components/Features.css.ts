@@ -4,12 +4,12 @@ import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
 export const features = style({
-  padding: "80px 24px",
+  padding: `80px ${vars.space.lg}`,
   background: vars.color.bgSoft,
   borderTop: `1px solid ${vars.color.border}`,
   "@media": {
     "(max-width: 768px)": {
-      padding: "48px 16px",
+      padding: `48px ${vars.space.md}`,
     },
   },
 })
@@ -49,7 +49,7 @@ export const featuresContainer = style({
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
   gap: "20px",
-  maxWidth: "1100px",
+  maxWidth: vars.layout.pageMaxWidth,
   margin: "0 auto",
 })
 

@@ -154,7 +154,7 @@ globalStyle(`${searchFooter} kbd`, {
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.sm,
   marginRight: "4px",
-  color: vars.color.accent,
+  color: vars.color.textLight,
   fontFamily: vars.font.mono,
 })
 
@@ -194,5 +194,5 @@ globalStyle(`${searchKbd} kbd`, {
   borderRadius: vars.radius.sm,
   fontSize: vars.fontSize.xs,
   fontFamily: vars.font.mono,
-  color: vars.color.accent,
+  color: vars.color.textLighter,
 })

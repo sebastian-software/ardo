@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
 
-import { render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
 import { ArdoLink, ArdoPageProvider } from "../runtime/page"
 import { ArdoHeader } from "./Header"
+import { type ArdoHeaderSearchMode, resolveHeaderSearch } from "./header-search-mode"
+import { type ArdoLayoutVariant, ArdoLayoutVariantContext } from "./layout-context"
 
 vi.mock("./components/Search", () => ({
   ArdoSearch: () => <input aria-label="Search input" />,
@@ -54,5 +56,60 @@ describe("ArdoHeader page state", () => {
 
     await user.click(screen.getByRole("button", { name: "Search" }))
     expect(screen.getByRole("dialog", { name: "Search" })).toBeTruthy()
+  })
+})
+
+function renderSearchHeader(layout: ArdoLayoutVariant, search?: ArdoHeaderSearchMode) {
+  render(
+    <ArdoPageProvider path="/start">
+      <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
+        <ArdoLayoutVariantContext value={layout}>
+          <ArdoHeader search={search} themeToggle={false} />
+        </ArdoLayoutVariantContext>
+      </ArdoProvider>
+    </ArdoPageProvider>
+  )
+}
+
+function pressSearchShortcut() {
+  fireEvent.keyDown(document, { key: "k", metaKey: true })
+}
+
+describe("ArdoHeader search modes", () => {
+  it("resolves auto from the layout and keeps explicit modes", () => {
+    expect(resolveHeaderSearch("auto", "doc")).toBe("field")
+    expect(resolveHeaderSearch("auto", "bare")).toBe("icon")
+    expect(resolveHeaderSearch(true, "bare")).toBe("icon")
+    expect(resolveHeaderSearch("field", "bare")).toBe("field")
+    expect(resolveHeaderSearch("icon", "doc")).toBe("icon")
+    expect(resolveHeaderSearch(false, "doc")).toBe("none")
+  })
+
+  it("shows the search field on docs pages and focuses it on ⌘K", () => {
+    renderSearchHeader("doc")
+
+    const input = screen.getByLabelText("Search input")
+    pressSearchShortcut()
+
+    expect(input.matches(":focus")).toBe(true)
+    expect(screen.queryByRole("dialog", { name: "Search" })).toBeNull()
+  })
+
+  it("collapses search to an icon on bare pages and opens the overlay on ⌘K", () => {
+    renderSearchHeader("bare")
+
+    expect(screen.queryByLabelText("Search input")).toBeNull()
+    const trigger = screen.getByRole("button", { name: "Search" })
+    expect(trigger.getAttribute("aria-keyshortcuts")).toBe("Meta+K Control+K")
+
+    pressSearchShortcut()
+    const dialog = screen.getByRole("dialog", { name: "Search" })
+    expect(within(dialog).getByLabelText("Search input")).toBeTruthy()
+  })
+
+  it("lets the search prop override the layout", () => {
+    renderSearchHeader("bare", "field")
+
+    expect(screen.getByLabelText("Search input")).toBeTruthy()
   })
 })

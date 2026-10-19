@@ -242,6 +242,7 @@ them — just the ones you want to change. Every token in `vars` (see below) has
   --ardo-layout-sidebarWidth: 20rem;
   --ardo-layout-tocWidth: 15rem;
   --ardo-layout-contentMaxWidth: 36em; /* em: the measure follows each element's font size */
+  --ardo-layout-pageMaxWidth: 69rem; /* header, hero, features, footer on bare pages */
   --ardo-layout-headerHeight: 3.5rem;
 
   /* Typography */
@@ -330,7 +331,7 @@ The `vars` object provides tokens for:
 - **`vars.color`** — Brand colors, backgrounds, text, borders, shadows, and semantic colors (tip, warning, danger, info, note)
 - **`vars.hue`** — Brand, accent, and neutral hue custom properties used by the default color ramp
 - **`vars.chroma`** — Brand, accent, and neutral chroma multipliers for the same ramp
-- **`vars.layout`** — Sidebar width, TOC width, content max width, header height
+- **`vars.layout`** — Sidebar width, TOC width, content max width, page max width (the shared frame for header, hero, features, and footer on bare pages), header height
 - **`vars.transition`** — Fast, base, and slow transition durations
 - **`vars.font`** — Body, heading, and monospace families, base size, and line height
 - **`vars.fontSize`** — The type scale from `xs` to `4xl`

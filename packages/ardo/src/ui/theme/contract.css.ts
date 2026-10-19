@@ -88,6 +88,7 @@ export const vars = createGlobalThemeContract(
       sidebarWidth: null,
       tocWidth: null,
       contentMaxWidth: null,
+      pageMaxWidth: null,
       headerHeight: null,
     },
     transition: {

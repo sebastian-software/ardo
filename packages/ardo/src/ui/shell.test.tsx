@@ -8,6 +8,7 @@ import { ArdoPageProvider } from "../runtime/page"
 import { ArdoRoot } from "./ArdoRoot"
 import { ArdoFooter } from "./Footer"
 import { ArdoHeader } from "./Header"
+import * as headerStyles from "./Header.css"
 import * as layoutStyles from "./Layout.css"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import { ArdoNav, ArdoNavLink } from "./Nav"
@@ -160,6 +161,32 @@ describe("UI shell landmarks", () => {
     expect(view).toContain(layoutStyles.withHeader)
     expect(view).toContain('href="#main-content"')
     expect(view).toContain('<main id="main-content">')
+  })
+
+  it("shows a centered search field on docs routes", () => {
+    const view = renderRootRoute(
+      <ArdoRoot config={config}>
+        <p>Guide</p>
+      </ArdoRoot>,
+      undefined,
+      "/guide"
+    )
+    expect(view).toContain('role="combobox"')
+    expect(view).not.toContain(headerStyles.headerContainerPage)
+  })
+
+  it("collapses search to an icon and uses the page frame on bare routes", () => {
+    const view = renderRootRoute(
+      <ArdoRoot config={config}>
+        <p>Landing</p>
+      </ArdoRoot>,
+      { layout: "bare" },
+      "/landing"
+    )
+    expect(view).not.toContain('role="combobox"')
+    expect(view).toContain('aria-label="Search"')
+    expect(view).toContain('aria-keyshortcuts="Meta+K Control+K"')
+    expect(view).toContain(headerStyles.headerContainerPage)
   })
 
   it("applies brand hue styles and logo defaults", () => {

@@ -153,14 +153,31 @@ import logo from "./assets/logo.svg"
 If `brand.logo` is configured in `ardo()`, `ArdoRoot` passes it to the default header unless the
 header sets its own `logo`.
 
-| Header prop         | Purpose                                                      |
-| ------------------- | ------------------------------------------------------------ |
-| `logo`              | String URL or `{ light, dark }` logo variants.               |
-| `title`             | Header title. Defaults to `config.title`.                    |
-| `search`            | Set to `false` to hide search. Defaults to `true`.           |
-| `searchPlaceholder` | Placeholder for the search input.                            |
-| `themeToggle`       | Set to `false` to hide the theme toggle. Defaults to `true`. |
-| `className`         | Replace the default header class.                            |
+| Header prop         | Purpose                                                                     |
+| ------------------- | --------------------------------------------------------------------------- |
+| `logo`              | String URL or `{ light, dark }` logo variants.                              |
+| `title`             | Header title. Defaults to `config.title`.                                   |
+| `search`            | `"auto"`, `"field"`, `"icon"`, or `false` to hide search. Default `"auto"`. |
+| `searchPlaceholder` | Placeholder for the search input.                                           |
+| `themeToggle`       | Set to `false` to hide the theme toggle. Defaults to `true`.                |
+| `className`         | Replace the default header class.                                           |
+
+### Search in the header
+
+With `search="auto"`, the page layout decides how search looks:
+
+- Docs pages show a search field in the center of the header.
+- Bare pages (`handle = { layout: "bare" }`, including the home page) show a search icon, so the
+  hero's call to action has the stage.
+
+Use `search="field"` or `search="icon"` to pick one presentation for every page. Below 1024px the
+field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and Linux) opens search.
+
+On bare pages the header content shares one page width with `ArdoHero`, `ArdoFeatures`, and
+`ArdoFooter`, so the logo lines up with the page content. Docs pages keep the full-width header
+above the sidebar, content, and table of contents. Change the width with the
+`--ardo-layout-pageMaxWidth` token, and use `vars.layout.pageMaxWidth` to align your own bare-page
+sections.
 
 ## Sidebar Sections
 

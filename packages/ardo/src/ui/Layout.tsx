@@ -2,6 +2,7 @@ import { type ReactNode, use } from "react"
 import { ArdoHead, ArdoScripts } from "../runtime/document"
 import { ArdoContext, useArdoLabels } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
+import { ArdoLayoutVariantContext } from "./layout-context"
 import * as styles from "./Layout.css"
 import { type ArdoThemePreference, getArdoThemeBootstrapScript } from "./theme-mode"
 
@@ -174,29 +175,31 @@ export function ArdoLayout({
     .filter(Boolean)
     .join(" ")
   return (
-    <div className={layoutClass}>
-      {showSkipLink && (
-        <a href="#main-content" className={styles.skipLink}>
-          {labels.layout.skipToContent}
-        </a>
-      )}
-      {header}
-      <div className={containerClass}>
-        {sidebar}
-        <main
-          id="main-content"
-          className={
-            bare
-              ? undefined
-              : [styles.main, isDocumentScroll && styles.documentScrollMain]
-                  .filter(Boolean)
-                  .join(" ")
-          }
-        >
-          {children}
-          {footer}
-        </main>
+    <ArdoLayoutVariantContext value={bare ? "bare" : "doc"}>
+      <div className={layoutClass}>
+        {showSkipLink && (
+          <a href="#main-content" className={styles.skipLink}>
+            {labels.layout.skipToContent}
+          </a>
+        )}
+        {header}
+        <div className={containerClass}>
+          {sidebar}
+          <main
+            id="main-content"
+            className={
+              bare
+                ? undefined
+                : [styles.main, isDocumentScroll && styles.documentScrollMain]
+                    .filter(Boolean)
+                    .join(" ")
+            }
+          >
+            {children}
+            {footer}
+          </main>
+        </div>
       </div>
-    </div>
+    </ArdoLayoutVariantContext>
   )
 }

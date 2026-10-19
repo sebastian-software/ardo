@@ -22,61 +22,79 @@ export const header = style({
   },
 })
 
+const MOBILE = "(max-width: 1024px)"
+const SMALL = "(max-width: 768px)"
+
+/**
+ * Three columns with equal outer tracks, so the search field sits at the
+ * viewport center no matter how wide the logo or the actions are. The docs
+ * content column moves with the sidebar and TOC; the viewport center does not.
+ */
 export const headerContainer = style({
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "1fr minmax(14rem, 26rem) 1fr",
   alignItems: "center",
-  justifyContent: "space-between",
+  columnGap: vars.space.lg,
   height: vars.layout.headerHeight,
   padding: `0 ${vars.space.lg}`,
   "@media": {
-    "(max-width: 1024px)": {
-      display: "grid",
+    [MOBILE]: {
       gridTemplateColumns: "minmax(0, 1fr) auto auto",
       columnGap: vars.space.sm,
     },
-    "(max-width: 640px)": {
+    [SMALL]: {
       padding: `0 ${vars.space.md}`,
     },
   },
 })
 
+/** No center column: logo on the left, actions (and a search icon) on the right. */
+export const headerContainerSplit = style({
+  gridTemplateColumns: "minmax(0, 1fr) auto",
+  "@media": {
+    [MOBILE]: {
+      gridTemplateColumns: "minmax(0, 1fr) auto",
+    },
+  },
+})
+
+/**
+ * Bare pages: the header shares the page frame with the hero, features and
+ * footer, so the logo lines up with the content edge.
+ */
+export const headerContainerPage = style({
+  maxWidth: `calc(${vars.layout.pageMaxWidth} + 2 * ${vars.space.lg})`,
+  margin: "0 auto",
+})
+
 export const headerLeft = style({
+  gridColumn: 1,
   display: "flex",
   alignItems: "center",
   gap: vars.space.md,
-  flexShrink: 0,
   minWidth: 0,
   "@media": {
-    "(max-width: 1024px)": {
-      gridColumn: 1,
+    [MOBILE]: {
       overflow: "hidden",
     },
   },
 })
 
 export const headerCenter = style({
+  gridColumn: 2,
   display: "flex",
-  flex: 1,
   justifyContent: "center",
   minWidth: 0,
-  padding: `0 ${vars.space.lg}`,
-  "@media": {
-    "(max-width: 1024px)": {
-      gridColumn: 2,
-      justifyContent: "center",
-      padding: 0,
-    },
-  },
 })
 
 export const headerRight = style({
+  gridColumn: "-2 / -1",
+  justifySelf: "end",
   display: "flex",
   alignItems: "center",
   gap: "0.75rem",
-  flexShrink: 0,
   "@media": {
-    "(max-width: 1024px)": {
-      gridColumn: 3,
+    [MOBILE]: {
       gap: vars.space.sm,
     },
   },
@@ -142,7 +160,7 @@ export const mobileMenuButton = style({
     },
   },
   "@media": {
-    "(max-width: 1024px)": {
+    [MOBILE]: {
       display: "flex",
       alignItems: "center",
     },
@@ -153,7 +171,7 @@ export const desktopNav = style({
   display: "flex",
   alignItems: "center",
   "@media": {
-    "(max-width: 1024px)": {
+    [MOBILE]: {
       display: "none",
     },
   },

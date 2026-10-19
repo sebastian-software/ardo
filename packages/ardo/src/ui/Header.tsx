@@ -18,10 +18,12 @@ import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
+import { type ArdoHeaderSearchMode, resolveHeaderSearch } from "./header-search-mode"
 import * as styles from "./Header.css"
 import { type ArdoLogo, HeaderLogo } from "./HeaderLogo"
 import { GithubIcon, LinkedinIcon, NpmIcon, TwitterIcon, YoutubeIcon } from "./brand-icons"
 import { MessageCircle } from "./content-icons"
+import { useArdoLayoutVariant } from "./layout-context"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
 import { getLocaleFromPath, getLocalizedPath, getVersionedPath } from "./version-path"
@@ -37,8 +39,11 @@ export type ArdoHeaderProps = {
   title?: string
   /** Navigation and action children. Use ArdoHeaderActions for right-side actions. */
   children?: ReactNode
-  /** Show search (default: true) */
-  search?: boolean
+  /**
+   * Search presentation (default: `"auto"`). `false` hides search; `true`
+   * is the same as `"auto"`.
+   */
+  search?: ArdoHeaderSearchMode | boolean
   /** Placeholder text for the search input */
   searchPlaceholder?: string
   /** Show theme toggle (default: true) */
@@ -123,7 +128,7 @@ export function ArdoHeader({
   logo,
   title,
   children,
-  search = true,
+  search = "auto",
   searchPlaceholder,
   themeToggle = true,
   mobileMenuContent,
@@ -134,6 +139,8 @@ export function ArdoHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const { actions, nav } = splitHeaderChildren(children)
+  const layout = useArdoLayoutVariant()
+  const searchMode = resolveHeaderSearch(search, layout)
 
   const resolvedLogo = logo
   const resolvedTitle = title ?? config.title
@@ -147,7 +154,13 @@ export function ArdoHeader({
   return (
     <>
       <header className={joinClassNames("ardo-header", className ?? styles.header)}>
-        <div className={styles.headerContainer}>
+        <div
+          className={joinClassNames(
+            styles.headerContainer,
+            layout === "bare" ? styles.headerContainerPage : undefined,
+            searchMode === "field" ? undefined : styles.headerContainerSplit
+          )}
+        >
           <div className={styles.headerLeft}>
             {hasMobileMenu && (
               <button
@@ -169,7 +182,7 @@ export function ArdoHeader({
             </ArdoLink>
           </div>
 
-          {search && (
+          {searchMode === "field" && (
             <div className={styles.headerCenter}>
               <ArdoHeaderSearch placeholder={searchPlaceholder} />
             </div>
@@ -177,6 +190,9 @@ export function ArdoHeader({
 
           <div className={styles.headerRight}>
             {nav != null && <div className={styles.desktopNav}>{nav}</div>}
+            {searchMode === "icon" && (
+              <ArdoHeaderSearch placeholder={searchPlaceholder} variant="icon" />
+            )}
             <ArdoVersionSwitcher />
             <ArdoLocaleSwitcher />
             {themeToggle && <ArdoThemeToggle />}

@@ -77,3 +77,18 @@ function getResultAtIndex<T>(results: T[], selectedIndex: number) {
 
   return results[selectedIndex]
 }
+
+type ShortcutKeyEvent = Pick<KeyboardEvent, "altKey" | "ctrlKey" | "key" | "metaKey">
+
+/** True for the global search shortcut: ⌘K on macOS, Ctrl+K elsewhere. */
+export function isSearchShortcut(event: ShortcutKeyEvent): boolean {
+  return (event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === "k"
+}
+
+/** Modifier label for the shortcut hint. Defaults to ⌘ when no platform is known (SSR). */
+export function getSearchShortcutModifier(
+  platform = typeof navigator === "undefined" ? undefined : navigator.platform
+): string {
+  if (platform == null) return "⌘"
+  return /Mac|iPhone|iPad|iPod/.test(platform) ? "⌘" : "Ctrl"
+}
