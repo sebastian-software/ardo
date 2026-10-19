@@ -28,6 +28,17 @@ function renderFooter(
 }
 
 describe("ArdoFooter", () => {
+  it("names the site by its title rather than the docs package name", () => {
+    const view = renderToStaticMarkup(
+      <ArdoProvider config={{ title: "Acme Docs", project: { name: "acme-docs" } }} sidebar={[]}>
+        <ArdoFooter ardoLink={false} />
+      </ArdoProvider>
+    )
+
+    expect(view).toContain("Acme Docs")
+    expect(view).not.toContain("acme-docs")
+  })
+
   it("escapes plain string footer content", () => {
     const view = renderFooter(
       <ArdoFooter
