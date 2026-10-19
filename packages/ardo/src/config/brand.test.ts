@@ -45,6 +45,19 @@ describe("createBrandThemeCss", () => {
     )
   })
 
+  it("emits chroma variable overrides next to the hues", () => {
+    expect(createBrandThemeCss({ color: "green", chroma: { color: 0.4, neutral: 0 } })).toBe(
+      ":root{--ardo-hue-brand:130;--ardo-hue-accent:4;--ardo-hue-neutral:130;--ardo-chroma-brand:0.4;--ardo-chroma-neutral:0;}"
+    )
+    expect(createBrandThemeCss({ chroma: 0.5 })).toBe(
+      ":root{--ardo-chroma-brand:0.5;--ardo-chroma-accent:0.5;}"
+    )
+  })
+
+  it("rejects negative chroma", () => {
+    expect(() => createBrandThemeCss({ chroma: { accent: -1 } })).toThrow("brand.chroma.accent")
+  })
+
   it("returns undefined when no brand hues are configured", () => {
     expect(createBrandThemeCss({ logo: "./app/assets/logo.svg" })).toBeUndefined()
   })

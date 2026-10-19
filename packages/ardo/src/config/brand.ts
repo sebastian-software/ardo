@@ -1,4 +1,4 @@
-import type { ArdoBrandConfig, ArdoBrandHue } from "./types"
+import type { ArdoBrandChroma, ArdoBrandConfig, ArdoBrandHue } from "./types"
 
 export const brandHuePresets = {
   amber: 70,
@@ -41,10 +41,14 @@ export function resolveBrandThemeHues(brand: ArdoBrandConfig | undefined): Resol
 
 export function createBrandThemeCss(brand: ArdoBrandConfig | undefined): string | undefined {
   const hues = resolveBrandThemeHues(brand)
+  const chroma = resolveBrandChroma(brand?.chroma)
   const declarations = [
     createHueDeclaration("brand", hues.color),
     createHueDeclaration("accent", hues.accent),
     createHueDeclaration("neutral", hues.neutral),
+    createChromaDeclaration("brand", chroma.color),
+    createChromaDeclaration("accent", chroma.accent),
+    createChromaDeclaration("neutral", chroma.neutral),
   ].filter((declaration) => declaration !== undefined)
 
   if (declarations.length === 0) {
@@ -91,6 +95,26 @@ function defaultAccent(color: number): number {
 
 function normalizeHue(value: number): number {
   return ((value % 360) + 360) % 360
+}
+
+export function resolveBrandChroma(
+  chroma: ArdoBrandChroma | undefined
+): Partial<Record<BrandHueKey, number>> {
+  if (chroma === undefined) {
+    return {}
+  }
+
+  const values = typeof chroma === "number" ? { color: chroma, accent: chroma } : chroma
+  for (const [key, value] of Object.entries(values)) {
+    if (!Number.isFinite(value) || value < 0) {
+      throw new TypeError(`brand.chroma.${key} must be a finite number of 0 or more.`)
+    }
+  }
+  return values
+}
+
+function createChromaDeclaration(name: "accent" | "brand" | "neutral", value: number | undefined) {
+  return value === undefined ? undefined : `--ardo-chroma-${name}:${value};`
 }
 
 function createHueDeclaration(name: "accent" | "brand" | "neutral", value: number | undefined) {

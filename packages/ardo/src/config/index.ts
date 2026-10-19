@@ -3,6 +3,7 @@ import path from "node:path"
 import { URL } from "node:url"
 
 import type {
+  ArdoBrandChroma,
   ArdoBrandConfig,
   ArdoBrandHue,
   ArdoBrandHuePreset,
@@ -50,6 +51,7 @@ type ConfigModule = {
 }
 
 export type {
+  ArdoBrandChroma,
   ArdoBrandConfig,
   ArdoBrandHue,
   ArdoBrandHuePreset,

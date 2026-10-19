@@ -12,9 +12,15 @@ describe("createTheme", () => {
       neutral: "130",
     })
     expect(theme.dark.hue).toStrictEqual(theme.light.hue)
-    expect(theme.light.color.brand).toBe("oklch(0.53 0.185 var(--ardo-hue-brand))")
-    expect(theme.light.color.bg).toBe("oklch(0.992 0.0015 var(--ardo-hue-neutral))")
-    expect(theme.dark.color.sidebarBg).toBe("oklch(0.13 0.008 var(--ardo-hue-neutral))")
+    expect(theme.light.color.brand).toBe(
+      "oklch(0.48 calc(0.185 * var(--ardo-chroma-brand)) var(--ardo-hue-brand))"
+    )
+    expect(theme.light.color.bg).toBe(
+      "oklch(0.992 calc(0.0015 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
+    )
+    expect(theme.dark.color.sidebarBg).toBe(
+      "oklch(0.13 calc(0.008 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
+    )
   })
 
   it("supports a neutral hue independent from brand and accent hues", () => {
@@ -25,9 +31,15 @@ describe("createTheme", () => {
       accent: "45",
       neutral: "260",
     })
-    expect(theme.light.color.accent).toBe("oklch(0.5 0.075 var(--ardo-hue-accent))")
-    expect(theme.light.color.border).toBe("oklch(0.88 0.005 var(--ardo-hue-neutral))")
-    expect(theme.dark.color.text).toBe("oklch(0.94 0.004 var(--ardo-hue-neutral))")
+    expect(theme.light.color.accent).toBe(
+      "oklch(0.5 calc(0.075 * var(--ardo-chroma-accent)) var(--ardo-hue-accent))"
+    )
+    expect(theme.light.color.border).toBe(
+      "oklch(0.88 calc(0.005 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
+    )
+    expect(theme.dark.color.text).toBe(
+      "oklch(0.94 calc(0.004 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
+    )
   })
 
   it("merges shared token overrides into light and dark themes", () => {
@@ -90,5 +102,22 @@ describe("createTheme", () => {
     expect(theme.light.color.text).toBe("#101010")
     expect(theme.dark.color.bg).toBe("#101010")
     expect(theme.dark.color.text).toBe("#fbfbf8")
+  })
+
+  it("scales hue-derived chroma and leaves the hue tokens alone", () => {
+    const theme = createTheme({ primary: 123, chroma: { brand: 0.4, accent: 2, neutral: 0 } })
+
+    expect(theme.light.chroma).toStrictEqual({ brand: "0.4", accent: "2", neutral: "0" })
+    expect(theme.dark.chroma).toStrictEqual(theme.light.chroma)
+    expect(createTheme({ primary: 123, chroma: 0.5 }).light.chroma).toStrictEqual({
+      brand: "0.5",
+      accent: "0.5",
+      neutral: "1",
+    })
+  })
+
+  it("rejects negative or non-finite chroma", () => {
+    expect(() => createTheme({ chroma: -1 })).toThrow("chroma.brand")
+    expect(() => createTheme({ chroma: { neutral: Number.NaN } })).toThrow("chroma.neutral")
   })
 })

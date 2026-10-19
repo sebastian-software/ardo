@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted
+Accepted. Amended by [ADR 0019](0019-chroma-multipliers-next-to-hues.md): chroma multipliers and
+checked contrast. The default hue is now 356 (berry).
 
 ## Context
 

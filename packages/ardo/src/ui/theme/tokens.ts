@@ -9,17 +9,32 @@ import { createGlobalTheme } from "@vanilla-extract/css"
 import { vars } from "./contract.css"
 
 type HueValue = number | string
+type ChromaValue = number | string
 type PrimitiveToken = number | string
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends PrimitiveToken ? T[K] : DeepPartial<T[K]>
 }
 
+/** Hues the color recipes read: CSS variables at runtime, plain numbers in tests. */
+export type ColorHues = { brand: HueValue; accent: HueValue; neutral: HueValue }
+/** Chroma multipliers the color recipes read: 1 keeps the designed saturation. */
+export type ColorChroma = { brand: ChromaValue; accent: ChromaValue; neutral: ChromaValue }
+
+const varHues: ColorHues = vars.hue
+const varChroma: ColorChroma = vars.chroma
+
 // eslint-disable-next-line max-params -- mirrors CSS oklch() syntax
-const oklch = (l: number, c: number, h: HueValue, alpha?: number) =>
+const oklch = (l: number, c: ChromaValue, h: HueValue, alpha?: number) =>
   alpha !== undefined ? `oklch(${l} ${c} ${h} / ${alpha})` : `oklch(${l} ${c} ${h})`
 
 function hueOffset(hue: HueValue, offset: number): HueValue {
   return typeof hue === "number" ? hue + offset : `calc(${hue} + ${offset})`
+}
+
+function scaleChroma(value: number, multiplier: ChromaValue): ChromaValue {
+  return typeof multiplier === "number"
+    ? Number((value * multiplier).toFixed(4))
+    : `calc(${value} * ${multiplier})`
 }
 
 const fontFamily =
@@ -33,7 +48,9 @@ const shared = {
   layout: {
     sidebarWidth: "20rem",
     tocWidth: "15rem",
-    contentMaxWidth: "68ch",
+    // About 75–80 characters of body text. `ch` measures the wide "0" glyph, so
+    // 68ch let system-ui prose run past 90 characters per line.
+    contentMaxWidth: "36rem",
     headerHeight: "3.5rem",
   },
   transition: {
@@ -46,7 +63,7 @@ const shared = {
     mono: fontMono,
     familyHeading: fontHeading,
     size: "1rem",
-    lineHeight: "1.72",
+    lineHeight: "1.65",
   },
   fontSize: {
     xs: "0.75rem",
@@ -80,46 +97,49 @@ const shared = {
   },
 }
 
-function createLightColors() {
-  const primary = vars.hue.brand
-  const secondary = vars.hue.accent
-  const neutral = vars.hue.neutral
+function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varChroma) {
+  const { brand: primary, accent: secondary, neutral } = hues
+  const b = (value: number) => scaleChroma(value, chroma.brand)
+  const a = (value: number) => scaleChroma(value, chroma.accent)
+  const n = (value: number) => scaleChroma(value, chroma.neutral)
   return {
-    brand: oklch(0.53, 0.185, primary),
-    brandLight: oklch(0.64, 0.16, primary),
-    brandDark: oklch(0.42, 0.175, primary),
-    brandSubtle: oklch(0.955, 0.04, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.55, 0.19, primary)} 0%, ${oklch(0.58, 0.16, hueOffset(primary, 18))} 100%)`,
-    brandInk: oklch(0.99, 0.01, primary),
-    ring: oklch(0.53, 0.185, primary, 0.38),
-    accent: oklch(0.5, 0.075, secondary),
-    accentLight: oklch(0.62, 0.07, secondary),
-    accentDark: oklch(0.38, 0.085, secondary),
-    accentSubtle: oklch(0.963, 0.012, secondary),
-    bg: oklch(0.992, 0.0015, neutral),
-    bgSoft: oklch(0.975, 0.003, neutral),
-    bgMute: oklch(0.955, 0.004, neutral),
-    bgAlt: oklch(0.935, 0.005, neutral),
-    text: oklch(0.17, 0.008, neutral),
-    textLight: oklch(0.4, 0.007, neutral),
-    textLighter: oklch(0.47, 0.006, neutral),
-    border: oklch(0.88, 0.005, neutral),
-    borderLight: oklch(0.925, 0.003, neutral),
-    divider: oklch(0.89, 0.004, neutral),
-    sidebarBg: oklch(0.965, 0.004, neutral),
-    sidebarRailBg: oklch(0.94, 0.005, neutral),
-    sidebarBorder: oklch(0.885, 0.005, neutral),
-    codeBg: oklch(0.965, 0.012, secondary),
-    codeBorder: oklch(0.88, 0.016, secondary),
-    codeShadow: `0 1px 2px ${oklch(0.2, 0.015, neutral, 0.03)}, 0 6px 16px -8px ${oklch(0.2, 0.015, neutral, 0.07)}`,
-    shadowSm: `0 1px 2px ${oklch(0.2, 0.015, neutral, 0.05)}, 0 2px 8px -2px ${oklch(0.2, 0.015, neutral, 0.05)}`,
-    shadowMd: `0 2px 4px ${oklch(0.2, 0.015, neutral, 0.04)}, 0 10px 24px -6px ${oklch(0.2, 0.015, neutral, 0.09)}`,
-    shadowLg: `0 4px 10px ${oklch(0.2, 0.015, neutral, 0.05)}, 0 24px 56px -12px ${oklch(0.2, 0.02, neutral, 0.16)}`,
-    surfaceCard: `linear-gradient(180deg, ${oklch(0.998, 0.001, neutral)} 0%, ${oklch(0.982, 0.003, neutral)} 100%)`,
+    brand: oklch(0.48, b(0.185), primary),
+    brandLight: oklch(0.64, b(0.16), primary),
+    brandDark: oklch(0.42, b(0.175), primary),
+    brandSubtle: oklch(0.955, b(0.04), primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.48, b(0.19), primary)} 0%, ${oklch(0.52, b(0.16), hueOffset(primary, 18))} 100%)`,
+    brandInk: oklch(0.99, b(0.01), primary),
+    ring: oklch(0.48, b(0.185), primary, 0.38),
+    accent: oklch(0.5, a(0.075), secondary),
+    accentLight: oklch(0.62, a(0.07), secondary),
+    accentDark: oklch(0.38, a(0.085), secondary),
+    accentSubtle: oklch(0.963, a(0.012), secondary),
+    bg: oklch(0.992, n(0.0015), neutral),
+    bgSoft: oklch(0.975, n(0.003), neutral),
+    bgMute: oklch(0.955, n(0.004), neutral),
+    bgAlt: oklch(0.935, n(0.005), neutral),
+    text: oklch(0.17, n(0.008), neutral),
+    textLight: oklch(0.4, n(0.007), neutral),
+    textLighter: oklch(0.47, n(0.006), neutral),
+    border: oklch(0.88, n(0.005), neutral),
+    borderLight: oklch(0.925, n(0.003), neutral),
+    divider: oklch(0.89, n(0.004), neutral),
+    sidebarBg: oklch(0.965, n(0.004), neutral),
+    sidebarRailBg: oklch(0.94, n(0.005), neutral),
+    sidebarBorder: oklch(0.885, n(0.005), neutral),
+    // Code surfaces take the accent hue but stay as quiet as the chrome, so a
+    // boosted accent does not tint every code block.
+    codeBg: oklch(0.965, n(0.012), secondary),
+    codeBorder: oklch(0.88, n(0.016), secondary),
+    codeShadow: `0 1px 2px ${oklch(0.2, n(0.015), neutral, 0.03)}, 0 6px 16px -8px ${oklch(0.2, n(0.015), neutral, 0.07)}`,
+    shadowSm: `0 1px 2px ${oklch(0.2, n(0.015), neutral, 0.05)}, 0 2px 8px -2px ${oklch(0.2, n(0.015), neutral, 0.05)}`,
+    shadowMd: `0 2px 4px ${oklch(0.2, n(0.015), neutral, 0.04)}, 0 10px 24px -6px ${oklch(0.2, n(0.015), neutral, 0.09)}`,
+    shadowLg: `0 4px 10px ${oklch(0.2, n(0.015), neutral, 0.05)}, 0 24px 56px -12px ${oklch(0.2, n(0.02), neutral, 0.16)}`,
+    surfaceCard: `linear-gradient(180deg, ${oklch(0.998, n(0.001), neutral)} 0%, ${oklch(0.982, n(0.003), neutral)} 100%)`,
     surfaceInset: `inset 0 1px 0 oklch(1 0 0 / 0.9)`,
-    headerBg: oklch(0.992, 0.0015, neutral, 0.82),
-    heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.92, 0.06, primary, 0.6)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.93, 0.035, secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.978, 0.003, neutral)} 0%, ${oklch(0.992, 0.0015, neutral)} 100%)`,
-    heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.55, 0.06, primary, 0.18)} 1px, transparent 1.5px)`,
+    headerBg: oklch(0.992, n(0.0015), neutral, 0.82),
+    heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.92, b(0.06), primary, 0.6)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.93, a(0.035), secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.978, n(0.003), neutral)} 0%, ${oklch(0.992, n(0.0015), neutral)} 100%)`,
+    heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.55, b(0.06), primary, 0.18)} 1px, transparent 1.5px)`,
     tip: oklch(0.5, 0.15, 155),
     tipBg: oklch(0.97, 0.025, 155),
     tipBorder: oklch(0.85, 0.08, 155),
@@ -156,59 +176,60 @@ function createLightColors() {
   }
 }
 
-function createDarkColors() {
-  const primary = vars.hue.brand
-  const secondary = vars.hue.accent
-  const neutral = vars.hue.neutral
+function createDarkColors(hues: ColorHues = varHues, chroma: ColorChroma = varChroma) {
+  const { brand: primary, accent: secondary, neutral } = hues
+  const b = (value: number) => scaleChroma(value, chroma.brand)
+  const a = (value: number) => scaleChroma(value, chroma.accent)
+  const n = (value: number) => scaleChroma(value, chroma.neutral)
   return {
-    brand: oklch(0.72, 0.17, primary),
-    brandLight: oklch(0.82, 0.14, primary),
-    brandDark: oklch(0.6, 0.18, primary),
-    brandSubtle: oklch(0.29, 0.09, primary),
-    brandGradient: `linear-gradient(135deg, ${oklch(0.72, 0.17, primary)} 0%, ${oklch(0.79, 0.13, hueOffset(primary, 18))} 100%)`,
-    brandInk: oklch(0.16, 0.055, primary),
-    ring: oklch(0.72, 0.17, primary, 0.5),
-    accent: oklch(0.74, 0.08, secondary),
-    accentLight: oklch(0.84, 0.07, secondary),
-    accentDark: oklch(0.6, 0.09, secondary),
-    accentSubtle: oklch(0.26, 0.03, secondary),
-    bg: oklch(0.155, 0.008, neutral),
-    bgSoft: oklch(0.195, 0.009, neutral),
-    bgMute: oklch(0.255, 0.01, neutral),
-    bgAlt: oklch(0.33, 0.01, neutral),
-    text: oklch(0.94, 0.004, neutral),
-    textLight: oklch(0.72, 0.007, neutral),
-    textLighter: oklch(0.68, 0.007, neutral),
-    border: oklch(0.285, 0.011, neutral),
-    borderLight: oklch(0.35, 0.01, neutral),
-    divider: oklch(0.29, 0.01, neutral),
-    sidebarBg: oklch(0.13, 0.008, neutral),
-    sidebarRailBg: oklch(0.105, 0.008, neutral),
-    sidebarBorder: oklch(0.265, 0.011, neutral),
-    codeBg: oklch(0.21, 0.016, secondary),
-    codeBorder: oklch(0.33, 0.024, secondary),
+    brand: oklch(0.72, b(0.17), primary),
+    brandLight: oklch(0.82, b(0.14), primary),
+    brandDark: oklch(0.6, b(0.18), primary),
+    brandSubtle: oklch(0.29, b(0.09), primary),
+    brandGradient: `linear-gradient(135deg, ${oklch(0.72, b(0.17), primary)} 0%, ${oklch(0.79, b(0.13), hueOffset(primary, 18))} 100%)`,
+    brandInk: oklch(0.16, b(0.055), primary),
+    ring: oklch(0.72, b(0.17), primary, 0.5),
+    accent: oklch(0.74, a(0.08), secondary),
+    accentLight: oklch(0.84, a(0.07), secondary),
+    accentDark: oklch(0.6, a(0.09), secondary),
+    accentSubtle: oklch(0.26, a(0.03), secondary),
+    bg: oklch(0.155, n(0.008), neutral),
+    bgSoft: oklch(0.195, n(0.009), neutral),
+    bgMute: oklch(0.255, n(0.01), neutral),
+    bgAlt: oklch(0.33, n(0.01), neutral),
+    text: oklch(0.94, n(0.004), neutral),
+    textLight: oklch(0.72, n(0.007), neutral),
+    textLighter: oklch(0.68, n(0.007), neutral),
+    border: oklch(0.285, n(0.011), neutral),
+    borderLight: oklch(0.35, n(0.01), neutral),
+    divider: oklch(0.29, n(0.01), neutral),
+    sidebarBg: oklch(0.13, n(0.008), neutral),
+    sidebarRailBg: oklch(0.105, n(0.008), neutral),
+    sidebarBorder: oklch(0.265, n(0.011), neutral),
+    codeBg: oklch(0.21, n(0.016), secondary),
+    codeBorder: oklch(0.33, n(0.024), secondary),
     codeShadow: "0 2px 6px oklch(0 0 0 / 0.14), 0 12px 28px -10px oklch(0 0 0 / 0.28)",
     shadowSm: "0 1px 2px oklch(0 0 0 / 0.22), 0 2px 8px -2px oklch(0 0 0 / 0.26)",
     shadowMd: "0 2px 6px oklch(0 0 0 / 0.22), 0 12px 28px -8px oklch(0 0 0 / 0.38)",
     shadowLg: "0 6px 16px oklch(0 0 0 / 0.26), 0 32px 72px -16px oklch(0 0 0 / 0.5)",
-    surfaceCard: `linear-gradient(180deg, ${oklch(0.215, 0.009, neutral)} 0%, ${oklch(0.185, 0.009, neutral)} 100%)`,
+    surfaceCard: `linear-gradient(180deg, ${oklch(0.215, n(0.009), neutral)} 0%, ${oklch(0.185, n(0.009), neutral)} 100%)`,
     surfaceInset: `inset 0 1px 0 oklch(1 0 0 / 0.06)`,
-    headerBg: oklch(0.155, 0.008, neutral, 0.8),
-    heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.36, 0.09, primary, 0.55)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.31, 0.055, secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.175, 0.01, neutral)} 0%, ${oklch(0.155, 0.008, neutral)} 100%)`,
-    heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.78, 0.08, primary, 0.16)} 1px, transparent 1.5px)`,
-    tip: oklch(0.5, 0.15, 155),
+    headerBg: oklch(0.155, n(0.008), neutral, 0.8),
+    heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.36, b(0.09), primary, 0.55)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.31, a(0.055), secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.175, n(0.01), neutral)} 0%, ${oklch(0.155, n(0.008), neutral)} 100%)`,
+    heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.78, b(0.08), primary, 0.16)} 1px, transparent 1.5px)`,
+    tip: oklch(0.78, 0.13, 155),
     tipBg: oklch(0.2, 0.04, 155),
     tipBorder: oklch(0.35, 0.1, 155),
-    warning: oklch(0.55, 0.16, 45),
+    warning: oklch(0.8, 0.12, 60),
     warningBg: oklch(0.22, 0.05, 45),
     warningBorder: oklch(0.4, 0.12, 45),
-    danger: oklch(0.5, 0.18, 25),
+    danger: oklch(0.76, 0.13, 25),
     dangerBg: oklch(0.2, 0.04, 25),
     dangerBorder: oklch(0.35, 0.1, 25),
-    info: oklch(0.5, 0.14, 220),
+    info: oklch(0.78, 0.1, 220),
     infoBg: oklch(0.2, 0.04, 220),
     infoBorder: oklch(0.35, 0.08, 220),
-    note: oklch(0.5, 0.14, 270),
+    note: oklch(0.78, 0.1, 270),
     noteBg: oklch(0.2, 0.04, 270),
     noteBorder: oklch(0.35, 0.08, 270),
     badgeBlue: oklch(0.7, 0.12, 250),
@@ -253,16 +274,33 @@ export type ArdoBrandHues = {
   neutral?: number
 }
 
+/**
+ * Chroma multipliers for the hue-derived colors. `1` keeps Ardo's designed
+ * saturation, `0.4` gives a muted palette and `0` turns a hue into pure gray.
+ * A single number applies to brand and accent; neutral keeps its own default.
+ */
+export type ArdoThemeChroma =
+  | {
+      /** Multiplier for the brand colors. */
+      brand?: number
+      /** Multiplier for the accent colors and code surfaces. */
+      accent?: number
+      /** Multiplier for backgrounds, borders, text, header, and sidebar. */
+      neutral?: number
+    }
+  | number
+
 type ThemeBase = typeof shared
 type ThemeColors = ReturnType<typeof createLightColors>
-type ThemeHueTokens = {
+type ThemeChannelTokens = {
   brand: string
   accent: string
   neutral: string
 }
 
 export type ArdoThemeTokens = {
-  hue: ThemeHueTokens
+  hue: ThemeChannelTokens
+  chroma: ThemeChannelTokens
   color: ThemeColors
 } & ThemeBase
 
@@ -273,10 +311,29 @@ export type ArdoThemeOptions = {
   dark?: ArdoThemeOverrides
   /** Overrides applied only to the generated light token set. */
   light?: ArdoThemeOverrides
-} & ArdoThemeOverrides &
+  /** Saturation of the hue-derived colors; see {@link ArdoThemeChroma}. */
+  chroma?: ArdoThemeChroma
+} & Omit<ArdoThemeOverrides, "chroma"> &
   Partial<ArdoBrandHues>
 
-function createBaseTheme(primary: number, secondary: number, neutral: number) {
+export function resolveChroma(chroma: ArdoThemeChroma | undefined): ThemeChannelTokens {
+  const values = typeof chroma === "number" ? { brand: chroma, accent: chroma } : (chroma ?? {})
+  for (const [key, value] of Object.entries(values)) {
+    if (!Number.isFinite(value) || value < 0) {
+      throw new TypeError(`chroma.${key} must be a finite number of 0 or more.`)
+    }
+  }
+  return {
+    brand: String(values.brand ?? 1),
+    accent: String(values.accent ?? 1),
+    neutral: String(values.neutral ?? 1),
+  }
+}
+
+function createBaseTheme(
+  { primary, secondary, neutral }: Required<ArdoBrandHues>,
+  chroma: ThemeChannelTokens
+) {
   const hue = {
     brand: String(primary),
     accent: String(secondary),
@@ -286,11 +343,13 @@ function createBaseTheme(primary: number, secondary: number, neutral: number) {
   return {
     light: {
       hue,
+      chroma,
       color: createLightColors(),
       ...shared,
     },
     dark: {
       hue,
+      chroma,
       color: createDarkColors(),
       ...shared,
     },
@@ -320,6 +379,7 @@ function getSharedThemeOverrides(options: ArdoThemeOptions | undefined): ArdoThe
   }
 
   const {
+    chroma: _chroma,
     dark: _dark,
     light: _light,
     neutral: _neutral,
@@ -363,9 +423,11 @@ export function createTheme(
   primaryOrOptions?: ArdoThemeOptions | number,
   secondaryArg?: number
 ): { dark: ArdoThemeTokens; light: ArdoThemeTokens } {
-  const { neutral, primary, secondary } = resolveThemeHues(primaryOrOptions, secondaryArg)
-  const baseTheme = createBaseTheme(primary, secondary, neutral)
   const options = typeof primaryOrOptions === "object" ? primaryOrOptions : undefined
+  const baseTheme = createBaseTheme(
+    resolveThemeHues(primaryOrOptions, secondaryArg),
+    resolveChroma(options?.chroma)
+  )
   const sharedOverrides = getSharedThemeOverrides(options)
 
   return {
@@ -388,4 +450,16 @@ export function applyBrandTheme(
   const theme = createTheme(primaryOrOptions, secondaryArg)
   createGlobalTheme(":root", vars, theme.light)
   createGlobalTheme(".dark", vars, theme.dark)
+}
+
+/**
+ * Resolves the color recipes with concrete hues and chroma multipliers instead
+ * of CSS variables, so tests can measure the colors a site actually gets.
+ */
+export function createColorTokens(
+  mode: "dark" | "light",
+  hues: ColorHues,
+  chroma: ColorChroma = { brand: 1, accent: 1, neutral: 1 }
+): ThemeColors {
+  return mode === "light" ? createLightColors(hues, chroma) : createDarkColors(hues, chroma)
 }
