@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest"
 
-import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
+import {
+  getActiveSearchOptionId,
+  getSearchKeyboardAction,
+  getSearchOptionId,
+  getSearchShortcutModifier,
+  isSearchShortcut,
+} from "./search-a11y"
 
 describe("search accessibility helpers", () => {
   const results = [{ path: "/intro" }, { path: "/api" }, { path: "/config" }]
@@ -61,5 +67,22 @@ describe("search accessibility helpers", () => {
         selectedIndex: 0,
       })
     ).toBeUndefined()
+  })
+
+  it("recognizes ⌘K and Ctrl+K as the search shortcut", () => {
+    const key = { altKey: false, ctrlKey: false, key: "k", metaKey: false }
+    expect(isSearchShortcut({ ...key, metaKey: true })).toBe(true)
+    expect(isSearchShortcut({ ...key, ctrlKey: true })).toBe(true)
+    expect(isSearchShortcut({ ...key, key: "K", metaKey: true })).toBe(true)
+    expect(isSearchShortcut(key)).toBe(false)
+    expect(isSearchShortcut({ ...key, altKey: true, metaKey: true })).toBe(false)
+    expect(isSearchShortcut({ ...key, key: "j", metaKey: true })).toBe(false)
+  })
+
+  it("labels the shortcut modifier per platform", () => {
+    expect(getSearchShortcutModifier("MacIntel")).toBe("⌘")
+    expect(getSearchShortcutModifier("iPhone")).toBe("⌘")
+    expect(getSearchShortcutModifier("Win32")).toBe("Ctrl")
+    expect(getSearchShortcutModifier("Linux x86_64")).toBe("Ctrl")
   })
 })

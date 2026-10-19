@@ -22,6 +22,14 @@ export const Desktop: Story = {
   },
 }
 
+/** Icon only, at every width. Hover or focus shows the ⌘K hint. */
+export const IconOnly: Story = {
+  args: {
+    placeholder: "Search docs...",
+    variant: "icon",
+  },
+}
+
 export const MobileOverlay: Story = {
   args: {
     placeholder: "Search docs...",

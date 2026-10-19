@@ -32,11 +32,20 @@ globalStyle(`main > .${footer}`, {
 })
 
 // Bare layouts render a plain <main> without the docs main class, so match the element.
+// The footer uses the page gutter there, so its content lines up with the header.
 globalStyle(`.${layoutStyles.home} main > .${footer}`, {
   width: "100%",
   marginRight: 0,
   marginBottom: 0,
   marginLeft: 0,
+  paddingRight: vars.space.lg,
+  paddingLeft: vars.space.lg,
+  "@media": {
+    "(max-width: 768px)": {
+      paddingRight: vars.space.md,
+      paddingLeft: vars.space.md,
+    },
+  },
 })
 
 export const footerContainer = style({
@@ -44,7 +53,7 @@ export const footerContainer = style({
   flexDirection: "column",
   gap: vars.space.xs,
   width: "100%",
-  maxWidth: "64rem",
+  maxWidth: vars.layout.pageMaxWidth,
   margin: "0 auto",
 })
 

@@ -4,7 +4,7 @@ import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
 export const hero = style({
-  padding: "104px 24px 72px",
+  padding: `104px ${vars.space.lg} 72px`,
   textAlign: "center",
   position: "relative",
   overflow: "hidden",
@@ -33,13 +33,14 @@ export const hero = style({
   },
   "@media": {
     "(max-width: 768px)": {
-      padding: "64px 20px 48px",
+      padding: `64px ${vars.space.md} 48px`,
     },
   },
 })
 
+// Centered copy keeps a narrower measure inside the shared page frame.
 export const heroContainer = style({
-  maxWidth: "800px",
+  maxWidth: `min(800px, ${vars.layout.pageMaxWidth})`,
   margin: "0 auto",
   position: "relative",
   zIndex: 1,

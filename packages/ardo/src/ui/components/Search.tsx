@@ -6,7 +6,12 @@ import type { ArdoLabels } from "../labels"
 
 import { useArdoLabels } from "../../runtime/hooks"
 import { ChromeIcon } from "../chrome-icons"
-import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
+import {
+  getActiveSearchOptionId,
+  getSearchKeyboardAction,
+  getSearchOptionId,
+  getSearchShortcutModifier,
+} from "./search-a11y"
 import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
 import * as styles from "./Search.css"
 import { SearchPopover } from "./SearchPopover"
@@ -30,6 +35,11 @@ export type ArdoSearchProps = {
   placeholder?: string
   /** Focus the input on mount (used by the mobile search overlay). */
   autoFocus?: boolean
+  /**
+   * Focus this input on ⌘K / Ctrl+K (default: true). The header search turns
+   * this off and handles the shortcut itself.
+   */
+  shortcut?: boolean
 }
 
 let searchIndex: Promise<MiniSearch<SearchDoc>> | undefined
@@ -161,16 +171,11 @@ function SearchInput({
         </button>
       )}
       <span className={styles.searchKbd}>
-        <kbd suppressHydrationWarning>{getShortcutModifierLabel()}</kbd>
+        <kbd suppressHydrationWarning>{getSearchShortcutModifier()}</kbd>
         <kbd>K</kbd>
       </span>
     </div>
   )
-}
-
-function getShortcutModifierLabel(): string {
-  if (typeof navigator === "undefined") return "⌘"
-  return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl"
 }
 
 function useSearchA11y({
@@ -196,7 +201,7 @@ function useSearchA11y({
   return { activeOptionId, getOptionId, listboxId }
 }
 
-export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) {
+export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: ArdoSearchProps) {
   const page = useArdoPage()
   const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -217,7 +222,7 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
     selectedIndex: state.selectedIndex,
   })
 
-  useGlobalSearchShortcut(inputRef, state.setIsOpen)
+  useGlobalSearchShortcut(inputRef, state.setIsOpen, shortcut)
   useOutsideClick({
     containerRef,
     popoverClass: styles.searchPopover,

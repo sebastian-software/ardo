@@ -1,12 +1,15 @@
 import { type RefObject, useEffect } from "react"
 
+import { isSearchShortcut } from "./search-a11y"
+
 export function useGlobalSearchShortcut(
   inputRef: RefObject<HTMLInputElement | null>,
-  setIsOpen: (open: boolean) => void
+  setIsOpen: (open: boolean) => void,
+  shortcut = true
 ) {
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if (shortcut && isSearchShortcut(e)) {
         e.preventDefault()
         inputRef.current?.focus()
         setIsOpen(true)
@@ -19,7 +22,7 @@ export function useGlobalSearchShortcut(
     return () => {
       document.removeEventListener("keydown", handleGlobalKeyDown)
     }
-  }, [inputRef, setIsOpen])
+  }, [inputRef, setIsOpen, shortcut])
 }
 
 type OutsideClickOptions = {

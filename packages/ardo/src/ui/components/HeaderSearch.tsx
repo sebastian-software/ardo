@@ -5,28 +5,32 @@ import { useArdoLabels } from "../../runtime/hooks"
 import { ChromeIcon } from "../chrome-icons"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
-import { ArdoSearch, type ArdoSearchProps } from "./Search"
+import { ArdoSearch } from "./Search"
+import { getSearchShortcutModifier, isSearchShortcut } from "./search-a11y"
+
+export type ArdoHeaderSearchProps = {
+  /** Placeholder text for the search input */
+  placeholder?: string
+  /**
+   * `"field"` shows the input on desktop and an icon button on narrow
+   * viewports. `"icon"` shows only the icon button, at every width.
+   */
+  variant?: "field" | "icon"
+}
 
 /**
- * Header-hosted search. On desktop it renders the search input inline; on
- * narrow viewports it collapses to an icon button that opens a full-width
- * search overlay.
+ * Header-hosted search. The field variant renders the input inline on
+ * desktop; both variants open a search overlay from an icon button.
+ * ⌘K / Ctrl+K focuses the inline input when it is visible and opens the
+ * overlay otherwise.
  */
-export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
-  const pathname = useArdoPath()
+export function ArdoHeaderSearch({ placeholder, variant = "field" }: ArdoHeaderSearchProps) {
   const labels = useArdoLabels()
-  const [overlayOpen, setOverlayOpen] = useState(false)
-  const [previousPathname, setPreviousPathname] = useState(pathname)
+  const { closeOverlay, openOverlay, overlayOpen } = useSearchOverlayState()
+  const inlineRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const closeOverlay = useCallback(() => {
-    setOverlayOpen(false)
-  }, [])
-
-  if (pathname !== previousPathname) {
-    setPreviousPathname(pathname)
-    setOverlayOpen(false)
-  }
+  const isIcon = variant === "icon"
 
   useSearchOverlayFocus({
     onClose: closeOverlay,
@@ -34,24 +38,30 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
     overlayRef,
     triggerRef,
   })
+  useHeaderSearchShortcut({ inlineRef, onOpenOverlay: openOverlay })
 
   return (
     <>
-      <div className={styles.inline}>
-        <ArdoSearch placeholder={placeholder} />
-      </div>
+      {!isIcon && (
+        <div ref={inlineRef} className={styles.inline}>
+          <ArdoSearch placeholder={placeholder} shortcut={false} />
+        </div>
+      )}
 
       <button
         ref={triggerRef}
         type="button"
-        className={styles.trigger}
+        className={isIcon ? styles.triggerIcon : styles.trigger}
         aria-label={labels.search.label}
         aria-expanded={overlayOpen}
-        onClick={() => {
-          setOverlayOpen(true)
-        }}
+        aria-keyshortcuts="Meta+K Control+K"
+        onClick={openOverlay}
       >
         <ChromeIcon name="search" />
+        <span className={styles.tooltip} aria-hidden="true">
+          <kbd suppressHydrationWarning>{getSearchShortcutModifier()}</kbd>
+          <kbd>K</kbd>
+        </span>
       </button>
 
       {overlayOpen && (
@@ -65,7 +75,7 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
         >
           <div className={styles.overlayBar}>
             <div className={styles.overlaySearch}>
-              <ArdoSearch placeholder={placeholder} autoFocus />
+              <ArdoSearch placeholder={placeholder} autoFocus shortcut={false} />
             </div>
             <button
               type="button"
@@ -80,6 +90,58 @@ export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
       )}
     </>
   )
+}
+
+/** Overlay open state; closes on navigation. */
+function useSearchOverlayState() {
+  const pathname = useArdoPath()
+  const [overlayOpen, setOverlayOpen] = useState(false)
+  const [previousPathname, setPreviousPathname] = useState(pathname)
+  const openOverlay = useCallback(() => {
+    setOverlayOpen(true)
+  }, [])
+  const closeOverlay = useCallback(() => {
+    setOverlayOpen(false)
+  }, [])
+
+  if (pathname !== previousPathname) {
+    setPreviousPathname(pathname)
+    setOverlayOpen(false)
+  }
+
+  return { closeOverlay, openOverlay, overlayOpen }
+}
+
+/**
+ * One ⌘K / Ctrl+K handler per header: focus the inline input while it is
+ * shown, otherwise open the overlay. The inline input hides via CSS on
+ * narrow viewports, so the check runs on each key press.
+ */
+function useHeaderSearchShortcut({
+  inlineRef,
+  onOpenOverlay,
+}: {
+  inlineRef: React.RefObject<HTMLDivElement | null>
+  onOpenOverlay: () => void
+}) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isSearchShortcut(event)) return
+      event.preventDefault()
+      const inline = inlineRef.current
+      const input = inline?.querySelector("input")
+      if (inline != null && input != null && getComputedStyle(inline).display !== "none") {
+        input.focus()
+        return
+      }
+      onOpenOverlay()
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [inlineRef, onOpenOverlay])
 }
 
 function useSearchOverlayFocus({

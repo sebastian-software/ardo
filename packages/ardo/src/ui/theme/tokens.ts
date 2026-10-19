@@ -52,6 +52,8 @@ const shared = {
     // size, so a larger lead or smaller note keeps the same measure. `ch`
     // measures the wide "0" glyph, so 68ch let system-ui prose run past 90.
     contentMaxWidth: "36em",
+    // Shared content width for bare pages: header, hero, features and footer.
+    pageMaxWidth: "69rem",
     headerHeight: "3.5rem",
   },
   transition: {
