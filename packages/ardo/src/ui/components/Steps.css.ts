@@ -13,6 +13,8 @@ globalStyle(`${steps} ol`, {
 })
 
 globalStyle(`${steps} ol > li`, {
+  // Content styles give every ol decimal markers; the step circle replaces them.
+  listStyle: "none",
   position: "relative",
   paddingLeft: "48px",
   paddingBottom: "24px",
@@ -36,7 +38,7 @@ globalStyle(`${steps} ol > li::before`, {
   height: "32px",
   borderRadius: "50%",
   background: vars.color.brand,
-  color: "white",
+  color: vars.color.brandInk,
   fontSize: "14px",
   fontWeight: 700,
   lineHeight: 1,
@@ -67,6 +69,6 @@ globalStyle(`.ardo-content ${steps} ol > li`, {
   marginBottom: 0,
 })
 
-globalStyle(`.ardo-content ${steps} ol > li::marker`, {
+globalStyle(`${steps} ol > li::marker, .ardo-content ${steps} ol > li::marker`, {
   content: "none",
 })
