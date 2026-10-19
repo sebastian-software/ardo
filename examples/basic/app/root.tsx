@@ -17,7 +17,7 @@ export default function Root() {
 
       <ArdoSidebar />
 
-      <ArdoFooter message="Built with Ardo" />
+      <ArdoFooter />
     </ArdoRoot>
   )
 }
