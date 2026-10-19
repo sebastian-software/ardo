@@ -145,8 +145,6 @@ export const handGray = style([handNote, { color: inkMuted, fontSize: "26px" }])
 
 export const noteLabel = style([handNote, { fontSize: "27px", lineHeight: 1, margin: "0 0 10px" }])
 
-export const noteNumber = style({ color: inkMuted })
-
 export const circled = style({
   position: "relative",
   display: "inline-block",
@@ -236,15 +234,25 @@ export const plainCard = style({
 export const indexCard = style({
   position: "relative",
   backgroundColor: card,
-  backgroundImage: `linear-gradient(${ruled} 1px, transparent 1px)`,
-  backgroundSize: "100% 32px",
-  backgroundPosition: "0 62px",
   borderTop: `3px solid ${ruledTop}`,
   borderRadius: "6px",
   padding: "22px 26px 28px",
   boxShadow: "0 12px 26px -12px rgba(60, 50, 30, 0.25), 0 1px 2px rgba(60, 50, 30, 0.12)",
   boxSizing: "border-box",
 })
+
+// The ruling sits under the written lines only, so text and lines always meet.
+const ruleHeight = "32px"
+
+globalStyle(`${indexCard} :is(p, ul, li)`, { lineHeight: ruleHeight })
+
+globalStyle(`${indexCard} :is(p, ul)`, {
+  backgroundImage: `linear-gradient(transparent calc(${ruleHeight} - 1px), ${ruled} calc(${ruleHeight} - 1px))`,
+  backgroundSize: `100% ${ruleHeight}`,
+})
+
+globalStyle(`${indexCard} ul`, { gap: 0 })
+globalStyle(`${indexCard} li::before`, { marginTop: "12px" })
 
 export const circleNumber = style({
   display: "inline-flex",
@@ -554,8 +562,6 @@ export const factsRow = style({
   gap: "10px 18px",
   marginTop: "30px",
 })
-
-export const heroAside = style({ marginTop: "14px" })
 
 export const heroArt = style({
   flex: "0 1 430px",

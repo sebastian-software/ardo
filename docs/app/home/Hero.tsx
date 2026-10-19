@@ -47,11 +47,12 @@ export function Hero({ facts }: { facts: NpmFacts | null }) {
           Open source · for React projects
         </span>
         <h1 className={styles.h1}>
-          Docs that are a <mark>joy to write</mark> and a treat to read.
+          React docs, baked into <mark>plain HTML</mark>.
         </h1>
         <p className={`${styles.lead} ${styles.heroLead}`}>
-          Ardo is a static site generator for React projects. Guides, API reference and search,
-          baked at build time by Rust engines and served as plain HTML.
+          Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API
+          reference read from your TypeScript, and search, all prerendered at build time by Rust
+          engines.
         </p>
         <div className={styles.buttonRow}>
           <a className={`${styles.button} ${styles.buttonPrimary}`} href="#setup">
@@ -67,12 +68,11 @@ export function Hero({ facts }: { facts: NpmFacts | null }) {
             ← fresh from npm at every build
           </p>
         </div>
-        <p className={`${styles.handGray} ${styles.heroAside}`}>
-          no account · no server to babysit
-        </p>
       </div>
       <div className={styles.heroArt}>
-        <div className={`${styles.bubble} ${styles.heroBubble}`}>Psst… it’s all just HTML.</div>
+        <div className={`${styles.bubble} ${styles.heroBubble}`}>
+          Psst… a joy to write, a treat to read.
+        </div>
         <img
           className={`${styles.heroOwl} ${styles.bobbing}`}
           src={mascot}

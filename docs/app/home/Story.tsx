@@ -6,7 +6,7 @@ import { NoteLabel } from "./NoteLabel"
 export function HowItWorks() {
   return (
     <section className={`${styles.wrap} ${styles.section} ${styles.sectionTight}`}>
-      <NoteLabel number={1}>how it works</NoteLabel>
+      <NoteLabel>how it works</NoteLabel>
       <h2 className={styles.h2}>From repo to website, no server to babysit.</h2>
       <div className={styles.cardGrid}>
         <div className={`${styles.indexCard} ${styles.tiltLeft}`}>
@@ -46,7 +46,7 @@ export function AgentSetup() {
     <section id="setup" className={`${styles.wrap} ${styles.section}`}>
       <div className={styles.splitRow}>
         <div className={styles.splitText}>
-          <NoteLabel number={2}>the easy way in</NoteLabel>
+          <NoteLabel>the easy way in</NoteLabel>
           <h2 className={styles.h2}>Let your agent do the setup.</h2>
           <p className={styles.lead}>
             No starter template, no copy-paste marathon. Hand this sentence to your coding agent, in

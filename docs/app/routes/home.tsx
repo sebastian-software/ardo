@@ -14,7 +14,7 @@ import { FitCheck, WhereArdoFits, WhyArdo } from "../home/Orientation"
 import { AgentSetup, HowItWorks } from "../home/Story"
 
 export const meta: MetaFunction = () => [
-  { title: "Ardo: docs that are a joy to write and a treat to read" },
+  { title: "Ardo: React docs, baked into plain HTML" },
   {
     name: "description",
     content:

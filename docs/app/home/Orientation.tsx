@@ -25,7 +25,7 @@ const NEIGHBORS = [
 export function WhereArdoFits() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel number={7}>where Ardo fits</NoteLabel>
+      <NoteLabel>where Ardo fits</NoteLabel>
       <h2 className={styles.h2}>Know one of these? Then you almost know Ardo.</h2>
       <ul className={styles.compareGrid}>
         {NEIGHBORS.map(([name, text]) => (
@@ -45,7 +45,7 @@ export function WhereArdoFits() {
 export function FitCheck() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel number={8}>fit check</NoteLabel>
+      <NoteLabel>fit check</NoteLabel>
       <h2 className={styles.h2}>Is Ardo your kind of bird?</h2>
       <div className={styles.fitGrid}>
         <div
@@ -91,7 +91,7 @@ export function WhyArdo() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
       <div className={styles.whyColumn}>
-        <NoteLabel number={9}>whoo made this?</NoteLabel>
+        <NoteLabel>whoo made this?</NoteLabel>
         <blockquote className={styles.quote}>
           “I went looking for a modern, lightweight docs framework that was simply React. It didn’t
           exist. So I built it.”
