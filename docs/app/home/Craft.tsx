@@ -42,7 +42,7 @@ export function Components() {
         </p>
       </div>
       <div className={styles.splitText}>
-        <NoteLabel number={4}>components and layouts</NoteLabel>
+        <NoteLabel>components and layouts</NoteLabel>
         <h2 className={styles.h2}>Your components are invited.</h2>
         <p className={styles.lead}>
           Drop your design system straight into MDX, or build landing pages and layouts in plain
@@ -60,7 +60,7 @@ export function ApiReference() {
   return (
     <section className={`${styles.wrap} ${styles.section} ${styles.splitRow}`}>
       <div className={styles.splitText}>
-        <NoteLabel number={5}>API reference for TypeScript</NoteLabel>
+        <NoteLabel>API reference for TypeScript</NoteLabel>
         <h2 className={styles.h2}>Your types, now with a website.</h2>
         <p className={styles.lead}>
           Point Ardo at your entry point and every export gets its own page, with signature,
@@ -104,11 +104,11 @@ const PALETTES = [
 export function Theming() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel number={6}>theming</NoteLabel>
-      <h2 className={styles.h2}>Dress it up in one line.</h2>
+      <NoteLabel>theming</NoteLabel>
+      <h2 className={styles.h2}>Dress it up in a few lines.</h2>
       <p className={styles.lead}>
-        Pick a brand, an accent and a neutral hue. Ardo works out light and dark mode from there.
-        Want more? Override any token or swap a component.
+        Pick a brand, an accent and a neutral hue, and how saturated they should be. Ardo works out
+        light and dark mode from there. Want more? Override any token or swap a component.
       </p>
       <div className={styles.swatchGrid}>
         {PALETTES.map((palette, index) => (

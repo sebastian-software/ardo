@@ -56,7 +56,7 @@ const FRIENDS: { mark: MarkName; name: string; text: string }[] = [
 export function Engines() {
   return (
     <section id="engines" className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel number={3}>under the hood</NoteLabel>
+      <NoteLabel>under the hood</NoteLabel>
       <h2 className={styles.h2}>Fast all the way down.</h2>
       <p className={styles.lead}>
         Ardo stands on remarkable tools. Two of them come straight out of our own workshop, written
