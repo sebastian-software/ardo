@@ -62,6 +62,9 @@ export type ArdoBrandHuePreset =
 
 export type ArdoBrandHue = ArdoBrandHuePreset | number
 
+/** Chroma multipliers for {@link ArdoBrandConfig}; `1` keeps the default saturation. */
+export type ArdoBrandChroma = { color?: number; accent?: number; neutral?: number } | number
+
 export type ArdoBrandLogo = { light: string; dark: string } | string
 
 export type ArdoBrandConfig = {
@@ -71,6 +74,11 @@ export type ArdoBrandConfig = {
   accent?: ArdoBrandHue
   /** Neutral chrome hue used by backgrounds, borders, text, header, and sidebar. */
   neutral?: ArdoBrandHue
+  /**
+   * Saturation of the hue-derived colors. `1` keeps the default, `0.4` mutes the
+   * palette, `0` turns it gray. A number applies to color and accent.
+   */
+  chroma?: ArdoBrandChroma
   /** Header logo path/URL, optionally with light/dark variants. */
   logo?: ArdoBrandLogo
 }
