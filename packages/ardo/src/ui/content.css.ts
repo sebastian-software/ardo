@@ -26,6 +26,8 @@ globalStyle(`${c} h1`, {
 // so long pages get visible structure while scanning.
 globalStyle(`${c} h2`, {
   fontSize: "1.375rem",
+  // The section rule spans the column, like code blocks and tables below it.
+  maxWidth: "none",
   marginTop: vars.space["2xl"],
   paddingTop: vars.space.lg,
   borderTop: `1px solid ${vars.color.divider}`,
@@ -46,12 +48,14 @@ globalStyle(`${c} h3`, {
 })
 
 globalStyle(`${c} h4`, {
-  fontSize: vars.fontSize.sm,
+  fontSize: vars.fontSize.base,
   fontWeight: 600,
   marginTop: vars.space.lg,
 })
 
 globalStyle(`${c} h5, ${c} h6`, {
+  fontSize: vars.fontSize.sm,
+  color: vars.color.textLight,
   marginTop: vars.space.lg,
 })
 
@@ -103,6 +107,12 @@ globalStyle(`${c} ol`, {
   textWrap: "pretty",
 })
 
+// Task list items carry their own checkbox, so they need no bullet as well.
+globalStyle(`${c} li:has(> input[type="checkbox"])`, {
+  listStyle: "none",
+  marginLeft: `calc(-1 * ${vars.space.lg})`,
+})
+
 globalStyle(`${c} ul ul, ${c} ol ul`, {
   listStyle: "circle",
 })
@@ -145,33 +155,34 @@ globalStyle(`${c} hr`, {
   background: `linear-gradient(90deg, ${vars.color.border} 0%, transparent 100%)`,
 })
 
-globalStyle(`${c} table`, {
-  display: "block",
-  width: "100%",
-  maxWidth: "100%",
+/**
+ * Markdown tables render inside this scroll box, so a wide table scrolls on its
+ * own while the table itself stays a real table and its rows span the width.
+ */
+export const tableScroll = style({
   overflowX: "auto",
   margin: `${vars.space.lg} 0`,
-  borderCollapse: "collapse",
-  fontSize: vars.fontSize.sm,
   borderRadius: vars.radius.base,
   border: `1px solid ${vars.color.border}`,
   background: vars.color.bg,
 })
 
-globalStyle(`${c} tbody, ${c} thead`, {
+globalStyle(`${c} table`, {
   width: "100%",
+  margin: `${vars.space.lg} 0`,
+  borderCollapse: "collapse",
+  fontSize: vars.fontSize.sm,
+  border: `1px solid ${vars.color.border}`,
+  background: vars.color.bg,
 })
 
-globalStyle(`${c} tr`, {
-  display: "table-row",
+globalStyle(`${tableScroll} > table`, {
+  margin: 0,
+  border: "none",
 })
 
-globalStyle(`${c} thead`, {
-  display: "table-header-group",
-})
-
-globalStyle(`${c} tbody`, {
-  display: "table-row-group",
+globalStyle(`${c} tr:last-child > td`, {
+  borderBottom: "none",
 })
 
 globalStyle(`${c} th, ${c} td`, {
@@ -183,9 +194,6 @@ globalStyle(`${c} th, ${c} td`, {
 globalStyle(`${c} th`, {
   background: vars.color.bgSoft,
   fontWeight: 600,
-  fontSize: vars.fontSize.xs,
-  textTransform: "uppercase",
-  letterSpacing: "0.04em",
 })
 
 globalStyle(`${c} img`, {

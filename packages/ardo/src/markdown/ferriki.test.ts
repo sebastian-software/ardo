@@ -23,4 +23,13 @@ describe("Ferriki highlighting", () => {
     expect(html).toContain('data-ln="1"')
     expect(html).toContain('class="line highlighted"')
   })
+
+  it("does not render an empty last line for the fence's trailing newline", async () => {
+    const html = await highlightCode("const first = 1\nconst second = 2\n", "ts", {
+      lineNumbers: true,
+    })
+
+    expect(html).toContain('data-ln="2"')
+    expect(html).not.toContain('data-ln="3"')
+  })
 })

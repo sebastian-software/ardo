@@ -7,6 +7,7 @@ import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
+import { ArdoContentTable } from "../ui/components/ContentTable"
 import { ArdoIcon } from "../ui/components/Icon"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
@@ -66,6 +67,7 @@ export function useMDXComponents(): ArdoMDXComponents {
 
     // MDX element overrides — styled via tag selectors in content.css.ts
     a: SmartLink,
+    table: ArdoContentTable,
 
     // Custom Ardo components available in MDX (mapped as short names)
     Accordion: ArdoAccordion,

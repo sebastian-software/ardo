@@ -48,7 +48,10 @@ function renderHtml(input: {
   meta: string
   options: FerrikiHighlightOptions
 }): string {
-  const { code, highlighter, language, meta, options } = input
+  const { highlighter, language, meta, options } = input
+  // Fenced code ends with a newline; without trimming it, every block renders an
+  // empty last line (and a numbered one when line numbers are on).
+  const code = input.code.replace(/\r?\n$/, "")
   const highlightOptions = {
     ...themeOptions(options.theme),
     lang: language,
