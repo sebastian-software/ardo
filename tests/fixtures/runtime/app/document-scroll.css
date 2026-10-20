@@ -1,0 +1,39 @@
+html.document-scroll-test:has(.document-scroll-header) {
+  --ardo-layout-headerHeight: 4rem;
+}
+
+@media (max-width: 640px) {
+  html.document-scroll-test:has(.document-scroll-header) {
+    --ardo-layout-headerHeight: 6rem;
+  }
+}
+
+.document-scroll-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  height: var(--ardo-layout-headerHeight);
+  padding: 0 1rem;
+  background: white;
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.document-scroll-custom-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.document-scroll-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+}
+
+.document-scroll-skip-link:focus-visible {
+  top: 0.5rem;
+}

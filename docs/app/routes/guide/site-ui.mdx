@@ -82,6 +82,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 | `editLink`    | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                            |
 | `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                   |
 | `labels`      | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                        |
+| `scrollMode`  | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.               |
 | `tocLabel`    | `string`                                                                           | Label for the table-of-contents panel.                                     |
 | `className`   | `string`                                                                           | Replace the default layout class.                                          |
 | `children`    | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides. |
@@ -210,3 +211,68 @@ overflow to your site. Provide your own skip link for keyboard navigation.
 
 Bare routes that retain Ardo's header keep its offset and built-in skip link.
 Documentation routes retain the existing inner-scroll layout.
+
+## Document Scrolling with Site-Owned Chrome
+
+Set `scrollMode="document"` when the site's header or footer lives outside Ardo's layout, or when
+the page should use normal document scrolling. Ardo keeps the existing viewport shell by default.
+In document mode, the document scrolls, the sidebar and page rail stick below the configured header
+height, and an external footer remains reachable after the documentation content. The mode also
+applies when `className` replaces Ardo's default layout class. Since that prop still replaces the
+default class, provide any root display or width rules your custom layout needs.
+
+Place a sticky custom header and footer beside `ArdoRoot`. When both are external, disable Ardo's
+header and footer so the page has one of each:
+
+```tsx
+export default function Root() {
+  return (
+    <>
+      <SiteHeader />
+      <ArdoRoot config={config} scrollMode="document" header={false} footer={false}>
+        <ArdoSidebar />
+      </ArdoRoot>
+      <SiteFooter />
+    </>
+  )
+}
+```
+
+The existing `--ardo-layout-headerHeight` variable sets the sticky offsets and anchor spacing. Put
+its value on `ArdoRootLayout` so Ardo and the site header share it, then update it at the breakpoint
+where a mobile header grows:
+
+```tsx
+export function Layout({ children }: { children: React.ReactNode }) {
+  return <ArdoRootLayout className="docs-site">{children}</ArdoRootLayout>
+}
+```
+
+```css
+.docs-site {
+  --ardo-layout-headerHeight: 4rem;
+}
+
+@media (max-width: 640px) {
+  .docs-site {
+    --ardo-layout-headerHeight: 6rem;
+  }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  height: var(--ardo-layout-headerHeight);
+}
+```
+
+A sticky header stays in document flow, so it needs no extra top padding. A fixed header is outside
+that flow; reserve its height once in the site wrapper with `padding-top: var(--ardo-layout-headerHeight)`.
+For an MDX route that owns its chrome, export:
+
+```mdx
+export const handle = { chrome: false }
+```
+
+The route's external header and footer follow the same offset rule, while Ardo keeps the sidebar
+and page rail. Provide a site-owned skip link for routes that suppress Ardo's chrome.

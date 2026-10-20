@@ -85,10 +85,13 @@ section navigation can hide `.ardo-sidebar-tabs` and retain the sidebar's readin
 links. Keep every section reachable through the site's own navigation on desktop
 and mobile.
 
-`ArdoRoot.className` replaces the default viewport shell. A host that uses normal
-document scrolling can set `#main-content` to `overflow: visible` and keep the
-sidebar and right rail sticky within the page. The outline follows the viewport
-in that composition; it follows `#main-content` when that element owns scrolling.
+Set `scrollMode="document"` on `ArdoRoot` when your site owns the header or footer, or when the
+documentation should use normal document scrolling. The sidebar and right rail stick below
+`--ardo-layout-headerHeight`, which you can set once on `ArdoRootLayout` and change at a mobile
+breakpoint. A sticky site header stays in document flow; a fixed header needs its height reserved
+once in the site wrapper. See [Site UI Configuration](/guide/site-ui#document-scrolling-with-site-owned-chrome)
+for a complete example. `ArdoRoot.className` can still replace the default layout class without
+disabling document scrolling.
 
 Use `ArdoRootLayout.className` for theme variables that also need to reach
 body-level portals such as search. A custom `favicon` can point to SVG, PNG,

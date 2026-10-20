@@ -69,6 +69,26 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await expect(menu).toBeHidden()
 })
 
+test("the default docs layout keeps its viewport-owned main scroll region", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto(gettingStartedPath)
+
+  const main = page.locator("#main-content")
+  await expect(main).toHaveCSS("overflow-y", "auto")
+
+  const scrollState = await page.evaluate(() => {
+    const mainElement = document.querySelector("#main-content")
+    return {
+      documentHeight: document.documentElement.scrollHeight,
+      mainClientHeight: mainElement?.clientHeight ?? 0,
+      mainScrollHeight: mainElement?.scrollHeight ?? 0,
+      viewportHeight: window.innerHeight,
+    }
+  })
+  expect(scrollState.mainScrollHeight).toBeGreaterThan(scrollState.mainClientHeight)
+  expect(scrollState.documentHeight).toBeLessThanOrEqual(scrollState.viewportHeight + 1)
+})
+
 test("native Markdown fences render visible line numbers and highlighted lines", async ({
   page,
 }) => {
@@ -155,7 +175,9 @@ test("consumer CSS overrides Ardo even before its stylesheet and after navigatio
   const override = await page.addStyleTag({
     content: ".ardo-footer { background-color: rgb(12, 34, 56); }",
   })
-  await override.evaluate((element) => document.head.prepend(element))
+  await override.evaluate((element) => {
+    document.head.prepend(element)
+  })
   await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
   await page.locator(`a[href="${docsBasePath}/guide/markdown"]`).first().click()
   await expect(page).toHaveURL(new RegExp(`${docsBasePath}/guide/markdown$`))

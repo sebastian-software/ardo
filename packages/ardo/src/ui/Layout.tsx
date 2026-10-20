@@ -35,6 +35,8 @@ export type ArdoRootLayoutProps = {
   theme?: ArdoThemePreference
 }
 
+export type ArdoScrollMode = "document" | "viewport"
+
 /**
  * Default HTML shell for Ardo sites. Replaces the boilerplate `Layout` export
  * that every root.tsx must define for React Router.
@@ -122,6 +124,8 @@ export type ArdoLayoutProps = {
   children: ReactNode
   /** Render a plain main element with document scrolling for bare routes. */
   bare?: boolean
+  /** Use the document as the scroll container instead of the viewport shell. */
+  scrollMode?: ArdoScrollMode
   /** Render the built-in skip link. Disable when the host owns navigation chrome. */
   showSkipLink?: boolean
   /** Additional CSS classes */
@@ -149,16 +153,29 @@ export function ArdoLayout({
   children,
   className,
   bare = false,
+  scrollMode = "viewport",
   showSkipLink = true,
 }: ArdoLayoutProps) {
   const labels = useArdoLabels()
   const hasHeader = header != null && header !== false
+  const isDocumentScroll = scrollMode === "document"
   const containerClass = bare
     ? hasHeader
       ? styles.withHeader
       : undefined
-    : `${styles.layoutContainer}${hasHeader ? ` ${styles.withHeader}` : ""}`
-  const layoutClass = className ?? `${styles.layout}${bare ? ` ${styles.home}` : ""}`
+    : [
+        styles.layoutContainer,
+        hasHeader && styles.withHeader,
+        isDocumentScroll && styles.documentScrollContainer,
+      ]
+        .filter(Boolean)
+        .join(" ")
+  const layoutClass = [
+    className ?? `${styles.layout}${bare ? ` ${styles.home}` : ""}`,
+    isDocumentScroll && styles.documentScroll,
+  ]
+    .filter(Boolean)
+    .join(" ")
   return (
     <div className={layoutClass}>
       {showSkipLink && (
@@ -169,7 +186,16 @@ export function ArdoLayout({
       {header}
       <div className={containerClass}>
         {sidebar}
-        <main id="main-content" className={bare ? undefined : styles.main}>
+        <main
+          id="main-content"
+          className={
+            bare
+              ? undefined
+              : [styles.main, isDocumentScroll && styles.documentScrollMain]
+                  .filter(Boolean)
+                  .join(" ")
+          }
+        >
           {children}
           {footer}
         </main>

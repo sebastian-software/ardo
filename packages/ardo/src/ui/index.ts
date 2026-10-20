@@ -85,7 +85,7 @@ export type { ArdoContainerLabels, ArdoLabels, ArdoLabelsInput } from "./labels"
 // Layout components
 export { ArdoLayout, ArdoRootLayout } from "./Layout"
 
-export type { ArdoLayoutProps, ArdoRootLayoutProps } from "./Layout"
+export type { ArdoLayoutProps, ArdoRootLayoutProps, ArdoScrollMode } from "./Layout"
 export { ArdoNav, ArdoNavLink } from "./Nav"
 export type { ArdoNavLinkProps, ArdoNavProps } from "./Nav"
 export { ArdoOwlMark } from "./OwlMark"
