@@ -131,7 +131,7 @@
     "@vanilla-extract/vite-plugin": "^5.2.6",
     "@vitejs/plugin-react": "^6.0.5",
     "ferromark": "^3.5.1",
-    "lucide-react": "^1.29.0",
+    "lucide-react": "^1.59.0",
     "minisearch": "^7.2.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
