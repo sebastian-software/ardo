@@ -78,7 +78,7 @@
     "node": ">=22.22.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+  "packageManager": "pnpm@12.14.0+sha512.c18ba6d87993d3d164cb5e8948f32b2c06ee854487e06cd8d86781342fb3e5bb4634367034711e86802baa9c37bea906ce1929ad08d70884c97d801df13389a6",
   "lint-staged": {
     "*.{ts,tsx,js,json,md,mdx,yml,yaml}": "prettier --write"
   }
