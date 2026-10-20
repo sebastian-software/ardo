@@ -1,4 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>sebastian-software/renovate-config"]
+  "extends": ["github>sebastian-software/renovate-config"],
+  "packageRules": [
+    {
+      "description": "Resolve the @typescript/native optional peer through its npm alias target.",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/ardo/package.json"],
+      "matchDepTypes": ["peerDependencies"],
+      "matchPackageNames": ["@typescript/native"],
+      "overridePackageName": "typescript"
+    }
+  ]
 }
