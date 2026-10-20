@@ -11,6 +11,13 @@ import {
 } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import {
+  assertGuardMatcher,
+  guardMatcherSelfTest,
+  isCompetingExecutable,
+} from "./process-guard.mjs"
+
+assertGuardMatcher()
 
 // Each lane is an installed homepage directory with an adjacent verified cache.
 const [
@@ -42,9 +49,6 @@ mkdirSync(output)
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex")
 const samples = []
 let semanticGateSha256
-const contenderPattern =
-  /(?:node|bun|rustc|cargo|clang|cc1|ld|pnpm|vite|esbuild|rolldown|python|chrom(?:e|ium)|firefox|webkit)/iu
-
 function hostSnapshot(destination, lanePid) {
   const snapshot = execFileSync("ps", ["-Ao", "pid,ppid,pcpu,comm"], { encoding: "utf8" })
   writeFileSync(destination, snapshot)
@@ -76,8 +80,9 @@ function hostSnapshot(destination, lanePid) {
     recordedAt: new Date().toISOString(),
     processCount: rows.length,
     competing: rows.filter(
-      (row) => !ownPids.has(row.pid) && row.cpuPercent > 15 && contenderPattern.test(row.command)
+      (row) => !ownPids.has(row.pid) && row.cpuPercent > 15 && isCompetingExecutable(row.command)
     ),
+    matcherSelfTest: guardMatcherSelfTest,
   }
 }
 
@@ -152,6 +157,7 @@ async function runBuild(lane, name, destination) {
     monitorChecks,
     monitorFailures,
     postBuildCompetitors: after.competing,
+    matcherSelfTest: guardMatcherSelfTest,
   }
   writeFileSync(path.join(destination, "guard.json"), `${JSON.stringify(guard, null, 2)}\n`)
   if (monitorFailures.length > 0 || after.competing.length > 0) {

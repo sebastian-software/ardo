@@ -149,6 +149,10 @@ jobs:
           fixture="$PROFILE_OUTPUT/lanes/candidate/homepage/app/routes/evidence/compatibility.mdx"
           node "$GITHUB_WORKSPACE/scripts/profiling/paired-builds.mjs" "$PROFILE_OUTPUT/lanes/baseline/homepage" "$PROFILE_OUTPUT/lanes/candidate/homepage" "$PROFILE_OUTPUT/evidence" 5 ardo "$fixture"
 
+      - name: Capture instrumented phase diagnostics after paired measurements
+        run: |
+          node "$GITHUB_WORKSPACE/scripts/profiling/diagnose-build-phases.mjs" "$PROFILE_OUTPUT" "$GITHUB_WORKSPACE"
+
       - name: Retain complete run evidence, including failures
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
