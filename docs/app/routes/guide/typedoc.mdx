@@ -15,11 +15,11 @@ This affects the `typedoc` option, `TypeDocConfig`, `ardo/typedoc`,
 Install the supported compiler and parser in your documentation project:
 
 ```bash
-pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
+pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
 ```
 
-The alias keeps the native compiler separate from your existing TypeScript build
-tools. This compiler is a pinned nightly. General documentation sites do not
+This compiler is a pinned TypeScript 7.1 nightly, and it also typechecks your
+project. TypeScript 7.0's native API lacks what Ardo needs. General documentation sites do not
 need these optional packages. Remove direct TypeDoc dependencies and plugins
 that were used only by this integration.
 

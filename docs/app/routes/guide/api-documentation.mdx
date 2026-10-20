@@ -16,13 +16,14 @@ documentation and internal API fixtures exercise the same generation path.
 The current integration uses a pinned TypeScript 7.1 nightly and the OXC parser:
 
 ```bash
-pnpm add -D @typescript/native@npm:typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
+pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.127.0
 ```
 
-`@typescript/native` is an npm alias for the official `typescript` package. The
-alias lets your existing build tools keep their own TypeScript version while
-API documentation uses the native compiler. The supported build here is a
-nightly; it is not a released 7.1 beta.
+Ardo reads your declarations through the native API of TypeScript 7.1, which
+also typechecks your project. TypeScript 7.0 does not work: its native API is
+still marked unstable and lacks the snapshot, emit and module resolution calls
+Ardo uses. The supported build is a pinned nightly; it is not a released 7.1
+beta. Projects that installed it as the `@typescript/native` alias keep working.
 
 ## Configuration
 

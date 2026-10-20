@@ -249,6 +249,9 @@ an opt-in validation; the normal docs configuration still uses TypeDoc.
 
 ### TypeDoc as a differential oracle
 
+> [!NOTE]
+> The TypeDoc oracle test and `evaluate-declaration-docs.mjs` were removed on 2026-10-20, when Ardo moved to TypeScript 7: TypeDoc needs the JavaScript compiler API that TypeScript 7 no longer provides. The links below point to files that no longer exist on `main`; the results in this report stay as recorded.
+
 [`typedoc-oracle.test.ts`](../../packages/ardo/src/api/typedoc-oracle.test.ts)
 converts the same TypeScript source through TypeDoc and through real declaration
 emit followed by OXC. The comparison checks property names, type syntax,
