@@ -79,7 +79,7 @@ export function SearchResults({
             aria-label={labels.results}
           />
           <div className={styles.searchNoResults}>
-            <ArdoOwlMark size={36} className={styles.searchNoResultsOwl} title="" />
+            <ArdoOwlMark size={36} className={styles.searchNoResultsOwl} />
             <span>{labels.noResults(query)}</span>
           </div>
         </div>

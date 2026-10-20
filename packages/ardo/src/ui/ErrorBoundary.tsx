@@ -62,7 +62,7 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
   return (
     <main className={styles.root}>
       <section className={styles.card}>
-        <ArdoOwlMark size={120} className={styles.owl} title="" />
+        <ArdoOwlMark size={120} className={styles.owl} />
         <p className={styles.status}>{statusLabel}</p>
         <h1 className={styles.title}>{copy.title}</h1>
         <p className={styles.description}>{copy.description}</p>
