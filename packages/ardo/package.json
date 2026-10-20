@@ -154,8 +154,8 @@
   },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.5",
-    "@storybook/react": "^10.5.7",
-    "@storybook/react-vite": "^10.5.7",
+    "@storybook/react": "^10.6.2",
+    "@storybook/react-vite": "^10.6.2",
     "@svgr/cli": "8.1.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
