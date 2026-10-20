@@ -43,8 +43,8 @@ unchanged published Ardo 5.0.0 release.
 The runner reports macOS 26.3 arm64, Apple M4 Pro (Virtual), six logical CPUs,
 and 24 GiB RAM (`blacksmith-6vcpu-macos-26`).
 
-The workflow records runner details and samples selected competing compiler,
-runtime, and browser processes every second. The process guard cannot observe
+The measurement harness recorded runner details and sampled selected competing
+compiler, runtime, and browser processes every second. The process guard cannot observe
 physical-host scheduling or all VM background activity. Raw context and every
 sample are retained in the artifact.
 
@@ -68,22 +68,25 @@ RSS values, summary statistics, and receipt hashes. Independent checks covered
 I rejected the separate phase diagnostic despite the green workflow result.
 The native prototype probe was installed repeatedly during config reevaluation,
 and Vite windows combined separate config instances. Its counts and phase
-durations are excluded. The diagnostic runner is removed from the delivered
-workflow; raw diagnostic files remain available in the run artifact.
+durations are excluded. Raw diagnostic files remain available in the run artifact.
 
 [Run 39423412925](https://github.com/sebastian-software/ardo/actions/runs/39423412925)
 was incomplete: the original process matcher misclassified `/usr/libexec/triald`
-as the `ld` linker. Its partial timings are excluded. The matcher now tests
-executable names and includes that regression case.
+as the `ld` linker. Its partial timings are excluded. The accepted run used a
+corrected matcher that checked executable names.
 
-## Remaining work
+## Interpretation and remaining work
 
-The accepted series supports keeping #324 open. A deliberate future comparison
-needs the updated engines from `97c0dfc` and their matching verified grammar
-assets; the older cache does not satisfy their offline asset plan. The phase
-probes also need separate config identities and idempotent installation before
-another diagnostic can support an optimization. No production optimization or
-performance improvement is claimed here.
+The comparison confirms extra build time for this snapshot. It does not yet
+explain where that time is spent. #324 remains open.
 
-The retained workflow reproduces the pinned historical paired comparison.
-It is manual-only; the temporary branch-push trigger has been removed.
+A focused local CPU profile and a few phase markers are sufficient next steps
+for finding expensive compilation, bundling, initialization, or repeated work.
+Concurrent builds limit conclusions from local wall-clock comparisons; they do
+not require building a permanent benchmark workflow to inspect CPU hot spots.
+The updated engines from `97c0dfc` also need their matching grammar assets for
+an offline build. No further measurement or production optimization is claimed.
+
+This PR retains only the report and raw timing record. The one-off Blacksmith
+workflow and added benchmark tooling are not included. The exact measurement
+harness remains available at commit `9fa98be` for provenance.
