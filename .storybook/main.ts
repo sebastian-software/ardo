@@ -15,6 +15,12 @@ const config: StorybookConfig = {
     options: {},
   },
 
+  // react-docgen-typescript needs the JavaScript compiler API that TypeScript 7
+  // removed; react-docgen reads component props from the source instead.
+  typescript: {
+    reactDocgen: "react-docgen",
+  },
+
   async viteFinal(baseConfig) {
     baseConfig.base = process.env.STORYBOOK_BASE ?? "/"
     baseConfig.resolve ??= {}

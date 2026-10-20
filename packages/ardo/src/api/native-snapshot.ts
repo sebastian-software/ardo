@@ -1,5 +1,6 @@
-import type { StringLiteralLikeNode } from "@typescript/native/ast"
-import type * as NativeCompiler from "@typescript/native/async"
+import type { StringLiteralLikeNode } from "typescript/ast"
+
+import { loadNativeAst, type NativeCompiler } from "./native-compiler"
 
 import fs from "node:fs/promises"
 import path from "node:path"
@@ -205,7 +206,7 @@ async function resolveCompilerImport(
 ): Promise<NativeCompiler.ResolvedModule | undefined> {
   const { request, fallbackMode } = options
   const source = await program.getSourceFile(file)
-  const { isStringLiteralLikeNode } = await import("@typescript/native/ast")
+  const { isStringLiteralLikeNode } = await loadNativeAst()
   const specifiers = (source?.imports ?? []).filter(
     (node): node is StringLiteralLikeNode => isStringLiteralLikeNode(node) && node.text === request
   )

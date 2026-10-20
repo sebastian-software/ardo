@@ -1,7 +1,21 @@
+import { createRequire } from "node:module"
+import path from "node:path"
+import { pathToFileURL } from "node:url"
+
 import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin"
 import { defineConfig } from "tsdown"
 
 import { uiStylesPlugin } from "./ui-styles-plugin.ts"
+
+// rolldown-plugin-dts only picks the native generator for TypeScript 7.0, so
+// point it at the tsgo binary of the installed TypeScript 7.1 instead of
+// letting it fall back to the JavaScript compiler API that TypeScript 7 removed.
+const typescriptRoot = path.dirname(
+  createRequire(import.meta.url).resolve("typescript/package.json")
+)
+const { default: getTsgoPath } = (await import(
+  pathToFileURL(path.join(typescriptRoot, "lib/getExePath.js")).href
+)) as { default: () => string }
 
 export default defineConfig({
   entry: {
@@ -29,7 +43,7 @@ export default defineConfig({
     "entries/server": "src/entries/server.tsx",
   },
   format: ["esm"],
-  dts: true,
+  dts: { tsgo: { path: getTsgoPath() } },
   sourcemap: true,
   clean: true,
   fixedExtension: false,

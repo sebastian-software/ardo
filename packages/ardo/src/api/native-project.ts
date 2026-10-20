@@ -1,4 +1,4 @@
-import type * as NativeCompiler from "@typescript/native/async"
+import { loadNativeCompiler, type NativeCompiler } from "./native-compiler"
 
 import path from "node:path"
 
@@ -81,14 +81,7 @@ export class NativeApiProject {
 
   private async initialize(): Promise<NativeCompiler.API> {
     if (this.api == null) {
-      try {
-        this.client = await import("@typescript/native/async")
-      } catch (error) {
-        throw new Error(
-          "[ardo:api] Source API documentation requires the native TypeScript 7.1 API. Install @typescript/native@npm:typescript@7.1.0-dev.20261011.1.",
-          { cause: error }
-        )
-      }
+      this.client = await loadNativeCompiler()
       this.api = new this.client.API({ cwd: this.root })
     }
     return this.api

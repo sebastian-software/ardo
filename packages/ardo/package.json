@@ -141,14 +141,14 @@
     "yaml": "^2.9.0"
   },
   "peerDependencies": {
-    "@typescript/native": "^7.1.0-dev.20261011.1",
-    "oxc-parser": "^0.127.0"
+    "oxc-parser": "^0.127.0",
+    "typescript": "^7.1.0-dev.20261011.1"
   },
   "peerDependenciesMeta": {
-    "@typescript/native": {
+    "oxc-parser": {
       "optional": true
     },
-    "oxc-parser": {
+    "typescript": {
       "optional": true
     }
   },
@@ -160,12 +160,10 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",
     "@types/node": "^26.1.2",
-    "@typescript/native": "npm:typescript@7.1.0-dev.20261011.1",
     "@vanilla-extract/rollup-plugin": "^1.5.4",
     "oxc-parser": "^0.127.0",
     "tsdown": "^0.22.14",
-    "typedoc": "^0.28.20",
-    "typescript": "^6.0.3",
+    "typescript": "7.1.0-dev.20261011.1",
     "vitest": "^4.1.10"
   },
   "keywords": [

@@ -78,7 +78,7 @@ const start = performance.now()
 const ardo = await import(pathToFileURL(path.join(dist, "api/index.js")))
 durations.ardoImport = performance.now() - start
 const sdkStart = performance.now()
-const sdk = await import(pathToFileURL(require.resolve("@typescript/native/async")))
+const sdk = await import(pathToFileURL(require.resolve("typescript/async")))
 durations.sdkImport = performance.now() - sdkStart
 const api = new sdk.API({ cwd: directory, collectTiming: true })
 

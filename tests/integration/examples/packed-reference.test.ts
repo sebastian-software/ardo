@@ -84,18 +84,18 @@ describe("Basic and optional API configuration as packed-package consumers", () 
       const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"))
       manifest.dependencies.ardo = `file:${tarball}`
       fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
-      const compilerVersion = manifest.devDependencies["@typescript/native"]?.replace(
-        "npm:typescript@",
-        ""
-      )
+      // The pinned TypeScript 7.1 preview is younger than the release-age policy
+      // allows, so the consumer excludes it the same way this workspace does.
+      const typescriptVersion: unknown = manifest.devDependencies?.typescript
+      const compilerVersion =
+        typeof typescriptVersion === "string" && typescriptVersion.includes("-dev.")
+          ? typescriptVersion
+          : undefined
       const compilerPlatforms =
         compilerVersion == null
           ? {}
           : JSON.parse(
-              fs.readFileSync(
-                path.join(source, "node_modules/@typescript/native/package.json"),
-                "utf8"
-              )
+              fs.readFileSync(path.join(source, "node_modules/typescript/package.json"), "utf8")
             ).optionalDependencies
       fs.writeFileSync(
         path.join(consumer, "pnpm-workspace.yaml"),
@@ -154,7 +154,8 @@ describe("Basic and optional API configuration as packed-package consumers", () 
           fs.readFileSync(path.join(client, "index.html"), "utf8").replace(/<!--.*?-->/gs, "")
         ).toContain("Count: 0")
         run(consumer, ["exec", "ardo", "--version"])
-        expect(fs.existsSync(path.join(consumer, "node_modules/@typescript/native"))).toBe(false)
+        // TypeScript stays an optional peer: Ardo never installs it for a Basic site.
+        expect(installed.dependencies.typescript).toBeUndefined()
         expect(fs.existsSync(path.join(consumer, "node_modules/oxc-parser"))).toBe(false)
         // Exercise the CLI's generated default wrapper as well as the configured
         // production build above. A Basic project must work without ardo.config.ts.
