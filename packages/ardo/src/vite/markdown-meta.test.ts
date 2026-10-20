@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { resolveConfig } from "../config"
 import { transformMarkdownMeta } from "./markdown-meta"
+import { compileMdxRouteModule } from "./mdx-compile"
 
 const routesDir = "/site/app/routes"
 const config = resolveConfig(
@@ -157,5 +158,32 @@ describe("transformMarkdownMeta", () => {
     )
 
     expect(result).toBeUndefined()
+  })
+
+  it("reads the frontmatter of a route compiled by the real MDX pipeline", () => {
+    const compiled = compileMdxRouteModule({
+      source: "---\ntitle: Getting Started\ndescription: Set up Ardo.\n---\n\n# Getting Started\n",
+      markdownConfig: undefined,
+      format: "mdx",
+      id: `${routesDir}/guide/getting-started.mdx`,
+    })
+    const result = transformMarkdownMeta(compiled.code, `${routesDir}/guide/getting-started.mdx`, {
+      routesDir,
+      resolvedConfig: config,
+    })
+
+    expect(result?.code).toContain("export const meta = () =>")
+    expect(result?.code).toContain('{ title: "Getting Started | Docs" }')
+    expect(result?.code).toContain('{ name: "description", content: "Set up Ardo." }')
+  })
+
+  it("keeps braces, semicolons, and escaped quotes inside generated frontmatter strings", () => {
+    const result = transformMarkdownMeta(
+      'const _ardoFrontmatter = {\n  "title": "Use {a; b} and \\"c\\"",\n  "order": 2\n};\nexport { _ardoFrontmatter as frontmatter };\n',
+      `${routesDir}/guide/tricky.mdx`,
+      { routesDir, resolvedConfig: config }
+    )
+
+    expect(result?.code).toContain('{ title: "Use {a; b} and \\"c\\" | Docs" }')
   })
 })

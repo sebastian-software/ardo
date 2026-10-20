@@ -95,7 +95,8 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   addApiPlugin(plugins, { api, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
-  plugins.push(createMdxPlugin(pressConfig.markdown))
+  // Page meta runs after Ferromark, so it reads the frontmatter of the compiled route.
+  plugins.push(createMdxPlugin(pressConfig.markdown), createMarkdownMetaPlugin(state))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...getReactRouterPlugins())
 
@@ -132,6 +133,14 @@ function addRoutesPlugin(
   plugins.push(ardoRoutesPlugin({ routesDir: routesDirOption, ...routePluginOptions }))
 }
 
+function createMarkdownMetaPlugin(state: PluginState): Plugin {
+  return {
+    name: "ardo:markdown-meta",
+    enforce: "pre",
+    transform: (code, id) => transformMarkdownMeta(code, id, state),
+  }
+}
+
 function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {
   return {
     name: "ardo",
@@ -161,9 +170,6 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     },
     async load(id) {
       return loadVirtualModule(id, state)
-    },
-    transform(code, id) {
-      return transformMarkdownMeta(code, id, state)
     },
     configureServer(server) {
       configureVirtualModuleInvalidation(server, state)

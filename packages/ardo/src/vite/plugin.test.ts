@@ -29,6 +29,24 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
   )
 }
 
+type TransformHook = {
+  transform: (code: string, id: string) => Promise<{ code: string } | undefined>
+}
+
+function hasTransformHook(plugin: Plugin): plugin is TransformHook & Plugin {
+  return typeof plugin.transform === "function"
+}
+
+function findPlugin<T>(
+  plugins: Plugin[],
+  name: string,
+  guard: (plugin: Plugin) => plugin is T & Plugin
+): T {
+  const plugin = plugins.find((entry) => entry.name === name)
+  if (plugin == null || !guard(plugin)) throw new Error(`Plugin ${name} not found`)
+  return plugin
+}
+
 describe("ardoPlugin", () => {
   it("installs managed runtime resolution before the remaining app plugins", () => {
     const plugins = ardoPlugin({ routes: false, icons: false })
@@ -44,6 +62,27 @@ describe("ardoPlugin", () => {
     expect(resolverIndex).toBeGreaterThan(boundaryIndex)
     expect(config.optimizeDeps?.exclude).toStrictEqual(["ardo/ui/styles.css"])
     expect(config.environments?.ssr.optimizeDeps?.exclude).toBeUndefined()
+  })
+
+  it("adds page meta to Markdown routes after Ferromark compiles them", async () => {
+    const plugins = ardoPlugin({ routes: false, icons: false, githubPages: false, title: "Docs" })
+    const names = plugins.map((plugin) => plugin.name)
+    expect(names.indexOf("ardo:markdown-meta")).toBeGreaterThan(names.indexOf("ardo:ferromark"))
+
+    findPlugin(plugins, "ardo", hasArdoPluginHooks).configResolved({
+      base: "/",
+      build: { ssr: false },
+      root: "/project",
+    })
+    const transform = (name: string) => findPlugin(plugins, name, hasTransformHook).transform
+    // React Router requests client route chunks with a query.
+    const id = "/project/app/routes/guide/start.mdx?__react-router-build-client-route"
+    const source = "---\ntitle: Start\ndescription: Set up Docs.\n---\n\n# Start\n"
+    const compiled = await transform("ardo:ferromark")(source, id)
+    const result = await transform("ardo:markdown-meta")(String(compiled?.code), id)
+
+    expect(result?.code).toContain('{ title: "Start | Docs" }')
+    expect(result?.code).toContain('{ name: "description", content: "Set up Docs." }')
   })
 
   it("isolates the docs dependency graph and preserves consumer options", () => {

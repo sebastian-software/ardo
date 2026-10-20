@@ -45,7 +45,7 @@ export function getReactRouterPlugins(): Plugin[] {
   return Array.isArray(routerPlugin) ? routerPlugin : [routerPlugin]
 }
 
-function getMarkdownFormat(id: string): NativeMarkdownFormat | undefined {
+export function getMarkdownFormat(id: string): NativeMarkdownFormat | undefined {
   const [path = id, query = ""] = id.split("?", 2)
   if (query.split("&").some((parameter) => parameter === "raw" || parameter === "url")) {
     return undefined
