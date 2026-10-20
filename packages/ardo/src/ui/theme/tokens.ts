@@ -48,9 +48,10 @@ const shared = {
   layout: {
     sidebarWidth: "20rem",
     tocWidth: "15rem",
-    // About 75–80 characters of body text. `ch` measures the wide "0" glyph, so
-    // 68ch let system-ui prose run past 90 characters per line.
-    contentMaxWidth: "36rem",
+    // About 75–80 characters per line. `em` follows each element's own font
+    // size, so a larger lead or smaller note keeps the same measure. `ch`
+    // measures the wide "0" glyph, so 68ch let system-ui prose run past 90.
+    contentMaxWidth: "36em",
     headerHeight: "3.5rem",
   },
   transition: {
