@@ -59,7 +59,7 @@ export const skipLink = style({
   zIndex: 200,
   padding: `0.75rem ${vars.space.lg}`,
   background: vars.color.brand,
-  color: "white",
+  color: vars.color.brandInk,
   fontWeight: 600,
   fontSize: vars.fontSize.sm,
   textDecoration: "none",

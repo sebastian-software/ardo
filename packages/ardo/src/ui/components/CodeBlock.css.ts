@@ -48,10 +48,6 @@ globalStyle(`${codeWrapper} pre`, {
   background: "transparent !important",
 })
 
-globalStyle(`.dark ${codeWrapper} pre`, {
-  color: "#e2e8f0",
-})
-
 globalStyle(`${codeWrapper} pre code`, {
   display: "flex",
   flexDirection: "column",
@@ -81,11 +77,6 @@ export const lineNumber = style({
   textAlign: "right",
   marginRight: vars.space.md,
   userSelect: "none",
-  selectors: {
-    ".dark &": {
-      color: "#475569",
-    },
-  },
 })
 
 // =============================================================================
@@ -129,10 +120,6 @@ globalStyle(`${s} pre`, {
   background: "transparent !important",
 })
 
-globalStyle(`.dark ${s} pre`, {
-  color: "#e2e8f0",
-})
-
 globalStyle(`${s} pre code`, {
   display: "flex",
   flexDirection: "column",
@@ -144,6 +131,12 @@ globalStyle(`${s} .line`, {
   margin: `0 -${vars.space.md}`,
   padding: `0 ${vars.space.md}`,
   borderLeft: "3px solid transparent",
+})
+
+// Fences end with a newline, which Ferromark renders as an empty last line
+// (numbered, when line numbers are on). It adds nothing, so it stays hidden.
+globalStyle(`${s} .line:last-child:empty`, {
+  display: "none",
 })
 
 globalStyle(`${s} .line.highlighted`, {
@@ -159,10 +152,6 @@ globalStyle(`${s} .line[data-ln]::before`, {
   textAlign: "right",
   marginRight: vars.space.md,
   userSelect: "none",
-})
-
-globalStyle(`.dark ${s} .line[data-ln]::before`, {
-  color: "#475569",
 })
 
 // Copy button - hidden by default, shown when the block is hovered or focused

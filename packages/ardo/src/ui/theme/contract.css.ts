@@ -9,6 +9,11 @@ export const vars = createGlobalThemeContract(
       accent: null,
       neutral: null,
     },
+    chroma: {
+      brand: null,
+      accent: null,
+      neutral: null,
+    },
     color: {
       brand: null,
       brandLight: null,

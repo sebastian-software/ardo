@@ -39,9 +39,16 @@ export type ArdoRootProps = {
   /** Additional CSS classes for the layout */
   className?: string
   /**
-   * Pass ArdoHeader, ArdoSidebar and ArdoFooter directly (or within fragments).
-   * Custom wrapper components are treated as content overrides and replace the route outlet.
+   * Site header in place of an `ArdoHeader` child: your own component, or
+   * `false` for no header. Children can only name Ardo's own header.
    */
+  header?: false | ReactNode
+  /**
+   * Site footer in place of an `ArdoFooter` child: your own component, or
+   * `false` for no footer. Without either, Ardo renders its default footer.
+   */
+  footer?: false | ReactNode
+  /** Site chrome children: ArdoHeader, ArdoSidebar, ArdoFooter, and optional content overrides. */
   children?: ReactNode
 }
 
@@ -181,6 +188,21 @@ function isArdoFooterElement(child: ReactNode): boolean {
   return isValidElement(child) && child.type === ArdoFooter
 }
 
+/** A `header` prop wins over an `ArdoHeader` child; `false` leaves the header out. */
+function resolveHeaderSlot(
+  config: ArdoConfig,
+  header: false | ReactNode,
+  mobileMenuContent: ReactNode
+): ReactNode {
+  return header === false ? null : resolveRootHeader(config, header, mobileMenuContent)
+}
+
+/** A `footer` prop wins over an `ArdoFooter` child; without either, Ardo renders its default. */
+function resolveFooterSlot(footer: false | ReactNode): ReactNode {
+  if (footer === false) return null
+  return footer ?? <ArdoFooter />
+}
+
 function resolveRootHeader(
   config: ArdoConfig,
   header: ReactNode,
@@ -199,6 +221,8 @@ export function ArdoRoot({
   labels,
   tocLabel,
   className,
+  header,
+  footer,
   children,
 }: ArdoRootProps) {
   const location = useLocation()
@@ -221,15 +245,9 @@ export function ArdoRoot({
   // Search lives in the header now. The sidebar no longer carries it.
   const resolvedSidebar = isBareLayout ? undefined : sidebar
   const resolvedHeader = showChrome
-    ? resolveRootHeader(config, chrome.header, isBareLayout ? undefined : resolvedSidebar)
+    ? resolveHeaderSlot(config, header ?? chrome.header, resolvedSidebar)
     : null
-  const resolvedFooter = showChrome ? (
-    chrome.footer === undefined ? (
-      <ArdoFooter />
-    ) : (
-      chrome.footer
-    )
-  ) : null
+  const resolvedFooter = showChrome ? resolveFooterSlot(footer ?? chrome.footer) : null
 
   const siteConfig = useMemo<ArdoSiteConfig>(
     () => ({ editLink, labels: resolveArdoLabels(labels), lastUpdated, tocLabel }),

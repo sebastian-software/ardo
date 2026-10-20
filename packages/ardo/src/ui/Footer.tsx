@@ -90,7 +90,10 @@ function FooterProjectLink({
   config: ReturnType<typeof useArdoConfig>
 }) {
   const resolved = project ?? config.project
-  const name = resolved?.name ?? ""
+  // The site title names the site better than a docs package such as
+  // "my-lib-docs"; an explicit project prop still wins.
+  const name =
+    project?.name ?? (config.title !== "" ? config.title : undefined) ?? resolved?.name ?? ""
   const version = resolved?.version ?? ""
   const homepage = resolved?.homepage ?? ""
   if (name === "") return null
