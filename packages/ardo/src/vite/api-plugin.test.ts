@@ -99,6 +99,8 @@ function attachServer(plugin: Plugin) {
 
 const pageFile = () => path.join(temporary, "app/routes/api-reference/functions/read.md")
 const readPage = async () => fs.readFile(pageFile(), "utf8")
+// Native compiler updates need the same polling window as the real watcher tests.
+const pollOptions = { timeout: 10_000 }
 
 describe("native API build and development plugin", () => {
   it("generates native Markdown before pre-enforced route scanning and closes build sessions", async () => {
@@ -130,12 +132,12 @@ describe("native API build and development plugin", () => {
       '/** Updated documentation. */\nexport function read() { return "guest"; }'
     )
     watcher.emit("change", source)
-    await expect.poll(readPage).toContain("Updated documentation.")
+    await expect.poll(readPage, pollOptions).toContain("Updated documentation.")
     expect(await readPage()).toContain("string")
     const good = await readPage()
     await fs.writeFile(source, 'export function read(): number { return "wrong"; }')
     watcher.emit("change", source)
-    await expect.poll(() => logger.error.mock.calls.length).toBe(1)
+    await expect.poll(() => logger.error.mock.calls.length, pollOptions).toBe(1)
     expect(await readPage()).toBe(good)
     expect(ws.send.mock.calls.at(-1)?.[0]).toMatchObject({
       type: "error",
@@ -143,7 +145,7 @@ describe("native API build and development plugin", () => {
     })
     await fs.writeFile(source, "/** Recovered. */\nexport function read() { return true; }")
     watcher.emit("change", source)
-    await expect.poll(readPage).toContain("Recovered.")
+    await expect.poll(readPage, pollOptions).toContain("Recovered.")
     expect(await readPage()).toContain("boolean")
     await fs.writeFile(source, 'export * from "./added.js";')
     const added = path.join(temporary, "src/added.ts")
@@ -151,10 +153,12 @@ describe("native API build and development plugin", () => {
     watcher.emit("add", added)
     watcher.emit("change", source)
     await expect
-      .poll(async () =>
-        fs
-          .readFile(path.join(temporary, "app/routes/api-reference/variables/label.md"), "utf8")
-          .catch(() => "")
+      .poll(
+        async () =>
+          fs
+            .readFile(path.join(temporary, "app/routes/api-reference/variables/label.md"), "utf8")
+            .catch(() => ""),
+        pollOptions
       )
       .toContain("New export.")
     await expect(fs.access(pageFile())).rejects.toMatchObject({ code: "ENOENT" })
@@ -183,13 +187,13 @@ describe("native API build and development plugin", () => {
     await fs.writeFile(source, "/** Read a value. */\nexport function read() { return true; }")
     watcher.emit("change", source)
     release()
-    await expect.poll(readPage).toContain("boolean")
+    await expect.poll(readPage, pollOptions).toContain("boolean")
     expect(ws.send.mock.calls.filter(([message]) => message.type === "full-reload")).toHaveLength(1)
     const published = await fs.stat(pageFile(), { bigint: true })
     expect(published.mtimeNs).not.toBe(initial.mtimeNs)
     await fs.writeFile(source, "/** Read a value. */\nexport function read() { return false; }")
     watcher.emit("change", source)
-    await expect.poll(() => extraction.mock.calls.length).toBe(3)
+    await expect.poll(() => extraction.mock.calls.length, pollOptions).toBe(3)
     // Closing waits for the update to finish, so this assertion does not race extraction.
     await closePlugin(plugin)
     const unchanged = await fs.stat(pageFile(), { bigint: true })
