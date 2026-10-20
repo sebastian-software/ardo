@@ -1,15 +1,8 @@
-name: Ferriki Ardo build profile
+name: Ferriki historical build comparison
 
-# Temporary branch bootstrap for the first reviewed Blacksmith run. Remove the
-# push trigger after that run; keep workflow_dispatch for deliberate reruns.
+# Manual reproduction of the pinned, pre-CDN-update source snapshot.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - codex/issue-324-build-profile
-    paths:
-      - .github/workflows/ferriki-build-profile.yml
-      - scripts/profiling/**
 
 permissions:
   contents: read
@@ -24,13 +17,12 @@ defaults:
 
 jobs:
   profile:
-    name: Ferriki build profile / macOS arm64
+    name: Pinned historical comparison / macOS arm64
     if: >-
       github.repository == 'sebastian-software/ardo' &&
-      ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
-       (github.event_name == 'push' && github.ref == 'refs/heads/codex/issue-324-build-profile'))
+      github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: blacksmith-6vcpu-macos-26
-    timeout-minutes: 45
+    timeout-minutes: 15
     env:
       npm_config_manage_package_manager_versions: "false"
 
@@ -148,10 +140,6 @@ jobs:
         run: |
           fixture="$PROFILE_OUTPUT/lanes/candidate/homepage/app/routes/evidence/compatibility.mdx"
           node "$GITHUB_WORKSPACE/scripts/profiling/paired-builds.mjs" "$PROFILE_OUTPUT/lanes/baseline/homepage" "$PROFILE_OUTPUT/lanes/candidate/homepage" "$PROFILE_OUTPUT/evidence" 5 ardo "$fixture"
-
-      - name: Capture instrumented phase diagnostics after paired measurements
-        run: |
-          node "$GITHUB_WORKSPACE/scripts/profiling/diagnose-build-phases.mjs" "$PROFILE_OUTPUT" "$GITHUB_WORKSPACE"
 
       - name: Retain complete run evidence, including failures
         if: always()

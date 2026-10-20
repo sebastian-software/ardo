@@ -5,22 +5,18 @@ import { performance } from "node:perf_hooks"
 // Diagnostic-only adapter for the verified React Router 8.3.0 and 8.4.0
 // profiling lanes. It brackets prerender request planning, preview startup,
 // rendering, and cleanup in loaded source without editing installed packages.
-const output = process.env.ARDO_PROFILE_FRAMEWORK_OUTPUT ?? process.env.ARDO_PROFILE_OUTPUT
+const output = process.env.ARDO_PROFILE_OUTPUT
 if (output != null) {
-  globalThis.__ardoProfileEvent = (event, moduleUrl) => {
-    const ms = performance.now()
+  globalThis.__ardoProfileEvent = (event, moduleUrl) =>
     appendFileSync(
       output,
       `${JSON.stringify({
         pid: process.pid,
         event,
         ...(moduleUrl == null ? {} : { moduleUrl }),
-        ms,
-        timeOrigin: performance.timeOrigin,
-        epochMs: performance.timeOrigin + ms,
+        ms: performance.now(),
       })}\n`
     )
-  }
   registerHooks({
     load(url, context, nextLoad) {
       const result = nextLoad(url, context)

@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "status": "accepted-paired-series-only",
+  "issue": 324,
+  "issueRemainsOpen": true,
+  "ardoSourceCommit": "493e53405e906fbc051d9e9d7a9d00a7d338a642",
+  "unmeasuredNewMainCommit": "97c0dfceb20539eb8fcc729632be18dd0436104a",
+  "harnessCommit": "9fa98be07d2539d6c232bb69a1865aebc96874e7",
+  "runUrl": "https://github.com/sebastian-software/ardo/actions/runs/39425047458",
+  "artifact": {
+    "id": 12266136486,
+    "name": "ferriki-build-profile-39425047458-1",
+    "sha256": "268b8fae740a46e8e225c65f42f2310752b183c2f516598eb317a0425990eaf5",
+    "retentionDays": 90
+  },
+  "audit": {
+    "acceptedSamples": 12,
+    "hostSnapshots": 134,
+    "verifiedOutputFiles": 894,
+    "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9",
+    "setupSha256": "f9a14e2d9f9482bef59f8fb47f493e77fa053b9f220105077afc7254dfe08a8b",
+    "preparedSha256": "e6575bace96b4f60cd54106f0e9104955b8ec124f2d8f87df37c6cf372017b12",
+    "samplesSha256": "e853bc018ed2a98cae0812bd80ffff181af1b986044c7614d523ef1c890f88d2",
+    "lanes": {
+      "baseline": {
+        "elapsedSeconds": {
+          "samples": [5.99, 6.27, 6.86, 7.43, 6.58],
+          "median": 6.58,
+          "min": 5.99,
+          "max": 7.43,
+          "MAD": 0.3100000000000005
+        },
+        "maxRssMiB": {
+          "samples": [1454.765625, 1445.796875, 1515.5, 1444.484375, 1358.03125],
+          "median": 1445.796875,
+          "min": 1358.03125,
+          "max": 1515.5,
+          "MAD": 8.96875
+        }
+      },
+      "candidate": {
+        "elapsedSeconds": {
+          "samples": [11.24, 11.23, 13.32, 13.34, 13.25],
+          "median": 13.25,
+          "min": 11.23,
+          "max": 13.34,
+          "MAD": 0.08999999999999986
+        },
+        "maxRssMiB": {
+          "samples": [1194.5, 1308.40625, 1226.734375, 1261.40625, 1248.125],
+          "median": 1248.125,
+          "min": 1194.5,
+          "max": 1308.40625,
+          "MAD": 21.390625
+        }
+      }
+    },
+    "elapsedSecondsChangePercent": 101.3677811550152,
+    "maxRssMiBChangePercent": -13.672174730630815
+  },
+  "samples": [
+    {
+      "lane": "baseline",
+      "name": "warmup",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 8.99,
+      "maxRssBytes": 1344847872,
+      "maxRssMiB": 1282.546875,
+      "rawTime": "        8.99 real         9.12 user         3.32 sys\n          1344847872  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              131369  page reclaims\n                1240  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 136  messages sent\n                 105  messages received\n                   0  signals received\n                5050  voluntary context switches\n               92838  involuntary context switches\n            84364288  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "7bb5ff3dbb6b0691196a38caf208a5bf23ae3686669c09ac28138c49d565a2d0",
+      "logSha256": "20b46548a6a30cf77bc7392a7bfc045aece5b671d9dc968980fea7bd45c287ec",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "warmup",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 11.94,
+      "maxRssBytes": 1256865792,
+      "maxRssMiB": 1198.640625,
+      "rawTime": "       11.94 real        11.96 user         4.18 sys\n          1256865792  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n               96203  page reclaims\n                1532  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 139  messages sent\n                 105  messages received\n                   0  signals received\n                2997  voluntary context switches\n              183677  involuntary context switches\n            84118208  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "2920aced8aff337db1039e2bb6f1851ceb894178854ead65c7edfd84c423e769",
+      "logSha256": "0e660c578126b827beb33ffa95b6239f3739ab607791db3556ca96f062764710",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-1",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 5.99,
+      "maxRssBytes": 1525432320,
+      "maxRssMiB": 1454.765625,
+      "rawTime": "        5.99 real         7.91 user         1.71 sys\n          1525432320  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              141778  page reclaims\n                 202  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 135  messages sent\n                 105  messages received\n                   0  signals received\n                  27  voluntary context switches\n               94060  involuntary context switches\n            84134912  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "5d5a7f80a4152dc9b8902da620a60304c113489a3bad3e9651d3f99eadb8a7d1",
+      "logSha256": "343d22819e2ec445427ecf393c7c8fccf62ebbba967d2c5d8ced283afd77831b",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-1",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 11.24,
+      "maxRssBytes": 1252524032,
+      "maxRssMiB": 1194.5,
+      "rawTime": "       11.24 real        11.37 user         4.06 sys\n          1252524032  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n               97738  page reclaims\n                 288  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 138  messages sent\n                 105  messages received\n                   0  signals received\n                  32  voluntary context switches\n              189667  involuntary context switches\n            84347520  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "3cd2d57b9d6217e5c91adc4cfb05edd6af38a0f9ec937c68cfeb577d98ed9453",
+      "logSha256": "13cbc2d2e7dc0059ae5421383de6dd76944f17f9a838d9d10d775add38056735",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-2",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 11.23,
+      "maxRssBytes": 1371963392,
+      "maxRssMiB": 1308.40625,
+      "rawTime": "       11.23 real        11.39 user         3.93 sys\n          1371963392  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              106200  page reclaims\n                 288  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 138  messages sent\n                 105  messages received\n                   0  signals received\n                  29  voluntary context switches\n              189664  involuntary context switches\n            84347776  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "173873ad1f89284fd995dc8d62c69270ff8cfea6fc73bdd5d45818703cb681ac",
+      "logSha256": "0003ce6063928ef6cf3eb997b71a15e68879704d38904212ce5e2bf027d98a4a",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-2",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 6.27,
+      "maxRssBytes": 1516027904,
+      "maxRssMiB": 1445.796875,
+      "rawTime": "        6.27 real         8.31 user         1.72 sys\n          1516027904  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              141031  page reclaims\n                 202  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 135  messages sent\n                 105  messages received\n                   0  signals received\n                  48  voluntary context switches\n               92692  involuntary context switches\n            84200128  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "9af9a6b3b0003fddf370ddbce5e2726e4b200f2eaed9f2298fef67b998979972",
+      "logSha256": "29096227b5e958ebf0bc1b7452cf024c452f3a020676e49602cf6914b7bbdc30",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-3",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 6.86,
+      "maxRssBytes": 1589116928,
+      "maxRssMiB": 1515.5,
+      "rawTime": "        6.86 real         8.92 user         1.83 sys\n          1589116928  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              146998  page reclaims\n                 202  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 135  messages sent\n                 105  messages received\n                   0  signals received\n                  87  voluntary context switches\n               94282  involuntary context switches\n            84249344  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "6ab615880ce0ea7587adc90e08cde185bb4446796acd204109659035760c3479",
+      "logSha256": "a605f17b6f53bb55eaa68a120137eb88923b168e3c3a14985d8d605342f90dd3",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-3",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 13.32,
+      "maxRssBytes": 1286324224,
+      "maxRssMiB": 1226.734375,
+      "rawTime": "       13.32 real        13.25 user         4.69 sys\n          1286324224  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              100059  page reclaims\n                 288  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 138  messages sent\n                 105  messages received\n                   0  signals received\n                 278  voluntary context switches\n              204556  involuntary context switches\n            84282112  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "57679fae9a6629dbdb1e87f43977ecf32425445ea75a3d93d6fac43e4d794ab1",
+      "logSha256": "6c4e8d5bcb0f0921101464ec3f9f06aa7be379890ad7ef1a9792d47d73ff6934",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-4",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 13.34,
+      "maxRssBytes": 1322680320,
+      "maxRssMiB": 1261.40625,
+      "rawTime": "       13.34 real        13.26 user         4.71 sys\n          1322680320  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              101526  page reclaims\n                 288  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 138  messages sent\n                 105  messages received\n                   0  signals received\n                 712  voluntary context switches\n              193827  involuntary context switches\n            84331328  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "2bfdb3998dab5303e2e35ccd6d7890695512783f126c3eef4b217c9d30e2d5c0",
+      "logSha256": "e32b8c8a9b61745a27d66531e8ad5a41c4f68118623070de39f437b480a08cde",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-4",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 7.43,
+      "maxRssBytes": 1514651648,
+      "maxRssMiB": 1444.484375,
+      "rawTime": "        7.43 real         9.11 user         1.92 sys\n          1514651648  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              141047  page reclaims\n                 202  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 135  messages sent\n                 105  messages received\n                   0  signals received\n                1282  voluntary context switches\n              107172  involuntary context switches\n            84035968  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "b64a73c7dcb99739b84d248104d62eb143c38a243f9f4a456829727d3d078fa5",
+      "logSha256": "47fae67afcbafbf7a47adb9c6227bb8ee517382fd0b01df3ba9b0584fc22fc05",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "baseline",
+      "name": "pair-5",
+      "command": "pnpm exec react-router build",
+      "elapsedSeconds": 6.58,
+      "maxRssBytes": 1423998976,
+      "maxRssMiB": 1358.03125,
+      "rawTime": "        6.58 real         8.40 user         1.73 sys\n          1423998976  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              135862  page reclaims\n                 202  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 135  messages sent\n                 105  messages received\n                   0  signals received\n                  27  voluntary context switches\n              104400  involuntary context switches\n            84282368  peak memory footprint\n",
+      "lockSha256": "1e00152c77342c2f6a41b77fc58f5d9a779bb63d79b91d6bb1f3d31b7a393a96",
+      "verificationSha256": "362ed992f69b8440c8bceda9268febd786d820ff8c617ab8f63ac2fb376cc9e4",
+      "hostMonitorSha256": "1a41ff7aae8ed63a7bd97ef111341fd710bc311789b7d2fe5bb69f3ab10dbeb6",
+      "logSha256": "74157cec48a38cee9f884977eef2d90ef1a788a343756b9fc11786435348b4e5",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    },
+    {
+      "lane": "candidate",
+      "name": "pair-5",
+      "command": "pnpm exec ardo build",
+      "elapsedSeconds": 13.25,
+      "maxRssBytes": 1308753920,
+      "maxRssMiB": 1248.125,
+      "rawTime": "       13.25 real        12.84 user         4.69 sys\n          1308753920  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              100799  page reclaims\n                 288  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                 138  messages sent\n                 105  messages received\n                   0  signals received\n                 155  voluntary context switches\n              192592  involuntary context switches\n            84200000  peak memory footprint\n",
+      "lockSha256": "10a4e73d01f00d4df8ffc7846990130dccbe8679486a74e2037bdcde01b68894",
+      "verificationSha256": "60ec896cccbc62a81a5e911e40d36a16a4b3c0880f1e33a45f115988741a1571",
+      "hostMonitorSha256": "37ffd64e7858aeda87c655a054b9d1909927b7b2d3f403012ab06fde4308df86",
+      "logSha256": "c3a4d9be2a2cb6de1bfd790f303f6b6bc499b90af243495c86618812d4a57b6d",
+      "semanticGateSha256": "cfba2bb2ba35fe853120d124f74083b0b0ea53a0e09f136354c931794137bbe9"
+    }
+  ],
+  "diagnostics": {
+    "accepted": false,
+    "reason": "Native prototype probes were installed repeatedly on config reevaluation, and Vite windows mixed separate config instances. No phase counts or timings are accepted."
+  },
+  "rejectedEarlierRun": {
+    "runId": 39423412925,
+    "artifactId": 12264268797,
+    "sha256": "dfd1a35a168949d2a69ae13dfdff5ffdfc41af36f0e8ab3a05a9aec09406d751",
+    "reason": "The process matcher misclassified triald as ld; the incomplete series is excluded."
+  },
+  "host": {
+    "runner": "blacksmith-6vcpu-macos-26",
+    "os": "macOS26.3",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro (Virtual)",
+    "logicalCpus": 6,
+    "memoryBytes": 25769803776,
+    "node": "24.21.0",
+    "consumerPnpm": "10.34.5"
+  }
+}

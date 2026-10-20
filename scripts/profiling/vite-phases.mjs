@@ -4,20 +4,12 @@ import { performance } from "node:perf_hooks"
 // Add profileBuild() to the disposable lane's Vite plugins for a diagnostic run.
 // Hook boundaries include plugin work and waits; they are not exclusive CPU time.
 export function profileBuild() {
-  const output = process.env.ARDO_PROFILE_VITE_OUTPUT ?? process.env.ARDO_PROFILE_OUTPUT
+  const output = process.env.ARDO_PROFILE_OUTPUT
   const record = (event, environment) => {
     if (output == null) return
-    const ms = performance.now()
     appendFileSync(
       output,
-      `${JSON.stringify({
-        pid: process.pid,
-        event,
-        environment,
-        ms,
-        timeOrigin: performance.timeOrigin,
-        epochMs: performance.timeOrigin + ms,
-      })}\n`
+      `${JSON.stringify({ pid: process.pid, event, environment, ms: performance.now() })}\n`
     )
   }
   const beforePrerender = {
