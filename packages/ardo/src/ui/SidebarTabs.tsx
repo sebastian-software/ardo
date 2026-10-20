@@ -23,7 +23,7 @@ export type SidebarTabItem = {
  */
 export function SidebarTabs({ items }: { items: SidebarTabItem[] }) {
   return (
-    <nav aria-label="Documentation sections" className={styles.sectionTabs}>
+    <nav aria-label="Documentation sections" className={`ardo-sidebar-tabs ${styles.sectionTabs}`}>
       <ul className={styles.sectionTabList}>
         {items.map((item) => (
           <li key={item.key}>

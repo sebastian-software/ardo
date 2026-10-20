@@ -12,7 +12,9 @@ import { type ArdoThemePreference, getArdoThemeBootstrapScript } from "./theme-m
 
 export type ArdoRootLayoutProps = {
   children: ReactNode
-  /** Favicon URL for the SVG icon link. Defaults to the generated /icon.svg asset. */
+  /** HTML class for inherited site tokens, including UI portaled outside the app root. */
+  className?: string
+  /** Custom favicon URL. Its response supplies the MIME type; defaults to /icon.svg. */
   favicon?: string
   /**
    * Base URL for generated icon files.
@@ -51,6 +53,7 @@ export type ArdoRootLayoutProps = {
  */
 export function ArdoRootLayout({
   children,
+  className,
   favicon,
   iconBasePath = "/",
   lang,
@@ -62,17 +65,25 @@ export function ArdoRootLayout({
   const iconBaseUrl = iconBasePath === false ? undefined : normalizeIconBasePath(iconBasePath)
 
   return (
-    <html lang={resolvedLang} suppressHydrationWarning>
+    <html lang={resolvedLang} className={className} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script dangerouslySetInnerHTML={{ __html: getArdoThemeBootstrapScript(theme) }} />
         {iconBaseUrl == null ? (
-          <link rel="icon" type="image/svg+xml" href={favicon ?? ARDO_FAVICON_DATA_URL} />
+          <link
+            rel="icon"
+            type={favicon === undefined ? "image/svg+xml" : undefined}
+            href={favicon ?? ARDO_FAVICON_DATA_URL}
+          />
         ) : (
           <>
             <link rel="icon" href={`${iconBaseUrl}favicon.ico`} sizes="32x32" />
-            <link rel="icon" href={favicon ?? `${iconBaseUrl}icon.svg`} type="image/svg+xml" />
+            <link
+              rel="icon"
+              href={favicon ?? `${iconBaseUrl}icon.svg`}
+              type={favicon === undefined ? "image/svg+xml" : undefined}
+            />
             <link rel="apple-touch-icon" href={`${iconBaseUrl}apple-touch-icon.png`} />
           </>
         )}

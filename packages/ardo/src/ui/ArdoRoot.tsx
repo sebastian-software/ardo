@@ -38,7 +38,10 @@ export type ArdoRootProps = {
   tocLabel?: string
   /** Additional CSS classes for the layout */
   className?: string
-  /** Site chrome children: ArdoHeader, ArdoSidebar, ArdoFooter, and optional content overrides. */
+  /**
+   * Pass ArdoHeader, ArdoSidebar and ArdoFooter directly (or within fragments).
+   * Custom wrapper components are treated as content overrides and replace the route outlet.
+   */
   children?: ReactNode
 }
 

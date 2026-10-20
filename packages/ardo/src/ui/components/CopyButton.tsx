@@ -27,7 +27,7 @@ export function ArdoCopyButton({ code }: CopyButtonProps) {
   return (
     <button
       type="button"
-      className={styles.copyButton}
+      className={`ardo-copy-button ${styles.copyButton}`}
       onClick={() => {
         void handleCopy()
       }}

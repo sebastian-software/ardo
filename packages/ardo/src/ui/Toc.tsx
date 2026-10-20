@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import type { TOCItem } from "../config/types"
 
@@ -19,25 +19,54 @@ function hasReducedMotionPreference(): boolean {
   return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches
 }
 
+function resolveTocScrollRegion() {
+  const main = document.getElementById("main-content")
+  // A host can let the document scroll instead of Ardo's viewport shell.
+  const overflow = main == null ? "" : getComputedStyle(main).overflowY
+  const root = overflow === "auto" || overflow === "scroll" ? main : null
+  const height = root?.clientHeight ?? 0
+  return { root, height: height > 0 ? height : globalThis.innerHeight }
+}
+
+function readScrollRegionSnapshot() {
+  const { root, height } = resolveTocScrollRegion()
+  return `${root == null ? "viewport" : "main"}:${height}`
+}
+
+function serverScrollRegionSnapshot() {
+  return ""
+}
+
+function subscribeToScrollRegion(onChange: () => void) {
+  globalThis.addEventListener("resize", onChange)
+  return () => {
+    globalThis.removeEventListener("resize", onChange)
+  }
+}
+
 export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   const toc = useArdoTOC()
   const siteConfig = useArdoSiteConfig()
   const labels = useArdoLabels()
   const [activeId, setActiveId] = useState<string>("")
-  const scrollContainerRef = useRef<HTMLElement | null>(null)
+  const scrollSnapshot = useSyncExternalStore(
+    subscribeToScrollRegion,
+    readScrollRegionSnapshot,
+    serverScrollRegionSnapshot
+  )
   const isClickScrollingRef = useRef(false)
 
   const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
 
   useEffect(() => {
-    scrollContainerRef.current = document.getElementById("main-content")
-  }, [])
+    if (
+      toc.length === 0 ||
+      scrollSnapshot === "" ||
+      typeof globalThis.IntersectionObserver !== "function"
+    )
+      return
 
-  useEffect(() => {
-    if (toc.length === 0 || typeof globalThis.IntersectionObserver !== "function") return
-
-    const scrollContainer = scrollContainerRef.current
-    if (!scrollContainer) return
+    const scrollRegion = resolveTocScrollRegion()
 
     const headingElements = toc.map((item) => document.getElementById(item.id)).filter(Boolean)
     if (headingElements.length === 0) return
@@ -53,11 +82,10 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
         }
       },
       {
-        root: scrollContainer,
-        // Shrink the detection zone to a narrow band at the top.
-        // The -20px top accounts for scroll-padding, -85% bottom means
-        // only headings in the top ~15% of the container trigger activation.
-        rootMargin: "-20px 0px -85% 0px",
+        root: scrollRegion.root,
+        // Percentage root margins resolve against width, including the vertical
+        // ones. Pixels keep a nonempty detection band on wide, short viewports.
+        rootMargin: `-20px 0px -${Math.round(scrollRegion.height * 0.85)}px 0px`,
         threshold: 0,
       }
     )
@@ -65,17 +93,16 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     for (const element of headingElements) {
       if (element !== null) observer.observe(element)
     }
-
     return () => {
       observer.disconnect()
     }
-  }, [toc])
+  }, [toc, scrollSnapshot])
 
   const handleClickItem = (id: string) => {
     setActiveId(id)
     isClickScrollingRef.current = true
     const element = document.getElementById(id)
-    const container = scrollContainerRef.current
+    const container = resolveTocScrollRegion().root ?? document
     if (element) {
       element.scrollIntoView({
         behavior: getTocScrollBehavior(hasReducedMotionPreference()),
@@ -84,19 +111,13 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
       globalThis.history.pushState(null, "", `#${id}`)
     }
     // Re-enable observer after scroll finishes
-    if (container) {
-      const onScrollEnd = () => {
-        isClickScrollingRef.current = false
-        container.removeEventListener("scrollend", onScrollEnd)
-      }
-      container.addEventListener("scrollend", onScrollEnd, { once: true })
-      // Fallback for browsers without scrollend
-      setTimeout(() => {
-        isClickScrollingRef.current = false
-      }, 1000)
-    } else {
+    const onScrollEnd = () => {
       isClickScrollingRef.current = false
+      container.removeEventListener("scrollend", onScrollEnd)
     }
+    container.addEventListener("scrollend", onScrollEnd, { once: true })
+    // Fallback for browsers without scrollend
+    setTimeout(onScrollEnd, 1000)
   }
 
   if (toc.length === 0) {
@@ -104,7 +125,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   }
 
   return (
-    <aside className={styles.toc}>
+    <aside className={`ardo-toc ${styles.toc}`}>
       <div>
         <h3 className={styles.tocTitle}>{label}</h3>
         <nav aria-label={labels.toc.navLabel}>

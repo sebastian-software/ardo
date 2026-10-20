@@ -177,12 +177,13 @@ export const updatedText = style({
 
 export const prevNext = style({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: vars.space.md,
   maxWidth: "80rem",
 })
 
 const prevNextLinkBase = style({
+  minWidth: 0,
   display: "flex",
   flexDirection: "column",
   padding: vars.space.lg,
@@ -223,6 +224,7 @@ export const previousArrow = style({
 })
 
 export const prevNextTitle = style({
+  overflowWrap: "anywhere",
   fontWeight: 600,
   color: vars.color.brand,
 })

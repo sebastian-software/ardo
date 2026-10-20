@@ -38,7 +38,7 @@ export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPa
 
   return (
     <ArdoLayout>
-      <div className={styles.docPage}>
+      <div className={`ardo-doc-page ${styles.docPage}`}>
         <ArdoContent editLink={editLink} lastUpdated={lastUpdated} metaPlacement="none">
           {children}
         </ArdoContent>
@@ -92,7 +92,7 @@ export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: Do
   const hideToc = pageData?.frontmatter.outline === false
 
   return (
-    <div className={styles.docPage}>
+    <div className={`ardo-doc-page ${styles.docPage}`}>
       <ArdoContent editLink={editLink} lastUpdated={lastUpdated} metaPlacement="none">
         {children}
       </ArdoContent>
@@ -126,9 +126,9 @@ function ArdoPageRail({
   if (!hasMeta && hideToc) return null
 
   return (
-    <aside className={styles.pageRail}>
+    <aside className={`ardo-page-rail ${styles.pageRail}`}>
       {hasMeta && (
-        <section className={styles.pageRailSection}>
+        <section className={`ardo-page-rail-section ${styles.pageRailSection}`}>
           <h2 className={styles.pageRailTitle}>Page</h2>
           {edit.show && (
             <a
@@ -151,7 +151,7 @@ function ArdoPageRail({
         </section>
       )}
       {!hideToc && (
-        <section className={styles.pageRailSection}>
+        <section className={`ardo-page-rail-section ${styles.pageRailSection}`}>
           <ArdoTOC label={tocLabel} />
         </section>
       )}

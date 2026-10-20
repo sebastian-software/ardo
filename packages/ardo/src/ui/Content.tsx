@@ -9,6 +9,7 @@ import { ChromeIcon } from "./chrome-icons"
 import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
+import { getNodeText } from "./text-content"
 
 type ContentProps = {
   children: ReactNode
@@ -72,7 +73,9 @@ export function ArdoContent({
   const location = useLocation()
 
   if (isBare) {
-    return <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
+    return (
+      <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>{children}</div>
+    )
   }
 
   const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig }
@@ -81,7 +84,7 @@ export function ArdoContent({
   const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
 
   return (
-    <article className={docStyles.contentContainer}>
+    <article className={`ardo-content ${docStyles.contentContainer}`}>
       <ArdoBreadcrumb />
       <ContentHeader
         title={pageData?.frontmatter.title ?? ""}
@@ -92,7 +95,7 @@ export function ArdoContent({
           children
         )}
       />
-      <div className={`${docStyles.contentBody} ${ardoContent}`}>{children}</div>
+      <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>{children}</div>
       {metaPlacement === "footer" && <ContentMeta edit={edit} updated={updated} />}
       <ContentPrevNext prev={prev} next={next} />
     </article>
@@ -110,9 +113,11 @@ function ContentHeader({
 }) {
   if (title === "") return null
   return (
-    <header className={docStyles.contentHeader}>
-      <h1 className={docStyles.contentTitle}>{title}</h1>
-      {showDescription && <p className={docStyles.contentDescription}>{description}</p>}
+    <header className={`ardo-content-header ${docStyles.contentHeader}`}>
+      <h1 className={`ardo-content-title ${docStyles.contentTitle}`}>{title}</h1>
+      {showDescription && (
+        <p className={`ardo-content-description ${docStyles.contentDescription}`}>{description}</p>
+      )}
     </header>
   )
 }
@@ -157,22 +162,6 @@ function readFirstParagraphCandidate(child: ReactNode): ParagraphCandidate {
   }
 
   return { action: "return", text: getNodeText(child.props.children) }
-}
-
-function getNodeText(children: ReactNode): string {
-  return Children.toArray(children)
-    .map((child) => {
-      if (typeof child === "string" || typeof child === "number") {
-        return String(child)
-      }
-
-      if (isValidElement<{ children?: ReactNode }>(child)) {
-        return getNodeText(child.props.children)
-      }
-
-      return ""
-    })
-    .join("")
 }
 
 function normalizeText(value: string): string {
