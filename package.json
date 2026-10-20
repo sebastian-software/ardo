@@ -47,7 +47,7 @@
   "author": "Sebastian Software GmbH",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.64.1",
     "@storybook/addon-a11y": "^10.6.2",
     "@storybook/addon-docs": "^10.6.2",
     "@storybook/react": "^10.6.2",
