@@ -1,0 +1,186 @@
+name: Ferriki Ardo build profile
+
+# Temporary branch bootstrap for the first reviewed Blacksmith run. Remove the
+# push trigger after that run; keep workflow_dispatch for deliberate reruns.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/issue-324-build-profile
+    paths:
+      - .github/workflows/ferriki-build-profile.yml
+      - scripts/profiling/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ferriki-build-profile
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  profile:
+    name: Ferriki build profile / macOS arm64
+    if: >-
+      github.repository == 'sebastian-software/ardo' &&
+      ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+       (github.event_name == 'push' && github.ref == 'refs/heads/codex/issue-324-build-profile'))
+    runs-on: blacksmith-6vcpu-macos-26
+    timeout-minutes: 45
+    env:
+      npm_config_manage_package_manager_versions: "false"
+
+    steps:
+      - name: Check out the reviewed harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out pinned Ardo source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: sebastian-software/ardo
+          ref: 493e53405e906fbc051d9e9d7a9d00a7d338a642
+          path: ardo-source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out pinned Ferriki source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: sebastian-software/ferriki
+          ref: 676b8e953e6597a337fc644e712a4a30e5b8bea5
+          path: ferriki-source
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+
+      - name: Set unique output paths
+        run: |
+          echo "PROFILE_OUTPUT=$RUNNER_TEMP/ferriki-profile" >> "$GITHUB_ENV"
+          echo "ROOT_PNPM=$RUNNER_TEMP/pnpm-11.20.0/node_modules/.bin/pnpm" >> "$GITHUB_ENV"
+          echo "CONSUMER_PNPM=$RUNNER_TEMP/pnpm-10.34.5/node_modules/.bin/pnpm" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/pnpm-10.34.5/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: Install the pinned package managers
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pnpm-11.20.0" --no-save --no-package-lock --ignore-scripts --no-audit --no-fund pnpm@11.20.0
+          npm install --prefix "$RUNNER_TEMP/pnpm-10.34.5" --no-save --no-package-lock --ignore-scripts --no-audit --no-fund pnpm@10.34.5
+          test "$("$ROOT_PNPM" --version)" = "11.20.0"
+          test "$("$CONSUMER_PNPM" --version)" = "10.34.5"
+
+      - name: Record Blacksmith VM and toolchain details
+        run: |
+          {
+            echo "Requested runner: blacksmith-6vcpu-macos-26"
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Attempt: $GITHUB_RUN_ATTEMPT"
+            echo "Harness commit: $(git rev-parse HEAD)"
+            echo "Ardo source commit: $(git -C "$GITHUB_WORKSPACE/ardo-source" rev-parse HEAD)"
+            echo "Ferriki source commit: $(git -C "$GITHUB_WORKSPACE/ferriki-source" rev-parse HEAD)"
+            echo "Ferriki lock seed SHA256: $(shasum -a 256 "$GITHUB_WORKSPACE/ferriki-source/homepage/pnpm-lock.yaml")"
+            echo "uname: $(uname -a)"
+            echo "macOS: $(sw_vers)"
+            echo "CPU brand: $(sysctl -n machdep.cpu.brand_string 2>/dev/null || true)"
+            echo "Logical CPUs: $(sysctl -n hw.logicalcpu 2>/dev/null || true)"
+            echo "Physical CPUs: $(sysctl -n hw.physicalcpu 2>/dev/null || true)"
+            echo "Memory bytes: $(sysctl -n hw.memsize 2>/dev/null || true)"
+            echo "Node.js: $(node --version)"
+            echo "npm: $(npm --version)"
+            echo "Ardo package manager: $("$ROOT_PNPM" --version)"
+            echo "Consumer package manager: $("$CONSUMER_PNPM" --version)"
+            echo "Timed pnpm on PATH: $(command -v pnpm || true)"
+            echo "Timed pnpm version: $(pnpm --version)"
+          } > "$RUNNER_TEMP/ferriki-runner-context.txt"
+
+      - name: Install, build, and pack pinned Ardo source
+        working-directory: ardo-source
+        run: |
+          "$ROOT_PNPM" install --frozen-lockfile 2>&1 | tee "$RUNNER_TEMP/ardo-install.log"
+          "$ROOT_PNPM" --filter ardo build 2>&1 | tee "$RUNNER_TEMP/ardo-build.log"
+
+      - name: Pack Ardo 5.0.0 with pnpm 11.20.0
+        working-directory: ardo-source/packages/ardo
+        run: |
+          mkdir "$RUNNER_TEMP/ardo-pack"
+          "$ROOT_PNPM" pack --pack-destination "$RUNNER_TEMP/ardo-pack" 2>&1 | tee "$RUNNER_TEMP/ardo-pack.log"
+          cp "$RUNNER_TEMP/ardo-pack/ardo-5.0.0.tgz" "$RUNNER_TEMP/ardo-5.0.0.tgz"
+          test -s "$RUNNER_TEMP/ardo-5.0.0.tgz"
+
+      - name: Prepare isolated baseline and candidate lanes
+        working-directory: ardo-source
+        run: |
+          node "$GITHUB_WORKSPACE/scripts/profiling/prepare-blacksmith.mjs" "$RUNNER_TEMP/ferriki-profile" "$GITHUB_WORKSPACE/ferriki-source" "$RUNNER_TEMP/ardo-5.0.0.tgz" > "$RUNNER_TEMP/ferriki-prepare.log" 2>&1
+
+      - name: Resolve and install both lanes with pnpm 10.34.5
+        run: |
+          for lane in baseline candidate; do
+            homepage="$PROFILE_OUTPUT/lanes/$lane/homepage"
+            (
+              cd "$homepage"
+              if [ "$lane" = candidate ]; then
+                "$CONSUMER_PNPM" install --lockfile-only --no-frozen-lockfile 2>&1 | tee "$PROFILE_OUTPUT/lanes/$lane/lock-resolution.log"
+              else
+                printf '%s\n' "Baseline retains the pinned Ferriki source lock; no lock resolution was run." > "$PROFILE_OUTPUT/lanes/$lane/lock-resolution.log"
+              fi
+              "$CONSUMER_PNPM" install --frozen-lockfile 2>&1 | tee "$PROFILE_OUTPUT/lanes/$lane/install.log"
+              "$CONSUMER_PNPM" list --depth 0 --json > "$PROFILE_OUTPUT/lanes/$lane/installed-packages.json"
+              shasum -a 256 pnpm-lock.yaml > "$PROFILE_OUTPUT/lanes/$lane/lock.sha256"
+              "$CONSUMER_PNPM" --version > "$PROFILE_OUTPUT/lanes/$lane/pnpm-version.txt"
+            )
+          done
+
+      - name: Record installed versions and lock receipts
+        run: |
+          PROFILE_PNPM_BIN="$CONSUMER_PNPM" ARDO_SOURCE_ROOT="$GITHUB_WORKSPACE/ardo-source" node "$GITHUB_WORKSPACE/scripts/profiling/record-blacksmith-setup.mjs" "$PROFILE_OUTPUT" "$PROFILE_OUTPUT/lanes/baseline/homepage" "$PROFILE_OUTPUT/lanes/candidate/homepage" > "$PROFILE_OUTPUT/setup-receipts.log" 2>&1
+
+      - name: Profile five alternating warm build pairs
+        run: |
+          fixture="$PROFILE_OUTPUT/lanes/candidate/homepage/app/routes/evidence/compatibility.mdx"
+          node "$GITHUB_WORKSPACE/scripts/profiling/paired-builds.mjs" "$PROFILE_OUTPUT/lanes/baseline/homepage" "$PROFILE_OUTPUT/lanes/candidate/homepage" "$PROFILE_OUTPUT/evidence" 5 ardo "$fixture"
+
+      - name: Retain complete run evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ferriki-build-profile-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/ferriki-profile/
+            !${{ runner.temp }}/ferriki-profile/**/node_modules/**
+            !${{ runner.temp }}/ferriki-profile/**/homepage/build/**
+            !${{ runner.temp }}/ferriki-profile/**/.cache/**
+            !${{ runner.temp }}/ferriki-profile/**/.pnpm-store/**
+            !${{ runner.temp }}/ferriki-profile/**/.turbo/**
+            !${{ runner.temp }}/ferriki-profile/**/.vite/**
+            ${{ runner.temp }}/ferriki-runner-context.txt
+            ${{ runner.temp }}/ferriki-prepare.log
+            ${{ runner.temp }}/ardo-install.log
+            ${{ runner.temp }}/ardo-build.log
+            ${{ runner.temp }}/ardo-pack.log
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Summarize the run and its limits
+        if: always()
+        run: |
+          {
+            echo "### Ferriki Ardo build profile"
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "The workflow performs setup, lock resolution, installs, and correctness gates before five alternating warm pairs, with one warmup per lane. The build runner rejects timings when it detects competing CPU-heavy work and retains the failed attempt evidence."
+            echo
+            echo "Runner-reported OS and CPU details are in the artifact. The VM does not expose physical-host scheduling or virtualization state, so results describe this Blacksmith runner profile only."
+            echo
+            echo "The artifact includes resolved locks and package versions, prepared asset caches, build outputs, raw timings, verifier receipts, host-monitor snapshots, and logs when those files were produced."
+          } >> "$GITHUB_STEP_SUMMARY"
