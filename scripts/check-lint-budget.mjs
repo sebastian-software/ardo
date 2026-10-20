@@ -4,16 +4,21 @@ import path from "node:path"
 import fs from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 
-export function auditLintResults(results, budgets) {
+/** oxlint reports `plugin(rule)`; budgets use the `plugin/rule` spelling, core rules bare. */
+export function ruleName(code) {
+  const match = /^([\w-]+)\((.+)\)$/.exec(code ?? "")
+  if (match == null) return code ?? "unknown"
+  return match[1] === "eslint" ? match[2] : `${match[1]}/${match[2]}`
+}
+
+export function auditLintResults(diagnostics, budgets) {
   const counts = new Map()
   let errorCount = 0
-  for (const result of results) {
-    for (const message of result.messages) {
-      if (message.severity === 2) errorCount++
-      if (message.severity === 1) {
-        const rule = message.ruleId ?? "unknown"
-        counts.set(rule, (counts.get(rule) ?? 0) + 1)
-      }
+  for (const diagnostic of diagnostics) {
+    if (diagnostic.severity === "error") errorCount++
+    if (diagnostic.severity === "warning") {
+      const rule = ruleName(diagnostic.code)
+      counts.set(rule, (counts.get(rule) ?? 0) + 1)
     }
   }
   const exceeded = new Set(
@@ -29,7 +34,7 @@ async function main() {
     await fs.readFile(new URL("./lint-warning-budget.json", import.meta.url), "utf8")
   )
   const require = createRequire(import.meta.url)
-  const eslintCli = path.join(path.dirname(require.resolve("eslint/package.json")), "bin/eslint.js")
+  const oxlintCli = path.join(path.dirname(require.resolve("oxlint/package.json")), "bin/oxlint")
   const sources = []
   for (const name of await fs.readdir("packages")) {
     if (name.startsWith(".")) continue
@@ -41,15 +46,16 @@ async function main() {
     }
   }
   if (sources.length === 0) throw new Error("No package source directories found")
-  const run = spawnSync(process.execPath, [eslintCli, ...sources.sort(), "--format", "json"], {
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-  })
+  const run = spawnSync(
+    process.execPath,
+    [oxlintCli, "--type-aware", "--format=json", ...sources.sort()],
+    { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
+  )
   if (run.error || run.status == null || run.status > 1) {
-    throw run.error ?? new Error(run.stderr || "ESLint did not complete")
+    throw run.error ?? new Error(run.stderr || "oxlint did not complete")
   }
-  const results = JSON.parse(run.stdout)
-  const audit = auditLintResults(results, budgets)
+  const { diagnostics } = JSON.parse(run.stdout)
+  const audit = auditLintResults(diagnostics, budgets)
   for (const [rule, count] of [...audit.counts].sort(([left], [right]) =>
     left.localeCompare(right)
   )) {
@@ -57,22 +63,13 @@ async function main() {
       `${rule}: ${count}/${budgets[rule] ?? 0}${audit.exceeded.has(rule) ? " EXCEEDED" : ""}`
     )
   }
-  const failures = results
-    .map((result) => ({
-      ...result,
-      messages: result.messages.filter(
-        (message) => message.severity === 2 || audit.exceeded.has(message.ruleId ?? "unknown")
-      ),
-    }))
-    .filter((result) => result.messages.length > 0)
-  if (failures.length > 0) {
-    for (const result of failures) {
-      for (const message of result.messages) {
-        console.error(
-          `${result.filePath}:${message.line}:${message.column} ${message.ruleId ?? "parser"}: ${message.message}`
-        )
-      }
-    }
+  for (const diagnostic of diagnostics) {
+    const rule = ruleName(diagnostic.code)
+    if (diagnostic.severity !== "error" && !audit.exceeded.has(rule)) continue
+    const span = diagnostic.labels?.[0]?.span
+    console.error(
+      `${diagnostic.filename}:${span?.line ?? 0}:${span?.column ?? 0} ${rule}: ${diagnostic.message}`
+    )
   }
   const warnings = [...audit.counts.values()].reduce((sum, count) => sum + count, 0)
   console.log(

@@ -14,6 +14,15 @@ const environment: ConfigEnv = {
   isPreview: false,
 }
 
+async function ardoOptions(env: ConfigEnv) {
+  await new Promise<void>((resolve) => {
+    setImmediate(() => {
+      resolve()
+    })
+  })
+  return { githubPages: env.command === "build" }
+}
+
 describe("createArdoProjectViteConfig", () => {
   it("adds Ardo with default options and preserves the app's Vite config", async () => {
     const appPlugin = { name: "app-plugin" }
@@ -31,14 +40,6 @@ describe("createArdoProjectViteConfig", () => {
   })
 
   it("resolves object, promise, and async callback exports per Vite environment", async () => {
-    const ardoOptions = async (env: ConfigEnv) => {
-      await new Promise<void>((resolve) => {
-        setImmediate(() => {
-          resolve()
-        })
-      })
-      return { githubPages: env.command === "build" }
-    }
     const viteOptions = new Promise<UserConfig>((resolve) => {
       resolve({ base: "/object/" })
     })
