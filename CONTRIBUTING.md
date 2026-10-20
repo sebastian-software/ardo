@@ -122,23 +122,22 @@ verification; do not commit tarball paths or invented registry integrity data.
 | `pnpm docs:dev`   | Start documentation dev server |
 | `pnpm test`       | Run tests                      |
 | `pnpm test:watch` | Run tests in watch mode        |
-| `pnpm lint`       | Run ESLint                     |
+| `pnpm lint`       | Run oxlint                     |
 | `pnpm format`     | Format code with Prettier      |
 | `pnpm typecheck`  | Run TypeScript type checking   |
 
 ### Lint warning budgets
 
-`pnpm lint` runs the existing package-source ESLint checks and enforces the per-rule
+`pnpm lint` runs oxlint with type-aware rules over the package sources and enforces the per-rule
 ceilings in `scripts/lint-warning-budget.json`. Every lint error fails the check.
 A warning category without a budget also fails, and one category cannot borrow
 unused budget from another. CI uses this same command.
 
 Known warnings remain active. `pnpm lint:raw` prints every file, line, and message.
-The current budgets retain dynamic filesystem-path warnings, browser-compatibility
-warnings (including Node-only API use), JSX composition and library export
-warnings, and compatibility exports. The four remaining spelling warnings are
-localized test text and intentionally misspelled frontmatter keys; they are not
-added to the general dictionary. The JSX composition contract is recorded in
+The current budgets retain JSX composition warnings (`cloneElement`, trusted
+`dangerouslySetInnerHTML`, single-child fragments), mixed component and helper
+exports, and conditionals in existing tests, which ESLint never checked. The JSX
+composition contract is recorded in
 [ADR 0008](docs/adr/0008-children-based-composition.md).
 
 Fix errors and behavior risks before adjusting a budget. When a warning is removed,
@@ -215,7 +214,7 @@ docs: update getting started guide
 ### Code Style
 
 - We use [Prettier](https://prettier.io/) for code formatting
-- We use [ESLint](https://eslint.org/) for linting
+- We use [oxlint](https://oxc.rs/docs/guide/usage/linter) for linting, configured through `eslint-config-setup`'s `getOxlintConfig()`
 - TypeScript is required for all source code
 - Run `pnpm format` before committing
 

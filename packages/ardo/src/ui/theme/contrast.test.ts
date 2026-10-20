@@ -5,6 +5,8 @@ import { type ColorChroma, createColorTokens } from "./tokens"
 
 type Rgb = [number, number, number]
 
+const clip = (value: number) => Math.min(1, Math.max(0, value))
+
 /** OKLCH to linear sRGB, clipped to the sRGB gamut like browsers do. */
 function oklchToLinearSrgb(l: number, c: number, h: number): Rgb {
   const radians = (h * Math.PI) / 180
@@ -13,7 +15,6 @@ function oklchToLinearSrgb(l: number, c: number, h: number): Rgb {
   const lCone = (l + 0.3963377774 * a + 0.2158037573 * b) ** 3
   const mCone = (l - 0.1055613458 * a - 0.0638541728 * b) ** 3
   const sCone = (l - 0.0894841775 * a - 1.291485548 * b) ** 3
-  const clip = (value: number) => Math.min(1, Math.max(0, value))
   return [
     clip(4.0767416621 * lCone - 3.3077115913 * mCone + 0.2309699292 * sCone),
     clip(-1.2684380046 * lCone + 2.6097574011 * mCone - 0.3413193965 * sCone),

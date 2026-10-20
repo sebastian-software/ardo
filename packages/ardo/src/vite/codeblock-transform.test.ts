@@ -55,7 +55,7 @@ describe("native TSX code blocks", () => {
       expect(view).toContain(`data-lang="${language}"`)
       expect(view).toContain(">sample</div>")
       expect(tsx.querySelector('[data-ln="4"]')).not.toBeNull()
-      expect(tsx.querySelector(".highlighted")?.getAttribute("data-ln")).toBe("3")
+      expect(tsx.querySelector<HTMLElement>(".highlighted")?.dataset.ln).toBe("3")
     }
   )
 

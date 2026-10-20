@@ -4,14 +4,6 @@ packages:
   - examples/basic
   - tests/fixtures/*
 
-overrides:
-  eslint-plugin-oxlint: 1.77.0
-  oxlint: 1.77.0
-
-peerDependencyRules:
-  allowedVersions:
-    "eslint-plugin-jsx-a11y>eslint": "^10.0.0"
-
 allowBuilds:
   "@swc/core": true
   esbuild: true

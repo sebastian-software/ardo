@@ -69,9 +69,8 @@ describe("mobile drawer accessibility helpers", () => {
       createFocusableElement({ testId: "visible-link" }),
     ]
 
-    expect(elements.filter(isFocusableElement).map((element) => element.testId)).toStrictEqual([
-      "close",
-      "visible-link",
-    ])
+    expect(
+      elements.filter((element) => isFocusableElement(element)).map((element) => element.testId)
+    ).toStrictEqual(["close", "visible-link"])
   })
 })

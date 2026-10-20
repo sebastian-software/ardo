@@ -606,7 +606,7 @@ export function resolveArdoSidebarItems(
 function getSidebarSectionElements(
   children: ReactNode
 ): Array<ReactElement<ArdoSidebarSectionProps>> {
-  return flattenSidebarChildren(children).filter(isSidebarSectionElement)
+  return flattenSidebarChildren(children).filter((child) => isSidebarSectionElement(child))
 }
 
 function isSidebarSectionElement(child: ReactNode): child is ReactElement<ArdoSidebarSectionProps> {

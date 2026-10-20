@@ -215,13 +215,13 @@ function normalizeRedirectFrom(value: unknown): PageFrontmatterMetadata | undefi
   if (typeof value === "string") return { redirectFrom: [value] }
   if (!Array.isArray(value)) return undefined
 
-  const redirectFrom = value.filter(isString)
+  const redirectFrom = value.filter((item): item is string => isString(item))
   return redirectFrom.length === 0 ? undefined : { redirectFrom }
 }
 
 function isOutline(value: unknown): value is NonNullable<PageFrontmatter["outline"]> {
   if (typeof value === "boolean" || typeof value === "number") return true
-  return Array.isArray(value) && value.length === 2 && value.every(isNumber)
+  return Array.isArray(value) && value.length === 2 && value.every((item) => isNumber(item))
 }
 
 function isPaginationLink(value: unknown): value is NonNullable<PageFrontmatter["next"]> {
