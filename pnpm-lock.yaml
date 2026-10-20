@@ -156,8 +156,8 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@ferriki/core':
-        specifier: ^0.13.0
-        version: 0.13.0
+        specifier: ^1.1.2
+        version: 1.1.2
       '@react-router/dev':
         specifier: 8.3.0
         version: 8.3.0(react-router@8.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@9.4.0)(typescript@6.0.3)(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -186,8 +186,8 @@ importers:
         specifier: ^6.0.5
         version: 6.0.5(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
       ferromark:
-        specifier: ^3.4.0
-        version: 3.4.0
+        specifier: ^3.5.1
+        version: 3.5.1
       lucide-react:
         specifier: ^1.29.0
         version: 1.29.0(react@19.2.8)
@@ -1308,52 +1308,53 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@ferriki/core@0.13.0':
-    resolution: {integrity: sha512-6QaUXSSB87t3noph16FEjaiRiGxTwZx5kxalb8Xlx0AUU5+zdZPtkkvmWS5kQn+83I191ihnBhefpWh1Ma38cw==}
+  '@ferriki/core@1.1.2':
+    resolution: {integrity: sha512-mjJEk1kkWsIZMA6Yqa1PTxPe9uhWzZ+4B+v7M65lHlJPUMaQpOHKoIUEWq/+tFHu/ujqIn4MB5PIpxAgTWwlmw==}
     engines: {node: '>=22.13.0'}
+    hasBin: true
 
-  '@ferriki/darwin-arm64@0.13.0':
-    resolution: {integrity: sha512-kgFKVnnvj0nXHTdgKXHLhC8MiVTso/KamPxLJAHQuB0c+R+JEJpzpX4bY6iWyFngtNWBClAxm3unVI53Dwt6cw==}
+  '@ferriki/darwin-arm64@1.1.2':
+    resolution: {integrity: sha512-2CNKui5M88laAJzcgBuLOha5uy2ho3FtGnH59Mj0h6kq8V5cW8ovcGPf56NuIz9CGy66R5kyuAhcD9eDB+q+Rg==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferriki/linux-arm64-gnu@0.13.0':
-    resolution: {integrity: sha512-qlkWb3LkvLWIc/Rvi173MXIkkJZpr+o6HXfHs46VKVkIo/Zp8LVrumHnYLVMbNI3pbQ+hxes7/Vjy076fSp1NA==}
+  '@ferriki/linux-arm64-gnu@1.1.2':
+    resolution: {integrity: sha512-sH2P0oHkEd22hCyWGaTPrvPCFQZc2r9SfL5XVHi6Vgn8xy7PUxcbNa2dQwWSSqjcTGPxpW0E6CBfqo89YkcjDA==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-arm64-musl@0.13.0':
-    resolution: {integrity: sha512-8Pmkqz6wx93RGfycRUCixk+ydJ5ApIpZ617AXeqYv+RsqrYQfu4HUb+O43xcO7/hnnpxf/575OHKqSkl2OMS5A==}
+  '@ferriki/linux-arm64-musl@1.1.2':
+    resolution: {integrity: sha512-UMQdocH0e0Thc1Bb9kp6XKyocv36tPMiQnEts/cAFObKWdTwkwjrvQkixv2egeU0RwGnSs4Hcjy2W9HoLv4zkA==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/linux-x64-gnu@0.13.0':
-    resolution: {integrity: sha512-jcZSQwLkVwrD/XGHlVsG3NY0MowmbGqrI8oKw6nNQ2YztukkXgwMmkQIASgcQYLKAaNRlaRpToauUcKYJJb5dQ==}
+  '@ferriki/linux-x64-gnu@1.1.2':
+    resolution: {integrity: sha512-OdpYRuwiubP+NATRSVFBYHhtZfV0xsdcdXfuhUbtzSlVhIva81ef/F/SR55VB+/MGq4ETeEVIFP21LnqCLFcxQ==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-x64-musl@0.13.0':
-    resolution: {integrity: sha512-57JmUJC6OXtc1ReO4OJ5YWl3mo/8MsMBr1hOjpirp+n8V3/Xalo4zxtK5T42u8GxofuGBhIxXeGOCIEyAJoQFQ==}
+  '@ferriki/linux-x64-musl@1.1.2':
+    resolution: {integrity: sha512-n7TPjtIzfhUuqSEeUPQtxMZxS8kCMjeDMXBvyBwHMQX7wA4IbWVEJXSf+r12L7lqZScN6iyMZPO1oBWOeLZFpQ==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/win32-arm64-msvc@0.13.0':
-    resolution: {integrity: sha512-14kpkwPrcmdibx2vk1Su5S0f4yCL4NdRbNl5UNEv6Ii9c5CEL8Wi7PAuAjVIZqAB2emvs8wj6GsF0lo31rgmJw==}
+  '@ferriki/win32-arm64-msvc@1.1.2':
+    resolution: {integrity: sha512-cZ8yMREMYVEk/KmWqAqER9/R8Y58Zp57EJyY9MW36dqulpjV5FfvHbaNOqu/OhO7LpgEv/n3ugLQu9IUcXEnSw==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@ferriki/win32-x64-msvc@0.13.0':
-    resolution: {integrity: sha512-j6tJhU+6DJkCKeHJHuzgMJ/+WC9tupFmPzG+eDM+zfc2m6E43e1Y75N+ncfrpd6n72sF/wXkYHdLOcRzzKR9lA==}
+  '@ferriki/win32-x64-msvc@1.1.2':
+    resolution: {integrity: sha512-EjJ+0dPQbnW7laCFjGOivgnR00ySexjL+EBSQhB8T1FADVjg+yJREDstuMssVVvy02QOBD0HFtt7UANFpVrv8w==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [win32]
@@ -4550,54 +4551,54 @@ packages:
       picomatch:
         optional: true
 
-  ferromark-darwin-arm64@3.4.0:
-    resolution: {integrity: sha512-3MkvM9CsE23U3HXQyyHpuxqhA8ifQFLIRa8xj0tGb5GPRPEuJ1GiPnEY3paOwyrVuHBjQgDZzAjJLqTjKUcRww==}
+  ferromark-darwin-arm64@3.5.1:
+    resolution: {integrity: sha512-gRYOFjInDs81PYJEnUnfEfNTz9w2FUQxjN4DWk5GjglLVtxF5qeY65iPLNsEAfflq9z5YZ2cPZHqj0DZwULSfQ==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [darwin]
 
-  ferromark-linux-arm64-gnu@3.4.0:
-    resolution: {integrity: sha512-A+kd5O6U6QtkGszMrympYtfI8J7Yw06B0XSNXTdZoTk+ZuMgW8ps8BsP/nrj8lzl1RKRfoBr5aWSrHqXsH2QaQ==}
+  ferromark-linux-arm64-gnu@3.5.1:
+    resolution: {integrity: sha512-ewedDaNw7RTKfIphMSwNL2Sqck5u+/FFpWOBOotKYbz7Xfxeg2l07hwnC105DlRAFAPEk+oMh0mTVvDRBdZBOg==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-arm64-musl@3.4.0:
-    resolution: {integrity: sha512-mbZV3YA4k7zy8FccC7xF4UWhaG7+CVGWLumCyO0NEDp6EeeyLwQl1HyeWPPcTNaptg/L1RaxR3Ct0aqmkRzQvQ==}
+  ferromark-linux-arm64-musl@3.5.1:
+    resolution: {integrity: sha512-ugym9Ig8JCR0Znn8W5E4P4a/XBuOpptH4Ztss71058wkf1ffa+Qo4Y+P2qPMj5L1OTkSTtH9eVWoamCXiwchDg==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  ferromark-linux-x64-gnu@3.4.0:
-    resolution: {integrity: sha512-g4zaB+jrdpzCU5m5vO9o479TEGWumqA+LoKQORtok2r/YUSqCyR0gWe+20xR44qAQZ9qDDxAnJy8WxzLgeB9Xg==}
+  ferromark-linux-x64-gnu@3.5.1:
+    resolution: {integrity: sha512-jMRBvSPKB1hr1YNyauttYo6kXALACFz+kGG+dqyB51T/Cu7WogwsqkI+p5pC21nLD8QjSxOdH0vdoqoPpj+WGA==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-x64-musl@3.4.0:
-    resolution: {integrity: sha512-OOR2njRabbOWEO3Y37oGlgPBILkrmqtkIXvdpQ33+kccdr6ulFQGAIvL+NsB3sBbvTKLhUVbVu5zDBT5vbxu2g==}
+  ferromark-linux-x64-musl@3.5.1:
+    resolution: {integrity: sha512-ow1bbb+VH/Im6DMVu6XTJj8yyIPW8hwTqgn1Z54AZGNRsoYOaa1o6zQZQutzF2L2VYXZsP1PgLV6lyfgl+Ih8Q==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  ferromark-win32-arm64-msvc@3.4.0:
-    resolution: {integrity: sha512-4i1tLkARJ20Ryt18/jTNiBX/cwn6SsuourSXRnKjQbrN7WRBB4FtyXrRK8ANsbdsI0zDFyK2mFoIpEZl1V3JaQ==}
+  ferromark-win32-arm64-msvc@3.5.1:
+    resolution: {integrity: sha512-dO2O/A68qEbxD+l3sS5g6B/tmrHegrpMcfhGY2/abXvhpLaKSdfvdAwPTul8Fl0s3qLP8hmXaAcDPfDx4Qrd3Q==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [win32]
 
-  ferromark-win32-x64-msvc@3.4.0:
-    resolution: {integrity: sha512-JiOQft3LYLeldo/5ww6rllKlXW74ijMVEYjZ5vwpzLTSKvjq0YGMUHHMrCWqrakd2iTN2xF0IEQU/LkM/avJVQ==}
+  ferromark-win32-x64-msvc@3.5.1:
+    resolution: {integrity: sha512-y95s/ak8nCuJuZh9e6qi13szGDV+uQcFFNiLXpx23/0el67DOQcc7V2XJ3Wf7pk/ez9+vd84kv9Ro9RGMtHv/w==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [win32]
 
-  ferromark@3.4.0:
-    resolution: {integrity: sha512-YkftWOh7JA4wv0rgUZSKq7m8/JsRVisLRgj4F7yD46yY1B3VYLxdygdMhC0UzDaqtK/Wh4l0DJT20pykq2K38g==}
+  ferromark@3.5.1:
+    resolution: {integrity: sha512-+nY7V1nNNHc7AxyS/RBpwpSuKAu6Vc+BBaHSDy3PFe8dcplSfZ/emGTU0Zewz6br/NzQrxkA3p1ilLsrYBzHWA==}
     engines: {node: '>=22.12.0'}
 
   file-entry-cache@8.0.0:
@@ -8330,35 +8331,35 @@ snapshots:
 
   '@exodus/bytes@1.15.1': {}
 
-  '@ferriki/core@0.13.0':
+  '@ferriki/core@1.1.2':
     optionalDependencies:
-      '@ferriki/darwin-arm64': 0.13.0
-      '@ferriki/linux-arm64-gnu': 0.13.0
-      '@ferriki/linux-arm64-musl': 0.13.0
-      '@ferriki/linux-x64-gnu': 0.13.0
-      '@ferriki/linux-x64-musl': 0.13.0
-      '@ferriki/win32-arm64-msvc': 0.13.0
-      '@ferriki/win32-x64-msvc': 0.13.0
+      '@ferriki/darwin-arm64': 1.1.2
+      '@ferriki/linux-arm64-gnu': 1.1.2
+      '@ferriki/linux-arm64-musl': 1.1.2
+      '@ferriki/linux-x64-gnu': 1.1.2
+      '@ferriki/linux-x64-musl': 1.1.2
+      '@ferriki/win32-arm64-msvc': 1.1.2
+      '@ferriki/win32-x64-msvc': 1.1.2
 
-  '@ferriki/darwin-arm64@0.13.0':
+  '@ferriki/darwin-arm64@1.1.2':
     optional: true
 
-  '@ferriki/linux-arm64-gnu@0.13.0':
+  '@ferriki/linux-arm64-gnu@1.1.2':
     optional: true
 
-  '@ferriki/linux-arm64-musl@0.13.0':
+  '@ferriki/linux-arm64-musl@1.1.2':
     optional: true
 
-  '@ferriki/linux-x64-gnu@0.13.0':
+  '@ferriki/linux-x64-gnu@1.1.2':
     optional: true
 
-  '@ferriki/linux-x64-musl@0.13.0':
+  '@ferriki/linux-x64-musl@1.1.2':
     optional: true
 
-  '@ferriki/win32-arm64-msvc@0.13.0':
+  '@ferriki/win32-arm64-msvc@1.1.2':
     optional: true
 
-  '@ferriki/win32-x64-msvc@0.13.0':
+  '@ferriki/win32-x64-msvc@1.1.2':
     optional: true
 
   '@floating-ui/core@1.8.0':
@@ -11705,36 +11706,36 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.5
 
-  ferromark-darwin-arm64@3.4.0:
+  ferromark-darwin-arm64@3.5.1:
     optional: true
 
-  ferromark-linux-arm64-gnu@3.4.0:
+  ferromark-linux-arm64-gnu@3.5.1:
     optional: true
 
-  ferromark-linux-arm64-musl@3.4.0:
+  ferromark-linux-arm64-musl@3.5.1:
     optional: true
 
-  ferromark-linux-x64-gnu@3.4.0:
+  ferromark-linux-x64-gnu@3.5.1:
     optional: true
 
-  ferromark-linux-x64-musl@3.4.0:
+  ferromark-linux-x64-musl@3.5.1:
     optional: true
 
-  ferromark-win32-arm64-msvc@3.4.0:
+  ferromark-win32-arm64-msvc@3.5.1:
     optional: true
 
-  ferromark-win32-x64-msvc@3.4.0:
+  ferromark-win32-x64-msvc@3.5.1:
     optional: true
 
-  ferromark@3.4.0:
+  ferromark@3.5.1:
     optionalDependencies:
-      ferromark-darwin-arm64: 3.4.0
-      ferromark-linux-arm64-gnu: 3.4.0
-      ferromark-linux-arm64-musl: 3.4.0
-      ferromark-linux-x64-gnu: 3.4.0
-      ferromark-linux-x64-musl: 3.4.0
-      ferromark-win32-arm64-msvc: 3.4.0
-      ferromark-win32-x64-msvc: 3.4.0
+      ferromark-darwin-arm64: 3.5.1
+      ferromark-linux-arm64-gnu: 3.5.1
+      ferromark-linux-arm64-musl: 3.5.1
+      ferromark-linux-x64-gnu: 3.5.1
+      ferromark-linux-x64-musl: 3.5.1
+      ferromark-win32-arm64-msvc: 3.5.1
+      ferromark-win32-x64-msvc: 3.5.1
 
   file-entry-cache@8.0.0:
     dependencies:
