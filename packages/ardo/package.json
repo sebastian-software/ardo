@@ -161,7 +161,7 @@
     "@testing-library/user-event": "^14.6.8",
     "@types/node": "^26.6.5",
     "@vanilla-extract/rollup-plugin": "^1.5.4",
-    "oxc-parser": "^0.154.0",
+    "oxc-parser": "^0.155.0",
     "tsdown": "^0.23.1",
     "typescript": "7.1.0-dev.20261011.1",
     "vitest": "^5.0.5"
