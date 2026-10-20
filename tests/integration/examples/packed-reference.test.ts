@@ -9,6 +9,27 @@ import { assertDevSSR } from "./dev-server"
 
 const packageDir = path.join(repositoryRoot, "packages/ardo")
 
+type WorkspaceValue = Record<string, boolean | string> | string[]
+
+/**
+ * Writes pnpm-workspace.yaml in block style. pnpm 12 edits this file during
+ * install (for example to extend minimumReleaseAgeExclude) and refuses inline
+ * flow collections, so a JSON document no longer works. Scalars stay
+ * JSON-quoted, which is valid YAML. Empty collections are left out.
+ */
+function toWorkspaceYaml(config: Record<string, WorkspaceValue>): string {
+  const lines: string[] = []
+  for (const [key, value] of Object.entries(config)) {
+    const entries = Array.isArray(value)
+      ? value.map((item) => `  - ${JSON.stringify(item)}`)
+      : Object.entries(value).map(
+          ([name, item]) => `  ${JSON.stringify(name)}: ${JSON.stringify(item)}`
+        )
+    if (entries.length > 0) lines.push(`${key}:`, ...entries)
+  }
+  return `${lines.join("\n")}\n`
+}
+
 function readEngineOverrides(): Record<string, string> {
   const inputPath = process.env.ARDO_TEST_ENGINE_OVERRIDES
   if (inputPath == null) return {}
@@ -99,7 +120,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
             ).optionalDependencies
       fs.writeFileSync(
         path.join(consumer, "pnpm-workspace.yaml"),
-        JSON.stringify({
+        toWorkspaceYaml({
           packages: ["."],
           allowBuilds: { esbuild: true },
           overrides: readEngineOverrides(),
