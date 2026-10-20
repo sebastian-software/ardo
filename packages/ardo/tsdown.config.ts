@@ -43,7 +43,7 @@ export default defineConfig({
     "entries/server": "src/entries/server.tsx",
   },
   format: ["esm"],
-  dts: { tsgo: { path: getTsgoPath() } },
+  dts: { generator: "tsgo", tsgo: { path: getTsgoPath() } },
   sourcemap: true,
   clean: true,
   fixedExtension: false,
