@@ -120,7 +120,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
-    "@ferriki/core": "^0.13.0",
+    "@ferriki/core": "^1.1.2",
     "@react-router/dev": "8.3.0",
     "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^19.2.18",
