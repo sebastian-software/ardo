@@ -13,6 +13,28 @@ vi.mock("./Tabs.css", () => ({
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "./Tabs"
 
 describe("ArdoTabs", () => {
+  it("renders implicit tabs and panels without React key warnings", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {
+      /* Collect React warnings without printing them. */
+    })
+    renderToStaticMarkup(
+      <ArdoTabs>
+        <ArdoTabList>
+          <ArdoTab>pnpm</ArdoTab>
+          <ArdoTab>npm</ArdoTab>
+        </ArdoTabList>
+        <ArdoTabPanels>
+          <ArdoTabPanel>pnpm install</ArdoTabPanel>
+          <ArdoTabPanel>npm install</ArdoTabPanel>
+        </ArdoTabPanels>
+      </ArdoTabs>
+    )
+
+    const keyWarnings = error.mock.calls.filter((call) => String(call[0]).includes('unique "key"'))
+    error.mockRestore()
+    expect(keyWarnings).toStrictEqual([])
+  })
+
   it("links explicit tabs and panels with accessible ids", () => {
     const view = renderToStaticMarkup(
       <ArdoTabs defaultValue="npm">
