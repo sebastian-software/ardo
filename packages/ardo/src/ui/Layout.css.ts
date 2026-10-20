@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
 
@@ -39,6 +39,35 @@ export const main = style({
       padding: `0 ${vars.space.md} ${vars.space.xl}`,
     },
   },
+})
+
+/** Opt-in document scrolling for sites that own chrome outside Ardo's frame. */
+export const documentScroll = style({
+  height: "auto",
+  minHeight: "100vh",
+  overflow: "visible",
+})
+
+export const documentScrollContainer = style({
+  flex: "1 0 auto",
+  minHeight: "auto",
+})
+
+export const documentScrollMain = style({
+  minHeight: "auto",
+  minWidth: 0,
+  overflowY: "visible",
+})
+
+globalStyle(`${documentScroll} .ardo-sidebar`, {
+  position: "sticky",
+  top: vars.layout.headerHeight,
+  alignSelf: "flex-start",
+  height: `calc(100vh - ${vars.layout.headerHeight})`,
+})
+
+globalStyle(`${documentScroll} .ardo-page-rail`, {
+  top: `calc(${vars.layout.headerHeight} + ${vars.space.xl})`,
 })
 
 export const home = style({

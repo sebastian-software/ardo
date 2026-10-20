@@ -17,7 +17,7 @@ import { ArdoFooter } from "./Footer"
 import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
 import { type ArdoLabelsInput, resolveArdoLabels } from "./labels"
-import { ArdoLayout } from "./Layout"
+import { ArdoLayout, type ArdoScrollMode } from "./Layout"
 import * as layoutStyles from "./Layout.css"
 import { ArdoSidebar, isArdoSidebarElement, resolveArdoSidebarItems } from "./Sidebar"
 
@@ -38,6 +38,8 @@ export type ArdoRootProps = {
   tocLabel?: string
   /** Additional CSS classes for the layout */
   className?: string
+  /** Choose the viewport shell (default) or let the document scroll. */
+  scrollMode?: ArdoScrollMode
   /**
    * Site header in place of an `ArdoHeader` child: your own component, or
    * `false` for no header. Children can only name Ardo's own header.
@@ -221,6 +223,7 @@ export function ArdoRoot({
   labels,
   tocLabel,
   className,
+  scrollMode = "viewport",
   header,
   footer,
   children,
@@ -260,6 +263,7 @@ export function ArdoRoot({
       <ArdoProvider config={config} sidebar={sidebarItems}>
         <ArdoLayout
           className={resolveLayoutClassName(className, isBareLayout)}
+          scrollMode={scrollMode}
           bare={isBareLayout}
           showSkipLink={showChrome}
           header={resolvedHeader}

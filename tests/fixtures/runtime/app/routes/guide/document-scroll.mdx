@@ -1,0 +1,51 @@
+---
+title: Document scrolling fixture
+---
+
+export const handle = { chrome: false }
+
+# Document scrolling fixture
+
+This route uses site-owned header and footer components outside `ArdoRoot`.
+
+## First section
+
+The document should scroll while the sidebar and page outline stay below the custom header.
+
+This paragraph gives the fixture enough content to scroll and keeps the header visible as the page moves.
+
+## Middle section
+
+The page outline should follow this heading as it enters the viewport's active reading band.
+
+This section adds enough content below the heading to let the browser align it beneath the site header without clamping the document at its end.
+
+The same rule applies to pages with short introductions: anchor positioning should remain useful whenever the target has room to move into view.
+
+The document is the scroll container on this route. The main element stays in normal flow, and the page outline and navigation rail use the site's header height as their sticky offset.
+
+Readers can keep moving through this section with the keyboard, a trackpad, or a mouse wheel. The active outline item should follow the heading that enters the reading area.
+
+More prose makes the browser test exercise a real document scroll instead of a viewport shell with a short page.
+
+This paragraph also ensures there is content below the middle heading when the outline link is activated.
+
+The layout keeps the content column available while the navigation rail remains anchored beside it on wide screens.
+
+On small screens, the site can increase its header token without putting content behind the sticky header.
+
+This last paragraph leaves room below the middle heading for the scroll position to change in either direction.
+
+## Final section
+
+Clicking this outline link should scroll the document and keep the heading below the custom header.
+
+The final section also has enough content after its heading for the outline observer to track it while the page remains away from the bottom edge.
+
+The external footer follows the document content and stays reachable after the reader finishes the page.
+
+Longer documentation pages continue to use ordinary browser scrolling, including the browser's native hash navigation.
+
+The final paragraph provides space for testing the sticky navigation after the document has moved.
+
+The site footer follows the Ardo layout and remains reachable at the end of the document.
