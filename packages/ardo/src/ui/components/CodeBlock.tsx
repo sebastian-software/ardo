@@ -1,5 +1,6 @@
 import { Children, isValidElement, useState } from "react"
 
+import { getNodeText } from "../text-content"
 import { shikiContainerClassName } from "./code-block-classes"
 import * as styles from "./CodeBlock.css"
 import { ArdoCopyButton } from "./CopyButton"
@@ -128,7 +129,9 @@ export function ArdoCodeBlock({
   children,
   __html,
 }: ArdoCodeBlockProps) {
-  const code = codeProp ?? (typeof children === "string" ? outdent(children) : "")
+  // Native highlighted fences supply intrinsic React nodes instead of a code prop.
+  const code =
+    codeProp ?? (typeof children === "string" ? outdent(children) : getNodeText(children))
   const hasCustomChildren = children != null && typeof children !== "string"
   const hasHtml = (__html ?? "") !== ""
   const hasTitle = (title ?? "") !== ""
@@ -137,13 +140,15 @@ export function ArdoCodeBlock({
   return (
     <div
       className={
-        hasCustomChildren ? `${styles.codeBlock} ${shikiContainerClassName}` : styles.codeBlock
+        hasCustomChildren
+          ? `ardo-code-block ${styles.codeBlock} ${shikiContainerClassName}`
+          : `ardo-code-block ${styles.codeBlock}`
       }
       data-lang={language}
       data-label={dataLabel}
     >
-      {hasTitle && <div className={styles.codeTitle}>{title}</div>}
-      <div className={styles.codeWrapper}>
+      {hasTitle && <div className={`ardo-code-title ${styles.codeTitle}`}>{title}</div>}
+      <div className={`ardo-code-wrapper ${styles.codeWrapper}`}>
         <CodeBlockContent
           html={__html}
           hasHtml={hasHtml}

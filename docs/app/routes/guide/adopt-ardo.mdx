@@ -64,3 +64,32 @@ pnpm build
 ```
 
 Run only commands the repository defines; report missing checks. Use `CI=true` for non-interactive pnpm environments. Ardo 6 uses the same versioned instructions and Basic example for new sites and existing projects.
+
+## Style Documentation in an Existing Design System
+
+Map the public `--ardo-*` theme variables first. Use the stable classes below for
+layout and reading styles that need more than token changes. Generated class
+names from Ardo's stylesheet are implementation details.
+
+| Region                                | Styling hooks                                                                                                     |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Document grid and optional right rail | `.ardo-doc-page`, `.ardo-page-rail`, `.ardo-page-rail-section`                                                    |
+| Article and introduction              | `.ardo-content`, `.ardo-content-header`, `.ardo-content-title`, `.ardo-content-description`, `.ardo-content-body` |
+| Sidebar slots                         | `.ardo-sidebar`, `.ardo-sidebar-tabs`, `.ardo-sidebar-panel`, `.ardo-sidebar-header`, `.ardo-sidebar-nav`         |
+| Page outline                          | `.ardo-toc`                                                                                                       |
+| Code sheets                           | `.ardo-code-block`, `.ardo-code-title`, `.ardo-code-wrapper`, `.ardo-copy-button`                                 |
+
+Scope overrides to the application's own wrapper. These classes retain Ardo's
+default styling and do not select a different theme. A site that already offers
+section navigation can hide `.ardo-sidebar-tabs` and retain the sidebar's reading
+links. Keep every section reachable through the site's own navigation on desktop
+and mobile.
+
+`ArdoRoot.className` replaces the default viewport shell. A host that uses normal
+document scrolling can set `#main-content` to `overflow: visible` and keep the
+sidebar and right rail sticky within the page. The outline follows the viewport
+in that composition; it follows `#main-content` when that element owns scrolling.
+
+Use `ArdoRootLayout.className` for theme variables that also need to reach
+body-level portals such as search. A custom `favicon` can point to SVG, PNG,
+or ICO; Ardo leaves its MIME type to the response.

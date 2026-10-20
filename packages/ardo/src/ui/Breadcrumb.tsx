@@ -3,6 +3,7 @@ import { useLocation } from "react-router"
 import type { SidebarItem } from "../config/types"
 
 import { useArdoLabels, useArdoSidebar } from "../runtime/hooks"
+import { sidebarPathsMatch } from "../runtime/sidebar-utils"
 import * as styles from "./Breadcrumb.css"
 import { ChromeIcon } from "./chrome-icons"
 
@@ -17,9 +18,9 @@ function matchInChildren(
   path: string
 ): BreadcrumbResult | undefined {
   for (const item of items) {
-    if (item.link === path) return { section: groupText, page: item.text }
+    if (sidebarPathsMatch(item.link, path)) return { section: groupText, page: item.text }
     if (item.items != null) {
-      const sub = item.items.find((s) => s.link === path)
+      const sub = item.items.find((s) => sidebarPathsMatch(s.link, path))
       if (sub != null) return { section: groupText, page: sub.text }
     }
   }
@@ -28,7 +29,7 @@ function matchInChildren(
 
 function findBreadcrumb(sidebar: SidebarItem[], currentPath: string): BreadcrumbResult {
   for (const group of sidebar) {
-    if (group.link === currentPath) return { page: group.text }
+    if (sidebarPathsMatch(group.link, currentPath)) return { page: group.text }
     if (group.items != null) {
       const found = matchInChildren(group.text, group.items, currentPath)
       if (found != null) return found

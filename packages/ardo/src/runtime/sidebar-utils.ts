@@ -1,5 +1,10 @@
 import type { SidebarItem } from "../config/types"
 
+/** Static hosts may add a trailing slash without changing the documentation route. */
+export function sidebarPathsMatch(link: string | undefined, currentPath: string): boolean {
+  return link !== "" && link?.replace(/\/$/u, "") === currentPath.replace(/\/$/u, "")
+}
+
 /**
  * Find the current sidebar item based on the current path.
  * This is client-safe and does not use any Node.js modules.
@@ -9,7 +14,7 @@ export function findCurrentSidebarItem(
   currentPath: string
 ): SidebarItem | undefined {
   for (const item of sidebar) {
-    if (item.link === currentPath) {
+    if (sidebarPathsMatch(item.link, currentPath)) {
       return item
     }
 
@@ -33,7 +38,7 @@ export function getPrevNextLinks(
   currentPath: string
 ): { prev?: SidebarItem; next?: SidebarItem } {
   const flatItems = flattenSidebar(sidebar)
-  const currentIndex = flatItems.findIndex((item) => item.link === currentPath)
+  const currentIndex = flatItems.findIndex((item) => sidebarPathsMatch(item.link, currentPath))
 
   if (currentIndex === -1) {
     return {}

@@ -132,9 +132,14 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
       <aside className={joinClassNames("ardo-sidebar", className ?? styles.sidebar)}>
         {/* A single section needs no switcher; its tree gets the full width. */}
         {tabItems.length > 1 && <SidebarTabs items={tabItems} />}
-        <div className={styles.sidebarPanel}>
-          {header != null && <div className={styles.sidebarHeader}>{header}</div>}
-          <nav aria-label={labels.sidebar.mainNavigation} className={styles.sidebarNav}>
+        <div className={`ardo-sidebar-panel ${styles.sidebarPanel}`}>
+          {header != null && (
+            <div className={`ardo-sidebar-header ${styles.sidebarHeader}`}>{header}</div>
+          )}
+          <nav
+            aria-label={labels.sidebar.mainNavigation}
+            className={`ardo-sidebar-nav ${styles.sidebarNav}`}
+          >
             {activeSection != null ? (
               <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>
                 {activeSection.props.children}
