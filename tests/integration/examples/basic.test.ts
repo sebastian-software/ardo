@@ -44,6 +44,14 @@ describe("the public Basic example", () => {
     expect(readEagerScripts().some((file) => /^react-[\w-]+\.js$/u.test(file))).toBe(true)
   })
 
+  it("loads MiniSearch only for search", () => {
+    for (const file of readEagerScripts()) {
+      expect(fs.readFileSync(path.join(client, "assets", file), "utf8")).not.toContain(
+        "MiniSearch: "
+      )
+    }
+  })
+
   /** Scripts the home page loads or preloads before anyone interacts with it. */
   function readEagerScripts(): string[] {
     const html = fs.readFileSync(path.join(client, "index.html"), "utf8")

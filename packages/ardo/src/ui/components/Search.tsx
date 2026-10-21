@@ -1,4 +1,5 @@
-import MiniSearch from "minisearch"
+import type MiniSearch from "minisearch"
+
 import { useCallback, useId, useRef, useState } from "react"
 import { navigateTo, resolveArdoHref, useArdoPage } from "../../runtime/page-context"
 
@@ -45,19 +46,21 @@ export type ArdoSearchProps = {
 let searchIndex: Promise<MiniSearch<SearchDoc>> | undefined
 
 /**
- * Load and index the site's search documents once, when someone first focuses
- * or uses search. Pages render and hydrate without the index.
+ * Load MiniSearch and index the site's search documents once, when someone
+ * first focuses or uses search. Pages render and hydrate without either.
  */
 function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
-  searchIndex ??= import("virtual:ardo/search-index").then(({ default: docs }) => {
-    const index = new MiniSearch<SearchDoc>({
-      fields: ["title", "content", "section"],
-      storeFields: ["title", "pageTitle", "excerpt", "path", "section"],
-      searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
-    })
-    index.addAll(docs)
-    return index
-  })
+  searchIndex ??= Promise.all([import("minisearch"), import("virtual:ardo/search-index")]).then(
+    ([{ default: SearchEngine }, { default: docs }]) => {
+      const index = new SearchEngine<SearchDoc>({
+        fields: ["title", "content", "section"],
+        storeFields: ["title", "pageTitle", "excerpt", "path", "section"],
+        searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
+      })
+      index.addAll(docs)
+      return index
+    }
+  )
   return searchIndex
 }
 
