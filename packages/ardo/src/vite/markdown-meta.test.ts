@@ -198,4 +198,29 @@ describe("compiled route modules", () => {
 
     expect(result?.code).toContain('export const meta = () => [{ title: "Getting Started | Docs" }')
   })
+
+  const compileRoute = (body: string) =>
+    compileMdxRouteModule({
+      source: `---\ntitle: Upgrade\n---\n\n${body}`,
+      markdownConfig: undefined,
+      format: "mdx",
+      id: `${routesDir}/guide/upgrade.mdx`,
+    }).code
+  const metaOf = (code: string) =>
+    transformMarkdownMeta(code, `${routesDir}/guide/upgrade.mdx`, {
+      routesDir,
+      resolvedConfig: config,
+    })
+
+  it("still adds meta when a code sample shows a meta export", () => {
+    const code = compileRoute('```tsx\nexport const meta = () => [{ title: "Custom" }]\n```\n')
+
+    expect(metaOf(code)?.code).toContain('{ title: "Upgrade | Docs" }')
+  })
+
+  it("leaves a page alone that exports its own meta", () => {
+    const code = compileRoute('export const meta = () => [{ title: "Custom" }]\n\n# Upgrade\n')
+
+    expect(metaOf(code)).toBeUndefined()
+  })
 })
