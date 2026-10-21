@@ -6,13 +6,35 @@ order: 8
 
 # Deployment
 
-Ardo produces a fully static site out of the box. Your docs can stay in your repository, build in your CI pipeline, and deploy to any provider that serves files. When you run `pnpm build`, React Router prerenders every page to static HTML (via `prerender: true` in your `react-router.config.ts`), so no server is needed at runtime.
+Ardo produces a fully static site out of the box. Your docs can stay in your repository, build in your CI pipeline, and deploy to any provider that serves files. When you run `pnpm build`, Ardo prerenders every page to static HTML, so no server is needed at runtime.
 
-The build output is located in `build/client/` and can be deployed to any static hosting provider.
+## Build Output
+
+The build output is located in `build/client/` and can be deployed to any static hosting provider. Its layout mirrors the deployed URLs:
+
+```text
+build/client/
+├── index.html                  # Home page
+├── 404.html                    # Not-found page
+├── guide/
+│   └── getting-started/
+│       └── index.html          # /guide/getting-started/
+├── assets/                     # Hashed JavaScript and CSS
+├── sitemap.xml
+├── robots.txt
+└── llms.txt
+```
+
+- Each page is a directory with an `index.html`. Ardo emits internal page links with a trailing slash, such as `/guide/getting-started/`, so static hosts serve them without a redirect.
+- `404.html` is the not-found page. GitHub Pages, Netlify, Cloudflare Pages, and most other static hosts pick it up automatically.
+- The build checks every internal link and anchor in the generated HTML before it finishes. See [`linkCheck`](/guide/configuration#linkcheck) to make broken links fail the build.
+- There is no client-side router. Every link loads the next prerendered document, which then hydrates, so the host only needs to serve files.
+
+Run `pnpm preview` to serve `build/client/` the way a static host does: `/guide` serves `guide/index.html`, and unknown paths get the nearest `404.html`.
 
 ## GitHub Pages
 
-### Step 1: Configure Base Path and Basename
+### Step 1: Configure the Base Path
 
 The Basic example serves from the domain root. For a GitHub Pages project site,
 enable repository subpath detection in `ardo.config.ts`:
@@ -26,35 +48,29 @@ export default defineArdoConfig({
 })
 ```
 
-Ardo derives the repository name from the GitHub remote and sets the build's
-base path. A GitHub remote identifies the repository, not the hosting target;
-enable this option only when publishing a Pages project site.
+During `ardo build`, Ardo derives the repository name from the GitHub remote and uses it as the
+base path, for example `/my-docs/` for `https://username.github.io/my-docs/`. A GitHub remote
+identifies the repository, not the hosting target; enable this option only when publishing a Pages
+project site.
 
-For client-side routing and prerendered HTML to work correctly under the subdirectory (e.g. `https://username.github.io/my-docs/`), wrap your React Router config with `withArdoGitHubPages()`:
+The base path is configured once. Ardo applies it to assets and page links
+and writes `build/client/` so that its contents are the site root on GitHub Pages. No post-build
+script or router setting is needed. To set the base path yourself instead of detecting it, use
+`base`:
 
 ```ts
-import type { ReactRouterConfig } from "ardo/config"
-import { withArdoGitHubPages } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-const config = {
-  ssr: false,
-  prerender: true,
-} satisfies ReactRouterConfig
-
-export default withArdoGitHubPages(config)
+export default defineArdoConfig({
+  title: "My Docs",
+  base: "/my-docs/",
+})
 ```
 
-`withArdoGitHubPages()` detects the repository name from your GitHub remote, sets React Router's `basename`, and registers Ardo's final synchronous flatten step for the React Router CLI build.
+If you deploy to the root (`https://username.github.io/`), set `githubPages: false` and leave `base` unset.
 
-<Tip>
-  When React Router writes prerendered files under `build/client/repo-name/`, Ardo moves those files
-  back to `build/client/` after prerendering finishes. No post-build script is needed.
-</Tip>
-
-If you deploy to the root (`https://username.github.io/`), no configuration is needed — both `base` and `basename` will remain at their defaults.
-
-For a GitHub Pages site behind a custom domain, disable GitHub Pages subpath detection and keep the
-React Router config unwrapped. The site is served from the domain root:
+For a GitHub Pages site behind a custom domain, disable GitHub Pages subpath detection. The site is
+served from the domain root:
 
 ```ts
 import { defineArdoConfig } from "ardo/config"
@@ -97,19 +113,10 @@ export default defineArdoConfig({
 })
 ```
 
-Set the matching React Router basename without GitHub Pages flattening:
-
-```ts
-import type { ReactRouterConfig } from "ardo/config"
-import { withArdoVersioning } from "ardo/vite"
-
-const config = {
-  ssr: false,
-  prerender: true,
-} satisfies ReactRouterConfig
-
-export default withArdoVersioning(config, { basename: "/v3/" })
-```
+The `versioning` option sets the base path of the current build to its version folder. Ardo writes
+the pages and assets under `build/client/v3/` and the site-wide files, such as `versions.json`,
+`robots.txt`, and the root redirect, at the top of `build/client/`. Switching versions in the
+header loads the other version as a new page.
 
 The generated sitemap lists the current major version only. Older versions can stay available under
 their folders for stable inbound links, while the active build avoids advertising duplicate current

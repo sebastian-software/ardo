@@ -20,16 +20,11 @@ import {
   ArdoNav,
   ArdoNavLink,
   ArdoRoot,
-  ArdoRootLayout,
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
 import config from "virtual:ardo/config"
 import "ardo/ui/styles.css"
-
-export function Layout({ children }: { children: React.ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
 
 export default function Root() {
   return (
@@ -50,8 +45,57 @@ export default function Root() {
 }
 ```
 
-`ArdoRootLayout` owns the document-level theme bootstrap. `ArdoRoot` owns the React Router outlet,
-Ardo providers, and the shell slots supplied as JSX children.
+`ArdoRoot` owns the Ardo providers, the current page's content, and the shell slots supplied as JSX
+children. It is the part of the page that hydrates in the browser.
+
+## Layout: The HTML Shell
+
+Ardo renders every page inside an HTML shell: `<html>`, `<head>`, and `<body>`. The shell is
+rendered on the server only, during `ardo dev` and `ardo build`; the root component inside it
+hydrates. By default, Ardo uses `ArdoRootLayout` from `ardo/ui`. It adds the charset and viewport
+tags, the theme bootstrap script, favicons, the page's title and meta tags, stylesheets, and the
+client script. Most sites do not need a `Layout` export.
+
+Export `Layout` from `root.tsx` to pass options to `ArdoRootLayout`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoRootLayout } from "ardo/ui"
+import logo from "./assets/logo.svg"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+}
+```
+
+For a fully custom shell, render `ArdoHead` in `<head>` and `ArdoScripts` at the end of `<body>`.
+Both come from `ardo/runtime`. `ArdoHead` renders the page's `meta` descriptors, stylesheets, and
+module preloads; `ArdoScripts` loads the client entry that hydrates the page. The shell must render
+`children`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoHead, ArdoScripts } from "ardo/runtime"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ArdoHead />
+      </head>
+      <body>
+        {children}
+        <ArdoScripts />
+      </body>
+    </html>
+  )
+}
+```
+
+A custom shell does not include `ArdoRootLayout`'s theme bootstrap or favicons. Prefer wrapping
+`ArdoRootLayout` unless the site needs full control over the document.
 
 ## RootLayout Theme Policy
 
@@ -60,7 +104,7 @@ and falls back to `prefers-color-scheme`. Set an explicit theme policy when a si
 user-selectable:
 
 ```tsx
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
 }
 ```
@@ -239,11 +283,11 @@ export default function Root() {
 ```
 
 The existing `--ardo-layout-headerHeight` variable sets the sticky offsets and anchor spacing. Put
-its value on `ArdoRootLayout` so Ardo and the site header share it, then update it at the breakpoint
+its value on `ArdoRootLayout` through a `Layout` export so Ardo and the site header share it, then update it at the breakpoint
 where a mobile header grows:
 
 ```tsx
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout className="docs-site">{children}</ArdoRootLayout>
 }
 ```

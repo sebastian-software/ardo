@@ -478,31 +478,35 @@ These helpers are useful when you replace the default document footer or sidebar
 
 ```tsx
 import {
+  ArdoLink,
   findCurrentSidebarItem,
   getPrevNextLinks,
   useArdoPageData,
+  useArdoPath,
   useArdoSidebar,
 } from "ardo/runtime"
-import { useLocation } from "react-router"
 
 function MyPrevNext() {
-  const location = useLocation()
+  const pathname = useArdoPath()
   const page = useArdoPageData()
   const sidebar = useArdoSidebar()
   if (!page) return null
 
-  const current = findCurrentSidebarItem(sidebar, location.pathname)
-  const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
+  const current = findCurrentSidebarItem(sidebar, pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, pathname)
 
   return (
     <nav>
       <span>{current?.text}</span>
-      {prev && <a href={prev.link}>{prev.text}</a>}
-      {next && <a href={next.link}>{next.text}</a>}
+      {prev?.link && <ArdoLink to={prev.link}>{prev.text}</ArdoLink>}
+      {next?.link && <ArdoLink to={next.link}>{next.text}</ArdoLink>}
     </nav>
   )
 }
 ```
+
+`useArdoPath()` returns the current page path without the base path. `ArdoLink` adds the base path
+and renders a plain `<a>`, so each click loads the prerendered target page.
 
 ### ArdoProvider and ArdoSiteConfigProvider
 
