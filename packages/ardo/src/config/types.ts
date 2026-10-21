@@ -186,7 +186,7 @@ export type ArdoConfig = {
   outDir?: string
   /** Site language (default: 'en') */
   lang?: string
-  /** Additional head tags (deprecated: use React Router Meta instead) */
+  /** Additional head tags (deprecated: export `meta` from the route or `app/root.tsx` instead) */
   head?: HeadConfig[]
   /** Markdown processing options */
   markdown?: MarkdownConfig

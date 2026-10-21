@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server"
-import { MemoryRouter } from "react-router"
+import { ArdoPageProvider } from "../../runtime/page"
 import { describe, expect, it } from "vitest"
 
 import { ArdoCard } from "./Card"
@@ -33,16 +33,16 @@ describe("ArdoCard", () => {
     expect(view).toContain('rel="noopener noreferrer"')
   })
 
-  it("renders internal links through React Router", () => {
+  it("renders internal links with the page's folder slash", () => {
     const view = renderToStaticMarkup(
-      <MemoryRouter>
+      <ArdoPageProvider>
         <ArdoCard title="Guide" href="/guide/getting-started">
           Read the guide
         </ArdoCard>
-      </MemoryRouter>
+      </ArdoPageProvider>
     )
 
-    expect(view).toContain('href="/guide/getting-started"')
+    expect(view).toContain('href="/guide/getting-started/"')
   })
 
   it("renders registered icon names and custom icon nodes", () => {

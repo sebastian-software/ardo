@@ -6,7 +6,7 @@ order: 2.5
 
 # Adopt Ardo in an Existing Project
 
-Ardo fits into an existing React, Vite, and React Router repository. Do not regenerate the project or replace its component system. Give a coding agent this instruction together with the repository:
+Ardo fits into an existing React and Vite repository. Do not regenerate the project or replace its component system. Give a coding agent this instruction together with the repository:
 
 ```text
 Add Ardo 6 documentation to this repository. Read https://ardo-docs.dev/v6/llms.txt first, then follow https://ardo-docs.dev/v6/guide/agent-instructions and the adoption guide. Inspect the project, adapt the tested Basic example from the matching Ardo release tag, preserve existing routing, components, styles, and deployment choices, and run the applicable checks.
@@ -26,7 +26,7 @@ validation commands. Preserve customized application behavior while adapting it.
 
 ## Agent Workflow
 
-1. Inspect `package.json`, the workspace layout, `ardo.config.*`, `vite.config.*`, `react-router.config.*`, the app root, existing routes, and deployment workflow.
+1. Inspect `package.json`, the workspace layout, `ardo.config.*`, `vite.config.*`, any router or framework configuration, the app root, existing routes, and deployment workflow.
 2. Read this guide, [Getting Started](/guide/getting-started), [Configuration](/guide/configuration), and the Basic example.
 3. State a plan naming every file to add or change, the example revision, and any assumption that cannot be verified.
 4. Follow the repository's instructions and requested scope, resolve choices that change application behavior or deployment ownership, and make the smallest compatible change.
@@ -40,22 +40,27 @@ Never silently replace a customized `app/root.tsx`, providers, design-system com
 
 For adoption, follow [Getting Started](/guide/getting-started#manual-installation) and introduce Ardo around documentation routes rather than replacing the application shell. Use [Content Sources](/guide/content-sources) for Markdown owned elsewhere in the repository and [Native API Documentation](/guide/api-documentation) for API pages.
 
-For an existing Ardo project, switch package scripts to `ardo dev`, `ardo build`, and
-`ardo preview`. Import Vite helpers from `ardo/vite`, the router configuration type from
-`ardo/config`, React APIs from `ardo/react`, and routing APIs from `ardo/router`. Set
-`jsxImportSource` to `ardo` and replace `vite/client` with `ardo/vite/client` in TypeScript
-configuration. Move Ardo's site and integration options to optional `ardo.config.ts` with
-`defineArdoConfig` from `ardo/config`. Remove the `ardo()` Vite plugin when the site no longer
-needs a custom Vite config; keep `vite.config.ts` for additional Vite plugins or Vite-specific
-settings. A standard client entry can be removed to use React Router's default. Replace a standard
-server entry with `export { default, streamTimeout } from "ardo/entry.server"`; preserve
-customized entry behavior and use Ardo's React DOM and router entry points.
-Once direct tooling imports have been migrated, remove the site's React, React DOM, router,
-Vite, icon, and related type dependencies that Ardo now owns. Keep other application
-libraries and optional integrations declared locally. Ardo resolves React and router
-imports to its own installation, including imports in installed component libraries.
+Ardo builds the documentation as its own static site. It runs its own Vite build, prerenders
+every page to HTML, and ships no client-side router, so it does not share a router or entry files
+with the rest of the repository. Keep the documentation in its own package or directory with
+`app/routes/`, `app/root.tsx`, and optional `ardo.config.ts`, and link between the application and
+the docs with plain URLs.
 
-Compare configuration and route layout with the matching current reference. Keep project-specific root/layout code and update only the framework integration, generated-route boundary, and documented configuration fields that differ. Run at least:
+For an existing Ardo project, switch package scripts to `ardo dev`, `ardo build`, and
+`ardo preview`. Import Vite helpers from `ardo/vite`, React APIs from `ardo/react`, and Ardo's
+runtime APIs such as `ArdoLink` and `useArdoPath` from `ardo/runtime`. Set `jsxImportSource` to
+`ardo` and replace `vite/client` with `ardo/vite/client` in TypeScript configuration. Move Ardo's
+site, base path, and integration options to optional `ardo.config.ts` with `defineArdoConfig`
+from `ardo/config`. Remove the `ardo()` Vite plugin when the site no longer needs a custom Vite
+config; keep `vite.config.ts` for additional Vite plugins or Vite-specific settings. A project on
+Ardo 5 also removes its router configuration and entry files as described in
+[Upgrade to Ardo 6](/guide/upgrade-to-v6).
+Once direct tooling imports have been migrated, remove the site's React, React DOM, Vite, icon,
+and related type dependencies that Ardo now owns. Keep other application libraries and optional
+integrations declared locally. Ardo resolves React imports to its own installation, including
+imports in installed component libraries.
+
+Compare configuration and route layout with the matching current reference. Keep project-specific root component and shell code and update only the framework integration, generated-route boundary, and documented configuration fields that differ. Run at least:
 
 ```bash
 pnpm typecheck

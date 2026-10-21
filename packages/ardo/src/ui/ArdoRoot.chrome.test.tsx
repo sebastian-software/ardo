@@ -1,9 +1,9 @@
 import type { ReactNode } from "react"
 
 import { renderToStaticMarkup } from "react-dom/server"
-import { createMemoryRouter, RouterProvider } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 
+import { ArdoPageProvider } from "../runtime/page"
 import { ArdoRoot } from "./ArdoRoot"
 
 vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
@@ -11,8 +11,7 @@ vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
 const config = { title: "Docs" }
 
 function renderRoot(element: ReactNode): string {
-  const router = createMemoryRouter([{ path: "*", element }], { initialEntries: ["/guide"] })
-  return renderToStaticMarkup(<RouterProvider router={router} />)
+  return renderToStaticMarkup(<ArdoPageProvider path="/guide">{element}</ArdoPageProvider>)
 }
 
 describe("ArdoRoot chrome props", () => {

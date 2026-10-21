@@ -16,8 +16,6 @@ describe("managed runtime packages", () => {
     ["react/jsx-runtime", "react"],
     ["react/jsx-runtime?direct", "react"],
     ["react-dom/client", "react-dom"],
-    ["react-router/dom", "react-router"],
-    ["@react-router/dev/routes", "@react-router/dev"],
     ["lucide-react", "lucide-react"],
     ["vite", "vite"],
   ])("recognizes %s as part of %s", (id, name) => {
@@ -39,8 +37,6 @@ describe("managed runtime packages", () => {
     expect(getManagedRuntimePackageNames()).toStrictEqual([
       "react",
       "react-dom",
-      "react-router",
-      "@react-router/dev",
       "lucide-react",
       "vite",
     ])

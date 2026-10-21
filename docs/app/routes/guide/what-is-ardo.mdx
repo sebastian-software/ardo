@@ -10,7 +10,7 @@ You know React. You have components, providers, styling conventions, examples, a
 
 **Ardo exists so you don't have to start over.**
 
-It is a static documentation framework built on [React](https://react.dev/), [React Router 8](https://reactrouter.com/), and [Vite](https://vite.dev/). It gives React teams a simple docs workflow without a closed platform, a second UI framework, or a docs-only component model.
+It is a static documentation framework built on [React](https://react.dev/) and [Vite](https://vite.dev/). It gives React teams a simple docs workflow without a closed platform, a second UI framework, or a docs-only component model.
 
 ## The Problem with Documentation Frameworks
 
@@ -30,9 +30,9 @@ Every component in Ardo is a React component. Your documentation layout, your cu
 
 There's nothing new to learn before you're productive.
 
-### Built on React Router 8
+### Plain HTML Pages
 
-Ardo doesn't reinvent routing. It uses [React Router 8](https://reactrouter.com/) — the same router that powers production React apps. This gives you file-based routing, static pre-rendering for fast page loads, type-safe navigation, and all the patterns from React 19.
+Every file in `app/routes` becomes a page, and every page is prerendered to its own HTML file. Links are ordinary links, so pages load fast from any static host, and the parts that need React hydrate in the browser. There is no client router to configure, and the build checks that every internal link points to a page that exists.
 
 ### Powered by Vite
 

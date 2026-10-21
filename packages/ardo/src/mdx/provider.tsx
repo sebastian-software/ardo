@@ -1,6 +1,6 @@
 import type { AnchorHTMLAttributes, ElementType, ReactNode } from "react"
 
-import { Link } from "react-router"
+import { ArdoLink } from "../runtime/page"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
 import { ArdoBadge } from "../ui/components/Badge"
@@ -44,11 +44,11 @@ function SmartLink({
     )
   }
 
-  // Internal link - use React Router Link for proper basename handling
+  // Internal link: ArdoLink applies the site's base path
   return (
-    <Link to={hrefValue} className={className} {...props}>
+    <ArdoLink to={hrefValue} className={className} {...props}>
       {children}
-    </Link>
+    </ArdoLink>
   )
 }
 

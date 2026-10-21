@@ -2,18 +2,19 @@ import "@fontsource-variable/bricolage-grotesque/opsz.css"
 import "@fontsource-variable/caveat"
 import "@fontsource-variable/figtree"
 
-import { type MetaFunction, useLoaderData } from "react-router"
+import type { ArdoMetaFunction } from "ardo/runtime"
+import npmFacts from "virtual:docs/npm-facts"
 
 import { CompanyCards, FinalCallToAction } from "../home/Closing"
 import { ApiReference, Components, Theming } from "../home/Craft"
 import { Engines } from "../home/Engines"
 import { Hero, Teaser, ToolStrip } from "../home/Hero"
 import * as styles from "../home/home.css"
-import { fetchNpmFacts, useLiveNpmFacts } from "../home/npm-facts"
+import { useLiveNpmFacts } from "../home/npm-facts"
 import { FitCheck, WhereArdoFits, WhyArdo } from "../home/Orientation"
 import { AgentSetup, HowItWorks } from "../home/Story"
 
-export const meta: MetaFunction = () => [
+export const meta: ArdoMetaFunction = () => [
   { title: "Ardo: React docs, baked into plain HTML" },
   {
     name: "description",
@@ -24,17 +25,9 @@ export const meta: MetaFunction = () => [
 
 export const handle = { layout: "bare" }
 
-/**
- * Runs when the site is built, so the prerendered page carries the npm facts
- * of its deploy. The page refreshes them in the browser afterwards.
- */
-export async function loader() {
-  return { npm: await fetchNpmFacts("ardo") }
-}
-
 export default function HomePage() {
-  const { npm } = useLoaderData<typeof loader>()
-  const facts = useLiveNpmFacts("ardo", npm)
+  // The build bakes in the npm facts of its deploy; the browser refreshes them.
+  const facts = useLiveNpmFacts("ardo", npmFacts)
 
   return (
     <div className={styles.page}>

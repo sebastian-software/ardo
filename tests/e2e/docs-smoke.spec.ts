@@ -9,7 +9,7 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
 }) => {
   await page.goto(gettingStartedPath)
   await page.getByRole("link", { name: "Agent Instructions", exact: true }).last().click()
-  await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions`)
+  await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions/`)
   await expect(page.getByRole("heading", { level: 1, name: "Agent Instructions" })).toBeVisible()
 
   const index = await request.get(`${docsBasePath}/llms.txt`)
@@ -49,7 +49,7 @@ test("built docs site hydrates and supports search and theme interactions", asyn
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/v6\/guide\/configuration#markdown$/)
+  await expect(page).toHaveURL(/\/v6\/guide\/configuration\/#markdown$/)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
@@ -168,18 +168,19 @@ test("native Markdown fences render visible line numbers and highlighted lines",
   expect.soft(highlightedStyles.borderLeftStyle).toBe("solid")
 })
 
-test("consumer CSS overrides Ardo even before its stylesheet and after navigation", async ({
-  page,
-}) => {
+test("consumer CSS overrides Ardo even before its stylesheet, on every page", async ({ page }) => {
+  // Every document gets the override ahead of Ardo's stylesheet, as a site's own
+  // CSS would arrive. Ardo's styles sit in a cascade layer, so order cannot matter.
+  await page.addInitScript(() => {
+    document.addEventListener("DOMContentLoaded", () => {
+      const style = document.createElement("style")
+      style.textContent = ".ardo-footer { background-color: rgb(12, 34, 56); }"
+      document.head.prepend(style)
+    })
+  })
   await page.goto(gettingStartedPath)
-  const override = await page.addStyleTag({
-    content: ".ardo-footer { background-color: rgb(12, 34, 56); }",
-  })
-  await override.evaluate((element) => {
-    document.head.prepend(element)
-  })
   await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
-  await page.locator(`a[href="${docsBasePath}/guide/markdown"]`).first().click()
-  await expect(page).toHaveURL(new RegExp(`${docsBasePath}/guide/markdown$`))
+  await page.locator(`a[href="${docsBasePath}/guide/markdown/"]`).first().click()
+  await expect(page).toHaveURL(new RegExp(`${docsBasePath}/guide/markdown/$`))
   await expect(page.locator(".ardo-footer")).toHaveCSS("background-color", "rgb(12, 34, 56)")
 })

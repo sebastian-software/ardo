@@ -1,10 +1,10 @@
-import { type ComponentProps, isValidElement, type ReactElement, type ReactNode } from "react"
-import { Link } from "react-router"
+import { isValidElement, type ReactElement, type ReactNode } from "react"
+import { ArdoLink } from "../../runtime/page"
 
 import * as styles from "./Hero.css"
 
 /** Internal route path from React Router */
-type RoutePath = ComponentProps<typeof Link>["to"]
+type RoutePath = string
 
 export type ArdoHeroAction = {
   /** Button text */
@@ -86,9 +86,9 @@ function HeroActionButton({ action }: { action: ArdoHeroAction }) {
     )
   }
   return (
-    <Link to={link} className={cls}>
+    <ArdoLink to={link} className={cls}>
       {content}
-    </Link>
+    </ArdoLink>
   )
 }
 

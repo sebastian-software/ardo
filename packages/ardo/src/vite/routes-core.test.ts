@@ -3,7 +3,8 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { generateRoutesFile, scanRoutesSync } from "./routes-core"
+import { scanRoutesSync } from "./routes-core"
+import { createRoutesModule } from "./routes-plugin"
 
 let routesDir: string
 
@@ -21,6 +22,7 @@ describe("scanRoutesSync", () => {
 
     expect(scanRoutesSync({ dir: routesDir, rootDir: routesDir })).toContainEqual({
       file: "routes/v1.md/changelog.md",
+      filePath: path.join(routesDir, "v1.md/changelog.md"),
       isIndex: false,
       path: "/v1.md/changelog",
     })
@@ -37,9 +39,13 @@ describe("scanRoutesSync", () => {
 
     expect(routes).toStrictEqual(
       expect.arrayContaining([
-        { file: "routes/home.tsx", isIndex: true, path: "/" },
-        { file: "routes/guide/index.mdx", isIndex: true, path: "/guide" },
-        { file: "routes/guide/$slug.md", isIndex: false, path: "/guide/:slug" },
+        expect.objectContaining({ file: "routes/home.tsx", isIndex: true, path: "/" }),
+        expect.objectContaining({ file: "routes/guide/index.mdx", isIndex: true, path: "/guide" }),
+        expect.objectContaining({
+          file: "routes/guide/$slug.md",
+          isIndex: false,
+          path: "/guide/:slug",
+        }),
       ])
     )
     expect(routes.some((route) => route.file.includes("_private"))).toBe(false)
@@ -47,19 +53,30 @@ describe("scanRoutesSync", () => {
   })
 })
 
-describe("generateRoutesFile", () => {
-  it("renders root index routes before nested routes", () => {
-    const routesFile = generateRoutesFile([
-      { file: "routes/guide/$slug.md", path: "/guide/:slug" },
-      { file: "routes/home.tsx", isIndex: true, path: "/" },
-      { file: "routes/guide/index.mdx", isIndex: true, path: "/guide" },
-    ])
+describe("createRoutesModule", () => {
+  it("imports the root module and loads every page lazily", async () => {
+    const appDir = path.join(routesDir, "app")
+    const pages = path.join(appDir, "routes")
+    await fs.mkdir(path.join(pages, "guide"), { recursive: true })
+    await fs.writeFile(path.join(appDir, "root.tsx"), "export default function Root() {}")
+    await fs.writeFile(path.join(pages, "home.tsx"), "export default function Home() {}")
+    await fs.writeFile(path.join(pages, "guide/intro.mdx"), "# Intro")
 
-    expect(routesFile).toContain('index("routes/home.tsx"),')
-    expect(routesFile.indexOf('index("routes/home.tsx"),')).toBeLessThan(
-      routesFile.indexOf('route("guide", "routes/guide/index.mdx"),')
+    const source = createRoutesModule({ root: routesDir, routesDir: pages })
+
+    expect(source).toContain(
+      `import * as rootModule from ${JSON.stringify(path.join(appDir, "root.tsx"))}`
     )
-    expect(routesFile).toContain('route("guide/:slug", "routes/guide/$slug.md"),')
+    expect(source).toContain('{ id: "app/routes/home.tsx", path: "/", load: () => import(')
+    expect(source).toContain(
+      '{ id: "app/routes/guide/intro.mdx", path: "/guide/intro", load: () => import('
+    )
+  })
+
+  it("works without a root module", () => {
+    expect(
+      createRoutesModule({ root: routesDir, routesDir: path.join(routesDir, "routes") })
+    ).toContain("const rootModule = {}")
   })
 })
 

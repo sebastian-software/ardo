@@ -1,7 +1,7 @@
 import { ArdoHero } from "ardo/ui"
-import type { MetaFunction } from "ardo/router"
+import type { ArdoMetaFunction } from "ardo/runtime"
 
-export const meta: MetaFunction = () => [{ title: "Three Sections" }]
+export const meta: ArdoMetaFunction = () => [{ title: "Three Sections" }]
 
 export default function HomePage() {
   return (

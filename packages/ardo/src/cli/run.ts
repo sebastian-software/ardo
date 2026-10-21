@@ -1,19 +1,15 @@
 import { realpathSync } from "node:fs"
-import { mkdtemp, rm } from "node:fs/promises"
-import { tmpdir } from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { checkBuildOutput } from "./build-check"
 import { CliUsageError, getPreviewHelp, startPreview } from "./preview"
+import { prepareProjectConfig } from "./project-config"
 import {
-  type ChildExit,
   type ProjectConfigPreparer,
   resolveArdoVersion,
-  runReactRouterCommand,
-} from "./process"
-import { ARDO_BUILD_INFO_ENV } from "../vite/build-info"
-import { prepareProjectConfig } from "./project-config"
+  runViteCommand,
+  ViteUsageError,
+} from "./vite-command"
 
 export type CliOutcome = { type: "exit"; code: number } | { type: "signal"; signal: NodeJS.Signals }
 
@@ -21,7 +17,7 @@ type RunCliOptions = {
   cwd?: string
   stdout?: Pick<NodeJS.WriteStream, "write">
   stderr?: Pick<NodeJS.WriteStream, "write">
-  runReactRouter?: typeof runReactRouterCommand
+  runVite?: typeof runViteCommand
   startPreview?: (args: readonly string[], cwd: string) => Promise<unknown>
   prepareProjectConfig?: ProjectConfigPreparer
 }
@@ -30,7 +26,7 @@ type CliRuntime = {
   cwd: string
   stdout: Pick<NodeJS.WriteStream, "write">
   stderr: Pick<NodeJS.WriteStream, "write">
-  runReactRouter: typeof runReactRouterCommand
+  runVite: typeof runViteCommand
   startPreview: (args: readonly string[], cwd: string) => Promise<unknown>
   prepareProjectConfig: ProjectConfigPreparer
 }
@@ -40,9 +36,9 @@ type CliCommand = "build" | "dev" | "preview"
 const help = `Usage: ardo <command> [root] [options]
 
 Commands:
-  dev       Start the React Router development server
-  build     Build the React Router application
-  preview   Preview a static React Router client build
+  dev       Start the development server
+  build     Build the site into static HTML
+  preview   Preview the built site
 
 Run "ardo <command> --help" for command options.
 `
@@ -58,7 +54,7 @@ export async function runCli(
     cwd: options.cwd ?? process.cwd(),
     stdout: options.stdout ?? process.stdout,
     stderr: options.stderr ?? process.stderr,
-    runReactRouter: options.runReactRouter ?? runReactRouterCommand,
+    runVite: options.runVite ?? runViteCommand,
     startPreview:
       options.startPreview ??
       (async (previewArgs, cwd) =>
@@ -95,39 +91,16 @@ async function runKnownCommand(
   runtime: CliRuntime
 ): Promise<CliOutcome> {
   if (command === "preview") return runPreviewCommand(args, runtime)
-  if (command === "build") return runBuildCommand(args, runtime)
 
   try {
-    return childExitOutcome(
-      await runtime.runReactRouter(command, args, {
-        cwd: runtime.cwd,
-        prepareProjectConfig: runtime.prepareProjectConfig,
-      })
-    )
+    const result = await runtime.runVite(command, args, {
+      cwd: runtime.cwd,
+      prepareProjectConfig: runtime.prepareProjectConfig,
+    })
+    return { type: "exit", code: result.code }
   } catch (error) {
     runtime.stderr.write(`Ardo ${command} failed: ${errorMessage(error)}\n`)
-    return { type: "exit", code: 1 }
-  }
-}
-
-async function runBuildCommand(args: readonly string[], runtime: CliRuntime): Promise<CliOutcome> {
-  const report = await mkdtemp(path.join(tmpdir(), "ardo-build-"))
-  const infoFile = path.join(report, "build-info.json")
-  try {
-    const outcome = childExitOutcome(
-      await runtime.runReactRouter("build", args, {
-        cwd: runtime.cwd,
-        prepareProjectConfig: runtime.prepareProjectConfig,
-        env: { [ARDO_BUILD_INFO_ENV]: infoFile },
-      })
-    )
-    if (outcome.type !== "exit" || outcome.code !== 0) return outcome
-    return checkBuildOutput(infoFile, runtime)
-  } catch (error) {
-    runtime.stderr.write(`Ardo build failed: ${errorMessage(error)}\n`)
-    return { type: "exit", code: 1 }
-  } finally {
-    await rm(report, { recursive: true, force: true })
+    return { type: "exit", code: error instanceof ViteUsageError ? 2 : 1 }
   }
 }
 
@@ -162,11 +135,6 @@ function runGlobalCommand(command: string, stdout: Pick<NodeJS.WriteStream, "wri
 function runUnknownCommand(command: string, stderr: Pick<NodeJS.WriteStream, "write">): CliOutcome {
   stderr.write(`Unknown command "${command}".\n\n${help}`)
   return { type: "exit", code: 2 }
-}
-
-function childExitOutcome(result: ChildExit): CliOutcome {
-  if (result.signal != null) return { type: "signal", signal: result.signal }
-  return { type: "exit", code: result.code ?? 1 }
 }
 
 function errorMessage(error: unknown): string {

@@ -10,19 +10,12 @@ export {
 } from "./collections"
 export { type ContentSourceFile, type ContentSourceMapping } from "./content-sources"
 
-export {
-  type ArdoGitHubPagesOptions,
-  type ArdoVersioningOptions,
-  withArdoGitHubPages,
-  withArdoVersioning,
-} from "./flatten-plugin"
 export { type ArdoIconOptions } from "./icons"
 
 export { ardoPlugin as ardo, ardoPlugin, type ArdoPluginOptions } from "./plugin"
 export { ardoPlugin as default } from "./plugin"
 export { detectGitHubBasename } from "./plugin"
 export { createArdoProjectViteConfig } from "./project-config"
-export { ardoRoutesPlugin, type ArdoRoutesPluginOptions } from "./routes-plugin"
 
 export { generateSearchIndex, type SearchDoc } from "./search-index"
 

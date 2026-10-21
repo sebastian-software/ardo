@@ -1,32 +1,95 @@
-import { renderToReadableStream } from "react-dom/server"
-import { type EntryContext, ServerRouter } from "react-router"
+import type { ReactNode } from "react"
 
-export const streamTimeout = 5000
+import { prerender } from "react-dom/static"
+import { rootModule, routes } from "virtual:ardo/routes"
 
-/** Render a complete documentation response with Ardo's shared React runtime. */
-// eslint-disable-next-line max-params -- React Router defines this server entry signature.
-export default async function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  routerContext: EntryContext
-): Promise<Response> {
-  responseHeaders.set("Content-Type", "text/html")
-  if (request.method === "HEAD") {
-    return new Response(null, { status: responseStatusCode, headers: responseHeaders })
-  }
+import { ArdoApp } from "../runtime/app"
+import { ArdoDocumentProvider } from "../runtime/document"
+import {
+  ARDO_APP_ELEMENT_ID,
+  ARDO_PAGE_DATA_ATTRIBUTE,
+  type ArdoRootModule,
+  isDynamicRoute,
+  matchRoute,
+  resolvePage,
+} from "../runtime/routing"
+import { ArdoRootLayout } from "../ui/Layout"
 
-  const body = await renderToReadableStream(
-    <ServerRouter context={routerContext} url={request.url} />,
-    {
-      signal: AbortSignal.timeout(streamTimeout + 1000),
-      onError(error: unknown) {
-        console.error(error)
-        responseStatusCode = 500
-      },
-    }
+export { routes }
+
+export type ArdoRenderAssets = {
+  entry: string
+  modulePreloads: string[]
+  stylesheets: string[]
+}
+
+export type ArdoRenderOptions = {
+  assets: (routeId: string | undefined) => ArdoRenderAssets
+  base: string
+  /** Render the not-found page instead of looking up a route. */
+  notFound?: boolean
+}
+
+export type ArdoRenderResult = { html: string; routeId?: string; status: number }
+
+/** Paths of every route that has a single page to prerender. */
+export function getStaticPaths(): string[] {
+  return routes.filter((route) => !isDynamicRoute(route)).map((route) => route.path)
+}
+
+/** Render a complete HTML document for a page path without the base path. */
+export async function renderPage(
+  path: string,
+  options: ArdoRenderOptions
+): Promise<ArdoRenderResult> {
+  const root: ArdoRootModule = rootModule
+  // `/guide/` and `/guide` are the same page; components see one path.
+  const pagePath = path.length > 1 ? path.replace(/\/+$/u, "") : path
+  const route = options.notFound === true ? undefined : matchRoute(routes, pagePath)
+  const page = await resolvePage({ base: options.base, path: pagePath, root, route })
+  const assets = options.assets(page.data.routeId)
+  const Layout = root.Layout ?? ArdoRootLayout
+
+  const body = await renderToHtml(<ArdoApp page={page} root={root} />)
+  const shell = await renderToHtml(
+    <ArdoDocumentProvider
+      value={{
+        entry: assets.entry,
+        meta: page.meta,
+        modulePreloads: assets.modulePreloads,
+        stylesheets: assets.stylesheets,
+      }}
+    >
+      <Layout>
+        <div
+          id={ARDO_APP_ELEMENT_ID}
+          style={{ display: "contents" }}
+          {...{ [ARDO_PAGE_DATA_ATTRIBUTE]: JSON.stringify(page.data) }}
+        />
+      </Layout>
+    </ArdoDocumentProvider>
   )
-  // Return complete documentation HTML after all suspended routes have rendered.
-  await body.allReady
-  return new Response(body, { status: responseStatusCode, headers: responseHeaders })
+  const html = insertAppHtml(shell, body)
+  return {
+    html: html.startsWith("<!DOCTYPE") ? html : `<!DOCTYPE html>${html}`,
+    routeId: page.data.routeId,
+    status: page.error == null ? 200 : (page.data.error?.status ?? 500),
+  }
+}
+
+/** Render to a complete HTML string, waiting for every suspended component. */
+async function renderToHtml(element: ReactNode): Promise<string> {
+  const { prelude } = await prerender(element)
+  return new Response(prelude).text()
+}
+
+/** Place the separately rendered page inside the shell's empty app element. */
+function insertAppHtml(shell: string, body: string): string {
+  const start = shell.indexOf(`<div id="${ARDO_APP_ELEMENT_ID}"`)
+  const end = start === -1 ? -1 : shell.indexOf("></div>", start)
+  if (end === -1) {
+    throw new Error("[ardo] The root Layout must render the page it receives as children.")
+  }
+  const openTagEnd = end + 1
+  return `${shell.slice(0, openTagEnd)}${body}${shell.slice(openTagEnd)}`
 }

@@ -99,3 +99,6 @@ export type {
 } from "./Sidebar"
 export { ArdoTOC } from "./Toc"
 export type { ArdoTOCProps } from "./Toc"
+
+// Links between pages
+export { ArdoActiveLink, ArdoLink, type ArdoLinkProps } from "../runtime/page"

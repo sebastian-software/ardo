@@ -1,4 +1,4 @@
-import { useLocation } from "react-router"
+import { useArdoPath } from "../runtime/page-context"
 
 import type { SidebarItem } from "../config/types"
 
@@ -41,8 +41,8 @@ function findBreadcrumb(sidebar: SidebarItem[], currentPath: string): Breadcrumb
 export function ArdoBreadcrumb() {
   const sidebar = useArdoSidebar()
   const labels = useArdoLabels()
-  const location = useLocation()
-  const { section, page } = findBreadcrumb(sidebar, location.pathname)
+  const pathname = useArdoPath()
+  const { section, page } = findBreadcrumb(sidebar, pathname)
 
   if (page == null || page === "") return null
 

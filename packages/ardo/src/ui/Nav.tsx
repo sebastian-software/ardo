@@ -1,11 +1,13 @@
-import { type ComponentProps, createContext, type ReactNode, use, useMemo, useState } from "react"
-import { NavLink as RouterNavLink, useLocation } from "react-router"
+import { createContext, type ReactNode, use, useMemo, useState } from "react"
+
+import { ArdoActiveLink } from "../runtime/page"
+import { useArdoPath } from "../runtime/page-context"
 
 import { joinClassNames } from "./classnames"
 import * as styles from "./Nav.css"
 
-/** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
-type RoutePath = ComponentProps<typeof RouterNavLink>["to"]
+/** Internal page path such as `/guide`. */
+type RoutePath = string
 
 // Nav context for shared state
 type NavContextValue = {
@@ -49,7 +51,7 @@ export function ArdoNav({ children, className }: ArdoNavProps) {
 // =============================================================================
 
 export type ArdoNavLinkProps = {
-  /** Internal route path (type-safe with React Router's registered routes) */
+  /** Internal page path such as `/guide` */
   to?: RoutePath
   /** External URL (uses anchor tag) */
   href?: string
@@ -75,7 +77,7 @@ export type ArdoNavLinkProps = {
  */
 export function ArdoNavLink({ to, href, children, className, activeMatch }: ArdoNavLinkProps) {
   const navContext = useNavContext()
-  const { pathname } = useLocation()
+  const pathname = useArdoPath()
   const baseClassName = className ?? styles.navLink
   const hasHref = (href ?? "") !== ""
   const hasTo = to !== undefined
@@ -103,7 +105,7 @@ export function ArdoNavLink({ to, href, children, className, activeMatch }: Ardo
   // Internal link
   if (hasTo) {
     return (
-      <RouterNavLink
+      <ArdoActiveLink
         to={to}
         className={({ isActive }: { isActive: boolean }) =>
           [baseClassName, (isActive || matchesActiveMatch(pathname, activeMatch)) && "active"]
@@ -113,7 +115,7 @@ export function ArdoNavLink({ to, href, children, className, activeMatch }: Ardo
         onClick={handleClick}
       >
         {children}
-      </RouterNavLink>
+      </ArdoActiveLink>
     )
   }
 

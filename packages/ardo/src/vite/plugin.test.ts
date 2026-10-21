@@ -80,12 +80,22 @@ describe("ardoPlugin", () => {
     })
   })
 
-  it("maps outDir to Vite build.outDir", () => {
-    const plugin = getMainPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" })
+  it("builds the client and server environments into outDir", () => {
+    const plugin = ardoPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" }).find(
+      (entry) => entry.name === "ardo:static-site"
+    )
+    const hook = plugin?.config
+    if (typeof hook !== "function") throw new Error("Static site plugin not found")
 
-    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+    const config = Reflect.apply(hook, {}, [
+      { root: "/project" },
+      { command: "build", mode: "production" },
+    ]) as UserConfig
 
-    expect(config.build?.outDir).toBe("custom-build")
+    expect(config.appType).toBe("custom")
+    expect(config.environments?.client?.build?.outDir).toBe("/project/custom-build/client")
+    expect(config.environments?.server?.build?.outDir).toBeUndefined()
+    expect(config.environments?.ssr?.build?.outDir).toBe("/project/custom-build/server")
   })
 
   it("sets Vite base to the current major version for versioned docs", () => {

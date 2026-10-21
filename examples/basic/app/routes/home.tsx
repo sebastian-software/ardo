@@ -1,8 +1,8 @@
 import { ArdoHero, ArdoFeatures, ArdoFeatureCard } from "ardo/ui"
-import type { MetaFunction } from "ardo/router"
+import type { ArdoMetaFunction } from "ardo/runtime"
 import { Counter } from "../Counter"
 
-export const meta: MetaFunction = () => [{ title: "Ardo Basic Example" }]
+export const meta: ArdoMetaFunction = () => [{ title: "Ardo Basic Example" }]
 
 export default function HomePage() {
   return (

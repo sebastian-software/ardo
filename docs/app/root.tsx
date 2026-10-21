@@ -1,6 +1,6 @@
+import type { ArdoMetaFunction } from "ardo/runtime"
 import {
   ArdoErrorBoundary,
-  ArdoRootLayout,
   ArdoRoot,
   ArdoFooter,
   ArdoHeader,
@@ -11,7 +11,6 @@ import {
 } from "ardo/ui"
 import { Code2, Rocket, Zap } from "lucide-react"
 import config from "virtual:ardo/config"
-import type { MetaFunction } from "react-router"
 import "ardo/ui/styles.css"
 import "./theme.css"
 
@@ -19,14 +18,10 @@ import logo from "./assets/logo.svg"
 
 registerIcons({ Code2, Rocket, Zap })
 
-export const meta: MetaFunction = () => [
+export const meta: ArdoMetaFunction = () => [
   { title: "Ardo" },
   { name: "description", content: "Documentation for React teams" },
 ]
-
-export function Layout({ children }: { children: React.ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
 
 export const ErrorBoundary = ArdoErrorBoundary
 

@@ -4,7 +4,7 @@ import path from "node:path"
 import { parseArgs } from "node:util"
 import { type InlineConfig, preview, type PreviewServer, resolveConfig } from "vite"
 
-import type { ProjectConfigPreparer } from "./process"
+import type { ProjectConfigPreparer } from "./vite-command"
 
 import { prepareProjectConfig } from "./project-config"
 

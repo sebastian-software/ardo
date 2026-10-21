@@ -330,4 +330,3 @@ function isValidUrl(value: string): boolean {
     return false
   }
 }
-export type { Config as ReactRouterConfig } from "@react-router/dev/config"

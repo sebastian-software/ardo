@@ -53,7 +53,7 @@ pnpm add -D typescript@6
 
 ### 3. Add package scripts
 
-Ardo manages React, React DOM, React Router, and Vite as its own dependencies. Its CLI starts the development server, builds the static site, and previews the generated client output:
+Ardo manages React, React DOM, Vite, and lucide-react as its own dependencies. Its CLI starts the development server, builds the static site, and previews the generated client output:
 
 ```json
 {
@@ -93,43 +93,27 @@ export default defineArdoConfig({
 Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
 adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.
 
-### 5. Create React Router configuration
+### 5. Create app files
 
-Ardo uses React Router 8 under the hood. For a static documentation site, you want pre-rendering enabled and SSR off:
-
-```ts
-import type { ReactRouterConfig } from "ardo/config"
-
-export default {
-  ssr: false,
-  prerender: true,
-} satisfies ReactRouterConfig
-```
-
-### 6. Create app files
-
-Create an Ardo root component. React Router supplies the default client entry. The server entry delegates to Ardo, which renders the complete page with its shared runtime. Customized entry files remain supported.
+An Ardo project needs one app file besides its content: `app/root.tsx`. Its default export is the root component. Ardo renders the HTML shell around it, so you only add a `Layout` export when you need to change that shell (see [Site UI](/guide/site-ui)). Ardo generates the route table from `app/routes/` and supplies the client and server entries itself.
 
 **`app/root.tsx`**:
 
 ```tsx
+import type { ArdoMetaFunction } from "ardo/runtime"
 import {
   ArdoGeneratedSidebar,
   ArdoHeader,
   ArdoNav,
   ArdoNavLink,
   ArdoRoot,
-  ArdoRootLayout,
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import type { ReactNode } from "ardo/react"
 import config from "virtual:ardo/config"
 import "ardo/ui/styles.css"
 
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
+export const meta: ArdoMetaFunction = () => [{ title: "My Documentation" }]
 
 export default function Root() {
   return (
@@ -150,11 +134,7 @@ export default function Root() {
 }
 ```
 
-**`app/entry.server.tsx`**:
-
-```tsx
-export { default, streamTimeout } from "ardo/entry.server"
-```
+`root.tsx` can also export `ErrorBoundary`, which replaces the root on 404 pages. Ardo uses `ArdoErrorBoundary` when you leave it out.
 
 **`tsconfig.json`**:
 
@@ -176,19 +156,21 @@ export { default, streamTimeout } from "ardo/entry.server"
 }
 ```
 
-Import hooks and React types from `ardo/react` and routing APIs from `ardo/router`.
-These public entry points provide types without separate React or router dependencies.
-Ardo also resolves bare React and router imports to its own runtime during development
-and builds, including imports in installed component libraries. Components and the
-renderer therefore use the same React installation even if an ancestor package has
-another version. Other application dependencies must still be declared and installed
-in the documentation package.
+Import React hooks and types from `ardo/react`. Import Ardo's runtime APIs, such as
+`ArdoLink`, `useArdoPath`, and `ArdoMetaFunction`, from `ardo/runtime`, and components from
+`ardo/ui`. Do not import runtime values from the package root `ardo` in browser code: that
+entry also contains Node-only build code.
 
-For portals and other React DOM APIs, use `ardo/react-dom`. For custom client or server
-entries, use `ardo/react-dom/client`, `ardo/react-dom/server`, and `ardo/router/dom`. Tailwind and other Vite plugins
+These public entry points provide types without a separate React dependency. Ardo also
+resolves bare React imports to its own runtime during development and builds, including
+imports in installed component libraries. Components and the renderer therefore use the
+same React installation even if an ancestor package has another version. Other application
+dependencies must still be declared and installed in the documentation package.
+
+For portals and other React DOM APIs, use `ardo/react-dom`. Tailwind and other Vite plugins
 are optional; install them in the documentation package when you use them.
 
-### 7. Create your first document
+### 6. Create your first document
 
 Create `app/routes/guide/getting-started.mdx`:
 
@@ -205,7 +187,7 @@ Welcome to your documentation site!
 That's it. Run `pnpm dev` and you've got a documentation site.
 
 <Tip>
-  The tested Basic example contains the complete app entry files and configuration. Use the
+  The tested Basic example contains the complete root component and configuration. Use the
   version-matched reference and Agent Instructions when adapting this setup to your repository.
 </Tip>
 
@@ -227,7 +209,7 @@ When you're ready to publish:
 pnpm build
 ```
 
-The output lands in `build/client/` — a fully static site ready for any hosting platform. Preview it locally before deploying:
+The output lands in `build/client/`: one prerendered `index.html` per page, a `404.html`, and the hashed assets, ready for any static host. The build also checks every internal link and anchor in the generated HTML. Preview it locally before deploying:
 
 ```bash
 pnpm preview
@@ -235,20 +217,18 @@ pnpm preview
 
 ## Project Structure
 
-Here's what an Ardo project looks like. If you've worked with React Router, the layout will feel natural:
+Here's what an Ardo project looks like. Files under `app/routes/` become pages, `app/root.tsx` holds the site chrome, and everything else is configuration:
 
-```
+```text
 my-docs/
 ├── app/
-│   ├── routes/                  # Your MDX/MD content files
+│   ├── routes/                  # Pages: .md, .mdx, and .tsx files
 │   │   ├── guide/
 │   │   │   └── getting-started.mdx
 │   │   └── home.tsx             # Home page
-│   ├── entry.server.tsx         # Delegates to Ardo
-│   └── root.tsx                 # Root layout
+│   └── root.tsx                 # Root component (header, sidebar, footer)
 ├── ardo.config.ts               # Optional site configuration
 ├── vite.config.ts               # Optional extra Vite plugins or settings
-├── react-router.config.ts       # React Router configuration
 ├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
 ├── tsconfig.json
 └── package.json
