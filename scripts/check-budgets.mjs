@@ -45,14 +45,14 @@ const budgets = {
     // one page's initial download. Lazily loaded chunks are excluded.
     label: "eager client JS gzip",
     budget: 530_000,
-    baseline: "≈379 KB (2026-10, without React Router; search index loads on first use)",
+    baseline: "≈392 KB (2026-10, MiniSearch and the search index load on first use)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
     budget: 1_500_000,
-    baseline: "≈454 KB (2026-10, the search index is the only lazy chunk)",
+    baseline: "≈479 KB (2026-10, MiniSearch and the search index are the lazy chunks)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
