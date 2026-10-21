@@ -25,7 +25,7 @@ describe("github-pages fixture build", () => {
     expect(buildSucceeded).toBe(true)
   })
 
-  it("flattens prerendered pages to the GitHub Pages artifact root", () => {
+  it("writes prerendered pages at the GitHub Pages artifact root", () => {
     expect(fs.existsSync(path.join(buildClientDir, "index.html"))).toBe(true)
     expect(fs.existsSync(path.join(buildClientDir, "guide", "getting-started", "index.html"))).toBe(
       true
@@ -39,10 +39,10 @@ describe("github-pages fixture build", () => {
   it("keeps GitHub Pages basename in generated links and asset references", () => {
     const indexHtml = fs.readFileSync(path.join(buildClientDir, "index.html"), "utf8")
 
-    expect(indexHtml).toContain('href="/ardo/guide/getting-started"')
+    expect(indexHtml).toContain('href="/ardo/guide/getting-started/"')
     expect(indexHtml).toContain('href="/ardo/assets/')
-    expect(indexHtml).toContain('import "/ardo/assets/')
+    expect(indexHtml).toContain('src="/ardo/assets/')
     expect(indexHtml).not.toContain('href="/assets/')
-    expect(indexHtml).not.toContain('import "/assets/')
+    expect(indexHtml).not.toContain('src="/assets/')
   })
 })

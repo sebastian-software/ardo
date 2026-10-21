@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { NativeApiProject } from "../api/native-project"
 import { createApiPlugin } from "./api-plugin"
 import { ardoPlugin } from "./plugin"
+import { createRoutesModule } from "./routes-plugin"
 
 let temporary: string
 const plugins: Plugin[] = []
@@ -97,27 +98,26 @@ function attachServer(plugin: Plugin) {
   return { watcher, ws, logger, server }
 }
 
+/** The route table Ardo would serve for the temporary project. */
+const routeTable = () =>
+  createRoutesModule({ root: temporary, routesDir: path.join(temporary, "app/routes") })
 const pageFile = () => path.join(temporary, "app/routes/api-reference/functions/read.md")
 const readPage = async () => fs.readFile(pageFile(), "utf8")
 // Native compiler updates need the same polling window as the real watcher tests.
 const pollOptions = { timeout: 10_000 }
 
 describe("native API build and development plugin", () => {
-  it("generates native Markdown before pre-enforced route scanning and closes build sessions", async () => {
+  it("generates native Markdown before route scanning and closes build sessions", async () => {
     const selected = ardoPlugin({ api: true, githubPages: false })
     const apiIndex = selected.findIndex((plugin) => plugin.name === "ardo:api")
     const routesIndex = selected.findIndex((plugin) => plugin.name === "ardo:routes")
-    const routerIndex = selected.findIndex((plugin) => plugin.name.includes("react-router"))
     expect(apiIndex).toBeLessThan(routesIndex)
-    expect(routesIndex).toBeLessThan(routerIndex)
     expect(selected[apiIndex].enforce).toBe("pre")
     const close = vi.spyOn(NativeApiProject.prototype, "close")
     await configure(selected[apiIndex], "build")
-    await configure(selected[routesIndex], "build")
     expect(close).toHaveBeenCalledTimes(1)
-    const routes = await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")
-    expect(routes).toContain(
-      'route("api-reference/functions/read", "routes/api-reference/functions/read.md")'
+    expect(routeTable()).toContain(
+      'id: "app/routes/api-reference/functions/read.md", path: "/api-reference/functions/read"'
     )
     expect(await readPage()).toContain("Read a value.")
   })
@@ -162,9 +162,7 @@ describe("native API build and development plugin", () => {
       )
       .toContain("New export.")
     await expect(fs.access(pageFile())).rejects.toMatchObject({ code: "ENOENT" })
-    expect(await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")).toContain(
-      "api-reference/variables/label"
-    )
+    expect(routeTable()).toContain('path: "/api-reference/variables/label"')
     await closePlugin(plugin)
     expect(watcher.listenerCount("change")).toBe(0)
     expect(watcher.listenerCount("add")).toBe(0)
@@ -223,10 +221,9 @@ describe("native API build and development plugin", () => {
       expect(selected.indexOf(source)).toBeLessThan(routesIndex)
       await configure(source, "build")
     }
-    await configure(selected[routesIndex], "build")
-    const routes = await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")
-    expect(routes).toContain("api/alpha/functions/read")
-    expect(routes).toContain("api/beta/functions/read")
+    const routes = routeTable()
+    expect(routes).toContain('path: "/api/alpha/functions/read"')
+    expect(routes).toContain('path: "/api/beta/functions/read"')
   })
 
   it.each([

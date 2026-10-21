@@ -1,6 +1,5 @@
 import type { Plugin } from "vite"
 
-import { reactRouter } from "@react-router/dev/vite"
 import { transformWithOxc } from "vite"
 
 import type { ArdoConfig } from "../config/types"
@@ -20,9 +19,7 @@ type CompiledRouteModule = Awaited<ReturnType<typeof compileRouteModule>>
 type CompiledRouteEntry = { result: Promise<CompiledRouteModule>; source: string }
 
 /**
- * React Router compiles every route several times per build: in the client and
- * SSR builds, as the `?__react-router-build-client-route` variant, and in its
- * Vite child compiler that detects route exports. Each config evaluation
+ * The client and server builds compile every route, and each config evaluation
  * creates new plugin instances, so the cache is shared by module and keyed by
  * the Markdown options, the file, and its exact source.
  */
@@ -48,11 +45,6 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
       return { code: compiled.code, map: compiled.map }
     },
   }
-}
-
-export function getReactRouterPlugins(): Plugin[] {
-  const routerPlugin = reactRouter()
-  return Array.isArray(routerPlugin) ? routerPlugin : [routerPlugin]
 }
 
 async function compileRouteModuleCached(

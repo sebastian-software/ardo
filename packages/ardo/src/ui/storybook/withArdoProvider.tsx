@@ -1,6 +1,6 @@
 import type { Decorator } from "@storybook/react"
 
-import { MemoryRouter } from "react-router"
+import { ArdoPageProvider } from "../../runtime/page"
 
 import type { ArdoConfig, PageData, SidebarItem } from "../../config/types"
 
@@ -64,10 +64,10 @@ export const withArdoProvider: Decorator = (Story, context) => {
   const path = typeof parameters.routerPath === "string" ? parameters.routerPath : defaultPath
 
   return (
-    <MemoryRouter initialEntries={[path]}>
+    <ArdoPageProvider path={path}>
       <ArdoProvider config={storybookConfig} sidebar={sidebar} currentPage={currentPage}>
         <Story />
       </ArdoProvider>
-    </MemoryRouter>
+    </ArdoPageProvider>
   )
 }

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 
 import { renderToStaticMarkup } from "react-dom/server"
-import { MemoryRouter } from "react-router"
+import { ArdoPageProvider } from "../runtime/page"
 import { describe, expect, it } from "vitest"
 
 import type { PageData } from "../config/types"
@@ -11,11 +11,11 @@ import { ArdoContent } from "./Content"
 
 function renderContent(pageData: PageData, children: ReactNode): string {
   return renderToStaticMarkup(
-    <MemoryRouter>
+    <ArdoPageProvider>
       <ArdoProvider config={{ title: "Docs" }} currentPage={pageData} sidebar={[]}>
         <ArdoContent>{children}</ArdoContent>
       </ArdoProvider>
-    </MemoryRouter>
+    </ArdoPageProvider>
   )
 }
 

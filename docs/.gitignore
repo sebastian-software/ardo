@@ -1,12 +1,8 @@
-# Generated routes file by ardo
-app/routes.ts
-
 # Generated API reference by TypeDoc
 app/routes/api-reference/
 
 # Opt-in API reference generated from declarations
 app/routes/api-declarations/
 
-# React Router build output
-.react-router/
+# Build output
 build/

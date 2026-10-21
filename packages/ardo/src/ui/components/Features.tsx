@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { Link } from "react-router"
+import { ArdoLink } from "../../runtime/page"
 
 import * as styles from "./Features.css"
 
@@ -60,9 +60,9 @@ export function ArdoFeatureCard({
       <h3 className={styles.featureTitle}>{title}</h3>
       <p className={styles.featureDetails}>{children}</p>
       {hasLink && (
-        <Link to={link ?? ""} className={styles.featureLink}>
+        <ArdoLink to={link ?? ""} className={styles.featureLink}>
           {resolvedLinkText}
-        </Link>
+        </ArdoLink>
       )}
     </div>
   )

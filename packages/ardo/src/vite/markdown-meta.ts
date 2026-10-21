@@ -183,8 +183,13 @@ function hasMetaExport(code: string): boolean {
 }
 
 function extractFrontmatterValue(code: string, key: string): string | undefined {
-  const frontmatterStart = code.indexOf("export const frontmatter")
-  if (frontmatterStart === -1) {
+  // Compiled route modules keep their frontmatter in `_ardoFrontmatter`; an
+  // authored MDX export stays `frontmatter`.
+  const markers = ["export const frontmatter", "const _ardoFrontmatter"]
+  const frontmatterStart = markers
+    .map((marker) => code.indexOf(marker))
+    .find((index) => index !== -1)
+  if (frontmatterStart == null) {
     return undefined
   }
 
@@ -193,7 +198,11 @@ function extractFrontmatterValue(code: string, key: string): string | undefined 
 }
 
 function findFrontmatterStringValue(code: string, key: string): string | undefined {
-  const keyPrefix = `${key}:`
+  // Compiled modules serialize frontmatter as JSON, with quoted keys.
+  return findStringValue(code, `${key}:`) ?? findStringValue(code, `"${key}":`)
+}
+
+function findStringValue(code: string, keyPrefix: string): string | undefined {
   let searchIndex = 0
 
   while (searchIndex < code.length) {

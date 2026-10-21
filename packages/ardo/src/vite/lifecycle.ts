@@ -27,7 +27,7 @@ export const ARDO_INTERNAL_LIFECYCLE_PHASES: readonly ArdoInternalLifecyclePhase
   },
   {
     id: "routes:generate",
-    description: "Generate React Router route files from the routes directory.",
+    description: "Generate the route table from the routes directory.",
     futurePublicCandidate: true,
   },
   {

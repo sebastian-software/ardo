@@ -1,6 +1,5 @@
 import { type ReactNode, use } from "react"
-import { Links, Meta, Scripts, ScrollRestoration } from "react-router"
-
+import { ArdoHead, ArdoScripts } from "../runtime/document"
 import { ArdoContext, useArdoLabels } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
 import * as styles from "./Layout.css"
@@ -38,8 +37,8 @@ export type ArdoRootLayoutProps = {
 export type ArdoScrollMode = "document" | "viewport"
 
 /**
- * Default HTML shell for Ardo sites. Replaces the boilerplate `Layout` export
- * that every root.tsx must define for React Router.
+ * Default HTML shell for Ardo sites. Ardo renders it on the server only; the
+ * page inside it hydrates. Export a `Layout` from root.tsx to customize it.
  *
  * @example Basic usage
  * ```tsx
@@ -89,13 +88,11 @@ export function ArdoRootLayout({
             <link rel="apple-touch-icon" href={`${iconBaseUrl}apple-touch-icon.png`} />
           </>
         )}
-        <Meta />
-        <Links />
+        <ArdoHead />
       </head>
       <body suppressHydrationWarning>
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        <ArdoScripts />
       </body>
     </html>
   )

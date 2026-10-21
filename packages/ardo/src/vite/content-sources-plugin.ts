@@ -7,7 +7,6 @@ import type { ContentSourceMapping } from "./content-sources"
 import { materializeContentSources } from "./content-sources"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { resolveRoutesDir } from "./path-utils"
-import { writeRoutesFile } from "./routes-core"
 
 export function createContentSourcePlugin(
   sources: ContentSourceMapping[],
@@ -21,13 +20,6 @@ export function createContentSourcePlugin(
   async function materializeAndWriteRoutes(): Promise<void> {
     await runArdoLifecyclePhase("content-sources:materialize", async () =>
       materializeContentSources({ root, routesDir, sources })
-    )
-    await runArdoLifecyclePhase("routes:generate", async () =>
-      writeRoutesFile({
-        appDir: path.resolve(root, "app"),
-        routesDir,
-        routesFilePath: path.resolve(root, "app/routes.ts"),
-      })
     )
   }
 

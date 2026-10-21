@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { ArdoLink } from "ardo/ui"
 
 import apiPage from "../assets/home/api-page.webp"
 import callouts from "../assets/home/callouts.webp"
@@ -49,7 +49,7 @@ export function Components() {
           React. Ardo brings cards, tabs, steps, accordions and callouts for everything around them.
         </p>
         <p className={styles.moreLink}>
-          <Link to="/guide/markdown">Components in MDX →</Link>
+          <ArdoLink to="/guide/markdown">Components in MDX →</ArdoLink>
         </p>
       </div>
     </section>
@@ -67,7 +67,7 @@ export function ApiReference() {
           parameters and linked types. It shows up in search, too, and it updates on the next build.
         </p>
         <p className={styles.moreLink}>
-          <Link to="/api-reference">Browse Ardo’s own API reference →</Link>
+          <ArdoLink to="/api-reference">Browse Ardo’s own API reference →</ArdoLink>
         </p>
       </div>
       <div className={styles.splitMedia}>

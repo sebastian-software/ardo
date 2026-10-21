@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { ArdoLink } from "ardo/ui"
 
 import mascot from "../assets/mascot.webp"
 import sebastianConsulting from "../assets/home/sebastian-consulting.svg"
@@ -30,9 +30,9 @@ export function FinalCallToAction() {
         </p>
         <div className={styles.buttonRow}>
           <CopyPromptButton label="Copy the setup prompt" />
-          <Link className={styles.button} to="/guide/getting-started">
+          <ArdoLink className={styles.button} to="/guide/getting-started">
             Read the docs
-          </Link>
+          </ArdoLink>
         </div>
       </div>
     </section>

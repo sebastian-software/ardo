@@ -46,11 +46,6 @@ const FRIENDS: { mark: MarkName; name: string; text: string }[] = [
     name: "Oxc",
     text: "Rust tooling that tidies up the compiled pages and maps your declarations.",
   },
-  {
-    mark: "reactRouter",
-    name: "React Router",
-    text: "Routes from your folders, prerendered pages, snappy navigation.",
-  },
 ]
 
 export function Engines() {

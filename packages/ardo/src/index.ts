@@ -26,19 +26,34 @@ export type {
 
 // Runtime (React hooks and context - client-safe)
 export {
+  ArdoActiveLink,
+  ArdoHead,
+  ArdoLink,
+  ArdoOutlet,
+  ArdoPageProvider,
   ArdoProvider,
+  ArdoScripts,
   ArdoSiteConfigProvider,
   findCurrentSidebarItem,
   getPrevNextLinks,
   useArdoConfig,
   useArdoContext,
+  useArdoHref,
   useArdoLabels,
+  useArdoPage,
   useArdoPageData,
+  useArdoPath,
   useArdoSidebar,
   useArdoSiteConfig,
   useArdoTOC,
 } from "./runtime"
-export type { ArdoSiteConfig } from "./runtime"
+export type {
+  ArdoLinkProps,
+  ArdoMetaDescriptor,
+  ArdoMetaFunction,
+  ArdoPage,
+  ArdoSiteConfig,
+} from "./runtime"
 
 // UI Components (client-safe)
 export {

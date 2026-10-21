@@ -8,18 +8,6 @@ import { generateSitemap } from "./sitemap"
 
 export { generateSitemap } from "./sitemap"
 
-type LinkCheckDiagnostic = {
-  filePath: string
-  href: string
-  message: string
-}
-
-type LinkCheckContext = {
-  config: ResolvedConfig
-  excludedPatterns: string[]
-  routeMap: Map<string, RouteManifestEntry>
-}
-
 export type BuildOutputAsset = {
   fileName: string
   source: string
@@ -93,25 +81,6 @@ export function generateVercelRedirects(redirects: Array<{ from: string; to: str
   )}\n`
 }
 
-export function checkInternalLinks(
-  entries: RouteManifestEntry[],
-  config: ResolvedConfig
-): LinkCheckDiagnostic[] {
-  if (config.linkCheck.enabled === false) {
-    return []
-  }
-
-  const excludedPatterns = config.linkCheck.exclude ?? []
-  const routeMap = new Map(entries.map((entry) => [entry.routePath, entry]))
-  const diagnostics: LinkCheckDiagnostic[] = []
-
-  for (const entry of entries) {
-    diagnostics.push(...checkEntryLinks(entry, { config, excludedPatterns, routeMap }))
-  }
-
-  return diagnostics
-}
-
 export function createBuildOutputAssets(
   entries: RouteManifestEntry[],
   config: ResolvedConfig
@@ -156,129 +125,6 @@ function createRedirectAssets(redirects: Array<{ from: string; to: string }>): B
   }
 
   return assets
-}
-
-export function formatLinkCheckDiagnostics(diagnostics: LinkCheckDiagnostic[]) {
-  return diagnostics.map((diagnostic) => `${diagnostic.filePath}: ${diagnostic.message}`).join("\n")
-}
-
-function extractInternalLinks(content: string) {
-  const links = new Set<string>()
-  collectMarkdownLinks(content, links)
-  collectJsxHrefLinks(content, links)
-
-  return [...links].filter((link) => link !== "" && !link.startsWith("//"))
-}
-
-function normalizeInternalPath(hrefPath: string, currentPath: string) {
-  if (hrefPath === "") {
-    return currentPath
-  }
-
-  return hrefPath.length > 1 ? hrefPath.replace(/\/$/u, "") : hrefPath
-}
-
-function isExcludedLink(href: string, patterns: string[]) {
-  return patterns.some((pattern) => matchesPattern(href, pattern))
-}
-
-function matchesPattern(value: string, pattern: string) {
-  if (!pattern.includes("*")) {
-    return value === pattern
-  }
-
-  const [prefix = "", suffix = ""] = pattern.split("*")
-  return value.startsWith(prefix) && value.endsWith(suffix)
-}
-
-function checkEntryLinks(
-  entry: RouteManifestEntry,
-  context: LinkCheckContext
-): LinkCheckDiagnostic[] {
-  const diagnostics: LinkCheckDiagnostic[] = []
-  for (const href of extractInternalLinks(entry.content)) {
-    const diagnostic = checkSingleLink(entry, href, context)
-    if (diagnostic != null) {
-      diagnostics.push(diagnostic)
-    }
-  }
-  return diagnostics
-}
-
-function checkSingleLink(
-  entry: RouteManifestEntry,
-  href: string,
-  context: LinkCheckContext
-): LinkCheckDiagnostic | null {
-  if (isExcludedLink(href, context.excludedPatterns)) {
-    return null
-  }
-
-  const [targetPath = "", targetAnchor = ""] = href.split("#")
-  const normalizedPath = normalizeInternalPath(targetPath, entry.routePath)
-  const targetEntry = context.routeMap.get(normalizedPath)
-  if (targetEntry == null) {
-    return { filePath: entry.filePath, href, message: `Missing internal route: ${href}` }
-  }
-
-  if (
-    context.config.linkCheck.checkAnchors !== false &&
-    targetAnchor !== "" &&
-    !targetEntry.anchors.includes(targetAnchor)
-  ) {
-    return {
-      filePath: entry.filePath,
-      href,
-      message: `Missing anchor "${targetAnchor}" on ${normalizedPath}`,
-    }
-  }
-
-  return null
-}
-
-function collectMarkdownLinks(content: string, links: Set<string>) {
-  let offset = 0
-  while (offset < content.length) {
-    const start = content.indexOf("](/", offset)
-    if (start === -1) return
-
-    const hrefStart = start + 2
-    const hrefEnd = content.indexOf(")", hrefStart)
-    if (hrefEnd === -1) return
-
-    links.add(content.slice(hrefStart, hrefEnd))
-    offset = hrefEnd + 1
-  }
-}
-
-function collectJsxHrefLinks(content: string, links: Set<string>) {
-  collectQuotedHrefLinks({ content, links, marker: 'href="/', quote: '"' })
-  collectQuotedHrefLinks({ content, links, marker: "href='/", quote: "'" })
-}
-
-function collectQuotedHrefLinks({
-  content,
-  links,
-  marker,
-  quote,
-}: {
-  content: string
-  links: Set<string>
-  marker: string
-  quote: string
-}) {
-  let offset = 0
-  while (offset < content.length) {
-    const start = content.indexOf(marker, offset)
-    if (start === -1) return
-
-    const hrefStart = start + marker.length - 1
-    const hrefEnd = content.indexOf(quote, hrefStart)
-    if (hrefEnd === -1) return
-
-    links.add(content.slice(hrefStart, hrefEnd))
-    offset = hrefEnd + 1
-  }
 }
 
 function toRedirectAssetName(from: string) {

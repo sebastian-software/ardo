@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 
 import { renderToStaticMarkup } from "react-dom/server"
-import { MemoryRouter } from "react-router"
+import { ArdoPageProvider } from "../runtime/page"
 import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
@@ -36,11 +36,11 @@ vi.mock("virtual:ardo/generated-sidebars", () => ({
 
 function renderSidebar(children: ReactNode, currentPath = "/guide/getting-started"): string {
   return renderToStaticMarkup(
-    <MemoryRouter initialEntries={[currentPath]}>
+    <ArdoPageProvider path={currentPath}>
       <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
         <ArdoSidebar>{children}</ArdoSidebar>
       </ArdoProvider>
-    </MemoryRouter>
+    </ArdoPageProvider>
   )
 }
 
@@ -120,11 +120,13 @@ describe("ArdoSidebar", () => {
     )
 
     expect(view).toContain('aria-label="Documentation sections"')
-    expect(view).toMatch(/<a [^>]*aria-current="true"[^>]*href="\/guide"/)
+    expect(view).toMatch(/<a [^>]*aria-current="true"[^>]*href="\/guide\/"/)
     expect(view).toMatch(
-      /href="\/api-reference"[^>]*>.*?<svg[^>]*data-icon="api".*?<span>api<\/span>/
+      /href="\/api-reference\/"[^>]*>.*?<svg[^>]*data-icon="api".*?<span>api<\/span>/
     )
-    expect(view).toMatch(/href="\/guide"[^>]*>.*?<svg[^>]*data-icon="guide".*?<span>guide<\/span>/)
+    expect(view).toMatch(
+      /href="\/guide\/"[^>]*>.*?<svg[^>]*data-icon="guide".*?<span>guide<\/span>/
+    )
   })
 
   it("renders unknown sections as text-only tabs", () => {
@@ -135,7 +137,7 @@ describe("ArdoSidebar", () => {
       </>
     )
 
-    expect(view).toMatch(/href="\/intro"[^>]*><span[^>]*><span>flat<\/span>/)
+    expect(view).toMatch(/href="\/intro\/"[^>]*><span[^>]*><span>flat<\/span>/)
   })
 
   it("lets an explicit icon replace or drop the catalog icon", () => {
@@ -163,8 +165,8 @@ describe("ArdoSidebar", () => {
     )
 
     expect(labels).toStrictEqual(["Guide", "API", "ADRs", "Flat"])
-    expect(tabs).toContain('href="/guide/getting-started"')
-    expect(tabs).toContain('href="/adr"')
+    expect(tabs).toContain('href="/guide/getting-started/"')
+    expect(tabs).toContain('href="/adr/"')
   })
 
   it("puts sidebar.sectionOrder ahead of the catalog order", () => {
@@ -180,7 +182,7 @@ describe("ArdoSidebar", () => {
     )
 
     expect(labels).toStrictEqual(["Flat", "Guide", "API", "ADRs"])
-    expect(tabs).toMatch(/aria-current="true"[^>]*href="\/guide\/getting-started"/)
+    expect(tabs).toMatch(/aria-current="true"[^>]*href="\/guide\/getting-started\/"/)
   })
 
   it("leaves out the tabs when there is only one section", () => {

@@ -1,5 +1,6 @@
 import { Children, Fragment, isValidElement, type ReactNode } from "react"
-import { Link, useLocation } from "react-router"
+import { ArdoLink } from "../runtime/page"
+import { useArdoPath } from "../runtime/page-context"
 
 import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
@@ -70,7 +71,7 @@ export function ArdoContent({
   const pageData = useArdoPageData()
   const siteConfig = useArdoSiteConfig()
   const sidebar = useArdoSidebar()
-  const location = useLocation()
+  const pathname = useArdoPath()
 
   if (isBare) {
     return (
@@ -81,7 +82,7 @@ export function ArdoContent({
   const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig }
   const edit = resolveEditLink(input)
   const updated = resolveLastUpdated(input)
-  const { prev, next } = getPrevNextLinks(sidebar, location.pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, pathname)
 
   return (
     <article className={`ardo-content ${docStyles.contentContainer}`}>
@@ -216,24 +217,24 @@ function ContentPrevNext({
   return (
     <nav className={footerStyles.prevNext} aria-label="Page navigation">
       {hasPrev ? (
-        <Link to={prevLink} className={footerStyles.prevLink}>
+        <ArdoLink to={prevLink} className={footerStyles.prevLink}>
           <span className={footerStyles.prevNextLabel}>
             <ChromeIcon name="previous-next" className={footerStyles.previousArrow} />
             Previous
           </span>
           <span className={footerStyles.prevNextTitle}>{prev?.text}</span>
-        </Link>
+        </ArdoLink>
       ) : (
         <div />
       )}
       {hasNext ? (
-        <Link to={nextLink} className={footerStyles.nextLink}>
+        <ArdoLink to={nextLink} className={footerStyles.nextLink}>
           <span className={`${footerStyles.prevNextLabel} ${footerStyles.nextLabel}`}>
             Next
             <ChromeIcon name="previous-next" />
           </span>
           <span className={footerStyles.prevNextTitle}>{next?.text}</span>
-        </Link>
+        </ArdoLink>
       ) : (
         <div />
       )}

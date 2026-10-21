@@ -16,7 +16,6 @@ import {
   type SharedExtraction,
 } from "./api-shared-extraction"
 import { isPathInsideDirectory, resolveRoutesDir } from "./path-utils"
-import { writeRoutesFileSync } from "./routes-core"
 
 type ApiBackend = {
   NativeApiProject: typeof NativeApiProject
@@ -200,12 +199,6 @@ export class ApiPluginState {
     const next = JSON.stringify(pages)
     if (next !== this.published) {
       await backend.writeDeclarationProject(result, this.config, this.routesDir)
-      const appDir = path.join(this.root, "app")
-      writeRoutesFileSync({
-        appDir,
-        routesDir: this.routesDir,
-        routesFilePath: path.join(appDir, "routes.ts"),
-      })
       this.published = next
       this.server?.moduleGraph.invalidateAll()
       this.server?.ws.send({ type: "full-reload" })
@@ -274,8 +267,7 @@ export class ApiPluginState {
       this.config.out ?? "api-reference",
       "api.out"
     )
-    if (isPathInsideDirectory(file, output) || file === path.join(this.root, "app/routes.ts"))
-      return false
+    if (isPathInsideDirectory(file, output)) return false
     return (
       this.watchFiles.has(file) ||
       (isPathInsideDirectory(file, path.dirname(this.config.tsconfig)) &&

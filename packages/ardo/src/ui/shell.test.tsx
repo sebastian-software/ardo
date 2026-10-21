@@ -1,10 +1,10 @@
 import type { ReactNode, RefObject } from "react"
 
 import { renderToStaticMarkup } from "react-dom/server"
-import { createMemoryRouter, MemoryRouter, RouterProvider } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
+import { ArdoPageProvider } from "../runtime/page"
 import { ArdoRoot } from "./ArdoRoot"
 import { ArdoFooter } from "./Footer"
 import { ArdoHeader } from "./Header"
@@ -22,19 +22,20 @@ const closeMobilePanel = vi.fn<() => void>()
 
 function renderShell(children: ReactNode): string {
   return renderToStaticMarkup(
-    <MemoryRouter>
+    <ArdoPageProvider>
       <ArdoProvider config={config} sidebar={[]}>
         {children}
       </ArdoProvider>
-    </MemoryRouter>
+    </ArdoPageProvider>
   )
 }
 
 function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"): string {
-  const router = createMemoryRouter([{ path: "*", element, handle }], {
-    initialEntries: [initialPath],
-  })
-  return renderToStaticMarkup(<RouterProvider router={router} />)
+  return renderToStaticMarkup(
+    <ArdoPageProvider handle={handle} path={initialPath}>
+      {element}
+    </ArdoPageProvider>
+  )
 }
 
 describe("UI shell landmarks", () => {
@@ -75,7 +76,7 @@ describe("UI shell landmarks", () => {
 
   it("renders a compact version switcher when major docs versions are configured", () => {
     const view = renderToStaticMarkup(
-      <MemoryRouter initialEntries={["/v3/guide"]}>
+      <ArdoPageProvider path="/v3/guide">
         <ArdoProvider
           config={{
             title: "Docs",
@@ -91,7 +92,7 @@ describe("UI shell landmarks", () => {
         >
           <ArdoHeader search={false} />
         </ArdoProvider>
-      </MemoryRouter>
+      </ArdoPageProvider>
     )
 
     expect(view).toContain('aria-label="Documentation version"')

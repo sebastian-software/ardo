@@ -1,22 +1,16 @@
-import type { ReactNode } from "ardo/react"
 import {
   ArdoFooter,
   ArdoHeader,
   ArdoHeaderActions,
   ArdoRoot,
-  ArdoRootLayout,
   ArdoSidebar,
   ArdoSocialLink,
 } from "ardo/ui"
 import config from "virtual:ardo/config"
-import type { MetaFunction } from "ardo/router"
+import type { ArdoMetaFunction } from "ardo/runtime"
 import "ardo/ui/styles.css"
 
-export const meta: MetaFunction = () => [{ title: "Eight Sections" }]
-
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
+export const meta: ArdoMetaFunction = () => [{ title: "Eight Sections" }]
 
 // Eight sections, including one folder (notes) that the catalog does not know.
 export default function Root() {

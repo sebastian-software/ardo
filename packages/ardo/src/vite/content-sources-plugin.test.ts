@@ -6,17 +6,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const mocks = vi.hoisted(() => ({
   materializeContentSources: vi.fn<() => Promise<number>>(),
-  writeRoutesFile: vi.fn<() => Promise<void>>(),
 }))
 
 vi.mock("./content-sources", () => ({
   materializeContentSources: mocks.materializeContentSources,
 }))
-vi.mock("./routes-core", () => ({ writeRoutesFile: mocks.writeRoutesFile }))
 
 import { createContentSourcePlugin } from "./content-sources-plugin"
 
-const { materializeContentSources, writeRoutesFile } = mocks
+const { materializeContentSources } = mocks
 
 type ContentSourcePluginHooks = {
   buildStart: () => Promise<void>
@@ -35,8 +33,6 @@ type WatchHandler = (changedPath: string) => void
 beforeEach(() => {
   materializeContentSources.mockReset()
   materializeContentSources.mockResolvedValue(0)
-  writeRoutesFile.mockReset()
-  writeRoutesFile.mockResolvedValue(undefined)
 })
 
 describe("createContentSourcePlugin", () => {
@@ -47,7 +43,6 @@ describe("createContentSourcePlugin", () => {
     await plugin.buildStart()
 
     expect(materializeContentSources).toHaveBeenCalledTimes(1)
-    expect(writeRoutesFile).toHaveBeenCalledTimes(1)
   })
 
   it("serializes watcher materialization runs", async () => {
@@ -82,9 +77,8 @@ describe("createContentSourcePlugin", () => {
     expect(materializeContentSources).toHaveBeenCalledTimes(2)
 
     resolvers[1]()
-    await vi.waitFor(() => {
-      expect(writeRoutesFile).toHaveBeenCalledTimes(2)
-    })
+    await waitForQueuedWork()
+    expect(materializeContentSources).toHaveBeenCalledTimes(2)
   })
 })
 

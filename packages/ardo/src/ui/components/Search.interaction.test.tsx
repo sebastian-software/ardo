@@ -2,10 +2,18 @@
 
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { MemoryRouter, useLocation } from "react-router"
 import { describe, expect, it, vi } from "vitest"
 
+import type * as pageContext from "../../runtime/page-context"
+
+import { ArdoPageProvider } from "../../runtime/page"
+import { navigateTo } from "../../runtime/page-context"
 import { ArdoSearch } from "./Search"
+
+vi.mock("../../runtime/page-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof pageContext>()),
+  navigateTo: vi.fn<(href: string) => void>(),
+}))
 
 vi.mock("virtual:ardo/search-index", () => ({
   default: [
@@ -26,17 +34,11 @@ vi.mock("virtual:ardo/search-index", () => ({
   ],
 }))
 
-function PathProbe() {
-  const location = useLocation()
-  return <output aria-label="current path">{location.pathname}</output>
-}
-
 function renderSearch() {
   render(
-    <MemoryRouter initialEntries={["/"]}>
+    <ArdoPageProvider base="/docs/">
       <ArdoSearch />
-      <PathProbe />
-    </MemoryRouter>
+    </ArdoPageProvider>
   )
 }
 
@@ -44,9 +46,9 @@ describe("ArdoSearch interactions", () => {
   it("focuses the search input when autoFocus is enabled", async () => {
     const user = userEvent.setup()
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <ArdoPageProvider>
         <ArdoSearch autoFocus />
-      </MemoryRouter>
+      </ArdoPageProvider>
     )
 
     await user.keyboard("install")
@@ -64,7 +66,7 @@ describe("ArdoSearch interactions", () => {
 
     await user.keyboard("{Enter}")
 
-    expect(screen.getByLabelText("current path").textContent).toBe("/guide/getting-started")
+    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith("/docs/guide/getting-started/")
   })
 
   it("closes the popover on Escape", async () => {

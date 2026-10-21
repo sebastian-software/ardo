@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted. The React Router configuration it describes was replaced by [ADR 0020](./0020-static-site-without-react-router.md); the decision to prerender every route statically stands.
 
 ## Context
 

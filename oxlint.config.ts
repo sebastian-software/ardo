@@ -7,7 +7,6 @@ const config = getOxlintConfig({ react: true }) as OxlintConfig
 config.ignorePatterns = [
   "**/dist/**",
   "**/build/**",
-  "**/.react-router/**",
   "coverage/**",
   "storybook-static/**",
   "node_modules/**",
