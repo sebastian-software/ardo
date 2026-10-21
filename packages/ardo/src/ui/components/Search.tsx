@@ -1,5 +1,5 @@
 import MiniSearch from "minisearch"
-import { useCallback, useId, useMemo, useRef, useState } from "react"
+import { useCallback, useId, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import searchDocs from "virtual:ardo/search-index"
 
@@ -33,15 +33,25 @@ export type ArdoSearchProps = {
   autoFocus?: boolean
 }
 
+function createSearchIndex(): MiniSearch<SearchDoc> {
+  const index = new MiniSearch<SearchDoc>({
+    fields: ["title", "content", "section"],
+    storeFields: ["title", "path", "section"],
+    searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
+  })
+  index.addAll(searchDocs)
+  return index
+}
+
+/**
+ * Index the site on the first query. Prerendering renders this component for
+ * every page, and hydration should not pay for an index nobody searched yet.
+ */
 function useSearchIndex() {
-  return useMemo(() => {
-    const index = new MiniSearch<SearchDoc>({
-      fields: ["title", "content", "section"],
-      storeFields: ["title", "path", "section"],
-      searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
-    })
-    index.addAll(searchDocs)
-    return index
+  const indexRef = useRef<MiniSearch<SearchDoc> | null>(null)
+  return useCallback(() => {
+    indexRef.current ??= createSearchIndex()
+    return indexRef.current
   }, [])
 }
 
@@ -61,7 +71,7 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
   })
 }
 
-function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
+function useSearch(getSearchIndex: ReturnType<typeof useSearchIndex>) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchMatch[]>([])
@@ -75,7 +85,7 @@ function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
       setSelectedIndex(0)
       return
     }
-    const rawResults = searchIndex.search(searchQuery).slice(0, 10)
+    const rawResults = getSearchIndex().search(searchQuery).slice(0, 10)
     setResults(normalizeResults(rawResults))
     setSelectedIndex(0)
     setIsOpen(true)
@@ -195,8 +205,8 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
     },
     [autoFocus]
   )
-  const searchIndex = useSearchIndex()
-  const state = useSearch(searchIndex)
+  const getSearchIndex = useSearchIndex()
+  const state = useSearch(getSearchIndex)
   const hasQuery = state.query.trim().length > 0
   const expanded = state.isOpen && hasQuery
   const searchA11y = useSearchA11y({

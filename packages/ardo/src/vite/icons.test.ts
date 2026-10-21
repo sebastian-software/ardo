@@ -59,3 +59,15 @@ function getAssetBytes(assets: Awaited<ReturnType<typeof createIconAssets>>, fil
 
   return asset.source
 }
+
+describe("icons with text", () => {
+  it("renders glyphs with the system fonts", async () => {
+    const assets = await createIconAssets(root, {
+      source:
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="70" font-size="60">A</text></svg>',
+    })
+    const png = getAssetBytes(assets, "apple-touch-icon.png")
+
+    expect(png.subarray(0, 8).join(",")).toBe("137,80,78,71,13,10,26,10")
+  })
+})

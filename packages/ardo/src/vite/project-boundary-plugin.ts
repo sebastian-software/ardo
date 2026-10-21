@@ -104,6 +104,9 @@ function getBoundaryImporter(
 ): string | undefined {
   if (importer == null || isEntry) return importer
   const cleanImporter = importer.split("?", 1)[0] ?? importer
+  // Only an index.html importer can be Vite's synthetic root/index.html, so
+  // the realpath lookup is skipped for every other module.
+  if (path.basename(cleanImporter) !== "index.html") return importer
   let canonicalImporter = path.resolve(cleanImporter)
   try {
     canonicalImporter = path.join(

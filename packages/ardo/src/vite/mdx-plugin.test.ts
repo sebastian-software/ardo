@@ -1,10 +1,11 @@
 import { decode } from "@jridgewell/sourcemap-codec"
+import { JsxCompiler } from "ferromark"
 import fs from "node:fs/promises"
 import path from "node:path"
 import { type ComponentType, createElement, type ReactNode } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { createServer, type TransformResult, type ViteDevServer } from "vite"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { createServer, type Plugin, type TransformResult, type ViteDevServer } from "vite"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useMDXComponents } from "../mdx/provider"
 import { createMdxPlugin } from "./mdx-plugin"
@@ -33,6 +34,7 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
+  vi.restoreAllMocks()
   await server?.close()
   await fs.rm(tempDirectory, { force: true, recursive: true })
 })
@@ -335,3 +337,44 @@ const layoutModule =
   `import { jsx } from "react/jsx-runtime";\n` +
   `export default function Layout({ children }) { ` +
   `return jsx("main", { "data-layout": "imported", children }); }\n`
+
+describe("compiled route cache", () => {
+  it("compiles a route once for every plugin instance and request variant", async () => {
+    const prepare = vi.spyOn(JsxCompiler.prototype, "prepare")
+    const id = path.join(tempDirectory, "cached.mdx")
+    const first = await transformRoute(createMdxPlugin(undefined), "# Cached", id)
+    const variant = await transformRoute(
+      createMdxPlugin(undefined),
+      "# Cached",
+      `${id}?__react-router-build-client-route`
+    )
+
+    expect(prepare).toHaveBeenCalledTimes(1)
+    expect(variant.code).toBe(first.code)
+
+    const changed = await transformRoute(createMdxPlugin(undefined), "# Changed", id)
+    const other = await transformRoute(createMdxPlugin({ headingOffset: 1 }), "# Changed", id)
+
+    expect(prepare).toHaveBeenCalledTimes(3)
+    expect(changed.code).not.toBe(first.code)
+    expect(other.code).not.toBe(changed.code)
+  })
+})
+
+async function transformRoute(
+  plugin: Plugin,
+  source: string,
+  id: string
+): Promise<{ code: string }> {
+  const hook = typeof plugin.transform === "function" ? plugin.transform : plugin.transform?.handler
+  if (hook == null) throw new Error("The Ferromark plugin has no transform hook.")
+  const result: unknown = await Reflect.apply(hook, {}, [source, id])
+  if (!isTransformResult(result)) throw new Error("Expected compiled route code.")
+  return result
+}
+
+function isTransformResult(value: unknown): value is { code: string } {
+  return (
+    typeof value === "object" && value !== null && "code" in value && typeof value.code === "string"
+  )
+}

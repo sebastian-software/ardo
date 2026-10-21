@@ -314,3 +314,59 @@ function delayNextExtraction() {
   })
   return { started, release, extraction }
 }
+
+describe("shared native extraction", () => {
+  it("reuses a build's extraction for later config evaluations and stops its compiler early", async () => {
+    const extract = vi.spyOn(NativeApiProject.prototype, "extract")
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    await configure(createApiPlugin(true), "build")
+    expect(close).toHaveBeenCalledTimes(1)
+    // React Router's child compiler and prerender server evaluate the config again.
+    await configure(createApiPlugin(true), "serve")
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(await readPage()).toContain("Read a value.")
+  })
+
+  it("keeps the development compiler for the attached server and shares it with later instances", async () => {
+    const extract = vi.spyOn(NativeApiProject.prototype, "extract")
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    const plugin = createApiPlugin(true)
+    await configure(plugin, "serve")
+    const { watcher } = attachServer(plugin)
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(1)
+    expect(close).not.toHaveBeenCalled()
+    const source = path.join(temporary, "src/index.ts")
+    await fs.writeFile(source, "/** Shared documentation. */\nexport function read() { return 1; }")
+    watcher.emit("change", source)
+    await expect.poll(readPage, pollOptions).toContain("Shared documentation.")
+    await closePlugin(plugin)
+    expect(close).toHaveBeenCalledTimes(1)
+    // A server started after the previous one closed compiles again.
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(3)
+  })
+})
+
+describe("compiler handover", () => {
+  it("keeps the compiler for a restarted server until the last holder closes", async () => {
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    const previous = createApiPlugin(true)
+    await configure(previous, "serve")
+    attachServer(previous)
+    // Vite creates the restarted server before it closes the previous one.
+    const next = createApiPlugin(true)
+    await configure(next, "serve")
+    const { watcher } = attachServer(next)
+    await closePlugin(previous)
+    expect(close).not.toHaveBeenCalled()
+    const source = path.join(temporary, "src/index.ts")
+    await fs.writeFile(source, "/** After restart. */\nexport function read() { return 1; }")
+    watcher.emit("change", source)
+    await expect.poll(readPage, pollOptions).toContain("After restart.")
+    await closePlugin(next)
+    expect(close).toHaveBeenCalledTimes(1)
+  })
+})

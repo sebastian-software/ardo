@@ -1,9 +1,16 @@
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import type * as nodeFs from "node:fs"
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { ProjectPackages } from "./project-packages"
+
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof nodeFs>()
+  return { ...actual, realpathSync: vi.fn(actual.realpathSync) }
+})
 
 let parent: string
 let root: string
@@ -205,5 +212,21 @@ describe("documentation package ownership", () => {
         importer: path.join(root, "entry.js"),
       })
     }).toThrow(/Undeclared application dependency "minisearch"/u)
+  })
+})
+
+describe("filesystem lookups", () => {
+  it("resolves each path once for repeated checks", () => {
+    writePackage("docs", { dependencies: { dependency: "1" } })
+    writePackage("docs/node_modules/dependency", { name: "dependency" })
+    const packages = new ProjectPackages(root)
+    const file = path.join(root, "node_modules/dependency/index.js")
+    const importer = path.join(root, "entry.js")
+    packages.checkFile(file, { importer })
+    const lookups = vi.mocked(realpathSync).mock.calls.length
+    expect(lookups).toBeGreaterThan(0)
+    packages.checkFile(file, { importer })
+    packages.checkFile(file, { importer })
+    expect(vi.mocked(realpathSync).mock.calls).toHaveLength(lookups)
   })
 })
