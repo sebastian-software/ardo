@@ -28,16 +28,6 @@ export type SearchDoc = {
   versionId?: string
 }
 
-export type SearchManifest = {
-  version: 2
-  recordCount: number
-  chunks: Array<{
-    byteSize: number
-    file: string
-    recordCount: number
-  }>
-}
-
 export async function generateSearchIndex(
   routesDir: string,
   options: RouteManifestOptions = {}
@@ -50,26 +40,6 @@ export function createSearchRecords(entries: RouteManifestEntry[]): SearchDoc[] 
   return entries
     .filter((entry) => isSearchableEntry(entry))
     .flatMap((entry) => createEntryRecords(entry))
-}
-
-export function createSearchAssets(entries: RouteManifestEntry[]): Array<{
-  fileName: string
-  source: string
-}> {
-  const records = createSearchRecords(entries)
-  const chunkFile = "search/chunk-0.json"
-  const chunkSource = `${JSON.stringify(records)}\n`
-  const chunkByteSize = new TextEncoder().encode(chunkSource).byteLength
-  const manifest: SearchManifest = {
-    version: 2,
-    recordCount: records.length,
-    chunks: [{ byteSize: chunkByteSize, file: chunkFile, recordCount: records.length }],
-  }
-
-  return [
-    { fileName: "search/manifest.json", source: `${JSON.stringify(manifest, null, 2)}\n` },
-    { fileName: chunkFile, source: chunkSource },
-  ]
 }
 
 function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
