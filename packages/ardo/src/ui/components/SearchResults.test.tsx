@@ -2,7 +2,8 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 
 import { defaultArdoLabels } from "../labels"
-import { getSearchResultContext, type SearchMatch, SearchResults } from "./SearchResults"
+import { getSearchResultContext, type SearchMatch } from "./search-result-text"
+import { SearchResults } from "./SearchResults"
 
 describe("SearchResults", () => {
   it("renders the empty state outside the live status node", () => {
