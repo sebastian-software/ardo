@@ -54,6 +54,11 @@ export type ArdoCodeBlockProps = {
   "data-label"?: string
   /** Show line numbers */
   lineNumbers?: boolean
+  /**
+   * Wrap long lines instead of scrolling sideways. Meant for prose, such as an
+   * agent prompt. Defaults to `true` for the `prompt` language.
+   */
+  wrap?: boolean
   /** Line numbers to highlight */
   highlightLines?: number[]
   /** Code as children — supports template literals with auto-outdent */
@@ -125,6 +130,7 @@ export function ArdoCodeBlock({
   title,
   "data-label": dataLabel,
   lineNumbers = false,
+  wrap = language === "prompt",
   highlightLines = EMPTY_HIGHLIGHT_LINES,
   children,
   __html,
@@ -146,6 +152,7 @@ export function ArdoCodeBlock({
       }
       data-lang={language}
       data-label={dataLabel}
+      data-wrap={wrap ? "" : undefined}
     >
       {hasTitle && <div className={`ardo-code-title ${styles.codeTitle}`}>{title}</div>}
       <div className={`ardo-code-wrapper ${styles.codeWrapper}`}>

@@ -12,12 +12,8 @@ Start with [Agent Instructions](/guide/agent-instructions) for a new site, an ex
 
 Give your coding agent this instruction together with the repository:
 
-```text
-Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
-then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the
-project and adapt the tested Basic example from the matching Ardo
-release tag. Preserve existing application behavior and deployment choices.
-Run the applicable typecheck, tests, and production build, and report the results.
+```prompt
+Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt, then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the project and adapt the tested Basic example from the matching Ardo release tag. Preserve existing application behavior and deployment choices. Run the applicable typecheck, tests, and production build, and report the results.
 ```
 
 Use `/v6/llms-full.txt` when the agent needs the complete documentation as Markdown. The unversioned text files follow the current major; use the versioned URLs for a repeatable setup. For development before a release, use the instructions, Basic example, and built package from the same checkout revision.
