@@ -16,6 +16,11 @@ export type ArdoMetaFunction = () => ArdoMetaDescriptor[]
 /** An error the page renders instead of its content, such as a missing route. */
 export type ArdoPageError = { status: number; message?: string } | Error
 
+/** Whether the page error is a missing page rather than a render error. */
+export function isArdoNotFound(error: ArdoPageError | undefined): boolean {
+  return error != null && !(error instanceof Error) && error.status === 404
+}
+
 /** What Ardo knows about the page it renders. */
 export type ArdoPage = {
   /** Public base path of the site, with leading and trailing slash. */

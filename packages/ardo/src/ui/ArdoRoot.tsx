@@ -218,6 +218,7 @@ export function ArdoRoot({
   children,
 }: ArdoRootProps) {
   const pathname = useArdoPath()
+  const isErrorPage = useArdoPage().error != null
   const layout = useRouteLayout()
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
@@ -225,7 +226,8 @@ export function ArdoRoot({
   // Bare layout: no sidebar, no section tabs — used for the home page and any
   // other marketing-style routes (TSX or MDX). Falls back to the legacy
   // hardcoded home detection if a route hasn't opted in via `handle.layout`.
-  const isBareLayout = layout === "bare" || pathname === "/" || pathname === ""
+  // A missing page keeps the header and footer but has no section to show in the sidebar.
+  const isBareLayout = layout === "bare" || pathname === "/" || pathname === "" || isErrorPage
   const sidebar = useMemo(
     (): ReactNode => withGeneratedSections(chrome.sidebar, config, pathname),
     [chrome.sidebar, config, pathname]

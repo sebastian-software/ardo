@@ -1,5 +1,5 @@
 import { ArdoLink } from "../runtime/page"
-import { type ArdoPageError, useArdoPage } from "../runtime/page-context"
+import { type ArdoPageError, isArdoNotFound, useArdoPage } from "../runtime/page-context"
 
 import * as styles from "./ErrorBoundary.css"
 import { ArdoOwlMark } from "./OwlMark"
@@ -51,7 +51,10 @@ const defaults = {
 export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
   const { error } = useArdoPage()
   const status = isStatusError(error) ? error.status : undefined
-  const is404 = status === 404
+  const is404 = isArdoNotFound(error)
+  // A missing page renders inside the site's root, which provides the main
+  // landmark. A render error replaces the root, so this page brings its own.
+  const Container = is404 ? "div" : "main"
 
   const copy = is404
     ? { ...defaults.notFound, ...props.notFound }
@@ -61,7 +64,7 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
   const errorDetails = is404 ? undefined : formatErrorDetails(error)
 
   return (
-    <main className={styles.root}>
+    <Container className={is404 ? `${styles.root} ${styles.inRoot}` : styles.root}>
       <section className={styles.card}>
         <ArdoOwlMark size={120} className={styles.owl} />
         <p className={styles.status}>{statusLabel}</p>
@@ -90,7 +93,7 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
           </details>
         )}
       </section>
-    </main>
+    </Container>
   )
 }
 

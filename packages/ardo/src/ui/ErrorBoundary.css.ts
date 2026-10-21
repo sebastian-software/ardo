@@ -10,6 +10,11 @@ export const root = style({
   padding: `${vars.space["3xl"]} ${vars.space.lg}`,
 })
 
+// Inside the site chrome the header and footer already take up room.
+export const inRoot = style({
+  minHeight: "60vh",
+})
+
 export const card = style({
   display: "flex",
   flexDirection: "column",
