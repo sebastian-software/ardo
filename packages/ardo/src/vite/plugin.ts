@@ -17,7 +17,7 @@ import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
-import { reportLinkDiagnostics } from "./link-diagnostics"
+import { reportOrDeferLinkDiagnostics } from "./link-diagnostics"
 import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
@@ -179,7 +179,10 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       )
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
-      reportLinkDiagnostics(this, manifest, resolvedConfig)
+      reportOrDeferLinkDiagnostics(this, manifest, {
+        config: resolvedConfig,
+        clientDir: outputOptions.dir,
+      })
       await runArdoLifecyclePhase("outputs:emit", () => {
         for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })

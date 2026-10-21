@@ -1,7 +1,10 @@
 import { realpathSync } from "node:fs"
+import { mkdtemp, rm } from "node:fs/promises"
+import { tmpdir } from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { checkBuildOutput } from "./build-check"
 import { CliUsageError, getPreviewHelp, startPreview } from "./preview"
 import {
   type ChildExit,
@@ -9,6 +12,7 @@ import {
   resolveArdoVersion,
   runReactRouterCommand,
 } from "./process"
+import { ARDO_BUILD_INFO_ENV } from "../vite/build-info"
 import { prepareProjectConfig } from "./project-config"
 
 export type CliOutcome = { type: "exit"; code: number } | { type: "signal"; signal: NodeJS.Signals }
@@ -91,6 +95,7 @@ async function runKnownCommand(
   runtime: CliRuntime
 ): Promise<CliOutcome> {
   if (command === "preview") return runPreviewCommand(args, runtime)
+  if (command === "build") return runBuildCommand(args, runtime)
 
   try {
     return childExitOutcome(
@@ -102,6 +107,27 @@ async function runKnownCommand(
   } catch (error) {
     runtime.stderr.write(`Ardo ${command} failed: ${errorMessage(error)}\n`)
     return { type: "exit", code: 1 }
+  }
+}
+
+async function runBuildCommand(args: readonly string[], runtime: CliRuntime): Promise<CliOutcome> {
+  const report = await mkdtemp(path.join(tmpdir(), "ardo-build-"))
+  const infoFile = path.join(report, "build-info.json")
+  try {
+    const outcome = childExitOutcome(
+      await runtime.runReactRouter("build", args, {
+        cwd: runtime.cwd,
+        prepareProjectConfig: runtime.prepareProjectConfig,
+        env: { [ARDO_BUILD_INFO_ENV]: infoFile },
+      })
+    )
+    if (outcome.type !== "exit" || outcome.code !== 0) return outcome
+    return checkBuildOutput(infoFile, runtime)
+  } catch (error) {
+    runtime.stderr.write(`Ardo build failed: ${errorMessage(error)}\n`)
+    return { type: "exit", code: 1 }
+  } finally {
+    await rm(report, { recursive: true, force: true })
   }
 }
 
