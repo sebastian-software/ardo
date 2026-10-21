@@ -1,7 +1,7 @@
 /**
- * Re-exports all Lucide React icons for convenience.
- * Brand icons removed from Lucide React v1 are provided by Ardo.
- * Import only the icons you need for optimal tree-shaking.
+ * Selected Streamline Core Line icons for Ardo content, plus brand icons.
+ * The 50 Core icons are available by name in MDX without registration.
+ * Streamline icons are covered by ICONS-LICENSE.md.
  *
  * @example
  * ```tsx
@@ -9,8 +9,6 @@
  *
  * <Zap size={24} />
  * ```
- *
- * @see https://lucide.dev/icons for available Lucide icons
  */
 export {
   Github,
@@ -24,4 +22,56 @@ export {
   Youtube,
   YoutubeIcon,
 } from "../ui/brand-icons"
-export * from "lucide-react"
+export {
+  Archive,
+  ArrowRight,
+  Bookmark,
+  BookOpen,
+  Branch,
+  Bug,
+  Check,
+  Clock,
+  Cloud,
+  Code,
+  Copy,
+  Database,
+  Download,
+  ExternalLink,
+  FileCode,
+  FileText,
+  Flag,
+  Folder,
+  Globe,
+  Help,
+  History,
+  Image,
+  Info,
+  Languages,
+  Layers,
+  LayoutGrid,
+  Lightbulb,
+  Link,
+  List,
+  ListChecks,
+  Lock,
+  MessageCircle,
+  Package,
+  Pencil,
+  Plug,
+  Rocket,
+  Search,
+  Server,
+  Settings,
+  ShieldCheck,
+  Table,
+  Terminal,
+  TestTube,
+  TriangleAlert,
+  Upload,
+  User,
+  Users,
+  Workflow,
+  Wrench,
+  Zap,
+} from "../ui/content-icons"
+export type { CoreIconProps } from "../ui/content-icons"

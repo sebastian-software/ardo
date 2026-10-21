@@ -169,7 +169,7 @@ props create the rail item, and the section children create the panel.
 
 ```tsx
 import { ArdoGeneratedSidebar, ArdoSidebar, ArdoSidebarSection } from "ardo/ui"
-import { BookOpen, Code2 } from "lucide-react"
+import { BookOpen, Code } from "ardo/icons"
 ;<ArdoSidebar>
   <ArdoSidebarSection
     id="guide"
@@ -180,7 +180,7 @@ import { BookOpen, Code2 } from "lucide-react"
     <ArdoGeneratedSidebar section="guide" />
   </ArdoSidebarSection>
 
-  <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code2 size={18} />}>
+  <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code size={18} />}>
     <ArdoGeneratedSidebar section="api-reference" />
   </ArdoSidebarSection>
 </ArdoSidebar>

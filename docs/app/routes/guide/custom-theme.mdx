@@ -515,15 +515,11 @@ fully custom root layout or an isolated component preview.
 
 ## Icon Registration
 
-MDX content and UI components can refer to registered icon names. Register icons once in
-`app/root.tsx`, then use the names through `ArdoIcon`, component `icon` props, or the MDX `<Icon />`
-component:
+All 50 built-in [Core icons](/guide/icons) are available automatically through `ArdoIcon`, component
+`icon` props, and the MDX `<Icon />` component:
 
 ```tsx
-import { ArdoIcon, registerIcons } from "ardo/ui"
-import { Code2, Rocket } from "lucide-react"
-
-registerIcons({ Code2, Rocket })
+import { ArdoIcon } from "ardo/ui"
 
 export function LaunchLink() {
   return (
@@ -534,8 +530,9 @@ export function LaunchLink() {
 }
 ```
 
-`getRegisteredIconNames()` returns the current registry keys when you need to validate user-facing
-configuration.
+`registerIcons()` adds custom React SVG components or overrides a built-in name. Call it once in
+`app/root.tsx` before rendering content. `getRegisteredIconNames()` returns the built-in and custom
+registry keys when you need to validate user-facing configuration.
 
 ## Full Custom Theme
 

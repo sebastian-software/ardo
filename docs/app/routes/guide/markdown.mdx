@@ -397,23 +397,14 @@ its child and styles it as a step-by-step sequence.
 
 ## Icons
 
-Use `Icon` when MDX content needs a registered SVG icon by name. Icons are opt-in: register only the
-icons your site uses, usually in `root.tsx` or another file that runs before MDX pages render.
-
-```tsx
-import { registerIcons } from "ardo/ui"
-import { Code2, Rocket, Zap } from "lucide-react"
-
-registerIcons({ Code2, Rocket, Zap })
-```
-
-Once registered, the same names are available in MDX:
+Ardo includes 50 [Streamline Core icons](/guide/icons), available in MDX without imports or registration.
+Use `<Icon name="Zap" />` directly, or pass a built-in name to a component's `icon` prop:
 
 <CardGroup cols={3}>
   <Card title="Fast authoring" icon="Zap">
     Use Markdown until a page needs richer React components.
   </Card>
-  <Card title="API-ready" icon="Code2">
+  <Card title="API-ready" icon="Code">
     Combine written guides with generated API reference pages.
   </Card>
   <Card title="Launchable" icon="Rocket">

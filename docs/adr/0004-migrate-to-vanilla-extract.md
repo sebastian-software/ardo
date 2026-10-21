@@ -24,7 +24,7 @@ Migrate all styles to Vanilla Extract with co-located `.css.ts` files next to ea
 - **30+ new `.css.ts` files** created (Footer, Header, Sidebar, CodeBlock, Tabs, Hero, Features, etc.)
 - **`styles.css` deleted** (2,800 lines)
 - **Design token system** introduced: `contract.css.ts`, `light.css.ts`, `dark.css.ts`, `reset.css.ts`, `animations.css.ts`
-- **lucide-react** replaces custom CSS mask icons
+- **Inline React SVG icons** replace custom CSS mask icons
 - Vanilla Extract plugin automatically integrated into `ardo()`
 
 ### Benefits

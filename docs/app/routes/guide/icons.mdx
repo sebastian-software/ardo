@@ -1,0 +1,135 @@
+---
+title: Icons
+description: Choose Streamline Core icons for cards, navigation, and documentation content.
+order: 3.5
+---
+
+# Icons
+
+Ardo includes 50 [Streamline Core Line](https://streamlinehq.com/icons/core-line) icons for documentation content. They share the same 14 × 14 grid, rounded strokes, and `currentColor` as the built-in sidebar and header controls.
+
+## Choose an icon
+
+Use these names when importing from `ardo/icons` or referring to an icon in MDX. Each icon below is rendered at 20 px.
+
+### Content and navigation
+
+| Icon                                   | Export         | Suggested use                            |
+| -------------------------------------- | -------------- | ---------------------------------------- |
+| <Icon name="Archive" size={20} />      | `Archive`      | Archived pages and past releases         |
+| <Icon name="ArrowRight" size={20} />   | `ArrowRight`   | Next steps and calls to action           |
+| <Icon name="Bookmark" size={20} />     | `Bookmark`     | Reference material and saved information |
+| <Icon name="BookOpen" size={20} />     | `BookOpen`     | Guides and tutorials                     |
+| <Icon name="Copy" size={20} />         | `Copy`         | Copying snippets and values              |
+| <Icon name="Download" size={20} />     | `Download`     | Downloads and exported artifacts         |
+| <Icon name="ExternalLink" size={20} /> | `ExternalLink` | Links to external resources              |
+| <Icon name="FileText" size={20} />     | `FileText`     | Documents and written content            |
+| <Icon name="Folder" size={20} />       | `Folder`       | Directories and content collections      |
+| <Icon name="Image" size={20} />        | `Image`        | Screenshots and visual assets            |
+| <Icon name="Link" size={20} />         | `Link`         | Cross-references and related resources   |
+| <Icon name="List" size={20} />         | `List`         | Lists and tables of contents             |
+| <Icon name="Table" size={20} />        | `Table`        | Structured data and comparisons          |
+| <Icon name="Upload" size={20} />       | `Upload`       | Uploads and imported content             |
+
+### Development and delivery
+
+| Icon                               | Export     | Suggested use                                  |
+| ---------------------------------- | ---------- | ---------------------------------------------- |
+| <Icon name="Branch" size={20} />   | `Branch`   | Branches, forks, and version-control workflows |
+| <Icon name="Bug" size={20} />      | `Bug`      | Known issues and debugging                     |
+| <Icon name="Code" size={20} />     | `Code`     | Code examples and API reference                |
+| <Icon name="FileCode" size={20} /> | `FileCode` | Source files and configuration examples        |
+| <Icon name="Package" size={20} />  | `Package`  | Packages and dependencies                      |
+| <Icon name="Plug" size={20} />     | `Plug`     | Integrations and connections                   |
+| <Icon name="Rocket" size={20} />   | `Rocket`   | Launches and deployment                        |
+| <Icon name="Terminal" size={20} /> | `Terminal` | Command-line tools and shell examples          |
+| <Icon name="TestTube" size={20} /> | `TestTube` | Tests and experiments                          |
+| <Icon name="Zap" size={20} />      | `Zap`      | Speed and quick actions                        |
+
+### Infrastructure and security
+
+| Icon                                  | Export        | Suggested use                          |
+| ------------------------------------- | ------------- | -------------------------------------- |
+| <Icon name="Cloud" size={20} />       | `Cloud`       | Cloud hosting and managed services     |
+| <Icon name="Database" size={20} />    | `Database`    | Data storage and persistence           |
+| <Icon name="Globe" size={20} />       | `Globe`       | Websites and global availability       |
+| <Icon name="Layers" size={20} />      | `Layers`      | Architecture and layered systems       |
+| <Icon name="Lock" size={20} />        | `Lock`        | Authentication and access control      |
+| <Icon name="Server" size={20} />      | `Server`      | Servers and backend services           |
+| <Icon name="ShieldCheck" size={20} /> | `ShieldCheck` | Security checks and quality guarantees |
+
+### People and communication
+
+| Icon                                    | Export          | Suggested use                       |
+| --------------------------------------- | --------------- | ----------------------------------- |
+| <Icon name="Languages" size={20} />     | `Languages`     | Translations and localization       |
+| <Icon name="MessageCircle" size={20} /> | `MessageCircle` | Community, feedback, and discussion |
+| <Icon name="User" size={20} />          | `User`          | User accounts and profiles          |
+| <Icon name="Users" size={20} />         | `Users`         | Teams and collaborators             |
+
+### Guidance and discovery
+
+| Icon                                    | Export          | Suggested use                      |
+| --------------------------------------- | --------------- | ---------------------------------- |
+| <Icon name="Flag" size={20} />          | `Flag`          | Getting started and milestones     |
+| <Icon name="Help" size={20} />          | `Help`          | FAQs and support                   |
+| <Icon name="Info" size={20} />          | `Info`          | Context and explanatory notes      |
+| <Icon name="Lightbulb" size={20} />     | `Lightbulb`     | Concepts and tips                  |
+| <Icon name="Search" size={20} />        | `Search`        | Discovery and troubleshooting      |
+| <Icon name="TriangleAlert" size={20} /> | `TriangleAlert` | Warnings and important limitations |
+
+### Planning and maintenance
+
+| Icon                                 | Export       | Suggested use                          |
+| ------------------------------------ | ------------ | -------------------------------------- |
+| <Icon name="Check" size={20} />      | `Check`      | Completed steps and successful results |
+| <Icon name="Clock" size={20} />      | `Clock`      | Timing and recent changes              |
+| <Icon name="History" size={20} />    | `History`    | Changelogs and revision history        |
+| <Icon name="LayoutGrid" size={20} /> | `LayoutGrid` | Components and feature collections     |
+| <Icon name="ListChecks" size={20} /> | `ListChecks` | Checklists and setup requirements      |
+| <Icon name="Pencil" size={20} />     | `Pencil`     | Editing and contributions              |
+| <Icon name="Settings" size={20} />   | `Settings`   | Settings and configuration             |
+| <Icon name="Workflow" size={20} />   | `Workflow`   | Processes and automation               |
+| <Icon name="Wrench" size={20} />     | `Wrench`     | Configuration and maintenance          |
+
+## Use in React
+
+```tsx
+import { BookOpen, Rocket, ShieldCheck } from "ardo/icons"
+
+<BookOpen size={20} />
+<Rocket size={28} className="launch-icon" />
+<ShieldCheck size={20} aria-label="Security checks passed" />
+```
+
+The default size is 24 px. Set `size` to a number or CSS length, or pass native `width` and `height` attributes. Icons inherit the surrounding text color. They are decorative by default; supply `aria-label` or `aria-labelledby` when the icon conveys information without accompanying text.
+
+## Use in MDX
+
+All 50 Core icons are available automatically. Use their names directly without imports or a registration call:
+
+```mdx
+<Icon name="Zap" size={20} />
+<Card title="Deploy your site" icon="Rocket">
+  Build the static output and publish it to your host.
+</Card>
+```
+
+## Add or override icons
+
+Use `registerIcons()` in `app/root.tsx` to add other React SVG components or brand icons:
+
+```tsx
+import { Github } from "ardo/icons"
+import { registerIcons } from "ardo/ui"
+
+registerIcons({ Github })
+```
+
+Then use `<Icon name="Github" />` in MDX. Registering an existing name overrides its built-in component. For icons from another library, declare that library as a direct dependency and import its components in your registration module.
+
+## Brand icons and usage terms
+
+`Github`, `Linkedin`, `Npm`, `Twitter`, and `Youtube` are also available from `ardo/icons`, with matching `Icon` aliases such as `GithubIcon`. Brand marks retain their own proportions and colors follow `currentColor`.
+
+Core icons are © Streamline Design Inc., used under the Streamline Premium License for use as part of Ardo. They are not covered by Ardo's MIT license. See [ICONS-LICENSE.md](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/ICONS-LICENSE.md) for redistribution terms and attribution.

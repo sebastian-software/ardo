@@ -7,16 +7,12 @@ import {
   ArdoHeaderActions,
   ArdoSidebar,
   ArdoSocialLink,
-  registerIcons,
 } from "ardo/ui"
-import { Code2, Rocket, Zap } from "lucide-react"
 import config from "virtual:ardo/config"
 import "ardo/ui/styles.css"
 import "./theme.css"
 
 import logo from "./assets/logo.svg"
-
-registerIcons({ Code2, Rocket, Zap })
 
 export const meta: ArdoMetaFunction = () => [
   { title: "Ardo" },

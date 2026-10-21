@@ -30,9 +30,17 @@ Delete these files. Ardo now provides what they did:
 | `app/routes.ts`          | A virtual route table that Ardo generates from `app/routes/`.          |
 | `.react-router/`         | Nothing. Remove it from `.gitignore` and from `tsconfig.json`.         |
 
-Also remove `react-router`, `@react-router/dev`, `@react-router/node`, and `isbot` from `package.json` if the project declared them. Ardo manages React, React DOM, Vite, and lucide-react as its own dependencies. If `tsconfig.json` lists `.react-router/types` in `include` or `rootDirs`, remove it.
+Also remove `react-router`, `@react-router/dev`, `@react-router/node`, and `isbot` from `package.json` if the project declared them. Ardo manages React, React DOM, and Vite as its own dependencies. If `tsconfig.json` lists `.react-router/types` in `include` or `rootDirs`, remove it.
 
 Customized entry files have no direct replacement. Move provider setup into the root component, and move document-level markup into a `Layout` export (see below).
+
+## Update content icons
+
+`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
+
+All 50 Core icons are registered automatically. Remove their imports and `registerIcons()` calls from `app/root.tsx`; keep registration calls for additional custom icons. Use `Code` where an older example used `Code2`, including `<Icon name="Code" />` and `<Card icon="Code">` in MDX.
+
+The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/icons) for all included motifs and their usage terms.
 
 ## Update `app/root.tsx`
 

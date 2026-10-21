@@ -16,7 +16,6 @@ describe("managed runtime packages", () => {
     ["react/jsx-runtime", "react"],
     ["react/jsx-runtime?direct", "react"],
     ["react-dom/client", "react-dom"],
-    ["lucide-react", "lucide-react"],
     ["vite", "vite"],
   ])("recognizes %s as part of %s", (id, name) => {
     expect(getManagedRuntimePackageName(id)).toBe(name)
@@ -34,12 +33,7 @@ describe("managed runtime packages", () => {
   })
 
   it("keeps the Ardo-owned package list explicit", () => {
-    expect(getManagedRuntimePackageNames()).toStrictEqual([
-      "react",
-      "react-dom",
-      "lucide-react",
-      "vite",
-    ])
+    expect(getManagedRuntimePackageNames()).toStrictEqual(["react", "react-dom", "vite"])
   })
 
   it("finds the Ardo package containing this resolver", () => {

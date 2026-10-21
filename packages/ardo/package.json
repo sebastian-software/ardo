@@ -102,7 +102,7 @@
     "dev": "tsdown --watch",
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
-    "icons:generate": "svgr --out-dir src/ui/icons/sections .icon-sources/sections && svgr --out-dir src/ui/icons/chrome .icon-sources/chrome && oxlint --fix src/ui/icons/sections src/ui/icons/chrome && prettier --write src/ui/icons"
+    "icons:generate": "svgr --out-dir src/ui/icons/sections .icon-sources/sections && svgr --out-dir src/ui/icons/chrome .icon-sources/chrome && svgr --out-dir src/ui/icons/content .icon-sources/content && oxlint --fix src/ui/icons/sections src/ui/icons/chrome src/ui/icons/content && prettier --write src/ui/icons"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -117,7 +117,6 @@
     "@vitejs/plugin-react": "^6.1.2",
     "ferromark": "^3.5.1",
     "htmlparser2": "^12.0.0",
-    "lucide-react": "^1.59.0",
     "minisearch": "^7.2.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",

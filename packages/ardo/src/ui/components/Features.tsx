@@ -18,7 +18,7 @@ export type ArdoFeaturesProps = {
 export type ArdoFeatureCardProps = {
   /** Feature title */
   title: string
-  /** Icon as ReactNode (emoji, Lucide icon component, or any JSX) */
+  /** Icon as ReactNode (emoji, SVG icon component, or any JSX) */
   icon?: ReactNode
   /** Feature description as children */
   children: ReactNode
@@ -35,7 +35,7 @@ export type ArdoFeatureCardProps = {
  *
  * @example
  * ```tsx
- * import { Zap } from "lucide-react"
+ * import { Zap } from "ardo/icons"
  *
  * <ArdoFeatureCard title="Fast" icon={<Zap size={28} />}>
  *   Lightning fast builds with Vite
