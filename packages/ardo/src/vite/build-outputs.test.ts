@@ -299,24 +299,10 @@ describe("build outputs", () => {
     expect(llmsFull?.source).not.toContain("export default function Home")
   })
 
-  it("emits static search manifest and chunk assets from route metadata", () => {
+  it("leaves search records to the client's search index chunk", () => {
     const assets = createBuildOutputAssets(entries, baseConfig)
 
-    expect(
-      JSON.parse(assets.find((asset) => asset.fileName === "search/manifest.json")?.source ?? "{}")
-    ).toStrictEqual({
-      version: 2,
-      recordCount: 1,
-      chunks: [{ byteSize: expect.any(Number), file: "search/chunk-0.json", recordCount: 1 }],
-    })
-    expect(
-      JSON.parse(assets.find((asset) => asset.fileName === "search/chunk-0.json")?.source ?? "[]")
-    ).toContainEqual(
-      expect.objectContaining({
-        pageTitle: "Guide",
-        publicPath: "/docs/guide#guide",
-      })
-    )
+    expect(assets.filter((asset) => asset.fileName.startsWith("search/"))).toStrictEqual([])
   })
 
   it("allows llms generation to be disabled or customized", () => {
