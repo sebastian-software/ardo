@@ -111,6 +111,17 @@ export const searchResultSection = style({
   color: vars.color.textLighter,
 })
 
+export const searchResultExcerpt = style({
+  display: "-webkit-box",
+  marginTop: "2px",
+  overflow: "hidden",
+  fontSize: vars.fontSize.xs,
+  lineHeight: 1.5,
+  color: vars.color.textLight,
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: 2,
+})
+
 export const searchNoResults = style({
   display: "flex",
   flexDirection: "column",

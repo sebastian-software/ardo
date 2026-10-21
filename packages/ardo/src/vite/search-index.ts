@@ -179,10 +179,15 @@ function appendAnchor(routePath: string, anchor: string | undefined): string {
   return anchor == null ? routePath : `${routePath}#${anchor}`
 }
 
+// The `| --- | :---: |` row under a table header. It is syntax, not text, and
+// would otherwise show up in result excerpts.
+const TABLE_DELIMITER_ROW = /^[ \t]*\|?(?:[ \t]*:?-+:?[ \t]*\|)+[ \t]*(?::?-+:?[ \t]*)?$/gmu
+
 function sanitizeSearchContent(content: string): string {
   const withoutCodeFences = removeCodeFences(content)
   const withoutImportLines = removeImportLines(withoutCodeFences)
-  const normalizedText = replacePunctuationWithSpaces(withoutImportLines)
+  const withoutTableRules = withoutImportLines.replaceAll(TABLE_DELIMITER_ROW, "")
+  const normalizedText = replacePunctuationWithSpaces(withoutTableRules)
   const collapsedWhitespace = collapseWhitespace(normalizedText)
   return collapsedWhitespace.slice(0, 2000)
 }
