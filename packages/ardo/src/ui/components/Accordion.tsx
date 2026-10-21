@@ -35,7 +35,7 @@ export type ArdoAccordionProps = {
   children: ReactNode
   /** Whether the accordion starts open. */
   defaultOpen?: boolean
-  /** Optional registered icon name or custom React node shown before the title. */
+  /** Optional built-in or custom registered icon name, or a React node shown before the title. */
   icon?: ReactNode | string
   /** Heading level used for the accordion trigger. */
   headingLevel?: ArdoAccordionHeadingLevel

@@ -93,7 +93,7 @@ describe("runtime and bare-layout regression build", () => {
     const files = fs.readdirSync(serverDir, { recursive: true }).map(String)
     for (const file of files.filter((file) => file.endsWith(".js"))) {
       expect(fs.readFileSync(path.join(serverDir, file), "utf8")).not.toMatch(
-        /^\s*import[^;\n]*from ["'](?:react(?:-dom|-router)?|lucide-react|@base-ui\/react)(?:\/[^"']*)?["']/m
+        /^\s*import[^;\n]*from ["'](?:react(?:-dom|-router)?|@base-ui\/react)(?:\/[^"']*)?["']/m
       )
     }
   })

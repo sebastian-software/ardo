@@ -1,5 +1,7 @@
 import { type ComponentType, createElement, type ReactNode, type SVGAttributes } from "react"
 
+import * as builtinIcons from "../content-icons"
+
 type IconComponent = ComponentType<{ size?: number } & SVGAttributes<SVGSVGElement>>
 
 export type ArdoIconProps = {
@@ -9,20 +11,20 @@ export type ArdoIconProps = {
   size?: number
 } & SVGAttributes<SVGSVGElement>
 
-// Icon registry - users register only the icons they need
-const iconRegistry = new Map<string, IconComponent>()
+// Core icons are available immediately; sites can add or override names.
+const iconRegistry = new Map<string, IconComponent>(Object.entries(builtinIcons))
 
 /**
- * Register icons for use with the Icon component.
- * Only registered icons are included in your bundle.
+ * Add custom icons or override built-in names for the Icon component.
+ * The 50 built-in Core icons are already registered.
  *
  * @example
  * ```tsx
  * // In your app's entry point or layout:
  * import { registerIcons } from "ardo/ui"
- * import { Zap, Rocket, Code } from "lucide-react"
+ * import { Github } from "ardo/icons"
  *
- * registerIcons({ Zap, Rocket, Code })
+ * registerIcons({ Github })
  * ```
  */
 export function registerIcons(icons: Record<string, IconComponent>): void {
@@ -40,27 +42,24 @@ export function getRegisteredIconNames(): string[] {
 
 /**
  * Renders a registered icon by name.
- * Icons must be registered first using `registerIcons()`.
+ * Built-in Core icons work immediately; register additional icons with `registerIcons()`.
  *
  * @example
  * ```tsx
- * // First register icons in your app:
- * import { registerIcons } from "ardo/ui"
- * import { Zap, Rocket } from "lucide-react"
- * registerIcons({ Zap, Rocket })
- *
- * // Then use in MDX:
+ * // Use built-in names directly in MDX:
  * <Icon name="Zap" size={24} />
  * <Icon name="Rocket" className="text-brand" />
  * ```
  *
- * @see https://lucide.dev/icons for available icon names
+ * @see ardo/icons for the built-in Streamline Core components
  */
 export function ArdoIcon({ name, ...props }: ArdoIconProps): ReactNode {
   const IconComp = iconRegistry.get(name)
 
   if (!IconComp) {
-    console.warn(`[Ardo] Icon "${name}" not found. Did you register it with registerIcons()?`)
+    console.warn(
+      `[Ardo] Icon "${name}" not found. Use a built-in Core icon or register it with registerIcons().`
+    )
     return null
   }
 

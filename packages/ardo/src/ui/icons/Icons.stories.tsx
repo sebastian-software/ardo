@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import type { ComponentType, SVGProps } from "react"
 
+import * as content from "../content-icons"
 import * as chrome from "./chrome"
 import * as sections from "./sections"
 
@@ -42,4 +43,9 @@ export const Sections: Story = {}
 /** Chrome icons at 14 px (header), 16 px (callouts) and doubled. */
 export const Chrome: Story = {
   args: { icons: chrome, sizes: [14, 16, 28] },
+}
+
+/** Icons available to documentation authors, at 20 px and 28 px. */
+export const Content: Story = {
+  args: { icons: content, sizes: [20, 28] },
 }

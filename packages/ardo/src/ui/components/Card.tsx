@@ -19,7 +19,7 @@ export type ArdoCardGroupProps = {
 export type ArdoCardProps = {
   /** Card title. */
   title: string
-  /** Optional registered icon name or custom React node. */
+  /** Optional built-in or custom registered icon name, or a React node. */
   icon?: ReactNode | string
   /** Card content. */
   children?: ReactNode

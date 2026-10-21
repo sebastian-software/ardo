@@ -4,7 +4,7 @@ import { existsSync, readFileSync, realpathSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
-const MANAGED_RUNTIME_PACKAGE_NAMES = ["react", "react-dom", "lucide-react", "vite"] as const
+const MANAGED_RUNTIME_PACKAGE_NAMES = ["react", "react-dom", "vite"] as const
 
 const managedRuntimePackageSet = new Set<string>(MANAGED_RUNTIME_PACKAGE_NAMES)
 

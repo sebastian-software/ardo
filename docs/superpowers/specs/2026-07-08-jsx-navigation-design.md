@@ -47,7 +47,7 @@ Ardo should expose compound components for site chrome:
       </ArdoSidebarGroup>
     </ArdoSidebarSection>
 
-    <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code2 />}>
+    <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code />}>
       <ArdoSidebarLink to="/api-reference">Overview</ArdoSidebarLink>
     </ArdoSidebarSection>
   </ArdoSidebar>

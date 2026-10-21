@@ -13,7 +13,7 @@ export type ArdoHeroAction = {
   link: RoutePath
   /** Visual theme: "brand" for primary, "alt" for secondary */
   theme?: "alt" | "brand"
-  /** Optional icon as ReactNode (e.g. Lucide icon component) */
+  /** Optional icon as ReactNode (e.g. a Streamline Core component) */
   icon?: ReactNode
 }
 
@@ -52,7 +52,7 @@ export type ArdoHeroProps = {
  *
  * @example
  * ```tsx
- * import { ArrowRight, Github } from "lucide-react"
+ * import { ArrowRight, Github } from "ardo/icons"
  *
  * <Hero
  *   name="Ardo"

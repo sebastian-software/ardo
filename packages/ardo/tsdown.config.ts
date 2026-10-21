@@ -57,7 +57,6 @@ export default defineConfig({
       "vite",
       /^@typescript\/native(?:\/|$)/,
       "tailwindcss",
-      "lucide-react",
       /^virtual:ardo\//,
     ],
   },

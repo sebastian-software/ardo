@@ -20,14 +20,8 @@ import { ArdoHeaderSearch } from "./components/HeaderSearch"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
 import * as styles from "./Header.css"
 import { type ArdoLogo, HeaderLogo } from "./HeaderLogo"
-import {
-  GithubIcon,
-  LinkedinIcon,
-  MessageCircleIcon,
-  NpmIcon,
-  TwitterIcon,
-  YoutubeIcon,
-} from "./icons"
+import { GithubIcon, LinkedinIcon, NpmIcon, TwitterIcon, YoutubeIcon } from "./brand-icons"
+import { MessageCircle } from "./content-icons"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
 import { getLocaleFromPath, getLocalizedPath, getVersionedPath } from "./version-path"
@@ -330,7 +324,7 @@ export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialL
 const socialIcons = {
   github: GithubIcon,
   twitter: TwitterIcon,
-  discord: MessageCircleIcon,
+  discord: MessageCircle,
   linkedin: LinkedinIcon,
   youtube: YoutubeIcon,
   npm: NpmIcon,

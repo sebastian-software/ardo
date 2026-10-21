@@ -108,8 +108,6 @@ describe("ArdoSidebar", () => {
 
     expect(view).toContain("sidebarNodeHeader")
     expect(view).not.toContain("sidebarTrunk")
-    expect(view).not.toContain("lucide-folder")
-    expect(view).not.toContain("lucide-file-text")
   })
 
   it("renders section tabs with visible labels and catalog icons", () => {
