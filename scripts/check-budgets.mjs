@@ -32,11 +32,12 @@ const routesDir = path.join(repoRoot, "docs", "app", "routes")
  */
 const budgets = {
   entryClientGzip: {
-    // Since Ardo 6 the client entry carries React DOM and Ardo's UI shell, which
-    // React Router's entry.client used to load from separate chunks.
+    // React has its own chunk, so it stays cached across deploys. The entry
+    // carries Ardo's UI shell, the site config, and the route table, and
+    // changes with every build. React DOM back in the entry would fail this.
     label: "entry-client gzip",
-    budget: 150_000,
-    baseline: "≈116 KB (2026-10, static site without React Router)",
+    budget: 50_000,
+    baseline: "≈25 KB (2026-10, React in its own chunk)",
   },
   eagerJsGzip: {
     // Union of JS referenced from all prerendered pages (script src +
