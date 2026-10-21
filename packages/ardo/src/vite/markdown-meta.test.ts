@@ -19,6 +19,22 @@ const config = resolveConfig(
   "/site"
 )
 
+function compileRoute(body: string): string {
+  return compileMdxRouteModule({
+    source: `---\ntitle: Upgrade\n---\n\n${body}`,
+    markdownConfig: undefined,
+    format: "mdx",
+    id: `${routesDir}/guide/upgrade.mdx`,
+  }).code
+}
+
+function metaOf(code: string) {
+  return transformMarkdownMeta(code, `${routesDir}/guide/upgrade.mdx`, {
+    routesDir,
+    resolvedConfig: config,
+  })
+}
+
 describe("transformMarkdownMeta", () => {
   it("adds Open Graph, Twitter, and canonical metadata from page and site defaults", () => {
     const result = transformMarkdownMeta(
@@ -198,19 +214,6 @@ describe("compiled route modules", () => {
 
     expect(result?.code).toContain('export const meta = () => [{ title: "Getting Started | Docs" }')
   })
-
-  const compileRoute = (body: string) =>
-    compileMdxRouteModule({
-      source: `---\ntitle: Upgrade\n---\n\n${body}`,
-      markdownConfig: undefined,
-      format: "mdx",
-      id: `${routesDir}/guide/upgrade.mdx`,
-    }).code
-  const metaOf = (code: string) =>
-    transformMarkdownMeta(code, `${routesDir}/guide/upgrade.mdx`, {
-      routesDir,
-      resolvedConfig: config,
-    })
 
   it("still adds meta when a code sample shows a meta export", () => {
     const code = compileRoute('```tsx\nexport const meta = () => [{ title: "Custom" }]\n```\n')

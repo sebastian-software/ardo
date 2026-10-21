@@ -218,12 +218,15 @@ function memberTable(rows: string[][]): string[] {
   const headers = described
     ? ["Name", "Type", "Required", "Description"]
     : ["Name", "Type", "Required"]
-  const line = (cells: string[]) => `| ${cells.join(" | ")} |`
   return [
-    line(headers),
-    line(headers.map(() => "---")),
-    ...rows.map((row) => line(row.slice(0, headers.length).map(cell))),
+    tableRow(headers),
+    tableRow(headers.map(() => "---")),
+    ...rows.map((row) => tableRow(row.slice(0, headers.length).map((value) => cell(value)))),
   ]
+}
+
+function tableRow(cells: string[]): string {
+  return `| ${cells.join(" | ")} |`
 }
 
 function propertyDescription(property: ApiProperty): string {
