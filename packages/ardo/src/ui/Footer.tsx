@@ -150,7 +150,7 @@ function FooterPrimaryLine({
   if (ardoLink)
     items.push(
       <a href="https://ardo-docs.dev" className={styles.footerArdoLink}>
-        <ArdoOwlMark size={16} className={styles.footerOwl} title="" />
+        <ArdoOwlMark size={16} className={styles.footerOwl} />
         {builtWithArdoLabel}
       </a>
     )

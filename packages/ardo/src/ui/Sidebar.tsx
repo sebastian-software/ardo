@@ -7,8 +7,10 @@ import {
   type ReactElement,
   type ReactNode,
   use,
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
 } from "react"
 
@@ -22,6 +24,7 @@ import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { resolveSectionIcon } from "./section-catalog"
 import * as styles from "./Sidebar.css"
+import { getSidebarScrollTop } from "./sidebar-scroll"
 import { type SidebarTabItem, SidebarTabs } from "./SidebarTabs"
 
 /** Internal page path such as `/guide`. */
@@ -126,6 +129,21 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
       : (findMatchingSidebarSection(sections, pathname) ?? sections[0])
   const tabItems = sections.map((section) => sectionToTabItem(section, section === activeSection))
   const contextValue = useMemo(() => ({ currentPath: pathname }), [pathname])
+  const navRef = useRef<HTMLElement>(null)
+
+  // Deep pages sit far down long trees, so bring the current link into view.
+  // Only the nav scrolls; scrollIntoView would move the page as well.
+  useEffect(() => {
+    const nav = navRef.current
+    const link = nav?.querySelector('a[aria-current="page"]')
+    if (nav == null || link == null) return
+    const scrollTop = getSidebarScrollTop(
+      nav.getBoundingClientRect(),
+      link.getBoundingClientRect(),
+      nav.scrollTop
+    )
+    if (scrollTop !== undefined) nav.scrollTop = scrollTop
+  }, [pathname])
 
   return (
     <SidebarContext value={contextValue}>
@@ -137,6 +155,7 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
             <div className={`ardo-sidebar-header ${styles.sidebarHeader}`}>{header}</div>
           )}
           <nav
+            ref={navRef}
             aria-label={labels.sidebar.mainNavigation}
             className={`ardo-sidebar-nav ${styles.sidebarNav}`}
           >

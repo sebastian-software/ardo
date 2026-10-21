@@ -14,20 +14,22 @@ const OWL_PATH =
  * The Ardo owl as a solid silhouette, drawn in `currentColor`. Used by the
  * default error and empty states and the "Built with Ardo" footer link. Set
  * `color` on the parent (or `style.color`) to recolor; set `title` to give
- * it accessible meaning.
+ * it accessible meaning. Without a title (or with an empty one) the mark is
+ * decorative and hidden from assistive technology.
  */
 export function ArdoOwlMark({ size = 96, title, ...props }: ArdoOwlMarkProps) {
+  const decorative = title == null || title === ""
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="136 113 1020 1020"
       width={size}
       height={size}
-      role={title == null ? "presentation" : "img"}
-      aria-hidden={title == null ? true : undefined}
+      role={decorative ? "presentation" : "img"}
+      aria-hidden={decorative ? true : undefined}
       {...props}
     >
-      {title == null ? null : <title>{title}</title>}
+      {decorative ? null : <title>{title}</title>}
       <path fill="currentColor" d={OWL_PATH} />
     </svg>
   )

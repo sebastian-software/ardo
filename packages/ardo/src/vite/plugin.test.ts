@@ -29,6 +29,30 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
   )
 }
 
+type TransformHandler = (code: string, id: string) => Promise<{ code: string } | undefined>
+
+type TransformHook = { transform: TransformHandler }
+
+type OrderedTransformHook = { transform: { order: string; handler: TransformHandler } }
+
+function hasTransformHook(plugin: Plugin): plugin is TransformHook & Plugin {
+  return typeof plugin.transform === "function"
+}
+
+function hasOrderedTransformHook(plugin: Plugin): plugin is OrderedTransformHook & Plugin {
+  return typeof plugin.transform === "object" && typeof plugin.transform.handler === "function"
+}
+
+function findPlugin<T>(
+  plugins: Plugin[],
+  name: string,
+  guard: (plugin: Plugin) => plugin is T & Plugin
+): T {
+  const plugin = plugins.find((entry) => entry.name === name)
+  if (plugin == null || !guard(plugin)) throw new Error(`Plugin ${name} not found`)
+  return plugin
+}
+
 describe("ardoPlugin", () => {
   it("installs managed runtime resolution before the remaining app plugins", () => {
     const plugins = ardoPlugin({ routes: false, icons: false })
@@ -44,6 +68,26 @@ describe("ardoPlugin", () => {
     expect(resolverIndex).toBeGreaterThan(boundaryIndex)
     expect(config.optimizeDeps?.exclude).toStrictEqual(["ardo/ui/styles.css"])
     expect(config.environments?.ssr.optimizeDeps?.exclude).toBeUndefined()
+  })
+
+  it("adds page meta to Markdown routes after Ferromark compiles them", async () => {
+    const plugins = ardoPlugin({ routes: false, icons: false, githubPages: false, title: "Docs" })
+    const meta = findPlugin(plugins, "ardo", hasOrderedTransformHook).transform
+    expect(meta.order).toBe("post")
+
+    findPlugin(plugins, "ardo", hasArdoPluginHooks).configResolved({
+      base: "/",
+      build: { ssr: false },
+      root: "/project",
+    })
+    const compile = findPlugin(plugins, "ardo:ferromark", hasTransformHook).transform
+    const id = "/project/app/routes/guide/start.mdx"
+    const source = "---\ntitle: Start\ndescription: Set up Docs.\n---\n\n# Start\n"
+    const compiled = await compile(source, id)
+    const result = await meta.handler(String(compiled?.code), id)
+
+    expect(result?.code).toContain('{ title: "Start | Docs" }')
+    expect(result?.code).toContain('{ name: "description", content: "Set up Docs." }')
   })
 
   it("isolates the docs dependency graph and preserves consumer options", () => {

@@ -2,6 +2,7 @@ import {
   Children,
   cloneElement,
   createContext,
+  Fragment,
   isValidElement,
   type KeyboardEvent,
   type ReactElement,
@@ -193,7 +194,18 @@ function assignImplicitValues(children: ReactNode, indexes: TabChildIndexes): Re
 
 function assignChildSequence(children: Iterable<ReactNode>, indexes: TabChildIndexes): ReactNode[] {
   const values: ReactNode[] = []
-  for (const child of children) values.push(assignImplicitValues(child, indexes))
+  for (const child of children) {
+    const value = assignImplicitValues(child, indexes)
+    // The clones render as one array, so each needs an explicit key. Children
+    // .toArray is not enough: React 19 still warns about the keys it invents.
+    values.push(
+      isValidElement(value) && value.key == null ? (
+        <Fragment key={`ardo-tabs-${values.length}`}>{value}</Fragment>
+      ) : (
+        value
+      )
+    )
+  }
   return values
 }
 

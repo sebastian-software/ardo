@@ -24,7 +24,8 @@ export const codeTitle = style({
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLight,
-  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
+  // Derived from the code surface, so a theme that recolors codeBg recolors the bar too.
+  background: `color-mix(in oklch, ${vars.color.codeBorder} 30%, ${vars.color.codeBg})`,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
