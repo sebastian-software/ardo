@@ -1,6 +1,6 @@
 import type { ReactNode } from "ardo/react"
 
-import { type MetaFunction, useLocation } from "ardo/router"
+import { type ArdoMetaFunction, useArdoPath } from "ardo/runtime"
 import {
   ArdoFooter,
   ArdoGeneratedSidebar,
@@ -17,14 +17,14 @@ import "ardo/ui/styles.css"
 
 import "./document-scroll.css"
 
-export const meta: MetaFunction = () => [{ title: "Ardo Basic Example" }]
+export const meta: ArdoMetaFunction = () => [{ title: "Ardo Basic Example" }]
 
 export function Layout({ children }: { children: ReactNode }) {
   return <ArdoRootLayout className="document-scroll-test">{children}</ArdoRootLayout>
 }
 
 export default function Root() {
-  const currentPathname = useLocation().pathname
+  const currentPathname = useArdoPath()
   const pathname =
     currentPathname.length > 1 && currentPathname.endsWith("/")
       ? currentPathname.slice(0, -1)

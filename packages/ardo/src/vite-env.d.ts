@@ -38,3 +38,12 @@ declare module "virtual:ardo/search-index" {
   const searchDocs: SearchDoc[]
   export default searchDocs
 }
+
+declare module "virtual:ardo/routes" {
+  import type { ArdoRootModule, ArdoRouteEntry } from "./runtime/routing"
+
+  /** `app/root.tsx`. */
+  export const rootModule: ArdoRootModule
+  /** Every page route, loaded lazily so each page gets its own chunk. */
+  export const routes: ArdoRouteEntry[]
+}

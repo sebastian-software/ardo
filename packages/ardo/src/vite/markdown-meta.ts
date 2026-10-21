@@ -1,7 +1,5 @@
 import type { MetadataConfig, ResolvedConfig } from "../config/types"
 
-import { extractFrontmatterValue } from "./route-frontmatter"
-import { getMarkdownFormat } from "./mdx-plugin"
 import { isPathInsideDirectory, normalizePath } from "./path-utils"
 
 type MarkdownMetaState = {
@@ -43,14 +41,22 @@ type ResolvedSocialMeta = {
   twitterTitle: string
 }
 
+type FrontmatterReadResult =
+  | {
+      found: false
+      nextIndex: number
+    }
+  | {
+      found: true
+      value: string | undefined
+    }
+
 export function transformMarkdownMeta(
   code: string,
   id: string,
   state: MarkdownMetaState
 ): { code: string; map: null } | undefined {
-  // React Router loads client route chunks under a query; they need meta too.
-  const path = id.split("?", 1)[0] ?? id
-  if (getMarkdownFormat(id) == null || !shouldInjectMeta(code, path, state)) {
+  if (!shouldInjectMeta(code, id, state)) {
     return undefined
   }
 
@@ -66,7 +72,7 @@ export function transformMarkdownMeta(
   const entries = buildMetaEntries({
     canonical: extractFrontmatterValue(code, "canonical"),
     pageTitle,
-    routePath: getRoutePathFromId(path, state.routesDir, state.resolvedConfig?.base ?? "/"),
+    routePath: getRoutePathFromId(id, state.routesDir, state.resolvedConfig?.base ?? "/"),
     siteMetadata: state.resolvedConfig?.metadata ?? {},
     siteUrl: state.resolvedConfig?.siteUrl ?? "",
     siteTitle,
@@ -84,8 +90,8 @@ export function transformMarkdownMeta(
   return { code: `${code}\nexport const meta = () => [${entries.join(", ")}];\n`, map: null }
 }
 
-function shouldInjectMeta(code: string, path: string, state: MarkdownMetaState): boolean {
-  return isPathInsideDirectory(path, state.routesDir) && !hasMetaExport(code)
+function shouldInjectMeta(code: string, id: string, state: MarkdownMetaState): boolean {
+  return isMarkdownFile(id) && isPathInsideDirectory(id, state.routesDir) && !hasMetaExport(code)
 }
 
 function buildMetaEntries(input: MetaInput): string[] {
@@ -168,8 +174,119 @@ function optionalCanonicalEntries(canonicalUrl?: string): string[] {
   ]
 }
 
+function isMarkdownFile(id: string): boolean {
+  return id.endsWith(".md") || id.endsWith(".mdx")
+}
+
 function hasMetaExport(code: string): boolean {
   return code.includes("export const meta") || code.includes("export function meta")
+}
+
+function extractFrontmatterValue(code: string, key: string): string | undefined {
+  // Compiled route modules keep their frontmatter in `_ardoFrontmatter`; an
+  // authored MDX export stays `frontmatter`.
+  const markers = ["export const frontmatter", "const _ardoFrontmatter"]
+  const frontmatterStart = markers
+    .map((marker) => code.indexOf(marker))
+    .find((index) => index !== -1)
+  if (frontmatterStart == null) {
+    return undefined
+  }
+
+  const frontmatterCode = code.slice(frontmatterStart)
+  return findFrontmatterStringValue(frontmatterCode, key)
+}
+
+function findFrontmatterStringValue(code: string, key: string): string | undefined {
+  // Compiled modules serialize frontmatter as JSON, with quoted keys.
+  return findStringValue(code, `${key}:`) ?? findStringValue(code, `"${key}":`)
+}
+
+function findStringValue(code: string, keyPrefix: string): string | undefined {
+  let searchIndex = 0
+
+  while (searchIndex < code.length) {
+    const keyIndex = code.indexOf(keyPrefix, searchIndex)
+    if (keyIndex === -1) {
+      return undefined
+    }
+
+    const result = readFrontmatterStringAtKey(code, keyIndex, keyPrefix)
+    if (result.found) {
+      return result.value
+    }
+
+    searchIndex = result.nextIndex
+  }
+
+  return undefined
+}
+
+function readFrontmatterStringAtKey(
+  code: string,
+  keyIndex: number,
+  keyPrefix: string
+): FrontmatterReadResult {
+  if (!hasFrontmatterKeyBoundary(code, keyIndex)) {
+    return { found: false, nextIndex: keyIndex + keyPrefix.length }
+  }
+
+  const valueIndex = skipWhitespace(code, keyIndex + keyPrefix.length)
+  if (code[valueIndex] !== '"') {
+    return { found: false, nextIndex: valueIndex + 1 }
+  }
+
+  return { found: true, value: parseQuotedFrontmatterString(code, valueIndex) }
+}
+
+function hasFrontmatterKeyBoundary(code: string, keyIndex: number): boolean {
+  if (keyIndex === 0) {
+    return true
+  }
+
+  const previous = code[keyIndex - 1]
+  return previous === "{" || previous === "," || isWhitespace(previous)
+}
+
+function isWhitespace(value: string | undefined): boolean {
+  return value === " " || value === "\n" || value === "\r" || value === "\t"
+}
+
+function skipWhitespace(code: string, startIndex: number): number {
+  let index = startIndex
+  while (isWhitespace(code[index])) {
+    index += 1
+  }
+  return index
+}
+
+function parseQuotedFrontmatterString(code: string, quoteIndex: number): string | undefined {
+  let index = quoteIndex + 1
+  let escaped = false
+
+  while (index < code.length) {
+    const char = code[index]
+    if (char === '"' && !escaped) {
+      return parseJsonString(code.slice(quoteIndex, index + 1))
+    }
+
+    escaped = char === "\\" && !escaped
+    if (char !== "\\") {
+      escaped = false
+    }
+    index += 1
+  }
+
+  return undefined
+}
+
+function parseJsonString(value: string): string | undefined {
+  try {
+    const parsedValue: unknown = JSON.parse(value)
+    return typeof parsedValue === "string" ? parsedValue : undefined
+  } catch {
+    return undefined
+  }
 }
 
 function getRoutePathFromId(id: string, routesDir: string, base: string) {

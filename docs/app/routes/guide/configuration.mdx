@@ -273,8 +273,16 @@ Set `seo.robots: false` if you want to provide your own `robots.txt` from `publi
 - **Type:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
 - **Default:** `{ enabled: true, checkAnchors: true, level: "warn" }`
 
-Checks internal links in Markdown and MDX content at build time. Ardo reports missing routes and,
-unless disabled, missing heading anchors.
+Checks internal links in the finished build output. After `ardo build` has written every page, Ardo
+parses the generated HTML and verifies each internal link, image, script, and stylesheet reference,
+whether it came from Markdown, a component, or a generated page. Unless disabled, it also verifies
+that every `#fragment` matches an element id on the target page. Redirect sources count as valid
+targets.
+
+External links are out of scope, because their availability depends on third-party servers rather
+than on the build. Links outside the site's base path, such as other documentation versions on the
+same host, are skipped for the same reason. Patterns in `exclude` match with or without the base
+path.
 
 ```ts
 ardo({
@@ -413,7 +421,7 @@ application shell and are not locale documents.
 - **Type:** `string`
 - **Default:** `"content"`
 
-Content source directory, relative to the project root. Most React Router projects use `app/routes/` through the route generator. `srcDir` remains available for config-driven content workflows and generated markdown output.
+Content source directory, relative to the project root. Most projects keep their pages in `app/routes/`, which Ardo turns into the route table. `srcDir` remains available for config-driven content workflows and generated markdown output.
 
 ```ts
 ardo({
@@ -427,8 +435,8 @@ ardo({
 - **Type:** `string`
 - **Status:** Deprecated compatibility field
 
-`outDir` remains in the public config type for compatibility, but it does not change the React
-Router build output. Ardo's static output is written to `build/client/`.
+`outDir` remains in the public config type for compatibility, but it does not change the build
+output. Ardo's static output is written to `build/client/`.
 
 ```ts
 ardo({
@@ -478,7 +486,7 @@ alphabetical fallback sorting.
 - **Type:** `HeadConfig[]`
 - **Status:** Deprecated
 
-Legacy static head tags. Prefer React Router's `meta` export and route-level metadata instead.
+Legacy static head tags. Prefer the `meta` export of `root.tsx` and route modules, typed as `ArdoMetaFunction` from `ardo/runtime`, and route-level metadata instead.
 
 ### vite
 
@@ -709,20 +717,22 @@ header, footer, and sidebar-section reference.
 
 Ardo keeps browser-safe runtime imports separate from build-time Node.js imports:
 
-| Import path          | Use it for                                                                                    |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| `ardo`               | Client-safe config types, runtime hooks, sidebar helpers, and UI exports.                     |
-| `ardo/api`           | Native API projects, one-shot generation, declaration extraction, and documentation types.    |
-| `ardo/config`        | Config helpers and config-related types.                                                      |
-| `ardo/vite`          | The `ardo()` Vite plugin, route plugin, GitHub Pages basename helper, and icon build options. |
-| `ardo/runtime`       | React providers, runtime hooks, and sidebar prev/next helpers.                                |
-| `ardo/ui`            | Default UI components, layout components, MDX components, and icon registration helpers.      |
-| `ardo/icons`         | Built-in icon asset metadata.                                                                 |
-| `ardo/theme`         | Vanilla Extract theme tokens and brand-theme helpers.                                         |
-| `ardo/mdx-provider`  | The MDX provider used to auto-register Ardo's MDX components.                                 |
-| `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                   |
-| `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                               |
-| `ardo/press.css`     | Compatibility alias for `ardo/ui/styles.css`.                                                 |
+| Import path          | Use it for                                                                                                                               |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `ardo`               | Types, config, and build-time helpers in one entry. It includes Node-only code; browser code imports `ardo/runtime` or `ardo/ui`.        |
+| `ardo/api`           | Native API projects, one-shot generation, declaration extraction, and documentation types.                                               |
+| `ardo/config`        | Config helpers and config-related types.                                                                                                 |
+| `ardo/vite`          | The `ardo()` Vite plugin, `defineConfig`, GitHub Pages base detection, and icon build options.                                           |
+| `ardo/runtime`       | React providers, runtime hooks, `ArdoLink`, `useArdoPath`, `ArdoHead`, `ArdoScripts`, `ArdoMetaFunction`, and sidebar prev/next helpers. |
+| `ardo/ui`            | Default UI components, layout components, MDX components, and icon registration helpers.                                                 |
+| `ardo/icons`         | Built-in icon asset metadata.                                                                                                            |
+| `ardo/theme`         | Vanilla Extract theme tokens and brand-theme helpers.                                                                                    |
+| `ardo/mdx-provider`  | The MDX provider used to auto-register Ardo's MDX components.                                                                            |
+| `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                                                              |
+| `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |
+| `ardo/react-dom`     | React DOM APIs, with `/client`, `/server`, and `/static` subpaths.                                                                       |
+| `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                                                                          |
+| `ardo/press.css`     | Compatibility alias for `ardo/ui/styles.css`.                                                                                            |
 
 ---
 

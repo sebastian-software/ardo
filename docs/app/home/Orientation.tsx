@@ -1,10 +1,13 @@
-import { Link } from "react-router"
+import { ArdoLink } from "ardo/ui"
 
 import * as styles from "./home.css"
 import { NoteLabel } from "./NoteLabel"
 
 const NEIGHBORS = [
-  ["Docusaurus", "React and MDX too, on a newer foundation: Vite, React Router and Rust engines."],
+  [
+    "Docusaurus",
+    "React and MDX too, on a newer foundation: Vite and Rust engines, with plain HTML pages.",
+  ],
   ["VitePress", "Vite and Markdown too, with React instead of Vue."],
   ["Starlight", "Static and content-first too, with React as the page model, not an island."],
   ["Nextra", "React and MDX too, without Next.js. Plain static files come out."],
@@ -36,7 +39,7 @@ export function WhereArdoFits() {
         ))}
       </ul>
       <p className={styles.moreLink}>
-        <Link to="/guide/comparison">Read the full comparison →</Link>
+        <ArdoLink to="/guide/comparison">Read the full comparison →</ArdoLink>
       </p>
     </section>
   )

@@ -1,4 +1,5 @@
-import { isRouteErrorResponse, Link, useRouteError } from "react-router"
+import { ArdoLink } from "../runtime/page"
+import { type ArdoPageError, useArdoPage } from "../runtime/page-context"
 
 import * as styles from "./ErrorBoundary.css"
 import { ArdoOwlMark } from "./OwlMark"
@@ -38,8 +39,8 @@ const defaults = {
 } as const
 
 /**
- * Themed error/404 page. Drop into a React Router route as `ErrorBoundary`
- * to replace the default unstyled fallback with a layout-aware page.
+ * Themed error/404 page. Ardo renders it for missing pages and render errors;
+ * export a different `ErrorBoundary` from `app/root.tsx` to replace it.
  *
  * @example
  * ```tsx
@@ -48,15 +49,15 @@ const defaults = {
  * ```
  */
 export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
-  const error = useRouteError()
-  const is404 = isRouteErrorResponse(error) && error.status === 404
-  const isRouteError = isRouteErrorResponse(error)
+  const { error } = useArdoPage()
+  const status = isStatusError(error) ? error.status : undefined
+  const is404 = status === 404
 
   const copy = is404
     ? { ...defaults.notFound, ...props.notFound }
     : { ...defaults.error, ...props.error }
 
-  const statusLabel = isRouteError ? `Error ${String(error.status)}` : "Error"
+  const statusLabel = status == null ? "Error" : `Error ${String(status)}`
   const errorDetails = is404 ? undefined : formatErrorDetails(error)
 
   return (
@@ -67,9 +68,9 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
         <h1 className={styles.title}>{copy.title}</h1>
         <p className={styles.description}>{copy.description}</p>
         <div className={styles.actions}>
-          <Link to={copy.homeHref} className={styles.primaryAction}>
+          <ArdoLink to={copy.homeHref} className={styles.primaryAction}>
             {copy.homeLabel}
-          </Link>
+          </ArdoLink>
           {!is404 && (
             <button
               type="button"
@@ -93,10 +94,13 @@ export function ArdoErrorBoundary(props: ArdoErrorBoundaryProps = {}) {
   )
 }
 
-function formatErrorDetails(error: unknown): string | undefined {
-  if (isRouteErrorResponse(error)) {
-    if (typeof error.data === "string" && error.data.length > 0) return error.data
-    return undefined
+function isStatusError(error: ArdoPageError | undefined): error is { status: number } {
+  return error != null && !(error instanceof Error)
+}
+
+function formatErrorDetails(error: ArdoPageError | undefined): string | undefined {
+  if (isStatusError(error)) {
+    return error.message != null && error.message.length > 0 ? error.message : undefined
   }
   if (error instanceof Error) {
     return error.stack ?? error.message

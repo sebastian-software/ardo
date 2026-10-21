@@ -1,0 +1,124 @@
+import type { Connect, EnvironmentModuleNode, RunnableDevEnvironment, ViteDevServer } from "vite"
+
+import path from "node:path"
+
+import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
+
+import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
+
+type ServerEntry = {
+  renderPage: (path: string, options: ArdoRenderOptions) => Promise<ArdoRenderResult>
+}
+
+const CSS_REQUEST = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:$|\?)|\.vanilla\.css/u
+
+/**
+ * Serve page requests with the same renderer the build uses. Vite then adds its
+ * client, React Refresh, and HMR to the document.
+ */
+export function createDevRenderMiddleware(server: ViteDevServer): Connect.NextHandleFunction {
+  return (request, response, next) => {
+    void handleRequest(server, request)
+      .then((page) => {
+        if (page == null) {
+          next()
+          return
+        }
+        response.statusCode = page.status
+        response.setHeader("Content-Type", "text/html; charset=utf-8")
+        response.end(request.method === "HEAD" ? undefined : page.html)
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) server.ssrFixStacktrace(error)
+        next(error)
+      })
+  }
+}
+
+async function handleRequest(
+  server: ViteDevServer,
+  request: Connect.IncomingMessage
+): Promise<{ html: string; status: number } | undefined> {
+  const pagePath = toPagePath(request, server.config.base)
+  if (pagePath == null) return undefined
+
+  const base = server.config.base
+  const environment = server.environments.ssr as RunnableDevEnvironment
+  // The runner loads Ardo's server entry, which has this shape.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const entry = (await environment.runner.import(VIRTUAL_ENTRY_SERVER_ID)) as ServerEntry
+  const render = async (pageStylesheets: string[]) =>
+    entry.renderPage(pagePath, {
+      base,
+      assets: () => ({
+        entry: `${base}@id/__x00__${VIRTUAL_ENTRY_CLIENT_ID}`,
+        modulePreloads: [],
+        stylesheets: pageStylesheets,
+      }),
+    })
+  // The first render loads the page's modules; their stylesheets go into the
+  // second, so the page does not flash unstyled before the client takes over.
+  const first = await render([])
+  const stylesheets = collectStylesheets(environment, base)
+  const result = stylesheets.length === 0 ? first : await render(stylesheets)
+  const html = await injectViteTags(server, request.originalUrl ?? "/", result.html)
+  return { html, status: result.status }
+}
+
+const EMPTY_DOCUMENT = "<!DOCTYPE html><html><head></head><body></body></html>"
+
+/**
+ * Add Vite's client and React Refresh to the page. Ardo's HTML already carries
+ * the base path, so it does not go through `transformIndexHtml` itself, which
+ * would prefix every absolute URL a second time.
+ */
+async function injectViteTags(server: ViteDevServer, url: string, html: string): Promise<string> {
+  const template = await server.transformIndexHtml(url, EMPTY_DOCUMENT)
+  const head = /<head>([\s\S]*)<\/head>/u.exec(template)?.[1] ?? ""
+  const body = /<body>([\s\S]*)<\/body>/u.exec(template)?.[1] ?? ""
+  return html.replace("<head>", () => `<head>${head}`).replace("</body>", () => `${body}</body>`)
+}
+
+/** Path of the requested page without the base, or `undefined` for anything that is not a page. */
+export function toPagePath(
+  request: Pick<Connect.IncomingMessage, "headers" | "method" | "originalUrl" | "url">,
+  base: string
+): string | undefined {
+  if (request.method !== "GET" && request.method !== "HEAD") return undefined
+  const accept = request.headers.accept ?? ""
+  if (accept !== "" && !accept.includes("text/html") && !accept.includes("*/*")) return undefined
+  const url = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid")
+  let pathname: string
+  try {
+    pathname = decodeURIComponent(url.pathname)
+  } catch {
+    return undefined
+  }
+  if (pathname.includes("/@") || pathname.includes("/__")) return undefined
+  const extension = path.posix.extname(pathname)
+  if (extension !== "" && extension !== ".html") return undefined
+  const isBaseRoot = `${pathname}/` === base
+  if (!pathname.startsWith(base) && !isBaseRoot) return undefined
+  const relative = isBaseRoot ? "" : pathname.slice(base.length)
+  return `/${relative.replace(/(?:^|\/)index\.html$/u, "")}`
+}
+
+function collectStylesheets(environment: RunnableDevEnvironment, base: string): string[] {
+  const stylesheets: string[] = []
+  const visited = new Set<EnvironmentModuleNode>()
+  const entry = environment.moduleGraph.getModuleById(`\0${VIRTUAL_ENTRY_SERVER_ID}`)
+  const pending = entry == null ? [] : [entry]
+  for (let module = pending.pop(); module != null; module = pending.pop()) {
+    if (visited.has(module)) continue
+    visited.add(module)
+    if (module.url !== "" && CSS_REQUEST.test(module.url)) {
+      // Module URLs already carry the base path when Vite serves under one.
+      const url = module.url.startsWith(base)
+        ? module.url
+        : `${base}${module.url.replace(/^\//u, "")}`
+      stylesheets.push(`${url}${url.includes("?") ? "&" : "?"}direct`)
+    }
+    pending.push(...module.importedModules)
+  }
+  return stylesheets
+}

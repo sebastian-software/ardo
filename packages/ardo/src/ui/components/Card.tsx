@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { Link } from "react-router"
+import { ArdoLink } from "../../runtime/page"
 
 import * as styles from "./Card.css"
 import { ArdoIcon } from "./Icon"
@@ -90,11 +90,11 @@ export function ArdoCard({ title, icon, children, href, className }: ArdoCardPro
   }
 
   return (
-    <Link className={cardLinkClassName} to={href}>
+    <ArdoLink className={cardLinkClassName} to={href}>
       <CardContent title={title} icon={icon}>
         {children}
       </CardContent>
-    </Link>
+    </ArdoLink>
   )
 }
 

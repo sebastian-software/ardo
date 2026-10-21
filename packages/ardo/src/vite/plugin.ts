@@ -1,4 +1,5 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
+import react from "@vitejs/plugin-react"
 import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
@@ -17,15 +18,15 @@ import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
-import { reportLinkDiagnostics } from "./link-diagnostics"
 import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
-import { createMdxPlugin, getReactRouterPlugins } from "./mdx-plugin"
+import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
+import { createStaticSitePlugin } from "./static-site-plugin"
 import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
 import {
   loadVirtualModule,
@@ -39,7 +40,7 @@ import {
 type PluginState = {
   collections?: CollectionsConfig
   deploymentBase?: string
-  isSsrBuild?: boolean
+  outDir?: string
   previewBase?: string
   resolvedConfig?: ResolvedConfig
   routesDir: string
@@ -73,6 +74,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   } = options
   const state: PluginState = {
     collections,
+    outDir: pressConfig.outDir,
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
   const mainPluginOptions: MainPluginOptions = {
@@ -82,6 +84,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   }
   const plugins: Plugin[] = [
     createMainPlugin(state, mainPluginOptions),
+    createStaticSitePlugin(state),
     ...createRuntimeBoundaryPlugins(),
   ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
@@ -95,10 +98,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   addApiPlugin(plugins, { api, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
-  // Page meta runs after Ferromark, so it reads the frontmatter of the compiled route.
-  plugins.push(createMdxPlugin(pressConfig.markdown), createMarkdownMetaPlugin(state))
+  plugins.push(createMdxPlugin(pressConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
-  plugins.push(...getReactRouterPlugins())
+  plugins.push(...react())
 
   return plugins
 }
@@ -125,20 +127,8 @@ function addRoutesPlugin(
   routes: ArdoPluginOptions["routes"],
   routesDirOption: string | undefined
 ): void {
-  if (routes === false) {
-    return
-  }
-
-  const routePluginOptions = routes ?? {}
+  const routePluginOptions = routes === false || routes == null ? {} : routes
   plugins.push(ardoRoutesPlugin({ routesDir: routesDirOption, ...routePluginOptions }))
-}
-
-function createMarkdownMetaPlugin(state: PluginState): Plugin {
-  return {
-    name: "ardo:markdown-meta",
-    enforce: "pre",
-    transform: (code, id) => transformMarkdownMeta(code, id, state),
-  }
 }
 
 function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {
@@ -156,7 +146,6 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
     configResolved(config) {
-      state.isSsrBuild = config.build.ssr !== false
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
       state.resolvedConfig = resolveArdoConfig({
         root: config.root,
@@ -171,13 +160,18 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     async load(id) {
       return loadVirtualModule(id, state)
     },
+    transform: {
+      // Runs after Ferromark has compiled the route and declared its frontmatter.
+      order: "post",
+      handler(code, id) {
+        return transformMarkdownMeta(code, id, state)
+      },
+    },
     configureServer(server) {
       configureVirtualModuleInvalidation(server, state)
     },
-    async generateBundle(outputOptions) {
-      if (state.isSsrBuild || isServerOutput(outputOptions.dir) || state.resolvedConfig == null) {
-        return
-      }
+    async generateBundle() {
+      if (this.environment.name !== "client" || state.resolvedConfig == null) return
 
       const resolvedConfig = state.resolvedConfig
       const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
@@ -185,7 +179,6 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       )
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
-      reportLinkDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
         for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
@@ -193,10 +186,6 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
   }
-}
-
-function isServerOutput(outputDir: string | undefined) {
-  return outputDir?.replaceAll("\\", "/").endsWith("/server") === true
 }
 
 function createMainConfig(
@@ -242,10 +231,6 @@ function createMainConfig(
   }
   for (const message of baseResult.logMessages) {
     console.log(message)
-  }
-
-  if (pressConfig.outDir != null) {
-    config.build = { ...config.build, outDir: pressConfig.outDir }
   }
 
   return mergeArdoViteConfig(pressConfig.vite, config)

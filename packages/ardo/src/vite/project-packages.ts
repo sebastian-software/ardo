@@ -55,11 +55,13 @@ export class ProjectPackages {
   private readonly managesRuntime: boolean
   private readonly managedPackageRoots = new Map<string, string>()
   private readonly resolvedModuleSources = new Map<string, string>()
+  private readonly canonicalPaths = new Map<string, string>()
+  private readonly installedPackages = new Map<string, string>()
 
   constructor(root: string, options: ProjectPackagesOptions = {}) {
     this.root = realpathSync(root)
     this.project = this.owner(this.root)
-    this.frameworkRoot = canonicalPath(
+    this.frameworkRoot = this.canonicalPath(
       options.ardoRoot ?? path.join(this.root, "node_modules/ardo")
     )
     this.managesRuntime = options.managedRuntime === true
@@ -90,9 +92,9 @@ export class ProjectPackages {
     if (file == null) return
     const fileKey = path.resolve(file)
     const resolvedSourcePath = managedSourcePath ?? this.resolvedModuleSources.get(fileKey)
-    const canonical = canonicalPath(file)
+    const canonical = this.canonicalPath(file)
     const target = this.ownerOf(
-      resolvedSourcePath == null ? canonical : canonicalPath(resolvedSourcePath)
+      resolvedSourcePath == null ? canonical : this.canonicalPath(resolvedSourcePath)
     )
     const origin = this.ownerOf(importer) ?? this.project
 
@@ -178,7 +180,7 @@ export class ProjectPackages {
     sourcePath,
   }: ManagedFileCheck): void {
     const expectedRoot = this.managedRuntimePackageRoot(name)
-    const actualSourcePath = sourcePath == null ? canonical : canonicalPath(sourcePath)
+    const actualSourcePath = sourcePath == null ? canonical : this.canonicalPath(sourcePath)
     const actualRoot = this.ownerOf(actualSourcePath)?.root
     if (expectedRoot == null || actualRoot !== expectedRoot) {
       throw new Error(
@@ -203,7 +205,7 @@ export class ProjectPackages {
     }
     return dependencyNames(origin, this.root).some((name) => {
       const installed = this.installedPackage(origin, name)
-      return installed != null && canonicalPath(installed) === target.root
+      return installed != null && this.canonicalPath(installed) === target.root
     })
   }
 
@@ -213,7 +215,7 @@ export class ProjectPackages {
 
   private ownerOf(id: string | undefined): PackageOwner | undefined {
     if (id == null || !path.isAbsolute(id)) return undefined
-    const file = canonicalPath(id.split("?", 1)[0])
+    const file = this.canonicalPath(id.split("?", 1)[0])
     const marker = `${path.sep}node_modules${path.sep}`
     const index = file.lastIndexOf(marker)
     if (index !== -1) {
@@ -265,6 +267,9 @@ export class ProjectPackages {
   }
 
   private installedPackage(owner: PackageOwner, name: string): string | undefined {
+    const key = `${owner.root}\0${name}`
+    const cached = this.installedPackages.get(key)
+    if (cached != null) return cached
     const local = path.join(this.root, "node_modules", name)
     const candidates = [path.join(owner.root, "node_modules", name)]
     if (owner.root !== this.root) {
@@ -273,7 +278,28 @@ export class ProjectPackages {
       if (index !== -1) candidates.push(path.join(owner.root.slice(0, index), "node_modules", name))
       candidates.push(local)
     }
-    return candidates.find((candidate) => existsSync(path.join(candidate, "package.json")))
+    const installed = candidates.find((candidate) =>
+      existsSync(path.join(candidate, "package.json"))
+    )
+    // Only remember installed packages so a later install is still found.
+    if (installed != null) this.installedPackages.set(key, installed)
+    return installed
+  }
+
+  /**
+   * Resolve symlinks once per path. Every resolved import is checked several
+   * times, and realpath on deep pnpm layouts dominated resolve time otherwise.
+   */
+  private canonicalPath(file: string): string {
+    const cached = this.canonicalPaths.get(file)
+    if (cached != null) return cached
+    if (!existsSync(file)) {
+      const parent = path.dirname(file)
+      return parent === file ? file : path.join(this.canonicalPath(parent), path.basename(file))
+    }
+    const canonical = realpathSync(file)
+    this.canonicalPaths.set(file, canonical)
+    return canonical
   }
 }
 
@@ -297,10 +323,4 @@ function isOptional(manifest: Manifest, name: string): boolean {
     manifest.optionalDependencies?.[name] != null ||
     manifest.peerDependenciesMeta?.[name]?.optional === true
   )
-}
-
-function canonicalPath(file: string): string {
-  if (existsSync(file)) return realpathSync(file)
-  const parent = path.dirname(file)
-  return parent === file ? file : path.join(canonicalPath(parent), path.basename(file))
 }

@@ -32,7 +32,7 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
     },
     async resolveId(id, importer, resolveOptions) {
       if (resolveOptions.custom?.[MANAGED_RUNTIME_RESOLUTION_KEY] === true) return
-      if (id.startsWith("\0") || id.startsWith("virtual:") || isBuiltin(id)) return
+      if (isVirtualId(id) || isBuiltin(id)) return
       const boundaryImporter = getBoundaryImporter(importer, packages.root, resolveOptions.isEntry)
       const managedName = pluginOptions.managedRuntime
         ? getManagedRuntimePackageName(id)
@@ -45,6 +45,7 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
         return optionalPrefix + id
       }
       const resolved = await this.resolve(id, importer, { ...resolveOptions, skipSelf: true })
+      if (resolved != null && isVirtualId(resolved.id)) return resolved
       if (resolved != null) {
         const resolvedSourcePath =
           managedSourcePath(
@@ -85,16 +86,26 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
       }
     },
     load(id) {
+      if (isVirtualId(id) && !id.startsWith(optionalPrefix)) return
       if (id.startsWith(optionalPrefix)) {
         const name = id.slice(optionalPrefix.length)
         const message = `[ardo] Optional dependency "${name}" is not installed in the documentation package's dependency tree. Install it there to use this feature.`
         return `throw new Error(${JSON.stringify(message)});`
       }
+      // Vite also tries extensionless page URLs as modules; a path that names no
+      // file is not an import across the boundary, so Vite may report it as missing.
+      const file = id.split("?", 1)[0] ?? id
+      if (path.isAbsolute(file) && !existsSync(file)) return
       packages.checkFile(id, {
         managedSourcePath: findOptimizedDependencySource(id, this.environment),
       })
     },
   }
+}
+
+/** Ids that name no file: Rollup's `\0` ids, `virtual:` modules, and Vite's `/@` URLs. */
+function isVirtualId(id: string): boolean {
+  return id.startsWith("\0") || id.startsWith("virtual:") || id.startsWith("/@")
 }
 
 function getBoundaryImporter(
@@ -104,6 +115,9 @@ function getBoundaryImporter(
 ): string | undefined {
   if (importer == null || isEntry) return importer
   const cleanImporter = importer.split("?", 1)[0] ?? importer
+  // Only an index.html importer can be Vite's synthetic root/index.html, so
+  // the realpath lookup is skipped for every other module.
+  if (path.basename(cleanImporter) !== "index.html") return importer
   let canonicalImporter = path.resolve(cleanImporter)
   try {
     canonicalImporter = path.join(

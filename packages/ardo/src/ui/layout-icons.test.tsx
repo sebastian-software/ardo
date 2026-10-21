@@ -1,15 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server"
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 
 import { ArdoRootLayout } from "./Layout"
-
-// The HTML shell's icon contract is independent of router metadata and hydration.
-vi.mock("react-router", () => ({
-  Links: () => null,
-  Meta: () => null,
-  Scripts: () => null,
-  ScrollRestoration: () => null,
-}))
 
 describe("root layout site identity", () => {
   it.each(["/mark-64.png", "/favicon.ico", "/brand.svg", "/mark.png?v=2"])(

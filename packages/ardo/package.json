@@ -76,31 +76,17 @@
       "types": "./dist/react-dom/static.d.ts",
       "import": "./dist/react-dom/static.js"
     },
-    "./router": {
-      "types": "./dist/router/index.d.ts",
-      "import": "./dist/router/index.js"
-    },
-    "./router/dom": {
-      "types": "./dist/router/dom.d.ts",
-      "import": "./dist/router/dom.js"
-    },
-    "./router/routes": {
-      "types": "./dist/router/routes.d.ts",
-      "import": "./dist/router/routes.js"
-    },
     "./package.json": "./package.json",
     "./vite/client": {
       "types": "./vite-client.d.ts"
-    },
-    "./entry.server": {
-      "types": "./dist/entries/server.d.ts",
-      "import": "./dist/entries/server.js"
     }
   },
   "sideEffects": [
     "*.css",
     "*.css.ts",
-    "*.css.js"
+    "*.css.js",
+    "./dist/entries/*.js",
+    "./src/entries/*.tsx"
   ],
   "files": [
     "ICONS-LICENSE.md",
@@ -121,7 +107,6 @@
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@ferriki/core": "^1.1.2",
-    "@react-router/dev": "8.4.0",
     "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -131,11 +116,11 @@
     "@vanilla-extract/vite-plugin": "^5.2.6",
     "@vitejs/plugin-react": "^6.1.2",
     "ferromark": "^3.5.1",
+    "htmlparser2": "^12.0.0",
     "lucide-react": "^1.59.0",
     "minisearch": "^7.2.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-router": "8.4.0",
     "read-package-up": "^12.0.0",
     "vite": "8.3.4",
     "yaml": "^2.9.1"
@@ -170,7 +155,6 @@
     "documentation",
     "static-site",
     "react",
-    "react-router",
     "mdx",
     "markdown",
     "docs"

@@ -88,7 +88,6 @@ export function Hero({ facts }: { facts: NpmFacts | null }) {
 
 const TOOLS: { mark: MarkName; label: string }[] = [
   { mark: "vite", label: "Vite" },
-  { mark: "reactRouter", label: "React Router" },
   { mark: "typescript", label: "TypeScript 7" },
   { mark: "oxc", label: "Oxc" },
   { mark: "ferromark", label: "Ferromark" },

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { Link } from "react-router"
+import { ArdoLink } from "../runtime/page"
 
 import { useArdoConfig, useArdoPageData } from "../runtime/hooks"
 import { ArdoFeatureCard, ArdoFeatures } from "./components/Features"
@@ -45,13 +45,13 @@ function HomeHeroSection({
           {heroActions.length > 0 && (
             <div className={heroStyles.heroActions}>
               {heroActions.map((action) => (
-                <Link
+                <ArdoLink
                   key={`${action.link}-${action.text}`}
                   to={action.link}
                   className={`${heroStyles.heroAction} ${action.theme === "alt" ? heroStyles.heroActionAlt : heroStyles.heroActionBrand}`}
                 >
                   {action.text}
-                </Link>
+                </ArdoLink>
               ))}
             </div>
           )}

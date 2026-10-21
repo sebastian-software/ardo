@@ -1,10 +1,10 @@
-import type { ComponentProps, ReactNode } from "react"
+import type { ReactNode } from "react"
 
-import { Link } from "react-router"
+import { ArdoLink } from "../runtime/page"
 
 import * as styles from "./SidebarTabs.css"
 
-type RoutePath = ComponentProps<typeof Link>["to"]
+type RoutePath = string
 
 export type SidebarTabItem = {
   key: string
@@ -27,7 +27,7 @@ export function SidebarTabs({ items }: { items: SidebarTabItem[] }) {
       <ul className={styles.sectionTabList}>
         {items.map((item) => (
           <li key={item.key}>
-            <Link
+            <ArdoLink
               to={item.to}
               aria-current={item.active ? "true" : undefined}
               className={[styles.sectionTab, item.active && "active"].filter(Boolean).join(" ")}
@@ -40,7 +40,7 @@ export function SidebarTabs({ items }: { items: SidebarTabItem[] }) {
                 )}
                 <span>{item.label}</span>
               </span>
-            </Link>
+            </ArdoLink>
           </li>
         ))}
       </ul>

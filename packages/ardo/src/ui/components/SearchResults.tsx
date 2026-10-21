@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { Link } from "react-router"
+import { ArdoLink } from "../../runtime/page"
 
 import type { ArdoLabels } from "../labels"
 
@@ -52,7 +52,7 @@ export function SearchResults({
         >
           {results.map((result, index) => (
             <li key={result.id} role="presentation">
-              <Link
+              <ArdoLink
                 id={getOptionId(result.id, index)}
                 to={result.path}
                 role="option"
@@ -66,7 +66,7 @@ export function SearchResults({
                 {result.section !== undefined && (
                   <span className={styles.searchResultSection}>{result.section}</span>
                 )}
-              </Link>
+              </ArdoLink>
             </li>
           ))}
         </ul>

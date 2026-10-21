@@ -29,12 +29,18 @@ function hasArdoPluginHooks(plugin: Plugin): plugin is ArdoPluginHooks & Plugin 
   )
 }
 
-type TransformHook = {
-  transform: (code: string, id: string) => Promise<{ code: string } | undefined>
-}
+type TransformHandler = (code: string, id: string) => Promise<{ code: string } | undefined>
+
+type TransformHook = { transform: TransformHandler }
+
+type OrderedTransformHook = { transform: { order: string; handler: TransformHandler } }
 
 function hasTransformHook(plugin: Plugin): plugin is TransformHook & Plugin {
   return typeof plugin.transform === "function"
+}
+
+function hasOrderedTransformHook(plugin: Plugin): plugin is OrderedTransformHook & Plugin {
+  return typeof plugin.transform === "object" && typeof plugin.transform.handler === "function"
 }
 
 function findPlugin<T>(
@@ -66,20 +72,19 @@ describe("ardoPlugin", () => {
 
   it("adds page meta to Markdown routes after Ferromark compiles them", async () => {
     const plugins = ardoPlugin({ routes: false, icons: false, githubPages: false, title: "Docs" })
-    const names = plugins.map((plugin) => plugin.name)
-    expect(names.indexOf("ardo:markdown-meta")).toBeGreaterThan(names.indexOf("ardo:ferromark"))
+    const meta = findPlugin(plugins, "ardo", hasOrderedTransformHook).transform
+    expect(meta.order).toBe("post")
 
     findPlugin(plugins, "ardo", hasArdoPluginHooks).configResolved({
       base: "/",
       build: { ssr: false },
       root: "/project",
     })
-    const transform = (name: string) => findPlugin(plugins, name, hasTransformHook).transform
-    // React Router requests client route chunks with a query.
-    const id = "/project/app/routes/guide/start.mdx?__react-router-build-client-route"
+    const compile = findPlugin(plugins, "ardo:ferromark", hasTransformHook).transform
+    const id = "/project/app/routes/guide/start.mdx"
     const source = "---\ntitle: Start\ndescription: Set up Docs.\n---\n\n# Start\n"
-    const compiled = await transform("ardo:ferromark")(source, id)
-    const result = await transform("ardo:markdown-meta")(String(compiled?.code), id)
+    const compiled = await compile(source, id)
+    const result = await meta.handler(String(compiled?.code), id)
 
     expect(result?.code).toContain('{ title: "Start | Docs" }')
     expect(result?.code).toContain('{ name: "description", content: "Set up Docs." }')
@@ -119,12 +124,22 @@ describe("ardoPlugin", () => {
     })
   })
 
-  it("maps outDir to Vite build.outDir", () => {
-    const plugin = getMainPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" })
+  it("builds the client and server environments into outDir", () => {
+    const plugin = ardoPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" }).find(
+      (entry) => entry.name === "ardo:static-site"
+    )
+    const hook = plugin?.config
+    if (typeof hook !== "function") throw new Error("Static site plugin not found")
 
-    const config = plugin.config({ root: "/project" }, { command: "build", mode: "production" })
+    const config = Reflect.apply(hook, {}, [
+      { root: "/project" },
+      { command: "build", mode: "production" },
+    ]) as UserConfig
 
-    expect(config.build?.outDir).toBe("custom-build")
+    expect(config.appType).toBe("custom")
+    expect(config.environments?.client?.build?.outDir).toBe("/project/custom-build/client")
+    expect(config.environments?.server?.build?.outDir).toBeUndefined()
+    expect(config.environments?.ssr?.build?.outDir).toBe("/project/custom-build/server")
   })
 
   it("sets Vite base to the current major version for versioned docs", () => {

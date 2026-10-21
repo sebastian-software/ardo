@@ -6,7 +6,6 @@ import type { RouteManifestEntry } from "./route-manifest"
 
 import { resolveConfig } from "../config"
 import {
-  checkInternalLinks,
   collectRedirects,
   createBuildOutputAssets,
   generateNetlifyRedirects,
@@ -277,21 +276,6 @@ describe("build outputs", () => {
 
     expect(redirects).not.toContainEqual({ from: "/", to: "/v3/en/" })
     expect(redirects).not.toContainEqual({ from: "/v3/", to: "/v3/en/" })
-  })
-
-  it("reports missing internal routes and anchors", () => {
-    expect(checkInternalLinks(entries, baseConfig)).toStrictEqual([
-      {
-        filePath: "/site/app/routes/guide.mdx",
-        href: "/missing",
-        message: "Missing internal route: /missing",
-      },
-      {
-        filePath: "/site/app/routes/guide.mdx",
-        href: "/guide#nope",
-        message: 'Missing anchor "nope" on /guide',
-      },
-    ])
   })
 
   it("emits generated llms text assets from markdown route entries", () => {

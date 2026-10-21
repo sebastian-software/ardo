@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useLocation } from "react-router"
+import { useArdoPath } from "../../runtime/page-context"
 
 import { useArdoLabels } from "../../runtime/hooks"
 import { ChromeIcon } from "../chrome-icons"
@@ -13,18 +13,18 @@ import { ArdoSearch, type ArdoSearchProps } from "./Search"
  * search overlay.
  */
 export function ArdoHeaderSearch({ placeholder }: ArdoSearchProps) {
-  const location = useLocation()
+  const pathname = useArdoPath()
   const labels = useArdoLabels()
   const [overlayOpen, setOverlayOpen] = useState(false)
-  const [previousPathname, setPreviousPathname] = useState(location.pathname)
+  const [previousPathname, setPreviousPathname] = useState(pathname)
   const overlayRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const closeOverlay = useCallback(() => {
     setOverlayOpen(false)
   }, [])
 
-  if (location.pathname !== previousPathname) {
-    setPreviousPathname(location.pathname)
+  if (pathname !== previousPathname) {
+    setPreviousPathname(pathname)
     setOverlayOpen(false)
   }
 

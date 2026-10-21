@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { NativeApiProject } from "../api/native-project"
 import { createApiPlugin } from "./api-plugin"
 import { ardoPlugin } from "./plugin"
+import { createRoutesModule } from "./routes-plugin"
 
 let temporary: string
 const plugins: Plugin[] = []
@@ -97,27 +98,26 @@ function attachServer(plugin: Plugin) {
   return { watcher, ws, logger, server }
 }
 
+/** The route table Ardo would serve for the temporary project. */
+const routeTable = () =>
+  createRoutesModule({ root: temporary, routesDir: path.join(temporary, "app/routes") })
 const pageFile = () => path.join(temporary, "app/routes/api-reference/functions/read.md")
 const readPage = async () => fs.readFile(pageFile(), "utf8")
 // Native compiler updates need the same polling window as the real watcher tests.
 const pollOptions = { timeout: 10_000 }
 
 describe("native API build and development plugin", () => {
-  it("generates native Markdown before pre-enforced route scanning and closes build sessions", async () => {
+  it("generates native Markdown before route scanning and closes build sessions", async () => {
     const selected = ardoPlugin({ api: true, githubPages: false })
     const apiIndex = selected.findIndex((plugin) => plugin.name === "ardo:api")
     const routesIndex = selected.findIndex((plugin) => plugin.name === "ardo:routes")
-    const routerIndex = selected.findIndex((plugin) => plugin.name.includes("react-router"))
     expect(apiIndex).toBeLessThan(routesIndex)
-    expect(routesIndex).toBeLessThan(routerIndex)
     expect(selected[apiIndex].enforce).toBe("pre")
     const close = vi.spyOn(NativeApiProject.prototype, "close")
     await configure(selected[apiIndex], "build")
-    await configure(selected[routesIndex], "build")
     expect(close).toHaveBeenCalledTimes(1)
-    const routes = await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")
-    expect(routes).toContain(
-      'route("api-reference/functions/read", "routes/api-reference/functions/read.md")'
+    expect(routeTable()).toContain(
+      'id: "app/routes/api-reference/functions/read.md", path: "/api-reference/functions/read"'
     )
     expect(await readPage()).toContain("Read a value.")
   })
@@ -162,9 +162,7 @@ describe("native API build and development plugin", () => {
       )
       .toContain("New export.")
     await expect(fs.access(pageFile())).rejects.toMatchObject({ code: "ENOENT" })
-    expect(await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")).toContain(
-      "api-reference/variables/label"
-    )
+    expect(routeTable()).toContain('path: "/api-reference/variables/label"')
     await closePlugin(plugin)
     expect(watcher.listenerCount("change")).toBe(0)
     expect(watcher.listenerCount("add")).toBe(0)
@@ -223,10 +221,9 @@ describe("native API build and development plugin", () => {
       expect(selected.indexOf(source)).toBeLessThan(routesIndex)
       await configure(source, "build")
     }
-    await configure(selected[routesIndex], "build")
-    const routes = await fs.readFile(path.join(temporary, "app/routes.ts"), "utf8")
-    expect(routes).toContain("api/alpha/functions/read")
-    expect(routes).toContain("api/beta/functions/read")
+    const routes = routeTable()
+    expect(routes).toContain('path: "/api/alpha/functions/read"')
+    expect(routes).toContain('path: "/api/beta/functions/read"')
   })
 
   it.each([
@@ -314,3 +311,59 @@ function delayNextExtraction() {
   })
   return { started, release, extraction }
 }
+
+describe("shared native extraction", () => {
+  it("reuses a build's extraction for later config evaluations and stops its compiler early", async () => {
+    const extract = vi.spyOn(NativeApiProject.prototype, "extract")
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    await configure(createApiPlugin(true), "build")
+    expect(close).toHaveBeenCalledTimes(1)
+    // React Router's child compiler and prerender server evaluate the config again.
+    await configure(createApiPlugin(true), "serve")
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(1)
+    expect(close).toHaveBeenCalledTimes(1)
+    expect(await readPage()).toContain("Read a value.")
+  })
+
+  it("keeps the development compiler for the attached server and shares it with later instances", async () => {
+    const extract = vi.spyOn(NativeApiProject.prototype, "extract")
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    const plugin = createApiPlugin(true)
+    await configure(plugin, "serve")
+    const { watcher } = attachServer(plugin)
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(1)
+    expect(close).not.toHaveBeenCalled()
+    const source = path.join(temporary, "src/index.ts")
+    await fs.writeFile(source, "/** Shared documentation. */\nexport function read() { return 1; }")
+    watcher.emit("change", source)
+    await expect.poll(readPage, pollOptions).toContain("Shared documentation.")
+    await closePlugin(plugin)
+    expect(close).toHaveBeenCalledTimes(1)
+    // A server started after the previous one closed compiles again.
+    await configure(createApiPlugin(true), "serve")
+    expect(extract).toHaveBeenCalledTimes(3)
+  })
+})
+
+describe("compiler handover", () => {
+  it("keeps the compiler for a restarted server until the last holder closes", async () => {
+    const close = vi.spyOn(NativeApiProject.prototype, "close")
+    const previous = createApiPlugin(true)
+    await configure(previous, "serve")
+    attachServer(previous)
+    // Vite creates the restarted server before it closes the previous one.
+    const next = createApiPlugin(true)
+    await configure(next, "serve")
+    const { watcher } = attachServer(next)
+    await closePlugin(previous)
+    expect(close).not.toHaveBeenCalled()
+    const source = path.join(temporary, "src/index.ts")
+    await fs.writeFile(source, "/** After restart. */\nexport function read() { return 1; }")
+    watcher.emit("change", source)
+    await expect.poll(readPage, pollOptions).toContain("After restart.")
+    await closePlugin(next)
+    expect(close).toHaveBeenCalledTimes(1)
+  })
+})

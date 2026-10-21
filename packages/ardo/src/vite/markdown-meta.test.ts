@@ -187,3 +187,15 @@ describe("transformMarkdownMeta", () => {
     expect(result?.code).toContain('{ title: "Use {a; b} and \\"c\\" | Docs" }')
   })
 })
+
+describe("compiled route modules", () => {
+  it("reads the frontmatter Ferromark declares for the route", () => {
+    const result = transformMarkdownMeta(
+      'const _ardoFrontmatter = {\n\t"title": "Getting Started",\n\t"description": "Set up"\n};\nexport { _ardoFrontmatter as frontmatter };\n',
+      `${routesDir}/guide/getting-started.mdx`,
+      { routesDir, resolvedConfig: config }
+    )
+
+    expect(result?.code).toContain('export const meta = () => [{ title: "Getting Started | Docs" }')
+  })
+})

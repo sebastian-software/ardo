@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server"
-import { MemoryRouter } from "react-router"
+import { ArdoPageProvider } from "../runtime/page"
 import { describe, expect, it } from "vitest"
 
 import { ArdoProvider } from "../runtime/hooks"
@@ -10,7 +10,7 @@ describe("ArdoBreadcrumb", () => {
     "keeps the section and page visible at %s",
     (path) => {
       const view = renderToStaticMarkup(
-        <MemoryRouter initialEntries={[path]}>
+        <ArdoPageProvider path={path}>
           <ArdoProvider
             config={{ title: "Docs" }}
             sidebar={[
@@ -22,7 +22,7 @@ describe("ArdoBreadcrumb", () => {
           >
             <ArdoBreadcrumb />
           </ArdoProvider>
-        </MemoryRouter>
+        </ArdoPageProvider>
       )
       expect(view).toContain('aria-label="Breadcrumb"')
       expect(view).toContain("Rust")

@@ -32,9 +32,11 @@ const routesDir = path.join(repoRoot, "docs", "app", "routes")
  */
 const budgets = {
   entryClientGzip: {
-    label: "entry.client gzip",
-    budget: 75_000,
-    baseline: "≈56 KB (2026-07)",
+    // Since Ardo 6 the client entry carries React DOM and Ardo's UI shell, which
+    // React Router's entry.client used to load from separate chunks.
+    label: "entry-client gzip",
+    budget: 150_000,
+    baseline: "≈116 KB (2026-10, static site without React Router)",
   },
   eagerJsGzip: {
     // Union of JS referenced from all prerendered pages (script src +
@@ -42,24 +44,25 @@ const budgets = {
     // one page's initial download. Lazily loaded chunks are excluded.
     label: "eager client JS gzip",
     budget: 530_000,
-    baseline: "≈425 KB (2026-10, 86 native API pages instead of 47 TypeDoc pages)",
+    baseline: "≈379 KB (2026-10, without React Router; search index loads on first use)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
     budget: 1_500_000,
-    baseline: "≈433 KB (2026-10, no lazy chunks since Mermaid moved out of Ardo)",
+    baseline: "≈454 KB (2026-10, the search index is the only lazy chunk)",
   },
   searchIndexGzip: {
+    // Loaded when a reader first focuses search, not with the page.
     label: "search index gzip",
-    budget: 80_000,
-    baseline: "≈50 KB (2026-07, after the v4.0 content growth)",
+    budget: 100_000,
+    baseline: "≈75 KB (2026-10, 99 native API pages)",
   },
   buildDurationMs: {
     label: "docs build duration",
     budget: 300_000,
-    baseline: "≈32 s local (2026-07)",
+    baseline: "≈6 s local (2026-10, static site without React Router)",
   },
 }
 
@@ -91,9 +94,9 @@ function formatMs(ms) {
 }
 
 async function measureEntryClient(jsFiles) {
-  const entryFiles = jsFiles.filter((file) => path.basename(file).startsWith("entry.client"))
+  const entryFiles = jsFiles.filter((file) => path.basename(file).startsWith("entry-client-"))
   if (entryFiles.length === 0) {
-    throw new Error(`No entry.client-*.js found in ${clientDir}`)
+    throw new Error(`No entry-client-*.js found in ${clientDir}`)
   }
   const sizes = await Promise.all(entryFiles.map((file) => gzipSize(file)))
   return Math.max(...sizes)

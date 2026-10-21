@@ -6,7 +6,7 @@ order: 9
 
 # Troubleshooting
 
-Most Ardo issues come from the boundary between Ardo's CLI configuration, React Router routes, and Markdown/MDX content. Start with the section that matches the symptom, then compare the integration with a [version-matched Basic example](/guide/reference-projects).
+Most Ardo issues come from the boundary between Ardo's CLI configuration, the routes in `app/routes`, and Markdown/MDX content. Start with the section that matches the symptom, then compare the integration with a [version-matched Basic example](/guide/reference-projects).
 
 ## Installation Issues
 
@@ -51,7 +51,7 @@ Ardo treats the Vite project root as an independent documentation package. Keep 
 `package.json` and install its declared dependencies in that project's `node_modules`.
 An installation in an ancestor or monorepo root does not satisfy a missing local installation.
 
-Ardo owns the React, React DOM, React Router, Vite, and default icon installations.
+Ardo owns the React, React DOM, Vite, and default icon installations.
 Imports of these managed packages resolve to Ardo's dependency tree. Other direct application
 imports must be declared in the docs package, even when another dependency already uses that
 package. Dependencies may use their own declared transitive dependencies.
@@ -80,7 +80,7 @@ If you see type errors in generated route files, try:
 
 1. Run `pnpm build` to regenerate route types
 2. Restart your TypeScript server in your editor
-3. Check that `tsconfig.json` includes React Router's generated route types and your `app` directory
+3. Check that `tsconfig.json` includes your `app` directory and lists `ardo/vite/client` and `ardo/virtual` in `types`
 4. Confirm the Ardo route generator is writing markdown routes into `app/routes`
 
 ### Build Fails with Memory Error

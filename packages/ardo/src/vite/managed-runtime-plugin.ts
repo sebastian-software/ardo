@@ -34,8 +34,6 @@ const managedBrowserIncludes = [
   "react-dom",
   "react-dom/client",
   "react-dom/static",
-  "react-router",
-  "react-router/dom",
   "lucide-react",
   // Vite's first optimizer scan sees the generated router entry before Ardo's
   // UI chunks. Include Ardo's direct browser graph in the same pass so those
@@ -59,7 +57,6 @@ const managedSsrIncludes = [
   "react-dom",
   "react-dom/server",
   "react-dom/static",
-  "react-router",
   "lucide-react",
   "ardo > @base-ui/react/accordion",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",

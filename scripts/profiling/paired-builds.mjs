@@ -53,7 +53,7 @@ function build(lane, name) {
   const log = path.join(destination, "build.log")
   const command = spawnSync(
     "/usr/bin/time",
-    ["-l", "-o", path.join(destination, "time.txt"), "pnpm", "exec", "react-router", "build"],
+    ["-l", "-o", path.join(destination, "time.txt"), "pnpm", "exec", "ardo", "build"],
     {
       cwd,
       encoding: "utf8",

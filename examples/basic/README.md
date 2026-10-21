@@ -40,21 +40,21 @@ The static site is written to `build/client/` inside the example.
    to edit the site and `pnpm preview` to inspect its production output.
 
 Use your project's own lockfile. The example's Ardo dependency manages React,
-React Router, and Vite; TypeScript is only a development tool.
+React DOM, and Vite; TypeScript is only a development tool.
 
 ## Files to edit
 
 - `app/routes/` contains authored Markdown, MDX, and React pages.
 - `app/Counter.tsx` is a small interactive React component.
-- `app/root.tsx` configures the header, navigation, sidebar, and footer.
+- `app/root.tsx` configures the header, navigation, sidebar, and footer, and sets
+  the default page title through its `meta` export. Ardo supplies the HTML shell,
+  the client and server entries, and the route table.
 - Optional `ardo.config.ts` sets the title and site options. This example serves
   from the domain root; select the deployment settings for your host.
-- `react-router.config.ts` enables static prerendering.
-- `app/entry.server.tsx` delegates rendering to Ardo. React Router supplies the
-  default client entry.
 - `tsconfig.json` configures TypeScript and Ardo's shared React runtime.
 
-`app/routes.ts` and `build/` are generated. Do not edit them by hand.
+`build/` is generated. Do not edit it by hand. `ardo build` prerenders every page
+to `build/client/` and checks its internal links.
 
 ## Optional features
 

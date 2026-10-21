@@ -1,5 +1,5 @@
 import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } from "react"
-import { Link } from "react-router"
+import { ArdoLink } from "../runtime/page"
 
 import { useArdoLabels } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
@@ -50,9 +50,9 @@ export function MobileSlidePanel({
         tabIndex={-1}
       >
         <div className={styles.mobilePanelHeader}>
-          <Link to="/" className={styles.logoLink} onClick={onClose}>
+          <ArdoLink to="/" className={styles.logoLink} onClick={onClose}>
             {logo != null && <HeaderLogo logo={logo} alt={title} />}
-          </Link>
+          </ArdoLink>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             {themeToggle && <ArdoThemeToggle />}
             <button

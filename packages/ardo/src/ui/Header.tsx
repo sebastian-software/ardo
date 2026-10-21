@@ -10,7 +10,8 @@ import {
   useRef,
   useState,
 } from "react"
-import { Link, useLocation } from "react-router"
+import { ArdoLink } from "../runtime/page"
+import { useArdoPath } from "../runtime/page-context"
 
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
@@ -106,11 +107,11 @@ function flattenHeaderChildren(children: ReactNode): ReactNode[] {
  */
 function useMobileMenu(): [boolean, (open: boolean) => void] {
   const [open, setOpen] = useState(false)
-  const location = useLocation()
-  const [previousPathname, setPreviousPathname] = useState(location.pathname)
+  const pathname = useArdoPath()
+  const [previousPathname, setPreviousPathname] = useState(pathname)
 
-  if (location.pathname !== previousPathname) {
-    setPreviousPathname(location.pathname)
+  if (pathname !== previousPathname) {
+    setPreviousPathname(pathname)
     setOpen(false)
   }
 
@@ -168,10 +169,10 @@ export function ArdoHeader({
                 <ChromeIcon name="menu" />
               </button>
             )}
-            <Link to="/" className={styles.logoLink}>
+            <ArdoLink to="/" className={styles.logoLink}>
               {hasLogo && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
               {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
-            </Link>
+            </ArdoLink>
           </div>
 
           {search && (
@@ -208,21 +209,23 @@ export function ArdoHeader({
 
 function ArdoLocaleSwitcher() {
   const config = useArdoConfig()
-  const location = useLocation()
+  const pathname = useArdoPath()
   const i18n = config.i18n
   if (i18n === false || i18n == null || i18n.locales.length < 2) return null
 
   const currentLocale =
     getLocaleFromPath(
-      location.pathname,
+      pathname,
       i18n.locales.map((locale) => locale.id)
     ) ?? i18n.defaultLocale
 
   function handleChange(event: ChangeEvent<HTMLSelectElement>) {
     const targetLocale = event.target.value
     if (targetLocale === currentLocale) return
-    const pathname = getLocalizedPath(location.pathname, currentLocale, targetLocale)
-    globalThis.location.assign(`${pathname}${location.search}${location.hash}`)
+    const targetPath = getLocalizedPath(pathname, currentLocale, targetLocale)
+    globalThis.location.assign(
+      `${targetPath}${globalThis.location.search}${globalThis.location.hash}`
+    )
   }
 
   return (
@@ -248,7 +251,7 @@ function ArdoLocaleSwitcher() {
 
 function ArdoVersionSwitcher() {
   const config = useArdoConfig()
-  const location = useLocation()
+  const pathname = useArdoPath()
   const versioning = config.versioning
   if (versioning === false || versioning == null || versioning.versions.length < 2) {
     return null
@@ -269,8 +272,10 @@ function ArdoVersionSwitcher() {
       return
     }
 
-    const pathname = getVersionedPath(location.pathname, activeVersion.path, targetVersion.path)
-    globalThis.location.assign(`${pathname}${location.search}${location.hash}`)
+    const targetPath = getVersionedPath(pathname, activeVersion.path, targetVersion.path)
+    globalThis.location.assign(
+      `${targetPath}${globalThis.location.search}${globalThis.location.hash}`
+    )
   }
 
   return (

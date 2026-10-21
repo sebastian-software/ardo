@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import {
   Children,
-  type ComponentProps,
   createContext,
   Fragment,
   isValidElement,
@@ -14,12 +13,13 @@ import {
   useRef,
   useState,
 } from "react"
-import { NavLink, useLocation } from "react-router"
 
 import type { SidebarItem as SidebarItemType } from "../config/types"
 import type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 
 import { useArdoLabels } from "../runtime/hooks"
+import { ArdoActiveLink } from "../runtime/page"
+import { useArdoPath } from "../runtime/page-context"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { resolveSectionIcon } from "./section-catalog"
@@ -27,8 +27,8 @@ import * as styles from "./Sidebar.css"
 import { getSidebarScrollTop } from "./sidebar-scroll"
 import { type SidebarTabItem, SidebarTabs } from "./SidebarTabs"
 
-/** Route path type - uses React Router's NavLink 'to' prop type for type-safe routes */
-type RoutePath = ComponentProps<typeof NavLink>["to"]
+/** Internal page path such as `/guide`. */
+type RoutePath = string
 
 // =============================================================================
 // Sidebar Context
@@ -120,7 +120,7 @@ export function ArdoSidebarSection({
  * ```
  */
 export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
-  const { pathname } = useLocation()
+  const pathname = useArdoPath()
   const labels = useArdoLabels()
   const sections = getSidebarSectionElements(children)
   const activeSection =
@@ -244,7 +244,7 @@ export function ArdoSidebarGroup({
     <li className={itemClassName}>
       <div className={styles.sidebarItemHeader}>
         {hasTo ? (
-          <NavLink
+          <ArdoActiveLink
             to={to ?? "/"}
             end
             className={({ isActive }) =>
@@ -252,7 +252,7 @@ export function ArdoSidebarGroup({
             }
           >
             {title}
-          </NavLink>
+          </ArdoActiveLink>
         ) : canToggle ? (
           <button
             type="button"
@@ -329,14 +329,14 @@ export function ArdoSidebarLink({ to, children, className }: ArdoSidebarLinkProp
   const baseClassName = className ?? styles.sidebarLink
   return (
     <li className={styles.sidebarItem}>
-      <NavLink
+      <ArdoActiveLink
         to={to}
         className={({ isActive }) =>
           [baseClassName, isActive && "active"].filter(Boolean).join(" ")
         }
       >
         {children}
-      </NavLink>
+      </ArdoActiveLink>
     </li>
   )
 }
@@ -512,9 +512,9 @@ function SidebarGroupNode({ item, depth }: ItemProps) {
     <li className={sidebarItemClass(hasChildren)}>
       <div className={headerClassName}>
         {hasItemLink ? (
-          <NavLink to={item.link ?? "/"} end className={styles.sidebarNodeTitle}>
+          <ArdoActiveLink to={item.link ?? "/"} end className={styles.sidebarNodeTitle}>
             {item.text}
-          </NavLink>
+          </ArdoActiveLink>
         ) : hasChildren ? (
           <button
             type="button"
@@ -556,7 +556,7 @@ function SidebarLeafItem({ item, depth }: ItemProps) {
     <li className={sidebarItemClass(hasChildren)}>
       <div className={styles.sidebarItemHeader}>
         {hasItemLink ? (
-          <NavLink
+          <ArdoActiveLink
             to={item.link ?? "/"}
             end={hasChildren}
             className={({ isActive }) =>
@@ -564,7 +564,7 @@ function SidebarLeafItem({ item, depth }: ItemProps) {
             }
           >
             {item.text}
-          </NavLink>
+          </ArdoActiveLink>
         ) : hasChildren ? (
           <button
             type="button"

@@ -6,14 +6,7 @@ export const repositoryRoot = path.resolve(import.meta.dirname, "../../..")
 export const basicDirectory = path.join(repositoryRoot, "examples/basic")
 export const fixturesDirectory = path.join(repositoryRoot, "tests/fixtures")
 
-const excluded = new Set([
-  "node_modules",
-  "build",
-  ".react-router",
-  ".api-declarations",
-  "app/routes.ts",
-  "app/routes/api-reference",
-])
+const excluded = new Set(["node_modules", "build", ".api-declarations", "app/routes/api-reference"])
 
 function copySource(source: string, destination: string): void {
   fs.cpSync(source, destination, {

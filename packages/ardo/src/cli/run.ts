@@ -3,13 +3,13 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 import { CliUsageError, getPreviewHelp, startPreview } from "./preview"
+import { prepareProjectConfig } from "./project-config"
 import {
-  type ChildExit,
   type ProjectConfigPreparer,
   resolveArdoVersion,
-  runReactRouterCommand,
-} from "./process"
-import { prepareProjectConfig } from "./project-config"
+  runViteCommand,
+  ViteUsageError,
+} from "./vite-command"
 
 export type CliOutcome = { type: "exit"; code: number } | { type: "signal"; signal: NodeJS.Signals }
 
@@ -17,7 +17,7 @@ type RunCliOptions = {
   cwd?: string
   stdout?: Pick<NodeJS.WriteStream, "write">
   stderr?: Pick<NodeJS.WriteStream, "write">
-  runReactRouter?: typeof runReactRouterCommand
+  runVite?: typeof runViteCommand
   startPreview?: (args: readonly string[], cwd: string) => Promise<unknown>
   prepareProjectConfig?: ProjectConfigPreparer
 }
@@ -26,7 +26,7 @@ type CliRuntime = {
   cwd: string
   stdout: Pick<NodeJS.WriteStream, "write">
   stderr: Pick<NodeJS.WriteStream, "write">
-  runReactRouter: typeof runReactRouterCommand
+  runVite: typeof runViteCommand
   startPreview: (args: readonly string[], cwd: string) => Promise<unknown>
   prepareProjectConfig: ProjectConfigPreparer
 }
@@ -36,9 +36,9 @@ type CliCommand = "build" | "dev" | "preview"
 const help = `Usage: ardo <command> [root] [options]
 
 Commands:
-  dev       Start the React Router development server
-  build     Build the React Router application
-  preview   Preview a static React Router client build
+  dev       Start the development server
+  build     Build the site into static HTML
+  preview   Preview the built site
 
 Run "ardo <command> --help" for command options.
 `
@@ -54,7 +54,7 @@ export async function runCli(
     cwd: options.cwd ?? process.cwd(),
     stdout: options.stdout ?? process.stdout,
     stderr: options.stderr ?? process.stderr,
-    runReactRouter: options.runReactRouter ?? runReactRouterCommand,
+    runVite: options.runVite ?? runViteCommand,
     startPreview:
       options.startPreview ??
       (async (previewArgs, cwd) =>
@@ -93,15 +93,14 @@ async function runKnownCommand(
   if (command === "preview") return runPreviewCommand(args, runtime)
 
   try {
-    return childExitOutcome(
-      await runtime.runReactRouter(command, args, {
-        cwd: runtime.cwd,
-        prepareProjectConfig: runtime.prepareProjectConfig,
-      })
-    )
+    const result = await runtime.runVite(command, args, {
+      cwd: runtime.cwd,
+      prepareProjectConfig: runtime.prepareProjectConfig,
+    })
+    return { type: "exit", code: result.code }
   } catch (error) {
     runtime.stderr.write(`Ardo ${command} failed: ${errorMessage(error)}\n`)
-    return { type: "exit", code: 1 }
+    return { type: "exit", code: error instanceof ViteUsageError ? 2 : 1 }
   }
 }
 
@@ -136,11 +135,6 @@ function runGlobalCommand(command: string, stdout: Pick<NodeJS.WriteStream, "wri
 function runUnknownCommand(command: string, stderr: Pick<NodeJS.WriteStream, "write">): CliOutcome {
   stderr.write(`Unknown command "${command}".\n\n${help}`)
   return { type: "exit", code: 2 }
-}
-
-function childExitOutcome(result: ChildExit): CliOutcome {
-  if (result.signal != null) return { type: "signal", signal: result.signal }
-  return { type: "exit", code: result.code ?? 1 }
 }
 
 function errorMessage(error: unknown): string {

@@ -1,25 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { createMemoryRouter, RouterProvider } from "react-router"
-
+import { ArdoPageProvider } from "../runtime/page"
 import { ArdoErrorBoundary, type ArdoErrorBoundaryProps } from "./ErrorBoundary"
 
 function ErrorBoundaryPreview(args: ArdoErrorBoundaryProps) {
-  const router = createMemoryRouter(
-    [
-      {
-        path: "/",
-        element: <div />,
-        errorElement: <ArdoErrorBoundary {...args} />,
-        loader() {
-          throw new Error("Storybook preview failure")
-        },
-      },
-    ],
-    { initialEntries: ["/"] }
+  return (
+    <ArdoPageProvider error={new Error("Storybook preview failure")}>
+      <ArdoErrorBoundary {...args} />
+    </ArdoPageProvider>
   )
-
-  return <RouterProvider router={router} />
 }
 
 const meta = {

@@ -1,7 +1,6 @@
 import MiniSearch from "minisearch"
-import { useCallback, useId, useMemo, useRef, useState } from "react"
-import { useNavigate } from "react-router"
-import searchDocs from "virtual:ardo/search-index"
+import { useCallback, useId, useRef, useState } from "react"
+import { navigateTo, resolveArdoHref, useArdoPage } from "../../runtime/page-context"
 
 import type { ArdoLabels } from "../labels"
 
@@ -33,16 +32,23 @@ export type ArdoSearchProps = {
   autoFocus?: boolean
 }
 
-function useSearchIndex() {
-  return useMemo(() => {
+let searchIndex: Promise<MiniSearch<SearchDoc>> | undefined
+
+/**
+ * Load and index the site's search documents once, when someone first focuses
+ * or uses search. Pages render and hydrate without the index.
+ */
+function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
+  searchIndex ??= import("virtual:ardo/search-index").then(({ default: docs }) => {
     const index = new MiniSearch<SearchDoc>({
       fields: ["title", "content", "section"],
       storeFields: ["title", "path", "section"],
       searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
     })
-    index.addAll(searchDocs)
+    index.addAll(docs)
     return index
-  }, [])
+  })
+  return searchIndex
 }
 
 function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMatch[] {
@@ -61,7 +67,8 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
   })
 }
 
-function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
+function useSearch() {
+  const latestQuery = useRef("")
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchMatch[]>([])
@@ -69,16 +76,20 @@ function useSearch(searchIndex: ReturnType<typeof useSearchIndex>) {
 
   const search = (searchQuery: string) => {
     setQuery(searchQuery)
+    latestQuery.current = searchQuery
     if (!searchQuery.trim()) {
       setResults([])
       setIsOpen(false)
       setSelectedIndex(0)
       return
     }
-    const rawResults = searchIndex.search(searchQuery).slice(0, 10)
-    setResults(normalizeResults(rawResults))
-    setSelectedIndex(0)
-    setIsOpen(true)
+    void loadSearchIndex().then((index) => {
+      // A faster typist may have moved on while the index loaded.
+      if (latestQuery.current !== searchQuery) return
+      setResults(normalizeResults(index.search(searchQuery).slice(0, 10)))
+      setSelectedIndex(0)
+      setIsOpen(true)
+    })
   }
 
   return { isOpen, setIsOpen, query, results, selectedIndex, setSelectedIndex, search }
@@ -184,7 +195,7 @@ function useSearchA11y({
 }
 
 export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) {
-  const navigate = useNavigate()
+  const page = useArdoPage()
   const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -195,8 +206,7 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
     },
     [autoFocus]
   )
-  const searchIndex = useSearchIndex()
-  const state = useSearch(searchIndex)
+  const state = useSearch()
   const hasQuery = state.query.trim().length > 0
   const expanded = state.isOpen && hasQuery
   const searchA11y = useSearchA11y({
@@ -229,7 +239,7 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
         break
       case "navigate":
         e.preventDefault()
-        void navigate(action.path)
+        navigateTo(resolveArdoHref(action.path, page))
         state.setIsOpen(false)
         break
       case "close":
@@ -257,6 +267,8 @@ export function ArdoSearch({ placeholder, autoFocus = false }: ArdoSearchProps) 
         onSearch={state.search}
         onKeyDown={handleKeyDown}
         onFocus={() => {
+          // Start loading the index while the reader types the first letters.
+          void loadSearchIndex()
           if (hasQuery) state.setIsOpen(true)
         }}
         activeOptionId={searchA11y.activeOptionId}

@@ -159,14 +159,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
         expect(renderer).toContain("The rendered document")
       } else {
         expect(Object.keys(manifest.dependencies)).toEqual(["ardo"])
-        for (const name of [
-          "react",
-          "react-dom",
-          "react-router",
-          "@react-router/dev",
-          "vite",
-          "lucide-react",
-        ]) {
+        for (const name of ["react", "react-dom", "vite", "lucide-react"]) {
           expect(installed.dependencies[name]).toBeDefined()
           expect(installed.peerDependencies[name]).toBeUndefined()
           expect(fs.existsSync(path.join(consumer, "node_modules", name))).toBe(false)

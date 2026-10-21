@@ -1,8 +1,12 @@
 import { createRequire } from "node:module"
 import path from "node:path"
 
+import type { Plugin } from "vite"
+
 import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
+
+import { fetchNpmFacts } from "./app/home/npm-facts"
 
 // Ardo's dev server only serves files inside the docs folder. In this pnpm
 // workspace the home page fonts resolve to the shared store at the repository
@@ -14,9 +18,30 @@ const fontPackages = [
   "@fontsource-variable/figtree",
 ].map((name) => path.dirname(require.resolve(`${name}/package.json`)))
 
+/**
+ * Fetch the package's npm facts once per build or dev server, so the
+ * prerendered home page and its hydration see the same numbers.
+ */
+function npmFacts(name: string): Plugin {
+  const id = "virtual:docs/npm-facts"
+  let facts: ReturnType<typeof fetchNpmFacts> | undefined
+  return {
+    name: "docs:npm-facts",
+    resolveId(source) {
+      return source === id ? `\0${id}` : undefined
+    },
+    async load(source) {
+      if (source !== `\0${id}`) return undefined
+      facts ??= fetchNpmFacts(name)
+      return `export default ${JSON.stringify(await facts)}`
+    },
+  }
+}
+
 export default defineConfig({
   server: { fs: { allow: fontPackages } },
   plugins: [
+    npmFacts("ardo"),
     ardo({
       title: "Ardo",
       description: "React-first Static Documentation Framework",

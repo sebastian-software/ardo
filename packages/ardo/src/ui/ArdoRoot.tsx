@@ -7,12 +7,12 @@ import {
   type ReactNode,
   useMemo,
 } from "react"
-import { Outlet, useLocation, useMatches } from "react-router"
-
 import type { ArdoConfig } from "../config/types"
 
 import { createBrandThemeCss } from "../config/brand"
 import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
+import { ArdoOutlet } from "../runtime/page"
+import { useArdoPage, useArdoPath } from "../runtime/page-context"
 import { ArdoFooter } from "./Footer"
 import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
@@ -108,27 +108,16 @@ function readChromeHandle(handle: unknown): boolean | undefined {
 }
 
 /**
- * Reads the React Router `handle` exports from every active route match and
- * returns the most specific `layout` value (the deepest match wins). MDX
- * routes get this export auto-generated from `frontmatter.layout`; .tsx
- * routes set it directly with `export const handle = { layout: "bare" }`.
+ * Reads the `layout` value of the page's `handle` export. MDX routes get this
+ * export generated from `frontmatter.layout`; .tsx routes set it directly with
+ * `export const handle = { layout: "bare" }`.
  */
 function useRouteLayout(): string | undefined {
-  const matches = useMatches()
-  for (let i = matches.length - 1; i >= 0; i--) {
-    const layout = readLayoutHandle(matches[i].handle)
-    if (layout !== undefined) return layout
-  }
-  return undefined
+  return readLayoutHandle(useArdoPage().handle)
 }
 
 function useRouteChrome(): boolean | undefined {
-  const matches = useMatches()
-  for (let i = matches.length - 1; i >= 0; i--) {
-    const chrome = readChromeHandle(matches[i].handle)
-    if (chrome !== undefined) return chrome
-  }
-  return undefined
+  return readChromeHandle(useArdoPage().handle)
 }
 
 function ArdoBrandThemeStyle({ brand }: { brand: ArdoConfig["brand"] }) {
@@ -228,7 +217,7 @@ export function ArdoRoot({
   footer,
   children,
 }: ArdoRootProps) {
-  const location = useLocation()
+  const pathname = useArdoPath()
   const layout = useRouteLayout()
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
@@ -236,14 +225,14 @@ export function ArdoRoot({
   // Bare layout: no sidebar, no section tabs — used for the home page and any
   // other marketing-style routes (TSX or MDX). Falls back to the legacy
   // hardcoded home detection if a route hasn't opted in via `handle.layout`.
-  const isBareLayout = layout === "bare" || location.pathname === "/" || location.pathname === ""
+  const isBareLayout = layout === "bare" || pathname === "/" || pathname === ""
   const sidebar = useMemo(
-    (): ReactNode => withGeneratedSections(chrome.sidebar, config, location.pathname),
-    [chrome.sidebar, config, location.pathname]
+    (): ReactNode => withGeneratedSections(chrome.sidebar, config, pathname),
+    [chrome.sidebar, config, pathname]
   )
   const sidebarItems = useMemo(
-    () => resolveArdoSidebarItems(sidebar, location.pathname),
-    [sidebar, location.pathname]
+    () => resolveArdoSidebarItems(sidebar, pathname),
+    [sidebar, pathname]
   )
   // Search lives in the header now. The sidebar no longer carries it.
   const resolvedSidebar = isBareLayout ? undefined : sidebar
@@ -270,7 +259,7 @@ export function ArdoRoot({
           sidebar={resolvedSidebar}
           footer={resolvedFooter}
         >
-          {chrome.content ?? <Outlet />}
+          {chrome.content ?? <ArdoOutlet />}
         </ArdoLayout>
       </ArdoProvider>
     </>
