@@ -42,7 +42,7 @@ function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
   searchIndex ??= import("virtual:ardo/search-index").then(({ default: docs }) => {
     const index = new MiniSearch<SearchDoc>({
       fields: ["title", "content", "section"],
-      storeFields: ["title", "path", "section"],
+      storeFields: ["title", "pageTitle", "excerpt", "path", "section"],
       searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
     })
     index.addAll(docs)
@@ -61,6 +61,8 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
         id: String(result.id),
         title,
         path: resultPath,
+        pageTitle: typeof result.pageTitle === "string" ? result.pageTitle : undefined,
+        excerpt: typeof result.excerpt === "string" ? result.excerpt : undefined,
         section: typeof result.section === "string" ? result.section : undefined,
       },
     ]

@@ -75,6 +75,17 @@ const moreSecret = "also do not index"
     ])
   })
 
+  it("keeps table cells but not the delimiter row in search text", async () => {
+    await writeRoute(
+      "guide/options.md",
+      "---\ntitle: Options\n---\n\n| Name | Required |\n| --- | :---: |\n| config | Yes |\n"
+    )
+
+    const [doc] = await generateSearchIndex(routesDir)
+
+    expect(doc?.excerpt).toBe("Name Required config Yes")
+  })
+
   it("indexes native setext and JSX heading text using the rendered heading ranges", async () => {
     await writeRoute(
       "guide/native.mdx",
