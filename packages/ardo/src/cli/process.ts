@@ -26,6 +26,8 @@ export type ProjectConfigPreparer = (
 
 type RunReactRouterOptions = {
   cwd: string
+  /** Extra environment variables for the React Router process. */
+  env?: Record<string, string>
   binPath?: string
   signalTarget?: SignalTarget
   prepareProjectConfig?: ProjectConfigPreparer
@@ -71,6 +73,7 @@ export async function runReactRouterCommand(
   const spawnOptions: SpawnOptions = {
     cwd: options.cwd,
     stdio: "inherit",
+    ...(options.env == null ? {} : { env: { ...process.env, ...options.env } }),
   }
 
   return new Promise<ChildExit>((resolve, reject) => {

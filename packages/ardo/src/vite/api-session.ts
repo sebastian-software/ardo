@@ -9,6 +9,12 @@ import type { NativeApiDocsConfig, NativeApiExtraction, NativeApiFileChanges } f
 
 import { resolveGeneratedDocsDirectory } from "../generated-docs"
 import { validateApiOutputs } from "./api-outputs"
+import {
+  forgetSharedExtraction,
+  getSharedExtraction,
+  registerSharedExtraction,
+  type SharedExtraction,
+} from "./api-shared-extraction"
 import { isPathInsideDirectory, resolveRoutesDir } from "./path-utils"
 import { writeRoutesFileSync } from "./routes-core"
 
@@ -30,6 +36,7 @@ export class ApiPluginState {
   private server?: ViteDevServer
   private watchFiles = new Set<string>()
   private initialized = false
+  private ownsProject = false
   private closing = false
   private revision = 0
   private published?: string
@@ -72,22 +79,59 @@ export class ApiPluginState {
     this.config = this.resolveConfig()
     validateApiOutputs(this.routesDir, this.outputs)
     this.backend = await loadBackend()
-    this.project = new this.backend.NativeApiProject(this.config)
+    const result = await this.extractShared(env.command === "build")
+    this.updateWatchFiles(result.watchFiles)
+    await this.publish(result)
+    this.initialized = true
+  }
+
+  private async extractShared(closeAfterwards: boolean): Promise<NativeApiExtraction> {
+    const shared = getSharedExtraction(this.config)
+    if (shared != null) return shared.result
+    const entry = this.startSharedExtraction()
     try {
-      const result = await this.project.extract()
-      this.updateWatchFiles(result.watchFiles)
-      await this.publish(result)
-      this.initialized = true
+      const result = await entry.result
+      // A build never watches, so the compiler stops as soon as the result exists.
+      if (closeAfterwards) await this.closeShared(entry)
+      return result
     } catch (error) {
-      await this.project.close()
+      forgetSharedExtraction(this.config)
+      await this.closeShared(entry)
       throw error
-    } finally {
-      if (env.command === "build") await this.project.close()
     }
+  }
+
+  private startSharedExtraction(): SharedExtraction {
+    const backend = this.getBackend()
+    const project = new backend.NativeApiProject(this.config)
+    this.project = project
+    this.ownsProject = true
+    return registerSharedExtraction(this.config, this, project)
+  }
+
+  private async closeShared(entry: SharedExtraction): Promise<void> {
+    entry.project = undefined
+    await this.project?.close()
+  }
+
+  private refreshShared(result: NativeApiExtraction): void {
+    const entry = getSharedExtraction(this.config)
+    if (entry != null && entry.holders.has(this)) entry.result = Promise.resolve(result)
+  }
+
+  /** A restarted server joins the compiler its predecessor still holds. */
+  private adoptSharedProject(): void {
+    if (this.project != null) return
+    const entry = getSharedExtraction(this.config)
+    if (entry?.project == null) return
+    this.project = entry.project
+    this.ownsProject = true
+    entry.holders.add(this)
   }
 
   attach(server: ViteDevServer): void {
     this.server = server
+    this.adoptSharedProject()
     this.updateWatchFiles([...this.watchFiles])
     server.watcher.on("add", this.onAdd).on("change", this.onChange).on("unlink", this.onUnlink)
     server.httpServer?.once("close", () => {
@@ -111,6 +155,16 @@ export class ApiPluginState {
 
   private async dispose(): Promise<void> {
     await this.running
+    if (!this.ownsProject) return
+    const entry = getSharedExtraction(this.config)
+    if (entry != null && entry.project === this.project) {
+      entry.holders.delete(this)
+      // Another server still uses this compiler, for example after a restart.
+      if (entry.holders.size > 0) return
+      // A closed development compiler must not serve a new server stale output;
+      // a finished build's result stays for later config evaluations.
+      if (entry.project != null) forgetSharedExtraction(this.config)
+    }
     await this.project?.close()
   }
 
@@ -179,20 +233,26 @@ export class ApiPluginState {
   }
 
   private async drain(): Promise<void> {
-    const project = this.project
-    if (project == null) return
     while (this.pending.size > 0 && !this.closing) {
       const revision = this.revision
       const changes = collectChanges(this.pending)
       this.pending.clear()
       try {
-        const result = await project.extract(changes)
+        const result = await this.extractChanges(changes)
         this.updateWatchFiles(result.watchFiles)
         if (this.isCurrent(revision)) await this.publish(result)
       } catch (error) {
         if (this.isCurrent(revision)) this.reportError(error)
       }
     }
+  }
+
+  private async extractChanges(changes: NativeApiFileChanges): Promise<NativeApiExtraction> {
+    // An earlier build already stopped its compiler, so this server starts a live one.
+    if (this.project == null) return this.startSharedExtraction().result
+    const result = await this.project.extract(changes)
+    this.refreshShared(result)
+    return result
   }
 
   private isCurrent(revision: number): boolean {

@@ -273,8 +273,19 @@ Set `seo.robots: false` if you want to provide your own `robots.txt` from `publi
 - **Type:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
 - **Default:** `{ enabled: true, checkAnchors: true, level: "warn" }`
 
-Checks internal links in Markdown and MDX content at build time. Ardo reports missing routes and,
-unless disabled, missing heading anchors.
+Checks internal links in the finished build output. After `ardo build` has written every page, Ardo
+parses the generated HTML and verifies each internal link, image, script, and stylesheet reference,
+whether it came from Markdown, a component, or a generated page. Unless disabled, it also verifies
+that every `#fragment` matches an element id on the target page. Redirect sources count as valid
+targets.
+
+External links are out of scope, because their availability depends on third-party servers rather
+than on the build. Links outside the site's base path, such as other documentation versions on the
+same host, are skipped for the same reason. Patterns in `exclude` match with or without the base
+path.
+
+When a project runs `react-router build` directly instead of `ardo build`, Ardo falls back to
+checking the links it finds in Markdown and MDX sources.
 
 ```ts
 ardo({

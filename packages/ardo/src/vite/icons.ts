@@ -151,6 +151,8 @@ async function resolveIconSvg(root: string, source: string | undefined): Promise
 
 function renderPng(svg: string, size: number): Uint8Array {
   return new Resvg(svg, {
+    // Scanning the system fonts costs far more than rendering an icon.
+    font: { loadSystemFonts: hasText(svg) },
     fitTo: {
       mode: "width",
       value: size,
@@ -158,6 +160,10 @@ function renderPng(svg: string, size: number): Uint8Array {
   })
     .render()
     .asPng()
+}
+
+function hasText(svg: string): boolean {
+  return /<text[\s/>]/iu.test(svg)
 }
 
 function createIco(png: Uint8Array, size: number): Uint8Array {
