@@ -39,4 +39,16 @@ describe("the public Basic example", () => {
     expect(files.some((file) => file.endsWith(".js"))).toBe(true)
     expect(files.some((file) => file.endsWith(".css"))).toBe(true)
   })
+
+  it("loads React from its own chunk", () => {
+    expect(readEagerScripts().some((file) => /^react-[\w-]+\.js$/u.test(file))).toBe(true)
+  })
+
+  /** Scripts the home page loads or preloads before anyone interacts with it. */
+  function readEagerScripts(): string[] {
+    const html = fs.readFileSync(path.join(client, "index.html"), "utf8")
+    return [...html.matchAll(/(?:src|href)="\/assets\/([^"]+\.js)"/gu)].map(
+      (match) => match[1] ?? ""
+    )
+  }
 })

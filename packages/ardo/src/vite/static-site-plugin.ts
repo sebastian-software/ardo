@@ -9,6 +9,8 @@ import { configureStaticPreview } from "./preview-static"
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
 import { checkSiteLinks, prerenderSite } from "./static-site"
 
+const REACT_MODULES = /[\\/]node_modules[\\/](?:react|react-dom|scheduler)[\\/]/u
+
 export type StaticSiteState = {
   deploymentBase?: string
   outDir?: string
@@ -38,7 +40,13 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
               emptyOutDir: true,
               manifest: true,
               outDir: path.join(buildDir, "client"),
-              rolldownOptions: { input: VIRTUAL_ENTRY_CLIENT_ID },
+              rolldownOptions: {
+                input: VIRTUAL_ENTRY_CLIENT_ID,
+                // React gets its own chunk. The entry also carries the site config,
+                // build time, and route table, so it changes with every build;
+                // returning readers keep React cached until its version changes.
+                output: { codeSplitting: { groups: [{ name: "react", test: REACT_MODULES }] } },
+              },
             },
           },
           ssr: {
