@@ -178,8 +178,12 @@ function isMarkdownFile(id: string): boolean {
   return id.endsWith(".md") || id.endsWith(".mdx")
 }
 
+// A page's own `meta` export starts a line of the compiled module. Code samples
+// that show such an export end up inside string literals, so they do not match.
+const META_EXPORT = /^export\s+(?:const|let|function|async\s+function)\s+meta\b/mu
+
 function hasMetaExport(code: string): boolean {
-  return code.includes("export const meta") || code.includes("export function meta")
+  return META_EXPORT.test(code)
 }
 
 function extractFrontmatterValue(code: string, key: string): string | undefined {
