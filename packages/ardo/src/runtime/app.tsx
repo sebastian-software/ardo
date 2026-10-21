@@ -3,13 +3,16 @@ import { type ReactNode, StrictMode } from "react"
 import type { ArdoResolvedPage, ArdoRootModule } from "./routing"
 
 import { ArdoPageProvider } from "./page"
+import { isArdoNotFound } from "./page-context"
 
 /**
- * The part of the page that hydrates: the root component around the page. An
- * error page replaces the root, so a broken site chrome cannot hide the error.
+ * The part of the page that hydrates: the root component around the page. A
+ * missing page renders inside the root like any other page. A render error
+ * replaces the root, so a broken site chrome cannot hide the error.
  */
 export function ArdoPageTree({ page, root }: { page: ArdoResolvedPage; root: ArdoRootModule }) {
-  const Root = page.error == null ? (root.default ?? DefaultRoot) : page.component
+  const keepsRoot = page.error == null || isArdoNotFound(page.error)
+  const Root = keepsRoot ? (root.default ?? DefaultRoot) : page.component
   return (
     <ArdoPageProvider
       base={page.data.base}
