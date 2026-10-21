@@ -49,6 +49,11 @@ globalStyle(`${codeWrapper} pre`, {
   background: "transparent !important",
 })
 
+globalStyle(`${codeBlock}[data-wrap] pre`, {
+  whiteSpace: "pre-wrap",
+  overflowWrap: "anywhere",
+})
+
 globalStyle(`${codeWrapper} pre code`, {
   display: "flex",
   flexDirection: "column",
