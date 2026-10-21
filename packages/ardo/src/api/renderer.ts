@@ -8,6 +8,9 @@ import type {
 
 import { getTag } from "./comments"
 
+/** Sections directly under the page title are `##`; under a signature or method, `###`. */
+type SectionHeading = "##" | "###"
+
 export function renderDeclarationDocs(
   items: ApiDeclaration[],
   out: string,
@@ -44,7 +47,7 @@ function renderPage(
   const lines = [
     `# ${item.name}`,
     "",
-    ...renderComment(item.comment, links),
+    ...renderComment(item.comment, links, "##"),
     codeBlock(item.signature),
     "",
   ]
@@ -72,14 +75,17 @@ function appendCallSignatures(
   item: ApiDeclaration,
   links: Map<string, string>
 ): void {
+  const typeCall = item.kind === "type" || item.kind === "interface"
+  // A single function signature has no heading of its own, so its sections sit under the title.
+  const nested = item.signatures.length > 1 || typeCall
+  const heading: SectionHeading = nested ? "###" : "##"
   for (const signature of item.signatures) {
-    const typeCall = item.kind === "type" || item.kind === "interface"
     if (item.signatures.length > 1) lines.push("## Overload", "")
     else if (typeCall) lines.push("## Call signature", "")
     if (signature.comment.description !== item.comment.description)
-      lines.push(...renderComment(signature.comment, links))
-    if (item.signatures.length > 1 || typeCall) lines.push(codeBlock(signature.text), "")
-    lines.push(...renderSignature(signature, links))
+      lines.push(...renderComment(signature.comment, links, heading))
+    if (nested) lines.push(codeBlock(signature.text), "")
+    lines.push(...renderSignature(signature, links, heading))
   }
 }
 
@@ -93,7 +99,7 @@ function appendIndexSignatures(
   lines.push("## Index signatures", "")
   for (const index of indexes)
     lines.push(
-      ...renderComment(index.comment, links),
+      ...renderComment(index.comment, links, "###"),
       codeBlock(`${index.readonly ? "readonly " : ""}${index.name}: ${index.type};`),
       ""
     )
@@ -103,9 +109,9 @@ function appendMethods(lines: string[], item: ApiDeclaration, links: Map<string,
   for (const method of item.properties.filter(
     (property) => property.kind === "method" || property.kind === "constructor"
   )) {
-    lines.push(`## ${method.name}`, "", ...renderComment(method.comment, links))
+    lines.push(`## ${method.name}`, "", ...renderComment(method.comment, links, "###"))
     for (const signature of method.signatures)
-      lines.push(codeBlock(signature.text), "", ...renderSignature(signature, links))
+      lines.push(codeBlock(signature.text), "", ...renderSignature(signature, links, "###"))
   }
 }
 
@@ -141,7 +147,11 @@ function renderIndex(
   }
 }
 
-function renderComment(comment: ApiComment, links: Map<string, string>): string[] {
+function renderComment(
+  comment: ApiComment,
+  links: Map<string, string>,
+  heading: SectionHeading
+): string[] {
   const lines: string[] = []
   const deprecated = getTag(comment, "deprecated")
   if (deprecated != null) lines.push(`> **Deprecated.** ${renderLinks(deprecated, links)}`, "")
@@ -150,7 +160,7 @@ function renderComment(comment: ApiComment, links: Map<string, string>): string[
   if (remarks != null) lines.push(renderLinks(remarks, links), "")
   for (const example of comment.tags.filter((tag) => tag.name === "example")) {
     lines.push(
-      "### Example",
+      `${heading} Example`,
       "",
       example.text.includes("```") || example.text.includes("~~~")
         ? example.text
@@ -161,25 +171,24 @@ function renderComment(comment: ApiComment, links: Map<string, string>): string[
   return lines
 }
 
-function renderSignature(signature: ApiSignature, links: Map<string, string>): string[] {
+function renderSignature(
+  signature: ApiSignature,
+  links: Map<string, string>,
+  heading: SectionHeading
+): string[] {
   const lines: string[] = []
   if (signature.parameters.length > 0) {
-    lines.push(
-      "### Parameters",
-      "",
-      "| Name | Type | Required | Description |",
-      "| --- | --- | --- | --- |"
-    )
-    for (const parameter of signature.parameters) {
-      lines.push(
-        `| ${cell(inlineCode(`${parameter.rest ? "..." : ""}${parameter.name}`))} | ${cell(inlineCode(parameter.type))} | ${parameter.optional || parameter.rest ? "No" : "Yes"} | ${cell(renderLinks(parameter.description, links))} |`
-      )
-    }
-    lines.push("")
+    const rows = signature.parameters.map((parameter) => [
+      inlineCode(`${parameter.rest ? "..." : ""}${parameter.name}`),
+      inlineCode(parameter.type),
+      parameter.optional || parameter.rest ? "No" : "Yes",
+      renderLinks(parameter.description, links),
+    ])
+    lines.push(`${heading} Parameters`, "", ...memberTable(rows), "")
   }
   if (signature.returnType !== "")
     lines.push(
-      "### Returns",
+      `${heading} Returns`,
       "",
       inlineCode(signature.returnType),
       "",
@@ -193,14 +202,28 @@ function renderSignature(signature: ApiSignature, links: Map<string, string>): s
 }
 
 function propertyTable(properties: ApiProperty[], links: Map<string, string>): string[] {
-  const lines = ["| Name | Type | Required | Description |", "| --- | --- | --- | --- |"]
-  for (const property of properties) {
-    const description = propertyDescription(property)
-    lines.push(
-      `| ${cell(inlineCode(property.name))} | ${cell(inlineCode(property.type))} | ${property.optional ? "No" : "Yes"} | ${cell(renderLinks(description, links))} |`
-    )
-  }
-  return lines
+  return memberTable(
+    properties.map((property) => [
+      inlineCode(property.name),
+      inlineCode(property.type),
+      property.optional ? "No" : "Yes",
+      renderLinks(propertyDescription(property), links),
+    ])
+  )
+}
+
+/** Name, type, required and description rows; drops the description column when every cell is empty. */
+function memberTable(rows: string[][]): string[] {
+  const described = rows.some((row) => row[3] !== "")
+  const headers = described
+    ? ["Name", "Type", "Required", "Description"]
+    : ["Name", "Type", "Required"]
+  const line = (cells: string[]) => `| ${cells.join(" | ")} |`
+  return [
+    line(headers),
+    line(headers.map(() => "---")),
+    ...rows.map((row) => line(row.slice(0, headers.length).map(cell))),
+  ]
 }
 
 function propertyDescription(property: ApiProperty): string {
