@@ -92,7 +92,7 @@ globalStyle(`${s} > [data-title]`, {
   fontWeight: 500,
   fontFamily: vars.font.mono,
   color: vars.color.textLight,
-  background: `color-mix(in oklch, ${vars.color.accentSubtle} 50%, ${vars.color.bgSoft})`,
+  background: `color-mix(in oklch, ${vars.color.codeBorder} 30%, ${vars.color.codeBg})`,
   borderBottom: `1px solid ${vars.color.codeBorder}`,
 })
 
