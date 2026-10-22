@@ -67,6 +67,20 @@ or `icons: false` to manage them from `public/`.
 
 ## Root layout
 
+`app/root.tsx` exports the root component. `<ArdoRoot />` is a complete site: header with
+search, a sidebar with one section per route folder, and the footer. Ardo supplies the site
+config and its stylesheet.
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Pass the chrome as children to change it:
+
 ```tsx
 import {
   ArdoGeneratedSidebar,
@@ -74,21 +88,13 @@ import {
   ArdoNav,
   ArdoNavLink,
   ArdoRoot,
-  ArdoRootLayout,
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import type { ReactNode } from "ardo/react"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
-
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
 
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoNav>
           <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>

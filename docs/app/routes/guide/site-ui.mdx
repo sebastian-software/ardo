@@ -11,7 +11,17 @@ rail, sidebar panels, footer, edit links, and last-updated metadata in your app'
 
 ## Minimal Root
 
-Every Ardo app needs the generated config. Navigation is composed with React components.
+`<ArdoRoot />` is a complete site: Ardo's header with search and the theme toggle, a sidebar with one section per top-level route folder, and the footer. The site config and the stylesheet come from Ardo's entries, so `root.tsx` needs no imports beyond the components it uses.
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Navigation is composed with React components. Pass `ArdoHeader`, `ArdoSidebar`, and `ArdoFooter` as children to change any part, or set `header`, `sidebar`, or `footer` to `false` to leave it out:
 
 ```tsx
 import {
@@ -23,12 +33,10 @@ import {
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
 
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoNav>
           <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>

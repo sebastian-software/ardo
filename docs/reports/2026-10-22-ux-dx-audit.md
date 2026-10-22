@@ -339,9 +339,9 @@ jeder künftige PR geprüft werden kann:
 
 | Messlatte                                          | Ziel            | Heute            |
 | -------------------------------------------------- | --------------- | ---------------- |
-| Zeilen vor dem Agenten-Prompt im Getting Started   | 2               | 25               |
+| Zeilen vor dem Agenten-Prompt im Getting Started   | 2               | 1 (war 25)       |
 | Dateien, die ein Neuling von Hand anlegt           | ≤ 3             | 7                |
-| Zeilen in tsconfig/root.tsx ohne erklärbaren Grund | 0               | 4                |
+| Zeilen in tsconfig/root.tsx ohne erklärbaren Grund | 0               | 0 (war 4)        |
 | Guide-Seiten in der Sidebar                        | ≤ 12 + 1 Gruppe | 26               |
 | Zeilen für eine Marke mit Logo und Schrift         | ≤ 10            | 44 (eigene Site) |
 | Warnzeilen bei `ardo dev` in Basic                 | 0               | 3                |
@@ -366,9 +366,10 @@ Was ich nicht weiß und deshalb als Annahme markiere:
    und `press.*` entfernt. Wrapper-Pfad aus der Fehlermeldung genommen. Die
    Vite-Alias-Warnung bleibt absichtlich sichtbar (Issue 398), und Node 22.13 im
    v5-Upgrade-Guide stimmt historisch.
-2. **Danach, DX:** Prompt mit Copy-Button an den Anfang des Getting Started. `ArdoRoot`
-   holt Config und Styles selbst. `ardo/tsconfig` zum Erweitern. Titel aus einer Quelle.
-   Basic auf drei Dateien.
+2. **Danach, DX (erledigt):** Prompt mit Copy-Button am Anfang des Getting Started.
+   `ArdoRoot` holt Config und Styles selbst und generiert die Sidebar. `ardo/tsconfig` zum
+   Erweitern. Seiten ohne Titel bekommen den Site-Titel. `root.tsx` in Basic ist eine Zeile
+   JSX.
 3. **Dann, Docs:** Getting Started linear, Agent-Seiten zusammenlegen, Upgrades
    einklappen, Maintainer-Inhalte raus, Rezepte ergänzen, README aus der Landing ableiten.
 4. **Zuletzt, Theming:** ein Vokabular, `brand` als Einstieg, tote Tokens weg, Callouts aus

@@ -86,7 +86,8 @@ export function createRoutesModule({ root, routesDir }: { root: string; routesDi
     }
     return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(route.path)}, load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
   })
-  return `${rootImport}\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
+  // Ardo's stylesheet loads before the root module, so a site's own CSS wins.
+  return `import "ardo/ui/styles.css"\n${rootImport}\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
 }
 
 /** Route id: the route file relative to the project root, as Vite's manifest keys it. */

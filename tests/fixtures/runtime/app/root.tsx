@@ -12,9 +12,6 @@ import {
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
-
 import "./document-scroll.css"
 
 export const meta: ArdoMetaFunction = () => [{ title: "Ardo Basic Example" }]
@@ -43,7 +40,6 @@ export default function Root() {
       )}
 
       <ArdoRoot
-        config={config}
         className={isDocumentScrollPage ? "document-scroll-custom-layout" : undefined}
         scrollMode={isDocumentScrollPage ? "document" : undefined}
       >

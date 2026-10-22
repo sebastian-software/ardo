@@ -728,7 +728,8 @@ Ardo keeps browser-safe runtime imports separate from build-time Node.js imports
 | `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                                                              |
 | `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |
 | `ardo/react-dom`     | React DOM APIs, with `/client`, `/server`, and `/static` subpaths.                                                                       |
-| `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                                                                          |
+| `ardo/ui/styles.css` | The default Ardo UI stylesheet. Every site loads it; import it yourself only to control cascade order.                                   |
+| `ardo/tsconfig`      | TypeScript preset for the docs package: `"extends": "ardo/tsconfig"`.                                                                    |
 
 ---
 
