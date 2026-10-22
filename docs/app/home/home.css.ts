@@ -711,6 +711,39 @@ export const promptNote = style({
 export const promptText = style({ fontSize: "21px", lineHeight: 1.55, margin: 0 })
 export const promptAction = style({ marginTop: "26px" })
 
+export const promptCopyControl = style({
+  display: "inline-grid",
+  justifyItems: "start",
+  maxWidth: "100%",
+  gap: "12px",
+  textAlign: "left",
+})
+
+export const promptCopyFallback = style({ display: "grid", gap: "8px", width: "100%" })
+
+export const promptCopyError = style({
+  margin: 0,
+  font: `400 14px/1.5 ${body}`,
+  color: ink,
+})
+
+export const promptCopyField = style({
+  display: "block",
+  width: "100%",
+  minHeight: "6rem",
+  boxSizing: "border-box",
+  resize: "vertical",
+  padding: "12px",
+  font: `400 14px/1.5 ${vars.font.mono}`,
+  color: ink,
+  background: card,
+  border: `1px solid ${ink}`,
+  borderRadius: "8px",
+  selectors: {
+    "&:focus-visible": { outline: `2px solid ${ink}`, outlineOffset: "2px" },
+  },
+})
+
 export const promptAside = style({
   position: "absolute",
   left: "14px",

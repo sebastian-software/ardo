@@ -49,6 +49,11 @@ globalStyle(`${codeWrapper} pre`, {
   background: "transparent !important",
 })
 
+globalStyle(`${codeWrapper} pre:focus-visible`, {
+  outline: `2px solid ${vars.color.ring}`,
+  outlineOffset: "-2px",
+})
+
 globalStyle(`${codeBlock}[data-wrap] pre`, {
   whiteSpace: "pre-wrap",
   overflowWrap: "anywhere",

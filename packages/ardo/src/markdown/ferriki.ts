@@ -182,6 +182,7 @@ function ardoLineTransformer(options: ArdoLineTransformerOptions = {}): ShikiTra
     },
     pre(node) {
       const properties = ensureNodeProperties(node)
+      properties.tabindex = 0
       applyTitleProperty(properties, state.metaRaw)
       applyLabelProperty(properties, state.metaRaw)
     },

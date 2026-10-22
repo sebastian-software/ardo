@@ -1,5 +1,5 @@
 {
-  "react/jsx-no-useless-fragment": 6,
+  "react/jsx-no-useless-fragment": 5,
   "react/no-clone-element": 5,
   "react/no-danger": 3,
   "react/only-export-components": 15,

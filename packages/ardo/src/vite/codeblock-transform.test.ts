@@ -46,7 +46,9 @@ describe("native TSX code blocks", () => {
       expect(transformed).not.toContain("__html=")
       const view = renderToStaticMarkup(await evaluateJsx(transformed))
       const compiler = new JsxCompiler()
-      const { body } = compiler.compile(`\`\`\`${language} ${meta}\n${code}\`\`\``)
+      const { body } = compiler.compile(`\`\`\`${language} ${meta}\n${code}\`\`\``, {
+        codeBlockComponent: "ArdoCodeBlock",
+      })
       const fence = codeElement(renderToStaticMarkup(await evaluateJsx(body)))
       const tsx = codeElement(view)
       expect(tsx.outerHTML).toBe(fence.outerHTML)
