@@ -1,3 +1,4 @@
+import fs from "node:fs/promises"
 import { describe, expect, it } from "vitest"
 
 import type { ResolvedConfig } from "../config/types"
@@ -97,6 +98,13 @@ describe("llms-text", () => {
     expect(text).not.toContain("<Demo />\n\nKeep")
   })
 
+  it("does not trim or collapse whitespace inside authored code examples", () => {
+    const code =
+      '    import { Demo } from "./demo"\n    <Demo />  \n\n~~~tsx\nconst first = 1  \n\n\nconst last = 2  \n~~~\n'
+    const text = generateLlmsFullTxt([entry({ content: code })], config)
+    expect(text).toContain(code)
+  })
+
   it("uses configured asset names", () => {
     expect(createLlmsTextAssets([], config).map((asset) => asset.fileName)).toStrictEqual([
       "llms.txt",
@@ -133,6 +141,41 @@ describe("llms-text", () => {
     expect(assets.find((asset) => asset.fileName === "v6/llms.txt")?.source).toContain(
       "https://example.com/docs/v6/llms-full.txt"
     )
+  })
+
+  it("keeps real setup-guide links navigable in latest and versioned full-text exports", async () => {
+    const source = await fs.readFile(
+      new URL("../../../../docs/app/routes/guide/getting-started.mdx", import.meta.url),
+      "utf8"
+    )
+    const versionedConfig = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
+      },
+      "/tmp"
+    )
+    const page = entry({
+      content: source,
+      publicPath: "/docs/v6/guide/getting-started",
+      routePath: "/guide/getting-started",
+      frontmatter: { title: "Getting Started" },
+    })
+    const full = createLlmsTextAssets([page], versionedConfig).filter((asset) =>
+      asset.fileName.endsWith("llms-full.txt")
+    )
+    expect(full).toHaveLength(2)
+    for (const asset of full) {
+      expect(asset.source).toContain(
+        "[tested Basic example](<https://example.com/docs/v6/guide/reference-projects/>)"
+      )
+      expect(asset.source).toContain(
+        "[manual installation](<https://example.com/docs/v6/guide/getting-started#manual-installation>)"
+      )
+      expect(asset.source).toContain('import { defineArdoConfig } from "ardo/config"')
+    }
   })
 
   it("respects custom filenames and disabled full text in versioned output", () => {

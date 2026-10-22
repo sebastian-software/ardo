@@ -2,6 +2,7 @@ import type { LlmsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { getCurrentVersion } from "../config/versioning"
+import { resolveLlmsContentLinks } from "./llms-links"
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
 import { buildPublicPath } from "./route-identity"
 
@@ -35,19 +36,22 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
   for (const entry of getLlmsEntries(entries)) {
     const title = getEntryTitle(entry)
     const description = entry.metadata.description
-    const content = sanitizeLlmsContent(entry.content, title)
+    const content = stripMdxSyntaxOutsideCodeFences(
+      resolveLlmsContentLinks(entry.content, entry, config),
+      title
+    )
 
     lines.push(`## ${title}`, "")
     if (description != null) {
       lines.push(description, "")
     }
     lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
-    if (content !== "") {
+    if (content.trim() !== "") {
       lines.push(content, "")
     }
   }
 
-  return `${lines.join("\n").trimEnd()}\n`
+  return `${lines.join("\n")}\n`
 }
 
 export function getLlmsAssetNames(config: ResolvedConfig) {
@@ -160,58 +164,6 @@ function appendFullDocSection(
 
 function getEntryTitle(entry: LlmsRouteEntry): string {
   return entry.metadata.title ?? formatRouteTitle(entry.routePath)
-}
-
-function sanitizeLlmsContent(content: string, title: string): string {
-  const withoutMdxSyntax = stripMdxSyntaxOutsideCodeFences(content)
-  const withoutDuplicateTitle = removeDuplicateH1(withoutMdxSyntax, title)
-  return collapseBlankLines(withoutDuplicateTitle).trim()
-}
-
-function removeDuplicateH1(content: string, title: string): string {
-  const lines = content.split("\n")
-  const firstContentIndex = lines.findIndex((contentLine) => contentLine.trim() !== "")
-  if (firstContentIndex === -1) {
-    return ""
-  }
-
-  const firstContentLine = lines[firstContentIndex]?.trim() ?? ""
-  if (!firstContentLine.startsWith("# ")) {
-    return content
-  }
-
-  const heading = firstContentLine.slice(2).trim()
-  if (normalizeHeading(heading) !== normalizeHeading(title)) {
-    return content
-  }
-
-  lines.splice(firstContentIndex, 1)
-  return lines.join("\n")
-}
-
-function collapseBlankLines(content: string): string {
-  const lines = content.split("\n")
-  const collapsed: string[] = []
-  let previousWasBlank = false
-
-  for (const line of lines) {
-    const isBlank = line.trim() === ""
-    if (isBlank && previousWasBlank) {
-      continue
-    }
-
-    collapsed.push(line.trimEnd())
-    previousWasBlank = isBlank
-  }
-
-  return collapsed.join("\n")
-}
-
-function normalizeHeading(value: string): string {
-  return value
-    .replaceAll(/[`*_~[\]()]/gu, "")
-    .trim()
-    .toLowerCase()
 }
 
 function formatRouteTitle(routePath: string): string {
