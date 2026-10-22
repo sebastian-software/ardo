@@ -17,10 +17,12 @@ describe("LLM Markdown projection", () => {
     expect(result).not.toContain("\n<Demo>")
   })
 
-  it.each(["`", "~"])(
-    "preserves %s fences and ignores shorter, other-marker, or non-closing runs",
-    (marker) => {
-      const other = marker === "`" ? "~" : "`"
+  it.each([
+    { marker: "`", other: "~" },
+    { marker: "~", other: "`" },
+  ])(
+    "preserves $marker fences and ignores shorter, other-marker, or non-closing runs",
+    ({ marker, other }) => {
       const code = [
         `${marker.repeat(4)}mdx`,
         'import { ArdoLink } from "ardo/ui"',
