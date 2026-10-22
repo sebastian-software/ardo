@@ -1,4 +1,4 @@
-import { Children, isValidElement, useState } from "react"
+import { Children, type ComponentProps, isValidElement, type ReactNode, useState } from "react"
 
 import { getNodeText } from "../text-content"
 import { shikiContainerClassName } from "./code-block-classes"
@@ -90,9 +90,9 @@ function CodeBlockContent({
 }) {
   // Preserve the public HTML compatibility input. Native build output uses React children.
   if (hasHtml) return <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
-  if (hasCustomChildren) return <>{children}</>
+  if (hasCustomChildren) return focusableCodeContent(children)
   return (
-    <pre className={`language-${language}`}>
+    <pre className={`language-${language}`} tabIndex={0}>
       <code>
         {lines.map((line, index) => {
           const lineNum = index + 1
@@ -110,6 +110,14 @@ function CodeBlockContent({
       </code>
     </pre>
   )
+}
+
+/** Native highlighted output supplies its own pre; preserve its styles and content. */
+function focusableCodeContent(children: ReactNode) {
+  return Children.map(children, (child) => {
+    if (!isValidElement<ComponentProps<"pre">>(child) || child.type !== "pre") return child
+    return <pre {...child.props} key={child.key} tabIndex={child.props.tabIndex ?? 0} />
+  })
 }
 
 /**

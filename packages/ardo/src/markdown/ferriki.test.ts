@@ -7,6 +7,7 @@ describe("Ferriki highlighting", () => {
     const html = await highlightCode("const answer = 42", "ts")
 
     expect(html).toContain('class="shiki')
+    expect(html).toContain('tabindex="0"')
     expect(html).toContain("--shiki-light")
     expect(html).toContain("--shiki-dark")
     expect(html).toContain("answer")
