@@ -30,7 +30,7 @@ export async function extractDeclarations(
   for (const entryPoint of entryPoints) {
     const module = await reader.read(entryPoint)
     for (const [name, resolved] of await reader.exportsOf(module)) {
-      const key = `${resolved.module.file}:${resolved.name}:${name}`
+      const key = `${resolved.module.id}:${resolved.name}:${name}`
       if (added.has(key)) continue
       added.add(key)
       const item = await extractor.extract(name, resolved)
@@ -50,7 +50,7 @@ class DeclarationExtractor {
     const records = resolved.records.filter((item) => !isInternal(item.comment))
     const record = records.at(0)
     if (record == null) return undefined
-    const context: TypeContext = { module: resolved.module, bindings: new Map() }
+    const context: TypeContext = { module: record.module, bindings: new Map() }
     const comment =
       records.find((item) => item.comment.description.length > 0)?.comment ?? record.comment
     const callables = []

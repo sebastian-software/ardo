@@ -126,9 +126,14 @@ native compiler backend for both initial generation and updates.
 
 ## Current limits
 
+Named types inside module-local and exported declaration namespaces participate in inherited-member
+expansion, including React's `export = React` declarations. React DOM attributes
+can appear alongside a component's own props, with generic arguments, omitted
+members, and authored overrides preserved.
+
 This integration preserves type expressions and reports unsupported property
 expansion. Arbitrary mapped or conditional types, complete TSDoc behavior,
-namespace pages, and original-source links remain migration work. Each project has its own compiler session; TypeScript solution-builder behavior
+namespace pages, pages for `export =` entry points, globally installed namespace members, and original-source links remain migration work. References to unsupported global namespace members report incomplete expansion. Each project has its own compiler session; TypeScript solution-builder behavior
 is not provided.
 
 Place member JSDoc on its own line before the member. The compiler can omit

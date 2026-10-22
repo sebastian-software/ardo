@@ -56,7 +56,7 @@ export function bindArguments(
     if (argument != null) bindings.set(parameter.name.name, { ...context, node: argument })
     else if (parameter.default != null)
       bindings.set(parameter.name.name, {
-        module: resolved.module,
+        module: resolved.records.at(0)?.module ?? resolved.module,
         bindings: new Map(bindings),
         node: parameter.default,
       })

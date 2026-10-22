@@ -13,6 +13,7 @@ import type { DeclarationModule, DeclarationRecord } from "./declaration-project
 
 import { readComment } from "./comments"
 import { readDeclarationReferences } from "./declaration-libraries"
+import { indexImportEquals, indexNamespace, qualifiedName } from "./declaration-namespaces"
 
 type Reporter = (message: string) => void
 
@@ -34,6 +35,7 @@ export function createDeclarationModule(
     return generics
   }
   const module: DeclarationModule = {
+    id: file,
     file,
     source,
     comments: parsed.comments,
@@ -41,6 +43,7 @@ export function createDeclarationModule(
     globalDeclarations: new Map(),
     imports: new Map(),
     exports: new Map(),
+    namespaces: new Map(),
     stars: [],
     dependencies: new Map(),
     get typeReferences() {
@@ -98,6 +101,7 @@ function indexGlobalAugmentations(
 
 function globalScope(module: DeclarationModule): DeclarationModule {
   return {
+    id: `${module.id}:global`,
     file: module.file,
     source: module.source,
     comments: module.comments,
@@ -105,6 +109,7 @@ function globalScope(module: DeclarationModule): DeclarationModule {
     globalDeclarations: module.globalDeclarations,
     imports: module.imports,
     exports: module.exports,
+    namespaces: module.namespaces,
     stars: module.stars,
     dependencies: module.dependencies,
     get typeReferences() {
@@ -146,21 +151,52 @@ function indexStatement(
     return
   }
   if (statement.type === "ExportNamedDeclaration") {
-    indexNamed(statement, module)
+    indexNamed(statement, module, report)
     return
   }
   if (statement.type === "ExportDefaultDeclaration") {
     indexDefault(statement, module, report)
     return
   }
-  if (statement.type === "ExportAllDeclaration") {
-    if (statement.exported == null) module.stars.push(statement.source.value)
-    else report(`Namespace export ${exportName(statement.exported)} is not expanded.`)
-    return
-  }
+  if (indexModuleDirective(statement, module, report)) return
   if (isDeclaration(statement)) addDeclaration(module, statement, { start: statement.start })
   else if (statement.type !== "EmptyStatement")
     report(`Declaration statement ${statement.type} is not supported.`)
+}
+
+function indexModuleDirective(
+  statement: Program["body"][number],
+  module: DeclarationModule,
+  report: Reporter
+): boolean {
+  if (statement.type === "ExportAllDeclaration") {
+    if (statement.exported == null) module.stars.push(statement.source.value)
+    else
+      module.exports.set(exportName(statement.exported), {
+        name: "*",
+        request: statement.source.value,
+      })
+    return true
+  }
+  if (statement.type === "TSNamespaceExportDeclaration") return true
+  if (statement.type === "TSExportAssignment") {
+    const name = qualifiedName(statement.expression)
+    if (name != null) module.exportAssignment = { name }
+    else report("Only namespace or declaration references are supported in export = assignments.")
+    return true
+  }
+  if (statement.type === "TSImportEqualsDeclaration") {
+    indexImportEquals(statement, module, report)
+    return true
+  }
+  if (statement.type === "TSModuleDeclaration") {
+    indexNamespace(statement, module, {
+      report,
+      index: (child, scope) => indexStatement(child, scope, report),
+    })
+    return true
+  }
+  return false
 }
 
 function indexImports(
@@ -181,11 +217,25 @@ function indexImports(
 
 function indexNamed(
   statement: Extract<Program["body"][number], { type: "ExportNamedDeclaration" }>,
-  module: DeclarationModule
+  module: DeclarationModule,
+  report: Reporter
 ): void {
   if (statement.declaration != null) {
-    const names = addDeclaration(module, statement.declaration, { start: statement.start })
-    for (const name of names) module.exports.set(name, { name })
+    const node = statement.declaration
+    let names: string[]
+    if (node.type === "TSModuleDeclaration") {
+      indexNamespace(node, module, {
+        report,
+        exported: true,
+        index: (child, scope) => indexStatement(child, scope, report),
+      })
+      const name = qualifiedName(node.id)
+      names = name == null ? [] : [name.split(".")[0]]
+    } else if (node.type === "TSImportEqualsDeclaration") {
+      indexImportEquals(node, module, report)
+      names = [node.id.name]
+    } else names = addDeclaration(module, node, { start: statement.start })
+    for (const name of names) module.exports.set(name, { name, declaration: true })
   }
   for (const specifier of statement.specifiers)
     module.exports.set(exportName(specifier.exported), {

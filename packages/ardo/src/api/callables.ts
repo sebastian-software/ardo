@@ -90,7 +90,7 @@ class DeclarationCallables {
           { module: resolved.module, bindings: new Map() },
           {
             ...state,
-            key: `${resolved.module.file}:value:${resolved.name}`,
+            key: `${resolved.module.id}:value:${resolved.name}`,
           }
         )
   }
@@ -122,11 +122,11 @@ class DeclarationCallables {
         : await this.reader.resolve(context.module, reference.name)
     const resolved =
       local ??
-      (context.module.imports.has(reference.name)
+      (this.reader.hasImport(context.module, reference.name)
         ? undefined
         : this.reader.globalType(reference.name))
     if (resolved == null) return []
-    const key = `${resolved.module.file}:type:${resolved.name}`
+    const key = `${resolved.module.id}:type:${resolved.name}`
     return this.target(
       resolved,
       {
