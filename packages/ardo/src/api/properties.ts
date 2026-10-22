@@ -73,7 +73,7 @@ export class TypeProperties {
     context: TypeContext,
     seen = new Set<string>()
   ): Promise<Properties> {
-    const key = `${resolved.module.file}:${resolved.name}`
+    const key = `${resolved.module.id}:${resolved.name}`
     if (seen.has(key))
       return this.incomplete(context, `Recursive expansion of ${resolved.name} was stopped.`)
     const next = new Set(seen).add(key)
@@ -128,7 +128,7 @@ export class TypeProperties {
       this.reader.isLibrary(context.module) && !context.module.isExternalModule
         ? undefined
         : await this.reader.resolve(context.module, reference.name)
-    if (resolved == null && !context.module.imports.has(reference.name)) {
+    if (resolved == null && !this.reader.hasImport(context.module, reference.name)) {
       const utility = await this.utility(reference, context, seen)
       if (utility != null) return utility
       resolved = this.reader.globalType(reference.name)
@@ -249,26 +249,25 @@ export class TypeProperties {
     context: TypeContext,
     seen: Set<string>
   ): Promise<string[] | undefined> {
-    if (node.typeName.type !== "Identifier") return undefined
-    const bound = context.bindings.get(node.typeName.name)
+    const name =
+      node.typeName.type === "Identifier" ? node.typeName.name : formatType(node.typeName, context)
+    const bound = context.bindings.get(name)
     if (bound != null) return this.literalKeys(bound.node, bound, this.bindings.scope(bound, seen))
     const local =
       this.reader.isLibrary(context.module) && !context.module.isExternalModule
         ? undefined
-        : await this.reader.resolve(context.module, node.typeName.name)
+        : await this.reader.resolve(context.module, name)
     const resolved =
       local ??
-      (context.module.imports.has(node.typeName.name)
-        ? undefined
-        : this.reader.globalType(node.typeName.name))
-    const alias = resolved?.records.at(0)?.node
-    if (resolved == null || alias?.type !== "TSTypeAliasDeclaration") return undefined
-    const key = `${resolved.module.file}:${resolved.name}`
+      (this.reader.hasImport(context.module, name) ? undefined : this.reader.globalType(name))
+    const record = resolved?.records.at(0)
+    if (resolved == null || record?.node.type !== "TSTypeAliasDeclaration") return undefined
+    const key = `${resolved.module.id}:${resolved.name}`
     if (seen.has(key)) return undefined
     return this.literalKeys(
-      alias.typeAnnotation,
+      record.node.typeAnnotation,
       {
-        module: resolved.module,
+        module: record.module,
         bindings: this.bindings.bind(
           resolved,
           { args: node.typeArguments?.params ?? [], context },
