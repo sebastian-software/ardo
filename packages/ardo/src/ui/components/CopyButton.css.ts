@@ -31,3 +31,44 @@ export const copyButton = style({
     },
   },
 })
+
+export const copyStatus = style({
+  position: "absolute",
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clipPath: "inset(50%)",
+  whiteSpace: "nowrap",
+})
+
+export const copyError = style({
+  borderTop: `1px solid ${vars.color.codeBorder}`,
+  padding: `${vars.space.md} ${vars.space.md} ${vars.space.sm}`,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.6,
+  color: vars.color.text,
+})
+
+export const copyRecovery = style({
+  padding: `0 ${vars.space.md} ${vars.space.md}`,
+})
+
+export const manualCode = style({
+  display: "block",
+  width: "100%",
+  maxHeight: "20rem",
+  padding: vars.space.sm,
+  resize: "vertical",
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.sm,
+  lineHeight: 1.6,
+  color: vars.color.text,
+  background: vars.color.bg,
+  border: `1px solid ${vars.color.codeBorder}`,
+  borderRadius: vars.radius.sm,
+  selectors: {
+    "&:focus-visible": { outline: `2px solid ${vars.color.ring}`, outlineOffset: "2px" },
+  },
+})

@@ -2,32 +2,17 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import type { TOCItem } from "../config/types"
 
+import { flattenToc } from "../markdown/toc"
+
 import { useArdoLabels, useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
 import * as styles from "./Toc.css"
+import { resolveTocScrollRegion, scrollToHeading } from "./toc-navigation"
 
 export type ArdoTOCProps = {
   /** Label for the TOC heading (default: "On this page") */
   label?: string
   /** Use a native disclosure for the compact outline above an article. */
   collapsible?: boolean
-}
-
-export function getTocScrollBehavior(isReducedMotion: boolean): ScrollBehavior {
-  return isReducedMotion ? "auto" : "smooth"
-}
-
-function hasReducedMotionPreference(): boolean {
-  if (typeof globalThis.matchMedia !== "function") return false
-  return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches
-}
-
-function resolveTocScrollRegion() {
-  const main = document.getElementById("main-content")
-  // A host can let the document scroll instead of Ardo's viewport shell.
-  const overflow = main == null ? "" : getComputedStyle(main).overflowY
-  const root = overflow === "auto" || overflow === "scroll" ? main : null
-  const height = root?.clientHeight ?? 0
-  return { root, height: height > 0 ? height : globalThis.innerHeight }
 }
 
 function readScrollRegionSnapshot() {
@@ -70,7 +55,9 @@ export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps 
 
     const scrollRegion = resolveTocScrollRegion()
 
-    const headingElements = toc.map((item) => document.getElementById(item.id)).filter(Boolean)
+    const headingElements = flattenToc(toc)
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean)
     if (headingElements.length === 0) return
 
     const observer = new IntersectionObserver(
@@ -142,19 +129,6 @@ export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps 
   )
 }
 
-function scrollToHeading(id: string) {
-  const element = document.getElementById(id)
-  const container = resolveTocScrollRegion().root ?? document
-  if (element) {
-    element.scrollIntoView({
-      behavior: getTocScrollBehavior(hasReducedMotionPreference()),
-      block: "start",
-    })
-    globalThis.history.pushState(null, "", `#${id}`)
-  }
-  return container
-}
-
 function CompactTOC({
   label,
   navLabel,
@@ -200,6 +174,7 @@ function TOCItemComponent({ item, activeId, onClickItem }: TOCItemComponentProps
     <li>
       <a
         href={`#${item.id}`}
+        aria-current={isActive ? "location" : undefined}
         className={[
           styles.tocLink,
           item.level === 3 && styles.tocLink3,
@@ -210,6 +185,15 @@ function TOCItemComponent({ item, activeId, onClickItem }: TOCItemComponentProps
           .filter(Boolean)
           .join(" ")}
         onClick={(e) => {
+          if (
+            e.defaultPrevented ||
+            e.button !== 0 ||
+            e.metaKey ||
+            e.ctrlKey ||
+            e.shiftKey ||
+            e.altKey
+          )
+            return
           e.preventDefault()
           onClickItem(item.id)
         }}
