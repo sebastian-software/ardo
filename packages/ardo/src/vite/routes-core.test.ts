@@ -67,6 +67,10 @@ describe("createRoutesModule", () => {
     expect(source).toContain(
       `import * as rootModule from ${JSON.stringify(path.join(appDir, "root.tsx"))}`
     )
+    // Ardo's stylesheet follows the root module, whose CSS can declare layer order.
+    expect(source.indexOf('import "ardo/ui/styles.css"')).toBeGreaterThan(
+      source.indexOf("import * as rootModule")
+    )
     expect(source).toContain('{ id: "app/routes/home.tsx", path: "/", load: () => import(')
     expect(source).toContain(
       '{ id: "app/routes/guide/intro.mdx", path: "/guide/intro", load: () => import('
