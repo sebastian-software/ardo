@@ -1,34 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { defineConfig, resolveConfig } from "./index"
-
-describe("defineConfig", () => {
-  it("returns the config unchanged", () => {
-    const config = {
-      title: "Test Docs",
-      description: "A test documentation site",
-    }
-
-    const result = defineConfig(config)
-
-    expect(result).toStrictEqual(config)
-  })
-
-  it("preserves all config properties", () => {
-    const config = {
-      title: "My Docs",
-      description: "Description",
-      base: "/docs/",
-      srcDir: "documentation",
-    }
-
-    const result = defineConfig(config)
-
-    expect(result.title).toBe("My Docs")
-    expect(result.base).toBe("/docs/")
-    expect(result.srcDir).toBe("documentation")
-  })
-})
+import { resolveConfig } from "./index"
 
 describe("resolveConfig", () => {
   it("rejects removed TypeDoc configuration supplied through a config file", () => {

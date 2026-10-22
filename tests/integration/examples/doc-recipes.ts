@@ -40,7 +40,7 @@ export function assertDocRecipes(
   write(
     "ardo.config.ts",
     `import { defineArdoConfig } from "ardo/config";
-export default defineArdoConfig({ title: "Recipe checks", githubPages: false, base: "/repo/" });
+export default defineArdoConfig({ title: "Recipe checks", base: "/repo/" });
 `
   )
   write(

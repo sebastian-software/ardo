@@ -1,5 +1,5 @@
 // Config (client-safe: pure types and small utility functions)
-export { defineConfig, loadConfig, resolveConfig } from "./config"
+export { resolveConfig } from "./config"
 export type {
   ArdoBrandChroma,
   ArdoBrandConfig,

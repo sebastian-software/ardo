@@ -46,7 +46,6 @@ export default defineConfig({
       title: "Ardo",
       description: "React-first Static Documentation Framework",
       siteUrl: "https://ardo-docs.dev",
-      githubPages: false,
       versioning: {
         current: "v6",
         versions: [

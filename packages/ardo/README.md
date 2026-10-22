@@ -52,7 +52,6 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   title: "My Documentation",
   description: "Docs for my React library",
-  githubPages: false,
 })
 ```
 

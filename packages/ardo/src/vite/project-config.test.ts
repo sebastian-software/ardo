@@ -20,7 +20,7 @@ async function ardoOptions(env: ConfigEnv) {
       resolve()
     })
   })
-  return { githubPages: env.command === "build" }
+  return { title: env.command === "build" ? "Docs (build)" : "Docs" }
 }
 
 describe("createArdoProjectViteConfig", () => {
@@ -75,7 +75,7 @@ describe("createArdoProjectViteConfig", () => {
   it("reports when ardo.config and vite.config both configure Ardo", async () => {
     const existingArdo = ardo({ routes: false })
     const resolveConfig = createArdoProjectViteConfig("/project", {
-      ardoConfig: { githubPages: false },
+      ardoConfig: { title: "Docs" },
       viteConfig: { plugins: [existingArdo] },
     })
 

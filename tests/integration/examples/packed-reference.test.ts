@@ -268,7 +268,6 @@ describe("Basic and optional API configuration as packed-package consumers", () 
 
 export default defineArdoConfig(({ command, mode }) => ({
   title: \`Packed Basic \${mode}-\${command}\`,
-  githubPages: false,
 }));
 `
         )

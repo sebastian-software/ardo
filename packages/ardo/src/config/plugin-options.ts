@@ -7,7 +7,6 @@ const optionNames = {
   content: true,
   collections: true,
   icons: true,
-  githubPages: true,
   routesDir: true,
   title: true,
   description: true,

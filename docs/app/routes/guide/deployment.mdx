@@ -36,27 +36,8 @@ Run `pnpm preview` to serve `build/client/` the way a static host does: `/guide`
 
 ### Step 1: Configure the Base Path
 
-The Basic example serves from the domain root. For a GitHub Pages project site,
-enable repository subpath detection in `ardo.config.ts`:
-
-```ts
-import { defineArdoConfig } from "ardo/config"
-
-export default defineArdoConfig({
-  title: "My Docs",
-  githubPages: true,
-})
-```
-
-During `ardo build`, Ardo derives the repository name from the GitHub remote and uses it as the
-base path, for example `/my-docs/` for `https://username.github.io/my-docs/`. A GitHub remote
-identifies the repository, not the hosting target; enable this option only when publishing a Pages
-project site.
-
-The base path is configured once. Ardo applies it to assets and page links
-and writes `build/client/` so that its contents are the site root on GitHub Pages. No post-build
-script or router setting is needed. To set the base path yourself instead of detecting it, use
-`base`:
+A GitHub Pages project site lives under the repository name, for example
+`https://username.github.io/my-docs/`. Set that path as `base` in `ardo.config.ts`:
 
 ```ts
 import { defineArdoConfig } from "ardo/config"
@@ -67,10 +48,12 @@ export default defineArdoConfig({
 })
 ```
 
-If you deploy to the root (`https://username.github.io/`), set `githubPages: false` and leave `base` unset.
+The base path is configured once. Ardo applies it to assets and page links in development and
+in the build, and writes `build/client/` so that its contents are the site root on GitHub Pages.
+No post-build script is needed.
 
-For a GitHub Pages site behind a custom domain, disable GitHub Pages subpath detection. The site is
-served from the domain root:
+If you deploy to the root (`https://username.github.io/`) or serve a GitHub Pages site behind a
+custom domain, leave `base` unset. The site is served from the domain root:
 
 ```ts
 import { defineArdoConfig } from "ardo/config"
@@ -78,7 +61,6 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://docs.example.com",
-  githubPages: false,
 })
 ```
 
@@ -102,7 +84,6 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://docs.example.com",
-  githubPages: false,
   versioning: {
     current: "v3",
     versions: [
@@ -221,8 +202,8 @@ Netlify requires no workflow file. Connect your Git repository in the Netlify da
 
 Netlify automatically detects the Node.js version from your `package.json` engines field or an `.nvmrc` file.
 
-For a root deployment, keep `githubPages: false` as in Basic. Set `base` in
-`ardo.config.ts` only when your site is served from a subpath.
+A root deployment needs no base-path setting. Set `base` in `ardo.config.ts` only
+when your site is served from a subpath.
 
 ## Vercel
 
