@@ -224,13 +224,14 @@ export function ArdoSidebarGroup({
   children,
   className,
 }: ArdoSidebarGroupProps) {
-  const [collapsed, setCollapsed] = useState(initialCollapsed)
   const labels = useArdoLabels()
   const { currentPath } = useSidebarContext()
   const contentId = useId()
 
   // Check if any child is active
   const hasActiveChild = checkChildrenActive(children, currentPath)
+  // A collapsed group still opens on the page that lives inside it.
+  const [collapsed, setCollapsed] = useState(initialCollapsed && !hasActiveChild)
 
   const textClassName = [styles.sidebarText, hasActiveChild && "child-active"]
     .filter(Boolean)
@@ -421,7 +422,6 @@ type SidebarItemState = {
 
 function useSidebarItem(item: SidebarItemType): SidebarItemState {
   const { currentPath } = useSidebarContext()
-  const [collapsed, setCollapsed] = useState(item.collapsed ?? false)
   const contentId = useId()
   const childItems = item.items ?? []
   const hasChildren = childItems.length > 0
@@ -433,6 +433,11 @@ function useSidebarItem(item: SidebarItemType): SidebarItemState {
         child.items?.some((grandchild) => grandchild.link === currentPath)
     )
   const hasItemLink = (item.link ?? "") !== ""
+  const isSelfActive = hasItemLink && item.link === currentPath
+  // A collapsed group still opens on its own page and on the pages inside it.
+  const [collapsed, setCollapsed] = useState(
+    (item.collapsed ?? false) && !hasActiveChild && !isSelfActive
+  )
   return {
     collapsed,
     toggle() {
@@ -443,7 +448,7 @@ function useSidebarItem(item: SidebarItemType): SidebarItemState {
     hasChildren,
     hasActiveChild,
     hasItemLink,
-    isSelfActive: hasItemLink && item.link === currentPath,
+    isSelfActive,
   }
 }
 
