@@ -13,7 +13,7 @@ export function configureStaticPreview(server: PreviewServer): () => void {
 
   server.middlewares.use((request, _response, next) => {
     const pathname = getRelativePath(request, base)
-    if (pathname != null && !pathname.endsWith("/")) {
+    if (pathname != null && pathname !== "" && !pathname.endsWith("/")) {
       if (isFile(path.join(outDir, pathname, "index.html"))) {
         const url = new URL(request.url ?? "/", "http://ardo.invalid")
         request.url = `${url.pathname}/${url.search}`
