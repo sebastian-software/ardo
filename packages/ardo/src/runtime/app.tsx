@@ -1,9 +1,10 @@
-import { type ReactNode, StrictMode } from "react"
+import { type ReactNode, StrictMode, useMemo } from "react"
 
-import type { ArdoResolvedPage, ArdoRootModule } from "./routing"
+import type { ArdoResolvedPage, ArdoRootModule, ArdoRouteEntry } from "./routing"
 
 import { ArdoPageProvider } from "./page"
 import { isArdoNotFound } from "./page-context"
+import { ArdoRoutePathsContext } from "./route-paths"
 
 /**
  * The part of the page that hydrates: the root component around the page. A
@@ -31,11 +32,22 @@ export function ArdoPageTree({ page, root }: { page: ArdoResolvedPage; root: Ard
  * The React root both sides render. The server renders it on its own, so ids
  * from `useId` match what the client hydrates.
  */
-export function ArdoApp({ page, root }: { page: ArdoResolvedPage; root: ArdoRootModule }) {
+export function ArdoApp({
+  page,
+  root,
+  routes,
+}: {
+  page: ArdoResolvedPage
+  root: ArdoRootModule
+  routes: ArdoRouteEntry[]
+}) {
+  const paths = useMemo(() => new Set(routes.map((route) => route.path)), [routes])
   return (
-    <StrictMode>
-      <ArdoPageTree page={page} root={root} />
-    </StrictMode>
+    <ArdoRoutePathsContext value={paths}>
+      <StrictMode>
+        <ArdoPageTree page={page} root={root} />
+      </StrictMode>
+    </ArdoRoutePathsContext>
   )
 }
 

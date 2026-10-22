@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react"
-import { navigateTo, resolveArdoHref, useArdoPage } from "../../runtime/page-context"
+import { navigateTo, useArdoHrefResolver } from "../../runtime/page-context"
 
 import type { ArdoLabels } from "../labels"
 
@@ -203,7 +203,7 @@ function useSearchRecovery(
 }
 
 export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: ArdoSearchProps) {
-  const page = useArdoPage()
+  const resolveHref = useArdoHrefResolver()
   const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
   const { inputRef, setInputRef } = useSearchInputRef(autoFocus)
@@ -241,7 +241,7 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
         break
       case "navigate":
         e.preventDefault()
-        navigateTo(resolveArdoHref(action.path, page))
+        navigateTo(resolveHref(action.path))
         state.setIsOpen(false)
         break
       case "close":

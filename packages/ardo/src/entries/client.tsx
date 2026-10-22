@@ -21,5 +21,5 @@ if (container != null && pageData != null) {
   const root: ArdoRootModule = rootModule
   const route = routes.find((entry) => entry.id === data.routeId)
   const page = await resolvePage({ ...data, root, route })
-  hydrateRoot(container, <ArdoApp page={page} root={root} />)
+  hydrateRoot(container, <ArdoApp page={page} root={root} routes={routes} />)
 }

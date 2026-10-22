@@ -9,6 +9,7 @@ import type * as searchIndexModule from "./search-index"
 
 import { ArdoPageProvider } from "../../runtime/page"
 import { navigateTo } from "../../runtime/page-context"
+import { ArdoRoutePathsContext } from "../../runtime/route-paths"
 import { ArdoSiteConfigProvider } from "../../runtime/hooks"
 import { resolveArdoLabels } from "../labels"
 import { ArdoSearch } from "./Search"
@@ -38,6 +39,12 @@ vi.mock("virtual:ardo/search-index", () => ({
       content: "Install dependencies and run the development server.",
       path: "/guide/getting-started",
       section: "Guide",
+    },
+    {
+      id: "release",
+      title: "Release 6.0",
+      content: "Release notes for the new version.",
+      path: "/guide/release-6.0",
     },
     {
       id: "api",
@@ -131,6 +138,23 @@ describe("ArdoSearch interactions", () => {
     await user.keyboard("{Enter}")
 
     expect(vi.mocked(navigateTo)).toHaveBeenCalledWith("/docs/guide/getting-started/")
+  })
+
+  it("uses the same dotted page URL for Enter and result links", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoRoutePathsContext value={new Set(["/guide/release-6.0"])}>
+        <ArdoPageProvider base="/project/v6/">
+          <ArdoSearch />
+        </ArdoPageProvider>
+      </ArdoRoutePathsContext>
+    )
+    await user.type(screen.getByRole("combobox", { name: "Search" }), "release")
+    const result = await screen.findByRole("option", { name: /Release 6.0/ })
+    const href = "/project/v6/guide/release-6.0/"
+    expect(result.getAttribute("href")).toBe(href)
+    await user.keyboard("{Enter}")
+    expect(vi.mocked(navigateTo)).toHaveBeenCalledWith(href)
   })
 
   it("closes the popover on Escape", async () => {

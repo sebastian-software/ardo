@@ -18,6 +18,7 @@ export type StaticSiteState = {
   deploymentBase?: string
   outDir?: string
   resolvedConfig?: ResolvedConfig
+  routesDir: string
 }
 
 /**
@@ -105,7 +106,7 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
     configureServer(server) {
       // Runs after Vite's own middleware, so modules and public files win.
       return () => {
-        server.middlewares.use(createDevRenderMiddleware(server))
+        server.middlewares.use(createDevRenderMiddleware(server, state.routesDir))
       }
     },
   }

@@ -8,7 +8,11 @@ import path from "node:path"
 
 import { ARDO_FAVICON_SVG } from "../ui/favicon"
 
-const ICON_FILES = new Set(["favicon.ico", "icon.svg", "apple-touch-icon.png"])
+const ICON_FILES = new Map([
+  ["favicon.ico", "image/x-icon"],
+  ["icon.svg", "image/svg+xml"],
+  ["apple-touch-icon.png", "image/png"],
+])
 
 export type ArdoIconOptions =
   | {
@@ -26,7 +30,10 @@ export type GeneratedIconAsset = {
   source: string | Uint8Array
 }
 
-export function createIconsPlugin(options: ArdoIconOptions | undefined): Plugin[] {
+export function createIconsPlugin(
+  options: ArdoIconOptions | undefined,
+  deployment: { deploymentBase?: string } = {}
+): Plugin[] {
   if (options === false) {
     return []
   }
@@ -46,7 +53,13 @@ export function createIconsPlugin(options: ArdoIconOptions | undefined): Plugin[
     },
     configureServer(server) {
       server.middlewares.use((request, response, next) => {
-        void serveIconRequest({ config, getAssets, response, url: request.url })
+        void serveIconRequest({
+          config,
+          deploymentBase: deployment.deploymentBase ?? config.base,
+          getAssets,
+          response,
+          url: request.url,
+        })
           .then((served) => {
             if (!served) {
               next()
@@ -86,18 +99,25 @@ export function createIconsPlugin(options: ArdoIconOptions | undefined): Plugin[
 
 async function serveIconRequest(input: {
   config: ViteResolvedConfig
+  deploymentBase: string
   getAssets: () => Promise<GeneratedIconAsset[]>
   response: ServerResponse
   url: string | undefined
 }): Promise<boolean> {
-  const { config, getAssets, response, url } = input
-  const fileName = getIconRequestFileName(url)
-  if (fileName == null || hasPublicAsset(config, fileName)) {
+  const { config, deploymentBase, getAssets, response, url } = input
+  const fileName = getIconRequestFileName(url, deploymentBase)
+  if (fileName == null) {
     return false
   }
 
-  const assets = await getAssets()
-  const asset = assets.find((candidate) => candidate.fileName === fileName)
+  const asset = hasPublicAsset(config, fileName)
+    ? {
+        contentType: ICON_FILES.get(fileName) ?? "application/octet-stream",
+        source: await readFile(path.join(config.publicDir, fileName)),
+      }
+    : await getAssets().then((assets) =>
+        assets.find((candidate) => candidate.fileName === fileName)
+      )
   if (asset == null) {
     return false
   }
@@ -204,13 +224,15 @@ function writeIcoDirectory(input: {
   view.setUint32(18, imageOffset, true)
 }
 
-function getIconRequestFileName(url: string | undefined): string | undefined {
+function getIconRequestFileName(url: string | undefined, base: string): string | undefined {
   if (url == null) {
     return undefined
   }
 
   const [pathname] = url.split("?", 1)
-  const fileName = pathname.startsWith("/") ? pathname.slice(1) : pathname
+  const fileName = pathname.startsWith(base)
+    ? pathname.slice(base.length)
+    : pathname.replace(/^\//u, "")
   return ICON_FILES.has(fileName) ? fileName : undefined
 }
 
