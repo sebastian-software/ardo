@@ -6,7 +6,7 @@ order: 6
 
 # Site UI Configuration
 
-Build-time options belong in `ardo()` config. Site chrome belongs in React. Define the header, left
+Build-time options belong in `defineArdoConfig()` in `ardo.config.ts`. Site chrome belongs in React. Define the header, left
 rail, sidebar panels, footer, edit links, and last-updated metadata in your app's `root.tsx`.
 
 ## Minimal Root
@@ -266,7 +266,21 @@ document pages, and page frontmatter can opt out with `editLink: false` or `last
 </ArdoRoot>
 ```
 
-The `:path` placeholder receives the route file path relative to the generated Markdown route root.
+The `:path` placeholder receives the authored file path relative to `app/routes`
+(or your configured `routesDir`), including the file extension. Keep the repository
+and source-directory prefix in the pattern. Edit links remain optional.
+
+Last-updated dates use each file's latest Git commit. Fetch the full history in CI
+(for example, `fetch-depth: 0` with `actions/checkout`); source archives and files
+without history fall back to filesystem modification times. Dates use the site's
+language and UTC unless a different time zone is supplied in `formatOptions`.
+Generated API pages disable edit links and file dates. Materialized content
+disables them by default; its frontmatter mapping can opt in when a meaningful
+source pattern is configured.
+
+On viewports up to 1280 pixels wide, the outline appears as an expandable
+"On this page" section below the title, and page actions appear at the end of the
+article. Wider screens keep the page rail.
 
 ## Route-Level Chrome
 

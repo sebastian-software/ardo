@@ -9,8 +9,8 @@ export type SharedExtraction = {
 }
 
 /**
- * React Router evaluates the Vite config for its child compiler and the
- * prerender server as well, and every evaluation creates new plugin instances.
+ * Separate Vite environments and repeated config evaluation can create new
+ * plugin instances for the same project.
  * Only the first instance per project runs the native compiler; later ones
  * reuse its result, and a build stops the compiler as soon as it has one.
  */

@@ -17,6 +17,10 @@ if (usePrebuiltDocs) {
     missingRoutes.push("v6/guide/markdown/index.html")
   }
 
+  if (!existsSync(`${docsClientDir}/v6/guide/component-playground/index.html`)) {
+    missingRoutes.push("v6/guide/component-playground/index.html")
+  }
+
   if (missingRoutes.length > 0) {
     throw new Error(
       `Prebuilt docs are missing required routes in ${docsClientDir}: ${missingRoutes.join(", ")}. Build the docs and prepare the Pages artifact when testing snapshots.`

@@ -33,6 +33,8 @@ export type ArdoPage = {
   handle?: unknown
   /** Path of the page without the base path, starting with a slash. */
   path: string
+  /** Source identity and modification time supplied by the route table. */
+  source?: { relativePath: string; lastUpdated: number }
 }
 
 export const ArdoPageContext = createContext<ArdoPage>({ base: "/", path: "/" })

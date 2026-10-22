@@ -7,6 +7,7 @@ import type { CollectionsConfig } from "./collections"
 import type { ArdoPluginOptions, PressConfigOptions } from "./plugin-options"
 
 import { resolveConfig } from "../config/index"
+import { validateArdoOptionNames } from "../config/plugin-options"
 import { addApiPlugin } from "./api-plugin"
 import { normalizeViteBaseForArdo } from "./base"
 import { resolveBrandIconOptions } from "./brand"
@@ -58,10 +59,6 @@ export { detectGitHubBasename } from "./git-utils"
 export type { ArdoPluginOptions } from "./plugin-options"
 
 export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
-  if ("typedoc" in options)
-    throw new Error(
-      "[ardo] The typedoc option was removed. Configure api instead; see the TypeDoc migration guide."
-    )
   const {
     content,
     collections,
@@ -72,7 +69,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     githubPages = true,
     routesDir: routesDirOption,
     ...pressConfig
-  } = options
+  } = validateArdoOptionNames(options)
   const state: PluginState = {
     collections,
     outDir: pressConfig.outDir,

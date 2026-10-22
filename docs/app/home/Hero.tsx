@@ -1,5 +1,5 @@
-import codeBlock from "../assets/home/code-block.webp"
-import guidePage from "../assets/home/guide-page.webp"
+import codeBlock from "../assets/home/code-block.png"
+import guidePage from "../assets/home/guide-page.png"
 import mascot from "../assets/mascot.webp"
 import { ArrowDownRight, ArrowRight, Footprints } from "./doodles"
 import * as styles from "./home.css"
@@ -132,7 +132,7 @@ export function Teaser() {
           <img
             className={styles.shotCover}
             src={codeBlock}
-            alt="An Ardo code block titled ardo.config.ts, with colored syntax and highlighted lines"
+            alt="Ardo's current API documentation guide, showing a typed configuration with its required tsconfig"
             width={940}
             height={528}
           />

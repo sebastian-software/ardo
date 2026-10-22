@@ -46,7 +46,7 @@ describe("Ardo preview CLI", () => {
     expect(() => parsePreviewArguments(["--unknown"])).toThrow(CliUsageError)
   })
 
-  it("uses the configured React Router client directory, base, and preview defaults", async () => {
+  it("uses the configured static client directory, base, and preview defaults", async () => {
     const root = await mkdtemp(path.join(tmpdir(), "ardo-preview-"))
     const clientDirectory = path.join(root, "release", "website", "client")
     const wrapperPath = path.join(root, ".ardo", "vite.config.mjs")

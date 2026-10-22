@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from "react"
 
-import type { ArdoMetaDescriptor, ArdoPageError } from "./page-context"
+import type { ArdoMetaDescriptor, ArdoPage, ArdoPageError } from "./page-context"
 
 import { ArdoErrorBoundary } from "../ui/ErrorBoundary"
 
@@ -22,6 +22,7 @@ export type ArdoRouteEntry = {
   id: string
   /** URL path without the base path, for example `/guide/intro`. Segments may be `:param`. */
   path: string
+  source?: ArdoPage["source"]
   load: () => Promise<ArdoRouteModule>
 }
 
@@ -31,6 +32,7 @@ export type ArdoPageData = {
   error?: { status: number; message?: string }
   path: string
   routeId?: string
+  source?: ArdoPage["source"]
 }
 
 export type ArdoResolvedPage = {
@@ -38,6 +40,7 @@ export type ArdoResolvedPage = {
   data: ArdoPageData
   error?: ArdoPageError
   handle?: unknown
+  source?: ArdoPage["source"]
   meta: ArdoMetaDescriptor[]
 }
 
@@ -61,14 +64,16 @@ export async function resolvePage(input: {
   root: ArdoRootModule
   route: ArdoRouteEntry | undefined
   error?: ArdoPageData["error"]
+  source?: ArdoPage["source"]
 }): Promise<ArdoResolvedPage> {
   const { base, path, root, route } = input
   const module = input.error == null && route != null ? await route.load() : undefined
   if (module?.default != null && route != null) {
     return {
       component: module.default,
-      data: { base, path, routeId: route.id },
+      data: { base, path, routeId: route.id, source: input.source ?? route.source },
       handle: module.handle,
+      source: input.source ?? route.source,
       meta: (module.meta ?? root.meta)?.() ?? [],
     }
   }

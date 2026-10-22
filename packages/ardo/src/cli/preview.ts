@@ -66,7 +66,7 @@ Options:
   --config, -c <file> Use a Vite config file
   --mode, -m <mode>   Set the Vite mode (default: production)
   --base <path>       Override the configured base path
-  --outDir <dir>      Override the React Router client build directory
+  --outDir <dir>      Override the static client build directory
   --help, -h          Show this help
 `
 
@@ -224,7 +224,7 @@ async function assertClientBuild(clientBuildDirectory: string): Promise<void> {
     if (!buildStat.isDirectory()) throw new Error("not a directory")
   } catch {
     throw new Error(
-      `No React Router client build found at ${clientBuildDirectory}. Run "ardo build" before "ardo preview".`
+      `No static client build found at ${clientBuildDirectory}. Run "ardo build" before "ardo preview".`
     )
   }
 
@@ -232,7 +232,7 @@ async function assertClientBuild(clientBuildDirectory: string): Promise<void> {
     await access(path.join(clientBuildDirectory, "index.html"), constants.R_OK)
   } catch {
     throw new Error(
-      `No index.html found in the React Router client build at ${clientBuildDirectory}. Enable prerendering or SPA mode before running "ardo preview".`
+      `No index.html found in the static client build at ${clientBuildDirectory}. Add a home route such as app/routes/home.tsx, then run "ardo build" before "ardo preview".`
     )
   }
 }

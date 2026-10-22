@@ -20,6 +20,7 @@ export function ArdoPageTree({ page, root }: { page: ArdoResolvedPage; root: Ard
       error={page.error}
       handle={page.handle}
       path={page.data.path}
+      source={page.source}
     >
       <Root />
     </ArdoPageProvider>

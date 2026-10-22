@@ -3,7 +3,11 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import { prepareGeneratedDocsDirectory, resolveGeneratedDocsDirectory } from "./generated-docs"
+import {
+  prepareGeneratedDocsDirectory,
+  resolveGeneratedDocsDirectory,
+  writeGeneratedDocs,
+} from "./generated-docs"
 
 let tempDir: string
 
@@ -16,6 +20,15 @@ afterEach(async () => {
 })
 
 describe("generated documentation filesystem guards", () => {
+  it("does not offer source editing or generated-file dates for generated pages", async () => {
+    await writeGeneratedDocs({ outputDir: tempDir, out: "api" }, [
+      { path: "index.md", frontmatter: { title: "API" }, content: "# API" },
+    ])
+    const page = await fs.readFile(path.join(tempDir, "api/index.md"), "utf8")
+    expect(page).toContain("editLink: false")
+    expect(page).toContain("lastUpdated: false")
+  })
+
   it("resolves generated docs inside the routes directory", () => {
     expect(resolveGeneratedDocsDirectory(tempDir, "api")).toBe(path.join(tempDir, "api"))
     expect(() => resolveGeneratedDocsDirectory(tempDir, ".")).toThrow(

@@ -104,7 +104,7 @@ export function createManagedRuntimePlugin(options: ManagedRuntimePluginOptions 
           dedupe: resolve.dedupe?.filter((name) => !managedNames.has(name)),
         }
 
-        // These imports are reached by React Router's generated client entry and
+        // These imports are reached by Ardo's generated client entry and
         // Ardo's UI. Including them up front avoids an optimizer reload between
         // the first request for the generated entry and hydration.
         config.optimizeDeps = withManagedIncludes({

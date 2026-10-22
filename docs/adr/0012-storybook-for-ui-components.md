@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR 0021](0021-mdx-component-gallery-and-browser-tests.md), 2026-10-22.
 
 ## Context
 

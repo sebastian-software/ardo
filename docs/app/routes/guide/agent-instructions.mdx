@@ -10,7 +10,7 @@ These instructions cover Ardo 6. Use them for a new documentation site, an exist
 
 ## Match the Version First
 
-Read the repository's manifest and lockfile to identify its installed Ardo version. For a new site, target Ardo 6 explicitly. Use `https://ardo-docs.dev/v6/llms.txt` as the documentation index and `https://ardo-docs.dev/v6/llms-full.txt` for the complete Markdown instructions. The unversioned text files follow the current documentation version and can change when another major is released.
+Read the repository's manifest and lockfile to identify its installed Ardo version. For a new site, use the latest published release unless a version or major was requested; then select its matching documentation and Basic example. These instructions apply when that selected major is Ardo 6. For an existing site, retain the installed major unless the task includes an upgrade. Use `https://ardo-docs.dev/v6/llms.txt` as the documentation index and `https://ardo-docs.dev/v6/llms-full.txt` for the complete Markdown instructions. The unversioned text files follow the current documentation version and can change when another major is released.
 
 Read `examples/basic` from the matching `ardo-v<exact-version>` Git tag in [Ardo's repository](https://github.com/sebastian-software/ardo/tags). For example, Ardo `6.0.0` uses `ardo-v6.0.0`. Do not combine a released package with examples from `main`. During development, use the instructions, examples, and built package from the same checkout revision.
 
@@ -39,9 +39,7 @@ boundary. Declare and install the docs package's dependencies locally. Import
 workspace components through an installed packaged dependency, not sibling
 source paths. API generation can read separately configured TypeScript projects.
 
-A setup skill should use these versioned instructions and the same Basic
-example, then add the selected feature configuration. Keep setup rules here
-instead of maintaining separate skill templates.
+The [Ardo setup skill](https://github.com/sebastian-software/ardo/tree/main/skills/ardo) uses these versioned instructions and the same Basic example, then adds the selected feature configuration. Install that folder through your assistant's normal skill support. Keep setup rules here instead of maintaining separate skill templates.
 
 ## Make the Smallest Compatible Change
 
@@ -53,7 +51,7 @@ For an **existing project**, introduce Ardo around documentation routes. Merge t
 
 For an **upgrade**, update the dependency and documented integration changes. Compare the existing setup with the matching target example. Preserve authored content and application-specific behavior; do not replace the root component or custom shell code wholesale. Delete only the files the [upgrade guide](/guide/upgrade-to-v6) lists as removed.
 
-Generated API routes and materialized collection routes are build output, and the route table is a virtual module. Do not edit them by hand. Native API documentation is opt-in; add its native compiler alias, `oxc-parser` dependency, and API configuration only when the project needs it. Follow [Native API Documentation](/guide/api-documentation) for the matching dependency versions. Use `ardo dev`, `ardo build`, and `ardo preview` for the managed toolchain. Import React APIs from `ardo/react`, Ardo's runtime APIs such as `ArdoLink`, `useArdoPath`, and `ArdoMetaFunction` from `ardo/runtime`, components from `ardo/ui`, and Vite configuration helpers from `ardo/vite`. Never import runtime values from the package root `ardo` in browser code; that entry also contains Node-only build code. Set `jsxImportSource` to `ardo` and use `ardo/vite/client` in TypeScript's `types` list. The basic reference only requires Ardo at runtime; TypeScript remains a development tool.
+Generated API routes and materialized collection routes are build output, and the route table is a virtual module. Do not edit them by hand. Native API documentation is opt-in; add the pinned native TypeScript compiler, `oxc-parser` dependency, and API configuration only when the project needs it. Follow [Native API Documentation](/guide/api-documentation) for the matching dependency versions. Use `ardo dev`, `ardo build`, and `ardo preview` for the managed toolchain. Import React APIs from `ardo/react`, Ardo's runtime APIs such as `ArdoLink`, `useArdoPath`, and `ArdoMetaFunction` from `ardo/runtime`, components from `ardo/ui`, and Vite configuration helpers from `ardo/vite`. Never import runtime values from the package root `ardo` in browser code; that entry also contains Node-only build code. Set `jsxImportSource` to `ardo` and use `ardo/vite/client` in TypeScript's `types` list. The basic reference only requires Ardo at runtime; TypeScript remains a development tool.
 
 Ardo 6 has no client-side router and no framework entry files. A project consists of `app/routes/**` (Markdown, MDX, and TSX routes), `app/root.tsx`, whose default export is the root component, and optional configuration. `root.tsx` may export `meta`, `ErrorBoundary`, and `Layout`; omit `Layout` unless the project needs a custom HTML shell, because Ardo renders `ArdoRootLayout` by default. Configure the base path once in Ardo config with `githubPages`, `base`, or `versioning`. Do not add `react-router.config.ts`, `app/entry.server.tsx`, `app/entry.client.tsx`, or a generated `app/routes.ts`, and do not import the removed `ardo/router`, `ardo/router/dom`, `ardo/router/routes`, `ardo/entry.server`, `ReactRouterConfig`, `withArdoGitHubPages`, or `withArdoVersioning` APIs. Route loaders and actions are not supported; provide build-time data through a Vite plugin with a virtual module. Tailwind is optional; retain the repository's styling choice.
 

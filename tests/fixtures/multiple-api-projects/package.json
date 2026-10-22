@@ -6,7 +6,7 @@
     "ardo": "workspace:*"
   },
   "devDependencies": {
-    "oxc-parser": "^0.154.0",
+    "oxc-parser": "^0.155.0",
     "typescript": "7.1.0-dev.20261011.1"
   }
 }

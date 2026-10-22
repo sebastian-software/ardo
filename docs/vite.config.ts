@@ -6,7 +6,7 @@ import type { Plugin } from "vite"
 import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
 
-import { fetchNpmFacts } from "./app/home/npm-facts"
+import { fetchNpmFacts } from "./app/home/npm-facts.ts"
 
 // Ardo's dev server only serves files inside the docs folder. In this pnpm
 // workspace the home page fonts resolve to the shared store at the repository

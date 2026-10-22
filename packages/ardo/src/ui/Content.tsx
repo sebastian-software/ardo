@@ -2,7 +2,7 @@ import { Children, Fragment, isValidElement, type ReactNode } from "react"
 import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
-import { useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoConfig, useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { useBareContent } from "./BareContent"
 import { ArdoBreadcrumb } from "./Breadcrumb"
@@ -20,7 +20,9 @@ type ContentProps = {
   /** Last updated configuration (overrides ArdoSiteConfig) */
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   /** Where to render edit/updated metadata (default: footer) */
-  metaPlacement?: "footer" | "none"
+  metaPlacement?: "footer" | "footer-on-narrow" | "none"
+  /** Optional in-page navigation, displayed after the article heading. */
+  outline?: ReactNode
 }
 
 type ContentMetaInput = {
@@ -28,6 +30,7 @@ type ContentMetaInput = {
   editLink: ContentProps["editLink"]
   lastUpdated: ContentProps["lastUpdated"]
   siteConfig: ReturnType<typeof useArdoSiteConfig>
+  locale: string
 }
 
 function resolveEditLink(input: ContentMetaInput) {
@@ -35,9 +38,17 @@ function resolveEditLink(input: ContentMetaInput) {
   const pattern = resolved?.pattern ?? ""
   const relativePath = input.pageData?.relativePath ?? ""
   const show =
-    input.pageData?.frontmatter.editLink !== false && pattern !== "" && input.pageData !== undefined
+    input.pageData?.frontmatter.editLink !== false && pattern !== "" && relativePath !== ""
   return {
-    href: show ? pattern.replace(":path", relativePath) : undefined,
+    href: show
+      ? pattern.replace(
+          ":path",
+          relativePath
+            .split("/")
+            .map((part) => encodeURIComponent(part))
+            .join("/")
+        )
+      : undefined,
     text: resolved?.text ?? "Edit this page",
     show,
   }
@@ -49,15 +60,19 @@ function resolveLastUpdated(input: ContentMetaInput) {
   const show =
     input.pageData?.frontmatter.lastUpdated !== false &&
     resolved?.enabled === true &&
-    typeof value === "number"
-  const formatOptions = resolved?.formatOptions ?? {
-    year: "numeric" as const,
-    month: "long" as const,
-    day: "numeric" as const,
+    typeof value === "number" &&
+    Number.isFinite(value)
+  const formatOptions = {
+    timeZone: "UTC",
+    ...(resolved?.formatOptions ?? {
+      year: "numeric" as const,
+      month: "long" as const,
+      day: "numeric" as const,
+    }),
   }
   return {
     label: resolved?.text ?? "Last updated",
-    text: show ? new Date(value).toLocaleDateString(undefined, formatOptions) : undefined,
+    text: show ? new Date(value).toLocaleDateString(input.locale, formatOptions) : undefined,
     show,
   }
 }
@@ -67,10 +82,12 @@ export function ArdoContent({
   editLink,
   lastUpdated,
   metaPlacement = "footer",
+  outline,
 }: ContentProps) {
   const isBare = useBareContent()
   const pageData = useArdoPageData()
   const siteConfig = useArdoSiteConfig()
+  const locale = useArdoConfig().lang ?? "en"
   const sidebar = useArdoSidebar()
   const pathname = useArdoPath()
 
@@ -80,7 +97,7 @@ export function ArdoContent({
     )
   }
 
-  const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig }
+  const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig, locale }
   const edit = resolveEditLink(input)
   const updated = resolveLastUpdated(input)
   const { prev, next } = getPrevNextLinks(sidebar, pathname)
@@ -98,8 +115,15 @@ export function ArdoContent({
           children
         )}
       />
+      {outline}
       <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>{children}</div>
-      {metaPlacement === "footer" && <ContentMeta edit={edit} updated={updated} />}
+      {metaPlacement !== "none" && (
+        <ContentMeta
+          edit={edit}
+          updated={updated}
+          className={metaPlacement === "footer-on-narrow" ? docStyles.narrowPageMeta : undefined}
+        />
+      )}
       <ContentPrevNext prev={prev} next={next} />
     </article>
   )
@@ -174,13 +198,15 @@ function normalizeText(value: string): string {
 function ContentMeta({
   edit,
   updated,
+  className,
 }: {
   edit: ReturnType<typeof resolveEditLink>
   updated: ReturnType<typeof resolveLastUpdated>
+  className?: string
 }) {
   if (!edit.show && !updated.show) return null
   return (
-    <div className={footerStyles.contentMeta}>
+    <div className={[footerStyles.contentMeta, className].filter(Boolean).join(" ")}>
       {edit.show && (
         <a
           href={edit.href}

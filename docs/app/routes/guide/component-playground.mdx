@@ -1,37 +1,269 @@
 ---
-title: Component Playground
-description: Review Ardo's default UI components in isolation before changing the docs experience.
+title: Component Gallery
+description: Try Ardo's components in the real documentation layout, with examples for MDX authors and theme maintainers.
 order: 11
 ---
 
-# Component Playground
+import { FileText, Github, Globe } from "ardo/icons"
+import { ArdoHero as Hero, ArdoFeatures as Features, ArdoFeatureCard as FeatureCard } from "ardo/ui"
+import { GalleryIcons, GalleryPreview } from "../../components/ComponentGallery"
 
-Ardo's default docs experience is built from React components in `ardo/ui`. Storybook gives maintainers and theme authors an isolated place to review those components before changing the production docs experience.
+# Component Gallery
 
-## Open Storybook
+Try the components that ship with Ardo. These examples use the same theme, styles, and React runtime as the rest of this site. Switch the theme in the header or resize the page to review them in context.
 
-Use the hosted playground:
+Authoring components such as `Tabs`, `Card`, and `Tip` are available in MDX without imports. In TSX, import their `Ardo`-prefixed equivalents from `ardo/ui`, such as `ArdoTabs` and `ArdoCard`. Landing-page components are imported explicitly, as shown below. See the [component inventory](/guide/component-inventory) for the full authoring baseline.
 
-- [Open Storybook](/storybook)
+## Tabs
 
-For local development from the repository root:
+Use tabs for equivalent choices, such as package managers. Select a tab or focus it and use Left, Right, Home, and End to move through the choices.
 
-```bash
-pnpm storybook
+<GalleryPreview id="gallery-tabs" label="Tabs example">
+  <Tabs defaultValue="pnpm">
+    <TabList>
+      <Tab value="pnpm">pnpm</Tab>
+      <Tab value="npm">npm</Tab>
+      <Tab value="yarn">yarn</Tab>
+    </TabList>
+    <TabPanels>
+      <TabPanel value="pnpm">
+        <CodeBlock language="bash" code="pnpm add ardo" />
+      </TabPanel>
+      <TabPanel value="npm">
+        <CodeBlock language="bash" code="npm install ardo" />
+      </TabPanel>
+      <TabPanel value="yarn">
+        <CodeBlock language="bash" code="yarn add ardo" />
+      </TabPanel>
+    </TabPanels>
+  </Tabs>
+</GalleryPreview>
+
+```mdx
+<Tabs defaultValue="pnpm">
+  <TabList>
+    <Tab value="pnpm">pnpm</Tab>
+    <Tab value="npm">npm</Tab>
+  </TabList>
+  <TabPanels>
+    <TabPanel value="pnpm">pnpm add ardo</TabPanel>
+    <TabPanel value="npm">npm install ardo</TabPanel>
+  </TabPanels>
+</Tabs>
 ```
 
-Create a production-ready static build:
+## Accordions
 
-```bash
-pnpm storybook:build
+Put optional explanations in an accordion. In a group with `onlyOneOpen`, opening an item closes its sibling. Space and Enter toggle the focused item; Up and Down move between triggers.
+
+<GalleryPreview id="gallery-accordion" label="Accordion example">
+  <AccordionGroup onlyOneOpen>
+    <Accordion title="Can I use React components?" icon="Code">
+      Yes. Import a component into an MDX route and render it alongside your prose.
+    </Accordion>
+    <Accordion title="Does it work without a server?" icon="Server">
+      Yes. The production build contains prerendered HTML and static assets.
+    </Accordion>
+  </AccordionGroup>
+</GalleryPreview>
+
+```mdx
+<AccordionGroup onlyOneOpen>
+  <Accordion title="Can I use React components?" icon="Code">
+    Yes. Import a component into an MDX route.
+  </Accordion>
+  <Accordion title="Does it work without a server?" icon="Server">
+    Yes. The production build contains static files.
+  </Accordion>
+</AccordionGroup>
 ```
 
-## What's covered in v1
+A standalone accordion can start open:
 
-The baseline stories focus on the core components used to compose Ardo documentation experiences:
+<Accordion title="Optional deployment details" defaultOpen>
+  Upload the generated client directory to your static host. See [Deployment](/guide/deployment) for
+  the supported workflows.
+</Accordion>
 
-- Layout: `Layout`, `Header`, `Sidebar`, `Footer`, `Nav`, `TOC`
-- Content: `Hero`, `Features`, `Card`, `CardGroup`, `Accordion`, `AccordionGroup`, `Tabs`, `Container`, `Steps`, `Badge`
-- Utilities: `ThemeToggle`, `Search`, `CopyButton`, `CodeBlock`
+## Code and copying
 
-As new components are introduced, stories should be added in `packages/ardo/src/ui` next to the implementation.
+Code blocks include a copy button that copies the code without the title or line numbers. Markdown fences are highlighted at build time; the `CodeBlock` component also accepts a string directly.
+
+<GalleryPreview id="gallery-code" label="Code example">
+  <CodeBlock language="bash" title="terminal" code="pnpm add ardo" />
+</GalleryPreview>
+
+```mdx
+<CodeBlock language="bash" title="terminal" code="pnpm add ardo" />
+```
+
+Use `CodeGroup` for related snippets with their own file names:
+
+<GalleryPreview id="gallery-code-group" label="Code group example">
+  <CodeGroup labels="Configuration,Home route">
+    <CodeBlock
+      language="typescript"
+      title="ardo.config.ts"
+      code={
+        'import { defineArdoConfig } from "ardo/config"\n\nexport default defineArdoConfig({ title: "My docs" })'
+      }
+    />
+    <CodeBlock
+      language="markdown"
+      title="app/routes/home.md"
+      code={"# Welcome\n\nStart with your first guide."}
+    />
+  </CodeGroup>
+</GalleryPreview>
+
+The [Markdown guide](/guide/markdown#syntax-highlighting) covers highlighted lines, line numbers, and wrapped agent prompts.
+
+## Cards
+
+Use linked cards for navigation and static cards for a short summary. The grid collapses to one column on small screens.
+
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
+    Set up a documentation site with an assistant or follow the manual steps.
+  </Card>
+  <Card title="Configuration" icon="Settings" href="/guide/configuration">
+    Configure routes, API reference, metadata, and deployment output.
+  </Card>
+  <Card title="Local components" icon="Code">
+    Import components from the docs project or an installed component package.
+  </Card>
+  <Card
+    title="Source repository"
+    icon={<Github size={20} />}
+    href="https://github.com/sebastian-software/ardo"
+  >
+    Review the implementation and contribute changes on GitHub.
+  </Card>
+</CardGroup>
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
+    Set up a documentation site.
+  </Card>
+  <Card title="Local components" icon="Code">
+    Import components into your MDX routes.
+  </Card>
+</CardGroup>
+```
+
+## Callouts
+
+Choose the variant that matches the information. All five use the site's theme tokens and support a custom title.
+
+<Tip title="Keep related instructions together">
+  Use a callout for a short piece of guidance that belongs next to the task.
+</Tip>
+<Info title="Static output">Ardo prerenders routes during the production build.</Info>
+<Note title="Optional configuration">
+  A route can use frontmatter to override its title and sidebar position.
+</Note>
+<Warning title="Check the destination">
+  Review the deployment base path before publishing a versioned site.
+</Warning>
+<Danger title="Destructive example">
+  Export your data before replacing a directory that contains work you need.
+</Danger>
+
+```mdx
+<Tip title="Keep related instructions together">Put the guidance next to the task.</Tip>
+```
+
+The same variants are available as [GitHub-style alerts](/guide/markdown#github-style-alerts) in plain Markdown.
+
+## Badges
+
+Badges add a compact status to a sentence. They stay inline: <Badge>New</Badge> <Badge variant="success">Stable</Badge> <Badge variant="warning">Preview</Badge> <Badge variant="danger">Deprecated</Badge> <Badge variant="info">Reference</Badge> <Badge icon="✦">With icon</Badge>.
+
+```mdx
+<Badge variant="success">Stable</Badge>
+<Badge icon="✦">With icon</Badge>
+```
+
+## Steps
+
+Wrap an ordered list in `Steps` to show a sequence. Each step can contain prose, links, or code blocks.
+
+<Steps>
+  <ol>
+    <li>
+      Create a home route in <code>app/routes</code>.
+    </li>
+    <li>Write a guide and link it from the home page.</li>
+    <li>Build the site and resolve broken internal links.</li>
+  </ol>
+</Steps>
+
+```mdx
+<Steps>
+  <ol>
+    <li>Create a home route.</li>
+    <li>Write a guide.</li>
+    <li>Build the site.</li>
+  </ol>
+</Steps>
+```
+
+## Hero and features
+
+`Hero` and `Features` compose landing pages. This compact hero shows its secondary text and actions; on a home page, add `name` for the main heading and optionally an image or version badge.
+
+<GalleryPreview id="gallery-hero" label="Hero example">
+  <Hero
+    text="Documentation for your project"
+    tagline="Write guides in Markdown, add React where it helps, and publish static files."
+    actions={[
+      { text: "Read the guide", link: "/guide/getting-started", theme: "brand" },
+      { text: "View the source", link: "https://github.com/sebastian-software/ardo", theme: "alt" },
+    ]}
+  />
+</GalleryPreview>
+
+<Features>
+  <FeatureCard title="Write in MDX" icon={<FileText size={28} />}>
+    Combine documentation and live React examples in one route.
+  </FeatureCard>
+  <FeatureCard
+    title="Publish static files"
+    icon={<Globe size={28} />}
+    link="/guide/deployment"
+    linkText="Explore deployment"
+  >
+    Generate HTML and assets for your static host.
+  </FeatureCard>
+</Features>
+
+```mdx
+import { ArdoHero as Hero } from "ardo/ui"
+
+<Hero
+  name="My project"
+  text="Documentation for your team"
+  actions={[{ text: "Read the guide", link: "/guide/getting-started" }]}
+/>
+```
+
+## Icons
+
+These are the registered content icons, shown at 14 and 28 pixels. Use the visible name with `Icon`, or import its component from `ardo/icons`. The [icon guide](/guide/icons) explains sizing and custom registration.
+
+<GalleryIcons />
+
+```mdx
+<Icon name="BookOpen" size={20} />
+```
+
+## Layout and navigation
+
+The page around these examples is the live layout example: header, section navigation, sidebar, breadcrumbs, article, outline, page actions, and footer. On a narrow screen, open the menu and the on-page outline. Use search and the theme toggle in the header to inspect their real behavior.
+
+See [Site UI](/guide/site-ui) for composition examples and [Custom Theme](/guide/custom-theme) to change the palette. The examples inherit those changes without a separate preview theme.
+
+## Work on a component
+
+From the repository root, run `pnpm docs:dev` and open this route. Add or update the MDX example with the component change. Use `pnpm docs:build` to check static rendering and links, then `pnpm test:e2e` for browser interactions. The browser suite covers tabs, accordions, copying, themes, search, and responsive navigation; unit tests cover component logic and additional states.

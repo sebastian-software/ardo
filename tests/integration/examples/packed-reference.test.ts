@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
@@ -45,23 +45,28 @@ function readEngineOverrides(): Record<string, string> {
   return overrides
 }
 
-function run(cwd: string, args: string[], timeout = 120_000): void {
-  try {
-    execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", ...args], {
-      cwd,
-      stdio: "pipe",
-      timeout,
-      env: { ...process.env, CI: "true" },
-    })
-  } catch (error) {
-    if (error instanceof Error && "stdout" in error && "stderr" in error) {
-      throw new Error(
-        `${error.message}\n${String(error.stdout ?? "")}\n${String(error.stderr ?? "")}`,
-        { cause: error }
-      )
-    }
-    throw error
+function run(cwd: string, args: string[], timeout = 120_000): string {
+  const result = spawnSync("pnpm", ["--config.verifyDepsBeforeRun=false", ...args], {
+    cwd,
+    stdio: "pipe",
+    encoding: "utf8",
+    timeout,
+    env: { ...process.env, CI: "true" },
+  })
+  if (result.error != null) throw result.error
+  const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`
+  if (result.status !== 0) {
+    throw new Error(`pnpm ${args.join(" ")} exited with ${result.status}.\n${output}`)
   }
+  return output
+}
+
+function manualFile(source: string, file: string, language: string): string {
+  const marker = `**\`${file}\`**:`
+  const section = source.split(marker)[1]
+  const contents = section?.split(`\`\`\`${language}\n`)[1]?.split("```", 1)[0]
+  if (contents == null) throw new Error(`Missing manual installation snippet for ${file}`)
+  return contents
 }
 
 async function assertPackedBasicDevSSRWithoutArdoConfig(consumer: string): Promise<void> {
@@ -93,6 +98,86 @@ describe("Basic and optional API configuration as packed-package consumers", () 
   afterAll(() => {
     if (temporaryRoot != null) fs.rmSync(temporaryRoot, { recursive: true, force: true })
   })
+
+  it("builds the literal manual setup and feature recipes as a packed-package consumer", () => {
+    const guide = fs.readFileSync(
+      path.join(repositoryRoot, "docs/app/routes/guide/getting-started.mdx"),
+      "utf8"
+    )
+    const consumer = path.join(temporaryRoot, "manual-installation")
+    const files = [
+      ["ardo.config.ts", "ts"],
+      ["tsconfig.json", "json"],
+      ["app/root.tsx", "tsx"],
+      ["app/routes/home.tsx", "tsx"],
+      ["app/routes/guide/getting-started.mdx", "markdown"],
+    ] as const
+    for (const [file, language] of files) {
+      const destination = path.join(consumer, file)
+      fs.mkdirSync(path.dirname(destination), { recursive: true })
+      fs.writeFileSync(destination, manualFile(guide, file, language))
+    }
+    const typescript = /pnpm add -D typescript@([^\s]+)/u.exec(guide)?.[1]
+    if (typescript == null) throw new Error("Missing manual TypeScript installation command")
+    fs.writeFileSync(
+      path.join(consumer, "package.json"),
+      JSON.stringify({
+        name: "ardo-manual-installation-test",
+        private: true,
+        type: "module",
+        scripts: { build: "ardo build" },
+        dependencies: { ardo: `file:${tarball}` },
+        devDependencies: { typescript },
+      })
+    )
+    fs.writeFileSync(
+      path.join(consumer, "pnpm-workspace.yaml"),
+      toWorkspaceYaml({
+        packages: ["."],
+        allowBuilds: { esbuild: true },
+        overrides: readEngineOverrides(),
+      })
+    )
+
+    run(consumer, ["install", "--no-lockfile", "--prefer-offline"], 180_000)
+    run(consumer, ["exec", "tsc", "--noEmit"])
+    expect(run(consumer, ["build"])).not.toContain("broken internal link")
+
+    const client = path.join(consumer, "build/client")
+    const home = fs.readFileSync(path.join(client, "index.html"), "utf8")
+    expect(home).toContain("Guides and examples for your project.")
+    expect(home).not.toContain("ERROR 404")
+    expect(home).toContain('href="/guide/getting-started/"')
+    expect(
+      fs
+        .readFileSync(path.join(client, "guide/getting-started/index.html"), "utf8")
+        .replace(/<!--.*?-->/gs, "")
+    ).toContain("Welcome to your documentation site!")
+
+    const logo = path.join(consumer, "app/assets/logo.svg")
+    fs.mkdirSync(path.dirname(logo), { recursive: true })
+    fs.writeFileSync(
+      logo,
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="blue"/></svg>'
+    )
+    fs.writeFileSync(
+      path.join(consumer, "openapi.yaml"),
+      "openapi: 3.1.0\ninfo:\n  title: Pet API\n  version: 1.0.0\npaths: {}\n"
+    )
+    for (const recipe of ["custom-theme", "openapi"]) {
+      const source = fs.readFileSync(
+        path.join(repositoryRoot, `docs/app/routes/guide/${recipe}.mdx`),
+        "utf8"
+      )
+      fs.writeFileSync(
+        path.join(consumer, "ardo.config.ts"),
+        manualFile(source, "ardo.config.ts", "ts")
+      )
+      run(consumer, ["exec", "tsc", "--noEmit"])
+      expect(run(consumer, ["build"])).not.toContain("broken internal link")
+    }
+    expect(fs.existsSync(path.join(client, "api/index.html"))).toBe(true)
+  }, 240_000)
 
   it.each(["basic", "native-api"])(
     "installs, typechecks, and builds the %s reference outside the workspace",

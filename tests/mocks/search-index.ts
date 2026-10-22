@@ -9,7 +9,7 @@ export default [
   {
     id: "component-playground",
     title: "Component Playground",
-    content: "Explore and review Ardo UI components in Storybook.",
+    content: "Explore and review Ardo UI components in the component gallery.",
     path: "/guide/component-playground",
     section: "Guide",
   },

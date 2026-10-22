@@ -15,7 +15,7 @@ This affects the `typedoc` option, `TypeDocConfig`, `ardo/typedoc`,
 Install the supported compiler and parser in your documentation project:
 
 ```bash
-pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.154.0
+pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.155.0
 ```
 
 This compiler is a pinned TypeScript 7.1 nightly, and it also typechecks your
@@ -23,25 +23,20 @@ project. TypeScript 7.0's native API lacks what Ardo needs. General documentatio
 need these optional packages. Remove direct TypeDoc dependencies and plugins
 that were used only by this integration.
 
-## Replace the Vite configuration
+## Update the Ardo configuration
 
-Replace `typedoc` with `api` and supply an explicit TypeScript configuration:
+Remove `typedoc` from the old Vite plugin configuration. Put `api` in `ardo.config.ts` and supply an explicit TypeScript configuration:
 
 ```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+import { defineArdoConfig } from "ardo/config"
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      api: {
-        entryPoints: ["./src/index.ts"],
-        tsconfig: "./tsconfig.api.json",
-        out: "api-reference",
-        title: "API Reference",
-      },
-    }),
-  ],
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.api.json",
+    out: "api-reference",
+    title: "API Reference",
+  },
 })
 ```
 

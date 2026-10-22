@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import type { ReactNode } from "react"
 
 import { renderToStaticMarkup } from "react-dom/server"
@@ -59,6 +61,34 @@ const headerClass = (view: string) => {
 }
 
 describe("ArdoSidebar", () => {
+  it.each(["flat", "guide", "api"])(
+    "renders valid lists for generated %s navigation",
+    (section) => {
+      const document = new DOMParser().parseFromString(
+        renderSidebar(generatedSection(section)),
+        "text/html"
+      )
+      expect(document.querySelectorAll(".ardo-sidebar-nav > ul")).toHaveLength(1)
+      expect(document.querySelectorAll(".ardo-sidebar-nav ul > :not(li)")).toHaveLength(0)
+    }
+  )
+
+  it("preserves manual items mixed with generated navigation in the same list", () => {
+    const view = renderSidebar(
+      <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+        <ArdoGeneratedSidebar section="flat" />
+        <ArdoSidebarGroup title="More">
+          <ArdoSidebarLink to="/custom">Custom guide</ArdoSidebarLink>
+        </ArdoSidebarGroup>
+      </ArdoSidebarSection>
+    )
+    const document = new DOMParser().parseFromString(view, "text/html")
+
+    expect(document.querySelectorAll(".ardo-sidebar-nav > ul > li")).toHaveLength(3)
+    expect(document.querySelectorAll(".ardo-sidebar-nav ul > :not(li)")).toHaveLength(0)
+    expect(view).toContain("Custom guide")
+  })
+
   it("connects collapsed generated group toggles to inert content", () => {
     const view = renderSidebar(generatedSection("guide"))
     const toggle =

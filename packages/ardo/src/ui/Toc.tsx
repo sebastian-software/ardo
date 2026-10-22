@@ -8,6 +8,8 @@ import * as styles from "./Toc.css"
 export type ArdoTOCProps = {
   /** Label for the TOC heading (default: "On this page") */
   label?: string
+  /** Use a native disclosure for the compact outline above an article. */
+  collapsible?: boolean
 }
 
 export function getTocScrollBehavior(isReducedMotion: boolean): ScrollBehavior {
@@ -44,7 +46,7 @@ function subscribeToScrollRegion(onChange: () => void) {
   }
 }
 
-export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
+export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps = {}) {
   const toc = useArdoTOC()
   const siteConfig = useArdoSiteConfig()
   const labels = useArdoLabels()
@@ -101,15 +103,7 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
   const handleClickItem = (id: string) => {
     setActiveId(id)
     isClickScrollingRef.current = true
-    const element = document.getElementById(id)
-    const container = resolveTocScrollRegion().root ?? document
-    if (element) {
-      element.scrollIntoView({
-        behavior: getTocScrollBehavior(hasReducedMotionPreference()),
-        block: "start",
-      })
-      globalThis.history.pushState(null, "", `#${id}`)
-    }
+    const container = scrollToHeading(id)
     // Re-enable observer after scroll finishes
     const onScrollEnd = () => {
       isClickScrollingRef.current = false
@@ -124,6 +118,18 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
     return null
   }
 
+  if (collapsible) {
+    return (
+      <CompactTOC
+        label={label}
+        navLabel={labels.toc.navLabel}
+        items={toc}
+        activeId={activeId}
+        onClickItem={handleClickItem}
+      />
+    )
+  }
+
   return (
     <aside className={`ardo-toc ${styles.toc}`}>
       <div>
@@ -133,6 +139,34 @@ export function ArdoTOC({ label: labelProp }: ArdoTOCProps = {}) {
         </nav>
       </div>
     </aside>
+  )
+}
+
+function scrollToHeading(id: string) {
+  const element = document.getElementById(id)
+  const container = resolveTocScrollRegion().root ?? document
+  if (element) {
+    element.scrollIntoView({
+      behavior: getTocScrollBehavior(hasReducedMotionPreference()),
+      block: "start",
+    })
+    globalThis.history.pushState(null, "", `#${id}`)
+  }
+  return container
+}
+
+function CompactTOC({
+  label,
+  navLabel,
+  ...items
+}: TOCItemsProps & { label: string; navLabel: string }) {
+  return (
+    <details className={`ardo-page-outline ${styles.compactToc}`}>
+      <summary className={styles.compactSummary}>{label}</summary>
+      <nav aria-label={navLabel} className={styles.compactNav}>
+        <TOCItems {...items} />
+      </nav>
+    </details>
   )
 }
 

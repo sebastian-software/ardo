@@ -26,9 +26,9 @@ Ardo takes a different approach. Instead of inventing a new system, it builds on
 
 ### Your React Knowledge, Applied Directly
 
-Every component in Ardo is a React component. Your documentation layout, your custom callouts, your interactive API playgrounds — they're all standard React. Import any component from npm. Use the hooks you already know. Write TypeScript the way you always do.
+Every component in Ardo is a React component. Your documentation layout, custom callouts, and interactive examples use standard React. Keep authored components inside the docs project, or install a packaged component library there and import its public exports. Use the hooks you already know and write TypeScript.
 
-There's nothing new to learn before you're productive.
+The docs site builds as its own package with Ardo's managed React runtime. Reuse a design system through an installed package rather than importing sibling application source. [Adopt Ardo](/guide/adopt-ardo) explains that boundary.
 
 ### Plain HTML Pages
 
@@ -71,6 +71,7 @@ Ardo ships with a complete theme so you can focus on content, not design:
 Ardo's UI is built with [Vanilla Extract](https://vanilla-extract.style/) — a zero-runtime CSS-in-TypeScript solution. Every design token (colors, spacing, radii, transitions) is available as a type-safe import:
 
 ```ts
+import { style } from "@vanilla-extract/css"
 import { vars } from "ardo/theme"
 
 // Full autocomplete for all design tokens
@@ -80,7 +81,7 @@ const myStyle = style({
 })
 ```
 
-The `ardo()` Vite plugin automatically includes the Vanilla Extract plugin, so you can write `.css.ts` files in your own project without any extra setup.
+The Ardo CLI includes the Vanilla Extract plugin. Install `@vanilla-extract/css` in the docs package when authoring `.css.ts` files with its styling APIs; no extra Vite plugin configuration is required.
 
 ### Fully Customizable
 

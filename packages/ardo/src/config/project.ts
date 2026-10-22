@@ -7,7 +7,13 @@ export type ArdoProjectConfigExport =
   | ArdoPluginOptions
   | Promise<ArdoPluginOptions>
 
-/** Identity helper that preserves type checking for ardo.config exports. */
-export function defineArdoConfig<T extends ArdoProjectConfigExport>(config: T): T {
+/** Contextually type configuration literals, including nested options. */
+export function defineArdoConfig(config: ArdoPluginOptions): ArdoPluginOptions
+export function defineArdoConfig(config: Promise<ArdoPluginOptions>): Promise<ArdoPluginOptions>
+export function defineArdoConfig(
+  config: (environment: ConfigEnv) => ArdoPluginOptions | Promise<ArdoPluginOptions>
+): (environment: ConfigEnv) => ArdoPluginOptions | Promise<ArdoPluginOptions>
+export function defineArdoConfig(config: ArdoProjectConfigExport): ArdoProjectConfigExport
+export function defineArdoConfig(config: ArdoProjectConfigExport): ArdoProjectConfigExport {
   return config
 }

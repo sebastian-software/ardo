@@ -19,14 +19,15 @@ These capabilities are available in the current package line.
 | Markdown and MDX routes | Shipped | Markdown, MDX, GFM, frontmatter, TOC extraction, and built-in MDX component mapping.                                   |
 | Syntax highlighting     | Shipped | Build-time Ferriki highlighting for Markdown code fences and static `CodeBlock` usage.                                 |
 | Search                  | Shipped | Generated search data with a built-in search UI.                                                                       |
-| Native API reference    | Shipped | Built into the `ardo()` plugin for TypeScript library APIs.                                                            |
+| Native API reference    | Shipped | Configured with `api` in `ardo.config.ts` for TypeScript library APIs.                                                 |
 | Content collections     | Shipped | Schema-validated local Markdown and MDX materialized as routes and typed static records for custom React views.        |
 | Social metadata         | Shipped | Generated canonical, Open Graph, and Twitter metadata for Markdown routes.                                             |
 | SEO build outputs       | Shipped | Sitemap, robots output, LLM text artifacts, link checking, and static redirects are supported.                         |
 | Theme hue overrides     | Shipped | Brand, accent, and neutral hue custom properties can retint the default color ramp from CSS.                           |
 | Core content components | Shipped | `Badge`, `Card`, `CardGroup`, `Tabs`, `Accordion`, `AccordionGroup`, callouts, steps, code blocks, hero, and features. |
 | Performance budgets     | Shipped | CI checks docs build duration, client bundle gzip sizes, and search-index size against documented budgets.             |
-| Storybook playground    | Shipped | Default UI components have a local and static Storybook workflow.                                                      |
+| Lint warning budget     | Shipped | CI rejects lint errors and warnings that exceed the per-rule budget in `scripts/lint-warning-budget.json`.             |
+| Component Gallery       | Shipped | MDX and React examples use the real docs shell; Playwright checks important interactions.                              |
 
 ## Experimental
 
@@ -44,11 +45,10 @@ These areas work, but the API or maintenance story may still evolve.
 
 These are useful, but not part of the shipped core yet.
 
-| Area                | Tracking issue                                                              | Notes                                                                                     |
-| ------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Migration guides    | [#134](https://github.com/sebastian-software/ardo/issues/134)               | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed.              |
-| Lint warning budget | [#179](https://github.com/sebastian-software/ardo/issues/179)               | Known warnings need to become an explicit quality budget.                                 |
-| Mermaid diagrams    | [ferromark#531](https://github.com/sebastian-software/ferromark/issues/531) | Static SVG rendering at compile time. Until then, `mermaid` fences render as code blocks. |
+| Area             | Tracking issue                                                              | Notes                                                                                     |
+| ---------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Migration guides | [#134](https://github.com/sebastian-software/ardo/issues/134)               | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed.              |
+| Mermaid diagrams | [ferromark#531](https://github.com/sebastian-software/ferromark/issues/531) | Static SVG rendering at compile time. Until then, `mermaid` fences render as code blocks. |
 
 ## Nice To Have
 

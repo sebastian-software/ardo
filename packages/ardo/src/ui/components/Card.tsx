@@ -55,7 +55,7 @@ function CardContent({
         {hasIcon && <CardIcon icon={icon} />}
         <h3 className={styles.cardTitle}>{title}</h3>
       </div>
-      {hasChildren && <span className={styles.cardBody}>{children}</span>}
+      {hasChildren && <div className={styles.cardBody}>{children}</div>}
     </>
   )
 }

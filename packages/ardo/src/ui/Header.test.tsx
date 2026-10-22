@@ -7,12 +7,15 @@ import { describe, expect, it, vi } from "vitest"
 import { ArdoProvider } from "../runtime/hooks"
 import { ArdoLink, ArdoPageProvider } from "../runtime/page"
 import { ArdoHeader } from "./Header"
+import { getSearchRecoveryQuery } from "./components/search-recovery"
 import { type ArdoHeaderSearchMode, resolveHeaderSearch } from "./header-search-mode"
 import { type ArdoLayoutVariant, ArdoLayoutVariantContext } from "./layout-context"
 
 vi.mock("./components/Search", () => ({
   ArdoSearch: () => <input aria-label="Search input" />,
 }))
+
+vi.mock("./components/search-recovery", () => ({ getSearchRecoveryQuery: vi.fn() }))
 
 function HeaderPage({ path }: { path: string }) {
   return (
@@ -27,6 +30,26 @@ function HeaderPage({ path }: { path: string }) {
 }
 
 describe("ArdoHeader page state", () => {
+  it("reopens and focuses the search dialog for a pending reload query", async () => {
+    vi.mocked(getSearchRecoveryQuery).mockReturnValueOnce("install")
+    render(<HeaderPage path="/start" />)
+
+    const dialog = await screen.findByRole("dialog", { name: "Search" })
+    expect(document.activeElement).toBe(within(dialog).getByLabelText("Search input"))
+  })
+
+  it("shows and initially focuses the site title when the mobile drawer has no logo", async () => {
+    const user = userEvent.setup()
+    render(<HeaderPage path="/start" />)
+
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }))
+
+    const menu = screen.getByRole("dialog", { name: "Docs navigation menu" })
+    const home = within(menu).getByRole("link", { name: "Docs" })
+    expect(home.textContent).toBe("Docs")
+    expect(document.activeElement).toBe(home)
+  })
+
   it("links with the base path and closes the mobile menu when the page changes", async () => {
     const user = userEvent.setup()
     const view = render(<HeaderPage path="/start" />)

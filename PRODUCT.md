@@ -15,7 +15,7 @@ Two audiences, one product:
 
 ## Product Purpose
 
-Ardo is a static documentation framework for React teams: React 19, React Router, Vite, MDX, native API documentation, Vanilla Extract. I started it because I could not find a modern, lightweight documentation solution for React teams. Success: a React team scaffolds a site, the default theme looks like someone cared, and they ship without touching a single style — yet can re-theme everything from three hue numbers.
+Ardo is a static documentation framework for React teams: React 19, Vite, MDX, native API documentation, Vanilla Extract. I started it because I could not find a modern, lightweight documentation solution for React teams. Success: a React team sets up a site, the default theme looks like someone cared, and they ship without touching a single style — yet can re-theme everything from three hue numbers.
 
 ## Brand Personality
 
@@ -30,7 +30,7 @@ Crafted, honest, engineering-grade. "The default theme is the proof of quality."
 
 ## Design Principles
 
-1. **Practice what you preach** — the default theme is the framework's strongest marketing asset; every surface must look intentionally designed.
+1. **Practice what you preach** — the default theme is the framework's strongest marketing asset; every surface must look intentionally designed. The Component Gallery in the docs app demonstrates real components inside that theme; browser tests verify important interactions.
 2. **Hue-derived everything** — every new color, shadow, gradient or texture must be computed from the three theme hues (`brand`, `accent`, `neutral`) or neutral alpha. Custom brand colors must keep working with zero extra config.
 3. **Depth without noise** — layered soft shadows, subtle surface gradients, 1px precision; decoration never competes with content.
 4. **Readers are mid-task** — docs UI stays calm and fast; the landing page may be bolder, the reading surface may not.

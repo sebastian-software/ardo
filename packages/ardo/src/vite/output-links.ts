@@ -137,7 +137,7 @@ function checkLink(site: Site, file: string, href: string): string | undefined {
   if (url.origin !== LOCAL_ORIGIN && url.origin !== site.siteOrigin) return undefined
 
   const pathname = safeDecode(url.pathname)
-  // Other deployments may share the host (archived versions, Storybook), but
+  // Other deployments may share the host (archived versions, separate apps), but
   // this build cannot know their contents.
   if (!isInsideBase(pathname, site.base)) return undefined
   if (isExcluded(site, href, pathname)) return undefined

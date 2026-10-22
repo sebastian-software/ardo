@@ -40,6 +40,8 @@ type SidebarContextValue = {
 }
 
 const SidebarContext = createContext<SidebarContextValue>({ currentPath: "" })
+// Generated and manually composed items share the navigation's top-level list.
+const SidebarListContext = createContext(false)
 
 function useSidebarContext() {
   return use(SidebarContext)
@@ -160,13 +162,15 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
             aria-label={labels.sidebar.mainNavigation}
             className={`ardo-sidebar-nav ${styles.sidebarNav}`}
           >
-            {activeSection != null ? (
-              <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>
-                {activeSection.props.children}
-              </ul>
-            ) : children != null && sections.length === 0 ? (
-              <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
-            ) : null}
+            <SidebarListContext value>
+              {activeSection != null ? (
+                <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>
+                  {activeSection.props.children}
+                </ul>
+              ) : children != null && sections.length === 0 ? (
+                <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
+              ) : null}
+            </SidebarListContext>
           </nav>
           <ArdoVersionControl divided />
         </div>
@@ -311,7 +315,7 @@ export function ArdoSidebarGroup({
 // =============================================================================
 
 export type ArdoSidebarLinkProps = {
-  /** Internal route path (type-safe with React Router's registered routes) */
+  /** Internal route path */
   to: RoutePath
   /** Link text */
   children: ReactNode
@@ -353,10 +357,13 @@ type SidebarItemsProps = {
 }
 
 export function SidebarItems({ items, depth }: SidebarItemsProps) {
+  const hasList = use(SidebarListContext)
   // Top-level groups use typographic headings. Flat lists stay plain.
   const treeMode = depth === 0 && items.some((item) => (item.items?.length ?? 0) > 0)
   const depthClass = depth === 0 ? styles.sidebarList0 : styles.sidebarList1
   const listClassName = [styles.sidebarList, depthClass].join(" ")
+  if (hasList && depth === 0)
+    return <SidebarItemListItems items={items} depth={depth} treeMode={treeMode} />
   return (
     <ul className={listClassName}>
       <SidebarItemListItems items={items} depth={depth} treeMode={treeMode} />

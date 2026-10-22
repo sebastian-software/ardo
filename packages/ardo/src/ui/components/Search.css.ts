@@ -53,6 +53,8 @@ export const searchInput = style({
 
 export const searchPopover = style({
   position: "fixed",
+  display: "flex",
+  flexDirection: "column",
   width: "min(28rem, calc(100vw - 2rem))",
   background: vars.color.bg,
   borderRadius: vars.radius.lg,
@@ -67,6 +69,8 @@ export const searchResults = style({
   padding: 0,
   listStyle: "none",
   maxHeight: "25rem",
+  minHeight: 0,
+  flexShrink: 1,
   overflowY: "auto",
 })
 
@@ -130,6 +134,18 @@ export const searchNoResults = style({
   padding: `${vars.space.xl} ${vars.space.md}`,
   textAlign: "center",
   color: vars.color.textLighter,
+  minHeight: 0,
+  overflowY: "auto",
+})
+
+export const searchRetry = style({
+  padding: `${vars.space.sm} ${vars.space.md}`,
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radius.base,
+  background: vars.color.bg,
+  color: vars.color.text,
+  cursor: "pointer",
+  font: "inherit",
 })
 
 export const searchNoResultsOwl = style({
@@ -139,6 +155,7 @@ export const searchNoResultsOwl = style({
 
 export const searchFooter = style({
   display: "flex",
+  flexShrink: 0,
   justifyContent: "center",
   gap: vars.space.lg,
   padding: `0.75rem ${vars.space.md}`,

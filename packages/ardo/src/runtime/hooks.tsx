@@ -4,6 +4,7 @@ import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types
 import type { ArdoLabels } from "../ui/labels"
 
 import { defaultArdoLabels } from "../ui/labels"
+import { useArdoPage } from "./page-context"
 
 type ArdoContextValue = {
   config: ArdoConfig
@@ -71,16 +72,18 @@ type ArdoPageDataProviderProps = {
 
 export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDataProviderProps) {
   const parent = use(ArdoContext)
+  const { source } = useArdoPage()
   const pageData: PageData = useMemo(
     () => ({
       title: typeof frontmatter.title === "string" ? frontmatter.title : "",
       frontmatter,
       toc,
       content: "",
-      filePath: "",
-      relativePath: "",
+      filePath: source?.relativePath ?? "",
+      relativePath: source?.relativePath ?? "",
+      lastUpdated: source?.lastUpdated,
     }),
-    [frontmatter, toc]
+    [frontmatter, toc, source]
   )
   const value = useMemo(
     () => (parent ? { ...parent, currentPage: pageData } : null),

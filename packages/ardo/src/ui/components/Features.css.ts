@@ -123,6 +123,9 @@ export const featureDetails = style({
   textWrap: "pretty",
 })
 
+globalStyle(`${featureDetails} > :first-child`, { marginTop: 0 })
+globalStyle(`${featureDetails} > :last-child`, { marginBottom: 0 })
+
 export const featureLink = style({
   fontSize: "14px",
   fontWeight: 500,
