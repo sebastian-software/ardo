@@ -18,6 +18,7 @@ import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
 import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
+import { findArdoPackageRoot } from "./managed-runtime"
 import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin } from "./mdx-plugin"
@@ -100,9 +101,27 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
   plugins.push(createMdxPlugin(pressConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
-  plugins.push(...react())
+  plugins.push(...createReactPlugins())
 
   return plugins
+}
+
+/**
+ * React with React Compiler, which memoizes the project's components in the
+ * client build through Oxc's native port (`oxc-transform-react`). Ardo's own
+ * package stays excluded like any installed dependency, also when a workspace
+ * links it from outside `node_modules`, so every site ships the same UI code.
+ */
+function createReactPlugins(): Plugin[] {
+  const ardoRoot = normalizePath(findArdoPackageRoot())
+  return react({
+    compiler: true,
+    exclude: [/\/node_modules\//u, new RegExp(`^${escapeRegExp(ardoRoot)}/`, "u")],
+  })
+}
+
+function escapeRegExp(value: string): string {
+  return value.replaceAll(/[$()*+.?[\\\]^{|}]/gu, String.raw`\$&`)
 }
 
 function addContentSourcePlugin(
