@@ -10,7 +10,7 @@ Ardo produces a fully static site out of the box. Your docs can stay in your rep
 
 ## Build Output
 
-The build output is located in `build/client/` and can be deployed to any static hosting provider. Its layout mirrors the deployed URLs:
+The build output defaults to `build/client/` and can be deployed to any static hosting provider. Set [`outDir`](/guide/configuration#outdir) to change the parent directory of the `client/` and `server/` builds, and update your hosting configuration to use that directory's `client/` folder. Its layout mirrors the deployed URLs:
 
 ```text
 build/client/
@@ -133,6 +133,8 @@ that combines the current build with retained static folders for older majors be
 
 Create `.github/workflows/deploy.yml` in your repository:
 
+The example pins pnpm explicitly. Match the version used to create your lockfile. If your `package.json` already pins pnpm with `packageManager`, omit the action's `version` input so the action uses that pin.
+
 ```yaml
 name: Deploy to GitHub Pages
 
@@ -155,19 +157,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
+        with:
+          version: "12.14.0"
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "pnpm"
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -176,7 +180,7 @@ jobs:
         run: pnpm build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/client
 
@@ -189,7 +193,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 ```
 
 ### Step 3: Enable GitHub Pages

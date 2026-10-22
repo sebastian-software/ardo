@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 
 import { basicDirectory, copyProjectSource, fixturesDirectory, repositoryRoot } from "./project"
 import { assertDevSSR } from "./dev-server"
+import { assertDocRecipes } from "./doc-recipes"
 
 const packageDir = path.join(repositoryRoot, "packages/ardo")
 
@@ -177,6 +178,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
       expect(run(consumer, ["build"])).not.toContain("broken internal link")
     }
     expect(fs.existsSync(path.join(client, "api/index.html"))).toBe(true)
+    assertDocRecipes(consumer, run)
   }, 240_000)
 
   it.each(["basic", "native-api"])(

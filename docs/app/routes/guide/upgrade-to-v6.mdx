@@ -165,8 +165,7 @@ Route `loader` and `action` exports are not supported. Pages are prerendered, so
 
 ```ts
 // vite.config.ts
-import type { Plugin } from "vite"
-import { defineConfig } from "ardo/vite"
+import { defineConfig, type Plugin } from "ardo/vite"
 
 function releaseFacts(): Plugin {
   const id = "virtual:docs/release-facts"
