@@ -146,4 +146,4 @@ Example: [Basic](https://ardo-docs.dev/v6/guide/reference-projects). Optional [A
 
 ## License
 
-[MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./ICONS-LICENSE.md).
+[MIT](https://github.com/sebastian-software/ardo/blob/main/LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./ICONS-LICENSE.md).
