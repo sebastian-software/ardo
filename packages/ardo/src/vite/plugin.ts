@@ -20,6 +20,7 @@ import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
 import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
+import { createMarkdownWarmupPlugin } from "./markdown-warmup"
 import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
@@ -96,13 +97,21 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   )
   addRoutesPlugin(plugins, routes, routesDirOption)
   addApiPlugin(plugins, { api, routesDirOption })
-
-  plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
-  plugins.push(createMdxPlugin(pressConfig.markdown))
+  addMarkdownPlugins(plugins, pressConfig.markdown, routesDirOption)
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...react())
 
   return plugins
+}
+
+function addMarkdownPlugins(
+  plugins: Plugin[],
+  markdownConfig: ArdoPluginOptions["markdown"],
+  routesDirOption: string | undefined
+): void {
+  plugins.push(createMarkdownWarmupPlugin(markdownConfig, routesDirOption))
+  plugins.push(ardoCodeBlockPlugin(markdownConfig))
+  plugins.push(createMdxPlugin(markdownConfig))
 }
 
 function addContentSourcePlugin(
