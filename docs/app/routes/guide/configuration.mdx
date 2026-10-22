@@ -437,18 +437,25 @@ defineArdoConfig({
 ### outDir
 
 - **Type:** `string`
-- **Status:** Deprecated compatibility field
+- **Default:** `"build"`
 
-`outDir` remains in the public config type for compatibility, but it does not change the build
-output. Ardo's static output is written to `build/client/`.
+Base directory for build output, relative to the project root or an absolute path. Ardo writes
+its deployable static site to `<outDir>/client/` and its build-time server bundle to
+`<outDir>/server/`. `ardo preview` uses the same configured client directory.
 
 ```ts
 defineArdoConfig({
   title: "My Docs",
-  // Do not use outDir for new projects.
-  // Deploy build/client/ instead.
+  outDir: "release/docs",
 })
 ```
+
+This writes the static site to `release/docs/client/`; deploy that directory instead of the default
+`build/client/`. The server bundle is only needed during the build.
+
+Ardo clears both output directories by default. Use `ardo build --no-emptyOutDir` to retain existing
+files. An explicit `build.emptyOutDir` in `vite.config.ts` sets the same policy; an environment's
+`environments.client.build.emptyOutDir` or `environments.ssr.build.emptyOutDir` takes precedence.
 
 ### lang
 

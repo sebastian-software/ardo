@@ -182,7 +182,7 @@ export type ArdoConfig = {
   siteUrl?: string
   /** Content source directory (default: 'content') */
   srcDir?: string
-  /** Build output directory (default: 'dist') */
+  /** Build output base directory, containing client/ and server/ (default: 'build') */
   outDir?: string
   /** Site language (default: 'en') */
   lang?: string

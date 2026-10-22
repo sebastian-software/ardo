@@ -1,13 +1,16 @@
-import type { Plugin, ResolvedConfig as ViteResolvedConfig } from "vite"
+import type { Plugin, PreviewServer, ResolvedConfig as ViteResolvedConfig } from "vite"
 
+import { constants } from "node:fs"
+import { access, stat } from "node:fs/promises"
 import path from "node:path"
 
 import type { ResolvedConfig } from "../config/types"
 
+import { getDefaultLocaleId } from "../config/i18n"
 import { createDevRenderMiddleware } from "./dev-render"
 import { configureStaticPreview } from "./preview-static"
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
-import { checkSiteLinks, prerenderSite } from "./static-site"
+import { checkSiteLinks, prerenderSite, resolvePageDirectory } from "./static-site"
 
 const REACT_MODULES = /[\\/]node_modules[\\/](?:react|react-dom|scheduler)[\\/]/u
 
@@ -37,7 +40,10 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
         environments: {
           client: {
             build: {
-              emptyOutDir: true,
+              emptyOutDir:
+                userConfig.environments?.client?.build?.emptyOutDir ??
+                userConfig.build?.emptyOutDir ??
+                true,
               manifest: true,
               outDir: path.join(buildDir, "client"),
               rolldownOptions: {
@@ -51,7 +57,10 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
           },
           ssr: {
             build: {
-              emptyOutDir: true,
+              emptyOutDir:
+                userConfig.environments?.ssr?.build?.emptyOutDir ??
+                userConfig.build?.emptyOutDir ??
+                true,
               outDir: path.join(buildDir, "server"),
               rolldownOptions: { input: { index: VIRTUAL_ENTRY_SERVER_ID } },
             },
@@ -89,7 +98,8 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
         }
       },
     },
-    configurePreviewServer(server) {
+    async configurePreviewServer(server) {
+      await assertPreviewEntry(server, state.resolvedConfig)
       return configureStaticPreview(server)
     },
     configureServer(server) {
@@ -98,5 +108,34 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
         server.middlewares.use(createDevRenderMiddleware(server))
       }
     },
+  }
+}
+
+/** Validate the configured home, which may live below a version and locale prefix. */
+async function assertPreviewEntry(
+  server: PreviewServer,
+  config: ResolvedConfig | undefined
+): Promise<void> {
+  const clientDir = path.resolve(server.config.root, server.config.build.outDir)
+  if (await isReadableFile(path.join(clientDir, "index.html"))) return
+  const pageDir =
+    config == null ? clientDir : resolvePageDirectory(clientDir, config.base, config.deploymentBase)
+  const locale = getDefaultLocaleId(config?.i18n ?? false)
+  const entry = path.join(pageDir, locale ?? "", "index.html")
+  if (!(await isReadableFile(entry))) {
+    throw new Error(
+      `No index.html found for the configured home page at ${entry}. Add a home route such as app/routes/home.tsx, then run "ardo build" before "ardo preview".`
+    )
+  }
+}
+
+async function isReadableFile(file: string): Promise<boolean> {
+  try {
+    const entryStat = await stat(file)
+    if (!entryStat.isFile()) return false
+    await access(file, constants.R_OK)
+    return true
+  } catch {
+    return false
   }
 }

@@ -46,7 +46,7 @@ describe("resolveConfig", () => {
     expect(resolved.description).toBe("")
     expect(resolved.base).toBe("/")
     expect(resolved.srcDir).toBe("content")
-    expect(resolved.outDir).toBe("dist")
+    expect(resolved.outDir).toBe("build")
     expect(resolved.lang).toBe("en")
     expect(resolved.contentDir).toBe("/project/content")
     expect(resolved.sidebar).toStrictEqual({})
@@ -59,7 +59,7 @@ describe("resolveConfig", () => {
       description: "Custom description",
       base: "/custom/",
       srcDir: "docs",
-      outDir: "build",
+      outDir: "release/docs",
       lang: "de",
     }
 
@@ -69,7 +69,7 @@ describe("resolveConfig", () => {
     expect(resolved.description).toBe("Custom description")
     expect(resolved.base).toBe("/custom/")
     expect(resolved.srcDir).toBe("docs")
-    expect(resolved.outDir).toBe("build")
+    expect(resolved.outDir).toBe("release/docs")
     expect(resolved.lang).toBe("de")
     expect(resolved.contentDir).toBe("/project/docs")
   })
