@@ -25,6 +25,7 @@ import { joinClassNames } from "./classnames"
 import { resolveSectionIcon } from "./section-catalog"
 import * as styles from "./Sidebar.css"
 import { getSidebarScrollTop } from "./sidebar-scroll"
+import { ArdoVersionControl } from "./site-controls"
 import { type SidebarTabItem, SidebarTabs } from "./SidebarTabs"
 
 /** Internal page path such as `/guide`. */
@@ -167,6 +168,7 @@ export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
               <ul className={`${styles.sidebarList} ${styles.sidebarList0}`}>{children}</ul>
             ) : null}
           </nav>
+          <ArdoVersionControl divided />
         </div>
       </aside>
     </SidebarContext>

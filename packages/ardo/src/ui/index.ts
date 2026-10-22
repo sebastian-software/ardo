@@ -78,6 +78,13 @@ export type { ArdoFooterCopyrightProps, ArdoFooterMessageProps, ArdoFooterProps 
 export { ArdoGeneratedSidebar } from "./GeneratedSidebar"
 export type { ArdoGeneratedSidebarProps } from "./GeneratedSidebar"
 export { ArdoHeader, ArdoHeaderActions, ArdoSocialLink } from "./Header"
+export {
+  ArdoLocaleSwitcher,
+  ArdoVersionBanner,
+  ArdoVersionControl,
+  ArdoVersionSwitcher,
+} from "./site-controls"
+export type { ArdoVersionControlProps, ArdoVersionSwitcherProps } from "./site-controls"
 export type { ArdoHeaderActionsProps, ArdoHeaderProps, ArdoSocialLinkProps } from "./Header"
 export type { ArdoHeaderSearchMode } from "./header-search-mode"
 export { ArdoHomePage } from "./HomePage"

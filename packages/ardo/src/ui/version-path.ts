@@ -1,13 +1,14 @@
 import { normalizeBasePath } from "../config/versioning"
 
-export function getVersionedPath(pathname: string, currentBase: string, targetBase: string) {
-  const relativePath = getPathWithinBase(pathname, currentBase)
-  const normalizedTarget = normalizeBasePath(targetBase)
-  if (relativePath === "/") {
-    return normalizedTarget
-  }
-
-  return `${normalizedTarget.replace(/\/$/u, "")}${relativePath}`
+/**
+ * Address of the same page in another documentation version. `pagePath` is
+ * the page path without the site base, as `useArdoPath()` reports it, and
+ * `targetVersionPath` a resolved version path, which includes the deployment
+ * base.
+ */
+export function getVersionHref(pagePath: string, targetVersionPath: string): string {
+  const target = normalizeBasePath(targetVersionPath)
+  return pagePath === "/" || pagePath === "" ? target : `${target.replace(/\/$/u, "")}${pagePath}`
 }
 
 export function getLocalizedPath(
@@ -37,21 +38,4 @@ export function getLocaleFromPath(pathname: string, localeIds: string[]): string
   }
 
   return activeLocale
-}
-
-function getPathWithinBase(pathname: string, base: string) {
-  const normalizedBase = normalizeBasePath(base).replace(/\/$/u, "")
-  if (normalizedBase === "") {
-    return pathname
-  }
-
-  if (pathname === normalizedBase) {
-    return "/"
-  }
-
-  if (pathname.startsWith(`${normalizedBase}/`)) {
-    return pathname.slice(normalizedBase.length) || "/"
-  }
-
-  return "/"
 }

@@ -1,5 +1,4 @@
 import {
-  type ChangeEvent,
   Children,
   Fragment,
   isValidElement,
@@ -26,7 +25,8 @@ import { MessageCircle } from "./content-icons"
 import { useArdoLayoutVariant } from "./layout-context"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import * as navStyles from "./Nav.css"
-import { getLocaleFromPath, getLocalizedPath, getVersionedPath } from "./version-path"
+import { ArdoLocaleSwitcher } from "./site-controls"
+import { useHasLocaleSwitcher, useHasVersionSwitcher } from "./site-controls-state"
 
 // =============================================================================
 // Header Component
@@ -124,6 +124,16 @@ function useMobileMenu(): [boolean, (open: boolean) => void] {
   return [open, setOpen]
 }
 
+/**
+ * On narrow screens the header keeps only the menu, the logo and search, so
+ * the menu also carries the version, language, appearance and links.
+ */
+function useHasMobileMenu(content: ReactNode[], themeToggle: boolean): boolean {
+  const hasVersions = useHasVersionSwitcher()
+  const hasLocales = useHasLocaleSwitcher()
+  return content.some((node) => node != null) || themeToggle || hasVersions || hasLocales
+}
+
 export function ArdoHeader({
   logo,
   title,
@@ -146,7 +156,7 @@ export function ArdoHeader({
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""
-  const hasMobileMenu = mobileMenuContent != null || nav != null
+  const hasMobileMenu = useHasMobileMenu([mobileMenuContent, nav, actions], themeToggle)
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
   }, [setMobileMenuOpen])
@@ -193,10 +203,11 @@ export function ArdoHeader({
             {searchMode === "icon" && (
               <ArdoHeaderSearch placeholder={searchPlaceholder} variant="icon" />
             )}
-            <ArdoVersionSwitcher />
-            <ArdoLocaleSwitcher />
-            {themeToggle && <ArdoThemeToggle />}
-            {actions}
+            <div className={styles.desktopActions}>
+              <ArdoLocaleSwitcher />
+              {themeToggle && <ArdoThemeToggle />}
+              {actions}
+            </div>
           </div>
         </div>
       </header>
@@ -206,6 +217,7 @@ export function ArdoHeader({
           logo={resolvedLogo}
           title={resolvedTitle}
           nav={nav}
+          actions={actions}
           themeToggle={themeToggle}
           triggerRef={mobileMenuButtonRef}
           onClose={closeMobileMenu}
@@ -214,97 +226,6 @@ export function ArdoHeader({
         </MobileSlidePanel>
       )}
     </>
-  )
-}
-
-function ArdoLocaleSwitcher() {
-  const config = useArdoConfig()
-  const pathname = useArdoPath()
-  const i18n = config.i18n
-  if (i18n === false || i18n == null || i18n.locales.length < 2) return null
-
-  const currentLocale =
-    getLocaleFromPath(
-      pathname,
-      i18n.locales.map((locale) => locale.id)
-    ) ?? i18n.defaultLocale
-
-  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
-    const targetLocale = event.target.value
-    if (targetLocale === currentLocale) return
-    const targetPath = getLocalizedPath(pathname, currentLocale, targetLocale)
-    globalThis.location.assign(
-      `${targetPath}${globalThis.location.search}${globalThis.location.hash}`
-    )
-  }
-
-  return (
-    <span className={styles.selectControl}>
-      <ChromeIcon name="language" className={styles.selectLeading} />
-      <select
-        aria-label="Documentation language"
-        className={joinClassNames(styles.versionSwitcher, styles.localeSwitcher)}
-        onChange={handleChange}
-        title="Documentation language"
-        value={currentLocale}
-      >
-        {i18n.locales.map((locale) => (
-          <option key={locale.id} value={locale.id}>
-            {locale.label ?? locale.id}
-          </option>
-        ))}
-      </select>
-      <ChromeIcon name="chevron" className={styles.selectChevron} />
-    </span>
-  )
-}
-
-function ArdoVersionSwitcher() {
-  const config = useArdoConfig()
-  const pathname = useArdoPath()
-  const versioning = config.versioning
-  if (versioning === false || versioning == null || versioning.versions.length < 2) {
-    return null
-  }
-
-  const currentVersion = versioning.versions.find((version) => version.id === versioning.current)
-  if (currentVersion == null) {
-    return null
-  }
-  const activeVersioning = versioning
-  const activeVersion = currentVersion
-
-  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
-    const targetVersion = activeVersioning.versions.find(
-      (version) => version.id === event.target.value
-    )
-    if (targetVersion == null || targetVersion.id === activeVersion.id) {
-      return
-    }
-
-    const targetPath = getVersionedPath(pathname, activeVersion.path, targetVersion.path)
-    globalThis.location.assign(
-      `${targetPath}${globalThis.location.search}${globalThis.location.hash}`
-    )
-  }
-
-  return (
-    <span className={styles.selectControl}>
-      <select
-        aria-label="Documentation version"
-        className={styles.versionSwitcher}
-        onChange={handleChange}
-        title="Documentation version"
-        value={activeVersion.id}
-      >
-        {activeVersioning.versions.map((version) => (
-          <option key={version.id} value={version.id}>
-            {version.label ?? version.id}
-          </option>
-        ))}
-      </select>
-      <ChromeIcon name="chevron" className={styles.selectChevron} />
-    </span>
   )
 }
 

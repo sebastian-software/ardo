@@ -13,7 +13,6 @@ import * as layoutStyles from "./Layout.css"
 import { MobileSlidePanel } from "./MobileSlidePanel"
 import { ArdoNav, ArdoNavLink } from "./Nav"
 import { ArdoSidebar, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
-import { getVersionedPath } from "./version-path"
 
 vi.mock("virtual:ardo/search-index", () => ({ default: [] }))
 
@@ -73,43 +72,6 @@ describe("UI shell landmarks", () => {
 
     expect(view).toContain('aria-label="Toggle menu"')
     expect(view).toContain('aria-expanded="false"')
-  })
-
-  it("renders a compact version switcher when major docs versions are configured", () => {
-    const view = renderToStaticMarkup(
-      <ArdoPageProvider path="/v3/guide">
-        <ArdoProvider
-          config={{
-            title: "Docs",
-            versioning: {
-              current: "v3",
-              versions: [
-                { id: "v3", label: "3.x", path: "/v3/" },
-                { id: "v2", label: "2.x", path: "/v2/" },
-              ],
-            },
-          }}
-          sidebar={[]}
-        >
-          <ArdoHeader search={false} />
-        </ArdoProvider>
-      </ArdoPageProvider>
-    )
-
-    expect(view).toContain('aria-label="Documentation version"')
-    expect(view).toContain('<option value="v3" selected="">3.x</option>')
-    expect(view).toContain('<option value="v2">2.x</option>')
-  })
-
-  it("preserves the equivalent route path when switching documentation versions", () => {
-    expect(getVersionedPath("/v3/guide/getting-started", "/v3/", "/v2/")).toBe(
-      "/v2/guide/getting-started"
-    )
-    expect(getVersionedPath("/docs/v3/guide/getting-started", "/docs/v3/", "/docs/v2/")).toBe(
-      "/docs/v2/guide/getting-started"
-    )
-    expect(getVersionedPath("/v3/", "/v3/", "/v2/")).toBe("/v2/")
-    expect(getVersionedPath("/unversioned", "/v3/", "/v2/")).toBe("/v2/")
   })
 
   it("extracts JSX chrome children around route content", () => {

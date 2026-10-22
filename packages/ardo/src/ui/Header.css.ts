@@ -177,6 +177,18 @@ export const desktopNav = style({
   },
 })
 
+/** Language, appearance and links. Narrow screens find them in the menu. */
+export const desktopActions = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.75rem",
+  "@media": {
+    [MOBILE]: {
+      display: "none",
+    },
+  },
+})
+
 export const versionSwitcher = style({
   height: "2rem",
   maxWidth: "7rem",

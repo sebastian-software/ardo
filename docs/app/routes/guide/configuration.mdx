@@ -350,8 +350,12 @@ Use frontmatter `redirectFrom` when a redirect belongs to one page instead of th
 - **Default:** `false`
 
 Enables a small major-version documentation model. Ardo builds the current docs under the active
-version path, exposes the configured versions to the header version switcher, emits
-`/versions.json`, and generates a static `/index.html` redirect to the current version by default.
+version path, exposes the configured versions to the version switcher, emits `/versions.json`,
+and generates a static `/index.html` redirect to the current version by default.
+
+The version switcher sits at the end of the sidebar, in the footer of bare pages, and in the menu
+on narrow screens. List versions newest first: the first entry counts as the latest version, and
+the pages of every other version show a banner that links to the same page in the latest one.
 
 ```ts
 ardo({
