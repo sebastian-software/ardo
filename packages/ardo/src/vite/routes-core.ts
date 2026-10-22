@@ -15,7 +15,12 @@ export type RouteInfo = {
 }
 
 export function scanRoutesSync(params: { dir: string; rootDir: string }): RouteInfo[] {
-  const { dir, rootDir } = params
+  const routes = scanRouteDirectory(params)
+  assertUniqueRoutePaths(routes)
+  return routes
+}
+
+function scanRouteDirectory({ dir, rootDir }: { dir: string; rootDir: string }): RouteInfo[] {
   const routes: RouteInfo[] = []
   const entries = readDirectoryEntries(dir)
 
@@ -23,7 +28,7 @@ export function scanRoutesSync(params: { dir: string; rootDir: string }): RouteI
     const fullPath = path.join(dir, entry.name)
 
     if (entry.isDirectory()) {
-      routes.push(...scanRoutesSync({ dir: fullPath, rootDir }))
+      routes.push(...scanRouteDirectory({ dir: fullPath, rootDir }))
       continue
     }
 
@@ -34,6 +39,22 @@ export function scanRoutesSync(params: { dir: string; rootDir: string }): RouteI
   }
 
   return routes
+}
+
+function assertUniqueRoutePaths(routes: RouteInfo[]): void {
+  const filesByPath = new Map<string, string[]>()
+  for (const route of routes) {
+    const files = filesByPath.get(route.path) ?? []
+    files.push(route.filePath)
+    filesByPath.set(route.path, files)
+  }
+  const collisions = [...filesByPath].filter(([, files]) => files.length > 1)
+  if (collisions.length === 0) return
+
+  const details = collisions
+    .map(([routePath, files]) => `- ${routePath}\n${files.map((file) => `  - ${file}`).join("\n")}`)
+    .join("\n")
+  throw new Error(`[ardo] Multiple route files resolve to the same URL:\n${details}`)
 }
 
 function readDirectoryEntries(dir: string): fsSync.Dirent[] {

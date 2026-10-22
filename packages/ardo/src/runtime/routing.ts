@@ -67,8 +67,11 @@ export async function resolvePage(input: {
   source?: ArdoPage["source"]
 }): Promise<ArdoResolvedPage> {
   const { base, path, root, route } = input
-  const module = input.error == null && route != null ? await route.load() : undefined
-  if (module?.default != null && route != null) {
+  if (input.error == null && route != null) {
+    const module = await route.load()
+    if (module.default == null) {
+      throw new Error(`[ardo] Route "${route.id}" must export a default page component.`)
+    }
     return {
       component: module.default,
       data: { base, path, routeId: route.id, source: input.source ?? route.source },

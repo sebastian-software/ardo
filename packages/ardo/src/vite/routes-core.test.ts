@@ -17,6 +17,29 @@ afterEach(async () => {
 })
 
 describe("scanRoutesSync", () => {
+  it.each([
+    { files: ["home.tsx", "index.mdx"], url: "/" },
+    { files: ["guide/intro.md", "guide/intro.mdx"], url: "/guide/intro" },
+    { files: ["guide.mdx", "guide/index.md", "guide/home.tsx"], url: "/guide" },
+    { files: ["en/home.tsx", "en/index.mdx"], url: "/en" },
+  ])("rejects multiple route files for $url: $files", async ({ files, url }) => {
+    for (const file of files) await writeRoute(file, "# Duplicate")
+
+    expect(scan).toThrow(`Multiple route files resolve to the same URL`)
+    expect(scan).toThrow(url)
+    for (const file of files) expect(scan).toThrow(path.join(routesDir, file))
+  })
+
+  it("keeps translated routes and dynamic routes distinct", async () => {
+    await writeRoute("en/guide/intro.mdx", "# English")
+    await writeRoute("de/guide/intro.mdx", "# Deutsch")
+    await writeRoute("en/guide/$slug.mdx", "# Dynamic")
+
+    expect(
+      scanRoutesSync({ dir: routesDir, rootDir: routesDir }).map((route) => route.path)
+    ).toStrictEqual(["/de/guide/intro", "/en/guide/:slug", "/en/guide/intro"])
+  })
+
   it("only strips markdown extensions from the end of route paths", async () => {
     await writeRoute("v1.md/changelog.md", "# Changelog")
 
@@ -84,4 +107,8 @@ async function writeRoute(relativePath: string, content: string): Promise<void> 
   const filePath = path.join(routesDir, relativePath)
   await fs.mkdir(path.dirname(filePath), { recursive: true })
   await fs.writeFile(filePath, content, "utf8")
+}
+
+function scan() {
+  return scanRoutesSync({ dir: routesDir, rootDir: routesDir })
 }
