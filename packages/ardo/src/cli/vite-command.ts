@@ -58,13 +58,15 @@ const buildOptions = {
 const helpText: Record<ViteCommand, string> = {
   build: `Usage: ardo build [root] [options]
 
-Builds the site into static HTML under build/client.
+Builds the site into static HTML under <outDir>/client (default: build/client).
 
 Options:
   --config, -c <file>   Use a Vite config file
   --mode, -m <mode>     Set the Vite mode (default: production)
   --logLevel, -l <lvl>  info | warn | error | silent
   --minify / --no-minify
+  --emptyOutDir / --no-emptyOutDir
+                       Clear or retain existing output files (default: clear)
   --sourcemap           Emit source maps for the client build
   --clearScreen         Clear the screen before logging
   --help, -h            Show this help

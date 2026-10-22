@@ -1,6 +1,14 @@
 import type { Logger } from "vite"
 
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs"
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 
@@ -159,6 +167,9 @@ function moveAssets(clientDir: string, pageDir: string): void {
   if (pageDir === clientDir || !existsSync(source)) return
   const target = path.join(pageDir, "assets")
   mkdirSync(pageDir, { recursive: true })
-  rmSync(target, { recursive: true, force: true })
-  renameSync(source, target)
+  if (existsSync(target)) {
+    // With emptyOutDir disabled, retain files already in the version's asset directory.
+    cpSync(source, target, { recursive: true })
+    rmSync(source, { recursive: true, force: true })
+  } else renameSync(source, target)
 }

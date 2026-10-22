@@ -14,7 +14,7 @@ async function getAvailablePort(): Promise<number> {
   const address = server.address()
   if (address == null || typeof address === "string") {
     await new Promise<void>((resolve) => server.close(() => resolve()))
-    throw new Error("Could not determine a free port for the Ardo dev smoke test")
+    throw new Error("Could not determine a free port for the Ardo server smoke test")
   }
   const port = address.port
   await new Promise<void>((resolve, reject) => {
@@ -50,13 +50,15 @@ async function waitForDevServer(
     if (spawnError != null) throw spawnError
     if (child.exitCode != null || child.signalCode != null) {
       throw new Error(
-        `Ardo dev exited before listening (code ${child.exitCode ?? child.signalCode}).\n${getOutput()}`
+        `Ardo server exited before listening (code ${child.exitCode ?? child.signalCode}).\n${getOutput()}`
       )
     }
     if (await isPortReady(port)) return
     await delay(200)
   }
-  throw new Error(`Ardo dev did not listen on port ${port} within ${timeoutMs} ms.\n${getOutput()}`)
+  throw new Error(
+    `Ardo server did not listen on port ${port} within ${timeoutMs} ms.\n${getOutput()}`
+  )
 }
 
 function signalDevServer(child: ChildProcess, signal: NodeJS.Signals): void {
@@ -91,13 +93,21 @@ async function stopDevServer(child: ChildProcess): Promise<void> {
   if (await waitForChildExit(child, 5_000)) return
   signalDevServer(child, "SIGKILL")
   if (!(await waitForChildExit(child, 5_000))) {
-    throw new Error("Ardo dev process did not stop after SIGKILL")
+    throw new Error("Ardo server process did not stop after SIGKILL")
   }
 }
 
-export async function assertDevSSR(
+type ServerExpectation = {
+  title?: string
+  responseHeader?: { name: string; value: string }
+  pathname?: string
+  args?: string[]
+}
+
+async function assertServerSSR(
   consumer: string,
-  expected?: { title?: string; responseHeader?: { name: string; value: string } }
+  command: "dev" | "preview",
+  expected?: ServerExpectation
 ): Promise<void> {
   const port = await getAvailablePort()
   let serverOutput = ""
@@ -109,12 +119,13 @@ export async function assertDevSSR(
       "--config.verifyDepsBeforeRun=false",
       "exec",
       "ardo",
-      "dev",
+      command,
       "--host",
       devHost,
       "--port",
       String(port),
       "--strictPort",
+      ...(expected?.args ?? []),
     ],
     {
       cwd: consumer,
@@ -142,11 +153,11 @@ export async function assertDevSSR(
 
     // A TCP readiness probe above avoids consuming the first HTTP request, which
     // must exercise the project's initial dev SSR dependency graph.
-    const response = await fetch(`http://${devHost}:${port}/`, {
+    const response = await fetch(`http://${devHost}:${port}${expected?.pathname ?? "/"}`, {
       signal: AbortSignal.timeout(60_000),
     })
     const html = await response.text()
-    expect(response.status, `First dev SSR response: ${html.slice(0, 2_000)}`).toBe(200)
+    expect(response.status, `First server response: ${html.slice(0, 2_000)}`).toBe(200)
     const normalizedHtml = html.replace(/<!--.*?-->/gs, "")
     expect(normalizedHtml).toContain("Count: 0")
     if (expected?.title != null) expect(normalizedHtml).toContain(expected.title)
@@ -163,11 +174,23 @@ export async function assertDevSSR(
     throw new Error(
       [
         failure instanceof Error ? (failure.stack ?? failure.message) : String(failure),
-        serverOutput.length === 0 ? "" : `Ardo dev output (tail):\n${serverOutput}`,
+        serverOutput.length === 0 ? "" : `Ardo ${command} output (tail):\n${serverOutput}`,
       ]
         .filter(Boolean)
         .join("\n\n"),
       { cause: failure }
     )
   }
+}
+
+export async function assertDevSSR(consumer: string, expected?: ServerExpectation): Promise<void> {
+  await assertServerSSR(consumer, "dev", expected)
+}
+
+export async function assertPreviewSSR(
+  consumer: string,
+  pathname: string,
+  args: string[] = []
+): Promise<void> {
+  await assertServerSSR(consumer, "preview", { pathname, args })
 }

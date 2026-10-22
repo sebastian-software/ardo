@@ -1,5 +1,4 @@
-import { constants } from "node:fs"
-import { access, stat } from "node:fs/promises"
+import { stat } from "node:fs/promises"
 import path from "node:path"
 import { parseArgs } from "node:util"
 import { type InlineConfig, preview, type PreviewServer, resolveConfig } from "vite"
@@ -227,14 +226,6 @@ async function assertClientBuild(clientBuildDirectory: string): Promise<void> {
       `No static client build found at ${clientBuildDirectory}. Run "ardo build" before "ardo preview".`
     )
   }
-
-  try {
-    await access(path.join(clientBuildDirectory, "index.html"), constants.R_OK)
-  } catch {
-    throw new Error(
-      `No index.html found in the static client build at ${clientBuildDirectory}. Add a home route such as app/routes/home.tsx, then run "ardo build" before "ardo preview".`
-    )
-  }
 }
 
 function createPreviewConfig({
@@ -251,6 +242,14 @@ function createPreviewConfig({
     mode,
     ...(options.base == null ? {} : { base: options.base }),
     build: { outDir: clientBuildDirectory },
+    // Vite preview serves the client environment, whose output Ardo config also sets.
+    plugins: [
+      {
+        name: "ardo:preview-output",
+        enforce: "post",
+        config: () => ({ environments: { client: { build: { outDir: clientBuildDirectory } } } }),
+      },
+    ],
     preview: {
       ...resolvedConfig.preview,
       host: options.host ?? resolvedConfig.preview.host,

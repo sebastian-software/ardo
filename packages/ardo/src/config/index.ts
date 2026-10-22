@@ -117,7 +117,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     deploymentBase: normalizeBasePath(deploymentBase),
     siteUrl: config.siteUrl ?? "",
     srcDir,
-    outDir: config.outDir ?? "dist",
+    outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
     head: config.head ?? [],
     seo: config.seo ?? {},
