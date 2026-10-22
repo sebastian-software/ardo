@@ -20,4 +20,4 @@ export { createArdoProjectViteConfig } from "./project-config"
 export { generateSearchIndex, type SearchDoc } from "./search-index"
 
 // Vite Plugin
-export { defineConfig, type UserConfig } from "vite"
+export { defineConfig, type Plugin, type UserConfig } from "vite"
