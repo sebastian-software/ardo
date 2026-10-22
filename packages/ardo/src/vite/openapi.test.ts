@@ -32,5 +32,8 @@ describe("generateOpenApiDocs", () => {
     await expect(
       fs.readFile(path.join(root, "app", "routes", "api", "pets", "get-pets.mdx"), "utf8")
     ).resolves.toContain("# GET /pets")
+    const operation = await fs.readFile(path.join(root, "app/routes/api/pets/get-pets.mdx"), "utf8")
+    expect(operation).toContain("editLink: false")
+    expect(operation).toContain("lastUpdated: false")
   })
 })

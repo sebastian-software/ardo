@@ -7,7 +7,6 @@ dist
 build
 .output
 .vinxi
-storybook-static
 
 # Generated files
 **/routeTree.gen.ts

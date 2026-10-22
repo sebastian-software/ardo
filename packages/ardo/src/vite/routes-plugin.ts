@@ -1,9 +1,10 @@
 import type { Plugin, ViteDevServer } from "vite"
 
-import { existsSync } from "node:fs"
+import { existsSync, statSync } from "node:fs"
 import path from "node:path"
 
 import { findArdoPackageRoot } from "./managed-runtime"
+import { getGitFileTimestamps } from "./git-utils"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { type RouteInfo, scanRoutesSync } from "./routes-core"
 
@@ -72,14 +73,19 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
 /** Generate the route table module for the routes in `routesDir`. */
 export function createRoutesModule({ root, routesDir }: { root: string; routesDir: string }) {
   const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
+  const timestamps = getGitFileTimestamps(routesDir)
   const rootFile = path.join(path.dirname(routesDir), "root.tsx")
   const rootImport = existsSync(rootFile)
     ? `import * as rootModule from ${JSON.stringify(normalizePath(rootFile))}`
     : "const rootModule = {}"
-  const entries = sortRoutes(routes).map(
-    (route) =>
-      `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(route.path)}, load: () => import(${JSON.stringify(normalizePath(route.filePath))}) },`
-  )
+  const entries = sortRoutes(routes).map((route) => {
+    const relativePath = normalizePath(path.relative(routesDir, route.filePath))
+    const source = {
+      relativePath,
+      lastUpdated: timestamps.get(relativePath) ?? statSync(route.filePath).mtimeMs,
+    }
+    return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(route.path)}, load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
+  })
   return `${rootImport}\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
 }
 

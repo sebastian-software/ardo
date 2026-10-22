@@ -2,10 +2,11 @@ import { useLayoutEffect, useState } from "react"
 import { createPortal } from "react-dom"
 
 import * as styles from "./Search.css"
+import { getSearchPopoverPosition } from "./search-popover-position"
 
 /**
- * Renders the search popover as a portal attached to document.body.
- * Uses getBoundingClientRect to position it below the anchor element.
+ * Keep modal results inside their dialog and fit them below the search field,
+ * including when a software keyboard reduces the visual viewport.
  */
 export function SearchPopover({
   anchorRef,
@@ -14,37 +15,42 @@ export function SearchPopover({
   anchorRef: React.RefObject<HTMLElement | null>
   children: React.ReactNode
 }) {
-  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 })
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0, maxHeight: 0 })
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null)
 
   useLayoutEffect(() => {
+    const viewport = globalThis.visualViewport
     const updatePosition = () => {
       const el = anchorRef.current
       if (el == null) {
         return
       }
 
-      const rect = el.getBoundingClientRect()
-      const viewportWidth = globalThis.innerWidth
-      const maxWidth = Math.max(viewportWidth - 32, 0)
-      const width = Math.min(Math.max(rect.width, 400), maxWidth)
-      const maxLeft = Math.max(viewportWidth - width - 16, 0)
-      setPos({
-        top: rect.bottom + 8,
-        left: Math.min(Math.max(rect.left, 16), maxLeft),
-        width,
-      })
+      setPos(
+        getSearchPopoverPosition(el.getBoundingClientRect(), {
+          width: viewport?.width ?? globalThis.innerWidth,
+          height: viewport?.height ?? globalThis.innerHeight,
+          left: viewport?.offsetLeft ?? 0,
+          top: viewport?.offsetTop ?? 0,
+        })
+      )
+      setPortalTarget(el.closest<HTMLElement>('[role="dialog"]') ?? document.body)
     }
 
     updatePosition()
     globalThis.addEventListener("resize", updatePosition)
     globalThis.addEventListener("scroll", updatePosition, true)
+    viewport?.addEventListener("resize", updatePosition)
+    viewport?.addEventListener("scroll", updatePosition)
     return () => {
       globalThis.removeEventListener("resize", updatePosition)
       globalThis.removeEventListener("scroll", updatePosition, true)
+      viewport?.removeEventListener("resize", updatePosition)
+      viewport?.removeEventListener("scroll", updatePosition)
     }
   }, [anchorRef])
 
-  if (typeof document === "undefined") return null
+  if (portalTarget == null) return null
 
   return createPortal(
     <div
@@ -53,10 +59,11 @@ export function SearchPopover({
         top: pos.top,
         left: pos.left,
         width: pos.width,
+        maxHeight: pos.maxHeight,
       }}
     >
       {children}
     </div>,
-    document.body
+    portalTarget
   )
 }

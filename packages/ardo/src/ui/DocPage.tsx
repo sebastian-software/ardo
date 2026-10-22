@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoConfig, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
 import { ArdoContent } from "./Content"
 import * as styles from "./DocPage.css"
@@ -39,7 +39,12 @@ export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPa
   return (
     <ArdoLayout>
       <div className={`ardo-doc-page ${styles.docPage}`}>
-        <ArdoContent editLink={editLink} lastUpdated={lastUpdated} metaPlacement="none">
+        <ArdoContent
+          editLink={editLink}
+          lastUpdated={lastUpdated}
+          metaPlacement="footer-on-narrow"
+          outline={hideToc ? undefined : <ArdoTOC label={tocLabel} collapsible />}
+        >
           {children}
         </ArdoContent>
         <ArdoPageRail
@@ -93,7 +98,12 @@ export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: Do
 
   return (
     <div className={`ardo-doc-page ${styles.docPage}`}>
-      <ArdoContent editLink={editLink} lastUpdated={lastUpdated} metaPlacement="none">
+      <ArdoContent
+        editLink={editLink}
+        lastUpdated={lastUpdated}
+        metaPlacement="footer-on-narrow"
+        outline={hideToc ? undefined : <ArdoTOC label={tocLabel} collapsible />}
+      >
         {children}
       </ArdoContent>
       <ArdoPageRail
@@ -118,9 +128,10 @@ function ArdoPageRail({
   hideToc?: boolean
 }) {
   const siteConfig = useArdoSiteConfig()
+  const locale = useArdoConfig().lang ?? "en"
   const pageData = useArdoPageData()
   const edit = resolveRailEditLink({ pageData, editLink, siteConfig })
-  const updated = resolveRailLastUpdated({ pageData, lastUpdated, siteConfig })
+  const updated = resolveRailLastUpdated({ pageData, lastUpdated, siteConfig, locale })
   const hasMeta = edit.show || updated.show
 
   if (!hasMeta && hideToc) return null
@@ -162,6 +173,7 @@ function ArdoPageRail({
 type RailMetaInput = {
   pageData: ReturnType<typeof useArdoPageData>
   siteConfig: ReturnType<typeof useArdoSiteConfig>
+  locale?: string
 }
 
 function resolveRailEditLink({
@@ -172,9 +184,17 @@ function resolveRailEditLink({
   const resolved = editLink ?? siteConfig.editLink
   const pattern = resolved?.pattern ?? ""
   const relativePath = pageData?.relativePath ?? ""
-  const show = pageData?.frontmatter.editLink !== false && pattern !== "" && pageData !== undefined
+  const show = pageData?.frontmatter.editLink !== false && pattern !== "" && relativePath !== ""
   return {
-    href: show ? pattern.replace(":path", relativePath) : undefined,
+    href: show
+      ? pattern.replace(
+          ":path",
+          relativePath
+            .split("/")
+            .map((part) => encodeURIComponent(part))
+            .join("/")
+        )
+      : undefined,
     text: resolved?.text ?? "Edit this page",
     show,
   }
@@ -184,6 +204,7 @@ function resolveRailLastUpdated({
   pageData,
   lastUpdated,
   siteConfig,
+  locale = "en",
 }: {
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
 } & RailMetaInput) {
@@ -192,15 +213,19 @@ function resolveRailLastUpdated({
   const show =
     pageData?.frontmatter.lastUpdated !== false &&
     resolved?.enabled === true &&
-    typeof value === "number"
-  const formatOptions = resolved?.formatOptions ?? {
-    year: "numeric" as const,
-    month: "long" as const,
-    day: "numeric" as const,
+    typeof value === "number" &&
+    Number.isFinite(value)
+  const formatOptions = {
+    timeZone: "UTC",
+    ...(resolved?.formatOptions ?? {
+      year: "numeric" as const,
+      month: "long" as const,
+      day: "numeric" as const,
+    }),
   }
   return {
     label: resolved?.text ?? "Last updated",
-    text: show ? new Date(value).toLocaleDateString(undefined, formatOptions) : undefined,
+    text: show ? new Date(value).toLocaleDateString(locale, formatOptions) : undefined,
     show,
   }
 }

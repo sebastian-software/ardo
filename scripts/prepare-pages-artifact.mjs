@@ -37,7 +37,17 @@ try {
     await requirePage(target, `Docs for ${version.id} (${version.path})`)
   }
 
-  // GitHub Pages must serve React Router's underscore-prefixed files unchanged.
+  // Preserve the former playground URL without shipping the retired application.
+  const playgroundDir = path.join(stagingDir, "storybook")
+  const galleryPath = `${current.path}guide/component-playground/`
+  await fs.rm(playgroundDir, { force: true, recursive: true })
+  await fs.mkdir(playgroundDir)
+  await fs.writeFile(
+    path.join(playgroundDir, "index.html"),
+    `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Ardo Component Gallery</title>\n<meta http-equiv="refresh" content="0; url=${galleryPath}">\n<link rel="canonical" href="${galleryPath}">\n</head>\n<body><a href="${galleryPath}">Open the component gallery</a></body>\n</html>\n`
+  )
+
+  // Archived builds can include underscore-prefixed assets that Jekyll would hide.
   await fs.writeFile(path.join(stagingDir, ".nojekyll"), "")
   await fs.rm(artifactDir, { force: true, recursive: true })
   await fs.rename(stagingDir, artifactDir)

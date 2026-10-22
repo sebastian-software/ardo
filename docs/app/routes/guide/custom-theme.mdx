@@ -8,7 +8,7 @@ order: 7
 
 Ardo starts with a polished default theme, but it is not a black box. React teams should be able to carry their brand, design system, and component choices into documentation without fighting the framework. You have five levels of customization, and you can mix them freely:
 
-1. **Brand shortcut** — Set brand, accent, neutral, and logo values in `ardo()`
+1. **Brand shortcut** — Set brand, accent, neutral, and logo values in `ardo.config.ts`
 2. **CSS variables** — Change colors, spacing, and typography without touching components
 3. **Vanilla Extract tokens** — Type-safe styling with `ardo/theme` imports and `.css.ts` files
 4. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
@@ -18,32 +18,31 @@ Start simple. Go deeper when you need to.
 
 ## Brand Shortcut
 
-Use `brand` in `vite.config.ts` for the common case: one primary brand color, one accent color, a
+Use `brand` in `ardo.config.ts` for the common case: one primary brand color, one accent color, a
 neutral chrome tone, and a logo.
 
-```ts
-import { defineConfig } from "vite"
-import { ardo } from "ardo/vite"
+**`ardo.config.ts`**:
 
-export default defineConfig({
-  plugins: [
-    ardo({
-      title: "Acme Docs",
-      brand: {
-        color: "blue",
-        accent: "teal",
-        neutral: "slate",
-        logo: "./app/assets/logo.svg",
-      },
-    }),
-  ],
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: "blue",
+    accent: "teal",
+    neutral: "slate",
+    logo: "./app/assets/logo.svg",
+  },
 })
 ```
+
+Merge these settings into an existing Ardo config and point `logo` at your own SVG asset, or omit it. The Ardo CLI supplies the Vite integration.
 
 `color`, `accent`, and `neutral` accept either preset names or OKLCH hue numbers:
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "Acme Docs",
   brand: {
     color: 240,
@@ -61,7 +60,7 @@ a calmer palette, and `0` turns a hue gray. A number applies to `color` and `acc
 sets each one, including `neutral`:
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "Acme Docs",
   brand: {
     color: "green",
@@ -83,7 +82,7 @@ paths, as the default source for generated favicons. An explicit `logo` on `Ardo
 ## Brand Color Helper
 
 Use the TypeScript helper when you prefer defining theme values from app code instead of the
-`ardo()` config. The default theme uses OKLCH hue tokens for brand, accent, and neutral chrome
+`ardo.config.ts` settings. The default theme uses OKLCH hue tokens for brand, accent, and neutral chrome
 colors, so you can change the brand while keeping backgrounds, borders, header, sidebar, and text on
 a separate neutral base.
 
@@ -271,7 +270,11 @@ declaration:
 
 Ardo's UI is built with [Vanilla Extract](https://vanilla-extract.style/). All design tokens are available as type-safe imports from `ardo/theme`, which means you get full autocomplete and compile-time errors when referencing tokens.
 
-The `ardo()` Vite plugin automatically includes the Vanilla Extract plugin, so `.css.ts` files work in your project without extra configuration.
+The Ardo CLI includes the Vanilla Extract plugin, so `.css.ts` files work without extra Vite configuration. Install the styling API in your docs package before importing it:
+
+```bash
+pnpm add @vanilla-extract/css
+```
 
 ### Using tokens in your styles
 

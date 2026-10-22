@@ -14,8 +14,8 @@ import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../
 import { ArdoDocContent } from "../ui/DocPage"
 
 /**
- * Smart link component that uses React Router for internal links
- * and regular anchor tags for external links.
+ * Apply Ardo's deployment base to internal links and use regular anchors
+ * for external links.
  */
 function SmartLink({
   href,

@@ -30,7 +30,7 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   await expect(page.getByRole("heading", { level: 2, name: "Multiple Packages" })).toBeVisible()
 })
 
-test("built docs site hydrates and supports search and theme interactions", async ({ page }) => {
+test("built docs persist the selected theme and navigate search by keyboard", async ({ page }) => {
   const consoleErrors: string[] = []
   page.on("console", (message) => {
     if (message.type() === "error") {
@@ -38,18 +38,32 @@ test("built docs site hydrates and supports search and theme interactions", asyn
     }
   })
 
+  await page.emulateMedia({ colorScheme: "light" })
   await page.goto(gettingStartedPath)
 
   await expect(page.getByRole("heading", { level: 1, name: "Getting Started" })).toBeVisible()
 
-  await page.getByRole("button", { name: /Switch to .* theme/ }).click()
-  await expect(page.locator("html")).toHaveClass(/light|dark/)
+  await page.getByRole("button", { name: "Switch to light theme", exact: true }).click()
+  await page.getByRole("button", { name: "Switch to dark theme", exact: true }).click()
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await page.reload()
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect(
+    page.getByRole("button", { name: "Switch to system theme", exact: true })
+  ).toBeVisible()
 
   const searchInput = page.getByRole("combobox", { name: "Search" }).last()
+  await page.keyboard.press("ControlOrMeta+k")
+  await expect(searchInput).toBeFocused()
   await searchInput.fill("markdown")
   await expect(page.getByRole("option", { name: /Markdown/ }).first()).toBeVisible()
+  await searchInput.press("ArrowDown")
+  const selected = page.getByRole("listbox", { name: "Search results" }).getByRole("option").nth(1)
+  await expect(selected).toHaveAttribute("aria-selected", "true")
+  const target = (await selected.getAttribute("href")) ?? ""
+  expect(target).toMatch(/^\/v6\/guide\//)
   await searchInput.press("Enter")
-  await expect(page).toHaveURL(/\/v6\/guide\/configuration\/#markdown$/)
+  await expect(page).toHaveURL(new URL(target, page.url()).href)
 
   expect(consoleErrors.filter((message) => !message.includes("favicon"))).toEqual([])
 })
@@ -59,8 +73,16 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await page.goto(gettingStartedPath)
 
   await expect(page.getByRole("heading", { level: 1, name: "Getting Started" })).toBeVisible()
-  await page.getByRole("banner").last().getByRole("button", { name: "Toggle menu" }).click()
+  const trigger = page.getByRole("banner").last().getByRole("button", { name: "Toggle menu" })
+  await trigger.click()
   const menu = page.getByRole("dialog", { name: /Ardo navigation menu/ })
+  await expect(menu).toBeVisible()
+  await expect(menu.getByRole("link", { name: "Ardo", exact: true })).toBeFocused()
+
+  await page.keyboard.press("Escape")
+  await expect(menu).toBeHidden()
+  await expect(trigger).toBeFocused()
+  await trigger.press("Enter")
   await expect(menu).toBeVisible()
 
   await menu.getByRole("link", { name: "Markdown Features" }).click()
@@ -68,6 +90,33 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await expect(page).toHaveURL(/\/v6\/guide\/markdown/)
   await expect(menu).toBeHidden()
 })
+
+for (const width of [1280, 390]) {
+  test(`compact page outline supports keyboard expansion and section navigation at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto(gettingStartedPath)
+    const outline = page.locator(".ardo-page-outline")
+    const summary = outline.locator("summary")
+    await expect(summary).toBeVisible()
+    await expect(outline).not.toHaveAttribute("open")
+
+    await summary.press("Enter")
+    await expect(outline).toHaveAttribute("open")
+    await outline.getByRole("link", { name: "Production Build", exact: true }).click()
+
+    await expect(page).toHaveURL(/#production-build$/)
+    await expect
+      .poll(() =>
+        page.locator("#production-build").evaluate((element) => {
+          const bounds = element.getBoundingClientRect()
+          return bounds.top >= 0 && bounds.bottom <= window.innerHeight
+        })
+      )
+      .toBe(true)
+  })
+}
 
 test("the default docs layout keeps its viewport-owned main scroll region", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })

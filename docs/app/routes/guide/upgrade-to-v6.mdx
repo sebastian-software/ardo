@@ -115,7 +115,7 @@ Import runtime values from `ardo/runtime` or `ardo/ui`. Do not import them from 
 | `useMatches()` for route `handle` data          | `useArdoPage().handle`                                   |
 | `useRouteError()` in an error boundary          | `useArdoPage().error`                                    |
 | `MetaFunction` from `ardo/router`               | `ArdoMetaFunction` and `ArdoMetaDescriptor`              |
-| `MemoryRouter` in tests and Storybook           | `ArdoPageProvider` with `path` and optional `base`       |
+| `MemoryRouter` in tests and component previews  | `ArdoPageProvider` with `path` and optional `base`       |
 | `<Meta />`, `<Links />`, `<Scripts />`          | `<ArdoHead />` and `<ArdoScripts />`                     |
 | `ardo/router/dom`, `ardo/router/routes`         | Removed. Ardo provides the client entry and route table. |
 | `ardo/entry.server`                             | Removed. Delete `app/entry.server.tsx`.                  |

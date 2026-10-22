@@ -45,8 +45,9 @@ export function Components() {
         <NoteLabel>components and layouts</NoteLabel>
         <h2 className={styles.h2}>Your components are invited.</h2>
         <p className={styles.lead}>
-          Drop your design system straight into MDX, or build landing pages and layouts in plain
-          React. Ardo brings cards, tabs, steps, accordions and callouts for everything around them.
+          Bring local React components or an installed design-system package into MDX. Build landing
+          pages and layouts in plain React, with Ardo's cards, tabs, steps, accordions and callouts
+          around them.
         </p>
         <p className={styles.moreLink}>
           <ArdoLink to="/guide/markdown">Components in MDX →</ArdoLink>
@@ -63,8 +64,8 @@ export function ApiReference() {
         <NoteLabel>API reference for TypeScript</NoteLabel>
         <h2 className={styles.h2}>Your types, now with a website.</h2>
         <p className={styles.lead}>
-          Point Ardo at your entry point and every export gets its own page, with signature,
-          parameters and linked types. It shows up in search, too, and it updates on the next build.
+          Point Ardo at your TypeScript entry points to generate reference pages with signatures,
+          parameters and comments. They show up in search, too, and update on the next build.
         </p>
         <p className={styles.moreLink}>
           <ArdoLink to="/api-reference">Browse Ardo’s own API reference →</ArdoLink>

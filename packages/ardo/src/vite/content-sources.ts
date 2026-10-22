@@ -164,6 +164,8 @@ function createMaterializedMarkdown(input: {
   const data = parseNativeFrontmatter(parsed.frontMatter, parsed.frontMatterKind)
   const content = removeFrontmatter(input.file.content, parsed.frontMatterSpan)
   const frontmatter = {
+    editLink: false,
+    lastUpdated: false,
     ...(parsed.frontMatterSpan == null
       ? createDefaultFrontmatter(
           input.file,

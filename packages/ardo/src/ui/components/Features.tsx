@@ -58,7 +58,7 @@ export function ArdoFeatureCard({
     <div className={className ?? styles.feature}>
       {hasIcon && <div className={styles.featureIcon}>{icon}</div>}
       <h3 className={styles.featureTitle}>{title}</h3>
-      <p className={styles.featureDetails}>{children}</p>
+      <div className={styles.featureDetails}>{children}</div>
       {hasLink && (
         <ArdoLink to={link ?? ""} className={styles.featureLink}>
           {resolvedLinkText}

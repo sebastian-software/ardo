@@ -17,6 +17,8 @@ export function SearchResults({
   query,
   labels,
   onClose,
+  status = "ready",
+  onRetry,
 }: {
   getOptionId: (resultId: string, index: number) => string
   listboxId: string
@@ -25,18 +27,29 @@ export function SearchResults({
   query: string
   labels: ArdoLabels["search"]
   onClose: () => void
+  status?: "loading" | "ready" | "error"
+  onRetry?: () => void
 }) {
   const resultsRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     const selectedOption = resultsRef.current?.querySelector<HTMLElement>('[aria-selected="true"]')
     selectedOption?.scrollIntoView({ block: "nearest" })
-  }, [selectedIndex])
+  }, [selectedIndex, results])
+
+  const statusText =
+    status === "loading"
+      ? labels.loading
+      : status === "error"
+        ? labels.loadError
+        : results.length > 0
+          ? labels.resultCount(results.length)
+          : labels.noResults(query)
 
   return (
     <>
       <div className={styles.searchStatus} role="status" aria-live="polite" aria-atomic="true">
-        {results.length > 0 ? labels.resultCount(results.length) : labels.noResults(query)}
+        {statusText}
       </div>
       {results.length > 0 ? (
         <ul
@@ -64,31 +77,43 @@ export function SearchResults({
           ))}
         </ul>
       ) : (
-        <div>
+        <>
           <ul
             id={listboxId}
             className={styles.searchResults}
             role="listbox"
             aria-label={labels.results}
+            aria-busy={status === "loading"}
           />
           <div className={styles.searchNoResults}>
             <ArdoOwlMark size={36} className={styles.searchNoResultsOwl} />
-            <span>{labels.noResults(query)}</span>
+            <span>{status === "ready" ? labels.noResults(query) : statusText}</span>
+            {status === "error" && onRetry != null && (
+              <button type="button" className={styles.searchRetry} onClick={onRetry}>
+                {labels.retry}
+              </button>
+            )}
           </div>
-        </div>
+        </>
       )}
-      <div className={styles.searchFooter}>
-        <span>
-          <kbd>↑</kbd> <kbd>↓</kbd> {labels.navigate}
-        </span>
-        <span>
-          <kbd>↵</kbd> {labels.select}
-        </span>
-        <span>
-          <kbd>esc</kbd> {labels.close}
-        </span>
-      </div>
+      {status === "ready" && <SearchFooter labels={labels} />}
     </>
+  )
+}
+
+function SearchFooter({ labels }: { labels: ArdoLabels["search"] }) {
+  return (
+    <div className={styles.searchFooter}>
+      <span>
+        <kbd>↑</kbd> <kbd>↓</kbd> {labels.navigate}
+      </span>
+      <span>
+        <kbd>↵</kbd> {labels.select}
+      </span>
+      <span>
+        <kbd>esc</kbd> {labels.close}
+      </span>
+    </div>
   )
 }
 

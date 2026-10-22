@@ -13,7 +13,7 @@ export type ArdoPageProviderProps = Partial<ArdoPage> & { children: ReactNode }
 
 /**
  * Describe the page being rendered. Ardo's renderer provides it for every page;
- * tests and Storybook use it to render components at a given path.
+ * tests and isolated previews use it to render components at a given path.
  */
 export function ArdoPageProvider({
   children,
@@ -22,10 +22,18 @@ export function ArdoPageProvider({
   component,
   error,
   handle,
+  source,
 }: ArdoPageProviderProps) {
   const value = useMemo(
-    () => ({ base: normalizeBase(base), component, error, handle, path: normalizePath(path) }),
-    [base, component, error, handle, path]
+    () => ({
+      base: normalizeBase(base),
+      component,
+      error,
+      handle,
+      path: normalizePath(path),
+      source,
+    }),
+    [base, component, error, handle, path, source]
   )
   return <ArdoPageContext value={value}>{children}</ArdoPageContext>
 }

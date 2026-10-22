@@ -2,11 +2,11 @@
 
 Modern, open documentation for React teams.
 
-Ardo is a React-first static documentation framework built on React 19, React Router 8, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
+Ardo is a React-first static documentation framework built on React 19, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
 
 ## Why use it?
 
-- **Use real React components in docs** - import your app components, design system, providers, and examples directly in MDX.
+- **Use real React components in docs** - use local components, providers, and examples in MDX, or install a packaged design system in the docs project.
 - **Ship static docs anywhere** - Ardo prerenders HTML and assets that work on GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any file server.
 - **Generate API docs from TypeScript** - Native TypeScript and OXC create linked API reference pages during builds and development.
 - **Start with a complete theme** - responsive layout, sidebar, TOC, search, dark mode, code highlighting, callouts, tabs, and typed design tokens. Tailwind v4 is optional.
@@ -35,9 +35,11 @@ pnpm add ardo@6
 pnpm add -D typescript@6
 ```
 
+Keep the docs project in its own package or directory. Declare its component libraries locally and import their public exports; sibling application source is outside the docs package boundary.
+
 Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Ardo
-manages the React, React Router, and Vite dependencies. Follow the
-[Basic example](../../examples/basic) for app files, TypeScript configuration,
+manages the React, React DOM, and Vite dependencies. Follow the
+[Basic example](https://ardo-docs.dev/v6/guide/reference-projects) for app files, TypeScript configuration,
 and the minimal pnpm esbuild build-script policy.
 
 ## Ardo configuration
@@ -140,7 +142,7 @@ LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/v6/llms-full.
 
 Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
-Example: [Basic](../../examples/basic). Optional [API](https://ardo-docs.dev/v6/guide/api-documentation), [content](https://ardo-docs.dev/v6/guide/content-sources), and [deployment](https://ardo-docs.dev/v6/guide/deployment) recipes extend the same setup.
+Example: [Basic](https://ardo-docs.dev/v6/guide/reference-projects). Optional [API](https://ardo-docs.dev/v6/guide/api-documentation), [content](https://ardo-docs.dev/v6/guide/content-sources), and [deployment](https://ardo-docs.dev/v6/guide/deployment) recipes extend the same setup.
 
 ## License
 

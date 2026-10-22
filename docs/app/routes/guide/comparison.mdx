@@ -12,21 +12,18 @@ That makes the comparison more specific than "which docs tool is best?" Docusaur
 
 ## At a glance
 
-|                          | **Ardo**                       | **Docusaurus**      | **Starlight**            | **VitePress**     | **Nextra**   | **Fumadocs**               | **Mintlify**       |
-| ------------------------ | ------------------------------ | ------------------- | ------------------------ | ----------------- | ------------ | -------------------------- | ------------------ |
-| Best fit                 | React teams, static docs       | Mature OSS docs     | Content-heavy Astro docs | Vue docs          | Next.js docs | Composable React docs      | Hosted API docs    |
-| UI model                 | React 19                       | React               | Astro                    | Vue               | Next.js      | React                      | Hosted platform    |
-| Build model              | Vite 8, static HTML per page   | Webpack             | Astro/Vite               | Vite              | Next.js      | Depends on React framework | SaaS/Git workflow  |
-| React component reuse    | Native                         | Native              | Via islands              | No                | Native       | Native                     | Platform-dependent |
-| TypeScript API docs      | Native TypeScript + OXC        | Plugin              | Plugin                   | External          | TSDoc        | Type tables/OpenAPI        | API tooling        |
-| Ownership                | Open source, self-hosted files | Open source         | Open source              | Open source       | Open source  | Open source                | Hosted SaaS        |
-| Measured Ardo first page | ~155 KB gzip including assets  | Heavier React stack | Lighter non-React stack  | Lighter Vue stack | Next runtime | Depends on setup           | Platform hosted    |
+|                       | **Ardo**                       | **Docusaurus**  | **Starlight**            | **VitePress** | **Nextra**   | **Fumadocs**               | **Mintlify**       |
+| --------------------- | ------------------------------ | --------------- | ------------------------ | ------------- | ------------ | -------------------------- | ------------------ |
+| Best fit              | React teams, static docs       | Mature OSS docs | Content-heavy Astro docs | Vue docs      | Next.js docs | Composable React docs      | Hosted API docs    |
+| UI model              | React 19                       | React           | Astro                    | Vue           | Next.js      | React                      | Hosted platform    |
+| Build model           | Vite 8, static HTML per page   | Webpack         | Astro/Vite               | Vite          | Next.js      | Depends on React framework | SaaS/Git workflow  |
+| React component reuse | Native                         | Native          | Via islands              | No            | Native       | Native                     | Platform-dependent |
+| TypeScript API docs   | Native TypeScript + OXC        | Plugin          | Plugin                   | External      | TSDoc        | Type tables/OpenAPI        | API tooling        |
+| Ownership             | Open source, self-hosted files | Open source     | Open source              | Open source   | Open source  | Open source                | Hosted SaaS        |
 
-<Note title="Measurement note">
-  The Ardo first-page number comes from `pnpm docs:build` on this repository and includes the
-  gzip-compressed JavaScript and CSS referenced by the generated homepage, including logo assets.
-  Treat it as a local build snapshot, not a universal benchmark.
-</Note>
+React reuse in Ardo means components inside the docs project or installed packaged dependencies. Declare design-system packages in the docs package and import their public exports; sibling application source, aliases, and symlinks across that boundary are rejected. Ardo manages the shared React runtime. See [Adopt Ardo](/guide/adopt-ardo) for the package boundary.
+
+Payload measurements depend on the site's content and components. Use the repository's build budgets for the current Ardo docs measurement rather than treating a comparison table as a cross-framework benchmark.
 
 For a maintained view of shipped, experimental, and planned Ardo capabilities, see
 [Feature Status](/guide/status-roadmap).
@@ -47,7 +44,7 @@ Choose Docusaurus if maturity, plugin coverage, and versioned docs matter more t
 
 **Where it fits:** prose-heavy docs, low-JavaScript sites, Astro teams, and projects where content quality matters more than sharing React application components.
 
-**Where Ardo differs:** Ardo treats React as the native component model. You can use your React providers, hooks, design system, and interactive examples directly in MDX. In Starlight, React runs through Astro islands, which is powerful but creates a different boundary.
+**Where Ardo differs:** Ardo treats React as the native component model. You can use React providers, hooks, and interactive examples in MDX, including an installed design-system package. In Starlight, React runs through Astro islands, which is powerful but creates a different boundary.
 
 Choose Starlight if page weight and Astro's content model are your top priorities.
 
@@ -75,7 +72,7 @@ Choose Nextra if your docs should be a first-class Next.js app.
 
 [Fumadocs](https://www.fumadocs.dev/) is a powerful React documentation toolkit. It is highly composable, supports multiple React frameworks, and offers deep building blocks for teams that want to assemble a custom docs system.
 
-**Where it fits:** design-system-heavy teams, docs teams that want headless/composable primitives, and projects that need advanced content blocks such as OpenAPI, Storybook-style component docs, or custom sources.
+**Where it fits:** design-system-heavy teams, docs teams that want headless/composable primitives, and projects that need advanced content blocks such as OpenAPI, interactive component examples, or custom sources.
 
 **Where Ardo differs:** Ardo is intentionally narrower. It gives you a complete static docs product around React, Vite, MDX, and native API documentation, with fewer architectural choices to make.
 
@@ -99,12 +96,12 @@ Ardo is deliberately focused. It may not be the right tool if:
 - you want the lowest possible JavaScript payload and do not need React components;
 - your docs should be a hosted SaaS workflow with analytics and API playground management;
 - your product stack is Vue, Astro, or Next.js and you want docs to live inside that ecosystem;
-- you need OpenAPI-first docs before Ardo's OpenAPI integration lands.
+- you need a built-in interactive API request console; Ardo's experimental OpenAPI integration generates static reference pages.
 
 Those are good reasons to choose another tool.
 
-## The bottom line
+## Choose Ardo
 
-Use Ardo when your documentation should feel like part of your React codebase: same component model, same styling strategy, same routing vocabulary, same repository, static output.
+Use Ardo when your documentation should feel like part of your React codebase: the React component model and styling strategy your team knows, in a separate docs package that builds static output.
 
 If that is your constraint, [create your first Ardo project](/guide/getting-started) and start from the default theme.

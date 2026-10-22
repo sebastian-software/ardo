@@ -7,6 +7,7 @@ import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch } from "./Search"
 import { getSearchShortcutModifier, isSearchShortcut } from "./search-a11y"
+import { getSearchRecoveryQuery } from "./search-recovery"
 
 export type ArdoHeaderSearchProps = {
   /** Placeholder text for the search input */
@@ -70,7 +71,7 @@ export function ArdoHeaderSearch({ placeholder, variant = "field" }: ArdoHeaderS
           className={styles.overlay}
           role="dialog"
           aria-modal="true"
-          aria-label="Search"
+          aria-label={labels.search.label}
           tabIndex={-1}
         >
           <div className={styles.overlayBar}>
@@ -103,6 +104,10 @@ function useSearchOverlayState() {
   const closeOverlay = useCallback(() => {
     setOverlayOpen(false)
   }, [])
+
+  useEffect(() => {
+    if (getSearchRecoveryQuery() != null) openOverlay()
+  }, [openOverlay])
 
   if (pathname !== previousPathname) {
     setPreviousPathname(pathname)

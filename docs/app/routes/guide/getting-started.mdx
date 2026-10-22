@@ -6,17 +6,19 @@ order: 2
 
 # Getting Started
 
-Start with [Agent Instructions](/guide/agent-instructions) for a new site, an existing React repository, or an upgrade. The instructions use [a tested Basic example](/guide/reference-projects) matched to your Ardo version. Ardo 6 retires the `create-ardo` starter.
+Use the Ardo skill with your coding assistant to set up a new site, adopt Ardo in an existing repository, or upgrade a site. The skill follows the [Agent Instructions](/guide/agent-instructions) and [tested Basic example](/guide/reference-projects). Ardo 6 retires the `create-ardo` starter; [manual installation](#manual-installation) remains available.
 
-## Set Up with an Agent
+## Use the Ardo Skill or Ask Your Assistant
 
-Give your coding agent this instruction together with the repository:
+Install the [Ardo skill folder](https://github.com/sebastian-software/ardo/tree/main/skills/ardo) using your assistant's normal skill support. Its [SKILL.md](https://raw.githubusercontent.com/sebastian-software/ardo/main/skills/ardo/SKILL.md) is also available to read directly. Then open the target repository and ask:
 
 ```prompt
-Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt, then follow https://ardo-docs.dev/v6/guide/agent-instructions. Inspect the project and adapt the tested Basic example from the matching Ardo release tag. Preserve existing application behavior and deployment choices. Run the applicable typecheck, tests, and production build, and report the results.
+Set up Ardo in this repository. Use the Ardo skill, inspect the project, and adapt the tested Basic example. For a new site, use the latest published Ardo release unless I selected a version. Preserve existing application behavior and deployment choices. Run the applicable checks and production build, then verify the home page and a guide in the browser.
 ```
 
-Use `/v6/llms-full.txt` when the agent needs the complete documentation as Markdown. The unversioned text files follow the current major; use the versioned URLs for a repeatable setup. For development before a release, use the instructions, Basic example, and built package from the same checkout revision.
+The skill selects the matching documentation and example before editing. For an existing Ardo site, it inspects the installed version and treats a major upgrade as a separate choice.
+
+Without skill support, ask your assistant to read `https://ardo-docs.dev/llms.txt` and follow [Agent Instructions](/guide/agent-instructions). The index points to the setup, adoption, upgrade, and optional feature guides. Use the versioned index for a repeatable setup: this guide covers Ardo 6 at `/v6/llms.txt`, with the complete Markdown context at `/v6/llms-full.txt`. Match those instructions and `examples/basic` to the selected release's Git tag. For development before a release, use the instructions, example, and built package from the same checkout revision.
 
 Use the Basic example for the common setup. Add optional API documentation, external content, or deployment configuration through the recipes in [Basic Example](/guide/reference-projects). For an existing app, see [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
 
@@ -77,14 +79,19 @@ allowBuilds:
 
 Ardo works without a configuration file. Add `ardo.config.ts` when you want to set site metadata, theme, deployment, or content options. UI configuration (navigation, sidebar, footer) stays in JSX props in `root.tsx`:
 
+**`ardo.config.ts`**:
+
 ```ts
 import { defineArdoConfig } from "ardo/config"
 
 export default defineArdoConfig({
   title: "My Documentation",
   description: "My awesome documentation site",
+  githubPages: false,
 })
 ```
+
+Set `githubPages: false` for a root deployment or custom domain. Choose the base path for your host with [Deployment](/guide/deployment).
 
 Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
 adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.
@@ -130,7 +137,7 @@ export default function Root() {
 }
 ```
 
-`root.tsx` can also export `ErrorBoundary`, which replaces the root on 404 pages. Ardo uses `ArdoErrorBoundary` when you leave it out.
+`root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
 
 **`tsconfig.json`**:
 
@@ -166,9 +173,29 @@ dependencies must still be declared and installed in the documentation package.
 For portals and other React DOM APIs, use `ardo/react-dom`. Tailwind and other Vite plugins
 are optional; install them in the documentation package when you use them.
 
-### 6. Create your first document
+### 6. Create your first pages
 
-Create `app/routes/guide/getting-started.mdx`:
+Create a home page so the root URL and header logo have a destination:
+
+**`app/routes/home.tsx`**:
+
+```tsx
+import { ArdoHero } from "ardo/ui"
+
+export default function HomePage() {
+  return (
+    <ArdoHero
+      name="My Documentation"
+      tagline="Guides and examples for your project."
+      actions={[{ text: "Get started", link: "/guide/getting-started", theme: "brand" }]}
+    />
+  )
+}
+```
+
+Add the guide linked from your home page, header, and sidebar:
+
+**`app/routes/guide/getting-started.mdx`**:
 
 ```markdown
 ---
@@ -180,7 +207,7 @@ title: Getting Started
 Welcome to your documentation site!
 ```
 
-That's it. Run `pnpm dev` and you've got a documentation site.
+Run `pnpm dev` and open `http://localhost:5173`. You should see your home page; choose **Get started** to open the guide.
 
 <Tip>
   The tested Basic example contains the complete root component and configuration. Use the
@@ -205,7 +232,7 @@ When you're ready to publish:
 pnpm build
 ```
 
-The output lands in `build/client/`: one prerendered `index.html` per page, a `404.html`, and the hashed assets, ready for any static host. The build also checks every internal link and anchor in the generated HTML. Preview it locally before deploying:
+The output lands in `build/client/`: one prerendered `index.html` per page, a `404.html`, and the hashed assets, ready for any static host. The build should report two prerendered pages and no broken internal links. It checks every internal link and anchor in the generated HTML. Preview it locally before deploying:
 
 ```bash
 pnpm preview

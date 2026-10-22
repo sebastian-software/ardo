@@ -38,7 +38,14 @@ export async function writeGeneratedDocs(
 }
 
 function formatGeneratedPage(doc: GeneratedDoc): string {
-  const lines = ["---", `title: ${JSON.stringify(doc.frontmatter.title)}`]
+  // Generated Markdown is not an editable repository source file, and its
+  // write time describes generation rather than the source's last update.
+  const lines = [
+    "---",
+    `title: ${JSON.stringify(doc.frontmatter.title)}`,
+    "editLink: false",
+    "lastUpdated: false",
+  ]
   if (doc.frontmatter.description != null)
     lines.push(`description: ${JSON.stringify(doc.frontmatter.description)}`)
   if (doc.frontmatter.sidebar_position != null)

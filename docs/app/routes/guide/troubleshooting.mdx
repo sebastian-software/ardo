@@ -64,7 +64,7 @@ and builds. Workspace package links to component source also fail. Install a pub
 when you need a packaged component library. Ardo's own workspace link is supported for framework
 development, using its built `dist` files.
 
-Ardo bundles the application's dependencies for SSR, including its React and routing runtime.
+Ardo bundles the application's dependencies for SSR, including its React runtime.
 Components and the server renderer use that same bundled runtime. There is no per-component
 `ssr.noExternal` list to maintain. A missing dependency produces an `[ardo]` error rather than
 falling back to a parent installation. During development, Vite automatically optimizes SSR
@@ -76,12 +76,12 @@ available to application imports.
 
 ### TypeScript Errors in Routes
 
-If you see type errors in generated route files, try:
+Ardo generates its route table as a virtual module; there are no generated router types to rebuild. Check the authored route and its imports:
 
-1. Run `pnpm build` to regenerate route types
-2. Restart your TypeScript server in your editor
-3. Check that `tsconfig.json` includes your `app` directory and lists `ardo/vite/client` and `ardo/virtual` in `types`
-4. Confirm the Ardo route generator is writing markdown routes into `app/routes`
+1. Check that `tsconfig.json` includes your `app` directory and lists `ardo/vite/client` and `ardo/virtual` in `types`
+2. Set `jsxImportSource` to `ardo` and import React APIs and types from `ardo/react`
+3. Run `pnpm exec tsc --noEmit` to see the source error, then restart your editor's TypeScript server if its diagnostics remain stale
+4. For optional API or collection routes, fix errors in their source inputs and configuration rather than editing generated Markdown
 
 ### Build Fails with Memory Error
 
@@ -105,12 +105,12 @@ Make sure you're importing the Ardo styles. If using a custom theme, verify your
 
 ### Search Not Working
 
-Search is built at build time. In development:
+Search data is generated from the route tree in development and during the production build. A separate build is not needed before using development search.
 
-1. Run `pnpm build` once to generate the search index
-2. Restart the dev server
-
-For production, the search index is automatically generated during build.
+1. Confirm the document is under `app/routes/` or an enabled content source
+2. Try a word from a heading or paragraph in a Markdown or MDX page
+3. Check the browser console and development terminal for a failed search-index module request
+4. Restart the dev server if a configuration change added a new content source
 
 ## Content Issues
 
@@ -175,7 +175,9 @@ Or absolute paths from the public directory:
 
 ### 404 on Page Refresh
 
-For static hosting (GitHub Pages, Netlify, etc.), ensure your hosting is configured for SPA routing, or use Ardo's static prerendering.
+Ardo writes one HTML file per page and uses ordinary document navigation. Deploy the complete `build/client/` directory and configure the host to serve directory indexes, such as `/guide/intro/index.html` for `/guide/intro/`. Preserve the configured base path and serve Ardo's `404.html` for missing pages. See [Deployment](/guide/deployment) for host-specific settings.
+
+If the root URL itself returns 404 during local development, add `app/routes/home.tsx` or `app/routes/index.mdx`. Check that the home page links to an existing document before building again.
 
 ### Base Path Issues
 
@@ -208,8 +210,8 @@ over metadata defaults. Dynamic props, interpolated templates, and custom JSX
 children keep their runtime behavior.
 
 `highlightCode` from `ardo/vite` continues to return HTML and `__html` remains
-a supported `ArdoCodeBlock` input. That compatibility helper uses Ferriki Core
-0.13 and the existing HTML metadata adapter. `MarkdownConfig.theme` retains its
+a supported `ArdoCodeBlock` input. That compatibility helper uses the direct `@ferriki/core` dependency
+and the HTML metadata adapter. `MarkdownConfig.theme` retains its
 Ferriki `ThemeInput` type. Ferromark bundles its own native highlighter: updating
 the direct Core dependency does not update that bundled copy. The HTML helper
 and native JSX renderer can produce different markup; both preserve their

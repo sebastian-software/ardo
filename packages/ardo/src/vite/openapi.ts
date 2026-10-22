@@ -90,7 +90,7 @@ function renderIndex(
   const groups = new Map<string, typeof operations>()
   for (const operation of operations)
     groups.set(operation.tag, [...(groups.get(operation.tag) ?? []), operation])
-  return `---\ntitle: ${JSON.stringify(title)}\n---\n\n# ${title}\n\n${document.info?.description ?? ""}\n\n${[...groups].map(([tag, items]) => `## ${tag}\n\n${items.map((item) => `- [\`${item.method} ${item.path}\`](./${tag}/${item.slug})`).join("\n")}`).join("\n\n")}\n`
+  return `---\ntitle: ${JSON.stringify(title)}\neditLink: false\nlastUpdated: false\n---\n\n# ${title}\n\n${document.info?.description ?? ""}\n\n${[...groups].map(([tag, items]) => `## ${tag}\n\n${items.map((item) => `- [\`${item.method} ${item.path}\`](./${tag}/${item.slug})`).join("\n")}`).join("\n\n")}\n`
 }
 
 function renderOperation(operation: ReturnType<typeof collectOperations>[number]): string {
@@ -105,7 +105,7 @@ function renderOperation(operation: ReturnType<typeof collectOperations>[number]
       : `## Responses\n\n${Object.entries(operation.responses)
           .map(([status, response]) => `- \`${status}\`: ${response.description ?? ""}`)
           .join("\n")}\n`
-  return `---\ntitle: ${JSON.stringify(`${operation.method} ${operation.path}`)}\n---\n\n# ${operation.method} ${operation.path}\n\n${operation.summary ?? operation.description ?? ""}\n\n${parameters}\n${responses}`
+  return `---\ntitle: ${JSON.stringify(`${operation.method} ${operation.path}`)}\neditLink: false\nlastUpdated: false\n---\n\n# ${operation.method} ${operation.path}\n\n${operation.summary ?? operation.description ?? ""}\n\n${parameters}\n${responses}`
 }
 
 function slugify(value: string): string {

@@ -41,6 +41,7 @@ async function benchmark() {
         "--modes=NAME,... selects scenarios. Additional modes: native-baseline, declarations-baseline,\n" +
         "workspace-one-pass, native-binary, native-api, native-api-baseline.\n" +
         "Native-api modes use the pinned async Node API.\n" +
+        "workspace-one-pass requires ARDO_JAVASCRIPT_TSC pointing to a TypeScript 6 executable.\n" +
         "Baseline modes require --baseline=/path/to/old/dist.\n" +
         "TypeDoc comparisons require --modes=typedoc,... --typedoc-dist=/path/to/pre-removal/dist.\n" +
         "Native-binary requires ARDO_DECLARATION_NATIVE_BINARY.\n" +
@@ -133,6 +134,15 @@ async function benchmark() {
   )
     throw new Error(`Select unique modes from: ${supported.join(", ")}.`)
   const currentDist = path.join(root, "packages/ardo/dist")
+  const javascriptCompiler = process.env.ARDO_JAVASCRIPT_TSC
+  if (
+    modes.includes("workspace-one-pass") &&
+    (!javascriptCompiler || !/^Version 6\./u.test(compilerVersion(javascriptCompiler)))
+  ) {
+    throw new Error(
+      "workspace-one-pass requires ARDO_JAVASCRIPT_TSC pointing to a TypeScript 6 executable."
+    )
+  }
   const typedocDist = values["typedoc-dist"] ? path.resolve(values["typedoc-dist"]) : undefined
   if (modes.includes("typedoc")) {
     if (!typedocDist)
@@ -192,8 +202,12 @@ async function benchmark() {
       logicalCpus: os.cpus().length,
       memoryGiB: round(os.totalmem() / 2 ** 30),
       declarationCompiler: version,
-      typedoc: require("typedoc/package.json").version,
-      typedocCompiler: require("typescript/package.json").version,
+      typedoc: modes.includes("typedoc")
+        ? createRequire(path.join(typedocDist, "index.js"))("typedoc/package.json").version
+        : null,
+      typedocCompiler: modes.includes("typedoc")
+        ? createRequire(path.join(typedocDist, "index.js"))("typescript/package.json").version
+        : null,
       oxc: JSON.parse(
         await fs.readFile(
           path.join(root, "packages/ardo/node_modules/oxc-parser/package.json"),
@@ -252,7 +266,7 @@ async function benchmark() {
               mode === "native-binary"
                 ? nativeBinary
                 : mode === "workspace-one-pass"
-                  ? path.join(root, "node_modules/typescript/bin/tsc")
+                  ? javascriptCompiler
                   : compiler,
             dist:
               mode === "typedoc"

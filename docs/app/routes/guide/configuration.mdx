@@ -65,7 +65,7 @@ The site title, used in the default `<title>` meta tag and displayed in the head
 `ardo.config.ts` when you want a custom title.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Documentation",
 })
 ```
@@ -78,7 +78,7 @@ ardo({
 Site description for the default meta tags.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   description: "A comprehensive guide to my library",
 })
@@ -92,7 +92,7 @@ ardo({
 Separator between the page title and the site title in `<title>` tags. For example, a page titled "Getting Started" produces `Getting Started | My Docs`.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   titleSeparator: " - ",
 })
@@ -106,7 +106,7 @@ ardo({
 Base URL path for the site. Set this if your docs live under a subpath.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   base: "/docs/",
 })
@@ -125,7 +125,7 @@ ardo({
 Absolute public URL for the site. Ardo uses it to generate canonical URLs, `og:url`, and absolute social image URLs for Markdown routes.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://example.com",
 })
@@ -141,7 +141,7 @@ If your docs are served from a subpath, configure `base` separately. Ardo combin
 Site-level defaults for generated Markdown metadata. Page frontmatter can override these values per route.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://example.com",
   metadata: {
@@ -163,7 +163,7 @@ accept OKLCH hue numbers or preset names: `berry`, `red`, `orange`, `amber`, `gr
 `blue`, `indigo`, `purple`, `pink`, `slate`, and `gray`.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   brand: {
     color: "blue",
@@ -199,7 +199,7 @@ imports, exports, and JSX component tags from the full export. Set `llms: false`
 frontmatter to exclude a Markdown page from both files.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://example.com",
   seo: {
@@ -223,7 +223,7 @@ Generates `/sitemap.xml` from Markdown, MDX, and TSX routes. Ardo combines `site
 route path so subpath deployments still produce absolute URLs.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://example.com",
   base: "/docs/",
@@ -254,7 +254,7 @@ Generates `/robots.txt`. By default Ardo allows all crawlers and points them at 
 sitemap when `siteUrl` is configured.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://example.com",
   seo: {
@@ -285,11 +285,11 @@ same host, are skipped for the same reason. Patterns in `exclude` match with or 
 path.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   linkCheck: {
     level: "error",
-    exclude: ["/storybook/*", "/generated/*"],
+    exclude: ["/generated/*"],
   },
 })
 ```
@@ -307,7 +307,7 @@ the source file and never feed malformed values into sidebar, search, sitemap, r
 output. Turn strict mode on when a project wants misspelled metadata to fail CI:
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   validation: {
     frontmatter: {
@@ -333,7 +333,7 @@ Generates static redirect assets for configured legacy paths:
 - HTML redirect files for static hosts that only serve files
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   redirects: [
     { from: "/old-guide", to: "/guide/getting-started" },
@@ -358,7 +358,7 @@ on narrow screens. List versions newest first: the first entry counts as the lat
 the pages of every other version show a banner that links to the same page in the latest one.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   siteUrl: "https://docs.example.com",
   versioning: {
@@ -399,7 +399,7 @@ When enabled, Ardo always includes the locale in canonical public URLs. With ver
 version segment comes first:
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   versioning: {
     current: "v3",
@@ -428,7 +428,7 @@ application shell and are not locale documents.
 Content source directory, relative to the project root. Most projects keep their pages in `app/routes/`, which Ardo turns into the route table. `srcDir` remains available for config-driven content workflows and generated markdown output.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   srcDir: "docs",
 })
@@ -443,7 +443,7 @@ ardo({
 output. Ardo's static output is written to `build/client/`.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   // Do not use outDir for new projects.
   // Deploy build/client/ instead.
@@ -458,7 +458,7 @@ ardo({
 Site language. Sets the `lang` attribute on the `<html>` element.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   lang: "de",
 })
@@ -474,7 +474,7 @@ without leading slashes. Sections listed here appear first in the configured ord
 listed still appears automatically after the configured sections using the normal generated order.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "Product Docs",
   sidebar: {
     sectionOrder: ["guide", "reference", "api", "quality", "architecture", "archive"],
@@ -529,7 +529,7 @@ Configuration for the automatic route generation plugin. Set to `false` to disab
 When `true`, Ardo auto-detects your GitHub repository name from the git remote and sets `base: '/repo-name/'` for GitHub Pages deployment.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   githubPages: false, // Disable auto-detection
 })
@@ -545,7 +545,7 @@ Ardo generates a lean favicon set at build time and serves it during development
 set without adding a web app manifest or legacy `apple-touch-icon-precomposed.png` files.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   icons: {
     source: "./app/assets/logo.svg",
@@ -565,7 +565,7 @@ Use this for repo-native docs such as ADRs, `CHANGELOG.md`, or package READMEs t
 their canonical source location but still publish with the rest of the site.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   content: [
     {
@@ -602,7 +602,7 @@ relative links or define collection schemas.
 Directory where route files are located.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   routesDir: "./src/routes",
 })
@@ -615,7 +615,7 @@ ardo({
 Markdown processing options are configured under the `markdown` key.
 
 ```ts
-ardo({
+defineArdoConfig({
   title: "My Docs",
   markdown: {
     theme: { light: "github-light-default", dark: "github-dark-default" },
@@ -749,10 +749,12 @@ Per-page configuration is done through frontmatter in your MDX files. See the de
 ## Vite Plugin Compatibility Example
 
 This form remains supported for projects that manage Vite directly. New Ardo sites should use
-`ardo.config.ts` and only add a Vite config for custom Vite integrations.
+`ardo.config.ts` and only add a Vite config for custom Vite integrations. Use this form instead of
+`ardo.config.ts`, and import `defineConfig` from Ardo so a separate Vite dependency is unnecessary.
+Add optional API generation through the [Native API Documentation](/guide/api-documentation) guide.
 
 ```ts
-import { defineConfig } from "vite"
+import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
 
 export default defineConfig({
@@ -766,11 +768,6 @@ export default defineConfig({
         theme: { light: "github-light-default", dark: "github-dark-default" },
         lineNumbers: false,
         toc: { level: [2, 3] },
-      },
-
-      typedoc: {
-        entryPoints: ["./src/index.ts"],
-        tsconfig: "./tsconfig.api.json",
       },
     }),
   ],

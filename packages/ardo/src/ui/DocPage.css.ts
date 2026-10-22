@@ -70,6 +70,10 @@ export const contentBody = style({
   overflowWrap: "break-word",
 })
 
+export const narrowPageMeta = style({
+  "@media": { "(min-width: 1281px)": { display: "none" } },
+})
+
 export const pageRail = style({
   width: vars.layout.tocWidth,
   position: "sticky",

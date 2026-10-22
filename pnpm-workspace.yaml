@@ -4,9 +4,29 @@ packages:
   - examples/basic
   - tests/fixtures/*
 
+catalog:
+  "@testing-library/react": "^16.3.3"
+  "@testing-library/user-event": "^14.6.8"
+  "@types/node": "^26.6.5"
+  "@types/react": "^19.3.0"
+  "@types/react-dom": "^19.3.0"
+  "@vanilla-extract/css": "^1.21.3"
+  "@vanilla-extract/vite-plugin": "^5.2.6"
+  "oxc-parser": "^0.155.0"
+  "react": "19.3.1"
+  "react-dom": "19.3.1"
+  "typescript": "7.1.0-dev.20261011.1"
+  "vite": "8.3.5"
+  "vitest": "^5.0.5"
+
+overrides:
+  # All supported integrations accept Vite 8; keep one patched runtime.
+  vite: "catalog:"
+
+minimumReleaseAgeExcludePrune: true
+
 allowBuilds:
   "@parcel/watcher": false
-  "@swc/core": true
   esbuild: true
   unrs-resolver: true
 
@@ -19,15 +39,6 @@ minimumReleaseAgeExclude:
   - "@typescript/typescript-linux-x64@7.1.0-dev.20261011.1"
   - "@typescript/typescript-win32-arm64@7.1.0-dev.20261011.1"
   - "@typescript/typescript-win32-x64@7.1.0-dev.20261011.1"
-  - vite@8.0.16 || 8.2.1
-  - "@storybook/addon-a11y@10.5.7"
-  - "@storybook/addon-docs@10.5.7"
-  - "@storybook/builder-vite@10.5.7"
-  - "@storybook/csf-plugin@10.5.7"
-  - "@storybook/react-dom-shim@10.5.7"
-  - "@storybook/react-vite@10.5.7"
-  - "@storybook/react@10.5.7"
-  - storybook@10.5.7
   - "@ferriki/core@1.1.2"
   - "@ferriki/darwin-arm64@1.1.2"
   - "@ferriki/linux-arm64-gnu@1.1.2"
@@ -46,6 +57,5 @@ minimumReleaseAgeExclude:
   - ferromark@3.5.1
 
 onlyBuiltDependencies:
-  - "@swc/core"
   - esbuild
   - unrs-resolver

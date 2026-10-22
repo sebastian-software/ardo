@@ -8,10 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "virtual:ardo/generated-sidebars": fileURLToPath(
-        new URL("./.storybook/mocks/generated-sidebars.ts", import.meta.url)
+        new URL("./tests/mocks/generated-sidebars.ts", import.meta.url)
       ),
       "virtual:ardo/search-index": fileURLToPath(
-        new URL("./.storybook/mocks/search-index.ts", import.meta.url)
+        new URL("./tests/mocks/search-index.ts", import.meta.url)
       ),
     },
   },
@@ -32,7 +32,7 @@ export default defineConfig({
         "packages/ardo/src/runtime/**/*.{ts,tsx}",
         "packages/ardo/src/vite/**/*.{ts,tsx}",
       ],
-      exclude: ["**/*.stories.{ts,tsx}", "**/*.test.{ts,tsx}"],
+      exclude: ["**/*.test.{ts,tsx}"],
       thresholds: {
         branches: 18,
         functions: 18,

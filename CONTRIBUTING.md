@@ -49,7 +49,7 @@ ardo/
 │   │   │   └── vite/        # Vite plugin
 │   │   └── package.json
 ├── docs/              # Documentation site (dogfooding)
-│   ├── app/           # React Router app and markdown routes
+│   ├── app/           # Ardo app and Markdown/MDX routes
 │   │   └── routes/    # Documentation pages and generated API routes
 │   └── public/        # Static assets and generated text outputs
 ├── examples/          # The public Basic setup example
@@ -60,8 +60,9 @@ ardo/
 ### Architecture
 
 The architecture decision records in [`docs/adr/`](./docs/adr/) explain the major framework
-decisions: React Router migration, static prerendering, native API documentation integration, Vanilla Extract,
-context-aware UI, public API naming, Storybook, agent instructions, and release conventions.
+decisions: static prerendering, native API documentation integration, Vanilla Extract,
+context-aware UI, public API naming, the MDX component gallery and browser tests, agent instructions,
+and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
 
 ### Coordinated native-engine development
@@ -115,16 +116,18 @@ verification; do not commit tarball paths or invented registry integrity data.
 
 ### Available Scripts
 
-| Command           | Description                    |
-| ----------------- | ------------------------------ |
-| `pnpm build`      | Build all packages             |
-| `pnpm dev`        | Start ardo package in dev mode |
-| `pnpm docs:dev`   | Start documentation dev server |
-| `pnpm test`       | Run tests                      |
-| `pnpm test:watch` | Run tests in watch mode        |
-| `pnpm lint`       | Run oxlint                     |
-| `pnpm format`     | Format code with Prettier      |
-| `pnpm typecheck`  | Run TypeScript type checking   |
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `pnpm build`      | Build all packages                 |
+| `pnpm dev`        | Start ardo package in dev mode     |
+| `pnpm docs:dev`   | Start documentation dev server     |
+| `pnpm docs:build` | Build the documentation site       |
+| `pnpm test:e2e`   | Run docs browser interaction tests |
+| `pnpm test`       | Run tests                          |
+| `pnpm test:watch` | Run tests in watch mode            |
+| `pnpm lint`       | Run oxlint                         |
+| `pnpm format`     | Format code with Prettier          |
+| `pnpm typecheck`  | Run TypeScript type checking       |
 
 ### Lint warning budgets
 
@@ -166,6 +169,25 @@ pnpm test
 # Run tests in watch mode
 pnpm test:watch
 ```
+
+### Review UI Components
+
+Use the [Component Gallery](https://ardo-docs.dev/v6/guide/component-playground/)
+to inspect component variants in the actual Ardo documentation app. Run
+`pnpm docs:dev` and open the gallery from the guide navigation. The page uses
+the default site header, search, sidebar, theme control, and mobile navigation;
+its content demonstrates the public authoring components with MDX and React.
+
+When adding or changing a component, update its gallery example and run the
+focused unit tests. Interactive changes also need Playwright assertions for the
+affected behavior: pointer and keyboard operation, focus, clipboard access, or
+failure recovery as appropriate. Rendering a sample alone does not establish
+that readers can operate it.
+
+`pnpm test:e2e` builds the docs and runs the browser suite against the production
+output. The gallery shares the normal docs build and deployment; it has no
+separate preview server or artifact. See
+[ADR 0021](docs/adr/0021-mdx-component-gallery-and-browser-tests.md) for the decision.
 
 ## Making Changes
 

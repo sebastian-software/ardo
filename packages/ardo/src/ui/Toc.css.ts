@@ -6,6 +6,26 @@ export const toc = style({
   width: "100%",
 })
 
+export const compactToc = style({
+  marginBottom: vars.space.xl,
+  borderTop: `1px solid ${vars.color.borderLight}`,
+  borderBottom: `1px solid ${vars.color.borderLight}`,
+  "@media": { "(min-width: 1281px)": { display: "none" } },
+})
+
+export const compactSummary = style({
+  padding: `${vars.space.md} 0`,
+  cursor: "pointer",
+  color: vars.color.text,
+  fontWeight: 600,
+  fontSize: vars.fontSize.sm,
+  selectors: {
+    "&:focus-visible": { outline: `2px solid ${vars.color.accent}`, outlineOffset: 4 },
+  },
+})
+
+export const compactNav = style({ paddingBottom: vars.space.md })
+
 export const tocTitle = style({
   fontSize: vars.fontSize.xs,
   fontWeight: 600,

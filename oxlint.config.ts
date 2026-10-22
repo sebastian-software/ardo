@@ -4,13 +4,7 @@ import { defineConfig, type OxlintConfig } from "oxlint"
 // eslint-disable-next-line typescript/no-unsafe-type-assertion -- getOxlintConfig() is not yet typed against oxlint's own OxlintConfig
 const config = getOxlintConfig({ react: true }) as OxlintConfig
 
-config.ignorePatterns = [
-  "**/dist/**",
-  "**/build/**",
-  "coverage/**",
-  "storybook-static/**",
-  "node_modules/**",
-]
+config.ignorePatterns = ["**/dist/**", "**/build/**", "coverage/**", "node_modules/**"]
 
 // JSX conditional rendering inflates complexity counts; raise limits for React components.
 config.rules = {

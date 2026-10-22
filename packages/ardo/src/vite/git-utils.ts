@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process"
+import { execFileSync, execSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
@@ -60,6 +60,32 @@ export function detectGitHubBasename(cwd?: string): string {
 
 export function getGitHubPagesBase(repoName: string): string {
   return repoName.endsWith(".github.io") ? "/" : `/${repoName}/`
+}
+
+/** Read each source file's latest commit time in one Git invocation. */
+export function getGitFileTimestamps(directory: string): Map<string, number> {
+  const timestamps = new Map<string, number>()
+  try {
+    const history = execFileSync(
+      "git",
+      ["-c", "core.quotepath=false", "log", "--format=%ct", "--name-only", "--relative", "--", "."],
+      {
+        cwd: directory,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+        maxBuffer: 16 * 1024 * 1024,
+      }
+    )
+    let timestamp: number | undefined
+    for (const line of history.split("\n")) {
+      if (/^\d+$/u.test(line)) timestamp = Number(line) * 1000
+      else if (line !== "" && timestamp != null && !timestamps.has(line))
+        timestamps.set(line, timestamp)
+    }
+  } catch {
+    // Source archives and fresh projects have no Git history; use file times.
+  }
+  return timestamps
 }
 
 /**

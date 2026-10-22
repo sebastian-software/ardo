@@ -29,6 +29,7 @@ export type ArdoLabels = {
   }
   mobilePanel: {
     closeMenu: string
+    home: string
     navigationMenu: string
     titledNavigationMenu: (title: string) => string
   }
@@ -37,11 +38,14 @@ export type ArdoLabels = {
     closeOverlay: string
     close: string
     label: string
+    loading: string
+    loadError: string
     navigate: string
     noResults: (query: string) => string
     placeholder: string
     resultCount: (count: number) => string
     results: string
+    retry: string
     select: string
   }
   sidebar: {
@@ -108,6 +112,7 @@ export const defaultArdoLabels: ArdoLabels = {
   },
   mobilePanel: {
     closeMenu: "Close menu",
+    home: "Home",
     navigationMenu: "Navigation menu",
     titledNavigationMenu: (title) => `${title} navigation menu`,
   },
@@ -116,11 +121,14 @@ export const defaultArdoLabels: ArdoLabels = {
     closeOverlay: "Close search",
     close: "to close",
     label: "Search",
+    loading: "Searching…",
+    loadError: "Search could not load. Reload the page to try again.",
     navigate: "to navigate",
     noResults: (query) => `No results found for "${query}"`,
     placeholder: "Search...",
     resultCount: (count) => `${String(count)} ${count === 1 ? "result" : "results"}`,
     results: "Search results",
+    retry: "Reload search",
     select: "to select",
   },
   sidebar: {

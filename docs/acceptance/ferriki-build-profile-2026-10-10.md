@@ -1,5 +1,10 @@
 # Ferriki homepage build profile, October 10, 2026
 
+Historical measurement. The one-off helpers under `scripts/profiling/` were
+retired on October 22, 2026. To reproduce this run, use those helpers from
+[commit ca934f2](https://github.com/sebastian-software/ardo/tree/ca934f2/scripts/profiling)
+with the recorded inputs below. The report and its original results remain unchanged.
+
 This follows [#324](https://github.com/sebastian-software/ardo/issues/324) with paired builds of published Ardo 5.0.0 and the candidate from [#326](https://github.com/sebastian-software/ardo/pull/326)/[#327](https://github.com/sebastian-software/ardo/pull/327). The candidate has a small lower elapsed median and a higher reported maximum RSS in this series. The overlapping ranges and single diagnostic run per lane do not establish a general speedup. #324 remains open.
 
 ## Controlled inputs and correctness

@@ -2,22 +2,29 @@ import { execFileSync } from "node:child_process"
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
 
-const root = fileURLToPath(new URL("../", import.meta.url))
-if (process.argv.length !== 4 || !process.env.ARDO_DECLARATION_TSC)
+if (
+  process.argv.length !== 4 ||
+  !process.env.ARDO_DECLARATION_TSC ||
+  !process.env.ARDO_JAVASCRIPT_TSC
+)
   throw new Error(
-    "Set ARDO_DECLARATION_TSC; usage: node scripts/check-api-compiler-compatibility.mjs PROFILES.json OUTPUT.json"
+    "Set ARDO_DECLARATION_TSC (native TypeScript 7) and ARDO_JAVASCRIPT_TSC (TypeScript 6); usage: node scripts/check-api-compiler-compatibility.mjs PROFILES.json OUTPUT.json"
   )
 const profileFile = path.resolve(process.argv[2])
 const profiles = JSON.parse(await fs.readFile(profileFile, "utf8"))
 const compilers = [
   { name: "native", executable: process.env.ARDO_DECLARATION_TSC },
-  { name: "javascript", executable: path.join(root, "node_modules/typescript/bin/tsc") },
+  { name: "javascript", executable: process.env.ARDO_JAVASCRIPT_TSC },
 ].map((compiler) => ({
   ...compiler,
   version: execFileSync(compiler.executable, ["--version"], { encoding: "utf8" }).trim(),
 }))
+if (!/^Version 7\./u.test(compilers[0].version) || !/^Version 6\./u.test(compilers[1].version)) {
+  throw new Error(
+    "Compiler comparison requires a native TypeScript 7 executable and a JavaScript TypeScript 6 executable."
+  )
+}
 const directory = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-compiler-compatibility-"))
 const report = { recordedAt: new Date().toISOString(), node: process.version, profiles: [] }
 try {

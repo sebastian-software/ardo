@@ -60,8 +60,17 @@ export function MobileSlidePanel({
         tabIndex={-1}
       >
         <div className={styles.mobilePanelHeader}>
-          <ArdoLink to="/" className={styles.logoLink} onClick={onClose}>
-            {logo != null && <HeaderLogo logo={logo} alt={title} />}
+          <ArdoLink
+            to="/"
+            className={styles.logoLink}
+            onClick={onClose}
+            aria-label={title || labels.mobilePanel.home}
+          >
+            {logo != null ? (
+              <HeaderLogo logo={logo} alt={title} />
+            ) : (
+              <span className={styles.siteTitle}>{title || labels.mobilePanel.home}</span>
+            )}
           </ArdoLink>
           <button
             type="button"

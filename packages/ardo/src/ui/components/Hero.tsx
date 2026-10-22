@@ -3,7 +3,7 @@ import { ArdoLink } from "../../runtime/page"
 
 import * as styles from "./Hero.css"
 
-/** Internal route path from React Router */
+/** Internal route path */
 type RoutePath = string
 
 export type ArdoHeroAction = {

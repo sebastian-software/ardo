@@ -1,6 +1,4 @@
-import type MiniSearch from "minisearch"
-
-import { useCallback, useId, useRef, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { navigateTo, resolveArdoHref, useArdoPage } from "../../runtime/page-context"
 
 import type { ArdoLabels } from "../labels"
@@ -14,22 +12,11 @@ import {
   getSearchShortcutModifier,
 } from "./search-a11y"
 import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
+import { loadSearchIndex } from "./search-index"
+import { consumeSearchRecoveryQuery, reloadSearch } from "./search-recovery"
 import * as styles from "./Search.css"
 import { SearchPopover } from "./SearchPopover"
 import { type SearchMatch, SearchResults } from "./SearchResults"
-
-type SearchDoc = {
-  id: string
-  title: string
-  pageTitle: string
-  content: string
-  excerpt: string
-  path: string
-  anchor?: string
-  headingHierarchy: string[]
-  routeGroup?: string
-  section?: string
-}
 
 export type ArdoSearchProps = {
   /** Placeholder text for the search input (default: "Search...") */
@@ -41,27 +28,6 @@ export type ArdoSearchProps = {
    * this off and handles the shortcut itself.
    */
   shortcut?: boolean
-}
-
-let searchIndex: Promise<MiniSearch<SearchDoc>> | undefined
-
-/**
- * Load MiniSearch and index the site's search documents once, when someone
- * first focuses or uses search. Pages render and hydrate without either.
- */
-function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
-  searchIndex ??= Promise.all([import("minisearch"), import("virtual:ardo/search-index")]).then(
-    ([{ default: SearchEngine }, { default: docs }]) => {
-      const index = new SearchEngine<SearchDoc>({
-        fields: ["title", "content", "section"],
-        storeFields: ["title", "pageTitle", "excerpt", "path", "section"],
-        searchOptions: { boost: { title: 2 }, fuzzy: 0.2, prefix: true },
-      })
-      index.addAll(docs)
-      return index
-    }
-  )
-  return searchIndex
 }
 
 function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMatch[] {
@@ -83,31 +49,37 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
 }
 
 function useSearch() {
-  const latestQuery = useRef("")
+  const latestRequest = useRef(0)
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<SearchMatch[]>([])
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("ready")
 
-  const search = (searchQuery: string) => {
+  const search = useCallback((searchQuery: string) => {
     setQuery(searchQuery)
-    latestQuery.current = searchQuery
+    const request = ++latestRequest.current
+    setResults([])
+    setSelectedIndex(0)
     if (!searchQuery.trim()) {
-      setResults([])
       setIsOpen(false)
-      setSelectedIndex(0)
+      setStatus("ready")
       return
     }
-    void loadSearchIndex().then((index) => {
-      // A faster typist may have moved on while the index loaded.
-      if (latestQuery.current !== searchQuery) return
-      setResults(normalizeResults(index.search(searchQuery).slice(0, 10)))
-      setSelectedIndex(0)
-      setIsOpen(true)
-    })
-  }
+    setStatus("loading")
+    setIsOpen(true)
+    void loadSearchIndex()
+      .then((index) => {
+        if (latestRequest.current !== request) return
+        setResults(normalizeResults(index.search(searchQuery).slice(0, 10)))
+        setStatus("ready")
+      })
+      .catch(() => {
+        if (latestRequest.current === request) setStatus("error")
+      })
+  }, [])
 
-  return { isOpen, setIsOpen, query, results, selectedIndex, setSelectedIndex, search }
+  return { isOpen, setIsOpen, query, results, selectedIndex, setSelectedIndex, search, status }
 }
 
 function SearchInput({
@@ -204,10 +176,7 @@ function useSearchA11y({
   return { activeOptionId, getOptionId, listboxId }
 }
 
-export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: ArdoSearchProps) {
-  const page = useArdoPage()
-  const labels = useArdoLabels()
-  const containerRef = useRef<HTMLDivElement>(null)
+function useSearchInputRef(autoFocus: boolean) {
   const inputRef = useRef<HTMLInputElement>(null)
   const setInputRef = useCallback(
     (input: HTMLInputElement | null) => {
@@ -216,7 +185,30 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
     },
     [autoFocus]
   )
+  return { inputRef, setInputRef }
+}
+
+function useSearchRecovery(
+  inputRef: React.RefObject<HTMLInputElement | null>,
+  search: (query: string) => void
+) {
+  useEffect(() => {
+    const input = inputRef.current
+    if (input == null || input.getClientRects().length === 0) return
+    const query = consumeSearchRecoveryQuery()
+    if (query == null) return
+    search(query)
+    input.focus()
+  }, [inputRef, search])
+}
+
+export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: ArdoSearchProps) {
+  const page = useArdoPage()
+  const labels = useArdoLabels()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { inputRef, setInputRef } = useSearchInputRef(autoFocus)
   const state = useSearch()
+  useSearchRecovery(inputRef, state.search)
   const hasQuery = state.query.trim().length > 0
   const expanded = state.isOpen && hasQuery
   const searchA11y = useSearchA11y({
@@ -278,7 +270,9 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
         onKeyDown={handleKeyDown}
         onFocus={() => {
           // Start loading the index while the reader types the first letters.
-          void loadSearchIndex()
+          void loadSearchIndex().catch(() => {
+            // A query shows the error and a retry action; prefetch stays quiet.
+          })
           if (hasQuery) state.setIsOpen(true)
         }}
         activeOptionId={searchA11y.activeOptionId}
@@ -295,6 +289,8 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
             selectedIndex={state.selectedIndex}
             query={state.query}
             labels={labels.search}
+            status={state.status}
+            onRetry={() => reloadSearch(state.query)}
             onClose={() => {
               state.setIsOpen(false)
             }}

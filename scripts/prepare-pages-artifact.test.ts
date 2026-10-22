@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -63,6 +63,20 @@ async function archive(folder = "v4") {
 }
 
 describe("GitHub Pages artifact", () => {
+  it("redirects the retired playground URL to the current gallery without old assets", async () => {
+    await writeManifest({ current: "next", versions: [{ id: "next", path: "/next/" }] })
+    await writePage("client/next", "current docs")
+    await writePage("client/storybook", "retired playground")
+    await writeFile(path.join(root, "client/storybook/old-app.js"), "retired application")
+
+    prepare()
+
+    const redirect = await readFile(path.join(root, "pages/storybook/index.html"), "utf8")
+    expect(redirect).toContain('content="0; url=/next/guide/component-playground/"')
+    expect(redirect).toContain('href="/next/guide/component-playground/"')
+    expect(await readdir(path.join(root, "pages/storybook"))).toEqual(["index.html"])
+  })
+
   it("preserves archived pages and assets alongside the fresh current build", async () => {
     await writePage("source/v4", "archived docs")
     await mkdir(path.join(root, "source/v4/assets"))
