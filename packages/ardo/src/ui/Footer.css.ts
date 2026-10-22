@@ -1,6 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import * as layoutStyles from "./Layout.css"
+import { versionControl } from "./site-controls.css"
 import { vars } from "./theme/contract.css"
 
 export const footer = style({
@@ -236,4 +237,15 @@ export const prevNextTitle = style({
   overflowWrap: "anywhere",
   fontWeight: 600,
   color: vars.color.brand,
+})
+
+// The version control spreads label and select apart in the sidebar; in the
+// footer they sit together at the start.
+export const footerVersion = style({
+  selectors: {
+    [`&.${versionControl}`]: {
+      justifyContent: "flex-start",
+      marginTop: vars.space.sm,
+    },
+  },
 })

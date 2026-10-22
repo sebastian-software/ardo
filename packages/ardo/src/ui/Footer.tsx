@@ -5,7 +5,9 @@ import type { ProjectMeta, SponsorConfig } from "../config/types"
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
 import { joinClassNames } from "./classnames"
 import * as styles from "./Footer.css"
+import { useArdoLayoutVariant } from "./layout-context"
 import { ArdoOwlMark } from "./OwlMark"
+import { ArdoVersionControl } from "./site-controls"
 
 // =============================================================================
 // Footer Component
@@ -219,6 +221,8 @@ export function ArdoFooter({
   const labels = useArdoLabels()
   const resolvedBuildTime = buildTime ?? config.buildTime
   const resolvedBuildHash = buildHash ?? config.buildHash
+  // Docs pages show the version at the end of the sidebar; bare pages have none.
+  const showsVersion = useArdoLayoutVariant() === "bare"
 
   if (children != null) {
     return (
@@ -251,6 +255,7 @@ export function ArdoFooter({
             {(resolvedBuildHash ?? "") !== "" && <> ({resolvedBuildHash})</>}
           </p>
         )}
+        {showsVersion && <ArdoVersionControl className={styles.footerVersion} />}
       </div>
     </footer>
   )

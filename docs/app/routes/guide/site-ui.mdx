@@ -173,6 +173,22 @@ With `search="auto"`, the page layout decides how search looks:
 Use `search="field"` or `search="icon"` to pick one presentation for every page. Below 1024px the
 field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and Linux) opens search.
 
+### Narrow screens
+
+Below 1024px the header keeps only the menu button, the logo, and search, so a long logo still
+fits. The menu ends with the site controls: the version switcher, the language switcher, the
+theme toggle, and everything inside `ArdoHeaderActions`, such as social links.
+
+### Version controls
+
+With [`versioning`](/guide/configuration#versioning) configured, the version switcher sits at the
+end of the sidebar instead of the header. Bare pages show it in the footer. Pages of an older
+version start with a banner that links to the same page in the latest version.
+
+Custom layouts can place the same pieces themselves: `ArdoVersionSwitcher` is the plain select,
+`ArdoVersionControl` adds the visible label, and `ArdoVersionBanner` is the older-version notice.
+Each renders nothing unless the build has two or more versions.
+
 On bare pages the header content shares one page width with `ArdoHero`, `ArdoFeatures`, and
 `ArdoFooter`, so the logo lines up with the page content. Docs pages keep the full-width header
 above the sidebar, content, and table of contents. Change the width with the

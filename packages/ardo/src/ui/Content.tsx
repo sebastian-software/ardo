@@ -11,6 +11,7 @@ import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
 import { getNodeText } from "./text-content"
+import { ArdoVersionBanner } from "./site-controls"
 
 type ContentProps = {
   children: ReactNode
@@ -86,6 +87,7 @@ export function ArdoContent({
 
   return (
     <article className={`ardo-content ${docStyles.contentContainer}`}>
+      <ArdoVersionBanner />
       <ArdoBreadcrumb />
       <ContentHeader
         title={pageData?.frontmatter.title ?? ""}

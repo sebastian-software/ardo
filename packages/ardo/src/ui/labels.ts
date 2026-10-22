@@ -49,6 +49,16 @@ export type ArdoLabels = {
     expand: string
     mainNavigation: string
   }
+  siteControls: {
+    appearance: string
+    language: string
+    links: string
+    version: string
+    /** Banner text on a version other than the latest. */
+    olderVersion: (version: string) => string
+    /** Banner link to the latest version. */
+    latestVersion: (version: string) => string
+  }
   toc: {
     label: string
     navLabel: string
@@ -65,6 +75,7 @@ export type ArdoLabelsInput = {
   mobilePanel?: Partial<ArdoLabels["mobilePanel"]>
   search?: Partial<ArdoLabels["search"]>
   sidebar?: Partial<ArdoLabels["sidebar"]>
+  siteControls?: Partial<ArdoLabels["siteControls"]>
   toc?: Partial<ArdoLabels["toc"]>
 }
 
@@ -117,6 +128,14 @@ export const defaultArdoLabels: ArdoLabels = {
     expand: "Expand",
     mainNavigation: "Main navigation",
   },
+  siteControls: {
+    appearance: "Appearance",
+    language: "Language",
+    links: "Links",
+    version: "Version",
+    olderVersion: (version) => `You are reading the documentation for ${version}.`,
+    latestVersion: (version) => `Go to the latest version (${version})`,
+  },
   toc: {
     label: "On this page",
     navLabel: "Table of contents",
@@ -135,6 +154,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
     mobilePanel: { ...defaultArdoLabels.mobilePanel, ...input.mobilePanel },
     search: { ...defaultArdoLabels.search, ...input.search },
     sidebar: { ...defaultArdoLabels.sidebar, ...input.sidebar },
+    siteControls: { ...defaultArdoLabels.siteControls, ...input.siteControls },
     toc: { ...defaultArdoLabels.toc, ...input.toc },
   }
 }
