@@ -40,7 +40,6 @@
       "types": "./dist/mdx/provider.d.ts",
       "import": "./dist/mdx/provider.js"
     },
-    "./press.css": "./dist/ui/styles.css",
     "./theme": {
       "types": "./dist/theme/index.d.ts",
       "import": "./dist/theme/index.js"

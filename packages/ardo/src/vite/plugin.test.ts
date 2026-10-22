@@ -59,7 +59,7 @@ describe("ardoPlugin", () => {
     const names = plugins.map((plugin) => plugin.name)
     const boundaryIndex = names.indexOf("ardo:project-boundary")
     const resolverIndex = names.indexOf("ardo:managed-runtime")
-    const config = getMainPlugin({ githubPages: false, title: "Docs" }).config(
+    const config = getMainPlugin({ title: "Docs" }).config(
       { root: "/project" },
       { command: "serve", mode: "development" }
     )
@@ -71,7 +71,7 @@ describe("ardoPlugin", () => {
   })
 
   it("adds page meta to Markdown routes after Ferromark compiles them", async () => {
-    const plugins = ardoPlugin({ routes: false, icons: false, githubPages: false, title: "Docs" })
+    const plugins = ardoPlugin({ routes: false, icons: false, title: "Docs" })
     const meta = findPlugin(plugins, "ardo", hasOrderedTransformHook).transform
     expect(meta.order).toBe("post")
 
@@ -92,7 +92,6 @@ describe("ardoPlugin", () => {
 
   it("isolates the docs dependency graph and preserves consumer options", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       vite: { ssr: { noExternal: ["consumer-ui"], target: "webworker" } },
     })
@@ -107,7 +106,6 @@ describe("ardoPlugin", () => {
 
   it("merges the public vite config option into the returned Vite config", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       vite: {
         define: { __BUILD_TIME__: JSON.stringify("custom"), __CUSTOM__: JSON.stringify(true) },
@@ -125,7 +123,7 @@ describe("ardoPlugin", () => {
   })
 
   it("builds the client and server environments into outDir", () => {
-    const plugin = ardoPlugin({ githubPages: false, title: "Docs", outDir: "custom-build" }).find(
+    const plugin = ardoPlugin({ title: "Docs", outDir: "custom-build" }).find(
       (entry) => entry.name === "ardo:static-site"
     )
     const hook = plugin?.config
@@ -144,7 +142,6 @@ describe("ardoPlugin", () => {
 
   it("sets Vite base to the current major version for versioned docs", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       versioning: {
         current: "v3",
@@ -159,7 +156,6 @@ describe("ardoPlugin", () => {
 
   it("uses the deployment base for versioned preview output", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       versioning: {
         current: "v3",
@@ -177,7 +173,6 @@ describe("ardoPlugin", () => {
 
   it("preserves an explicit Vite base for versioned preview output", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       versioning: {
         current: "v3",
@@ -193,8 +188,8 @@ describe("ardoPlugin", () => {
     expect(config.base).toBeUndefined()
   })
 
-  it("uses the build-time GitHub Pages base when Vite loads config for preview", () => {
-    const plugin = getMainPlugin({ githubPages: true, title: "Docs" })
+  it("uses the configured base when Vite loads config for preview", () => {
+    const plugin = getMainPlugin({ base: "/ardo/", title: "Docs" })
 
     const config = plugin.config(
       { root: process.cwd() },
@@ -204,9 +199,16 @@ describe("ardoPlugin", () => {
     expect(config.base).toBe("/ardo/")
   })
 
+  it("serves from the root unless base is set", () => {
+    const plugin = getMainPlugin({ title: "Docs" })
+
+    const config = plugin.config({ root: process.cwd() }, { command: "build", mode: "production" })
+
+    expect(config.base).toBeUndefined()
+  })
+
   it("keeps the Vite base at the version root when i18n is active", () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       versioning: {
         current: "v3",
@@ -224,7 +226,7 @@ describe("ardoPlugin", () => {
   })
 
   it("uses resolved Vite base in the virtual Ardo config", async () => {
-    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+    const plugin = getMainPlugin({ title: "Docs" })
 
     plugin.configResolved({
       base: "/docs/",
@@ -239,7 +241,6 @@ describe("ardoPlugin", () => {
 
   it("exposes versioning and i18n URL config in the virtual Ardo config", async () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       versioning: {
         current: "v3",
@@ -264,7 +265,7 @@ describe("ardoPlugin", () => {
   })
 
   it("normalizes absolute Vite bases before exposing the virtual Ardo config", async () => {
-    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+    const plugin = getMainPlugin({ title: "Docs" })
 
     plugin.configResolved({
       base: "https://cdn.example.com/assets/docs/",
@@ -278,7 +279,7 @@ describe("ardoPlugin", () => {
   })
 
   it("normalizes relative Vite bases before exposing the virtual Ardo config", async () => {
-    const plugin = getMainPlugin({ githubPages: false, title: "Docs" })
+    const plugin = getMainPlugin({ title: "Docs" })
 
     plugin.configResolved({
       base: "./",
@@ -293,7 +294,6 @@ describe("ardoPlugin", () => {
 
   it("exposes brand config with bundled local logo assets", async () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       brand: {
         color: "blue",
@@ -318,7 +318,6 @@ describe("ardoPlugin", () => {
 
   it("keeps public brand logo URLs as direct config values", async () => {
     const plugin = getMainPlugin({
-      githubPages: false,
       title: "Docs",
       brand: {
         logo: "/logo.svg",

@@ -87,11 +87,10 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   title: "My Documentation",
   description: "My awesome documentation site",
-  githubPages: false,
 })
 ```
 
-Set `githubPages: false` for a root deployment or custom domain. Choose the base path for your host with [Deployment](/guide/deployment).
+The site serves from the domain root. For a subpath, such as a GitHub Pages project site, set `base`; the [Deployment](/guide/deployment) guide covers every host.
 
 Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
 adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.

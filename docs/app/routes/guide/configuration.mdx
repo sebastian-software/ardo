@@ -113,8 +113,8 @@ defineArdoConfig({
 ```
 
 <Tip>
-  When deploying to GitHub Pages, Ardo auto-detects the repository name and sets the base path for
-  you. See the `githubPages` option below.
+  A GitHub Pages project site is served under the repository name, so set `base: "/repo-name/"`. See
+  [Deployment](/guide/deployment#github-pages) for every host.
 </Tip>
 
 ### siteUrl
@@ -528,20 +528,6 @@ they migrate.
 
 Configuration for the automatic route generation plugin. Set to `false` to disable auto-routing entirely.
 
-### githubPages
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-When `true`, Ardo auto-detects your GitHub repository name from the git remote and sets `base: '/repo-name/'` for GitHub Pages deployment.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  githubPages: false, // Disable auto-detection
-})
-```
-
 ### icons
 
 - **Type:** `false | { source?: string }`
@@ -743,7 +729,6 @@ Ardo keeps browser-safe runtime imports separate from build-time Node.js imports
 | `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |
 | `ardo/react-dom`     | React DOM APIs, with `/client`, `/server`, and `/static` subpaths.                                                                       |
 | `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                                                                          |
-| `ardo/press.css`     | Compatibility alias for `ardo/ui/styles.css`.                                                                                            |
 
 ---
 

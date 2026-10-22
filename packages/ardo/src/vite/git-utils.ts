@@ -25,41 +25,10 @@ export function findPackageRoot(cwd: string): string | undefined {
 }
 
 /**
- * Detects the GitHub repository name from git remote URL.
- * Returns the repo name (e.g., "ardo" from "github.com/sebastian-software/ardo")
- * or undefined if not a GitHub repo.
- */
-export function detectGitHubRepoName(cwd: string): string | undefined {
-  const remoteUrl = runGitCommand(cwd, "git remote get-url origin")
-  if (remoteUrl == null) {
-    return undefined
-  }
-
-  return parseGitHubRepoName(remoteUrl)
-}
-
-/**
  * Detects the current short git commit hash.
  */
 export function detectGitHash(cwd: string): string | undefined {
   return runGitCommand(cwd, "git rev-parse --short HEAD")
-}
-
-/**
- * Detects the GitHub Pages basename from the git remote URL.
- * Returns "/" in dev mode or when no GitHub repo is detected.
- */
-export function detectGitHubBasename(cwd?: string): string {
-  if (process.env.NODE_ENV !== "production") {
-    return "/"
-  }
-
-  const repoName = detectGitHubRepoName(cwd ?? process.cwd())
-  return repoName != null ? getGitHubPagesBase(repoName) : "/"
-}
-
-export function getGitHubPagesBase(repoName: string): string {
-  return repoName.endsWith(".github.io") ? "/" : `/${repoName}/`
 }
 
 /** Read each source file's latest commit time in one Git invocation. */
@@ -119,25 +88,4 @@ function runGitCommand(cwd: string, command: string): string | undefined {
   } catch {
     return undefined
   }
-}
-
-function parseGitHubRepoName(remoteUrl: string): string | undefined {
-  const normalizedUrl = remoteUrl.trim()
-  if (!normalizedUrl.includes("github.com")) {
-    return undefined
-  }
-
-  const withoutGitSuffix = normalizedUrl.endsWith(".git")
-    ? normalizedUrl.slice(0, -4)
-    : normalizedUrl
-  const slashSeparatedUrl = withoutGitSuffix.replace(":", "/")
-  const urlSegments = slashSeparatedUrl.split("/")
-  const repoName = urlSegments.at(-1)
-  const ownerName = urlSegments.at(-2)
-
-  if (repoName == null || repoName === "" || ownerName == null || ownerName === "") {
-    return undefined
-  }
-
-  return repoName
 }
