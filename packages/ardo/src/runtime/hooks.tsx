@@ -22,8 +22,17 @@ export function useArdoContext(): ArdoContextValue {
   return context
 }
 
+/**
+ * The site config from `ardo.config.ts`. Ardo's entries provide it to the whole
+ * page tree, and `ArdoRoot` provides it again together with the sidebar.
+ */
 export function useArdoConfig(): ArdoConfig {
-  const { config } = useArdoContext()
+  const context = use(ArdoContext)
+  const siteConfig = use(ArdoConfigContext)
+  const config = context?.config ?? siteConfig
+  if (config == null) {
+    throw new Error("useArdoConfig must be used within Ardo's app or an ArdoProvider")
+  }
   return config
 }
 
@@ -58,6 +67,27 @@ export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoPro
 }
 
 export { ArdoContext }
+
+// =============================================================================
+// ArdoConfig — the site config, provided by Ardo's entries
+// =============================================================================
+
+const ArdoConfigContext = createContext<ArdoConfig | null>(null)
+
+type ArdoConfigProviderProps = {
+  config: ArdoConfig
+  children: ReactNode
+}
+
+/**
+ * Provides the site config to the page tree. Ardo's client and server entries
+ * render it around the root component; tests and previews can do the same.
+ */
+export function ArdoConfigProvider({ config, children }: ArdoConfigProviderProps) {
+  return <ArdoConfigContext value={config}>{children}</ArdoConfigContext>
+}
+
+export { ArdoConfigContext }
 
 // =============================================================================
 // ArdoPageDataProvider — injects page-level data (frontmatter, toc) into context

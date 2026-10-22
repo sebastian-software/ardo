@@ -1,7 +1,9 @@
 import { type ReactNode, StrictMode } from "react"
 
+import type { ArdoConfig } from "../config/types"
 import type { ArdoResolvedPage, ArdoRootModule } from "./routing"
 
+import { ArdoConfigProvider } from "./hooks"
 import { ArdoPageProvider } from "./page"
 import { isArdoNotFound } from "./page-context"
 
@@ -10,10 +12,10 @@ import { isArdoNotFound } from "./page-context"
  * missing page renders inside the root like any other page. A render error
  * replaces the root, so a broken site chrome cannot hide the error.
  */
-export function ArdoPageTree({ page, root }: { page: ArdoResolvedPage; root: ArdoRootModule }) {
+export function ArdoPageTree({ config, page, root }: ArdoAppProps) {
   const keepsRoot = page.error == null || isArdoNotFound(page.error)
   const Root = keepsRoot ? (root.default ?? DefaultRoot) : page.component
-  return (
+  const tree = (
     <ArdoPageProvider
       base={page.data.base}
       component={page.component}
@@ -25,18 +27,26 @@ export function ArdoPageTree({ page, root }: { page: ArdoResolvedPage; root: Ard
       <Root />
     </ArdoPageProvider>
   )
+  return config == null ? tree : <ArdoConfigProvider config={config}>{tree}</ArdoConfigProvider>
 }
 
 /**
  * The React root both sides render. The server renders it on its own, so ids
  * from `useId` match what the client hydrates.
  */
-export function ArdoApp({ page, root }: { page: ArdoResolvedPage; root: ArdoRootModule }) {
+export function ArdoApp({ config, page, root }: ArdoAppProps) {
   return (
     <StrictMode>
-      <ArdoPageTree page={page} root={root} />
+      <ArdoPageTree config={config} page={page} root={root} />
     </StrictMode>
   )
+}
+
+type ArdoAppProps = {
+  /** The site config from `virtual:ardo/config`; Ardo's entries always pass it. */
+  config?: ArdoConfig
+  page: ArdoResolvedPage
+  root: ArdoRootModule
 }
 
 function DefaultRoot(): ReactNode {

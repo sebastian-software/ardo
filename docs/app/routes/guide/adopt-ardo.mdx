@@ -48,8 +48,8 @@ the docs with plain URLs.
 
 For an existing Ardo project, switch package scripts to `ardo dev`, `ardo build`, and
 `ardo preview`. Import Vite helpers from `ardo/vite`, React APIs from `ardo/react`, and Ardo's
-runtime APIs such as `ArdoLink` and `useArdoPath` from `ardo/runtime`. Set `jsxImportSource` to
-`ardo` and replace `vite/client` with `ardo/vite/client` in TypeScript configuration. Move Ardo's
+runtime APIs such as `ArdoLink` and `useArdoPath` from `ardo/runtime`. Extend `ardo/tsconfig`
+in the docs package's TypeScript configuration. Move Ardo's
 site, base path, and integration options to optional `ardo.config.ts` with `defineArdoConfig`
 from `ardo/config`. Remove the `ardo()` Vite plugin when the site no longer needs a custom Vite
 config; keep `vite.config.ts` for additional Vite plugins or Vite-specific settings. A project on

@@ -1,26 +1,18 @@
 ---
 title: Getting Started
-description: Set up Ardo 6 with versioned agent instructions and a tested Basic example, or follow the manual installation guide.
+description: Hand the setup prompt to your coding agent, or install Ardo 6 by hand in a few files.
 order: 2
 ---
 
+import { SetupPrompt } from "../../components/SetupPrompt"
+
 # Getting Started
 
-Use the Ardo skill with your coding assistant to set up a new site, adopt Ardo in an existing repository, or upgrade a site. The skill follows the [Agent Instructions](/guide/agent-instructions) and [tested Basic example](/guide/reference-projects). Ardo 6 retires the `create-ardo` starter; [manual installation](#manual-installation) remains available.
+Hand this sentence to your coding agent, in a fresh repository or one you already have. It finds Ardo's versioned [Agent Instructions](/guide/agent-instructions), adapts the tested [Basic example](/guide/reference-projects), and reports how typecheck, tests, and build went. You review the result like any other pull request.
 
-## Use the Ardo Skill or Ask Your Assistant
+<SetupPrompt />
 
-Install the [Ardo skill folder](https://github.com/sebastian-software/ardo/tree/main/skills/ardo) using your assistant's normal skill support. Its [SKILL.md](https://raw.githubusercontent.com/sebastian-software/ardo/main/skills/ardo/SKILL.md) is also available to read directly. Then open the target repository and ask:
-
-```prompt
-Set up Ardo in this repository. Use the Ardo skill, inspect the project, and adapt the tested Basic example. For a new site, use the latest published Ardo release unless I selected a version. Preserve existing application behavior and deployment choices. Run the applicable checks and production build, then verify the home page and a guide in the browser.
-```
-
-The skill selects the matching documentation and example before editing. For an existing Ardo site, it inspects the installed version and treats a major upgrade as a separate choice.
-
-Without skill support, ask your assistant to read `https://ardo-docs.dev/llms.txt` and follow [Agent Instructions](/guide/agent-instructions). The index points to the setup, adoption, upgrade, and optional feature guides. Use the versioned index for a repeatable setup: this guide covers Ardo 6 at `/v6/llms.txt`, with the complete Markdown context at `/v6/llms-full.txt`. Match those instructions and `examples/basic` to the selected release's Git tag. For development before a release, use the instructions, example, and built package from the same checkout revision.
-
-Use the Basic example for the common setup. Add optional API documentation, external content, or deployment configuration through the recipes in [Basic Example](/guide/reference-projects). For an existing app, see [Adopt Ardo in an Existing Project](/guide/adopt-ardo).
+Without an agent, follow the [manual installation](#manual-installation) below. Ardo 6 has no `create-ardo` starter.
 
 ## Prerequisites
 
@@ -97,66 +89,48 @@ adds its build integration automatically, so a custom Vite config does not need 
 
 ### 5. Create app files
 
-An Ardo project needs one app file besides its content: `app/root.tsx`. Its default export is the root component. Ardo renders the HTML shell around it, so you only add a `Layout` export when you need to change that shell (see [Site UI](/guide/site-ui)). Ardo generates the route table from `app/routes/` and supplies the client and server entries itself.
+An Ardo project needs one app file besides its content: `app/root.tsx`. Its default export is the root component, and `<ArdoRoot />` on its own is a complete site: a header with search and the theme toggle, a sidebar with one section per folder in `app/routes/`, and a footer. Ardo renders the HTML shell around it, generates the route table, and supplies the client and server entries, the site config, and its stylesheet.
 
 **`app/root.tsx`**:
 
 ```tsx
-import type { ArdoMetaFunction } from "ardo/runtime"
-import {
-  ArdoGeneratedSidebar,
-  ArdoHeader,
-  ArdoNav,
-  ArdoNavLink,
-  ArdoRoot,
-  ArdoSidebar,
-  ArdoSidebarSection,
-} from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
+import { ArdoRoot } from "ardo/ui"
 
-export const meta: ArdoMetaFunction = () => [{ title: "My Documentation" }]
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Pass `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children to change any part of the chrome, for example to add a navigation link:
+
+```tsx
+import { ArdoHeader, ArdoNav, ArdoNavLink, ArdoRoot } from "ardo/ui"
 
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoNav>
           <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
         </ArdoNav>
       </ArdoHeader>
-
-      <ArdoSidebar>
-        <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
-          <ArdoGeneratedSidebar section="guide" />
-        </ArdoSidebarSection>
-      </ArdoSidebar>
     </ArdoRoot>
   )
 }
 ```
 
-`root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
+[Site UI](/guide/site-ui) covers sidebar sections, the footer, and the `Layout` export for a custom HTML shell. `root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
 
 **`tsconfig.json`**:
 
 ```json
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "jsxImportSource": "ardo",
-    "types": ["ardo/vite/client", "ardo/virtual"],
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true
-  },
+  "extends": "ardo/tsconfig",
   "include": ["app/**/*", "*.ts"]
 }
 ```
+
+The preset sets `jsx`, `jsxImportSource: "ardo"`, and Ardo's type declarations, so React, MDX, and `virtual:` imports typecheck without further setup.
 
 Import React hooks and types from `ardo/react`. Import Ardo's runtime APIs, such as
 `ArdoLink`, `useArdoPath`, and `ArdoMetaFunction`, from `ardo/runtime`, and components from

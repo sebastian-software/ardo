@@ -76,6 +76,7 @@
       "import": "./dist/react-dom/static.js"
     },
     "./package.json": "./package.json",
+    "./tsconfig": "./tsconfig.app.json",
     "./vite/client": {
       "types": "./vite-client.d.ts"
     }
@@ -92,7 +93,8 @@
     "dist",
     "virtual.d.ts",
     "vite-client.d.ts",
-    "bin"
+    "bin",
+    "tsconfig.app.json"
   ],
   "engines": {
     "node": ">=22.22.0"

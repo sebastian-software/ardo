@@ -46,12 +46,14 @@ React DOM, and Vite; TypeScript is only a development tool.
 
 - `app/routes/` contains authored Markdown, MDX, and React pages.
 - `app/Counter.tsx` is a small interactive React component.
-- `app/root.tsx` configures the header, navigation, sidebar, and footer, and sets
-  the default page title through its `meta` export. Ardo supplies the HTML shell,
-  the client and server entries, and the route table.
+- `app/root.tsx` renders `<ArdoRoot />`: header, sidebar, and footer with their
+  defaults. Pass them as children to change them. Ardo supplies the HTML shell,
+  the client and server entries, the route table, the site config, and its
+  stylesheet.
 - Optional `ardo.config.ts` sets the title and site options. This example serves
   from the domain root; select the deployment settings for your host.
-- `tsconfig.json` configures TypeScript and Ardo's shared React runtime.
+- `tsconfig.json` extends `ardo/tsconfig`, which configures TypeScript for
+  Ardo's shared React runtime.
 
 `build/` is generated. Do not edit it by hand. `ardo build` prerenders every page
 to `build/client/` and checks its internal links.

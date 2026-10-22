@@ -119,10 +119,9 @@ applyBrandTheme({
 })
 ```
 
-Import it in your `root.tsx` after Ardo's styles:
+Import it in your `root.tsx`; Ardo's own stylesheet loads before the root module:
 
 ```ts
-import "ardo/ui/styles.css"
 import "./styles/brand.css"
 ```
 
@@ -196,10 +195,9 @@ Create a custom CSS file:
 }
 ```
 
-Import it in your app:
+Import it in your `root.tsx`:
 
 ```ts
-import "ardo/ui/styles.css"
 import "./styles/custom.css"
 ```
 
@@ -301,9 +299,9 @@ globalStyle(".ardo-content a", {
 
 ### Stylesheet ownership and cascade
 
-Import `ardo/ui/styles.css` once in your root module. It includes the complete UI,
+Ardo loads `ardo/ui/styles.css` before your root module. It includes the complete UI,
 reset, and theme styles in the named `ardo` cascade layer. Component imports do
-not load another copy of the stylesheet.
+not load another copy of the stylesheet, and neither does importing it yourself.
 
 Normal unlayered app CSS takes precedence over Ardo's normal layered rules,
 regardless of stylesheet load order. You can override `.ardo-footer` directly

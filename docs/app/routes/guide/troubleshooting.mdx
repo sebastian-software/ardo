@@ -78,8 +78,8 @@ available to application imports.
 
 Ardo generates its route table as a virtual module; there are no generated router types to rebuild. Check the authored route and its imports:
 
-1. Check that `tsconfig.json` includes your `app` directory and lists `ardo/vite/client` and `ardo/virtual` in `types`
-2. Set `jsxImportSource` to `ardo` and import React APIs and types from `ardo/react`
+1. Check that `tsconfig.json` extends `ardo/tsconfig` and includes your `app` directory
+2. Import React APIs and types from `ardo/react`
 3. Run `pnpm exec tsc --noEmit` to see the source error, then restart your editor's TypeScript server if its diagnostics remain stale
 4. For optional API or collection routes, fix errors in their source inputs and configuration rather than editing generated Markdown
 
