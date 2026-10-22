@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { getTocScrollBehavior } from "./Toc"
+import { getTocScrollBehavior } from "./toc-navigation"
 
 describe("getTocScrollBehavior", () => {
   it("honors reduced-motion preferences", () => {

@@ -3,10 +3,15 @@
 import { act, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
+import type { TOCItem } from "../config/types"
+
 import { ArdoProvider } from "../runtime/hooks"
 import { ArdoTOC } from "./Toc"
 
-function renderToc(overflowY: "auto" | "scroll" | "visible" = "visible") {
+function renderToc(
+  overflowY: "auto" | "scroll" | "visible" = "visible",
+  toc: TOCItem[] = [{ id: "first", text: "First", level: 2 }]
+) {
   return render(
     <ArdoProvider
       config={{ title: "Docs" }}
@@ -17,11 +22,12 @@ function renderToc(overflowY: "auto" | "scroll" | "visible" = "visible") {
         filePath: "",
         relativePath: "",
         frontmatter: {},
-        toc: [{ id: "first", text: "First", level: 2 }],
+        toc,
       }}
     >
       <main id="main-content" style={{ overflowY }}>
         <h2 id="first">First</h2>
+        <h3 id="child">Child</h3>
         <ArdoTOC />
       </main>
     </ArdoProvider>
@@ -74,6 +80,34 @@ describe("TOC observer lifecycle", () => {
       view.unmount()
     }
   )
+
+  it("tracks nested subsections while reading", () => {
+    const observe = vi.fn()
+    let notify: (entries: Array<{ target: HTMLElement; isIntersecting: boolean }>) => void = vi.fn()
+    vi.stubGlobal(
+      "IntersectionObserver",
+      vi.fn(function observer(callback: typeof notify) {
+        notify = callback
+        return { observe, disconnect: vi.fn() }
+      })
+    )
+    const view = renderToc("auto", [
+      {
+        id: "first",
+        text: "First",
+        level: 2,
+        children: [{ id: "child", text: "Child", level: 3 }],
+      },
+    ])
+    const child = screen.getByRole("heading", { name: "Child" })
+    expect(observe).toHaveBeenCalledWith(child)
+    act(() => notify([{ target: child, isIntersecting: true }]))
+    expect(screen.getByRole("link", { name: "Child" }).getAttribute("aria-current")).toBe(
+      "location"
+    )
+    expect(screen.getByRole("link", { name: "First" }).getAttribute("aria-current")).toBeNull()
+    view.unmount()
+  })
 
   it("disconnects its observer on unmount", () => {
     const observe = vi.fn()

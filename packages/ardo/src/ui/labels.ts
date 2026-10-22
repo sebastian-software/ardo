@@ -15,6 +15,8 @@ export type ArdoLabels = {
     copy: string
     copied: string
     copyCode: string
+    copyFailed: string
+    manualCode: string
   }
   footer: {
     builtOn: string
@@ -98,6 +100,8 @@ export const defaultArdoLabels: ArdoLabels = {
     copy: "Copy",
     copied: "Copied!",
     copyCode: "Copy code",
+    copyFailed: "Copying failed. Copy the selected code below manually.",
+    manualCode: "Code to copy manually",
   },
   footer: {
     builtOn: "Built on",
