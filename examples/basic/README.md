@@ -63,5 +63,5 @@ to `build/client/` and checks its internal links.
 Add [API documentation](https://ardo-docs.dev/v6/guide/api-documentation),
 [external content or collections](https://ardo-docs.dev/v6/guide/content-sources),
 or [deployment settings](https://ardo-docs.dev/v6/guide/deployment) to this same
-setup. The [Basic Example guide](https://ardo-docs.dev/v6/guide/reference-projects)
-explains the common package boundary and configuration choices.
+setup. The [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions#the-basic-example)
+explain how to copy this example and keep its package boundary.

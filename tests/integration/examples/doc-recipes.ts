@@ -26,16 +26,19 @@ export function assertDocRecipes(
     fs.mkdirSync(path.dirname(destination), { recursive: true })
     fs.writeFileSync(destination, source)
   }
-  write("vite.config.ts", example("upgrade-to-v6", "function releaseFacts"))
+  write("vite.config.ts", example("releases/upgrade-to-v6", "function releaseFacts"))
   run(consumer, ["exec", "tsc", "--noEmit"])
   // The example fetches release data; only its public type contract needs execution here.
   fs.rmSync(path.join(consumer, "vite.config.ts"))
 
-  write("app/components/tailwind-home.tsx", example("tailwind", "export default function Home"))
-  write("app/components/launch-link.tsx", example("custom-theme", "export function LaunchLink"))
+  write("app/components/tailwind-home.tsx", example("custom-theme", "export default function Home"))
+  write(
+    "app/components/launch-link.tsx",
+    example("component-playground", "export function LaunchLink")
+  )
   write(
     "app/components/edit-link.tsx",
-    `${example("custom-theme", "function MyEditLink")}\nexport { MyEditLink };\n`
+    `${example("site-ui", "function MyEditLink")}\nexport { MyEditLink };\n`
   )
   write(
     "ardo.config.ts",

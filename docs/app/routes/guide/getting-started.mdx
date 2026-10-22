@@ -8,7 +8,7 @@ import { SetupPrompt } from "../../components/SetupPrompt"
 
 # Getting Started
 
-Hand this sentence to your coding agent, in a fresh repository or one you already have. It finds Ardo's versioned [Agent Instructions](/guide/agent-instructions), adapts the [tested Basic example](/guide/reference-projects), and reports how typecheck, tests, and build went. You review the result like any other pull request.
+Hand this sentence to your coding agent, in a fresh repository or one you already have. It finds Ardo's versioned [Agent Instructions](/guide/agent-instructions), adapts the [tested Basic example](/guide/agent-instructions#the-basic-example), and reports how typecheck, tests, and build went. You review the result like any other pull request.
 
 <SetupPrompt>Set up Ardo in this repository and follow the official instructions.</SetupPrompt>
 
@@ -22,9 +22,28 @@ You'll need:
 - Linux or Windows on x64/arm64, or macOS on Apple Silicon, with optional native package dependencies enabled
 - [pnpm](https://pnpm.io/) (recommended) or npm/yarn
 
+## Project Structure
+
+Here's what an Ardo project looks like. Files under `app/routes/` become pages, `app/root.tsx` holds the site chrome, and everything else is configuration:
+
+```text
+my-docs/
+├── app/
+│   ├── routes/                  # Pages: .md, .mdx, and .tsx files
+│   │   ├── guide/
+│   │   │   └── getting-started.mdx
+│   │   └── home.tsx             # Home page
+│   └── root.tsx                 # Root component (header, sidebar, footer)
+├── ardo.config.ts               # Optional site configuration
+├── vite.config.ts               # Optional extra Vite plugins or settings
+├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
+├── tsconfig.json
+└── package.json
+```
+
 ## Manual Installation
 
-For setup without an agent, follow these steps and the matching [Basic example](/guide/reference-projects). In an existing workspace, merge the required configuration into your application rather than creating a replacement shell. Ardo's CLI supplies the build integration; React handles UI configuration.
+For setup without an agent, follow these steps and the matching [Basic example](/guide/agent-instructions#the-basic-example). In an existing workspace, merge the required configuration into your application rather than creating a replacement shell. Ardo's CLI supplies the build integration; React handles UI configuration.
 
 ### 1. Create a new project
 
@@ -119,7 +138,7 @@ export default function Root() {
 }
 ```
 
-[Site UI](/guide/site-ui) covers sidebar sections, the footer, and the `Layout` export for a custom HTML shell. `root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
+[Layout & Navigation](/guide/site-ui) covers sidebar sections, the footer, and the `Layout` export for a custom HTML shell. `root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
 
 **`tsconfig.json`**:
 
@@ -211,34 +230,12 @@ The output lands in `build/client/`: one prerendered `index.html` per page, a `4
 pnpm preview
 ```
 
-## Project Structure
-
-Here's what an Ardo project looks like. Files under `app/routes/` become pages, `app/root.tsx` holds the site chrome, and everything else is configuration:
-
-```text
-my-docs/
-├── app/
-│   ├── routes/                  # Pages: .md, .mdx, and .tsx files
-│   │   ├── guide/
-│   │   │   └── getting-started.mdx
-│   │   └── home.tsx             # Home page
-│   └── root.tsx                 # Root component (header, sidebar, footer)
-├── ardo.config.ts               # Optional site configuration
-├── vite.config.ts               # Optional extra Vite plugins or settings
-├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
-├── tsconfig.json
-└── package.json
-```
-
-Use the [Basic example](/guide/reference-projects) from the Git tag matching your installed Ardo version. Add API inputs, external Markdown, or hosting configuration through the optional recipes.
-
 ## Next Steps
 
 Your site is running. Now make it yours:
 
-- Write richer content with [Markdown Features](/guide/markdown)
-- Add optional utility classes with [Tailwind CSS](/guide/tailwind)
-- Customize the look with [Custom Theme](/guide/custom-theme)
-- Style with type-safe tokens using [Vanilla Extract](/guide/custom-theme#vanilla-extract-tokens) — `.css.ts` files work out of the box
-- [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, or Vercel
-- Explore the [API Reference](/api-reference)
+- Add pages, sidebar sections, a logo, and header links with [Layout & Navigation](/guide/site-ui#common-tasks)
+- Write richer content with [Markdown & MDX](/guide/markdown) and the ready-made [Components](/guide/component-playground)
+- Change colors and styles with [Theming](/guide/custom-theme), including optional [Tailwind CSS](/guide/custom-theme#tailwind-css)
+- [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, Vercel, or any static host
+- Generate reference pages with [API Documentation](/guide/api-documentation)

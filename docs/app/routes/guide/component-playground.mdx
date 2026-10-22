@@ -1,18 +1,98 @@
 ---
-title: Component Gallery
-description: Try Ardo's components in the real documentation layout, with examples for MDX authors and theme maintainers.
-order: 11
+title: Components
+description: Every component Ardo ships, live in the real documentation layout, with MDX examples and props.
+order: 5
+redirectFrom:
+  - /v6/guide/icons
+  - /v6/guide/component-inventory
 ---
 
 import { FileText, Github, Globe } from "ardo/icons"
 import { ArdoHero as Hero, ArdoFeatures as Features, ArdoFeatureCard as FeatureCard } from "ardo/ui"
 import { GalleryIcons, GalleryPreview } from "../../components/ComponentGallery"
 
-# Component Gallery
+# Components
 
-Try the components that ship with Ardo. These examples use the same theme, styles, and React runtime as the rest of this site. Switch the theme in the header or resize the page to review them in context.
+Ardo ships the components documentation pages need most: callouts, badges, cards, tabs, accordions, steps, code blocks, icons, and landing-page blocks. Each one follows the theme in light and dark mode and works with the keyboard. The examples below run in the real layout of this site, so switch the theme in the header or resize the window to see them in context.
 
-Authoring components such as `Tabs`, `Card`, and `Tip` are available in MDX without imports. In TSX, import their `Ardo`-prefixed equivalents from `ardo/ui`, such as `ArdoTabs` and `ArdoCard`. Landing-page components are imported explicitly, as shown below. See the [component inventory](/guide/component-inventory) for the full authoring baseline.
+In MDX, use the components without imports, for example `Tip`, `Card`, and `Tabs`. In TSX, import their `Ardo`-prefixed equivalents from `ardo/ui`, such as `ArdoTip`, `ArdoCard`, and `ArdoTabs`. Landing-page components are imported explicitly in both.
+
+## Callouts
+
+Choose the variant that matches the information. All five use the site's theme tokens and support a custom title.
+
+<Tip title="Keep related instructions together">
+  Use a callout for a short piece of guidance that belongs next to the task.
+</Tip>
+<Info title="Static output">Ardo prerenders routes during the production build.</Info>
+<Note title="Optional configuration">
+  A route can use frontmatter to override its title and sidebar position.
+</Note>
+<Warning title="Check the destination">
+  Review the deployment base path before publishing a versioned site.
+</Warning>
+<Danger title="Destructive example">
+  Export your data before replacing a directory that contains work you need.
+</Danger>
+
+```mdx
+<Tip title="Keep related instructions together">Put the guidance next to the task.</Tip>
+```
+
+The same variants are available as [GitHub-style alerts](/guide/markdown#callouts) in plain Markdown.
+
+## Badges
+
+Badges add a compact status to a sentence. They stay inline: <Badge>New</Badge> <Badge variant="success">Stable</Badge> <Badge variant="warning">Preview</Badge> <Badge variant="danger">Deprecated</Badge> <Badge variant="info">Reference</Badge> <Badge icon="✦">With icon</Badge>.
+
+```mdx
+<Badge variant="success">Stable</Badge>
+<Badge icon="✦">With icon</Badge>
+```
+
+## Cards
+
+Use linked cards for navigation and static cards for a short summary. The grid collapses to one column on small screens.
+
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
+    Set up a documentation site with an assistant or follow the manual steps.
+  </Card>
+  <Card title="Configuration" icon="Settings" href="/guide/configuration">
+    Configure routes, API reference, metadata, and deployment output.
+  </Card>
+  <Card title="Local components" icon="Code">
+    Import components from the docs project or an installed component package.
+  </Card>
+  <Card
+    title="Source repository"
+    icon={<Github size={20} />}
+    href="https://github.com/sebastian-software/ardo"
+  >
+    Review the implementation and contribute changes on GitHub.
+  </Card>
+</CardGroup>
+
+```mdx
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
+    Set up a documentation site.
+  </Card>
+  <Card title="Local components" icon="Code">
+    Import components into your MDX routes.
+  </Card>
+</CardGroup>
+```
+
+| Component   | Prop        | Type                  | Purpose                                                              |
+| ----------- | ----------- | --------------------- | -------------------------------------------------------------------- |
+| `CardGroup` | `cols`      | `1 \| 2 \| 3 \| 4`    | Preferred number of columns on wide screens. Defaults to `2`.        |
+| `CardGroup` | `children`  | `ReactNode`           | Cards to render in the responsive grid.                              |
+| `Card`      | `title`     | `string`              | Required card heading.                                               |
+| `Card`      | `href`      | `string`              | Optional internal or external destination. Makes the card clickable. |
+| `Card`      | `icon`      | `string \| ReactNode` | Registered icon name or custom React node.                           |
+| `Card`      | `children`  | `ReactNode`           | Body content.                                                        |
+| `Card`      | `className` | `string`              | Additional CSS class.                                                |
 
 ## Tabs
 
@@ -52,6 +132,18 @@ Use tabs for equivalent choices, such as package managers. Select a tab or focus
 </Tabs>
 ```
 
+For custom components that create tabs or panels internally, set `defaultValue` on `Tabs`
+and give each tab/panel pair matching explicit `value` props.
+
+| Component  | Prop           | Type        | Purpose                                                                |
+| ---------- | -------------- | ----------- | ---------------------------------------------------------------------- |
+| `Tabs`     | `defaultValue` | `string`    | Initial active tab value. Defaults to the first tab.                   |
+| `Tabs`     | `children`     | `ReactNode` | A `TabList` and matching `TabPanels`.                                  |
+| `Tab`      | `value`        | `string`    | Stable value that matches a `TabPanel`. Optional when order is stable. |
+| `Tab`      | `children`     | `ReactNode` | Tab label.                                                             |
+| `TabPanel` | `value`        | `string`    | Matching value for the tab content. Optional when order matches tabs.  |
+| `TabPanel` | `children`     | `ReactNode` | Panel content.                                                         |
+
 ## Accordions
 
 Put optional explanations in an accordion. In a group with `onlyOneOpen`, opening an item closes its sibling. Space and Enter toggle the focused item; Up and Down move between triggers.
@@ -85,7 +177,31 @@ A standalone accordion can start open:
   the supported workflows.
 </Accordion>
 
-## Code and copying
+## Steps
+
+Wrap an ordered list in `Steps` to show a sequence. Each step can contain prose, links, or code blocks.
+
+<Steps>
+  <ol>
+    <li>
+      Create a home route in <code>app/routes</code>.
+    </li>
+    <li>Write a guide and link it from the home page.</li>
+    <li>Build the site and resolve broken internal links.</li>
+  </ol>
+</Steps>
+
+```mdx
+<Steps>
+  <ol>
+    <li>Create a home route.</li>
+    <li>Write a guide.</li>
+    <li>Build the site.</li>
+  </ol>
+</Steps>
+```
+
+## Code Blocks
 
 Code blocks include a copy button that copies the code without the title or line numbers. Markdown fences are highlighted at build time; the `CodeBlock` component also accepts a string directly.
 
@@ -116,100 +232,193 @@ Use `CodeGroup` for related snippets with their own file names:
   </CodeGroup>
 </GalleryPreview>
 
-The [Markdown guide](/guide/markdown#syntax-highlighting) covers highlighted lines, line numbers, and wrapped agent prompts.
+Markdown fences support titles, highlighted lines, line numbers, and wrapped agent prompts; see [Syntax Highlighting](/guide/markdown#syntax-highlighting).
 
-## Cards
+### In TSX Routes
 
-Use linked cards for navigation and static cards for a short summary. The grid collapses to one column on small screens.
+The `ArdoCodeBlock` component can be used directly in `.tsx` route files. Just write the code as children — no template literals or special escaping needed:
 
-<CardGroup cols={2}>
-  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
-    Set up a documentation site with an assistant or follow the manual steps.
-  </Card>
-  <Card title="Configuration" icon="Settings" href="/guide/configuration">
-    Configure routes, API reference, metadata, and deployment output.
-  </Card>
-  <Card title="Local components" icon="Code">
-    Import components from the docs project or an installed component package.
-  </Card>
-  <Card
-    title="Source repository"
-    icon={<Github size={20} />}
-    href="https://github.com/sebastian-software/ardo"
-  >
-    Review the implementation and contribute changes on GitHub.
-  </Card>
-</CardGroup>
+```tsx
+import { ArdoCodeBlock } from "ardo/ui"
 
-```mdx
-<CardGroup cols={2}>
-  <Card title="Getting Started" icon="Rocket" href="/guide/getting-started">
-    Set up a documentation site.
-  </Card>
-  <Card title="Local components" icon="Code">
-    Import components into your MDX routes.
-  </Card>
-</CardGroup>
+export default function MyPage() {
+  return (
+    <ArdoCodeBlock language="tsx">
+      export function Hello() {
+        return <div>Hello world!</div>
+      }
+    </ArdoCodeBlock>
+  )
+}
 ```
 
-## Callouts
+The `ardo:codeblock-highlight` Vite plugin processes ArdoCodeBlock **before the JSX parser runs**, so the children can contain any syntax (`<`, `{`, `>`, etc.) without causing errors. Common indentation is stripped automatically.
 
-Choose the variant that matches the information. All five use the site's theme tokens and support a custom title.
+The `code` prop and template literal children are also supported:
 
-<Tip title="Keep related instructions together">
-  Use a callout for a short piece of guidance that belongs next to the task.
-</Tip>
-<Info title="Static output">Ardo prerenders routes during the production build.</Info>
-<Note title="Optional configuration">
-  A route can use frontmatter to override its title and sidebar position.
-</Note>
-<Warning title="Check the destination">
-  Review the deployment base path before publishing a versioned site.
-</Warning>
-<Danger title="Destructive example">
-  Export your data before replacing a directory that contains work you need.
-</Danger>
-
-```mdx
-<Tip title="Keep related instructions together">Put the guidance next to the task.</Tip>
+```tsx
+<ArdoCodeBlock code="const x = 42" language="typescript" />
 ```
 
-The same variants are available as [GitHub-style alerts](/guide/markdown#github-style-alerts) in plain Markdown.
+If the `language` prop is dynamic (from a variable), build-time highlighting is skipped and the code renders as plain text.
 
-## Badges
+## Icons
 
-Badges add a compact status to a sentence. They stay inline: <Badge>New</Badge> <Badge variant="success">Stable</Badge> <Badge variant="warning">Preview</Badge> <Badge variant="danger">Deprecated</Badge> <Badge variant="info">Reference</Badge> <Badge icon="✦">With icon</Badge>.
+Ardo includes 50 [Streamline Core Line](https://streamlinehq.com/icons/core-line) icons for documentation content. They share the same 14 × 14 grid, rounded strokes, and `currentColor` as the built-in sidebar and header controls.
 
-```mdx
-<Badge variant="success">Stable</Badge>
-<Badge icon="✦">With icon</Badge>
-```
+These are the registered content icons, shown at 14 and 28 pixels. Use the visible name with `Icon`, or import its component from `ardo/icons`.
 
-## Steps
+<GalleryIcons />
 
-Wrap an ordered list in `Steps` to show a sequence. Each step can contain prose, links, or code blocks.
+### Use in MDX
 
-<Steps>
-  <ol>
-    <li>
-      Create a home route in <code>app/routes</code>.
-    </li>
-    <li>Write a guide and link it from the home page.</li>
-    <li>Build the site and resolve broken internal links.</li>
-  </ol>
-</Steps>
+All 50 Core icons are available automatically. Use their names directly without imports or a registration call:
 
 ```mdx
-<Steps>
-  <ol>
-    <li>Create a home route.</li>
-    <li>Write a guide.</li>
-    <li>Build the site.</li>
-  </ol>
-</Steps>
+<Icon name="Zap" size={20} />
+<Card title="Deploy your site" icon="Rocket">
+  Build the static output and publish it to your host.
+</Card>
 ```
 
-## Hero and features
+| Component | Prop      | Type                           | Purpose                                 |
+| --------- | --------- | ------------------------------ | --------------------------------------- |
+| `Icon`    | `name`    | `string`                       | Registered icon name.                   |
+| `Icon`    | `size`    | `number`                       | Optional rendered icon size.            |
+| `Icon`    | SVG props | `SVGAttributes<SVGSVGElement>` | Passed to the registered SVG component. |
+
+### Use in React
+
+```tsx
+import { BookOpen, Rocket, ShieldCheck } from "ardo/icons"
+
+<BookOpen size={20} />
+<Rocket size={28} className="launch-icon" />
+<ShieldCheck size={20} aria-label="Security checks passed" />
+```
+
+The default size is 24 px. Set `size` to a number or CSS length, or pass native `width` and `height` attributes. Icons inherit the surrounding text color. They are decorative by default; supply `aria-label` or `aria-labelledby` when the icon conveys information without accompanying text.
+
+`ArdoIcon` renders a registered icon by name, for example inside a link:
+
+```tsx
+import { ArdoIcon, ArdoLink } from "ardo/ui"
+
+export function LaunchLink() {
+  return (
+    <ArdoLink to="/guide/getting-started">
+      <ArdoIcon name="Rocket" aria-hidden /> Get started
+    </ArdoLink>
+  )
+}
+```
+
+### Add or Override Icons
+
+Use `registerIcons()` in `app/root.tsx` to add other React SVG components or brand icons:
+
+```tsx
+import { Github } from "ardo/icons"
+import { registerIcons } from "ardo/ui"
+
+registerIcons({ Github })
+```
+
+Then use `<Icon name="Github" />` in MDX. Registering an existing name overrides its built-in component. For icons from another library, declare that library as a direct dependency and import its components in your registration module.
+
+`getRegisteredIconNames()` returns the built-in and custom registry keys when you need to validate user-facing configuration.
+
+### Choose an Icon
+
+Use these names when importing from `ardo/icons` or referring to an icon in MDX. Each icon below is rendered at 20 px.
+
+#### Content and navigation
+
+| Icon                                   | Export         | Suggested use                            |
+| -------------------------------------- | -------------- | ---------------------------------------- |
+| <Icon name="Archive" size={20} />      | `Archive`      | Archived pages and past releases         |
+| <Icon name="ArrowRight" size={20} />   | `ArrowRight`   | Next steps and calls to action           |
+| <Icon name="Bookmark" size={20} />     | `Bookmark`     | Reference material and saved information |
+| <Icon name="BookOpen" size={20} />     | `BookOpen`     | Guides and tutorials                     |
+| <Icon name="Copy" size={20} />         | `Copy`         | Copying snippets and values              |
+| <Icon name="Download" size={20} />     | `Download`     | Downloads and exported artifacts         |
+| <Icon name="ExternalLink" size={20} /> | `ExternalLink` | Links to external resources              |
+| <Icon name="FileText" size={20} />     | `FileText`     | Documents and written content            |
+| <Icon name="Folder" size={20} />       | `Folder`       | Directories and content collections      |
+| <Icon name="Image" size={20} />        | `Image`        | Screenshots and visual assets            |
+| <Icon name="Link" size={20} />         | `Link`         | Cross-references and related resources   |
+| <Icon name="List" size={20} />         | `List`         | Lists and tables of contents             |
+| <Icon name="Table" size={20} />        | `Table`        | Structured data and comparisons          |
+| <Icon name="Upload" size={20} />       | `Upload`       | Uploads and imported content             |
+
+#### Development and delivery
+
+| Icon                               | Export     | Suggested use                                  |
+| ---------------------------------- | ---------- | ---------------------------------------------- |
+| <Icon name="Branch" size={20} />   | `Branch`   | Branches, forks, and version-control workflows |
+| <Icon name="Bug" size={20} />      | `Bug`      | Known issues and debugging                     |
+| <Icon name="Code" size={20} />     | `Code`     | Code examples and API reference                |
+| <Icon name="FileCode" size={20} /> | `FileCode` | Source files and configuration examples        |
+| <Icon name="Package" size={20} />  | `Package`  | Packages and dependencies                      |
+| <Icon name="Plug" size={20} />     | `Plug`     | Integrations and connections                   |
+| <Icon name="Rocket" size={20} />   | `Rocket`   | Launches and deployment                        |
+| <Icon name="Terminal" size={20} /> | `Terminal` | Command-line tools and shell examples          |
+| <Icon name="TestTube" size={20} /> | `TestTube` | Tests and experiments                          |
+| <Icon name="Zap" size={20} />      | `Zap`      | Speed and quick actions                        |
+
+#### Infrastructure and security
+
+| Icon                                  | Export        | Suggested use                          |
+| ------------------------------------- | ------------- | -------------------------------------- |
+| <Icon name="Cloud" size={20} />       | `Cloud`       | Cloud hosting and managed services     |
+| <Icon name="Database" size={20} />    | `Database`    | Data storage and persistence           |
+| <Icon name="Globe" size={20} />       | `Globe`       | Websites and global availability       |
+| <Icon name="Layers" size={20} />      | `Layers`      | Architecture and layered systems       |
+| <Icon name="Lock" size={20} />        | `Lock`        | Authentication and access control      |
+| <Icon name="Server" size={20} />      | `Server`      | Servers and backend services           |
+| <Icon name="ShieldCheck" size={20} /> | `ShieldCheck` | Security checks and quality guarantees |
+
+#### People and communication
+
+| Icon                                    | Export          | Suggested use                       |
+| --------------------------------------- | --------------- | ----------------------------------- |
+| <Icon name="Languages" size={20} />     | `Languages`     | Translations and localization       |
+| <Icon name="MessageCircle" size={20} /> | `MessageCircle` | Community, feedback, and discussion |
+| <Icon name="User" size={20} />          | `User`          | User accounts and profiles          |
+| <Icon name="Users" size={20} />         | `Users`         | Teams and collaborators             |
+
+#### Guidance and discovery
+
+| Icon                                    | Export          | Suggested use                      |
+| --------------------------------------- | --------------- | ---------------------------------- |
+| <Icon name="Flag" size={20} />          | `Flag`          | Getting started and milestones     |
+| <Icon name="Help" size={20} />          | `Help`          | FAQs and support                   |
+| <Icon name="Info" size={20} />          | `Info`          | Context and explanatory notes      |
+| <Icon name="Lightbulb" size={20} />     | `Lightbulb`     | Concepts and tips                  |
+| <Icon name="Search" size={20} />        | `Search`        | Discovery and troubleshooting      |
+| <Icon name="TriangleAlert" size={20} /> | `TriangleAlert` | Warnings and important limitations |
+
+#### Planning and maintenance
+
+| Icon                                 | Export       | Suggested use                          |
+| ------------------------------------ | ------------ | -------------------------------------- |
+| <Icon name="Check" size={20} />      | `Check`      | Completed steps and successful results |
+| <Icon name="Clock" size={20} />      | `Clock`      | Timing and recent changes              |
+| <Icon name="History" size={20} />    | `History`    | Changelogs and revision history        |
+| <Icon name="LayoutGrid" size={20} /> | `LayoutGrid` | Components and feature collections     |
+| <Icon name="ListChecks" size={20} /> | `ListChecks` | Checklists and setup requirements      |
+| <Icon name="Pencil" size={20} />     | `Pencil`     | Editing and contributions              |
+| <Icon name="Settings" size={20} />   | `Settings`   | Settings and configuration             |
+| <Icon name="Workflow" size={20} />   | `Workflow`   | Processes and automation               |
+| <Icon name="Wrench" size={20} />     | `Wrench`     | Configuration and maintenance          |
+
+### Brand Icons and License
+
+`Github`, `Linkedin`, `Npm`, `Twitter`, and `Youtube` are also available from `ardo/icons`, with matching `Icon` aliases such as `GithubIcon`. Brand marks retain their own proportions and colors follow `currentColor`.
+
+Core icons are © Streamline Design Inc., used under the Streamline Premium License for use as part of Ardo. They are not covered by Ardo's MIT license. See [ICONS-LICENSE.md](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/ICONS-LICENSE.md) for redistribution terms and attribution.
+
+## Hero and Features
 
 `Hero` and `Features` compose landing pages. This compact hero shows its secondary text and actions; on a home page, add `name` for the main heading and optionally an image or version badge.
 
@@ -248,22 +457,8 @@ import { ArdoHero as Hero } from "ardo/ui"
 />
 ```
 
-## Icons
-
-These are the registered content icons, shown at 14 and 28 pixels. Use the visible name with `Icon`, or import its component from `ardo/icons`. The [icon guide](/guide/icons) explains sizing and custom registration.
-
-<GalleryIcons />
-
-```mdx
-<Icon name="BookOpen" size={20} />
-```
-
-## Layout and navigation
+## Layout and Navigation
 
 The page around these examples is the live layout example: header, section navigation, sidebar, breadcrumbs, article, outline, page actions, and footer. On a narrow screen, open the menu and the on-page outline. Use search and the theme toggle in the header to inspect their real behavior.
 
-See [Site UI](/guide/site-ui) for composition examples and [Custom Theme](/guide/custom-theme) to change the palette. The examples inherit those changes without a separate preview theme.
-
-## Work on a component
-
-From the repository root, run `pnpm docs:dev` and open this route. Add or update the MDX example with the component change. Use `pnpm docs:build` to check static rendering and links, then `pnpm test:e2e` for browser interactions. The browser suite covers tabs, accordions, copying, themes, search, and responsive navigation; unit tests cover component logic and additional states.
+See [Layout & Navigation](/guide/site-ui) for composition examples and [Theming](/guide/custom-theme) to change the palette. The examples inherit those changes without a separate preview theme.

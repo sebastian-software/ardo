@@ -39,7 +39,7 @@ export function WhereArdoFits() {
         ))}
       </ul>
       <p className={styles.moreLink}>
-        <ArdoLink to="/guide/comparison">Read the full comparison →</ArdoLink>
+        <ArdoLink to="/guide/what-is-ardo#how-ardo-compares">Read the full comparison →</ArdoLink>
       </p>
     </section>
   )

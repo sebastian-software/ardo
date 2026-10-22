@@ -1,14 +1,15 @@
 ---
 title: Upgrade to Ardo 6
 description: Move from React Router to Ardo's static site build, remove the router files, and switch to Ardo's link and page APIs.
-order: 15
+order: 1
+redirectFrom: /v6/guide/upgrade-to-v6
 ---
 
 # Upgrade to Ardo 6
 
 Ardo 6 builds static sites with Vite alone. It no longer uses React Router: neither `react-router` nor `@react-router/dev` is part of the toolchain, and there is no client-side router. Ardo renders every page to HTML at build time, and each link loads the next prerendered document, which then hydrates.
 
-Most of the migration removes files rather than rewriting them. Your routes in `app/routes/`, your root component, and your Ardo configuration stay. The background is recorded in [ADR 0020](https://github.com/sebastian-software/ardo/blob/main/docs/adr/0020-static-site-without-react-router.md).
+Most of the migration removes files rather than rewriting them. Your routes in `app/routes/`, your root component, and your Ardo configuration stay. The background is recorded in [ADR 0020](https://github.com/sebastian-software/ardo/blob/main/docs/adr/0020-static-site-without-react-router.md). If the site used the `typedoc` option, also follow [Migrate from TypeDoc](/guide/releases/migrate-from-typedoc).
 
 ## How the build works now
 
@@ -36,11 +37,11 @@ Customized entry files have no direct replacement. Move provider setup into the 
 
 ## Update content icons
 
-`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
+`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/component-playground#icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
 
 All 50 Core icons are registered automatically. Remove their imports and `registerIcons()` calls from `app/root.tsx`; keep registration calls for additional custom icons. Use `Code` where an older example used `Code2`, including `<Icon name="Code" />` and `<Card icon="Code">` in MDX.
 
-The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/icons) for all included motifs and their usage terms.
+The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/component-playground#icons) for all included motifs and their usage terms.
 
 ## Update `app/root.tsx`
 
@@ -88,7 +89,7 @@ export default function Root() {
 
 Keep `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children when they carry props or navigation; without children, `ArdoRoot` renders the same three parts with their defaults.
 
-Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Site UI](/guide/site-ui#layout-the-html-shell).
+Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/site-ui#layout-the-html-shell).
 
 Route modules keep their `meta` and `handle` exports, for example `export const handle = { layout: "bare" }`.
 

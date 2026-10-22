@@ -1,12 +1,12 @@
 ---
 title: Troubleshooting
 description: Fix common setup, build, styling, content, and deployment problems in Ardo projects.
-order: 9
+order: 13
 ---
 
 # Troubleshooting
 
-Most Ardo issues come from the boundary between Ardo's CLI configuration, the routes in `app/routes`, and Markdown/MDX content. Start with the section that matches the symptom, then compare the integration with a [version-matched Basic example](/guide/reference-projects).
+Most Ardo issues come from the boundary between Ardo's CLI configuration, the routes in `app/routes`, and Markdown/MDX content. Start with the section that matches the symptom, then compare the integration with a [version-matched Basic example](/guide/agent-instructions#the-basic-example).
 
 ## Installation Issues
 
@@ -198,21 +198,3 @@ If your issue isn't listed here:
 1. Check the [GitHub Issues](https://github.com/sebastian-software/ardo/issues) for similar problems
 2. Open a [GitHub Discussion](https://github.com/sebastian-software/ardo/discussions) for questions
 3. Create a new issue with a minimal reproduction
-
-### Native TSX highlighting and HTML compatibility
-
-Literal `ArdoCodeBlock` samples use Ferromark's standalone fence renderer,
-sharing Markdown's title/label, highlighted-line, and line-number metadata.
-Generated JSX children retain native blank/trailing lines; copying uses the
-original `code` prop or the outdented literal children. Explicit component
-title, label, line numbers, and literal highlighted-line props take precedence
-over metadata defaults. Dynamic props, interpolated templates, and custom JSX
-children keep their runtime behavior.
-
-`highlightCode` from `ardo/vite` continues to return HTML and `__html` remains
-a supported `ArdoCodeBlock` input. That compatibility helper uses the direct `@ferriki/core` dependency
-and the HTML metadata adapter. `MarkdownConfig.theme` retains its
-Ferriki `ThemeInput` type. Ferromark bundles its own native highlighter: updating
-the direct Core dependency does not update that bundled copy. The HTML helper
-and native JSX renderer can produce different markup; both preserve their
-respective public output contracts.

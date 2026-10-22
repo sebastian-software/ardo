@@ -337,14 +337,14 @@ Gegen dieses Kriterium gehalten:
 Damit „einfach" nicht Geschmackssache bleibt, schlage ich eine Messlatte vor, gegen die
 jeder künftige PR geprüft werden kann:
 
-| Messlatte                                          | Ziel            | Heute            |
-| -------------------------------------------------- | --------------- | ---------------- |
-| Zeilen vor dem Agenten-Prompt im Getting Started   | 2               | 1 (war 25)       |
-| Dateien, die ein Neuling von Hand anlegt           | ≤ 3             | 7                |
-| Zeilen in tsconfig/root.tsx ohne erklärbaren Grund | 0               | 0 (war 4)        |
-| Guide-Seiten in der Sidebar                        | ≤ 12 + 1 Gruppe | 26               |
-| Zeilen für eine Marke mit Logo und Schrift         | ≤ 10            | 44 (eigene Site) |
-| Warnzeilen bei `ardo dev` in Basic                 | 0               | 3                |
+| Messlatte                                          | Ziel            | Heute                  |
+| -------------------------------------------------- | --------------- | ---------------------- |
+| Zeilen vor dem Agenten-Prompt im Getting Started   | 2               | 1 (war 25)             |
+| Dateien, die ein Neuling von Hand anlegt           | ≤ 3             | 7                      |
+| Zeilen in tsconfig/root.tsx ohne erklärbaren Grund | 0               | 0 (war 4)              |
+| Guide-Seiten in der Sidebar                        | ≤ 12 + 1 Gruppe | 13 + 1 Gruppe (war 26) |
+| Zeilen für eine Marke mit Logo und Schrift         | ≤ 10            | 44 (eigene Site)       |
+| Warnzeilen bei `ardo dev` in Basic                 | 0               | 3                      |
 
 Was ich nicht weiß und deshalb als Annahme markiere:
 
@@ -370,8 +370,12 @@ Was ich nicht weiß und deshalb als Annahme markiere:
    `ArdoRoot` holt Config und Styles selbst und generiert die Sidebar. `ardo/tsconfig` zum
    Erweitern. Seiten ohne Titel bekommen den Site-Titel. `root.tsx` in Basic ist eine Zeile
    JSX.
-3. **Dann, Docs:** Getting Started linear, Agent-Seiten zusammenlegen, Upgrades
-   einklappen, Maintainer-Inhalte raus, Rezepte ergänzen, README aus der Landing ableiten.
+3. **Dann, Docs (erledigt):** 13 Guide-Seiten plus die eingeklappte Gruppe „Releases“
+   statt 26. Vier Agenten-Seiten sind eine, der Vergleich steht in „What is Ardo?“,
+   Komponenten, Icons und Tailwind haben je ein Zuhause, Maintainer-Inhalte stehen in
+   CONTRIBUTING, „Layout & Navigation“ beginnt mit acht Rezepten, das README folgt der
+   Landing. Frontmatter bleibt eine eigene Seite, weil die Zusammenlegung mit Markdown
+   eine Seite von über 600 Zeilen ergäbe.
 4. **Zuletzt, Theming:** ein Vokabular, `brand` als Einstieg, tote Tokens weg, Callouts aus
    Hues, Favicon-Einstiege zusammenziehen, Schrift-Rezept, `custom-theme.mdx` halbieren.
 

@@ -165,7 +165,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
       path.join(consumer, "openapi.yaml"),
       "openapi: 3.1.0\ninfo:\n  title: Pet API\n  version: 1.0.0\npaths: {}\n"
     )
-    for (const recipe of ["custom-theme", "openapi"]) {
+    for (const recipe of ["custom-theme", "api-documentation"]) {
       const source = fs.readFileSync(
         path.join(repositoryRoot, `docs/app/routes/guide/${recipe}.mdx`),
         "utf8"
