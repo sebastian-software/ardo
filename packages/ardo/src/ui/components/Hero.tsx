@@ -92,14 +92,20 @@ function HeroActionButton({ action }: { action: ArdoHeroAction }) {
   )
 }
 
-function resolveHeroImage(image: ArdoHeroProps["image"], name: string | undefined) {
-  if (typeof image === "string") {
-    return { url: image, alt: name ?? "" }
-  }
-  if (image == null || isValidElement(image)) {
-    return { url: "", alt: "" }
-  }
-  return { url: image.light, alt: image.alt ?? name ?? "" }
+function HeroImage({ image, name }: Pick<ArdoHeroProps, "image" | "name">) {
+  if (isValidElement(image)) return <div>{image}</div>
+  if (image == null) return null
+  const light = typeof image === "string" ? image : image.light
+  if (light === "") return null
+  const dark = typeof image === "string" ? undefined : image.dark
+  const alt = typeof image === "string" ? (name ?? "") : (image.alt ?? name ?? "")
+  const hasDark = dark != null && dark !== ""
+  return (
+    <div>
+      <img src={light} alt={alt} className={hasDark ? styles.heroImageLight : undefined} />
+      {hasDark && <img src={dark} alt={alt} className={styles.heroImageDark} />}
+    </div>
+  )
 }
 
 export function ArdoHero({
@@ -111,18 +117,10 @@ export function ArdoHero({
   className,
   version,
 }: ArdoHeroProps) {
-  const imageElement = isValidElement(image) ? image : undefined
-  const img = imageElement === undefined ? resolveHeroImage(image, name) : { url: "", alt: "" }
-
   return (
     <section className={className ?? styles.hero}>
       <div className={`${styles.heroContainer} ${styles.heroAnimate}`}>
-        {imageElement !== undefined && <div>{imageElement}</div>}
-        {img.url !== "" && (
-          <div>
-            <img src={img.url} alt={img.alt} />
-          </div>
-        )}
+        <HeroImage image={image} name={name} />
         <div>
           {(version ?? "") !== "" && <span className={styles.heroVersion}>v{version}</span>}
           {(name ?? "") !== "" && <h1 className={styles.heroName}>{name}</h1>}

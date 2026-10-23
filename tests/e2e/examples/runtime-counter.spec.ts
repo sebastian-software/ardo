@@ -229,3 +229,24 @@ test("document mode updates the custom header offset on mobile and keeps anchors
   expect(await header.evaluate((element) => element.getBoundingClientRect().top)).toBe(0)
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
 })
+
+test.describe("build date hydration", () => {
+  test.use({ timezoneId: "America/Los_Angeles" })
+
+  test("keeps the UTC build date when the reader is on the previous calendar day", async ({
+    page,
+    request,
+  }) => {
+    const errors: string[] = []
+    page.on("pageerror", (error) => errors.push(error.message))
+    const html = await (await request.get("/")).text()
+    expect(html).toContain("January 5, 2026")
+    await page.goto("/")
+    const counter = page.getByTestId("runtime-counter")
+    await expect(counter).toHaveAttribute("data-hydrated", "true")
+    await counter.click()
+    await expect(counter).toHaveText("Count: 1")
+    await expect(page.locator(".ardo-footer")).toContainText("January 5, 2026")
+    expect(errors).toEqual([])
+  })
+})

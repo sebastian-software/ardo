@@ -81,6 +81,11 @@ function createRouteInfo(params: {
   }
 
   const relativePath = path.relative(rootDir, fullPath)
+  if (/[#?]/u.test(relativePath)) {
+    throw new Error(
+      `[ardo] Route file "${fullPath}" contains a URL-reserved character (# or ?). Rename the file or directory to remove these characters.`
+    )
+  }
   const baseName = stripTrailingExtension(entryName, extension)
   const urlPath = toRoutePath({
     baseName,

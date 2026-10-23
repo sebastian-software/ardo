@@ -68,8 +68,9 @@ describe("ArdoFooter", () => {
   })
 
   it("formats build dates with the site locale and keeps invalid dates readable", () => {
-    const date = "2026-01-05T12:00:00.000Z"
+    const date = "2026-01-05T00:30:00.000Z"
     const expected = new Date(date).toLocaleDateString("de-DE", {
+      timeZone: "UTC",
       month: "long",
       day: "numeric",
       year: "numeric",

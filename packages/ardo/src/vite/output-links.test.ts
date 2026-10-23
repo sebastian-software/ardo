@@ -126,6 +126,26 @@ describe("checkOutputLinks", () => {
     expect(hrefs(result)).toStrictEqual(["index.html /docs/gone/"])
   })
 
+  it.each(["/", "/project/"])(
+    "checks versioned localized output mounted at %s without a version index",
+    (deploymentBase) => {
+      const base = `${deploymentBase}v6/`
+      write(
+        "v6/en/index.html",
+        page(
+          `<a href="${base}en/guide/">Guide</a><a href="${base}en/missing/">Missing</a>`,
+          `<script src="${base}assets/app.js"></script>`
+        )
+      )
+      write("v6/en/guide/index.html", page(`<a href="${base}en/">Home</a>`))
+      write("v6/assets/app.js")
+
+      const result = checkOutputLinks({ clientDir, base, deploymentBase })
+
+      expect(hrefs(result)).toStrictEqual([`v6/en/index.html ${base}en/missing/`])
+    }
+  )
+
   it("accepts redirect sources and excluded patterns with or without the base", () => {
     write("_redirects", "# moved pages\n/v2/old /v2/guide/ 301\n")
     write(

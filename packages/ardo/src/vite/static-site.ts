@@ -142,6 +142,7 @@ export async function prerenderSite(options: {
 /** Check internal links in the written site. Throws when `level` is `error`. */
 export function checkSiteLinks(options: {
   base: string
+  deploymentBase: string
   clientDir: string
   linkCheck: LinkCheckConfig
   logger: Logger
@@ -151,6 +152,7 @@ export function checkSiteLinks(options: {
   if (linkCheck.enabled === false) return
   const result = checkOutputLinks({
     base: options.base,
+    deploymentBase: options.deploymentBase,
     checkAnchors: linkCheck.checkAnchors,
     clientDir: options.clientDir,
     exclude: linkCheck.exclude,

@@ -55,7 +55,7 @@ export default function Root() {
           </ArdoSidebarSection>
         </ArdoSidebar>
 
-        <ArdoFooter message="Built with Ardo" />
+        <ArdoFooter message="Built with Ardo" buildTime="2026-01-05T00:30:00.000Z" />
       </ArdoRoot>
 
       {isDocumentScrollPage && <footer data-testid="external-site-footer">Site footer</footer>}

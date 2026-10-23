@@ -7,6 +7,8 @@ export type OutputLinkCheckOptions = {
   clientDir: string
   /** Public base path of the site, for example `/` or `/v6/`. */
   base: string
+  /** Public URL mounted at the client directory root, including a deployment subpath. */
+  deploymentBase?: string
   /** Absolute links to this origin count as internal. */
   siteUrl?: string
   /** Link patterns to skip. A single `*` matches any infix. */
@@ -94,7 +96,12 @@ function readSite(options: OutputLinkCheckOptions): Site {
     checkAnchors: options.checkAnchors !== false,
     exclude: options.exclude ?? [],
     files,
-    mount: files.has(joinPath(base.slice(1), "index.html")) ? "/" : base,
+    mount:
+      options.deploymentBase == null
+        ? files.has(joinPath(base.slice(1), "index.html"))
+          ? "/"
+          : base
+        : normalizeBase(options.deploymentBase),
     pages,
     redirects: readRedirects(options.clientDir),
     siteOrigin: parseOrigin(options.siteUrl),

@@ -253,6 +253,15 @@ describe("build outputs", () => {
       "<loc>/docs/v3/en/guide</loc>"
     )
     expect(generateVersionsJson(versionedConfig)).toContain('"path": "/docs/v3/"')
+    const assets = createBuildOutputAssets(versionedEntries, versionedConfig)
+    expect(assets.find((asset) => asset.fileName === "v3/index.html")?.source).toContain(
+      "url=/docs/v3/en/"
+    )
+    expect(assets.some((asset) => asset.fileName === "docs/v3/index.html")).toBe(false)
+    expect(assets.find((asset) => asset.fileName === "_redirects")?.source).toContain(
+      "/docs/v3/ /docs/v3/en/ 301"
+    )
+    expect(assets.some((asset) => asset.fileName === "old-guide/index.html")).toBe(true)
   })
 
   it("can keep root pages when versioning disables root redirects", () => {

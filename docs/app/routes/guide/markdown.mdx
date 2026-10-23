@@ -8,6 +8,13 @@ order: 4
 
 Ardo is Markdown-first, but it does not trap you in Markdown. Start with plain prose and code blocks; when a page needs a live React example, a custom component, or a design-system callout, switch to MDX without changing tools.
 
+## Page Filenames
+
+Files in `app/routes/` become page URLs. Use descriptive names such as
+`guide/getting-started.mdx` or `guide/c-sharp.mdx`. Ardo rejects `#` and `?` in
+route filenames and directory names because they delimit URL fragments and queries.
+Use those characters in page titles and content instead.
+
 ## Basic Syntax
 
 ### Headings
