@@ -165,6 +165,22 @@ describe("llms-text", () => {
     ])
   })
 
+  it("nests a page's own headings below its title in full text", () => {
+    const text = generateLlmsFullTxt(
+      [
+        entry({
+          content: "# Guide\n\n## Install\n\n```md\n## Example\n```\n",
+          frontmatter: { title: "Guide" },
+          routePath: "/guide",
+        }),
+      ],
+      config
+    )
+    expect(text).toContain("## Guide\n")
+    expect(text).toContain("\n### Install\n")
+    expect(text).toContain("```md\n## Example\n```")
+  })
+
   it("lists every reference page when the reference folder has no index", () => {
     const text = generateLlmsTxt(
       [

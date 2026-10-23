@@ -3,6 +3,7 @@ import type { RouteManifestEntry } from "./route-manifest"
 
 import { getCurrentVersion } from "../config/versioning"
 import { resolveSectionLabel } from "../ui/section-kinds"
+import { shiftHeadings } from "./llms-headings"
 import { resolveLlmsContentLinks } from "./llms-links"
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
 import { type ReadingOrderEntry, sortByReadingOrder } from "./reading-order"
@@ -68,7 +69,8 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     }
     lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
     if (content.trim() !== "") {
-      lines.push(content, "")
+      // The page title is the `##` above, so the page's own headings move one level down.
+      lines.push(shiftHeadings(content, 1), "")
     }
   }
 

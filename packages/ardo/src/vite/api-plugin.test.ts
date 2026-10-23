@@ -186,7 +186,13 @@ describe("native API build and development plugin", () => {
     watcher.emit("change", source)
     release()
     await expect.poll(readPage, pollOptions).toContain("boolean")
-    expect(ws.send.mock.calls.filter(([message]) => message.type === "full-reload")).toHaveLength(1)
+    // Pages are written before the reload goes out, so wait for the message as well.
+    await expect
+      .poll(
+        () => ws.send.mock.calls.filter(([message]) => message.type === "full-reload"),
+        pollOptions
+      )
+      .toHaveLength(1)
     const published = await fs.stat(pageFile(), { bigint: true })
     expect(published.mtimeNs).not.toBe(initial.mtimeNs)
     await fs.writeFile(source, "/** Read a value. */\nexport function read() { return false; }")
