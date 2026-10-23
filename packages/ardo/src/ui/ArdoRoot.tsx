@@ -11,6 +11,7 @@ import {
 import type { ArdoConfig } from "../config/types"
 
 import { createBrandThemeCss } from "../config/brand"
+import { ArdoMDXComponentsContext, type ArdoMDXComponents } from "../mdx/components-context"
 import {
   ArdoConfigContext,
   ArdoProvider,
@@ -37,6 +38,8 @@ export type ArdoRootProps = {
    * root component can leave it out; pass it in tests and previews.
    */
   config?: ArdoConfig
+  /** Add to or override the default Markdown component set, including its wrapper. */
+  components?: ArdoMDXComponents
   /** Edit link configuration (applied site-wide via ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
@@ -247,6 +250,7 @@ function resolveRootHeader(
  */
 export function ArdoRoot({
   config: configProp,
+  components,
   editLink,
   lastUpdated,
   labels,
@@ -298,7 +302,9 @@ export function ArdoRoot({
           sidebar={resolvedSidebar}
           footer={resolvedFooter}
         >
-          {chrome.content ?? <ArdoOutlet />}
+          <ArdoMDXComponentsContext value={components ?? {}}>
+            {chrome.content ?? <ArdoOutlet />}
+          </ArdoMDXComponentsContext>
         </ArdoLayout>
       </ArdoProvider>
     </>

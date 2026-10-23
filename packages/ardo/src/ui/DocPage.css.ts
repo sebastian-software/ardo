@@ -19,6 +19,9 @@ export const docPage = style({
   // Breathing room before the footer band on tall pages; on short pages the
   // grid's flex: 1 grows and the footer sits at the bottom of the viewport.
   paddingBottom: vars.space["3xl"],
+  selectors: {
+    '&[data-rail="false"]': { gridTemplateColumns: "minmax(0, 1fr)" },
+  },
   "@media": {
     "(min-width: 1536px)": {
       gridTemplateColumns: `minmax(0, 78rem) ${vars.layout.tocWidth}`,

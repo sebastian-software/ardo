@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 import { useArdoConfig, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
-import { ArdoContent } from "./Content"
+import { ArdoContent, type ArdoContentProps } from "./Content"
 import * as styles from "./DocPage.css"
 import { ArdoLayout } from "./Layout"
 import { ArdoTOC } from "./Toc"
@@ -11,15 +11,7 @@ import { ArdoTOC } from "./Toc"
 // DocPage Component (includes Layout - for backwards compatibility)
 // =============================================================================
 
-type DocPageProps = {
-  children: ReactNode
-  /** Edit link configuration (forwarded to Content) */
-  editLink?: { pattern: string; text?: string }
-  /** Last updated configuration (forwarded to Content) */
-  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
-  /** TOC label (forwarded to TOC) */
-  tocLabel?: string
-}
+export type ArdoDocPageProps = ArdoDocContentProps
 
 /**
  * A documentation page with Ardo's layout around it: header, sidebar, article,
@@ -33,28 +25,10 @@ type DocPageProps = {
  * </ArdoDocPage>
  * ```
  */
-export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPageProps) {
-  const pageData = useArdoPageData()
-  const hideToc = pageData?.frontmatter.outline === false
-
+export function ArdoDocPage(props: ArdoDocPageProps) {
   return (
     <ArdoLayout>
-      <div className={`ardo-doc-page ${styles.docPage}`}>
-        <ArdoContent
-          editLink={editLink}
-          lastUpdated={lastUpdated}
-          metaPlacement="footer-on-narrow"
-          outline={hideToc ? undefined : <ArdoTOC label={tocLabel} collapsible />}
-        >
-          {children}
-        </ArdoContent>
-        <ArdoPageRail
-          editLink={editLink}
-          lastUpdated={lastUpdated}
-          tocLabel={tocLabel}
-          hideToc={hideToc}
-        />
-      </div>
+      <ArdoDocContent {...props} />
     </ArdoLayout>
   )
 }
@@ -63,14 +37,13 @@ export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPa
 // DocContent Component (without Layout - for use with _layout.tsx)
 // =============================================================================
 
-type DocContentProps = {
-  children: ReactNode
-  /** Edit link configuration (forwarded to Content) */
-  editLink?: { pattern: string; text?: string }
-  /** Last updated configuration (forwarded to Content) */
-  lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
-  /** TOC label (forwarded to TOC) */
+export type ArdoDocContentProps = Omit<ArdoContentProps, "metaPlacement"> & {
+  /** TOC label (forwarded to TOC). */
   tocLabel?: string
+  /** Outline source. DOM mode includes component-rendered headings after hydration. */
+  tocSource?: "metadata" | "dom"
+  /** Replace the right-hand page rail; false omits it. Undefined keeps the default. */
+  rail?: ReactNode
 }
 
 /**
@@ -86,26 +59,54 @@ type DocContentProps = {
  * </ArdoLayout>
  * ```
  */
-export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: DocContentProps) {
+export function ArdoDocContent({
+  children,
+  editLink,
+  lastUpdated,
+  tocLabel,
+  tocSource,
+  header,
+  footer,
+  outline,
+  rail,
+}: ArdoDocContentProps) {
   const pageData = useArdoPageData()
   const hideToc = pageData?.frontmatter.outline === false
 
   return (
-    <div className={`ardo-doc-page ${styles.docPage}`}>
+    <div
+      className={`ardo-doc-page ${styles.docPage}`}
+      data-rail={rail === false || rail === null ? "false" : undefined}
+    >
       <ArdoContent
         editLink={editLink}
         lastUpdated={lastUpdated}
         metaPlacement="footer-on-narrow"
-        outline={hideToc ? undefined : <ArdoTOC label={tocLabel} collapsible />}
+        header={header}
+        footer={footer}
+        outline={
+          outline === undefined ? (
+            hideToc ? undefined : (
+              <ArdoTOC label={tocLabel} source={tocSource} collapsible />
+            )
+          ) : (
+            outline
+          )
+        }
       >
         {children}
       </ArdoContent>
-      <ArdoPageRail
-        editLink={editLink}
-        lastUpdated={lastUpdated}
-        tocLabel={tocLabel}
-        hideToc={hideToc}
-      />
+      {rail === undefined ? (
+        <ArdoPageRail
+          editLink={editLink}
+          lastUpdated={lastUpdated}
+          tocLabel={tocLabel}
+          hideToc={hideToc}
+          tocSource={tocSource}
+        />
+      ) : (
+        rail
+      )}
     </div>
   )
 }
@@ -115,11 +116,13 @@ function ArdoPageRail({
   lastUpdated,
   tocLabel,
   hideToc = false,
+  tocSource,
 }: {
   editLink?: { pattern: string; text?: string }
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   tocLabel?: string
   hideToc?: boolean
+  tocSource?: "metadata" | "dom"
 }) {
   const siteConfig = useArdoSiteConfig()
   const locale = useArdoConfig().lang ?? "en"
@@ -157,7 +160,7 @@ function ArdoPageRail({
       )}
       {!hideToc && (
         <section className={`ardo-page-rail-section ${styles.pageRailSection}`}>
-          <ArdoTOC label={tocLabel} />
+          <ArdoTOC label={tocLabel} source={tocSource} />
         </section>
       )}
     </aside>

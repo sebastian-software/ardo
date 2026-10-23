@@ -17,6 +17,7 @@ import {
 import * as controlStyles from "./site-controls.css"
 
 export function MobileSlidePanel({
+  id,
   logo,
   title,
   nav,
@@ -26,6 +27,7 @@ export function MobileSlidePanel({
   children,
   onClose,
 }: {
+  id?: string
   logo?: ArdoLogo
   title: string
   nav?: ReactNode
@@ -47,6 +49,7 @@ export function MobileSlidePanel({
       <div className={styles.mobileBackdrop} data-open="true" onClick={onClose} />
 
       <div
+        id={id}
         ref={panelRef}
         className={joinClassNames("ardo-mobile-panel", styles.mobilePanel)}
         data-open="true"
