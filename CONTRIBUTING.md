@@ -65,6 +65,36 @@ context-aware UI, public API naming, the MDX component gallery and browser tests
 and release conventions.
 Read them before changing routing, public exports, theming, build output, or release behavior.
 
+#### Markdown pipeline
+
+Ardo prepares each Markdown/MDX route once, parses its raw YAML frontmatter,
+and renders one native module. The TOC uses that module's final headings after
+title omission, heading offsets, prefixes, and native ID planning. Manifest
+and search readers use the same preparation/render options and final heading
+planner; sidebar and collection readers only extract preparation metadata.
+Prepared documents are scoped to each invocation, so edits are reparsed during
+HMR. Compiler and highlighter resources are reused by theme and line-number
+configuration. Metadata reads skip highlighting; rendering still highlights
+each document's fences.
+
+#### Code block rendering
+
+Literal `ArdoCodeBlock` samples use Ferromark's standalone fence renderer,
+sharing Markdown's title/label, highlighted-line, and line-number metadata.
+Generated JSX children retain native blank/trailing lines; copying uses the
+original `code` prop or the outdented literal children. Explicit component
+title, label, line numbers, and literal highlighted-line props take precedence
+over metadata defaults. Dynamic props, interpolated templates, and custom JSX
+children keep their runtime behavior.
+
+`highlightCode` from `ardo/vite` continues to return HTML and `__html` remains
+a supported `ArdoCodeBlock` input. That compatibility helper uses the direct
+`@ferriki/core` dependency and the HTML metadata adapter. `MarkdownConfig.theme`
+retains its Ferriki `ThemeInput` type. Ferromark bundles its own native
+highlighter: updating the direct Core dependency does not update that bundled
+copy. The HTML helper and native JSX renderer can produce different markup;
+both preserve their respective public output contracts.
+
 ### Coordinated native-engine development
 
 Ardo uses the published Ferromark 3.4 native module and prepared-document APIs.
@@ -170,11 +200,19 @@ pnpm test
 pnpm test:watch
 ```
 
+`pnpm test:integration` typechecks and builds the Basic example and applies the
+focused fixtures under `tests/fixtures/`: API, multiple projects, collections,
+GitHub Pages, runtime, and bare layout. Basic and its optional API configuration
+also install, typecheck, and build as isolated consumers of the packed Ardo
+package. CI runs these checks on Node.js 22, 24, and 26. The fixtures are
+regression inputs, not setup references; `examples/basic` stays the one public
+example.
+
 ### Review UI Components
 
-Use the [Component Gallery](https://ardo-docs.dev/v6/guide/component-playground/)
+Use the [Components page](https://ardo-docs.dev/v6/guide/component-playground/)
 to inspect component variants in the actual Ardo documentation app. Run
-`pnpm docs:dev` and open the gallery from the guide navigation. The page uses
+`pnpm docs:dev` and open Components from the guide navigation. The page uses
 the default site header, search, sidebar, theme control, and mobile navigation;
 its content demonstrates the public authoring components with MDX and React.
 
@@ -271,6 +309,10 @@ Include:
 - Why the changes were needed
 - How to test the changes
 - Screenshots (if UI changes)
+
+When a feature lands, an issue is closed as not planned, or a roadmap item is
+split, update the status tables on the
+[Releases page](docs/app/routes/guide/releases/index.mdx).
 
 ## Reporting Issues
 

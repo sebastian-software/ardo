@@ -1,0 +1,82 @@
+---
+title: Releases
+description: What Ardo 6 ships, what is experimental or planned, and the guides for upgrading from earlier majors.
+order: 20
+collapsed: true
+redirectFrom: /v6/guide/status-roadmap
+---
+
+# Releases
+
+Ardo releases the framework, UI, and runtime as one package. This page keeps product claims grounded: what is ready to use today, what still evolves, and what is planned. The [changelog](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md) lists every release.
+
+## Upgrade Guides
+
+- [Upgrade to Ardo 6](/guide/releases/upgrade-to-v6) from Ardo 5: a static build without React Router, and fewer app files.
+- [Upgrade to Ardo 5](/guide/releases/upgrade-to-v5) from Ardo 4: Ferromark for Markdown and MDX, and Ferriki for highlighting.
+- [Upgrade to Ardo 4.0](/guide/releases/upgrade-to-v4) from Ardo 3: stable major-version URLs.
+- [Migrate from TypeDoc](/guide/releases/migrate-from-typedoc): native API documentation replaces the `typedoc` option.
+
+Coding agents follow the same guides through the [Agent Instructions](/guide/agent-instructions).
+
+## Shipped
+
+These capabilities are available in the current package line.
+
+| Area                    | Notes                                                                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static site build       | Vite build with static HTML for every page, file-based routes, and no client-side router.                                                          |
+| Markdown and MDX routes | Markdown, MDX, GFM, frontmatter, TOC extraction, and built-in MDX component mapping.                                                               |
+| Syntax highlighting     | Build-time Ferriki highlighting for Markdown code fences and static `CodeBlock` usage.                                                             |
+| Search                  | Generated search data with a built-in search UI.                                                                                                   |
+| Native API reference    | Configured with `api` in `ardo.config.ts` for TypeScript library APIs.                                                                             |
+| Content collections     | Schema-validated local Markdown and MDX materialized as routes and typed static records for custom React views.                                    |
+| Social metadata         | Generated canonical, Open Graph, and Twitter metadata for Markdown routes.                                                                         |
+| SEO build outputs       | Sitemap, robots output, LLM text artifacts, link checking, and static redirects.                                                                   |
+| Theme hue overrides     | Brand, accent, and neutral hues retint the default color ramp from `ardo.config.ts` or CSS.                                                        |
+| Components              | Callouts, badges, cards, tabs, accordions, steps, code blocks, icons, hero, and features, shown live on [Components](/guide/component-playground). |
+
+## Experimental
+
+These areas work, but the API or maintenance story may still evolve.
+
+| Area                  | Notes                                                                                                                                                      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native compiler SDK   | Pinned to a TypeScript 7.1 nightly; compiler compatibility and API stability require care.                                                                 |
+| Theme token overrides | CSS variables and Vanilla Extract tokens are public, but the broader theming API and build-time customization story may still change.                      |
+| Major docs versioning | Supports static major-version folders, root HTML redirects, `versions.json`, a version switcher at the end of the sidebar, and a banner on older versions. |
+| Static i18n           | Complete locale route trees, locale-aware sidebars and switcher, and build-time rejection of missing translations; no runtime fallback.                    |
+| Static OpenAPI        | Generates local OpenAPI 3.0/3.1 JSON or YAML reference pages; an interactive playground remains out of scope.                                              |
+
+## Planned
+
+| Area             | Tracking issue                                                              | Notes                                                                                     |
+| ---------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Migration guides | [#134](https://github.com/sebastian-software/ardo/issues/134)               | Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed.              |
+| Mermaid diagrams | [ferromark#531](https://github.com/sebastian-software/ferromark/issues/531) | Static SVG rendering at compile time. Until then, `mermaid` fences render as code blocks. |
+
+## Nice to Have
+
+These are useful for some teams but are not central to the documentation framework.
+
+| Area                      | Tracking issue                                              | Notes                                                                                              |
+| ------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Tooltip component         | [#81](https://github.com/sebastian-software/ardo/issues/81) | Needs careful accessibility and mobile interaction design.                                         |
+| Page feedback widget      | [#74](https://github.com/sebastian-software/ardo/issues/74) | The UI is small; the harder part is deciding where feedback data goes.                             |
+| Math notation             | [#68](https://github.com/sebastian-software/ardo/issues/68) | Browser-native MathML may keep this lightweight if the markdown pipeline integration stays simple. |
+| Custom font configuration | [#77](https://github.com/sebastian-software/ardo/issues/77) | Most teams can already handle this through CSS and app-level head customization.                   |
+| File tree block           |                                                             | Project-structure docs use code fences today.                                                      |
+| Package manager tabs      |                                                             | `Tabs` with one code block per package manager covers this today.                                  |
+| Example frame             |                                                             | Interactive React examples need a sandboxing and hydration story first.                            |
+
+## Not Planned
+
+Ardo is intentionally not trying to become every kind of documentation product.
+
+| Area                         | Reason                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Hosted editing workflow      | Ardo is repository-native and self-hosted. Teams that want hosted collaboration should use a hosted docs platform. |
+| Built-in analytics product   | Static deployments can integrate analytics providers directly; Ardo does not need to own event storage.            |
+| Lowest-JavaScript prose site | Ardo prioritizes React-native reuse. Astro, VitePress, or Starlight can be better for prose-only sites.            |
+| TypeScript hover examples    | Twoslash-style hovers carry high maintenance and toolchain weight relative to their reach.                         |
+| Embedded live playgrounds    | Sandpack-style editors conflict with Ardo's static-first, small-bundle output.                                     |

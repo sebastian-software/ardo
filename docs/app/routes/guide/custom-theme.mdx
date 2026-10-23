@@ -1,20 +1,20 @@
 ---
-title: Custom Theme
-description: Change the brand color, swap components, or build a custom React documentation theme.
-order: 7
+title: Theming
+description: Recolor Ardo from three hues, override CSS variables and Vanilla Extract tokens, and add Tailwind CSS for your own content.
+order: 8
+redirectFrom: /v6/guide/tailwind
 ---
 
-# Custom Theme
+# Theming
 
-Ardo starts with a polished default theme, but it is not a black box. React teams should be able to carry their brand, design system, and component choices into documentation without fighting the framework. You have five levels of customization, and you can mix them freely:
+Ardo starts with a polished default theme, but it is not a black box. React teams should be able to carry their brand and design system into documentation without fighting the framework. Start simple and go deeper when you need to:
 
-1. **Brand shortcut** — Set brand, accent, neutral, and logo values in `ardo.config.ts`
-2. **CSS variables** — Change colors, spacing, and typography without touching components
-3. **Vanilla Extract tokens** — Type-safe styling with `ardo/theme` imports and `.css.ts` files
-4. **Component overrides** — Replace individual pieces (header, sidebar, footer) with your own React components
-5. **Full custom theme** — Build your entire layout from scratch, using Ardo's runtime hooks for data
+1. **Brand shortcut**: set brand, accent, and neutral hues and a logo in `ardo.config.ts`.
+2. **CSS variables**: change colors, spacing, and typography without touching components.
+3. **Vanilla Extract tokens**: type-safe styling with `ardo/theme` imports and `.css.ts` files.
+4. **Tailwind CSS**: utility classes for your own pages and components.
 
-Start simple. Go deeper when you need to.
+To replace the header, sidebar, or footer with your own React components, see [Layout & Navigation](/guide/site-ui#replace-parts-of-the-chrome).
 
 ## Brand Shortcut
 
@@ -119,7 +119,7 @@ applyBrandTheme({
 })
 ```
 
-Import it in your `root.tsx`; Ardo's own stylesheet loads before the root module:
+Import it in your `root.tsx`:
 
 ```ts
 import "./styles/brand.css"
@@ -299,31 +299,37 @@ globalStyle(".ardo-content a", {
 
 ### Stylesheet ownership and cascade
 
-Ardo loads `ardo/ui/styles.css` before your root module. It includes the complete UI,
-reset, and theme styles in the named `ardo` cascade layer. Component imports do
-not load another copy of the stylesheet, and neither does importing it yourself.
+Ardo loads `ardo/ui/styles.css` for every site, after the CSS your root module imports. It
+includes the complete UI, reset, and theme styles in the named `ardo` cascade layer. Component
+imports do not load another copy of the stylesheet, and neither does importing it yourself.
 
 Normal unlayered app CSS takes precedence over Ardo's normal layered rules,
 regardless of stylesheet load order. You can override `.ardo-footer` directly
-without adding extra selectors. If your app uses layers, declare their order
-before importing the stylesheets, for example `@layer ardo, app;`.
+without adding extra selectors. If your app uses layers, declare their order in the
+first stylesheet your root module imports, for example `@layer ardo, app;`.
 
 ### Stable override hooks
 
 Ardo's generated Vanilla Extract class names are implementation details. Use the stable hook classes
 for narrowly scoped overrides:
 
-| Class                | Landmark                      |
-| -------------------- | ----------------------------- |
-| `.ardo-header`       | Default header shell          |
-| `.ardo-nav`          | Default navigation container  |
-| `.ardo-mobile-panel` | Mobile navigation dialog      |
-| `.ardo-sidebar`      | Sidebar shell                 |
-| `.ardo-footer`       | Default footer shell          |
-| `.ardo-content`      | Rendered Markdown/MDX content |
+| Region                                | Classes                                                                                                           |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Header and navigation                 | `.ardo-header`, `.ardo-nav`, `.ardo-mobile-panel`                                                                 |
+| Sidebar                               | `.ardo-sidebar`, `.ardo-sidebar-tabs`, `.ardo-sidebar-panel`, `.ardo-sidebar-header`, `.ardo-sidebar-nav`         |
+| Document grid and optional right rail | `.ardo-doc-page`, `.ardo-page-rail`, `.ardo-page-rail-section`                                                    |
+| Article and introduction              | `.ardo-content`, `.ardo-content-header`, `.ardo-content-title`, `.ardo-content-description`, `.ardo-content-body` |
+| Page outline                          | `.ardo-toc`                                                                                                       |
+| Code sheets                           | `.ardo-code-block`, `.ardo-code-title`, `.ardo-code-wrapper`, `.ardo-copy-button`                                 |
+| Footer                                | `.ardo-footer`                                                                                                    |
 
 These classes are override anchors, not a replacement styling API. Prefer tokens and component props
 first, then use the hooks for project-specific adjustments that need a stable selector.
+
+Inside an existing design system, scope overrides to the site's own wrapper. A site that already
+offers section navigation can hide `.ardo-sidebar-tabs` and keep the sidebar's reading links, as long
+as every section stays reachable on desktop and mobile. Put theme variables that also need to reach
+body-level portals, such as search, on `ArdoRootLayout`'s `className`.
 
 ### Available token categories
 
@@ -339,220 +345,102 @@ The `vars` object provides tokens for:
 - **`vars.space`** — The spacing scale from `xs` to `4xl`
 - **`vars.radius`** — `sm`, `base`, `lg`, `xl`, and `full` border radii
 
-## Component Overrides
+## Tailwind CSS
 
-When CSS isn't enough, replace individual components with your own. Since everything in Ardo is a React component, this works exactly how you'd expect — write a component, use it in your layout:
+[Tailwind CSS v4](https://tailwindcss.com/) is an optional integration for custom landing pages, examples, component demos, and MDX content. Retain your existing styling setup when adopting Ardo.
 
-```tsx
-// components/MyHeader.tsx
-import { useArdoConfig } from "ardo/runtime"
+Ardo handles the framework UI with Vanilla Extract. Tailwind is for _your_ content, so you can style without leaving React or adding a second theme system.
 
-export function MyHeader() {
-  const config = useArdoConfig()
+### Setup
 
+To add Tailwind, install `tailwindcss` and `@tailwindcss/vite` as development dependencies and configure:
+
+1. **`@tailwindcss/vite`** in the `plugins` of `vite.config.ts`
+2. **`tailwindcss`** as a devDependency
+3. **`app/app.css`** with Tailwind's theme and utility layers
+
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Follow Ardo's theme toggle, which sets the .dark class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Import this file in `app/root.tsx`. Ardo loads its own stylesheet after it, so the layer order declared here applies: Ardo ships its styles in the `ardo` cascade layer, and naming it before `components` and `utilities` lets your utility classes win over Ardo's content styles.
+
+Tailwind's `dark:` variant follows the operating system by default. The `@custom-variant` line makes it follow Ardo's theme toggle instead, so `dark:` classes switch together with the rest of the site.
+
+### Examples
+
+#### Callout box in MDX
+
+Drop this into any `.mdx` file — it works immediately:
+
+```html
+<div
+  className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950"
+>
+  <span className="text-xl">💡</span>
+  <div>
+    <p className="font-semibold text-blue-900 dark:text-blue-100">Good to know</p>
+    <p className="text-sm text-blue-700 dark:text-blue-300">
+      Tailwind classes work in MDX files, TSX components, and anywhere else in your Ardo project.
+    </p>
+  </div>
+</div>
+```
+
+#### Custom hero section
+
+Build a landing page header without writing a single line of CSS:
+
+```tsx title="app/routes/home.tsx"
+import { ArdoLink } from "ardo/ui"
+
+export default function Home() {
   return (
-    <header className="my-custom-header">
-      <h1>{config.title}</h1>
-      {/* Your custom header content */}
-    </header>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+      <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+        My Project
+      </h1>
+      <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        A short description that tells visitors exactly what this is and why they should care.
+      </p>
+      <div className="flex gap-3">
+        <ArdoLink
+          to="/guide/getting-started"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Get Started
+        </ArdoLink>
+        <a
+          href="https://github.com/your/repo"
+          className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
   )
 }
 ```
 
-Then pass it to `ArdoRoot`. Mix your custom components with Ardo's defaults — replace the pieces you
-want, keep the rest:
+### Why no Preflight?
 
-```tsx
-// app/root.tsx
-import { ArdoRoot, ArdoSidebar } from "ardo/ui"
-import config from "virtual:ardo/config"
+Ardo provides its own base styles for documentation content — typography, headings, links, lists, and code blocks. Tailwind's Preflight reset would conflict with these styles and break the default look.
 
-import { MyHeader } from "../components/MyHeader"
+If you're building a heavily custom site where you control all styling, you can opt in to Preflight by adding one line to `app/app.css`:
 
-export default function Root() {
-  return (
-    <ArdoRoot config={config} header={<MyHeader />}>
-      <ArdoSidebar />
-    </ArdoRoot>
-  )
-}
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 ```
 
-`header` and `footer` take any React element, or `false` to leave that part out. As children,
-`ArdoRoot` recognizes only Ardo's own `ArdoHeader`, `ArdoSidebar`, and `ArdoFooter`; any other child
-replaces the page content.
-
-Footer `message` and `copyright` props render as React content, so plain strings are escaped. If you
-need footer markup from a trusted source, use `trustedMessageHtml` or `trustedCopyrightHtml`; do not
-pass user- or CMS-provided content to those props.
-
-## Runtime Hooks
-
-When building custom components, you'll need access to site configuration, sidebar data, and page metadata. Ardo provides React hooks for all of it:
-
-### useArdoConfig
-
-```tsx
-import { useArdoConfig } from "ardo/runtime"
-
-function MyComponent() {
-  const config = useArdoConfig()
-  return <h1>{config.title}</h1>
-}
-```
-
-### useArdoSiteConfig
-
-Access cross-cutting content settings (editLink, lastUpdated, TOC label) set on `<ArdoRoot>`:
-
-```tsx
-import { useArdoPageData, useArdoSiteConfig } from "ardo/runtime"
-
-function MyEditLink() {
-  const { editLink } = useArdoSiteConfig()
-  const page = useArdoPageData()
-  if (!editLink?.pattern || !page?.relativePath || page.frontmatter.editLink === false) {
-    return null
-  }
-  const sourcePath = page.relativePath.split("/").map(encodeURIComponent).join("/")
-  const href = editLink.pattern.replace(":path", sourcePath)
-  return <a href={href}>{editLink.text ?? "Edit this page"}</a>
-}
-```
-
-### useArdoSidebar
-
-```tsx
-import { useArdoSidebar } from "ardo/runtime"
-
-function MySidebar() {
-  const sidebar = useArdoSidebar()
-  // Render sidebar items
-}
-```
-
-### useArdoPageData
-
-```tsx
-import { useArdoPageData } from "ardo/runtime"
-
-function MyContent() {
-  const pageData = useArdoPageData()
-  return (
-    <article>
-      <h1>{pageData?.title}</h1>
-      {/* content */}
-    </article>
-  )
-}
-```
-
-### useArdoTOC
-
-```tsx
-import { useArdoTOC } from "ardo/runtime"
-
-function MyTOC() {
-  const toc = useArdoTOC()
-  return (
-    <nav>
-      {toc.map((item) => (
-        <a href={`#${item.id}`}>{item.text}</a>
-      ))}
-    </nav>
-  )
-}
-```
-
-### useArdoContext
-
-Use the full runtime context when a custom component needs several pieces of Ardo state at once:
-
-```tsx
-import { useArdoContext } from "ardo/runtime"
-
-function CurrentRouteDebug() {
-  const { config, currentPage, activeContextId } = useArdoContext()
-  return (
-    <pre>{JSON.stringify({ site: config.title, page: currentPage?.title, activeContextId })}</pre>
-  )
-}
-```
-
-### findCurrentSidebarItem and getPrevNextLinks
-
-These helpers are useful when you replace the default document footer or sidebar behavior:
-
-```tsx
-import {
-  ArdoLink,
-  findCurrentSidebarItem,
-  getPrevNextLinks,
-  useArdoPageData,
-  useArdoPath,
-  useArdoSidebar,
-} from "ardo/runtime"
-
-function MyPrevNext() {
-  const pathname = useArdoPath()
-  const page = useArdoPageData()
-  const sidebar = useArdoSidebar()
-  if (!page) return null
-
-  const current = findCurrentSidebarItem(sidebar, pathname)
-  const { prev, next } = getPrevNextLinks(sidebar, pathname)
-
-  return (
-    <nav>
-      <span>{current?.text}</span>
-      {prev?.link && <ArdoLink to={prev.link}>{prev.text}</ArdoLink>}
-      {next?.link && <ArdoLink to={next.link}>{next.text}</ArdoLink>}
-    </nav>
-  )
-}
-```
-
-`useArdoPath()` returns the current page path without the base path. `ArdoLink` adds the base path
-and renders a plain `<a>`, so each click loads the prerendered target page.
-
-### ArdoProvider and ArdoSiteConfigProvider
-
-Most apps get these providers through `<ArdoRoot>`. Import them directly only when you are building a
-fully custom root layout or an isolated component preview.
-
-## Icon Registration
-
-All 50 built-in [Core icons](/guide/icons) are available automatically through `ArdoIcon`, component
-`icon` props, and the MDX `<Icon />` component:
-
-```tsx
-import { ArdoIcon, ArdoLink } from "ardo/ui"
-
-export function LaunchLink() {
-  return (
-    <ArdoLink to="/guide/getting-started">
-      <ArdoIcon name="Rocket" aria-hidden /> Get started
-    </ArdoLink>
-  )
-}
-```
-
-`registerIcons()` adds custom React SVG components or overrides a built-in name. Call it once in
-`app/root.tsx` before rendering content. `getRegisteredIconNames()` returns the built-in and custom
-registry keys when you need to validate user-facing configuration.
-
-## Full Custom Theme
-
-If you need complete control, you can build your own theme from scratch. Create your components, export them, and use them in your app. Ardo's runtime hooks give you all the data you need — you just decide how to render it:
-
-```tsx
-// theme/index.tsx
-export { MyLayout as Layout } from "./Layout"
-export { MyHeader as Header } from "./Header"
-export { MySidebar as Sidebar } from "./Sidebar"
-export { MyTOC as TOC } from "./TOC"
-export { MyContent as Content } from "./Content"
-export { MyFooter as Footer } from "./Footer"
-```
-
-Use your custom theme components in `root.tsx` and you have a fully custom documentation site — with all of Ardo's content processing, routing, and search still working underneath.
+Ardo's content styles set list markers, table borders, code styles, and spacing explicitly, so
+Markdown content stays readable even when a host reset clears browser defaults. Because the `ardo`
+layer sits after `base`, Preflight cannot undo Ardo's styles, and because it sits before `utilities`,
+your utility classes still win where you apply them.

@@ -86,8 +86,10 @@ export function createRoutesModule({ root, routesDir }: { root: string; routesDi
     }
     return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(route.path)}, load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
   })
-  // Ardo's stylesheet loads before the root module, so a site's own CSS wins.
-  return `import "ardo/ui/styles.css"\n${rootImport}\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
+  // The root module's CSS comes first, so a cascade-layer order it declares,
+  // such as Tailwind's, also places Ardo's `ardo` layer. Unlayered site CSS
+  // beats that layer whatever the order.
+  return `${rootImport}\nimport "ardo/ui/styles.css"\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
 }
 
 /** Route id: the route file relative to the project root, as Vite's manifest keys it. */

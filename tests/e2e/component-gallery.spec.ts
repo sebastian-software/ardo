@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
   galleryErrors.set(page, errors)
   page.on("pageerror", (error) => errors.push(error.message))
   await page.goto(galleryPath)
-  await expect(page.getByRole("heading", { level: 1, name: "Component Gallery" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Components" })).toBeVisible()
 })
 
 test.afterEach(async ({ page }) => {

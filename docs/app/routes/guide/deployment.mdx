@@ -1,7 +1,7 @@
 ---
 title: Deployment
 description: Deploy your Ardo documentation site to GitHub Pages, Netlify, Vercel, and more.
-order: 8
+order: 11
 ---
 
 # Deployment
@@ -63,52 +63,6 @@ export default defineArdoConfig({
   siteUrl: "https://docs.example.com",
 })
 ```
-
-### Major-Versioned GitHub Pages Docs
-
-For stable major-version URLs, build the current docs into a version folder and keep older major
-versions deployed as static folders:
-
-```text
-/          -> static HTML redirect to /v3/
-/v3/       -> current major docs
-/v2/       -> previous major docs
-/versions.json
-```
-
-Configure Ardo's versioning in `ardo.config.ts`:
-
-```ts
-import { defineArdoConfig } from "ardo/config"
-
-export default defineArdoConfig({
-  title: "My Docs",
-  siteUrl: "https://docs.example.com",
-  versioning: {
-    current: "v3",
-    versions: [
-      { id: "v3", label: "3.x", path: "/v3/" },
-      { id: "v2", label: "2.x", path: "/v2/" },
-    ],
-  },
-})
-```
-
-The `versioning` option sets the base path of the current build to its version folder. Ardo writes
-the pages and assets under `build/client/v3/` and the site-wide files, such as `versions.json`,
-`robots.txt`, and the root redirect, at the top of `build/client/`. Switching versions in the
-header loads the other version as a new page.
-
-The generated sitemap lists the current major version only. Older versions can stay available under
-their folders for stable inbound links, while the active build avoids advertising duplicate current
-content. On GitHub Pages, the root redirect is a static `index.html` file. If your custom domain sits
-behind a CDN or host that supports HTTP redirects, configure that provider-level redirect outside
-Ardo.
-
-When `versions.json` lists older major versions, do not upload only the fresh `build/client` folder
-to GitHub Pages. GitHub Pages replaces the full artifact on every deploy, so use a staging directory
-that combines the current build with retained static folders for older majors before calling
-`actions/upload-pages-artifact`.
 
 ### Step 2: Add a GitHub Actions Workflow
 
@@ -192,6 +146,52 @@ custom GitHub Actions workflow, GitHub stores the custom domain in the repositor
   Instructions](/guide/agent-instructions). Preserve an existing deployment workflow unless a change
   is required.
 </Tip>
+
+### Major-Versioned GitHub Pages Docs
+
+For stable major-version URLs, build the current docs into a version folder and keep older major
+versions deployed as static folders:
+
+```text
+/          -> static HTML redirect to /v3/
+/v3/       -> current major docs
+/v2/       -> previous major docs
+/versions.json
+```
+
+Configure Ardo's versioning in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
+})
+```
+
+The `versioning` option sets the base path of the current build to its version folder. Ardo writes
+the pages and assets under `build/client/v3/` and the site-wide files, such as `versions.json`,
+`robots.txt`, and the root redirect, at the top of `build/client/`. Switching versions in the
+header loads the other version as a new page.
+
+The generated sitemap lists the current major version only. Older versions can stay available under
+their folders for stable inbound links, while the active build avoids advertising duplicate current
+content. On GitHub Pages, the root redirect is a static `index.html` file. If your custom domain sits
+behind a CDN or host that supports HTTP redirects, configure that provider-level redirect outside
+Ardo.
+
+When `versions.json` lists older major versions, do not upload only the fresh `build/client` folder
+to GitHub Pages. GitHub Pages replaces the full artifact on every deploy, so use a staging directory
+that combines the current build with retained static folders for older majors before calling
+`actions/upload-pages-artifact`.
 
 ## Netlify
 

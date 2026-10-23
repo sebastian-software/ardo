@@ -1,7 +1,7 @@
 ---
 title: Content Sources
 description: Publish Markdown and MDX outside app/routes while preserving one canonical source file.
-order: 5
+order: 10
 ---
 
 # Content Sources
@@ -60,4 +60,4 @@ const recipes = getCollection<{ title: string }>("recipes")
 
 Collections remain local and static: the schema runs during the build, while the generated route pages continue through the normal sidebar, search, sitemap, redirect, and LLM pipelines. Source paths are project-relative, so the virtual module does not expose an author's absolute filesystem paths.
 
-Add these options to the version-matched [Basic example](/guide/reference-projects#content-owned-elsewhere). The internal collection fixture checks the complete flow: `project-content/recipes/` remains canonical, `/recipes/*` is generated, and a custom `/catalog` React route renders the same collection records.
+Add these options to the version-matched [Basic example](/guide/agent-instructions#the-basic-example). The authored files stay canonical: the build generates the `/recipes/*` pages from them, and a custom React route can render the same records.

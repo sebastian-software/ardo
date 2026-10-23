@@ -50,7 +50,7 @@ export function Components() {
           around them.
         </p>
         <p className={styles.moreLink}>
-          <ArdoLink to="/guide/markdown">Components in MDX →</ArdoLink>
+          <ArdoLink to="/guide/component-playground">See every component →</ArdoLink>
         </p>
       </div>
     </section>

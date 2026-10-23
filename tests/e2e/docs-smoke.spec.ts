@@ -25,9 +25,10 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
     expect(instructions).not.toContain(`examples/${removed}`)
   }
 
+  // The former Basic Example page redirects to its section of the instructions.
   await page.goto(`${docsBasePath}/guide/reference-projects`)
-  await expect(page.getByRole("heading", { level: 1, name: "Basic Example" })).toBeVisible()
-  await expect(page.getByRole("heading", { level: 2, name: "Multiple Packages" })).toBeVisible()
+  await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions/`)
+  await expect(page.getByRole("heading", { level: 2, name: "The Basic Example" })).toBeVisible()
 })
 
 test("built docs persist the selected theme and navigate search by keyboard", async ({ page }) => {
@@ -85,7 +86,7 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await trigger.press("Enter")
   await expect(menu).toBeVisible()
 
-  await menu.getByRole("link", { name: "Markdown Features" }).click()
+  await menu.getByRole("link", { name: "Markdown & MDX" }).click()
 
   await expect(page).toHaveURL(/\/v6\/guide\/markdown/)
   await expect(menu).toBeHidden()
