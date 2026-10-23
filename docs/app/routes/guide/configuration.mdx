@@ -1,7 +1,7 @@
 ---
 title: Configuration
 description: Configure Ardo's CLI, generated routes, Markdown pipeline, API output, and React UI.
-order: 10
+order: 12
 ---
 
 # Configuration
@@ -14,7 +14,7 @@ hooks.
 This page documents Ardo's site and build options, then points to the React-side UI hooks and
 components. Existing Vite projects can continue to use the `ardo()` plugin API while migrating.
 For a broader capability matrix, including planned features that are not yet configurable, see
-[Feature Status](/guide/status-roadmap).
+[Releases](/guide/releases).
 
 ## Basic Setup
 
@@ -113,8 +113,8 @@ defineArdoConfig({
 ```
 
 <Tip>
-  When deploying to GitHub Pages, Ardo auto-detects the repository name and sets the base path for
-  you. See the `githubPages` option below.
+  A GitHub Pages project site is served under the repository name, so set `base: "/repo-name/"`. See
+  [Deployment](/guide/deployment#github-pages) for every host.
 </Tip>
 
 ### siteUrl
@@ -528,20 +528,6 @@ they migrate.
 
 Configuration for the automatic route generation plugin. Set to `false` to disable auto-routing entirely.
 
-### githubPages
-
-- **Type:** `boolean`
-- **Default:** `true`
-
-When `true`, Ardo auto-detects your GitHub repository name from the git remote and sets `base: '/repo-name/'` for GitHub Pages deployment.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  githubPages: false, // Disable auto-detection
-})
-```
-
 ### icons
 
 - **Type:** `false | { source?: string }`
@@ -698,7 +684,7 @@ Ferromark syntax options are configured directly under `markdown`. GFM tables, s
 
 `headingOffset` shifts rendered heading levels and TOC levels together. `headingIdPrefix` prefixes native IDs everywhere they are used. See the [Ferromark Node API](https://github.com/sebastian-software/ferromark/blob/main/node/ferromark/README.md) for option semantics and supported passes.
 
-Ardo manages document format, YAML frontmatter, React component bindings, and removal of a matching first page-title heading. The former remark, rehype, and recma plugin options have been removed; see [Upgrade to Ardo 5](/guide/upgrade-to-v5).
+Ardo manages document format, YAML frontmatter, React component bindings, and removal of a matching first page-title heading. The former remark, rehype, and recma plugin options have been removed; see [Upgrade to Ardo 5](/guide/releases/upgrade-to-v5).
 
 ---
 
@@ -711,17 +697,17 @@ Object configuration requires `entryPoints` and `tsconfig`; `out` defaults to
 `api-reference` and `title` to `API Reference`. Multiple outputs must be distinct
 and must not contain one another.
 
-See [Native API Documentation](/guide/api-documentation) for installation,
+See [API Documentation](/guide/api-documentation) for installation,
 configuration, programmatic use, and current limits. The previous `typedoc`
 option and package exports have been removed; see the
-[TypeDoc migration guide](/guide/typedoc).
+[TypeDoc migration guide](/guide/releases/migrate-from-typedoc).
 
 ---
 
 ## UI Configuration
 
 Navigation, sidebar sections, footer, editLink, lastUpdated, and search are configured with JSX in
-your `root.tsx` using `<ArdoRoot>`. See [Site UI Configuration](/guide/site-ui) for the `ArdoRoot`,
+your `root.tsx` using `<ArdoRoot>`. See [Layout & Navigation](/guide/site-ui) for the `ArdoRoot`,
 header, footer, and sidebar-section reference.
 
 ## Package Exports
@@ -742,8 +728,8 @@ Ardo keeps browser-safe runtime imports separate from build-time Node.js imports
 | `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                                                              |
 | `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |
 | `ardo/react-dom`     | React DOM APIs, with `/client`, `/server`, and `/static` subpaths.                                                                       |
-| `ardo/ui/styles.css` | The default Ardo UI stylesheet.                                                                                                          |
-| `ardo/press.css`     | Compatibility alias for `ardo/ui/styles.css`.                                                                                            |
+| `ardo/ui/styles.css` | The default Ardo UI stylesheet. Every site loads it; import it yourself only to control cascade order.                                   |
+| `ardo/tsconfig`      | TypeScript preset for the docs package: `"extends": "ardo/tsconfig"`.                                                                    |
 
 ---
 
@@ -758,7 +744,7 @@ Per-page configuration is done through frontmatter in your MDX files. See the de
 This form remains supported for projects that manage Vite directly. New Ardo sites should use
 `ardo.config.ts` and only add a Vite config for custom Vite integrations. Use this form instead of
 `ardo.config.ts`, and import `defineConfig` from Ardo so a separate Vite dependency is unnecessary.
-Add optional API generation through the [Native API Documentation](/guide/api-documentation) guide.
+Add optional API generation through the [API Documentation](/guide/api-documentation) guide.
 
 ```ts
 import { defineConfig } from "ardo/vite"

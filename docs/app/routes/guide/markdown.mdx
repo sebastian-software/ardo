@@ -1,10 +1,10 @@
 ---
-title: Markdown Features
+title: Markdown & MDX
 description: Write Markdown and MDX that can stay simple until a page needs real React.
-order: 3
+order: 4
 ---
 
-# Markdown Features
+# Markdown & MDX
 
 Ardo is Markdown-first, but it does not trap you in Markdown. Start with plain prose and code blocks; when a page needs a live React example, a custom component, or a design-system callout, switch to MDX without changing tools.
 
@@ -83,16 +83,6 @@ Ferromark highlights Markdown code blocks at build time with its native [Ferriki
 | Shell & DevOps  | `bash`, `shell`, `dockerfile`                                   |
 | General purpose | `python`, `rust`, `go`, `sql`, `diff`                           |
 
-Both `.md` and `.mdx` routes are parsed by Ferromark. MDX adds JavaScript expressions, imports, exports, and JSX components; React compiles the generated JSX through Vite. Use YAML frontmatter for page metadata.
-
-Ferromark compiles each route into an MDX module, following the same contract as `@mdx-js/mdx`:
-
-- `import` and `export` blocks are JavaScript. TypeScript syntax there is a compile error; move typed code into a `.ts` module and import it.
-- A component you import is used as imported. Every other component comes from Ardo's components, then from the `components` prop. An undefined component fails with an error that names it.
-- An `export default` becomes the page layout and replaces Ardo's content wrapper, so the page renders inside your layout instead of `ArdoDocContent`.
-- JSX inside a JavaScript expression, such as `{items.map((item) => <Card />)}`, does not see Ardo's components. Import the component you use there.
-- Generated code reserves `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute`, and `_ardoToc`. Declaring one of them is a compile error.
-
 ```typescript
 interface User {
   id: string
@@ -154,33 +144,34 @@ Add a Deployment page that explains the GitHub Pages workflow of this repository
 ```
 ````
 
-## Badge Component
+### Code Groups
 
-Use badges for inline status labels, version indicators, and metadata tags. The `Badge` component is auto-registered in MDX files — no import needed.
+Display multiple code variants in tabs:
 
-This feature is <Badge>New</Badge>, available for <Badge variant="info">v2.0+</Badge>, and can mark <Badge variant="warning">Beta</Badge> or <Badge variant="danger">Deprecated</Badge> content.
+<CodeGroup labels="JavaScript,TypeScript,Python">
 
-```mdx
-<Badge>New</Badge>
-<Badge variant="success">Stable</Badge>
-<Badge variant="warning">Beta</Badge>
-<Badge variant="danger">Deprecated</Badge>
-<Badge variant="info">v2.0+</Badge>
+```js
+function greet(name) {
+  return `Hello, ${name}!`
+}
 ```
 
-Badges also support an optional leading icon:
-
-```mdx
-<Badge icon="✨">New</Badge>
+```ts
+function greet(name: string): string {
+  return `Hello, ${name}!`
+}
 ```
 
-## Callout Components
+```python
+def greet(name):
+    return f"Hello, {name}!"
+```
 
-Use callouts to highlight important information. Ardo accepts two equivalent syntaxes — pick whichever reads better in your file.
+</CodeGroup>
 
-### GitHub-style alerts
+## Callouts
 
-Plain Markdown, no imports. Ardo recognises GFM alert syntax and maps each type to the matching callout.
+Plain Markdown, no imports: Ardo recognizes GitHub's alert syntax and maps each type to the matching callout.
 
 ```md
 > [!NOTE]
@@ -216,279 +207,25 @@ Renders as:
 > [!CAUTION]
 > Negative potential consequences of an action.
 
-### JSX components
+For a custom title, use the callout components such as `<Tip title="Pro Tip">` described in [Components](/guide/component-playground#callouts).
 
-When you need a custom title or full control, the same callouts are also available as JSX. These components are auto-registered in MDX files — no import needed.
+## Components
 
-<Tip>This is a helpful tip for readers.</Tip>
+Ardo's components work in MDX without imports: callouts, badges, cards, tabs, accordions, steps, code blocks, and icons. [Components](/guide/component-playground) shows each one live, with its MDX and its props.
 
-<Warning>Be careful when using this feature.</Warning>
+### Your Own Components
 
-<Danger>This action cannot be undone!</Danger>
+You can use React components directly in your markdown:
 
-<Info>Here's some additional information.</Info>
+```markdown
+import { MyComponent } from './components/MyComponent'
 
-<Note>This is a note for reference.</Note>
+# My Page
 
-#### Custom titles
-
-You can customize the callout title:
-
-<Tip title="Pro Tip">This is a pro tip with a custom title.</Tip>
-
-## Accordions
-
-Use `Accordion` and `AccordionGroup` for collapsible FAQ items, optional explanations, and compact reference sections. Add `onlyOneOpen` to the group when only one item should stay open at a time.
-
-```mdx
-<AccordionGroup onlyOneOpen>
-  <Accordion title="How do I install Ardo?" defaultOpen>
-    Follow the versioned Agent Instructions and adapt the tested Basic example.
-  </Accordion>
-  <Accordion title="Can I use it with existing projects?">
-    Yes, Ardo can be added to an existing React and Vite project.
-  </Accordion>
-</AccordionGroup>
+<MyComponent prop="value" />
 ```
 
-<AccordionGroup onlyOneOpen>
-  <Accordion title="How do I install Ardo?" defaultOpen>
-    Follow the versioned Agent Instructions and adapt the tested Basic example.
-  </Accordion>
-  <Accordion title="Can I use it with existing projects?">
-    Yes, Ardo can be added to an existing React and Vite project.
-  </Accordion>
-</AccordionGroup>
-
-Each accordion also supports an optional `icon` and can be used standalone without a group.
-
-## Cards
-
-Use `Card` and `CardGroup` for compact navigation, feature summaries, and reference lists. They are
-auto-registered in MDX files, so no import is needed.
-
-<CardGroup cols={3}>
-  <Card title="Configuration" href="/guide/configuration">
-    Build-time options for routes, Markdown, API documentation, SEO outputs, and deployment helpers.
-  </Card>
-  <Card title="Site UI" href="/guide/site-ui">
-    React-side props for the header, sidebar, footer, edit links, and context navigation.
-  </Card>
-  <Card title="Frontmatter" href="/guide/frontmatter">
-    Page-level metadata, navigation controls, and build-output overrides.
-  </Card>
-</CardGroup>
-
-```mdx
-<CardGroup cols={3}>
-  <Card title="Configuration" href="/guide/configuration">
-    Build-time options for routes, Markdown, API documentation, SEO outputs, and deployment helpers.
-  </Card>
-  <Card title="Site UI" href="/guide/site-ui">
-    React-side props for the header, sidebar, footer, edit links, and context navigation.
-  </Card>
-  <Card title="Frontmatter" href="/guide/frontmatter">
-    Page-level metadata, navigation controls, and build-output overrides.
-  </Card>
-</CardGroup>
-```
-
-| Component   | Prop        | Type                  | Purpose                                                              |
-| ----------- | ----------- | --------------------- | -------------------------------------------------------------------- |
-| `CardGroup` | `cols`      | `1 \| 2 \| 3 \| 4`    | Preferred number of columns on wide screens. Defaults to `2`.        |
-| `CardGroup` | `children`  | `ReactNode`           | Cards to render in the responsive grid.                              |
-| `Card`      | `title`     | `string`              | Required card heading.                                               |
-| `Card`      | `href`      | `string`              | Optional internal or external destination. Makes the card clickable. |
-| `Card`      | `icon`      | `string \| ReactNode` | Registered icon name or custom React node.                           |
-| `Card`      | `children`  | `ReactNode`           | Body content.                                                        |
-| `Card`      | `className` | `string`              | Additional CSS class.                                                |
-
-## Tabs
-
-Use `Tabs` when readers need to switch between equivalent variants, such as package managers,
-framework integrations, or deployment providers.
-
-<Tabs defaultValue="pnpm">
-  <TabList>
-    <Tab value="pnpm">pnpm</Tab>
-    <Tab value="npm">npm</Tab>
-    <Tab value="yarn">Yarn</Tab>
-  </TabList>
-  <TabPanels>
-    <TabPanel value="pnpm">
-
-```bash
-pnpm add ardo@6
-```
-
-    </TabPanel>
-    <TabPanel value="npm">
-
-```bash
-npm install ardo@6
-```
-
-    </TabPanel>
-    <TabPanel value="yarn">
-
-```bash
-yarn add ardo@6
-```
-
-    </TabPanel>
-
-  </TabPanels>
-</Tabs>
-
-````mdx
-<Tabs defaultValue="pnpm">
-  <TabList>
-    <Tab value="pnpm">pnpm</Tab>
-    <Tab value="npm">npm</Tab>
-  </TabList>
-  <TabPanels>
-    <TabPanel value="pnpm">
-
-```bash
-pnpm add ardo@6
-```
-
-    </TabPanel>
-    <TabPanel value="npm">
-
-```bash
-npm install ardo@6
-```
-
-    </TabPanel>
-
-  </TabPanels>
-</Tabs>
-````
-
-For custom components that create tabs or panels internally, set `defaultValue` on `Tabs`
-and give each tab/panel pair matching explicit `value` props.
-
-| Component  | Prop           | Type        | Purpose                                                                |
-| ---------- | -------------- | ----------- | ---------------------------------------------------------------------- |
-| `Tabs`     | `defaultValue` | `string`    | Initial active tab value. Defaults to the first tab.                   |
-| `Tabs`     | `children`     | `ReactNode` | A `TabList` and matching `TabPanels`.                                  |
-| `Tab`      | `value`        | `string`    | Stable value that matches a `TabPanel`. Optional when order is stable. |
-| `Tab`      | `children`     | `ReactNode` | Tab label.                                                             |
-| `TabPanel` | `value`        | `string`    | Matching value for the tab content. Optional when order matches tabs.  |
-| `TabPanel` | `children`     | `ReactNode` | Panel content.                                                         |
-
-## Steps
-
-Use `Steps` for ordered setup or migration instructions. The component expects an ordered list as
-its child and styles it as a step-by-step sequence.
-
-<Steps>
-  <ol>
-    <li>Create a route file in `app/routes/guide`.</li>
-    <li>Add frontmatter with a `title`, `description`, and `order`.</li>
-    <li>Run the docs build to validate links and generated output.</li>
-  </ol>
-</Steps>
-
-```mdx
-<Steps>
-  <ol>
-    <li>Create a route file in `app/routes/guide`.</li>
-    <li>Add frontmatter with a `title`, `description`, and `order`.</li>
-    <li>Run the docs build to validate links and generated output.</li>
-  </ol>
-</Steps>
-```
-
-| Component | Prop       | Type        | Purpose                                     |
-| --------- | ---------- | ----------- | ------------------------------------------- |
-| `Steps`   | `children` | `ReactNode` | Usually an `<ol>` with one `<li>` per step. |
-
-## Icons
-
-Ardo includes 50 [Streamline Core icons](/guide/icons), available in MDX without imports or registration.
-Use `<Icon name="Zap" />` directly, or pass a built-in name to a component's `icon` prop:
-
-<CardGroup cols={3}>
-  <Card title="Fast authoring" icon="Zap">
-    Use Markdown until a page needs richer React components.
-  </Card>
-  <Card title="API-ready" icon="Code">
-    Combine written guides with generated API reference pages.
-  </Card>
-  <Card title="Launchable" icon="Rocket">
-    Ship sitemap, robots, redirects, and LLM text artifacts from one build.
-  </Card>
-</CardGroup>
-
-```mdx
-<Icon name="Zap" size={20} />
-<Card title="Fast authoring" icon="Zap">
-  Use Markdown until a page needs richer React components.
-</Card>
-```
-
-| Component | Prop      | Type                           | Purpose                                 |
-| --------- | --------- | ------------------------------ | --------------------------------------- |
-| `Icon`    | `name`    | `string`                       | Registered icon name.                   |
-| `Icon`    | `size`    | `number`                       | Optional rendered icon size.            |
-| `Icon`    | SVG props | `SVGAttributes<SVGSVGElement>` | Passed to the registered SVG component. |
-
-## Code Groups
-
-Display multiple code variants in tabs:
-
-<CodeGroup labels="JavaScript,TypeScript,Python">
-
-```js
-function greet(name) {
-  return `Hello, ${name}!`
-}
-```
-
-```ts
-function greet(name: string): string {
-  return `Hello, ${name}!`
-}
-```
-
-```python
-def greet(name):
-    return f"Hello, {name}!"
-```
-
-</CodeGroup>
-
-## ArdoCodeBlock in `.tsx` Routes
-
-The `ArdoCodeBlock` component can be used directly in `.tsx` route files. Just write the code as children — no template literals or special escaping needed:
-
-```tsx
-import { ArdoCodeBlock } from "ardo/ui"
-
-export default function MyPage() {
-  return (
-    <ArdoCodeBlock language="tsx">
-      export function Hello() {
-        return <div>Hello world!</div>
-      }
-    </ArdoCodeBlock>
-  )
-}
-```
-
-The `ardo:codeblock-highlight` Vite plugin processes ArdoCodeBlock **before the JSX parser runs**, so the children can contain any syntax (`<`, `{`, `>`, etc.) without causing errors. Common indentation is stripped automatically.
-
-The `code` prop and template literal children are also supported:
-
-```tsx
-<ArdoCodeBlock code="const x = 42" language="typescript" />
-```
-
-If the `language` prop is dynamic (from a variable), build-time highlighting is skipped and the code renders as plain text.
-
-## Reusable MDX Snippets
+## Reusable Snippets
 
 Ardo uses standard MDX modules, so reusable content snippets work without a custom syntax or plugin. Put shared fragments in a `snippets/` directory and import them wherever you need the same content.
 
@@ -521,7 +258,7 @@ Snippets can receive props in normal MDX expressions, compose Ardo components, a
   usually imports `../../snippets/prerequisites.mdx`.
 </Note>
 
-## Embedding MDX Snippets with ArdoBareContent
+### In TSX Routes
 
 When you import an `.mdx` file into a `.tsx` route, it normally renders inside the full `Content` wrapper (article, header, footer, navigation). This is useful for full pages, but snippets usually need to render without that page chrome. To embed an imported MDX file as a plain content snippet in TSX, wrap it in `ArdoBareContent`:
 
@@ -538,17 +275,17 @@ export default function MyPage() {
 }
 ```
 
-## Custom Components
+## How MDX Compiles
 
-You can use React components directly in your markdown:
+Both `.md` and `.mdx` routes are parsed by Ferromark. MDX adds JavaScript expressions, imports, exports, and JSX components; React compiles the generated JSX through Vite. Use YAML frontmatter for page metadata.
 
-```markdown
-import { MyComponent } from './components/MyComponent'
+Ferromark compiles each route into an MDX module, following the same contract as `@mdx-js/mdx`:
 
-# My Page
-
-<MyComponent prop="value" />
-```
+- `import` and `export` blocks are JavaScript. TypeScript syntax there is a compile error; move typed code into a `.ts` module and import it.
+- A component you import is used as imported. Every other component comes from Ardo's components, then from the `components` prop. An undefined component fails with an error that names it.
+- An `export default` becomes the page layout and replaces Ardo's content wrapper, so the page renders inside your layout instead of `ArdoDocContent`.
+- JSX inside a JavaScript expression, such as `{items.map((item) => <Card />)}`, does not see Ardo's components. Import the component you use there.
+- Generated code reserves `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute`, and `_ardoToc`. Declaring one of them is a compile error.
 
 ## Frontmatter
 
@@ -565,15 +302,3 @@ outline: [2, 3]
 ```
 
 See the [Frontmatter Reference](/guide/frontmatter) for all available options.
-
-## Prepared route metadata
-
-Ardo prepares each Markdown/MDX route once, parses its raw YAML frontmatter,
-and renders one native module. The TOC uses that module's final headings after
-title omission, heading offsets, prefixes, and native ID planning. Manifest
-and search readers use the same preparation/render options and final heading
-planner; sidebar and collection readers only extract preparation metadata.
-Prepared documents are scoped to each invocation, so edits are reparsed during
-HMR. Compiler and highlighter resources are reused by theme and line-number
-configuration. Metadata reads skip highlighting; rendering still highlights
-each document's fences.

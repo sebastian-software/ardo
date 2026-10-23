@@ -1,17 +1,159 @@
 ---
-title: Site UI Configuration
-description: Configure ArdoRoot, header, footer, edit links, last-updated metadata, and JSX sidebar sections from root.tsx.
-order: 6
+title: Layout & Navigation
+description: Add pages and sidebar sections, change the logo, header, and footer, and compose the site chrome in root.tsx.
+order: 7
 ---
 
-# Site UI Configuration
+# Layout & Navigation
 
-Build-time options belong in `defineArdoConfig()` in `ardo.config.ts`. Site chrome belongs in React. Define the header, left
-rail, sidebar panels, footer, edit links, and last-updated metadata in your app's `root.tsx`.
+Build-time options belong in `ardo.config.ts`. Everything around the content, from the header to the sidebar and the footer, is React in `app/root.tsx`. Most sites need only a few of the common tasks below; the rest of the page is the reference.
+
+## Common Tasks
+
+### Add a Page
+
+Create a Markdown or MDX file under `app/routes/`. Its path becomes its URL: `app/routes/guide/install.mdx` is served at `/guide/install/`. The development server picks it up right away, and the page appears in the sidebar and in search.
+
+```mdx title="app/routes/guide/install.mdx"
+---
+title: Install
+description: Add the package to your project.
+---
+
+# Install
+
+Run the installer for your package manager.
+```
+
+The `title` sets the sidebar label and the browser tab. TSX files in `app/routes/` become pages too, but the generated sidebar lists Markdown and MDX pages only, so link a TSX page from the header or from another page.
+
+### Order Pages
+
+Pages with an `order` come first, lowest number first. The rest follow alphabetically by title.
+
+```yaml
+---
+title: Install
+order: 2
+---
+```
+
+### Group Pages
+
+Put related pages in a folder. An `index.mdx` in that folder labels the group, places it among its siblings, and decides whether it starts collapsed. The index page is also the group's own page.
+
+```mdx title="app/routes/guide/releases/index.mdx"
+---
+title: Releases
+order: 20
+collapsed: true
+---
+
+# Releases
+```
+
+Without an index page, the group takes its label from the folder name. [Frontmatter](/guide/frontmatter#directory-index-metadata) lists the options.
+
+### Hide a Page from the Sidebar
+
+Set `sidebar: false` in the page's frontmatter. The page still builds and stays reachable by link.
+
+### Add a Sidebar Section
+
+Each top-level folder in `app/routes/` becomes a section with its own tab, such as `guide/` and `api-reference/`. Folder names Ardo knows, such as `guide`, `reference`, `api`, `examples`, or `adr`, get a matching label and icon; any other folder gets a text tab named after it. The tab opens the folder's index page, or its first page.
+
+Order the tabs in `ardo.config.ts`:
+
+```ts title="ardo.config.ts"
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  sidebar: { sectionOrder: ["guide", "reference", "api"] },
+})
+```
+
+To write sections by hand instead, see [Sidebar Sections](#sidebar-sections).
+
+### Add Links to the Header
+
+Pass an `ArdoHeader` with navigation links. `ArdoNavLink` takes a page path in `to`, which gets the base path, or any URL in `href`. Social links go into `ArdoHeaderActions`:
+
+```tsx title="app/root.tsx"
+import {
+  ArdoHeader,
+  ArdoHeaderActions,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoSocialLink,
+} from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+          <ArdoNavLink href="https://github.com/example/project/releases">Releases</ArdoNavLink>
+        </ArdoNav>
+        <ArdoHeaderActions>
+          <ArdoSocialLink href="https://github.com/example/project" icon="github" />
+        </ArdoHeaderActions>
+      </ArdoHeader>
+    </ArdoRoot>
+  )
+}
+```
+
+`ArdoSocialLink` knows the `github`, `discord`, `linkedin`, `npm`, `twitter`, and `youtube` icons.
+
+### Change the Logo and Favicon
+
+Set `brand.logo` in `ardo.config.ts`. A local SVG becomes the header logo and the source of the generated favicons:
+
+```ts title="ardo.config.ts"
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  brand: { logo: "./app/assets/logo.svg" },
+})
+```
+
+`brand.logo` also accepts `{ light, dark }` variants. To build the favicons from a different image, set [`icons.source`](/guide/configuration#icons); to manage favicon files yourself in `public/`, set `icons: false`.
+
+### Change the Footer
+
+Pass an `ArdoFooter` with your own text:
+
+```tsx title="app/root.tsx"
+import { ArdoFooter, ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoFooter message="Released under the MIT License." copyright="© 2026 Example Co" />
+    </ArdoRoot>
+  )
+}
+```
+
+Without an `ArdoFooter`, Ardo renders its default footer; `footer={false}` on `ArdoRoot` leaves it out. [Footer](#footer) lists the props.
 
 ## Minimal Root
 
-Every Ardo app needs the generated config. Navigation is composed with React components.
+`<ArdoRoot />` is a complete site: Ardo's header with search and the theme toggle, a sidebar with one section per top-level route folder, and the footer. The site config and the stylesheet come from Ardo's entries, so `root.tsx` needs no imports beyond the components it uses.
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Navigation is composed with React components. Pass `ArdoHeader`, `ArdoSidebar`, and `ArdoFooter` as children to change any part, or set `header`, `sidebar`, or `footer` to `false` to leave it out:
 
 ```tsx
 import {
@@ -23,12 +165,10 @@ import {
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
 
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoNav>
           <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
@@ -48,88 +188,23 @@ export default function Root() {
 `ArdoRoot` owns the Ardo providers, the current page's content, and the shell slots supplied as JSX
 children. It is the part of the page that hydrates in the browser.
 
-## Layout: The HTML Shell
-
-Ardo renders every page inside an HTML shell: `<html>`, `<head>`, and `<body>`. The shell is
-rendered on the server only, during `ardo dev` and `ardo build`; the root component inside it
-hydrates. By default, Ardo uses `ArdoRootLayout` from `ardo/ui`. It adds the charset and viewport
-tags, the theme bootstrap script, favicons, the page's title and meta tags, stylesheets, and the
-client script. Most sites do not need a `Layout` export.
-
-Export `Layout` from `root.tsx` to pass options to `ArdoRootLayout`:
-
-```tsx
-import type { ReactNode } from "ardo/react"
-import { ArdoRootLayout } from "ardo/ui"
-import logo from "./assets/logo.svg"
-
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
-}
-```
-
-For a fully custom shell, render `ArdoHead` in `<head>` and `ArdoScripts` at the end of `<body>`.
-Both come from `ardo/runtime`. `ArdoHead` renders the page's `meta` descriptors, stylesheets, and
-module preloads; `ArdoScripts` loads the client entry that hydrates the page. The shell must render
-`children`:
-
-```tsx
-import type { ReactNode } from "ardo/react"
-import { ArdoHead, ArdoScripts } from "ardo/runtime"
-
-export function Layout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <ArdoHead />
-      </head>
-      <body>
-        {children}
-        <ArdoScripts />
-      </body>
-    </html>
-  )
-}
-```
-
-A custom shell does not include `ArdoRootLayout`'s theme bootstrap or favicons. Prefer wrapping
-`ArdoRootLayout` unless the site needs full control over the document.
-
-## RootLayout Theme Policy
-
-By default, `ArdoRootLayout` uses `theme="auto"`: it applies a stored `ardo-theme` preference first
-and falls back to `prefers-color-scheme`. Set an explicit theme policy when a site should not be
-user-selectable:
-
-```tsx
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
-}
-```
-
-| Theme policy | Behavior                                                                 |
-| ------------ | ------------------------------------------------------------------------ |
-| `auto`       | Stored user preference wins; system preference is the fallback. Default. |
-| `light`      | Always render light mode and clear stale stored theme preferences.       |
-| `dark`       | Always render dark mode and clear stale theme preferences.               |
-| `system`     | Always follow `prefers-color-scheme` and clear stored preferences.       |
-
 ## ArdoRoot
 
-`ArdoRoot` accepts site-wide content settings as props and shell components as children.
+`ArdoRoot` takes site-wide content settings as props and the chrome as children.
 
-| Prop          | Type                                                                               | Purpose                                                                    |
-| ------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `config`      | `ArdoConfig`                                                                       | Generated site config from `virtual:ardo/config`.                          |
-| `editLink`    | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                            |
-| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                   |
-| `labels`      | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                        |
-| `scrollMode`  | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.               |
-| `tocLabel`    | `string`                                                                           | Label for the table-of-contents panel.                                     |
-| `className`   | `string`                                                                           | Replace the default layout class.                                          |
-| `children`    | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides. |
+| Prop          | Type                                                                               | Purpose                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `header`      | `ReactNode \| false`                                                               | Your own header in place of `ArdoHeader`, or `false` for none.                                   |
+| `sidebar`     | `ReactNode \| false`                                                               | Your own sidebar in place of `ArdoSidebar`, or `false` for none.                                 |
+| `footer`      | `ReactNode \| false`                                                               | Your own footer in place of `ArdoFooter`, or `false` for none.                                   |
+| `editLink`    | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                                  |
+| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                                         |
+| `labels`      | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                                              |
+| `scrollMode`  | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.                                     |
+| `tocLabel`    | `string`                                                                           | Label for the table-of-contents panel.                                                           |
+| `className`   | `string`                                                                           | Replace the default layout class.                                                                |
+| `config`      | `ArdoConfig`                                                                       | The site config. Ardo's entries provide it from `ardo.config.ts`; pass it in tests and previews. |
+| `children`    | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides.                       |
 
 ## Header
 
@@ -150,8 +225,8 @@ import logo from "./assets/logo.svg"
 </ArdoHeader>
 ```
 
-If `brand.logo` is configured in `ardo()`, `ArdoRoot` passes it to the default header unless the
-header sets its own `logo`.
+If `brand.logo` is set in `ardo.config.ts`, `ArdoRoot` passes it to the header unless the header
+sets its own `logo`.
 
 | Header prop         | Purpose                                                                     |
 | ------------------- | --------------------------------------------------------------------------- |
@@ -250,7 +325,6 @@ document pages, and page frontmatter can opt out with `editLink: false` or `last
 
 ```tsx
 <ArdoRoot
-  config={config}
   editLink={{
     pattern: "https://github.com/example/project/edit/main/docs/app/routes/:path",
     text: "Edit this page on GitHub",
@@ -303,6 +377,173 @@ overflow to your site. Provide your own skip link for keyboard navigation.
 Bare routes that retain Ardo's header keep its offset and built-in skip link.
 Documentation routes retain the existing inner-scroll layout.
 
+## Replace Parts of the Chrome
+
+When CSS is not enough, replace a part of the chrome with your own React component. Write the component:
+
+```tsx title="app/components/MyHeader.tsx"
+import { useArdoConfig } from "ardo/runtime"
+
+export function MyHeader() {
+  const config = useArdoConfig()
+
+  return (
+    <header className="my-custom-header">
+      <h1>{config.title}</h1>
+      {/* Your custom header content */}
+    </header>
+  )
+}
+```
+
+Then pass it to `ArdoRoot`. Replace the parts you want and keep Ardo's defaults for the rest:
+
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
+
+import { MyHeader } from "./components/MyHeader"
+
+export default function Root() {
+  return <ArdoRoot header={<MyHeader />} />
+}
+```
+
+`header`, `sidebar`, and `footer` take any React element, or `false` to leave that part out. As children, `ArdoRoot` recognizes only Ardo's own `ArdoHeader`, `ArdoSidebar`, and `ArdoFooter`; any other child replaces the page content. Keep `ArdoRoot` around your components: it provides the context the runtime hooks below read.
+
+Footer `message` and `copyright` props render as React content, so plain strings are escaped. If you need footer markup from a trusted source, use `trustedMessageHtml` or `trustedCopyrightHtml`; do not pass user- or CMS-provided content to those props.
+
+### Runtime Hooks
+
+Your components read Ardo's state through hooks from `ardo/runtime`:
+
+| Hook                  | Returns                                                                                                  |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| `useArdoConfig()`     | The site config from `ardo.config.ts`, such as `title`, `description`, and `brand`.                      |
+| `useArdoSiteConfig()` | The `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings passed to `ArdoRoot`.                   |
+| `useArdoSidebar()`    | The sidebar items of the current section.                                                                |
+| `useArdoPageData()`   | Inside Markdown and MDX page content: the page's title, frontmatter, table of contents, and source path. |
+| `useArdoTOC()`        | The current page's table of contents, or an empty list.                                                  |
+| `useArdoPath()`       | The current page path without the base path.                                                             |
+| `useArdoContext()`    | The config, sidebar, and current page together.                                                          |
+
+An edit link built from the site settings and the current page:
+
+```tsx
+import { useArdoPageData, useArdoSiteConfig } from "ardo/runtime"
+
+function MyEditLink() {
+  const { editLink } = useArdoSiteConfig()
+  const page = useArdoPageData()
+  if (!editLink?.pattern || !page?.relativePath || page.frontmatter.editLink === false) {
+    return null
+  }
+  const sourcePath = page.relativePath.split("/").map(encodeURIComponent).join("/")
+  const href = editLink.pattern.replace(":path", sourcePath)
+  return <a href={href}>{editLink.text ?? "Edit this page"}</a>
+}
+```
+
+`findCurrentSidebarItem` and `getPrevNextLinks` help when you replace the previous and next links at the end of a page:
+
+```tsx
+import {
+  ArdoLink,
+  findCurrentSidebarItem,
+  getPrevNextLinks,
+  useArdoPageData,
+  useArdoPath,
+  useArdoSidebar,
+} from "ardo/runtime"
+
+function MyPrevNext() {
+  const pathname = useArdoPath()
+  const page = useArdoPageData()
+  const sidebar = useArdoSidebar()
+  if (!page) return null
+
+  const current = findCurrentSidebarItem(sidebar, pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, pathname)
+
+  return (
+    <nav>
+      <span>{current?.text}</span>
+      {prev?.link && <ArdoLink to={prev.link}>{prev.text}</ArdoLink>}
+      {next?.link && <ArdoLink to={next.link}>{next.text}</ArdoLink>}
+    </nav>
+  )
+}
+```
+
+`ArdoLink` adds the base path and renders a plain `<a>`, so each click loads the prerendered target page. `ArdoProvider` and `ArdoSiteConfigProvider` supply the same context in tests and isolated component previews.
+
+## Layout: The HTML Shell
+
+Ardo renders every page inside an HTML shell: `<html>`, `<head>`, and `<body>`. The shell is
+rendered on the server only, during `ardo dev` and `ardo build`; the root component inside it
+hydrates. By default, Ardo uses `ArdoRootLayout` from `ardo/ui`. It adds the charset and viewport
+tags, the theme bootstrap script, favicons, the page's title and meta tags, stylesheets, and the
+client script. Most sites do not need a `Layout` export.
+
+Export `Layout` from `root.tsx` to pass options to `ArdoRootLayout`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoRootLayout } from "ardo/ui"
+import logo from "./assets/logo.svg"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+}
+```
+
+For a fully custom shell, render `ArdoHead` in `<head>` and `ArdoScripts` at the end of `<body>`.
+Both come from `ardo/runtime`. `ArdoHead` renders the page's `meta` descriptors, stylesheets, and
+module preloads; `ArdoScripts` loads the client entry that hydrates the page. The shell must render
+`children`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoHead, ArdoScripts } from "ardo/runtime"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ArdoHead />
+      </head>
+      <body>
+        {children}
+        <ArdoScripts />
+      </body>
+    </html>
+  )
+}
+```
+
+A custom shell does not include `ArdoRootLayout`'s theme bootstrap or favicons. Prefer wrapping
+`ArdoRootLayout` unless the site needs full control over the document.
+
+## RootLayout Theme Policy
+
+By default, `ArdoRootLayout` uses `theme="auto"`: it applies a stored `ardo-theme` preference first
+and falls back to `prefers-color-scheme`. Set an explicit theme policy when a site should not be
+user-selectable:
+
+```tsx
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+}
+```
+
+| Theme policy | Behavior                                                                 |
+| ------------ | ------------------------------------------------------------------------ |
+| `auto`       | Stored user preference wins; system preference is the fallback. Default. |
+| `light`      | Always render light mode and clear stale stored theme preferences.       |
+| `dark`       | Always render dark mode and clear stale theme preferences.               |
+| `system`     | Always follow `prefers-color-scheme` and clear stored preferences.       |
+
 ## Document Scrolling with Site-Owned Chrome
 
 Set `scrollMode="document"` when the site's header or footer lives outside Ardo's layout, or when
@@ -320,9 +561,7 @@ export default function Root() {
   return (
     <>
       <SiteHeader />
-      <ArdoRoot config={config} scrollMode="document" header={false} footer={false}>
-        <ArdoSidebar />
-      </ArdoRoot>
+      <ArdoRoot scrollMode="document" header={false} footer={false} />
       <SiteFooter />
     </>
   )

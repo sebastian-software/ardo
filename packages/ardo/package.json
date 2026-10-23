@@ -40,7 +40,6 @@
       "types": "./dist/mdx/provider.d.ts",
       "import": "./dist/mdx/provider.js"
     },
-    "./press.css": "./dist/ui/styles.css",
     "./theme": {
       "types": "./dist/theme/index.d.ts",
       "import": "./dist/theme/index.js"
@@ -77,6 +76,7 @@
       "import": "./dist/react-dom/static.js"
     },
     "./package.json": "./package.json",
+    "./tsconfig": "./tsconfig.app.json",
     "./vite/client": {
       "types": "./vite-client.d.ts"
     }
@@ -89,11 +89,13 @@
     "./src/entries/*.tsx"
   ],
   "files": [
+    "CHANGELOG.md",
     "ICONS-LICENSE.md",
     "dist",
     "virtual.d.ts",
     "vite-client.d.ts",
-    "bin"
+    "bin",
+    "tsconfig.app.json"
   ],
   "engines": {
     "node": ">=22.22.0"

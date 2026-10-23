@@ -1,14 +1,15 @@
 ---
 title: Upgrade to Ardo 6
 description: Move from React Router to Ardo's static site build, remove the router files, and switch to Ardo's link and page APIs.
-order: 15
+order: 1
+redirectFrom: /v6/guide/upgrade-to-v6
 ---
 
 # Upgrade to Ardo 6
 
 Ardo 6 builds static sites with Vite alone. It no longer uses React Router: neither `react-router` nor `@react-router/dev` is part of the toolchain, and there is no client-side router. Ardo renders every page to HTML at build time, and each link loads the next prerendered document, which then hydrates.
 
-Most of the migration removes files rather than rewriting them. Your routes in `app/routes/`, your root component, and your Ardo configuration stay. The background is recorded in [ADR 0020](https://github.com/sebastian-software/ardo/blob/main/docs/adr/0020-static-site-without-react-router.md).
+Most of the migration removes files rather than rewriting them. Your routes in `app/routes/`, your root component, and your Ardo configuration stay. The background is recorded in [ADR 0020](https://github.com/sebastian-software/ardo/blob/main/docs/adr/0020-static-site-without-react-router.md). If the site used the `typedoc` option, also follow [Migrate from TypeDoc](/guide/releases/migrate-from-typedoc).
 
 ## How the build works now
 
@@ -36,17 +37,17 @@ Customized entry files have no direct replacement. Move provider setup into the 
 
 ## Update content icons
 
-`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
+`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/component-playground#icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
 
 All 50 Core icons are registered automatically. Remove their imports and `registerIcons()` calls from `app/root.tsx`; keep registration calls for additional custom icons. Use `Code` where an older example used `Code2`, including `<Icon name="Code" />` and `<Card icon="Code">` in MDX.
 
-The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/icons) for all included motifs and their usage terms.
+The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/component-playground#icons) for all included motifs and their usage terms.
 
 ## Update `app/root.tsx`
 
-The default export stays the root component, typically `<ArdoRoot config={config}>` with the header, sidebar, and footer as children. Three optional exports remain:
+The default export stays the root component. `<ArdoRoot>` now reads the site config from Ardo's entries and generates a sidebar from the route folders, so the `config` prop, the `virtual:ardo/config` import, and the `ardo/ui/styles.css` import can go. Three optional exports remain:
 
-- `meta`: typed as `ArdoMetaFunction` from `ardo/runtime`. It takes no arguments and returns the same descriptor objects as before, such as `{ title: "My Docs" }`.
+- `meta`: typed as `ArdoMetaFunction` from `ardo/runtime`. It takes no arguments and returns the same descriptor objects as before, such as `{ title: "My Docs" }`. Drop it when it only set the site title: pages without a `title` get the title from `ardo.config.ts`.
 - `Layout`: the HTML shell. It now renders on the server only. Ardo uses `ArdoRootLayout` from `ardo/ui` when you omit it, so most projects delete their `Layout` export.
 - `ErrorBoundary`: replaces the root on 404 and error pages. Ardo uses `ArdoErrorBoundary` when you omit it.
 
@@ -79,49 +80,54 @@ export default function Root() {
 After:
 
 ```tsx
-import type { ArdoMetaFunction } from "ardo/runtime"
-import { ArdoFooter, ArdoHeader, ArdoRoot, ArdoSidebar } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
-
-export const meta: ArdoMetaFunction = () => [{ title: "My Docs" }]
+import { ArdoRoot } from "ardo/ui"
 
 export default function Root() {
-  return (
-    <ArdoRoot config={config}>
-      <ArdoHeader />
-      <ArdoSidebar />
-      <ArdoFooter />
-    </ArdoRoot>
-  )
+  return <ArdoRoot />
 }
 ```
 
-Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Site UI](/guide/site-ui#layout-the-html-shell).
+Keep `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children when they carry props or navigation; without children, `ArdoRoot` renders the same three parts with their defaults.
+
+Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/site-ui#layout-the-html-shell).
 
 Route modules keep their `meta` and `handle` exports, for example `export const handle = { layout: "bare" }`.
+
+## Trim `tsconfig.json`
+
+Replace the compiler options with Ardo's preset. It sets `jsx`, `jsxImportSource: "ardo"`, `moduleResolution: "bundler"`, strict mode, and Ardo's type declarations:
+
+```json
+{
+  "extends": "ardo/tsconfig",
+  "include": ["app/**/*", "*.ts"]
+}
+```
 
 ## Replace router imports
 
 Import runtime values from `ardo/runtime` or `ardo/ui`. Do not import them from the package root `ardo` in browser code: that entry also contains Node-only build code. React APIs still come from `ardo/react`, and the `ardo/react-dom/*` subpaths still exist.
 
-| Ardo 5 (React Router)                           | Ardo 6                                                   |
-| ----------------------------------------------- | -------------------------------------------------------- |
-| `Link` from `ardo/router`                       | `ArdoLink` with `to` and anchor attributes               |
-| `NavLink` from `ardo/router`                    | `ArdoActiveLink`, which adds `active` and `aria-current` |
-| `useLocation().pathname`                        | `useArdoPath()`, the page path without the base path     |
-| `useNavigate()`                                 | `navigateTo(href)`, a full page navigation               |
-| `useHref(to)`                                   | `useArdoHref(to)` or `resolveArdoHref(to, page)`         |
-| `useMatches()` for route `handle` data          | `useArdoPage().handle`                                   |
-| `useRouteError()` in an error boundary          | `useArdoPage().error`                                    |
-| `MetaFunction` from `ardo/router`               | `ArdoMetaFunction` and `ArdoMetaDescriptor`              |
-| `MemoryRouter` in tests and component previews  | `ArdoPageProvider` with `path` and optional `base`       |
-| `<Meta />`, `<Links />`, `<Scripts />`          | `<ArdoHead />` and `<ArdoScripts />`                     |
-| `ardo/router/dom`, `ardo/router/routes`         | Removed. Ardo provides the client entry and route table. |
-| `ardo/entry.server`                             | Removed. Delete `app/entry.server.tsx`.                  |
-| `ReactRouterConfig` from `ardo/config`          | Removed. Delete `react-router.config.ts`.                |
-| `withArdoGitHubPages()`, `withArdoVersioning()` | `githubPages`, `base`, or `versioning` in Ardo config    |
-| `ardoRoutesPlugin`                              | Removed. The `ardo()` plugin generates the route table.  |
+| Ardo 5 (React Router)                           | Ardo 6                                                         |
+| ----------------------------------------------- | -------------------------------------------------------------- |
+| `Link` from `ardo/router`                       | `ArdoLink` with `to` and anchor attributes                     |
+| `NavLink` from `ardo/router`                    | `ArdoActiveLink`, which adds `active` and `aria-current`       |
+| `useLocation().pathname`                        | `useArdoPath()`, the page path without the base path           |
+| `useNavigate()`                                 | `navigateTo(href)`, a full page navigation                     |
+| `useHref(to)`                                   | `useArdoHref(to)` or `resolveArdoHref(to, page)`               |
+| `useMatches()` for route `handle` data          | `useArdoPage().handle`                                         |
+| `useRouteError()` in an error boundary          | `useArdoPage().error`                                          |
+| `MetaFunction` from `ardo/router`               | `ArdoMetaFunction` and `ArdoMetaDescriptor`                    |
+| `MemoryRouter` in tests and component previews  | `ArdoPageProvider` with `path` and optional `base`             |
+| `<Meta />`, `<Links />`, `<Scripts />`          | `<ArdoHead />` and `<ArdoScripts />`                           |
+| `ardo/router/dom`, `ardo/router/routes`         | Removed. Ardo provides the client entry and route table.       |
+| `ardo/entry.server`                             | Removed. Delete `app/entry.server.tsx`.                        |
+| `ReactRouterConfig` from `ardo/config`          | Removed. Delete `react-router.config.ts`.                      |
+| `withArdoGitHubPages()`, `withArdoVersioning()` | `base` or `versioning` in Ardo config                          |
+| `githubPages` option, `detectGitHubBasename()`  | Removed. Set `base: "/repo/"` for a GitHub Pages project site. |
+| `ardoRoutesPlugin`                              | Removed. The `ardo()` plugin generates the route table.        |
+| `defineConfig`, `loadConfig` from `ardo`        | Removed. Use `defineArdoConfig` from `ardo/config`.            |
+| `ardo/press.css`                                | Removed. Import `ardo/ui/styles.css`.                          |
 
 All of these, except `ArdoMetaFunction` and `ArdoMetaDescriptor`, are values exported from `ardo/runtime`. `ArdoLink` and `ArdoActiveLink` are also exported from `ardo/ui`. UI props that took React Router's `To` type now take a `string`.
 
@@ -153,8 +159,8 @@ render(
 
 There is no separate router `basename` and no flatten step anymore. Set the base path in Ardo config, and Ardo applies it to assets, links, and the output folders:
 
-- GitHub Pages project sites: keep `githubPages: true`, the default, which detects the repository name during the build, or set `base: "/repo/"`.
-- Root deployments and custom domains: set `githubPages: false`.
+- GitHub Pages project sites: set `base: "/repo/"`.
+- Root deployments and custom domains: nothing to set.
 - Versioned docs: use the `versioning` option. Ardo writes the current version's pages under its folder, such as `build/client/v6/`, and site-wide files such as `versions.json` at the top of `build/client/`.
 
 See [Deployment](/guide/deployment) for complete examples.
@@ -201,6 +207,8 @@ Declare the module's type in a `.d.ts` file so TypeScript accepts the import. Th
 
 ## Behavior changes
 
+- **Every page has a title.** Pages whose module and root set no `title` meta get the site title from `ardo.config.ts`.
+- **No GitHub remote detection.** Ardo 5 used the repository name from a GitHub remote as the base path unless you set `githubPages: false`. Ardo 6 removes `githubPages` and `detectGitHubBasename`. Set `base` for a subpath; it applies in development and in the build alike.
 - **Full page navigations.** Every link is a plain `<a>`, and each click loads a new prerendered document. Client state, such as an open search dialog, does not survive navigation.
 - **Trailing slashes.** Ardo emits internal page links with a trailing slash, such as `/guide/intro/`, so static hosts serve each page's `index.html` without a redirect. Links to files such as `llms.txt` keep their form.
 - **Link check on the built HTML.** `ardo build` always checks every internal link, image, script, stylesheet, and `#fragment` in the generated HTML, including links from components and generated pages. Configure it with [`linkCheck`](/guide/configuration#linkcheck).

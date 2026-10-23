@@ -17,6 +17,8 @@ export type ArdoHeaderSearchProps = {
    * viewports. `"icon"` shows only the icon button, at every width.
    */
   variant?: "field" | "icon"
+  /** Close related header UI before activating search. */
+  onActivate?: () => void
 }
 
 /**
@@ -25,7 +27,11 @@ export type ArdoHeaderSearchProps = {
  * ⌘K / Ctrl+K focuses the inline input when it is visible and opens the
  * overlay otherwise.
  */
-export function ArdoHeaderSearch({ placeholder, variant = "field" }: ArdoHeaderSearchProps) {
+export function ArdoHeaderSearch({
+  placeholder,
+  variant = "field",
+  onActivate,
+}: ArdoHeaderSearchProps) {
   const labels = useArdoLabels()
   const { closeOverlay, openOverlay, overlayOpen } = useSearchOverlayState()
   const inlineRef = useRef<HTMLDivElement>(null)
@@ -36,10 +42,11 @@ export function ArdoHeaderSearch({ placeholder, variant = "field" }: ArdoHeaderS
   useSearchOverlayFocus({
     onClose: closeOverlay,
     open: overlayOpen,
+    inlineRef,
     overlayRef,
     triggerRef,
   })
-  useHeaderSearchShortcut({ inlineRef, onOpenOverlay: openOverlay })
+  useHeaderSearchShortcut({ inlineRef, overlayRef, onActivate, onOpenOverlay: openOverlay })
 
   return (
     <>
@@ -56,7 +63,10 @@ export function ArdoHeaderSearch({ placeholder, variant = "field" }: ArdoHeaderS
         aria-label={labels.search.label}
         aria-expanded={overlayOpen}
         aria-keyshortcuts="Meta+K Control+K"
-        onClick={openOverlay}
+        onClick={() => {
+          onActivate?.()
+          openOverlay()
+        }}
       >
         <ChromeIcon name="search" />
         <span className={styles.tooltip} aria-hidden="true">
@@ -118,27 +128,28 @@ function useSearchOverlayState() {
 }
 
 /**
- * One ⌘K / Ctrl+K handler per header: focus the inline input while it is
- * shown, otherwise open the overlay. The inline input hides via CSS on
- * narrow viewports, so the check runs on each key press.
+ * One ⌘K / Ctrl+K handler per header. An open overlay keeps ownership of
+ * search across responsive changes; otherwise use the visible inline field
+ * or open the overlay after closing related header UI.
  */
 function useHeaderSearchShortcut({
   inlineRef,
+  overlayRef,
+  onActivate,
   onOpenOverlay,
 }: {
   inlineRef: React.RefObject<HTMLDivElement | null>
+  overlayRef: React.RefObject<HTMLDivElement | null>
+  onActivate?: () => void
   onOpenOverlay: () => void
 }) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isSearchShortcut(event)) return
       event.preventDefault()
-      const inline = inlineRef.current
-      const input = inline?.querySelector("input")
-      if (inline != null && input != null && getComputedStyle(inline).display !== "none") {
-        input.focus()
-        return
-      }
+      if (focusSearchField(overlayRef.current)) return
+      onActivate?.()
+      if (focusSearchField(inlineRef.current)) return
       onOpenOverlay()
     }
 
@@ -146,17 +157,19 @@ function useHeaderSearchShortcut({
     return () => {
       document.removeEventListener("keydown", handleKeyDown)
     }
-  }, [inlineRef, onOpenOverlay])
+  }, [inlineRef, overlayRef, onActivate, onOpenOverlay])
 }
 
 function useSearchOverlayFocus({
   onClose,
   open,
+  inlineRef,
   overlayRef,
   triggerRef,
 }: {
   onClose: () => void
   open: boolean
+  inlineRef: React.RefObject<HTMLDivElement | null>
   overlayRef: React.RefObject<HTMLDivElement | null>
   triggerRef: React.RefObject<HTMLButtonElement | null>
 }) {
@@ -166,6 +179,7 @@ function useSearchOverlayFocus({
     }
 
     const overlay = overlayRef.current
+    const inlineElement = inlineRef.current
     const triggerElement = triggerRef.current
     document.body.style.overflow = "hidden"
 
@@ -189,7 +203,17 @@ function useSearchOverlayFocus({
     return () => {
       document.body.style.overflow = ""
       document.removeEventListener("keydown", handleKeyDown)
-      triggerElement?.focus()
+      if (!focusSearchField(inlineElement)) triggerElement?.focus()
     }
-  }, [onClose, open, overlayRef, triggerRef])
+  }, [onClose, open, inlineRef, overlayRef, triggerRef])
+}
+
+/** The inline field hides at the mobile breakpoint; the overlay is absent when closed. */
+function focusSearchField(container: HTMLDivElement | null): boolean {
+  const input = container?.querySelector("input")
+  if (container == null || input == null || getComputedStyle(container).display === "none") {
+    return false
+  }
+  input.focus()
+  return true
 }

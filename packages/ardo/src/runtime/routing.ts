@@ -65,6 +65,8 @@ export async function resolvePage(input: {
   route: ArdoRouteEntry | undefined
   error?: ArdoPageData["error"]
   source?: ArdoPage["source"]
+  /** `<title>` for pages whose module and root set none, usually the site title. */
+  siteTitle?: string
 }): Promise<ArdoResolvedPage> {
   const { base, path, root, route } = input
   if (input.error == null && route != null) {
@@ -77,7 +79,7 @@ export async function resolvePage(input: {
       data: { base, path, routeId: route.id, source: input.source ?? route.source },
       handle: module.handle,
       source: input.source ?? route.source,
-      meta: (module.meta ?? root.meta)?.() ?? [],
+      meta: withDefaultTitle((module.meta ?? root.meta)?.() ?? [], input.siteTitle),
     }
   }
   const error = input.error ?? { status: 404, message: `No page at ${path}` }
@@ -85,8 +87,18 @@ export async function resolvePage(input: {
     component: root.ErrorBoundary ?? ArdoErrorBoundary,
     data: { base, error, path },
     error,
-    meta: root.meta?.() ?? [],
+    meta: withDefaultTitle(root.meta?.() ?? [], input.siteTitle),
   }
+}
+
+/** Every page gets a `<title>`: the site title unless the page or root set one. */
+function withDefaultTitle(
+  meta: ArdoMetaDescriptor[],
+  siteTitle: string | undefined
+): ArdoMetaDescriptor[] {
+  if (siteTitle == null || siteTitle === "") return meta
+  if (meta.some((descriptor) => "title" in descriptor)) return meta
+  return [...meta, { title: siteTitle }]
 }
 
 function matchesPattern(pattern: string, pathname: string): boolean {

@@ -1,15 +1,17 @@
 ---
-title: Native API Documentation
-description: Generate API documentation from source using native TypeScript and OXC.
+title: API Documentation
+description: Generate API reference pages from TypeScript entry points with native TypeScript and OXC, or from a local OpenAPI specification.
+order: 9
+redirectFrom: /v6/guide/openapi
 ---
 
-# Native API Documentation
+# API Documentation
 
 The `api` option generates Markdown documentation from your public
 TypeScript entry points. It includes inferred types, signatures, overloads,
-JSDoc, and supported inherited or composed properties. Add this optional
-integration to the [Basic example](/guide/reference-projects). Ardo's own
-documentation and internal API fixtures exercise the same generation path.
+JSDoc, and supported inherited or composed properties. Ardo's own
+[API reference](/api-reference) is generated this way. For a REST API, generate
+pages from an [OpenAPI specification](#openapi-specs) instead.
 
 ## Installation
 
@@ -126,10 +128,9 @@ native compiler backend for both initial generation and updates.
 
 ## Current limits
 
-Named types inside module-local and exported declaration namespaces participate in inherited-member
-expansion, including React's `export = React` declarations. React DOM attributes
-can appear alongside a component's own props, with generic arguments, omitted
-members, and authored overrides preserved.
+Props that extend other types are expanded into the page, including types declared inside
+namespaces such as React's. A component that extends React DOM attributes lists them next to its
+own props, with generic arguments, omitted members, and your overrides preserved.
 
 This integration preserves type expressions and reports unsupported property
 expansion. Arbitrary mapped or conditional types, complete TSDoc behavior,
@@ -143,5 +144,56 @@ the extractor reports incomplete expansion rather than selecting a potentially
 incorrect declaration.
 
 Projects using the removed TypeDoc integration should follow the
-[TypeDoc migration guide](/guide/typedoc). The native path uses the official
+[TypeDoc migration guide](/guide/releases/migrate-from-typedoc). The native path uses the official
 TypeScript Node client and does not require custom Go bindings.
+
+## OpenAPI Specs
+
+Ardo can turn a local OpenAPI 3.0 or 3.1 specification into static MDX reference pages. The generated pages use the ordinary route, sidebar, search, sitemap, link-check, and LLM-output pipeline, so an API reference behaves like the rest of the documentation.
+
+### Configure a Local Spec
+
+Keep the specification in the repository and add its relative path to `ardo.config.ts`. Merge `openapi` into your existing config:
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Pet API",
+  openapi: {
+    spec: "./openapi.yaml",
+    out: "api",
+  },
+})
+```
+
+`spec` accepts `.json`, `.yaml`, and `.yml` files. `out` defaults to `api`, so the reference index is available at `/api` and operations are grouped below tag paths such as `/api/pets/get-pets`.
+
+### Generated Content
+
+The initial static reference includes:
+
+- API title and description;
+- endpoint method and path;
+- tag-based grouping;
+- endpoint summary or description;
+- declared parameters and required markers;
+- declared response status codes and descriptions.
+
+Generated directories are marked as Ardo-managed. Edit the OpenAPI source, not the generated MDX files.
+
+### Static by Design
+
+The build never fetches a remote specification, sends requests to an API, stores credentials, or renders an interactive request console. This keeps builds reproducible and static deployments safe. Teams can add a custom React component for a project-specific playground later without changing the generated reference contract.
+
+### Validate
+
+Run the usual docs build after a specification change:
+
+```bash
+pnpm build
+```
+
+An invalid document, an unsupported OpenAPI major version, or a non-object specification fails the build with an actionable Ardo error.

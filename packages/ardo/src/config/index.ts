@@ -1,4 +1,3 @@
-import fs from "node:fs"
 import path from "node:path"
 import { URL } from "node:url"
 
@@ -38,17 +37,12 @@ import type {
 } from "./types"
 
 import { resolveBrandThemeHues } from "./brand"
-import { isArdoConfig } from "./guards"
 import { resolveI18nConfig } from "./i18n"
 import { validateOpenApiConfig } from "./openapi"
 import { validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
-
-type ConfigModule = {
-  default?: unknown
-}
 
 export type {
   ArdoBrandChroma,
@@ -85,9 +79,6 @@ export type {
   TOCItem,
 }
 
-export function defineConfig(config: ArdoConfig): ArdoConfig {
-  return config
-}
 export const defaultMarkdownConfig: MarkdownConfig = {
   theme: {
     light: "github-light-default",
@@ -139,54 +130,6 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     root,
     contentDir,
   }
-}
-
-export async function loadConfig(root: string): Promise<ResolvedConfig> {
-  const configPath = path.resolve(root, "press.config.ts")
-  if (!fs.existsSync(configPath)) {
-    return resolveDefaultConfig(root)
-  }
-
-  const configModule = await importConfigModule(configPath)
-  if (configModule == null) {
-    return resolveDefaultConfig(root)
-  }
-
-  const config = configModule.default
-
-  if (isArdoConfig(config)) {
-    return resolveConfig(config, root)
-  }
-
-  console.warn(`[ardo] Config at ${configPath} does not export a valid Ardo config.`)
-  console.warn("[ardo] Falling back to defaults.")
-  return resolveDefaultConfig(root)
-}
-
-async function importConfigModule(configPath: string): Promise<ConfigModule | undefined> {
-  try {
-    const configModule: unknown = await import(configPath)
-    if (typeof configModule === "object" && configModule !== null && "default" in configModule) {
-      return configModule
-    }
-    return {}
-  } catch (error) {
-    console.warn(`[ardo] Failed to load config at ${configPath}. Falling back to defaults.`)
-    if (error instanceof Error) {
-      console.warn(`[ardo] ${error.message}`)
-    }
-    return undefined
-  }
-}
-
-function resolveDefaultConfig(root: string): ResolvedConfig {
-  return resolveConfig(
-    {
-      title: "Ardo",
-      description: "Documentation powered by Ardo",
-    },
-    root
-  )
 }
 
 function validateConfig(config: ArdoConfig): void {

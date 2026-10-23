@@ -6,5 +6,4 @@ export default defineArdoConfig({
   brand: {
     color: "teal",
   },
-  githubPages: false,
 })

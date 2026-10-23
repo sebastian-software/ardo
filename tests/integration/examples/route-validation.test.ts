@@ -95,7 +95,7 @@ describe("real CLI route validation", () => {
       `
       import { defineArdoConfig } from "ardo/config";
       export default defineArdoConfig({
-        title: "Route validation", githubPages: false,
+        title: "Route validation",
         versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
         i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
       });

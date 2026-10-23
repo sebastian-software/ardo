@@ -5,9 +5,9 @@ import type { ContentSourceMapping } from "./content-sources"
 import type { ArdoIconOptions } from "./icons"
 import type { ArdoRoutesPluginOptions } from "./routes-plugin"
 
-export type PressConfigOptions = Omit<
+export type SiteConfigOptions = Omit<
   ArdoPluginOptions,
-  "api" | "collections" | "content" | "githubPages" | "icons" | "routes" | "routesDir"
+  "api" | "collections" | "content" | "icons" | "routes" | "routesDir"
 >
 
 export type ArdoPluginOptions = {
@@ -30,11 +30,6 @@ export type ArdoPluginOptions = {
    * @default true
    */
   icons?: ArdoIconOptions
-  /**
-   * Auto-detect GitHub repository and set base path for GitHub Pages.
-   * @default true
-   */
-  githubPages?: boolean
   /**
    * Directory where routes are located.
    * @default "./app/routes"
