@@ -289,16 +289,20 @@ target page. Redirect sources are valid targets, because Ardo writes a page for 
 External links are out of scope, because their availability depends on third-party servers rather
 than on the build. Links to the other versions in [`versioning`](#versioning) count as present,
 because each version is deployed on its own. A link that leaves the deployment base, such as
-`/guide/` on a site served below `/docs/`, is reported. Patterns in `exclude` name link targets to
-skip, with or without the base path; a single `*` matches any infix. Each finding names the file and
-line it comes from.
+`/guide/` on a site served below `/docs/`, is reported. Each finding names the file and line it
+comes from.
+
+Patterns in `exclude` are globs of link targets to skip. A pattern with a leading `/` matches the URL
+path, base path included, such as `/generated/**`, or `/blog/**` for another app on the same host.
+Any other pattern is relative to the deployment base. A skipped target is reported neither as missing
+nor for a missing anchor.
 
 ```ts
 defineArdoConfig({
   title: "My Docs",
   linkCheck: {
     level: "error",
-    exclude: ["/generated/*"],
+    exclude: ["/generated/**"],
   },
 })
 ```

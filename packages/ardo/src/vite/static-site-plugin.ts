@@ -90,7 +90,6 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
         })
         if (config != null) {
           await checkSiteLinks({
-            base: viteConfig.base,
             deploymentBase: state.deploymentBase ?? viteConfig.base,
             clientDir,
             linkCheck: config.linkCheck,

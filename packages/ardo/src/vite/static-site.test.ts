@@ -5,7 +5,13 @@ import { afterEach, describe, expect, it } from "vitest"
 import { createLogger } from "vite"
 
 import { findNotFoundPage } from "./preview-static"
-import { createAssetResolver, prerenderSite, resolvePageDirectory, toHtmlFile } from "./static-site"
+import {
+  checkSiteLinks,
+  createAssetResolver,
+  prerenderSite,
+  resolvePageDirectory,
+  toHtmlFile,
+} from "./static-site"
 import { toPagePath } from "./dev-render"
 
 describe("createAssetResolver", () => {
@@ -158,5 +164,85 @@ describe("prerender response status", () => {
     await expect(render(200)).resolves.toBe(1)
     expect(readFileSync(path.join(directory, "guide/index.html"), "utf8")).toBe("Guide content")
     expect(readFileSync(path.join(directory, "404.html"), "utf8")).toBe("Intentional not found")
+  })
+})
+
+describe("checkSiteLinks", () => {
+  let clientDir: string
+  const messages: { info: string[]; warn: string[] } = { info: [], warn: [] }
+  const logger = createLogger("silent")
+  logger.info = (message) => messages.info.push(message)
+  logger.warn = (message) => messages.warn.push(message)
+
+  afterEach(() => {
+    rmSync(clientDir, { recursive: true, force: true })
+    messages.info.length = 0
+    messages.warn.length = 0
+  })
+
+  function site(files: Record<string, string>) {
+    clientDir = mkdtempSync(path.join(os.tmpdir(), "ardo-links-"))
+    for (const [file, content] of Object.entries(files)) {
+      mkdirSync(path.dirname(path.join(clientDir, file)), { recursive: true })
+      writeFileSync(path.join(clientDir, file), content)
+    }
+  }
+
+  function run(linkCheck: Parameters<typeof checkSiteLinks>[0]["linkCheck"] = {}) {
+    return checkSiteLinks({
+      clientDir,
+      deploymentBase: "/",
+      linkCheck,
+      logger,
+      versioning: {
+        current: "v6",
+        versions: [
+          { id: "v6", path: "/v6/" },
+          { id: "v5", path: "/v5/" },
+        ],
+      },
+    })
+  }
+
+  it("logs a clean build and accepts the archived versions", async () => {
+    site({
+      "v6/index.html": '<a href="/v6/guide/#setup">Guide</a><a href="/v5/guide/">v5</a>',
+      "v6/guide/index.html": '<h2 id="setup">Setup</h2>',
+      "versions.json": '{ "current": "v6", "versions": [{ "path": "/v6/" }, { "path": "/v5/" }] }',
+    })
+
+    await run()
+
+    expect(messages.warn).toStrictEqual([])
+    expect(messages.info).toStrictEqual(["[ardo] Checked 4 internal links in 2 pages"])
+  })
+
+  it("warns with every broken link by default and fails at level error", async () => {
+    site({ "v6/index.html": '<a href="/v6/gone/">Gone</a>\n<a href="/v4/">v4</a>' })
+
+    await run()
+
+    expect(messages.warn).toStrictEqual([
+      [
+        "[ardo] 2 broken internal links in build output (2 internal links in 1 pages):",
+        "v6/index.html",
+        "  line 1     broken link     /v6/gone/",
+        "  line 2     broken link     /v4/",
+      ].join("\n"),
+    ])
+    await expect(run({ level: "error" })).rejects.toThrow("[ardo] 2 broken internal links")
+  })
+
+  it("skips excluded targets, anchors on request, and the whole check when disabled", async () => {
+    site({
+      "v6/index.html":
+        '<a href="/v6/storybook/">Storybook</a><a href="/blog/">Blog</a><a href="#nope">Top</a>',
+    })
+
+    await run({ exclude: ["/v6/storybook/**", "/blog/**"], checkAnchors: false })
+    expect(messages.warn).toStrictEqual([])
+
+    await run({ enabled: false })
+    expect(messages.info).toHaveLength(1)
   })
 })
