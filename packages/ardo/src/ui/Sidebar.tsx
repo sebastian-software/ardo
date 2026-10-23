@@ -113,13 +113,13 @@ export function ArdoSidebarSection({
  *
  * @example
  * ```tsx
- * <Sidebar>
- *   <SidebarSection id="guide" label="Guide" to="/guide">
- *     <SidebarGroup title="Guide">
- *       <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
- *     </SidebarGroup>
- *   </SidebarSection>
- * </Sidebar>
+ * <ArdoSidebar>
+ *   <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+ *     <ArdoSidebarGroup title="Guide">
+ *       <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+ *     </ArdoSidebarGroup>
+ *   </ArdoSidebarSection>
+ * </ArdoSidebar>
  * ```
  */
 export function ArdoSidebar({ children, header, className }: ArdoSidebarProps) {
@@ -203,17 +203,17 @@ export type ArdoSidebarGroupProps = {
  *
  * @example
  * ```tsx
- * <SidebarGroup title="Guide">
- *   <SidebarLink to="/guide/intro">Introduction</SidebarLink>
- *   <SidebarLink to="/guide/setup">Setup</SidebarLink>
- * </SidebarGroup>
+ * <ArdoSidebarGroup title="Guide">
+ *   <ArdoSidebarLink to="/guide/intro">Introduction</ArdoSidebarLink>
+ *   <ArdoSidebarLink to="/guide/setup">Setup</ArdoSidebarLink>
+ * </ArdoSidebarGroup>
  * ```
  *
  * @example With collapsible state
  * ```tsx
- * <SidebarGroup title="Advanced" collapsed>
- *   <SidebarLink to="/advanced/config">Configuration</SidebarLink>
- * </SidebarGroup>
+ * <ArdoSidebarGroup title="Advanced" collapsed>
+ *   <ArdoSidebarLink to="/advanced/config">Configuration</ArdoSidebarLink>
+ * </ArdoSidebarGroup>
  * ```
  */
 export function ArdoSidebarGroup({
@@ -329,7 +329,7 @@ export type ArdoSidebarLinkProps = {
  *
  * @example
  * ```tsx
- * <SidebarLink to="/guide/getting-started">Getting Started</SidebarLink>
+ * <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
  * ```
  */
 export function ArdoSidebarLink({ to, children, className }: ArdoSidebarLinkProps) {

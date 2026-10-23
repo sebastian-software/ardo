@@ -51,40 +51,6 @@ function formatBuildTime(iso: string, locale: string): string {
   })
 }
 
-/**
- * Footer component with structured layout for project info, sponsor, and build metadata.
- *
- * Automatically pulls data from Ardo context (`config.project`, `config.buildTime`,
- * `config.buildHash`). Props serve as overrides.
- *
- * When `children` is provided, all automatic rendering is skipped.
- *
- * @example Automatic (zero-config)
- * ```tsx
- * <Footer />
- * ```
- *
- * @example With overrides
- * ```tsx
- * <Footer
- *   sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
- *   message="Released under the MIT License."
- *   copyright="Copyright 2026 Sebastian Software GmbH"
- * />
- * ```
- *
- * @example Trusted HTML opt-in
- * ```tsx
- * <Footer trustedMessageHtml={'Released under the <a href="/license">MIT License</a>.'} />
- * ```
- *
- * @example Custom content
- * ```tsx
- * <Footer>
- *   <CustomFooterContent />
- * </Footer>
- * ```
- */
 function FooterProjectLink({
   project,
   config,
@@ -205,6 +171,40 @@ function FooterTextLine({
   return <p className={className}>{children}</p>
 }
 
+/**
+ * Footer component with structured layout for project info, sponsor, and build metadata.
+ *
+ * Automatically pulls data from Ardo context (`config.project`, `config.buildTime`,
+ * `config.buildHash`). Props serve as overrides.
+ *
+ * When `children` is provided, all automatic rendering is skipped.
+ *
+ * @example Automatic (zero-config)
+ * ```tsx
+ * <ArdoFooter />
+ * ```
+ *
+ * @example With overrides
+ * ```tsx
+ * <ArdoFooter
+ *   sponsor={{ text: "Sebastian Software", link: "https://sebastian-software.com/oss" }}
+ *   message="Released under the MIT License."
+ *   copyright="Copyright 2026 Sebastian Software GmbH"
+ * />
+ * ```
+ *
+ * @example Trusted HTML opt-in
+ * ```tsx
+ * <ArdoFooter trustedMessageHtml={'Released under the <a href="/license">MIT License</a>.'} />
+ * ```
+ *
+ * @example Custom content
+ * ```tsx
+ * <ArdoFooter>
+ *   <CustomFooterContent />
+ * </ArdoFooter>
+ * ```
+ */
 export function ArdoFooter({
   children,
   className,

@@ -8,6 +8,10 @@ type CopyButtonProps = {
   code: string
 }
 
+/**
+ * A button that copies `code` to the clipboard and announces the result. Code blocks render it
+ * already.
+ */
 export function ArdoCopyButton({ code }: CopyButtonProps) {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle")
   const labels = useArdoLabels().copyButton

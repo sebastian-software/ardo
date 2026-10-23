@@ -35,11 +35,11 @@ export type ArdoNavProps = {
  *
  * @example
  * ```tsx
- * <Nav>
- *   <NavLink to="/guide">Guide</NavLink>
- *   <NavLink to="/api">API</NavLink>
- *   <NavLink href="https://github.com/...">GitHub</NavLink>
- * </Nav>
+ * <ArdoNav>
+ *   <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+ *   <ArdoNavLink to="/api">API</ArdoNavLink>
+ *   <ArdoNavLink href="https://github.com/...">GitHub</ArdoNavLink>
+ * </ArdoNav>
  * ```
  */
 export function ArdoNav({ children, className }: ArdoNavProps) {
@@ -69,10 +69,10 @@ export type ArdoNavLinkProps = {
  * @example
  * ```tsx
  * // Internal link
- * <NavLink to="/guide">Guide</NavLink>
+ * <ArdoNavLink to="/guide">Guide</ArdoNavLink>
  *
  * // External link
- * <NavLink href="https://github.com/...">GitHub</NavLink>
+ * <ArdoNavLink href="https://github.com/...">GitHub</ArdoNavLink>
  * ```
  */
 export function ArdoNavLink({ to, href, children, className, activeMatch }: ArdoNavLinkProps) {

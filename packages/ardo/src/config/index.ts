@@ -91,6 +91,10 @@ export const defaultMarkdownConfig: MarkdownConfig = {
   },
 }
 
+/**
+ * Fills in defaults and validates an Ardo config. Ardo calls it during the build and reports
+ * invalid options as one readable error.
+ */
 export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig {
   validateConfig(config)
 

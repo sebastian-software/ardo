@@ -31,6 +31,7 @@ function subscribeToScrollRegion(onChange: () => void) {
   }
 }
 
+/** The outline of the current page. It links to each heading and marks the section in view. */
 export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps = {}) {
   const toc = useArdoTOC()
   const siteConfig = useArdoSiteConfig()

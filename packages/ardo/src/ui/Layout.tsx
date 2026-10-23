@@ -22,7 +22,7 @@ export type ArdoRootLayoutProps = {
    * Set to `false` to render only the inline fallback favicon link.
    */
   iconBasePath?: false | string
-  /** Language attribute for <html> (default: from config or "en") */
+  /** Language attribute for `<html>` (default: from config or "en") */
   lang?: string
   /**
    * Theme policy applied before first paint.
@@ -42,16 +42,16 @@ export type ArdoScrollMode = "document" | "viewport"
  * Default HTML shell for Ardo sites. Ardo renders it on the server only; the
  * page inside it hydrates. Export a `Layout` from root.tsx to customize it.
  *
- * @example Basic usage
- * ```tsx
- * // app/root.tsx
- * export { RootLayout as Layout } from "ardo/ui"
- * ```
- *
  * @example With favicon
  * ```tsx
+ * // app/root.tsx
+ * import type { ReactNode } from "ardo/react"
+ * import { ArdoRootLayout } from "ardo/ui"
  * import logo from "./assets/logo.svg"
- * export const Layout = (props) => <RootLayout favicon={logo} {...props} />
+ *
+ * export function Layout({ children }: { children: ReactNode }) {
+ *   return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+ * }
  * ```
  */
 export function ArdoRootLayout({
@@ -139,13 +139,13 @@ export type ArdoLayoutProps = {
  *
  * @example
  * ```tsx
- * <Layout
- *   header={<Header logo="/logo.svg" title="Ardo" nav={...} />}
- *   sidebar={<Sidebar>...</Sidebar>}
- *   footer={<Footer message="MIT License" />}
+ * <ArdoLayout
+ *   header={<ArdoHeader logo="/logo.svg" title="Ardo" />}
+ *   sidebar={<ArdoSidebar />}
+ *   footer={<ArdoFooter message="MIT License" />}
  * >
- *   <Outlet />
- * </Layout>
+ *   <ArdoOutlet />
+ * </ArdoLayout>
  * ```
  */
 export function ArdoLayout({

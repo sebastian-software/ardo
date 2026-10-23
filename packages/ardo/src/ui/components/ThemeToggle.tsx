@@ -11,6 +11,7 @@ import {
 } from "../theme-mode"
 import * as styles from "./ThemeToggle.css"
 
+/** A button that switches between light and dark mode and remembers the choice. */
 export function ArdoThemeToggle() {
   const [theme, setTheme] = useState<ArdoThemeMode>(getInitialThemeMode)
   const mounted = useSyncExternalStore(subscribeMounted, getClientMounted, getServerMounted)

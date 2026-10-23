@@ -46,9 +46,9 @@ export function getRegisteredIconNames(): string[] {
  *
  * @example
  * ```tsx
- * // Use built-in names directly in MDX:
- * <Icon name="Zap" size={24} />
- * <Icon name="Rocket" className="text-brand" />
+ * // In MDX, the same component is available as <Icon />.
+ * <ArdoIcon name="Zap" size={24} />
+ * <ArdoIcon name="Rocket" className="text-brand" />
  * ```
  *
  * @see ardo/icons for the built-in Streamline Core components

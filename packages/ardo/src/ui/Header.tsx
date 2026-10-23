@@ -59,6 +59,7 @@ export type ArdoHeaderActionsProps = {
   children?: ReactNode
 }
 
+/** The right side of the header, for links such as `ArdoSocialLink`. */
 export function ArdoHeaderActions({ children }: ArdoHeaderActionsProps) {
   return <>{children}</>
 }
@@ -136,6 +137,10 @@ function useHasMobileMenu(content: ReactNode[], themeToggle: boolean): boolean {
   return content.some((node) => node != null) || themeToggle || hasVersions || hasLocales
 }
 
+/**
+ * The site header: logo, title, navigation, search, theme toggle, and the menu on narrow
+ * screens.
+ */
 export function ArdoHeader({
   logo,
   title,
@@ -250,6 +255,7 @@ export type ArdoSocialLinkProps = {
   className?: string
 }
 
+/** An icon link to a profile or repository, such as GitHub, npm, or Discord. */
 export function ArdoSocialLink({ href, icon, ariaLabel, className }: ArdoSocialLinkProps) {
   return (
     <a

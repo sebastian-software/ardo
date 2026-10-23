@@ -41,6 +41,7 @@ export type ArdoPage = {
 
 export const ArdoPageContext = createContext<ArdoPage>({ base: "/", path: "/" })
 
+/** Path, base path, route `handle`, error, and source of the page Ardo renders. */
 export function useArdoPage(): ArdoPage {
   return use(ArdoPageContext)
 }

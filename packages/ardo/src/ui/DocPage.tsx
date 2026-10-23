@@ -22,14 +22,15 @@ type DocPageProps = {
 }
 
 /**
- * Full documentation page with Layout wrapper.
- * Use this when you don't have a _layout.tsx file.
+ * A documentation page with Ardo's layout around it: header, sidebar, article,
+ * outline, and footer. `ArdoRoot` renders the same for every page; use this
+ * only in a custom root.
  *
  * @example
  * ```tsx
- * <DocPage>
- *   <Content />
- * </DocPage>
+ * <ArdoDocPage>
+ *   <ArdoOutlet />
+ * </ArdoDocPage>
  * ```
  */
 export function ArdoDocPage({ children, editLink, lastUpdated, tocLabel }: DocPageProps) {
@@ -73,23 +74,16 @@ type DocContentProps = {
 }
 
 /**
- * Documentation content without Layout wrapper.
- * Use this when you have a _layout.tsx that provides the Layout.
+ * The article, outline, and page actions of a documentation page, without the
+ * surrounding layout. Use it inside `ArdoLayout` in a custom root.
  *
  * @example
  * ```tsx
- * // In _layout.tsx:
- * <Layout>
- *   <Header ... />
- *   <Sidebar ... />
- *   <Outlet />
- *   <Footer ... />
- * </Layout>
- *
- * // In page routes:
- * <DocContent>
- *   <MarkdownContent />
- * </DocContent>
+ * <ArdoLayout header={<ArdoHeader />} sidebar={<ArdoSidebar />}>
+ *   <ArdoDocContent>
+ *     <ArdoOutlet />
+ *   </ArdoDocContent>
+ * </ArdoLayout>
  * ```
  */
 export function ArdoDocContent({ children, editLink, lastUpdated, tocLabel }: DocContentProps) {
