@@ -16,7 +16,7 @@ test("a denied homepage copy offers a selected manual prompt", async ({ page }) 
   const prompt = page.getByRole("textbox", { name: "Setup prompt", exact: true })
   await expect(prompt).toBeFocused()
   await expect(prompt).toHaveValue(
-    "Set up Ardo in this repository and follow the official instructions."
+    "Set up Ardo in this repository following https://ardo-docs.dev/llms.txt."
   )
   expect(
     await prompt.evaluate((element: HTMLTextAreaElement) =>

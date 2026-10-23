@@ -17,10 +17,10 @@ Ardo is a static site generator for React projects. Guides in Markdown and MDX, 
 Hand this sentence to your coding agent, in a fresh repository or one you already have:
 
 ```text
-Set up Ardo in this repository and follow the official instructions.
+Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.
 ```
 
-It finds the versioned [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions), adapts the tested Basic example, and reports how typecheck, tests, and build went. The same instructions cover new sites, adoption, and upgrades.
+The link points it to the versioned [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions). It adapts the tested Basic example and reports how typecheck, tests, and build went. The same instructions cover new sites, adoption, and upgrades.
 
 ## Manual installation
 

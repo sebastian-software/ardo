@@ -44,7 +44,8 @@ export default defineConfig({
     npmFacts("ardo"),
     ardo({
       title: "Ardo",
-      description: "React-first Static Documentation Framework",
+      description:
+        "React docs, baked into plain HTML. Ardo is a static site generator for React projects: guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time.",
       siteUrl: "https://ardo-docs.dev",
       versioning: {
         current: "v6",

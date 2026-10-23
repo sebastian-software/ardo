@@ -1,8 +1,31 @@
-import { useEffect, useId, useRef, useState } from "react"
+import { Fragment, useEffect, useId, useRef, useState } from "react"
 
 import * as styles from "./home.css"
 
-export const SETUP_PROMPT = "Set up Ardo in this repository and follow the official instructions."
+export const SETUP_PROMPT =
+  "Set up Ardo in this repository following https://ardo-docs.dev/llms.txt."
+
+/**
+ * Shows a prompt whose URL wraps only after `//` and before a `/`, so a line
+ * never ends at the hyphen of `ardo-docs.dev` and reads like hyphenation.
+ */
+export function PromptText({ text }: { text: string }) {
+  const url = /https?:\/\/\S+?(?=\.?(?:\s|$))/u.exec(text)
+  if (url == null) return text
+  const segments = url[0].split(/(?<=\/\/)|(?<!\/)(?=\/[^/])/u)
+  return (
+    <>
+      {text.slice(0, url.index)}
+      {segments.map((segment, index) => (
+        <Fragment key={segment}>
+          {index > 0 && <wbr />}
+          <span style={{ whiteSpace: "nowrap" }}>{segment}</span>
+        </Fragment>
+      ))}
+      {text.slice(url.index + url[0].length)}
+    </>
+  )
+}
 
 /** Copies the setup prompt and says so for a moment. */
 export function CopyPromptButton({ label = "Copy prompt" }: { label?: string }) {
