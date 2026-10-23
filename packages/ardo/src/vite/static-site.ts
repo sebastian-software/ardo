@@ -13,7 +13,7 @@ import path from "node:path"
 import { pathToFileURL } from "node:url"
 
 import type { ArdoRenderAssets, ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
-import type { LinkCheckConfig } from "../config/types"
+import type { DocumentationVersioningConfig, LinkCheckConfig } from "../config/types"
 
 import { checkOutputLinks, formatOutputLinkDiagnostics } from "./output-links"
 
@@ -140,22 +140,24 @@ export async function prerenderSite(options: {
 }
 
 /** Check internal links in the written site. Throws when `level` is `error`. */
-export function checkSiteLinks(options: {
+export async function checkSiteLinks(options: {
   base: string
   deploymentBase: string
   clientDir: string
   linkCheck: LinkCheckConfig
   logger: Logger
   siteUrl?: string
-}): void {
+  versioning?: DocumentationVersioningConfig | false
+}): Promise<void> {
   const { linkCheck, logger } = options
   if (linkCheck.enabled === false) return
-  const result = checkOutputLinks({
+  const result = await checkOutputLinks({
     base: options.base,
     deploymentBase: options.deploymentBase,
     checkAnchors: linkCheck.checkAnchors,
     clientDir: options.clientDir,
     exclude: linkCheck.exclude,
+    externalPaths: archivedVersionPaths(options.versioning),
     siteUrl: options.siteUrl,
   })
   const checked = `${result.links} internal links in ${result.pages} pages`
@@ -167,6 +169,14 @@ export function checkSiteLinks(options: {
   const message = `[ardo] ${count} broken internal link${count === 1 ? "" : "s"} in build output (${checked}):\n${formatOutputLinkDiagnostics(result.diagnostics)}`
   if (linkCheck.level === "error") throw new Error(message)
   logger.warn(message)
+}
+
+/** A build holds only the current version; the others are deployed on their own. */
+function archivedVersionPaths(versioning: DocumentationVersioningConfig | false | undefined) {
+  if (versioning == null || versioning === false) return []
+  return versioning.versions
+    .filter((version) => version.id !== versioning.current)
+    .map((version) => version.path)
 }
 
 function moveAssets(clientDir: string, pageDir: string): void {

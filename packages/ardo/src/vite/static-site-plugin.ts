@@ -89,13 +89,14 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
           serverEntry: path.join(serverDir, "index.js"),
         })
         if (config != null) {
-          checkSiteLinks({
+          await checkSiteLinks({
             base: viteConfig.base,
             deploymentBase: state.deploymentBase ?? viteConfig.base,
             clientDir,
             linkCheck: config.linkCheck,
             logger: viteConfig.logger,
             siteUrl: config.siteUrl,
+            versioning: config.versioning,
           })
         }
       },
