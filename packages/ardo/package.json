@@ -89,6 +89,7 @@
     "./src/entries/*.tsx"
   ],
   "files": [
+    "CHANGELOG.md",
     "ICONS-LICENSE.md",
     "dist",
     "virtual.d.ts",
