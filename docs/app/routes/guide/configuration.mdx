@@ -186,8 +186,10 @@ become the default source for generated favicons. Use an explicit `logo` on `Ard
 
 Generates LLM-friendly text artifacts alongside the other build outputs:
 
-- `/llms.txt` is a concise Markdown index with links to Markdown and MDX routes.
-- `/llms-full.txt` is the same documentation content as one Markdown file.
+- `/llms.txt` is a concise Markdown index of the Markdown and MDX routes. It follows the sidebar:
+  one heading per section, in tab order, and pages by `order`, so agents read the guide before the
+  reference. A generated API or OpenAPI reference appears as one link to its index page.
+- `/llms-full.txt` contains every page, in the same order, as one Markdown file.
 
 With documentation versioning enabled, Ardo also emits both files under the current version's
 path, such as `/v6/llms.txt` and `/v6/llms-full.txt`. The versioned index links to its versioned

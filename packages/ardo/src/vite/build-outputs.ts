@@ -2,7 +2,7 @@ import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
-import { createLlmsTextAssets } from "./llms-text"
+import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
 import { generateSitemap } from "./sitemap"
 
 export { generateSitemap } from "./sitemap"
@@ -82,7 +82,8 @@ export function generateVercelRedirects(redirects: Array<{ from: string; to: str
 
 export function createBuildOutputAssets(
   entries: RouteManifestEntry[],
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  llms: LlmsTextOptions = {}
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
   if (config.seo.sitemap !== false) {
@@ -94,7 +95,7 @@ export function createBuildOutputAssets(
   }
 
   if (config.seo.llms !== false) {
-    assets.push(...createLlmsTextAssets(entries, config))
+    assets.push(...createLlmsTextAssets(entries, config, llms))
   }
 
   assets.push(...createVersioningBuildOutputAssets(config))

@@ -14,14 +14,22 @@ export function addApiPlugin(
   if (api == null) return
   const projects = Array.isArray(api) ? api : [api]
   if (projects.length === 0) throw new Error("[ardo] api must contain at least one project.")
-  const outputs = projects.map((project) =>
-    project === true ? "api-reference" : (project.out ?? "api-reference")
-  )
+  const outputs = apiOutputDirectories(api)
   const group: ApiPluginGroup = { outputs, initializing: new Set() }
   plugins.unshift(
     ...projects.map((project, index) =>
       createApiPlugin(project, routesDirOption, { group, first: index === 0 })
     )
+  )
+}
+
+/** The `api.out` folder of each API project, relative to the routes directory. */
+export function apiOutputDirectories(
+  api: NativeApiDocsConfig | NativeApiDocsConfig[] | true | undefined
+): string[] {
+  if (api == null) return []
+  return (Array.isArray(api) ? api : [api]).map((project) =>
+    project === true ? "api-reference" : (project.out ?? "api-reference")
   )
 }
 

@@ -44,7 +44,10 @@ const config: ResolvedConfig = {
   versioning: false,
 }
 
-function entry(overrides: Partial<RouteManifestEntry>): RouteManifestEntry {
+function entry({
+  sourcePath,
+  ...overrides
+}: Partial<RouteManifestEntry> & { sourcePath?: string }): RouteManifestEntry {
   const routePath = overrides.routePath ?? "/guide/page"
   const identity = createCurrentRouteIdentity(routePath, config)
   const frontmatter = overrides.frontmatter ?? {}
@@ -56,7 +59,11 @@ function entry(overrides: Partial<RouteManifestEntry>): RouteManifestEntry {
     frontmatter,
     identity,
     lastmod: new Date("2026-01-01T00:00:00.000Z"),
-    metadata: createPageMetadata({ frontmatter, identity, sourcePath: "page.mdx" }),
+    metadata: createPageMetadata({
+      frontmatter,
+      identity,
+      sourcePath: sourcePath ?? `${routePath.slice(1) || "index"}.mdx`,
+    }),
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,
@@ -90,6 +97,89 @@ describe("llms-text", () => {
     expect(text).toContain("# Ardo")
     expect(text).toContain("- [Guide](https://example.com/docs/guide): Start here")
     expect(text).not.toContain("Private")
+  })
+
+  it("follows the sidebar, one section per tab, with the API reference as one link", () => {
+    const pages = [
+      entry({
+        frontmatter: { title: "API Reference" },
+        routePath: "/api-reference",
+        sourcePath: "api-reference/index.md",
+      }),
+      entry({
+        frontmatter: { title: "ArdoCard" },
+        routePath: "/api-reference/components/ardocard",
+        sourcePath: "api-reference/components/ardocard.md",
+      }),
+      entry({
+        frontmatter: { title: "useArdoPage" },
+        routePath: "/api-reference/functions/useardopage",
+        sourcePath: "api-reference/functions/useardopage.md",
+      }),
+      entry({ frontmatter: { title: "Troubleshooting" }, routePath: "/guide/troubleshooting" }),
+      entry({ frontmatter: { title: "Releases", order: 20 }, routePath: "/guide/releases" }),
+      entry({ frontmatter: { title: "Upgrade to v6" }, routePath: "/guide/releases/v6" }),
+      entry({ frontmatter: { title: "Agent Instructions", order: 3 }, routePath: "/guide/agent" }),
+      entry({
+        frontmatter: { title: "What is Ardo?", order: 1 },
+        routePath: "/guide/what-is-ardo",
+      }),
+    ]
+
+    expect(generateLlmsTxt(pages, config, { referenceDirs: ["./api-reference/"] })).toBe(
+      [
+        "# Ardo",
+        "",
+        "> Framework docs",
+        "",
+        "## Guide",
+        "",
+        "- [What is Ardo?](https://example.com/docs/guide/what-is-ardo)",
+        "- [Agent Instructions](https://example.com/docs/guide/agent)",
+        "- [Releases](https://example.com/docs/guide/releases)",
+        "- [Upgrade to v6](https://example.com/docs/guide/releases/v6)",
+        "- [Troubleshooting](https://example.com/docs/guide/troubleshooting)",
+        "",
+        "## API",
+        "",
+        "- [API Reference](https://example.com/docs/api-reference): Index of 2 generated reference pages.",
+        "",
+        "## More",
+        "",
+        "- [Full documentation](https://example.com/docs/llms-full.txt): Complete documentation as one Markdown file.",
+        "",
+      ].join("\n")
+    )
+
+    const full = generateLlmsFullTxt(pages, config)
+    const sections = [...full.matchAll(/^## (.+)$/gmu)].map((match) => match[1])
+    expect(sections).toStrictEqual([
+      "What is Ardo?",
+      "Agent Instructions",
+      "Releases",
+      "Upgrade to v6",
+      "Troubleshooting",
+      "API Reference",
+      "ArdoCard",
+      "useArdoPage",
+    ])
+  })
+
+  it("lists every reference page when the reference folder has no index", () => {
+    const text = generateLlmsTxt(
+      [
+        entry({
+          frontmatter: { title: "ArdoCard" },
+          routePath: "/api-reference/components/ardocard",
+          sourcePath: "api-reference/components/ardocard.md",
+        }),
+      ],
+      config,
+      { referenceDirs: ["api-reference"] }
+    )
+    expect(text).toContain(
+      "## API\n\n- [ArdoCard](https://example.com/docs/api-reference/components/ardocard)\n"
+    )
   })
 
   it("strips duplicate headings and MDX syntax from full text", () => {

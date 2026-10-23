@@ -8,7 +8,7 @@
 
 import type { ComponentType, SVGProps } from "react"
 
-import type { ArdoSectionKind } from "./section-catalog"
+import type { ArdoSectionKind } from "./section-kinds"
 
 import * as icons from "./icons/sections"
 
