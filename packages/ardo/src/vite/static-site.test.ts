@@ -1,10 +1,11 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
+import { createLogger } from "vite"
 
 import { findNotFoundPage } from "./preview-static"
-import { createAssetResolver, resolvePageDirectory, toHtmlFile } from "./static-site"
+import { createAssetResolver, prerenderSite, resolvePageDirectory, toHtmlFile } from "./static-site"
 import { toPagePath } from "./dev-render"
 
 describe("createAssetResolver", () => {
@@ -107,5 +108,55 @@ describe("preview 404 pages", () => {
 
     expect(findNotFoundPage(outDir, "v6/guide/missing")).toBe(path.join(outDir, "v6/404.html"))
     expect(findNotFoundPage(outDir, "other/missing")).toBeUndefined()
+  })
+})
+
+describe("prerender response status", () => {
+  let directory: string
+
+  afterEach(() => rmSync(directory, { recursive: true, force: true }))
+
+  function render(status: number) {
+    directory = mkdtempSync(path.join(os.tmpdir(), "ardo-prerender-status-"))
+    mkdirSync(path.join(directory, ".vite"))
+    writeFileSync(
+      path.join(directory, ".vite/manifest.json"),
+      JSON.stringify({
+        "entry-client": { file: "assets/client.js", isEntry: true },
+      })
+    )
+    const serverEntry = path.join(directory, "server.mjs")
+    writeFileSync(
+      serverEntry,
+      `
+      export function getStaticPaths() { return ["/guide"]; }
+      export async function renderPage(page, options) {
+        return { html: options.notFound ? "Intentional not found" : "Guide content", status: options.notFound ? 404 : ${status} };
+      }
+    `
+    )
+    return prerenderSite({
+      base: "/",
+      deploymentBase: "/",
+      clientDir: directory,
+      logger: createLogger("silent"),
+      serverEntry,
+    })
+  }
+
+  it.each([301, 404, 500])(
+    "rejects HTTP %i for an authored route before writing its HTML",
+    async (status) => {
+      await expect(render(status)).rejects.toThrow(
+        `[ardo] Could not prerender "/guide": renderer returned HTTP ${status}.`
+      )
+      expect(existsSync(path.join(directory, "guide/index.html"))).toBe(false)
+    }
+  )
+
+  it("writes successful pages and the intentional 404 artifact", async () => {
+    await expect(render(200)).resolves.toBe(1)
+    expect(readFileSync(path.join(directory, "guide/index.html"), "utf8")).toBe("Guide content")
+    expect(readFileSync(path.join(directory, "404.html"), "utf8")).toBe("Intentional not found")
   })
 })

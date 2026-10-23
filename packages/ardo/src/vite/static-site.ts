@@ -120,6 +120,11 @@ export async function prerenderSite(options: {
   const paths = server.getStaticPaths()
   const write = async (pagePath: string, notFound = false) => {
     const result = await server.renderPage(pagePath, { assets, base, notFound })
+    if (!notFound && (result.status < 200 || result.status >= 300)) {
+      throw new Error(
+        `[ardo] Could not prerender "${pagePath}": renderer returned HTTP ${result.status}.`
+      )
+    }
     const file = path.join(pageDir, notFound ? "404.html" : toHtmlFile(pagePath))
     mkdirSync(path.dirname(file), { recursive: true })
     writeFileSync(file, result.html)
