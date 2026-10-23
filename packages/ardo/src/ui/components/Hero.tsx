@@ -73,7 +73,8 @@ function HeroActionButton({ action }: { action: ArdoHeroAction }) {
   )
 }
 
-function HeroImage({ image, name }: Pick<ArdoHeroProps, "image" | "name">) {
+/** The hero image; a `{ light, dark }` pair switches with the color scheme. */
+export function HeroImage({ image, name }: Pick<ArdoHeroProps, "image" | "name">) {
   if (isValidElement(image)) return <div>{image}</div>
   if (image == null) return null
   const light = typeof image === "string" ? image : image.light
