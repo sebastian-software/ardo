@@ -115,9 +115,11 @@ function useMobileMenu(): [boolean, (open: boolean) => void] {
   }
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    if (!open) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
     return () => {
-      document.body.style.overflow = ""
+      document.body.style.overflow = previousOverflow
     }
   }, [open])
 
@@ -194,14 +196,18 @@ export function ArdoHeader({
 
           {searchMode === "field" && (
             <div className={styles.headerCenter}>
-              <ArdoHeaderSearch placeholder={searchPlaceholder} />
+              <ArdoHeaderSearch placeholder={searchPlaceholder} onActivate={closeMobileMenu} />
             </div>
           )}
 
           <div className={styles.headerRight}>
             {nav != null && <div className={styles.desktopNav}>{nav}</div>}
             {searchMode === "icon" && (
-              <ArdoHeaderSearch placeholder={searchPlaceholder} variant="icon" />
+              <ArdoHeaderSearch
+                placeholder={searchPlaceholder}
+                variant="icon"
+                onActivate={closeMobileMenu}
+              />
             )}
             <div className={styles.desktopActions}>
               <ArdoLocaleSwitcher />
