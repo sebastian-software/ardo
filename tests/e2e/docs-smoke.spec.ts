@@ -19,7 +19,7 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   const full = await request.get(`${docsBasePath}/llms-full.txt`)
   expect(full.ok()).toBe(true)
   const instructions = await full.text()
-  expect(instructions).toContain("## Match the Version First")
+  expect(instructions).toContain("\n### Match the Version First\n")
   expect(instructions).toContain("examples/basic")
   for (const removed of ["library", "monorepo", "content-sources", "github-pages"]) {
     expect(instructions).not.toContain(`examples/${removed}`)
