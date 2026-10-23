@@ -4,6 +4,7 @@ import { ArdoLink } from "../runtime/page"
 
 import { useArdoConfig, useArdoPageData } from "../runtime/hooks"
 import { ArdoFeatureCard, ArdoFeatures } from "./components/Features"
+import { HeroImage } from "./components/Hero"
 import * as heroStyles from "./components/Hero.css"
 import { ArdoFooter } from "./Footer"
 import { ArdoHeader } from "./Header"
@@ -30,14 +31,7 @@ function HomeHeroSection({
   return (
     <section className={heroStyles.hero}>
       <div className={heroStyles.heroContainer}>
-        {heroImage !== undefined && (
-          <div>
-            <img
-              src={typeof heroImage === "string" ? heroImage : heroImage.light}
-              alt={heroName !== "" ? heroName : fallbackTitle}
-            />
-          </div>
-        )}
+        <HeroImage image={heroImage} name={heroName !== "" ? heroName : fallbackTitle} />
         <div>
           {heroName !== "" && <h1 className={heroStyles.heroName}>{heroName}</h1>}
           {(hero.text ?? "") !== "" && <p className={heroStyles.heroText}>{hero.text}</p>}
