@@ -1,8 +1,10 @@
 import type { ReactNode } from "react"
 
 import { prerender } from "react-dom/static"
-import config from "virtual:ardo/config"
+import virtualConfig from "virtual:ardo/config"
 import { rootModule, routes } from "virtual:ardo/routes"
+
+import type { ResolvedConfig } from "../config/types"
 
 import { ArdoApp } from "../runtime/app"
 import { ArdoDocumentProvider } from "../runtime/document"
@@ -43,6 +45,7 @@ export async function renderPage(
   path: string,
   options: ArdoRenderOptions
 ): Promise<ArdoRenderResult> {
+  const config: ResolvedConfig = virtualConfig
   const root: ArdoRootModule = rootModule
   // `/guide/` and `/guide` are the same page; components see one path.
   const pagePath = path.length > 1 ? path.replace(/\/+$/u, "") : path
@@ -57,7 +60,13 @@ export async function renderPage(
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
 
-  const body = await renderToHtml(<ArdoApp config={config} page={page} root={root} />)
+  const locale =
+    config.i18n === false
+      ? undefined
+      : config.i18n.locales.find((entry) => entry.id === pagePath.split("/")[1])?.id
+  const body = await renderToHtml(
+    <ArdoApp config={config} page={page} root={root} routes={routes} />
+  )
   const shell = await renderToHtml(
     <ArdoDocumentProvider
       value={{
@@ -65,6 +74,8 @@ export async function renderPage(
         meta: page.meta,
         modulePreloads: assets.modulePreloads,
         stylesheets: assets.stylesheets,
+        lang: locale ?? config.lang,
+        iconBasePath: config.deploymentBase,
       }}
     >
       <Layout>

@@ -32,12 +32,13 @@ export function generateLlmsTxt(entries: RouteManifestEntry[], config: ResolvedC
 export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: ResolvedConfig): string {
   const llmsConfig = resolveLlmsConfig(config)
   const lines = createHeaderLines(llmsConfig, config)
+  const routePaths = new Set(entries.map((entry) => entry.routePath))
 
   for (const entry of getLlmsEntries(entries)) {
     const title = getEntryTitle(entry)
     const description = entry.metadata.description
     const content = stripMdxSyntaxOutsideCodeFences(
-      resolveLlmsContentLinks(entry.content, entry, config),
+      resolveLlmsContentLinks(entry.content, { ...entry, routePaths }, config),
       title
     )
 

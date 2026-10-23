@@ -102,6 +102,7 @@ type ServerExpectation = {
   responseHeader?: { name: string; value: string }
   pathname?: string
   args?: string[]
+  pages?: { pathname: string; contains: string[] }[]
 }
 
 async function assertServerSSR(
@@ -164,6 +165,15 @@ async function assertServerSSR(
     if (expected?.responseHeader != null) {
       expect(response.headers.get(expected.responseHeader.name)).toBe(expected.responseHeader.value)
     }
+
+    for (const page of expected?.pages ?? []) {
+      const pageResponse = await fetch(`http://${devHost}:${port}${page.pathname}`, {
+        signal: AbortSignal.timeout(60_000),
+      })
+      const pageHtml = await pageResponse.text()
+      expect(pageResponse.status, `${page.pathname}: ${pageHtml.slice(0, 2_000)}`).toBe(200)
+      for (const content of page.contains) expect(pageHtml).toContain(content)
+    }
   } catch (error) {
     failure = error
   } finally {
@@ -189,8 +199,12 @@ export async function assertDevSSR(consumer: string, expected?: ServerExpectatio
 
 export async function assertPreviewSSR(
   consumer: string,
-  pathname: string,
+  pathname: string | ServerExpectation,
   args: string[] = []
 ): Promise<void> {
-  await assertServerSSR(consumer, "preview", { pathname, args })
+  await assertServerSSR(
+    consumer,
+    "preview",
+    typeof pathname === "string" ? { pathname, args } : pathname
+  )
 }

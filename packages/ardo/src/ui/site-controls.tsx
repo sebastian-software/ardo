@@ -1,5 +1,5 @@
 import { type ChangeEvent, use } from "react"
-import { useArdoPath } from "../runtime/page-context"
+import { useArdoHrefResolver, useArdoPath } from "../runtime/page-context"
 
 import { useArdoLabels } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
@@ -68,6 +68,7 @@ export function ArdoVersionSwitcher({ className }: ArdoVersionSwitcherProps) {
 export function ArdoLocaleSwitcher() {
   const choice = useLocaleChoice()
   const pathname = useArdoPath()
+  const resolveHref = useArdoHrefResolver()
   const labels = useArdoLabels()
   if (choice == null) return null
   const { current, locales } = choice
@@ -76,7 +77,7 @@ export function ArdoLocaleSwitcher() {
     const target = event.target.value
     if (target === current) return
     globalThis.location.assign(
-      `${getLocalizedPath(pathname, current, target)}${globalThis.location.search}${globalThis.location.hash}`
+      `${resolveHref(getLocalizedPath(pathname, current, target))}${globalThis.location.search}${globalThis.location.hash}`
     )
   }
 

@@ -25,6 +25,18 @@ function links(content: string) {
 }
 
 describe("LLM content hyperlinks", () => {
+  it("uses known dotted pages without adding slashes to static files", () => {
+    expect(
+      resolveLlmsContentLinks(
+        "[release](/guide/release-6.0) [Unicode](/guide/caf%C3%A9-6.0) [manual](/manual.pdf)",
+        { ...page, routePaths: new Set(["/guide/release-6.0", "/guide/café-6.0"]) },
+        config
+      )
+    ).toBe(
+      "[release](<https://example.com/docs/v6/guide/release-6.0/>) [Unicode](<https://example.com/docs/v6/guide/caf%C3%A9-6.0/>) [manual](<https://example.com/docs/v6/manual.pdf>)"
+    )
+  })
+
   it("resolves root, relative, query, and fragment links from their original page", () => {
     expect(
       links(

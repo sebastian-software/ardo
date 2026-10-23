@@ -5,6 +5,7 @@ import path from "node:path"
 import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
+import { scanRoutesSync } from "./routes-core"
 
 type ServerEntry = {
   renderPage: (path: string, options: ArdoRenderOptions) => Promise<ArdoRenderResult>
@@ -16,9 +17,12 @@ const CSS_REQUEST = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:$|\?)|\
  * Serve page requests with the same renderer the build uses. Vite then adds its
  * client, React Refresh, and HMR to the document.
  */
-export function createDevRenderMiddleware(server: ViteDevServer): Connect.NextHandleFunction {
+export function createDevRenderMiddleware(
+  server: ViteDevServer,
+  routesDir: string
+): Connect.NextHandleFunction {
   return (request, response, next) => {
-    void handleRequest(server, request)
+    void handleRequest(server, request, routesDir)
       .then((page) => {
         if (page == null) {
           next()
@@ -37,9 +41,14 @@ export function createDevRenderMiddleware(server: ViteDevServer): Connect.NextHa
 
 async function handleRequest(
   server: ViteDevServer,
-  request: Connect.IncomingMessage
+  request: Connect.IncomingMessage,
+  routesDir: string
 ): Promise<{ html: string; status: number } | undefined> {
-  const pagePath = toPagePath(request, server.config.base)
+  const pagePath = toPagePath(request, server.config.base, (pathname) =>
+    scanRoutesSync({ dir: routesDir, rootDir: routesDir }).some(
+      (route) => route.path === pathname.replace(/\/+$/u, "")
+    )
+  )
   if (pagePath == null) return undefined
 
   const base = server.config.base
@@ -82,25 +91,38 @@ async function injectViteTags(server: ViteDevServer, url: string, html: string):
 /** Path of the requested page without the base, or `undefined` for anything that is not a page. */
 export function toPagePath(
   request: Pick<Connect.IncomingMessage, "headers" | "method" | "originalUrl" | "url">,
-  base: string
+  base: string,
+  isPagePath?: (pathname: string) => boolean
+): string | undefined {
+  const pathname = readRequestPathname(request)
+  if (pathname == null) return undefined
+  if (pathname.includes("/@") || pathname.includes("/__")) return undefined
+  const isBaseRoot = `${pathname}/` === base
+  if (!pathname.startsWith(base) && !isBaseRoot) return undefined
+  const relative = isBaseRoot ? "" : pathname.slice(base.length)
+  const literalPath = `/${relative}`
+  const extension = path.posix.extname(pathname)
+  if (extension !== "") {
+    // A literal route such as guide/index.html.mdx wins over the generated index alias.
+    if (isPagePath?.(literalPath)) return literalPath
+    if (extension !== ".html") return undefined
+  }
+  return `/${relative.replace(/(?:^|\/)index\.html$/u, "")}`
+}
+
+/** Decode HTML reads once, leaving malformed URLs and non-page requests to Vite. */
+function readRequestPathname(
+  request: Pick<Connect.IncomingMessage, "headers" | "method" | "originalUrl" | "url">
 ): string | undefined {
   if (request.method !== "GET" && request.method !== "HEAD") return undefined
   const accept = request.headers.accept ?? ""
   if (accept !== "" && !accept.includes("text/html") && !accept.includes("*/*")) return undefined
   const url = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid")
-  let pathname: string
   try {
-    pathname = decodeURIComponent(url.pathname)
+    return decodeURIComponent(url.pathname)
   } catch {
     return undefined
   }
-  if (pathname.includes("/@") || pathname.includes("/__")) return undefined
-  const extension = path.posix.extname(pathname)
-  if (extension !== "" && extension !== ".html") return undefined
-  const isBaseRoot = `${pathname}/` === base
-  if (!pathname.startsWith(base) && !isBaseRoot) return undefined
-  const relative = isBaseRoot ? "" : pathname.slice(base.length)
-  return `/${relative.replace(/(?:^|\/)index\.html$/u, "")}`
 }
 
 function collectStylesheets(environment: RunnableDevEnvironment, base: string): string[] {

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { ArdoActiveLink, ArdoLink, ArdoPageProvider } from "./page"
 import { resolveArdoHref, useArdoPath } from "./page-context"
+import { ArdoRoutePathsContext } from "./route-paths"
 
 describe("resolveArdoHref", () => {
   const page = { base: "/v6/", path: "/guide/setup" }
@@ -22,6 +23,18 @@ describe("resolveArdoHref", () => {
     ["//cdn.example.com/x.js", "//cdn.example.com/x.js"],
   ])("resolves %s to %s", (to, href) => {
     expect(resolveArdoHref(to, page)).toBe(href)
+  })
+
+  it("distinguishes known dotted and encoded pages from static files", () => {
+    const routes = new Set(["/guide/release-6.0", "/guide/café-6.0", "/guide/c++-6.0"])
+    expect(resolveArdoHref("/guide/release-6.0?q=1#details", page, routes)).toBe(
+      "/v6/guide/release-6.0/?q=1#details"
+    )
+    expect(resolveArdoHref("/guide/caf%C3%A9-6.0", page, routes)).toBe("/v6/guide/caf%C3%A9-6.0/")
+    expect(resolveArdoHref("/guide/c%2B%2B-6.0", page, routes)).toBe("/v6/guide/c%2B%2B-6.0/")
+    expect(resolveArdoHref("/manual.pdf", page, routes)).toBe("/v6/manual.pdf")
+    expect(resolveArdoHref("/llms.txt", page, routes)).toBe("/v6/llms.txt")
+    expect(resolveArdoHref("/guide/bad%escape.0", page, routes)).toBe("/v6/guide/bad%escape.0")
   })
 
   it("works without a base path", () => {
@@ -47,6 +60,16 @@ function onOffClass({ isActive }: { isActive: boolean }) {
 }
 
 describe("page context and links", () => {
+  it("uses the route table for dotted page links", () => {
+    expect(
+      render(
+        <ArdoRoutePathsContext value={new Set(["/guide/release-6.0"])}>
+          <ArdoLink to="/guide/release-6.0">Release</ArdoLink>
+        </ArdoRoutePathsContext>
+      )
+    ).toBe('<a href="/docs/guide/release-6.0/">Release</a>')
+  })
+
   it("exposes the current path and prefixes internal links", () => {
     expect(render(<Path />)).toBe("<output>/guide/setup</output>")
     expect(render(<ArdoLink to="/api">API</ArdoLink>)).toBe('<a href="/docs/api/">API</a>')

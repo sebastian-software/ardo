@@ -44,6 +44,7 @@ export async function loadVirtualModule(
       title: state.resolvedConfig.title,
       description: state.resolvedConfig.description,
       base: state.resolvedConfig.base,
+      deploymentBase: state.resolvedConfig.deploymentBase,
       lang: state.resolvedConfig.lang,
       brand: state.resolvedConfig.brand,
       versioning: state.resolvedConfig.versioning,

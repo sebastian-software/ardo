@@ -1,5 +1,7 @@
 import { type ComponentType, createContext, use } from "react"
 
+import { ArdoRoutePathsContext } from "./route-paths"
+
 /** One `<meta>`, `<title>`, or `<link>` description, as returned by a `meta` export. */
 export type ArdoMetaDescriptor =
   | { charSet: string }
@@ -50,8 +52,14 @@ export function useArdoPath(): string {
 
 /** Resolve an internal link target against the current page and the base path. */
 export function useArdoHref(to: string): string {
-  const { base, path } = use(ArdoPageContext)
-  return resolveArdoHref(to, { base, path })
+  return useArdoHrefResolver()(to)
+}
+
+/** Bind link resolution to the current page and generated route table. */
+export function useArdoHrefResolver(): (to: string) => string {
+  const page = use(ArdoPageContext)
+  const routePaths = use(ArdoRoutePathsContext)
+  return (to) => resolveArdoHref(to, page, routePaths)
 }
 
 /** Whether `to` names the current page, or with `end: false` one of its ancestors. */
@@ -75,12 +83,17 @@ export function navigateTo(href: string): void {
  * Resolve a link target to the URL an `<a>` needs. Pages live in folders, so
  * page links end with a slash and reach the page without a host redirect.
  */
-export function resolveArdoHref(to: string, page: { base: string; path: string }): string {
+export function resolveArdoHref(
+  to: string,
+  page: { base: string; path: string },
+  routePaths?: ReadonlySet<string>
+): string {
   if (to === "" || isExternal(to) || to.startsWith("#") || to.startsWith("?")) return to
   const target = toInternalPath(to, page)
   if (target == null) return to
   const base = normalizeBase(page.base)
-  const pathname = target === "/" ? base : `${base.slice(0, -1)}${withPageSlash(target)}`
+  const pathname =
+    target === "/" ? base : `${base.slice(0, -1)}${withPageSlash(target, routePaths)}`
   return pathname + to.slice(firstIndexOf(to, ["?", "#"]))
 }
 
@@ -94,10 +107,21 @@ export function normalizePath(pathname: string): string {
 }
 
 /** Add the folder slash to page paths; paths to files such as `llms.txt` stay as they are. */
-function withPageSlash(pathname: string): string {
+function withPageSlash(pathname: string, routePaths?: ReadonlySet<string>): string {
   if (pathname.endsWith("/")) return pathname
+  if (isKnownRoute(pathname, routePaths)) return `${pathname}/`
   const lastSegment = pathname.slice(pathname.lastIndexOf("/") + 1)
   return lastSegment.includes(".") ? pathname : `${pathname}/`
+}
+
+/** Route files use decoded names; authored URLs may percent-encode Unicode. */
+function isKnownRoute(pathname: string, routePaths?: ReadonlySet<string>): boolean {
+  if (routePaths?.has(pathname)) return true
+  try {
+    return routePaths?.has(decodeURIComponent(pathname)) ?? false
+  } catch {
+    return false
+  }
 }
 
 /**

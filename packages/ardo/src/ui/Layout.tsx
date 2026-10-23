@@ -1,5 +1,6 @@
 import { type ReactNode, use } from "react"
 import { ArdoHead, ArdoScripts } from "../runtime/document"
+import { ArdoDocumentContext } from "../runtime/document-context"
 import { ArdoContext, useArdoLabels } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
 import { ArdoLayoutVariantContext } from "./layout-context"
@@ -57,14 +58,17 @@ export function ArdoRootLayout({
   children,
   className,
   favicon,
-  iconBasePath = "/",
+  iconBasePath,
   lang,
   theme = "auto",
 }: ArdoRootLayoutProps) {
   // Use optional context (RootLayout renders before ArdoProvider is available)
   const context = use(ArdoContext)
-  const resolvedLang = lang ?? context?.config.lang ?? "en"
-  const iconBaseUrl = iconBasePath === false ? undefined : normalizeIconBasePath(iconBasePath)
+  const document = use(ArdoDocumentContext)
+  const resolvedLang = lang ?? document?.lang ?? context?.config.lang ?? "en"
+  const resolvedIconBase = iconBasePath ?? document?.iconBasePath ?? "/"
+  const iconBaseUrl =
+    resolvedIconBase === false ? undefined : normalizeIconBasePath(resolvedIconBase)
 
   return (
     <html lang={resolvedLang} className={className} suppressHydrationWarning>

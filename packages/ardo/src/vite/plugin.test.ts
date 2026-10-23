@@ -242,6 +242,7 @@ describe("ardoPlugin", () => {
   it("exposes versioning and i18n URL config in the virtual Ardo config", async () => {
     const plugin = getMainPlugin({
       title: "Docs",
+      base: "/docs/",
       versioning: {
         current: "v3",
         versions: [{ id: "v3", path: "/v3/" }],
@@ -253,13 +254,15 @@ describe("ardoPlugin", () => {
     })
 
     plugin.configResolved({
-      base: "/v3/",
+      base: "/docs/v3/",
       build: { ssr: false },
       root: "/project",
     })
 
     const code = await plugin.load("\0virtual:ardo/config")
 
+    expect(String(code)).toContain('"base":"/docs/v3/"')
+    expect(String(code)).toContain('"deploymentBase":"/docs/"')
     expect(String(code)).toContain('"versioning":{')
     expect(String(code)).toContain('"i18n":{"defaultLocale":"en"')
   })

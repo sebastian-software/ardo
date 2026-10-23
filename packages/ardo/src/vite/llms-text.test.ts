@@ -66,6 +66,18 @@ function entry(overrides: Partial<RouteManifestEntry>): RouteManifestEntry {
 }
 
 describe("llms-text", () => {
+  it("passes the full route set to links in exported Markdown", () => {
+    const text = generateLlmsFullTxt(
+      [
+        entry({ content: "[release](/guide/release-6.0) [manual](/manual.pdf)" }),
+        entry({ routePath: "/guide/release-6.0" }),
+      ],
+      config
+    )
+    expect(text).toContain("[release](<https://example.com/docs/guide/release-6.0/>)")
+    expect(text).toContain("[manual](<https://example.com/docs/manual.pdf>)")
+  })
+
   it("generates an index with absolute links and excludes opted-out pages", () => {
     const text = generateLlmsTxt(
       [

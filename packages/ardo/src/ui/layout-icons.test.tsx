@@ -2,8 +2,43 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 
 import { ArdoRootLayout } from "./Layout"
+import { ArdoDocumentProvider } from "../runtime/document"
+
+const document = {
+  meta: [],
+  stylesheets: [],
+  modulePreloads: [],
+  lang: "de",
+  iconBasePath: "/project/",
+}
 
 describe("root layout site identity", () => {
+  it("inherits language and generated icons outside the app provider", () => {
+    const html = renderToStaticMarkup(
+      <ArdoDocumentProvider value={document}>
+        <ArdoRootLayout>
+          <p>German site</p>
+        </ArdoRootLayout>
+      </ArdoDocumentProvider>
+    )
+    expect(html).toContain('<html lang="de">')
+    for (const icon of ["icon.svg", "favicon.ico", "apple-touch-icon.png"])
+      expect(html).toContain(`href="/project/${icon}"`)
+  })
+
+  it("keeps explicit layout props ahead of request defaults", () => {
+    const html = renderToStaticMarkup(
+      <ArdoDocumentProvider value={document}>
+        <ArdoRootLayout lang="fr" iconBasePath={false}>
+          <p>Custom site</p>
+        </ArdoRootLayout>
+      </ArdoDocumentProvider>
+    )
+    expect(html).toContain('<html lang="fr">')
+    expect(html).not.toContain("/project/")
+    expect(html).toContain('href="data:image/svg+xml')
+  })
+
   it.each(["/mark-64.png", "/favicon.ico", "/brand.svg", "/mark.png?v=2"])(
     "lets the response declare the MIME type for a custom URL: %s",
     (favicon) => {

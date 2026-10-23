@@ -81,7 +81,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...createRuntimeBoundaryPlugins(),
   ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
-  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, siteConfig.brand?.logo)))
+  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, siteConfig.brand?.logo), state))
   addContentSourcePlugin(
     plugins,
     [...(content ?? []), ...createCollectionContentSources(collections)],

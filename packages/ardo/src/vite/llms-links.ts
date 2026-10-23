@@ -7,7 +7,9 @@ import { normalizeBasePath } from "../config/versioning"
 import { resolveArdoHref } from "../runtime/page-context"
 
 const localOrigin = "https://ardo.invalid"
-type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath">
+type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath"> & {
+  routePaths?: ReadonlySet<string>
+}
 type LinkConfig = Pick<ResolvedConfig, "base" | "deploymentBase" | "siteUrl" | "versioning">
 
 /** Native source spans identify links without touching code, images, or external URLs. */
@@ -47,7 +49,7 @@ function resolveDestination(destination: string, entry: LinkContext, config: Lin
   const page = { base, path: entry.routePath }
   const publicPage = new URL(entry.publicPath, config.siteUrl || localOrigin)
   const mounted = isMountedPath(destination, config)
-  const href = mounted ? destination : resolveArdoHref(destination, page)
+  const href = mounted ? destination : resolveArdoHref(destination, page, entry.routePaths)
   const target = new URL(href, publicPage)
   return config.siteUrl === "" ? target.pathname + target.search + target.hash : target.href
 }
