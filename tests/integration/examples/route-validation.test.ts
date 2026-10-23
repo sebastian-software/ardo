@@ -58,6 +58,18 @@ describe("real CLI route validation", () => {
     expect(fs.existsSync(path.join(directory, "build/client/index.html"))).toBe(false)
   })
 
+  it("rejects a hash in a route filename with an actionable build error", () => {
+    const directory = project()
+    writeRoute(directory, "guide/c#-6.0.mdx", "# C Sharp\n")
+    const result = build(directory)
+
+    expect(result.status).toBe(1)
+    expect(result.output).toContain("URL-reserved character (# or ?)")
+    expect(result.output).toContain(path.join(directory, "app/routes/guide/c#-6.0.mdx"))
+    expect(result.output).toContain("Rename the file or directory")
+    expect(fs.existsSync(path.join(directory, "build/client/index.html"))).toBe(false)
+  })
+
   it("fails instead of publishing a 404 document for a route without a default export", () => {
     const directory = project()
     writeRoute(

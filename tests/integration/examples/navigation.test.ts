@@ -47,7 +47,6 @@ describe("public CLI document identity and dotted navigation", () => {
         for (const [name, title] of [
           ["release-6.0", "Release 6.0"],
           ["caf%C3%A9-6.0", "Unicode release"],
-          ["c%23-6.0", "Encoded hash release"],
           ["index.html", "Literal index route"],
         ]) {
           for (const slash of ["", "/"])
@@ -64,12 +63,13 @@ describe("public CLI document identity and dotted navigation", () => {
         { pathname: "/project/apple-touch-icon.png", contains: [] }
       )
       const expected = { pathname: pages[0].pathname, pages }
-      // Vite's dev module loader treats raw # in source filenames as URL fragments.
-      await assertDevSSR(directory, {
+      await assertDevSSR(directory, expected)
+      await assertPreviewSSR(directory, {
         ...expected,
-        pages: pages.filter((page) => !page.pathname.includes("c%23")),
+        pages: localized
+          ? [...pages, { pathname: base, contains: ["url=/project/v6/en/"] }]
+          : pages,
       })
-      await assertPreviewSSR(directory, expected)
       const output = path.join(directory, "build/client", localized ? "v6/en" : "")
       expect(fs.readFileSync(path.join(output, "guide/index.html/index.html"), "utf8")).toContain(
         "Literal index route"

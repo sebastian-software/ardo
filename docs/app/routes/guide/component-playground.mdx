@@ -10,6 +10,8 @@ redirectFrom:
 import { FileText, Github, Globe } from "ardo/icons"
 import { ArdoHero as Hero, ArdoFeatures as Features, ArdoFeatureCard as FeatureCard } from "ardo/ui"
 import { GalleryIcons, GalleryPreview } from "../../components/ComponentGallery"
+import heroLight from "../../assets/hero-light.svg"
+import heroDark from "../../assets/hero-dark.svg"
 
 # Components
 
@@ -425,6 +427,7 @@ Core icons are © Streamline Design Inc., used under the Streamline Premium Lice
 <GalleryPreview id="gallery-hero" label="Hero example">
   <Hero
     text="Documentation for your project"
+    image={{ light: heroLight, dark: heroDark, alt: "Documentation preview" }}
     tagline="Write guides in Markdown, add React where it helps, and publish static files."
     actions={[
       { text: "Read the guide", link: "/guide/getting-started", theme: "brand" },
@@ -432,6 +435,10 @@ Core icons are © Streamline Design Inc., used under the Streamline Premium Lice
     ]}
   />
 </GalleryPreview>
+
+Pass `image={{ light, dark, alt }}` to provide a variant for each theme. The image
+follows the theme selected in the header. A string URL or `{ light, alt }` uses
+one image in both themes; a React element can render an inline illustration.
 
 <Features>
   <FeatureCard title="Write in MDX" icon={<FileText size={28} />}>

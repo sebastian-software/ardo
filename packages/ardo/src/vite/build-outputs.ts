@@ -104,12 +104,15 @@ export function createBuildOutputAssets(
     return assets
   }
 
-  assets.push(...createRedirectAssets(redirects))
+  assets.push(...createRedirectAssets(redirects, config.deploymentBase))
 
   return assets
 }
 
-function createRedirectAssets(redirects: Array<{ from: string; to: string }>): BuildOutputAsset[] {
+function createRedirectAssets(
+  redirects: Array<{ from: string; to: string }>,
+  deploymentBase: string
+): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = [
     { fileName: "_redirects", source: generateNetlifyRedirects(redirects) },
     { fileName: "vercel.json", source: generateVercelRedirects(redirects) },
@@ -117,7 +120,7 @@ function createRedirectAssets(redirects: Array<{ from: string; to: string }>): B
 
   for (const redirect of redirects) {
     assets.push({
-      fileName: toRedirectAssetName(redirect.from),
+      fileName: toRedirectAssetName(redirect.from, deploymentBase),
       source: generateRedirectHtml(redirect.to),
     })
   }
@@ -125,8 +128,15 @@ function createRedirectAssets(redirects: Array<{ from: string; to: string }>): B
   return assets
 }
 
-function toRedirectAssetName(from: string) {
-  const routePath = from.replace(/^\//u, "").replace(/\/$/u, "")
+function toRedirectAssetName(from: string, deploymentBase: string) {
+  // Public URLs include the deployment prefix; artifact paths start below it.
+  // Authored redirect sources without that prefix already name artifact paths.
+  const relative = from.startsWith(deploymentBase)
+    ? from.slice(deploymentBase.length)
+    : from === deploymentBase.slice(0, -1)
+      ? ""
+      : from
+  const routePath = relative.replace(/^\//u, "").replace(/\/$/u, "")
   return routePath === "" ? "index.html" : `${routePath}/index.html`
 }
 

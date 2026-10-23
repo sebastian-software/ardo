@@ -30,6 +30,16 @@ describe("scanRoutesSync", () => {
     for (const file of files) expect(scan).toThrow(path.join(routesDir, file))
   })
 
+  it.each(["guide/c#-6.0.mdx", "c#/intro.md", "guide/c#-6.0.tsx"])(
+    "rejects URL delimiters in route files and directories: %s",
+    async (file) => {
+      await writeRoute(file, "export default function Page() { return null }")
+      expect(scan).toThrow("URL-reserved character (# or ?)")
+      expect(scan).toThrow(path.join(routesDir, file))
+      expect(scan).toThrow("Rename the file or directory")
+    }
+  )
+
   it("keeps translated routes and dynamic routes distinct", async () => {
     await writeRoute("en/guide/intro.mdx", "# English")
     await writeRoute("de/guide/intro.mdx", "# Deutsch")

@@ -44,6 +44,7 @@ function formatBuildTime(iso: string, locale: string): string {
     return iso
   }
   return date.toLocaleDateString(locale, {
+    timeZone: "UTC",
     month: "long",
     day: "numeric",
     year: "numeric",

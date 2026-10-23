@@ -198,3 +198,13 @@ export const heroActionAlt = style({
     },
   },
 })
+
+export const heroImageLight = style({
+  display: "inline-block",
+  selectors: { ".dark &": { display: "none" } },
+})
+
+export const heroImageDark = style({
+  display: "none",
+  selectors: { ".dark &": { display: "inline-block" } },
+})

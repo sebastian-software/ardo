@@ -36,7 +36,6 @@ export default function Home() {
     for (const [name, title] of [
       ["release-6.0", "Release 6.0"],
       ["café-6.0", "Unicode release"],
-      ["c#-6.0", "Encoded hash release"],
       ["index.html", "Literal index route"],
     ])
       fs.writeFileSync(
@@ -61,12 +60,12 @@ export default defineArdoConfig(${JSON.stringify({
       title: "Navigation fixture",
       base: "/project/",
       lang: localized ? "fr" : "de",
+      linkCheck: { level: "error" },
       ...(localized
         ? {
             versioning: {
               current: "v6",
               versions: [{ id: "v6", path: "/v6/" }],
-              rootRedirect: false,
             },
             i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
           }
