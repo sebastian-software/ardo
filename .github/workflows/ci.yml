@@ -6,6 +6,9 @@ on:
   # Stacked PRs need the same checks before their base merges.
   pull_request:
 
+env:
+  FERROLINK_VERSION: "0.1.0"
+
 jobs:
   test:
     name: Test (Node.js ${{ matrix.node-version }})
@@ -72,6 +75,28 @@ jobs:
       - name: Validate complete GitHub Pages artifact
         if: matrix.node-version == '22'
         run: pnpm docs:prepare-pages
+
+      - name: Restore ferrolink ${{ env.FERROLINK_VERSION }}
+        id: ferrolink-cache
+        if: matrix.node-version == '22'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cargo/bin/ferrolink
+          key: ferrolink-${{ env.FERROLINK_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Install ferrolink ${{ env.FERROLINK_VERSION }}
+        if: matrix.node-version == '22' && steps.ferrolink-cache.outputs.cache-hit != 'true'
+        run: cargo install --locked ferrolink --version "$FERROLINK_VERSION"
+
+      # Ardo's build checks the links of the version it builds. ferrolink checks
+      # the finished Pages artifact, so links between versions are covered too.
+      # Archived v3–v5 pages stay link targets, but their own links are not
+      # checked: they carry 234 known broken links, nearly all lowercase API
+      # reference paths that never existed (such as
+      # /v5/api-reference/other/ardotoc), plus /v5/storybook.
+      - name: Check links across the GitHub Pages artifact
+        if: matrix.node-version == '22'
+        run: pnpm docs:check-links
 
       - name: Install Playwright browsers
         if: matrix.node-version == '22'

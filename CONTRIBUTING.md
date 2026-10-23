@@ -190,6 +190,18 @@ The docs site build is guarded by performance budgets (`pnpm docs:budgets`, runs
 
 Budget values and measured baselines live at the top of [`scripts/check-budgets.mjs`](./scripts/check-budgets.mjs). If your change intentionally exceeds a budget, update the budget and baseline there and explain the increase in the commit message. To re-check sizes without rebuilding, run `node scripts/check-budgets.mjs --no-build`.
 
+### Cross-Version Link Check
+
+Ardo's build checks the links of the version it builds. CI and the Pages deployment also check the complete GitHub Pages artifact with [ferrolink](https://crates.io/crates/ferrolink), so links into archived versions are covered too. To run it locally, install it with `cargo install --locked ferrolink --version 0.1.0`, then run:
+
+```bash
+pnpm docs:build
+pnpm docs:prepare-pages
+pnpm docs:check-links
+```
+
+Archived v3–v5 pages remain link targets, but their own links are not checked because they contain known broken links.
+
 ### Running Tests
 
 ```bash

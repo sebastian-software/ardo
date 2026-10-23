@@ -27,6 +27,7 @@
     "docs:build": "pnpm -r --filter './docs' build",
     "docs:prepare-pages": "node scripts/prepare-pages-artifact.mjs",
     "docs:budgets": "node scripts/check-budgets.mjs",
+    "docs:check-links": "ferrolink check docs/build/pages --site-url https://ardo-docs.dev --exclude 'v[345]/**'",
     "prepare": "husky"
   },
   "keywords": [

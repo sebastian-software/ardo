@@ -15,6 +15,9 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 
+env:
+  FERROLINK_VERSION: "0.1.0"
+
 jobs:
   build:
     name: Build docs
@@ -52,6 +55,22 @@ jobs:
 
       - name: Prepare GitHub Pages artifact
         run: pnpm docs:prepare-pages
+
+      - name: Restore ferrolink ${{ env.FERROLINK_VERSION }}
+        id: ferrolink-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cargo/bin/ferrolink
+          key: ferrolink-${{ env.FERROLINK_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Install ferrolink ${{ env.FERROLINK_VERSION }}
+        if: steps.ferrolink-cache.outputs.cache-hit != 'true'
+        run: cargo install --locked ferrolink --version "$FERROLINK_VERSION"
+
+      # Same cross-version check as CI, so a broken artifact is never uploaded.
+      # Archived v3–v5 pages are excluded as link sources; see ci.yml.
+      - name: Check links across the GitHub Pages artifact
+        run: pnpm docs:check-links
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
