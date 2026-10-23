@@ -117,7 +117,7 @@
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "catalog:",
     "@vitejs/plugin-react": "^6.1.2",
-    "ferrolink": "^0.2.0",
+    "ferrolink": "^0.2.1",
     "ferromark": "^3.5.1",
     "minisearch": "^7.2.0",
     "oxc-transform-react": "^0.152.0",

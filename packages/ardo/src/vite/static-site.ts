@@ -1,5 +1,7 @@
 import type { Logger } from "vite"
 
+import { check, formatIssues } from "ferrolink"
+
 import {
   cpSync,
   existsSync,
@@ -14,8 +16,6 @@ import { pathToFileURL } from "node:url"
 
 import type { ArdoRenderAssets, ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 import type { DocumentationVersioningConfig, LinkCheckConfig } from "../config/types"
-
-import { checkOutputLinks, formatOutputLinkDiagnostics } from "./output-links"
 
 type ManifestChunk = {
   css?: string[]
@@ -139,9 +139,12 @@ export async function prerenderSite(options: {
   return paths.length
 }
 
-/** Check internal links in the written site. Throws when `level` is `error`. */
+/**
+ * Check every internal link, asset, and `#fragment` in the written site with
+ * ferrolink, including the redirect and version files at its root. Throws
+ * when `level` is `error`.
+ */
 export async function checkSiteLinks(options: {
-  base: string
   deploymentBase: string
   clientDir: string
   linkCheck: LinkCheckConfig
@@ -151,32 +154,31 @@ export async function checkSiteLinks(options: {
 }): Promise<void> {
   const { linkCheck, logger } = options
   if (linkCheck.enabled === false) return
-  const result = await checkOutputLinks({
-    base: options.base,
-    deploymentBase: options.deploymentBase,
-    checkAnchors: linkCheck.checkAnchors,
-    clientDir: options.clientDir,
-    exclude: linkCheck.exclude,
-    externalPaths: archivedVersionPaths(options.versioning),
-    siteUrl: options.siteUrl,
+  const report = await check({
+    root: options.clientDir,
+    basePath: options.deploymentBase,
+    anchors: linkCheck.checkAnchors !== false,
+    assumePresent: [...archivedVersionGlobs(options.versioning), ...(linkCheck.exclude ?? [])],
+    ...(options.siteUrl == null ? {} : { siteUrl: options.siteUrl }),
   })
-  const checked = `${result.links} internal links in ${result.pages} pages`
-  if (result.diagnostics.length === 0) {
+  const { pages, internalLinks } = report.summary
+  const checked = `${internalLinks} internal links in ${pages} pages`
+  const count = report.issues.length
+  if (count === 0) {
     logger.info(`[ardo] Checked ${checked}`)
     return
   }
-  const count = result.diagnostics.length
-  const message = `[ardo] ${count} broken internal link${count === 1 ? "" : "s"} in build output (${checked}):\n${formatOutputLinkDiagnostics(result.diagnostics)}`
+  const message = `[ardo] ${count} broken internal link${count === 1 ? "" : "s"} in build output (${checked}):\n${formatIssues(report.issues)}`
   if (linkCheck.level === "error") throw new Error(message)
   logger.warn(message)
 }
 
 /** A build holds only the current version; the others are deployed on their own. */
-function archivedVersionPaths(versioning: DocumentationVersioningConfig | false | undefined) {
+function archivedVersionGlobs(versioning: DocumentationVersioningConfig | false | undefined) {
   if (versioning == null || versioning === false) return []
   return versioning.versions
     .filter((version) => version.id !== versioning.current)
-    .map((version) => version.path)
+    .map((version) => `${version.path}**`)
 }
 
 function moveAssets(clientDir: string, pageDir: string): void {
