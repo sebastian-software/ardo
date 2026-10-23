@@ -212,7 +212,7 @@ Declare the module's type in a `.d.ts` file so TypeScript accepts the import. Th
 - **No GitHub remote detection.** Ardo 5 used the repository name from a GitHub remote as the base path unless you set `githubPages: false`. Ardo 6 removes `githubPages` and `detectGitHubBasename`. Set `base` for a subpath; it applies in development and in the build alike.
 - **Full page navigations.** Every link is a plain `<a>`, and each click loads a new prerendered document. Client state, such as an open search dialog, does not survive navigation.
 - **Trailing slashes.** Ardo emits internal page links with a trailing slash, such as `/guide/intro/`, so static hosts serve each page's `index.html` without a redirect. Links to files such as `llms.txt` keep their form.
-- **Link check on the built HTML.** `ardo build` always checks every internal link, image, script, stylesheet, and `#fragment` in the generated HTML, including links from components and generated pages. Configure it with [`linkCheck`](/guide/configuration#linkcheck).
+- **Link check on the built HTML.** `ardo build` always checks every internal link, image, script, stylesheet, and `#fragment` in the generated HTML, including links from components and generated pages, and the destinations in its redirect and version files. Configure it with [`linkCheck`](/guide/configuration#linkcheck).
 - **Lazy search index.** The search index, about 75 KB gzip on the Ardo docs, loads when a reader first focuses search instead of with every page.
 
 ## Performance

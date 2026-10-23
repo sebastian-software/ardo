@@ -25,11 +25,11 @@ function page(body: string, head = "") {
   return `<!doctype html><html><head>${head}</head><body>${body}</body></html>`
 }
 
-const hrefs = (result: ReturnType<typeof checkOutputLinks>) =>
+const hrefs = (result: Awaited<ReturnType<typeof checkOutputLinks>>) =>
   result.diagnostics.map(({ file, href }) => `${file} ${href}`)
 
 describe("checkOutputLinks", () => {
-  it("accepts pages, trailing-slash variants, relative links, and assets", () => {
+  it("accepts pages, trailing-slash variants, relative links, and assets", async () => {
     write(
       "index.html",
       page(
@@ -43,26 +43,29 @@ describe("checkOutputLinks", () => {
     write("assets/app.js")
     write("logo.svg")
 
-    const result = checkOutputLinks({ clientDir, base: "/" })
+    const result = await checkOutputLinks({ clientDir, base: "/" })
 
     expect(result.diagnostics).toStrictEqual([])
     expect(result.pages).toBe(3)
     expect(result.links).toBe(9)
   })
 
-  it("reports missing pages and assets once per page", () => {
+  it("reports every missing page and asset with its line", async () => {
     write(
       "index.html",
-      page('<a href="/missing/">A</a><a href="/missing/">B</a><img src="/assets/gone.png">')
+      page('<a href="/missing/">A</a>\n<a href="/missing/">B</a>\n<img src="/assets/gone.png">')
     )
 
-    const result = checkOutputLinks({ clientDir, base: "/" })
+    const result = await checkOutputLinks({ clientDir, base: "/" })
 
-    expect(hrefs(result)).toStrictEqual(["index.html /missing/", "index.html /assets/gone.png"])
-    expect(result.diagnostics[0].message).toBe("Missing target")
+    expect(result.diagnostics).toStrictEqual([
+      { file: "index.html", line: 1, href: "/missing/", message: "Missing target" },
+      { file: "index.html", line: 2, href: "/missing/", message: "Missing target" },
+      { file: "index.html", line: 3, href: "/assets/gone.png", message: "Missing target" },
+    ])
   })
 
-  it("checks anchors on the same and on other pages", () => {
+  it("checks anchors on the same and on other pages", async () => {
     write(
       "index.html",
       page(
@@ -73,25 +76,26 @@ describe("checkOutputLinks", () => {
     )
     write("guide/index.html", page('<h2 id="setup">Setup</h2>'))
 
-    const result = checkOutputLinks({ clientDir, base: "/" })
+    const result = await checkOutputLinks({ clientDir, base: "/" })
 
     expect(result.diagnostics.map(({ href, message }) => `${href} ${message}`)).toStrictEqual([
       '#nope Missing anchor "#nope"',
       '/guide/#gone Missing anchor "#gone"',
     ])
-    expect(
-      checkOutputLinks({ clientDir, base: "/", checkAnchors: false }).diagnostics
-    ).toStrictEqual([])
+    const withoutAnchors = await checkOutputLinks({ clientDir, base: "/", checkAnchors: false })
+    expect(withoutAnchors.diagnostics).toStrictEqual([])
   })
 
-  it("decodes encoded paths and fragments", () => {
+  it("decodes encoded paths and fragments", async () => {
     write("index.html", page('<a href="/caf%C3%A9/#d%C3%A9j%C3%A0">ok</a>'))
     write("café/index.html", page('<h2 id="déjà">Déjà</h2>'))
 
-    expect(checkOutputLinks({ clientDir, base: "/" }).diagnostics).toStrictEqual([])
+    const result = await checkOutputLinks({ clientDir, base: "/" })
+
+    expect(result.diagnostics).toStrictEqual([])
   })
 
-  it("ignores external links and resource hints but checks the site's own origin", () => {
+  it("ignores external links and resource hints but checks the site's own origin", async () => {
     write(
       "index.html",
       page(
@@ -101,34 +105,44 @@ describe("checkOutputLinks", () => {
       )
     )
 
-    const result = checkOutputLinks({ clientDir, base: "/", siteUrl: "https://docs.example.org" })
+    const result = await checkOutputLinks({
+      clientDir,
+      base: "/",
+      siteUrl: "https://docs.example.org",
+    })
 
     expect(hrefs(result)).toStrictEqual(["index.html https://docs.example.org/gone/"])
   })
 
-  it("resolves a versioned build that keeps its base folder", () => {
+  it("resolves a versioned build that keeps its base folder", async () => {
     write("v2/index.html", page('<a href="/v2/guide/">ok</a><a href="/v2/gone/">bad</a>'))
     write("v2/guide/index.html", page('<a href="/v1/guide/">older version</a><a href="../">up</a>'))
     write("__spa-fallback.html", page('<script src="/v2/assets/app.js"></script>'))
     write("v2/assets/app.js")
 
-    const result = checkOutputLinks({ clientDir, base: "/v2/" })
+    const archived = await checkOutputLinks({ clientDir, base: "/v2/", externalPaths: ["/v1/"] })
+    expect(hrefs(archived)).toStrictEqual(["v2/index.html /v2/gone/"])
 
-    expect(hrefs(result)).toStrictEqual(["v2/index.html /v2/gone/"])
+    // Without the archived version, its links are as broken as any other.
+    const unknown = await checkOutputLinks({ clientDir, base: "/v2/" })
+    expect(hrefs(unknown)).toStrictEqual([
+      "v2/guide/index.html /v1/guide/",
+      "v2/index.html /v2/gone/",
+    ])
   })
 
-  it("resolves a flattened build whose files sit at the root of the base", () => {
+  it("resolves a flattened build whose files sit at the root of the base", async () => {
     write("index.html", page('<a href="/docs/guide/">ok</a><a href="/docs/gone/">bad</a>'))
     write("guide/index.html", page('<a href="/docs/">home</a><a href="/docs">home</a>'))
 
-    const result = checkOutputLinks({ clientDir, base: "/docs/" })
+    const result = await checkOutputLinks({ clientDir, base: "/docs/" })
 
     expect(hrefs(result)).toStrictEqual(["index.html /docs/gone/"])
   })
 
   it.each(["/", "/project/"])(
     "checks versioned localized output mounted at %s without a version index",
-    (deploymentBase) => {
+    async (deploymentBase) => {
       const base = `${deploymentBase}v6/`
       write(
         "v6/en/index.html",
@@ -140,14 +154,36 @@ describe("checkOutputLinks", () => {
       write("v6/en/guide/index.html", page(`<a href="${base}en/">Home</a>`))
       write("v6/assets/app.js")
 
-      const result = checkOutputLinks({ clientDir, base, deploymentBase })
+      const result = await checkOutputLinks({ clientDir, base, deploymentBase })
 
       expect(hrefs(result)).toStrictEqual([`v6/en/index.html ${base}en/missing/`])
     }
   )
 
-  it("accepts redirect sources and excluded patterns with or without the base", () => {
-    write("_redirects", "# moved pages\n/v2/old /v2/guide/ 301\n")
+  it("reports links that leave the deployment base", async () => {
+    write("v6/index.html", page('<a href="/guide/">forgot the prefix</a>'))
+
+    const result = await checkOutputLinks({
+      clientDir,
+      base: "/project/v6/",
+      deploymentBase: "/project/",
+    })
+
+    expect(result.diagnostics).toStrictEqual([
+      {
+        file: "v6/index.html",
+        line: 1,
+        href: "/guide/",
+        message: "Outside the deployment base /project/",
+      },
+    ])
+  })
+
+  it("accepts redirect pages and excluded patterns with or without the base", async () => {
+    // Ardo writes an HTML page for every redirect source, next to `_redirects`.
+    write("_redirects", "/v2/old /v2/guide/ 301\n")
+    write("v2/old/index.html", page('<meta http-equiv="refresh" content="0; url=/v2/guide/">'))
+    write("v2/guide/index.html", page("Guide"))
     write(
       "v2/index.html",
       page(
@@ -155,7 +191,7 @@ describe("checkOutputLinks", () => {
       )
     )
 
-    const result = checkOutputLinks({
+    const result = await checkOutputLinks({
       clientDir,
       base: "/v2/",
       exclude: ["/storybook/", "/v2/generated/*"],
@@ -164,19 +200,31 @@ describe("checkOutputLinks", () => {
     expect(result.diagnostics).toStrictEqual([])
   })
 
+  it("checks the destinations in redirect and version files", async () => {
+    write("index.html", page("Home"))
+    write("_redirects", "/old /\n/older /gone/ 301\n")
+    write("versions.json", '{ "current": "v2", "versions": [{ "id": "v1", "path": "/v1/" }] }\n')
+
+    const result = await checkOutputLinks({ clientDir, base: "/" })
+    expect(hrefs(result)).toStrictEqual(["_redirects /gone/", "versions.json /v1/"])
+
+    const archived = await checkOutputLinks({ clientDir, base: "/", externalPaths: ["/v1/"] })
+    expect(hrefs(archived)).toStrictEqual(["_redirects /gone/"])
+  })
+
   it("formats diagnostics grouped by page", () => {
     expect(
       formatOutputLinkDiagnostics([
-        { file: "a/index.html", href: "/x", message: "Missing target" },
-        { file: "a/index.html", href: "#y", message: 'Missing anchor "#y"' },
-        { file: "b.html", href: "/z", message: "Missing target" },
+        { file: "a/index.html", line: 3, href: "/x", message: "Missing target" },
+        { file: "a/index.html", line: 7, href: "#y", message: 'Missing anchor "#y"' },
+        { file: "b.json", line: 0, href: "/z", message: "Missing target" },
       ])
     ).toBe(
       [
         "  a/index.html",
-        "    /x: Missing target",
-        '    #y: Missing anchor "#y"',
-        "  b.html",
+        "    /x (line 3): Missing target",
+        '    #y (line 7): Missing anchor "#y"',
+        "  b.json",
         "    /z: Missing target",
       ].join("\n")
     )
