@@ -14,6 +14,7 @@ type ArdoContextValue = {
 
 const ArdoContext = createContext<ArdoContextValue | null>(null)
 
+/** The site config, the sidebar, and the current page together. Throws outside `ArdoProvider`. */
 export function useArdoContext(): ArdoContextValue {
   const context = use(ArdoContext)
   if (!context) {
@@ -36,16 +37,22 @@ export function useArdoConfig(): ArdoConfig {
   return config
 }
 
+/** The sidebar items of the current section. */
 export function useArdoSidebar(): SidebarItem[] {
   const { sidebar } = useArdoContext()
   return sidebar
 }
 
+/**
+ * Title, frontmatter, outline, and source path of the current Markdown or MDX page. `undefined`
+ * outside page content.
+ */
 export function useArdoPageData(): PageData | undefined {
   const { currentPage } = useArdoContext()
   return currentPage
 }
 
+/** The outline of the current page, or an empty list. */
 export function useArdoTOC(): TOCItem[] {
   const { currentPage } = useArdoContext()
   return currentPage?.toc ?? []
@@ -58,6 +65,10 @@ type ArdoProviderProps = {
   children: ReactNode
 }
 
+/**
+ * Provides the site config, the sidebar, and the current page to Ardo's hooks. `ArdoRoot`
+ * renders it; render it yourself only in tests and isolated previews.
+ */
 export function ArdoProvider({ config, sidebar, currentPage, children }: ArdoProviderProps) {
   const contextValue = useMemo(
     () => ({ config, sidebar, currentPage }),
@@ -100,6 +111,10 @@ type ArdoPageDataProviderProps = {
   children: ReactNode
 }
 
+/**
+ * Provides a Markdown page's frontmatter and outline to `useArdoPageData` and `useArdoTOC`. Ardo
+ * wraps every compiled Markdown and MDX page in it.
+ */
 export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDataProviderProps) {
   const parent = use(ArdoContext)
   const { source } = useArdoPage()
@@ -137,10 +152,12 @@ export type ArdoSiteConfig = {
 
 const ArdoSiteConfigContext = createContext<ArdoSiteConfig>({})
 
+/** The `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings passed to `ArdoRoot`. */
 export function useArdoSiteConfig(): ArdoSiteConfig {
   return use(ArdoSiteConfigContext)
 }
 
+/** The labels and aria text of Ardo's UI, with the overrides passed to `ArdoRoot`. */
 export function useArdoLabels(): ArdoLabels {
   return useArdoSiteConfig().labels ?? defaultArdoLabels
 }
@@ -150,6 +167,10 @@ type ArdoSiteConfigProviderProps = {
   children: ReactNode
 }
 
+/**
+ * Provides the `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings. `ArdoRoot` renders
+ * it from its props.
+ */
 export function ArdoSiteConfigProvider({ value, children }: ArdoSiteConfigProviderProps) {
   return <ArdoSiteConfigContext value={value}>{children}</ArdoSiteConfigContext>
 }

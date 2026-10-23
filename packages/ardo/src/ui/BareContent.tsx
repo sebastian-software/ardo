@@ -9,9 +9,9 @@ const BareContentContext = createContext(false)
  * ```tsx
  * import MySnippet from "./snippet.mdx"
  *
- * <BareContent>
+ * <ArdoBareContent>
  *   <MySnippet />
- * </BareContent>
+ * </ArdoBareContent>
  * ```
  */
 export function ArdoBareContent({ children }: { children: ReactNode }) {

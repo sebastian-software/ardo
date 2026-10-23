@@ -63,6 +63,42 @@ declaration emission and retains comments in memory, including when your
 configuration uses `noEmit` or `removeComments`. Your configuration file is not
 rewritten. Declaration files do not need to be generated on disk.
 
+## Import paths
+
+When your package has subpath exports, map each import path to its entry point.
+Every page then shows how to import the declaration, and the index groups the
+pages by import path:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: {
+      "my-lib/ui": "./src/ui/index.ts",
+      "my-lib/hooks": "./src/hooks/index.ts",
+    },
+    tsconfig: "./tsconfig.api.json",
+  },
+})
+```
+
+A declaration that several entry points export belongs to the first one. Ardo's
+own [API reference](/api-reference) uses this for `ardo/ui`, `ardo/runtime`, and
+`ardo/config`.
+
+## What the pages show
+
+A function name that starts with an uppercase letter is a React component. Its
+page shows the import, a JSX usage line with the required props, and a table of
+all props. A props type named after its component, such as `ButtonProps` for
+`Button`, gets no page of its own when that table lists every prop; links to it
+lead to the component's props.
+
+Functions, hooks, and types show their signature or definition. Type names in
+tables link to their pages. JSDoc descriptions, `@example`, `@remarks`,
+`@deprecated`, `@default`, and `{@link Name}` appear on the page.
+
 ## Multiple packages
 
 Pass an array when packages need different TypeScript configurations or separate

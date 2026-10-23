@@ -85,6 +85,11 @@ function HomeFeaturesSection({
   )
 }
 
+/**
+ * A home page with its own header and footer, built from the `hero` and `features` frontmatter
+ * of the current page. Inside `ArdoRoot`, write the home page as a TSX route with `ArdoHero`
+ * instead.
+ */
 export function ArdoHomePage({ header, footer }: ArdoHomePageProps = {}) {
   const pageData = useArdoPageData()
   const config = useArdoConfig()

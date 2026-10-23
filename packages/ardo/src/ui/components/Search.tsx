@@ -202,6 +202,10 @@ function useSearchRecovery(
   }, [inputRef, search])
 }
 
+/**
+ * A search field with live results from the site's search index. The header renders it; use it
+ * directly in a custom header.
+ */
 export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: ArdoSearchProps) {
   const resolveHref = useArdoHrefResolver()
   const labels = useArdoLabels()

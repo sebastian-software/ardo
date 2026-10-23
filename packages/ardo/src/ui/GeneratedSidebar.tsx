@@ -17,6 +17,7 @@ export type ArdoGeneratedSidebarComponent = {
   ardoGeneratedSidebarItems?: (section: string) => SidebarItemType[]
 } & typeof ArdoGeneratedSidebar
 
+/** The navigation Ardo generates from the route files of one top-level folder, such as `guide`. */
 export function ArdoGeneratedSidebar({ section }: ArdoGeneratedSidebarProps) {
   const config = useArdoConfig()
   const pathname = useArdoPath()

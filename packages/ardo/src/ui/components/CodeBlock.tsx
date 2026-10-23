@@ -123,14 +123,15 @@ function focusableCodeContent(children: ReactNode) {
 /**
  * Syntax-highlighted code block with copy button.
  *
- * Code can be provided via the `code` prop or as children:
+ * Pass the code as the `code` prop or as children. When children is a string,
+ * leading and trailing blank lines and the common indentation are stripped.
+ *
+ * @example
  * ```tsx
- * <CodeBlock language="typescript">{`
+ * <ArdoCodeBlock language="typescript">{`
  *   const x = 42
- * `}</CodeBlock>
- * ```tsx
- * When children is a string, leading/trailing blank lines and common
- * indentation are stripped automatically.
+ * `}</ArdoCodeBlock>
+ * ```
  */
 export function ArdoCodeBlock({
   code: codeProp,

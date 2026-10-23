@@ -77,6 +77,10 @@ function resolveLastUpdated(input: ContentMetaInput) {
   }
 }
 
+/**
+ * The article of a documentation page: title, lede, the page content, edit link, last-updated
+ * date, and previous and next links.
+ */
 export function ArdoContent({
   children,
   editLink,

@@ -47,25 +47,6 @@ export type ArdoHeroProps = {
   version?: string
 }
 
-/**
- * Hero section component for landing pages.
- *
- * @example
- * ```tsx
- * import { ArrowRight, Github } from "ardo/icons"
- *
- * <Hero
- *   name="Ardo"
- *   text="React-first Documentation"
- *   tagline="Build beautiful documentation sites with React."
- *   image="/logo.svg"
- *   actions={[
- *     { text: "Get Started", link: "/guide/getting-started", theme: "brand", icon: <ArrowRight size={16} /> },
- *     { text: "GitHub", link: "https://github.com/...", theme: "alt", icon: <Github size={16} /> }
- *   ]}
- * />
- * ```
- */
 function HeroActionButton({ action }: { action: ArdoHeroAction }) {
   const link = action.link
   const isExternal =
@@ -108,6 +89,25 @@ function HeroImage({ image, name }: Pick<ArdoHeroProps, "image" | "name">) {
   )
 }
 
+/**
+ * Hero section component for landing pages.
+ *
+ * @example
+ * ```tsx
+ * import { ArrowRight, Github } from "ardo/icons"
+ *
+ * <ArdoHero
+ *   name="Ardo"
+ *   text="React-first Documentation"
+ *   tagline="Build beautiful documentation sites with React."
+ *   image="/logo.svg"
+ *   actions={[
+ *     { text: "Get Started", link: "/guide/getting-started", theme: "brand", icon: <ArrowRight size={16} /> },
+ *     { text: "GitHub", link: "https://github.com/...", theme: "alt", icon: <Github size={16} /> }
+ *   ]}
+ * />
+ * ```
+ */
 export function ArdoHero({
   name,
   text,

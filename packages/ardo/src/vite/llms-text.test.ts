@@ -204,4 +204,18 @@ describe("llms-text", () => {
       "v6/agent/index.txt",
     ])
   })
+
+  it("reads Markdown pages as Markdown, where a line may start with export", () => {
+    const page = entry({
+      content:
+        "# Errors\n\nThe default boundary is fine;\nexport a different one from `root.tsx`.\n",
+      filePath: "/tmp/errors.md",
+      frontmatter: { title: "Errors" },
+    })
+    const full = createLlmsTextAssets([page], resolveConfig({ title: "Docs" }, "/tmp")).find(
+      (asset) => asset.fileName === "llms-full.txt"
+    )
+
+    expect(full?.source).toContain("export a different one from `root.tsx`.")
+  })
 })

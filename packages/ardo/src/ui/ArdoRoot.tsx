@@ -68,38 +68,6 @@ export type ArdoRootProps = {
   children?: ReactNode
 }
 
-/**
- * All-in-one root component that combines ArdoProvider, Layout, Header,
- * Sidebar, Footer, and homepage detection into a single component.
- *
- * @example Minimal usage: header with search, a generated sidebar, and the footer
- * ```tsx
- * export default function Root() {
- *   return <ArdoRoot />
- * }
- * ```
- *
- * @example With JSX chrome
- * ```tsx
- * export default function Root() {
- *   return (
- *     <ArdoRoot>
- *       <ArdoHeader>
- *         <ArdoNav>
- *           <ArdoNavLink to="/guide">Guide</ArdoNavLink>
- *         </ArdoNav>
- *       </ArdoHeader>
- *       <ArdoSidebar>
- *         <ArdoSidebarSection id="guide" label="Guide" to="/guide">
- *           <ArdoGeneratedSidebar section="guide" />
- *         </ArdoSidebarSection>
- *       </ArdoSidebar>
- *       <ArdoFooter message="Released under the MIT License." />
- *     </ArdoRoot>
- *   )
- * }
- * ```
- */
 function resolveLayoutClassName(className: string | undefined, isBareLayout: boolean): string {
   if (className != null) return className
   return isBareLayout ? `${layoutStyles.layout} ${layoutStyles.home}` : layoutStyles.layout
@@ -243,6 +211,40 @@ function resolveRootHeader(
   return <ArdoHeader logo={config.brand?.logo} mobileMenuContent={mobileMenuContent} />
 }
 
+/**
+ * The whole site around the page: header with search, a sidebar with one
+ * section per route folder, the page, and the footer. Render it in
+ * `app/root.tsx`; pass `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as
+ * children to change a part.
+ *
+ * @example Minimal usage: header with search, a generated sidebar, and the footer
+ * ```tsx
+ * export default function Root() {
+ *   return <ArdoRoot />
+ * }
+ * ```
+ *
+ * @example With JSX chrome
+ * ```tsx
+ * export default function Root() {
+ *   return (
+ *     <ArdoRoot>
+ *       <ArdoHeader>
+ *         <ArdoNav>
+ *           <ArdoNavLink to="/guide">Guide</ArdoNavLink>
+ *         </ArdoNav>
+ *       </ArdoHeader>
+ *       <ArdoSidebar>
+ *         <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+ *           <ArdoGeneratedSidebar section="guide" />
+ *         </ArdoSidebarSection>
+ *       </ArdoSidebar>
+ *       <ArdoFooter message="Released under the MIT License." />
+ *     </ArdoRoot>
+ *   )
+ * }
+ * ```
+ */
 export function ArdoRoot({
   config: configProp,
   editLink,

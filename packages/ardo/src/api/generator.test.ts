@@ -21,6 +21,70 @@ async function declaration(file: string, source: string): Promise<string> {
 }
 
 describe("declaration API documentation", () => {
+  it("renders components as JSX with linked props and import paths from named entry points", async () => {
+    const ui = await declaration(
+      "ui.d.ts",
+      [
+        "export type CardProps = {",
+        "  /** Card heading. */",
+        "  title: string;",
+        "  link?: {",
+        "    href: string;",
+        "    label?: string;",
+        "  };",
+        '  children?: import("react").ReactNode;',
+        "};",
+        "/** A card. */",
+        'export declare function Card({ title: heading, link, children }: CardProps): import("react").JSX.Element;',
+        'export declare function Head(): import("react").JSX.Element | null;',
+      ].join("\n")
+    )
+    const runtime = await declaration(
+      "runtime.d.ts",
+      [
+        "import type { CardProps } from './ui';",
+        "export { Card } from './ui';",
+        "/** Read the card. */",
+        "export declare function useCard({ title }: CardProps): CardProps;",
+      ].join("\n")
+    )
+    const result = await generateDeclarationDocs(
+      { entryPoints: [ui, runtime], importPaths: ["my-lib/ui", "my-lib/runtime"] },
+      temporary
+    )
+    const page = (file: string) => result.pages.find((item) => item.path === file)?.content ?? ""
+
+    const card = page("components/card.md")
+    expect(card).toContain(
+      '```tsx\nimport { Card } from "my-lib/ui"\n\n<Card title={…}>{children}</Card>\n```'
+    )
+    expect(card).toContain("## Props")
+    expect(card).toContain("| ` link ` | ` { href: string; label?: string } ` | No |")
+    expect(card).toContain("Props type: ` CardProps `")
+    expect(card).not.toContain("## Parameters")
+    expect(card).not.toContain("## Returns")
+    expect(card).not.toContain("import(")
+
+    expect(page("components/head.md")).toContain("<Head />")
+    expect(page("components/head.md")).toContain("This component takes no props.")
+
+    const hook = page("functions/usecard.md")
+    expect(hook).toContain(
+      '```ts\nimport { useCard } from "my-lib/runtime"\n\nuseCard(props: CardProps): CardProps\n```'
+    )
+    // CardProps adds nothing beyond the props of Card, so it has no page of its own.
+    expect(hook).toContain(
+      "| ` props ` | [` CardProps `](/api-reference/components/card#props) | Yes |"
+    )
+    expect(page("types/cardprops.md")).toBe("")
+
+    // The first entry point that exports a declaration owns it.
+    expect(result.items.find((item) => item.name === "Card")?.importPath).toBe("my-lib/ui")
+    expect(page("index.md")).toContain("## `my-lib/ui`\n\n### Components")
+    expect(page("index.md")).not.toContain("CardProps")
+    expect(page("index.md")).toContain("## `my-lib/runtime`\n\n### Functions")
+  })
+
   it("locates preceding JSDoc among unrelated and nested comments without borrowing later documentation", async () => {
     const entry = await declaration(
       "api.d.ts",
