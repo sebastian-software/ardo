@@ -8,6 +8,8 @@ import { resolveArdoHref } from "../runtime/page-context"
 
 const localOrigin = "https://ardo.invalid"
 type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath"> & {
+  /** Markdown pages are parsed as Markdown, not MDX. Defaults to MDX. */
+  format?: "md" | "mdx"
   routePaths?: ReadonlySet<string>
 }
 type LinkConfig = Pick<ResolvedConfig, "base" | "deploymentBase" | "siteUrl" | "versioning">
@@ -19,7 +21,7 @@ export function resolveLlmsContentLinks(
   config: LinkConfig
 ): string {
   const bytes = Buffer.from(content)
-  const replacements = prepareDocument(content, { format: "mdx" })
+  const replacements = prepareDocument(content, { format: entry.format ?? "mdx" })
     .collectReferences()
     .flatMap((reference) => {
       if (reference.kind !== "link" || reference.span == null) return []
