@@ -295,47 +295,10 @@ describe("ardoPlugin", () => {
     expect(String(code)).toContain('"base":"/"')
   })
 
-  it("exposes brand config with bundled local logo assets", async () => {
-    const plugin = getMainPlugin({
-      title: "Docs",
-      brand: {
-        color: "blue",
-        accent: "teal",
-        neutral: "slate",
-        logo: "./app/assets/logo.svg",
-      },
-    })
-
-    plugin.configResolved({
-      base: "/",
-      build: { ssr: false },
-      root: "/project",
-    })
-
-    const code = await plugin.load("\0virtual:ardo/config")
-
-    expect(String(code)).toContain('import __ardoBrandLogo0 from "/project/app/assets/logo.svg"')
-    expect(String(code)).toContain('"brand":{"color":"blue","accent":"teal","neutral":"slate"}')
-    expect(String(code)).toContain("logo: __ardoBrandLogo0")
-  })
-
-  it("keeps public brand logo URLs as direct config values", async () => {
-    const plugin = getMainPlugin({
-      title: "Docs",
-      brand: {
-        logo: "/logo.svg",
-      },
-    })
-
-    plugin.configResolved({
-      base: "/",
-      build: { ssr: false },
-      root: "/project",
-    })
-
-    const code = await plugin.load("\0virtual:ardo/config")
-
-    expect(String(code)).not.toContain("import __ardoBrandLogo")
-    expect(String(code)).toContain('logo: "/logo.svg"')
+  it("points a brand option to the theme and logo props", () => {
+    expect(() =>
+      // @ts-expect-error JavaScript configs can still pass the removed option.
+      getMainPlugin({ title: "Docs", brand: { color: "blue" } })
+    ).toThrow("The brand option moved into JSX")
   })
 })

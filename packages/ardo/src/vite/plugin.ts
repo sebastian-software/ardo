@@ -10,7 +10,6 @@ import { resolveConfig } from "../config/index"
 import { validateArdoOptionNames } from "../config/plugin-options"
 import { addApiPlugin, apiOutputDirectories } from "./api-plugin"
 import { normalizeViteBaseForArdo } from "./base"
-import { resolveBrandIconOptions } from "./brand"
 import { createBuildOutputAssets } from "./build-outputs"
 import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createCollectionContentSources } from "./collections"
@@ -61,7 +60,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
     content,
     collections,
-    icons = {},
+    icons,
     openapi,
     routes,
     api,
@@ -87,7 +86,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...createRuntimeBoundaryPlugins(),
   ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
-  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, siteConfig.brand?.logo), state))
+  plugins.push(...createIconsPlugin(icons, state))
   addContentSourcePlugin(
     plugins,
     [...(content ?? []), ...createCollectionContentSources(collections)],

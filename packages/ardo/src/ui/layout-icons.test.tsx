@@ -41,17 +41,48 @@ describe("root layout site identity", () => {
 
   it.each(["/mark-64.png", "/favicon.ico", "/brand.svg", "/mark.png?v=2"])(
     "lets the response declare the MIME type for a custom URL: %s",
-    (favicon) => {
+    (icon) => {
       const view = renderToStaticMarkup(
-        <ArdoRootLayout favicon={favicon} iconBasePath={false}>
+        <ArdoRootLayout icon={icon} iconBasePath={false}>
           <p>Custom site</p>
         </ArdoRootLayout>
       )
-      expect(view).toContain(`href="${favicon}"`)
+      expect(view).toContain(`href="${icon}"`)
       expect(view).not.toContain('type="image/svg+xml"')
       expect(view.match(/rel="icon"/g)).toHaveLength(1)
     }
   )
+
+  it("links the icons ArdoRoot registered instead of the generated owl", () => {
+    const view = renderToStaticMarkup(
+      <ArdoDocumentProvider
+        value={{
+          ...document,
+          icon: "/assets/icon-a1b2.svg",
+          appleTouchIcon: "/assets/apple-c3d4.png",
+        }}
+      >
+        <ArdoRootLayout>
+          <p>Branded site</p>
+        </ArdoRootLayout>
+      </ArdoDocumentProvider>
+    )
+    expect(view.match(/rel="icon"/g)).toHaveLength(1)
+    expect(view).toContain('<link rel="icon" href="/assets/icon-a1b2.svg"/>')
+    expect(view).toContain('<link rel="apple-touch-icon" href="/assets/apple-c3d4.png"/>')
+    expect(view).not.toContain("/project/favicon.ico")
+  })
+
+  it("keeps the generated touch icon next to a site icon", () => {
+    const view = renderToStaticMarkup(
+      <ArdoDocumentProvider value={{ ...document, icon: "/assets/icon-a1b2.svg" }}>
+        <ArdoRootLayout>
+          <p>Branded site</p>
+        </ArdoRootLayout>
+      </ArdoDocumentProvider>
+    )
+    expect(view).toContain('<link rel="apple-touch-icon" href="/project/apple-touch-icon.png"/>')
+  })
 
   it("places a site token scope on html for content and body portals", () => {
     const view = renderToStaticMarkup(

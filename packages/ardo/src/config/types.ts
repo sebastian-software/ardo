@@ -43,47 +43,6 @@ export type SocialLink = {
 }
 
 // =============================================================================
-// Brand Config
-// =============================================================================
-
-export type ArdoBrandHuePreset =
-  | "amber"
-  | "berry"
-  | "blue"
-  | "gray"
-  | "green"
-  | "indigo"
-  | "orange"
-  | "pink"
-  | "purple"
-  | "red"
-  | "slate"
-  | "teal"
-
-export type ArdoBrandHue = ArdoBrandHuePreset | number
-
-/** Chroma multipliers for {@link ArdoBrandConfig}; `1` keeps the default saturation. */
-export type ArdoBrandChroma = { color?: number; accent?: number; neutral?: number } | number
-
-export type ArdoBrandLogo = { light: string; dark: string } | string
-
-export type ArdoBrandConfig = {
-  /** Main brand hue used by primary accents and calls to action. */
-  color?: ArdoBrandHue
-  /** Accent hue used by secondary accents and code surfaces. Defaults from color. */
-  accent?: ArdoBrandHue
-  /** Neutral chrome hue used by backgrounds, borders, text, header, and sidebar. */
-  neutral?: ArdoBrandHue
-  /**
-   * Saturation of the hue-derived colors. `1` keeps the default, `0.4` mutes the
-   * palette, `0` turns it gray. A number applies to color and accent.
-   */
-  chroma?: ArdoBrandChroma
-  /** Header logo path/URL, optionally with light/dark variants. */
-  logo?: ArdoBrandLogo
-}
-
-// =============================================================================
 // Head Config
 // =============================================================================
 
@@ -194,8 +153,6 @@ export type ArdoConfig = {
   sidebar?: SidebarConfig
   /** Site-level social metadata defaults */
   metadata?: MetadataConfig
-  /** Simple brand customization for the default theme and header logo. */
-  brand?: ArdoBrandConfig
   /** Sitemap and robots.txt generation */
   seo?: SeoConfig
   /** Build-time internal link checking */

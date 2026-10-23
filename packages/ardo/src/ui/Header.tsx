@@ -12,7 +12,7 @@ import {
 import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
-import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { useArdoConfig, useArdoLabels, useArdoSiteConfig } from "../runtime/hooks"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
@@ -152,6 +152,7 @@ export function ArdoHeader({
   className,
 }: ArdoHeaderProps) {
   const config = useArdoConfig()
+  const siteLogo = useArdoSiteConfig().logo
   const labels = useArdoLabels()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
@@ -159,7 +160,7 @@ export function ArdoHeader({
   const layout = useArdoLayoutVariant()
   const searchMode = resolveHeaderSearch(search, layout)
 
-  const resolvedLogo = logo
+  const resolvedLogo = logo ?? siteLogo
   const resolvedTitle = title ?? config.title
   const hasLogo = resolvedLogo !== undefined
   const hasTitle = resolvedTitle !== ""

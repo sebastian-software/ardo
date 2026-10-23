@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from "react"
 
-import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { useArdoConfig, useArdoLabels, useArdoSiteConfig } from "../runtime/hooks"
 import { useArdoPath } from "../runtime/page-context"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
@@ -43,6 +43,7 @@ export function ArdoMobileNavigation({
 }: ArdoMobileNavigationProps) {
   const config = useArdoConfig()
   const labels = useArdoLabels()
+  const siteConfig = useArdoSiteConfig()
   const id = useId()
   const triggerRef = useRef<HTMLButtonElement>(null)
   const [localOpen, setLocalOpen] = useState(false)
@@ -89,7 +90,7 @@ export function ArdoMobileNavigation({
         <MobileSlidePanel
           id={id}
           title={title ?? config.title}
-          logo={logo ?? config.brand?.logo}
+          logo={logo ?? siteConfig.logo}
           nav={nav}
           actions={actions}
           themeToggle={themeToggle}

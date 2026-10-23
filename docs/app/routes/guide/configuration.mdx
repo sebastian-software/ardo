@@ -153,34 +153,6 @@ defineArdoConfig({
 })
 ```
 
-### brand
-
-- **Type:** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; chroma?: number | { color?: number; accent?: number; neutral?: number }; logo?: string | { light: string; dark: string } }`
-- **Default:** `{}`
-
-Simple brand configuration for the default theme and header logo. `color`, `accent`, and `neutral`
-accept OKLCH hue numbers or preset names: `berry`, `red`, `orange`, `amber`, `green`, `teal`,
-`blue`, `indigo`, `purple`, `pink`, `slate`, and `gray`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  brand: {
-    color: "blue",
-    accent: "teal",
-    neutral: "slate",
-    logo: "./app/assets/logo.svg",
-  },
-})
-```
-
-`chroma` scales the saturation: `1` keeps the default, `0.4` mutes the palette, and `0` turns it gray. A number applies to `color` and `accent`; an object sets each hue separately. [Theming](/guide/theming#brand-shortcut) shows the effect.
-
-When `color` is set without `accent`, Ardo derives an accent hue. When `neutral` is omitted, the
-neutral chrome follows `color`. Local SVG logo paths are bundled for the default header and also
-become the default source for generated favicons. Use an explicit `logo` on `ArdoHeader` or
-`icons.source` when the header and favicon should use different assets.
-
 ### seo.llms
 
 - **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
@@ -526,23 +498,14 @@ Configuration for the automatic route generation plugin. Set to `false` to disab
 
 ### icons
 
-- **Type:** `false | { source?: string }`
-- **Default:** automatic Ardo icon set
+- **Type:** `false`
+- **Default:** the generated owl icons
 
-Ardo generates a lean favicon set at build time and serves it during development:
-`/favicon.ico`, `/icon.svg`, and `/apple-touch-icon.png`. This matches the modern minimal browser
-set without adding a web app manifest or legacy `apple-touch-icon-precomposed.png` files.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  icons: {
-    source: "./app/assets/logo.svg",
-  },
-})
-```
-
-Set `icons: false` if you want to manage all root icon files yourself from `public/`.
+Ardo generates a lean favicon set from its owl at build time and serves it during development:
+`/favicon.ico`, `/icon.svg`, and `/apple-touch-icon.png`. Your own icon is an imported file on
+`ArdoRoot`, `<ArdoRoot icon={icon} />`, so Vite fingerprints it; see [Theming](/guide/theming#colors-logo-and-favicon).
+A file of the same name in `public/` replaces the generated one, and `icons: false` leaves all three
+to you.
 
 ### content
 
@@ -757,9 +720,9 @@ Ardo keeps browser-safe runtime imports separate from build-time Node.js imports
 | `ardo/config`        | `defineArdoConfig` and the config types.                                                                                                 |
 | `ardo/vite`          | The `ardo()` Vite plugin, Vite's `defineConfig`, `defineCollection`, `highlightCode`, and build helpers.                                 |
 | `ardo/runtime`       | React providers, runtime hooks, `ArdoLink`, `useArdoPath`, `ArdoHead`, `ArdoScripts`, `ArdoMetaFunction`, and sidebar prev/next helpers. |
-| `ardo/ui`            | Default UI components, layout components, MDX components, and icon registration helpers.                                                 |
+| `ardo/ui`            | Default UI components, layout components, MDX components, `ArdoTheme`, and icon registration helpers.                                    |
 | `ardo/icons`         | The 50 built-in content icons and the brand icons as React components.                                                                   |
-| `ardo/theme`         | Vanilla Extract theme tokens and brand-theme helpers.                                                                                    |
+| `ardo/theme`         | `vars`, the Vanilla Extract theme tokens for your own styles.                                                                            |
 | `ardo/mdx-provider`  | The MDX provider used to auto-register Ardo's MDX components.                                                                            |
 | `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                                                              |
 | `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |

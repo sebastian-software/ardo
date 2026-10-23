@@ -2,11 +2,6 @@ import path from "node:path"
 import { URL } from "node:url"
 
 import type {
-  ArdoBrandChroma,
-  ArdoBrandConfig,
-  ArdoBrandHue,
-  ArdoBrandHuePreset,
-  ArdoBrandLogo,
   ArdoConfig,
   ContentValidationConfig,
   DiagnosticLevel,
@@ -36,7 +31,6 @@ import type {
   TOCItem,
 } from "./types"
 
-import { resolveBrandThemeHues } from "./brand"
 import { resolveI18nConfig } from "./i18n"
 import { validateOpenApiConfig } from "./openapi"
 import { validateSitemapConfig } from "./seo"
@@ -45,11 +39,6 @@ import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
 
 export type {
-  ArdoBrandChroma,
-  ArdoBrandConfig,
-  ArdoBrandHue,
-  ArdoBrandHuePreset,
-  ArdoBrandLogo,
   ArdoConfig,
   ContentValidationConfig,
   DiagnosticLevel,
@@ -128,7 +117,6 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     },
     sidebar: config.sidebar ?? {},
     metadata: config.metadata ?? {},
-    brand: config.brand ?? {},
     vite: config.vite,
     project: config.project ?? {},
     root,
@@ -148,8 +136,6 @@ function validateConfig(config: ArdoConfig): void {
   if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl)) {
     errors.push("siteUrl must be an absolute URL.")
   }
-
-  validateBrandConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
   validateOpenApiConfig(config, errors)
@@ -254,14 +240,6 @@ function validateVersionEntry(
   }
   if (!isValidBasePath(version.path)) {
     errors.push(`versioning.versions["${version.id}"].path must start and end with "/".`)
-  }
-}
-
-function validateBrandConfig(config: ArdoConfig, errors: string[]): void {
-  try {
-    resolveBrandThemeHues(config.brand)
-  } catch (error) {
-    errors.push(error instanceof Error ? error.message : String(error))
   }
 }
 

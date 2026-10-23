@@ -11,7 +11,6 @@ import { createCurrentRouteIdentity } from "./route-identity"
 
 const config: ResolvedConfig = {
   base: "/docs/",
-  brand: {},
   contentDir: "/tmp/routes",
   deploymentBase: "/docs/",
   description: "Framework docs",

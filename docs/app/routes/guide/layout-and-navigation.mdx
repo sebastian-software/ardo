@@ -112,18 +112,20 @@ export default function Root() {
 
 ### Change the Logo and Favicon
 
-Set `brand.logo` in `ardo.config.ts`. A local SVG becomes the header logo and the source of the generated favicons:
+Import the files and pass them to `ArdoRoot`. Vite fingerprints imported files, so a new logo reaches readers with the next deploy:
 
-```ts title="ardo.config.ts"
-import { defineArdoConfig } from "ardo/config"
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
 
-export default defineArdoConfig({
-  title: "My Docs",
-  brand: { logo: "./app/assets/logo.svg" },
-})
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return <ArdoRoot logo={logo} icon={icon} />
+}
 ```
 
-`brand.logo` also accepts `{ light, dark }` variants. To build the favicons from a different image, set [`icons.source`](/guide/configuration#icons); to manage favicon files yourself in `public/`, set `icons: false`.
+`logo` also takes `{ light, dark }` variants, and `appleTouchIcon` takes a 180×180 PNG for iOS home screens. Without `icon`, Ardo links its generated owl icons; [Theming](/guide/theming#colors-logo-and-favicon) has the details.
 
 ### Change the Footer
 
@@ -194,20 +196,24 @@ children. It is the part of the page that hydrates in the browser.
 
 `ArdoRoot` takes site-wide content settings as props and the chrome as children.
 
-| Prop          | Type                                                                               | Purpose                                                                                          |
-| ------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `header`      | `ReactNode \| false`                                                               | Your own header in place of `ArdoHeader`, or `false` for none.                                   |
-| `sidebar`     | `ReactNode \| false`                                                               | Your own sidebar in place of `ArdoSidebar`, or `false` for none.                                 |
-| `footer`      | `ReactNode \| false`                                                               | Your own footer in place of `ArdoFooter`, or `false` for none.                                   |
-| `editLink`    | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                                  |
-| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                                         |
-| `labels`      | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                                              |
-| `scrollMode`  | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.                                     |
-| `tocLabel`    | `string`                                                                           | Label for the table-of-contents panel.                                                           |
-| `className`   | `string`                                                                           | Replace the default layout class.                                                                |
-| `config`      | `ArdoConfig`                                                                       | The site config. Ardo's entries provide it from `ardo.config.ts`; pass it in tests and previews. |
-| `components`  | `ArdoMDXComponents`                                                                | Add to or replace the default Markdown component set, including its wrapper.                     |
-| `children`    | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides.                       |
+| Prop             | Type                                                                               | Purpose                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `theme`          | `ArdoThemeProps`                                                                   | Hues, saturation, callout colors, fonts, and tokens; see [Theming](/guide/theming).              |
+| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Header and mobile menu logo, usually an imported file.                                           |
+| `icon`           | `string`                                                                           | Favicon, usually an imported SVG or PNG. Defaults to the generated owl icons.                    |
+| `appleTouchIcon` | `string`                                                                           | 180×180 PNG for iOS home screens.                                                                |
+| `header`         | `ReactNode \| false`                                                               | Your own header in place of `ArdoHeader`, or `false` for none.                                   |
+| `sidebar`        | `ReactNode \| false`                                                               | Your own sidebar in place of `ArdoSidebar`, or `false` for none.                                 |
+| `footer`         | `ReactNode \| false`                                                               | Your own footer in place of `ArdoFooter`, or `false` for none.                                   |
+| `editLink`       | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                                  |
+| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                                         |
+| `labels`         | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                                              |
+| `scrollMode`     | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.                                     |
+| `tocLabel`       | `string`                                                                           | Label for the table-of-contents panel.                                                           |
+| `className`      | `string`                                                                           | Replace the default layout class.                                                                |
+| `config`         | `ArdoConfig`                                                                       | The site config. Ardo's entries provide it from `ardo.config.ts`; pass it in tests and previews. |
+| `components`     | `ArdoMDXComponents`                                                                | Add to or replace the default Markdown component set, including its wrapper.                     |
+| `children`       | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides.                       |
 
 ## Header
 
@@ -228,8 +234,8 @@ import logo from "./assets/logo.svg"
 </ArdoHeader>
 ```
 
-If `brand.logo` is set in `ardo.config.ts`, `ArdoRoot` passes it to the header unless the header
-sets its own `logo`.
+The `logo` passed to `ArdoRoot` reaches the header and the mobile menu unless the header sets its
+own `logo`.
 
 | Header prop         | Purpose                                                                     |
 | ------------------- | --------------------------------------------------------------------------- |
@@ -542,8 +548,8 @@ Your components read Ardo's state through hooks from `ardo/runtime`:
 
 | Hook                  | Returns                                                                                                  |
 | --------------------- | -------------------------------------------------------------------------------------------------------- |
-| `useArdoConfig()`     | The site config from `ardo.config.ts`, such as `title`, `description`, and `brand`.                      |
-| `useArdoSiteConfig()` | The `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings passed to `ArdoRoot`.                   |
+| `useArdoConfig()`     | The site config from `ardo.config.ts`, such as `title`, `description`, and `base`.                       |
+| `useArdoSiteConfig()` | The `editLink`, `lastUpdated`, `labels`, `logo`, and `tocLabel` settings passed to `ArdoRoot`.           |
 | `useArdoSidebar()`    | The sidebar items of the current section.                                                                |
 | `useArdoPageData()`   | Inside Markdown and MDX page content: the page's title, frontmatter, table of contents, and source path. |
 | `useArdoTOC()`        | The current page's table of contents, or an empty list.                                                  |
@@ -613,10 +619,9 @@ Export `Layout` from `root.tsx` to pass options to `ArdoRootLayout`:
 ```tsx
 import type { ReactNode } from "ardo/react"
 import { ArdoRootLayout } from "ardo/ui"
-import logo from "./assets/logo.svg"
 
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
@@ -661,19 +666,19 @@ import { ArdoErrorBoundary } from "ardo/ui"
 export const ErrorBoundary = ArdoErrorBoundary
 ```
 
-## RootLayout Theme Policy
+## RootLayout Color Scheme
 
-By default, `ArdoRootLayout` uses `theme="auto"`: it applies a stored `ardo-theme` preference first
-and falls back to `prefers-color-scheme`. Set an explicit theme policy when a site should not be
-user-selectable:
+By default, `ArdoRootLayout` uses `colorScheme="auto"`: it applies a stored `ardo-theme` preference
+first and falls back to `prefers-color-scheme`. Set an explicit color scheme when a site should not
+be user-selectable:
 
 ```tsx
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
-| Theme policy | Behavior                                                                 |
+| Color scheme | Behavior                                                                 |
 | ------------ | ------------------------------------------------------------------------ |
 | `auto`       | Stored user preference wins; system preference is the fallback. Default. |
 | `light`      | Always render light mode and clear stale stored theme preferences.       |
