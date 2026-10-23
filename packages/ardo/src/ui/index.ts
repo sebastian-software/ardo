@@ -1,5 +1,10 @@
 export { ArdoRoot } from "./ArdoRoot"
 export type { ArdoRootProps } from "./ArdoRoot"
+export type { ArdoMDXComponents } from "../mdx/components-context"
+export { ArdoHeaderSearch } from "./components/HeaderSearch"
+export type { ArdoHeaderSearchProps } from "./components/HeaderSearch"
+export { ArdoMobileNavigation } from "./MobileNavigation"
+export type { ArdoMobileNavigationProps } from "./MobileNavigation"
 
 export { ArdoBareContent } from "./BareContent"
 // UI components
@@ -68,7 +73,9 @@ export type {
 } from "./components"
 
 export { ArdoContent } from "./Content"
+export type { ArdoContentProps } from "./Content"
 export { ArdoDocContent, ArdoDocLayout, ArdoDocPage } from "./DocPage"
+export type { ArdoDocContentProps, ArdoDocPageProps } from "./DocPage"
 
 export { ArdoErrorBoundary } from "./ErrorBoundary"
 export type { ArdoErrorBoundaryProps } from "./ErrorBoundary"

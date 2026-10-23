@@ -1,4 +1,6 @@
-import type { AnchorHTMLAttributes, ElementType, ReactNode } from "react"
+import { type AnchorHTMLAttributes, type ReactNode, use } from "react"
+
+import { ArdoMDXComponentsContext, type ArdoMDXComponents } from "./components-context"
 
 import { ArdoLink } from "../runtime/page"
 
@@ -56,7 +58,7 @@ function SmartLink({
  * Provides MDX components for rendering documentation content.
  * Used by generated Ferromark route modules to resolve Markdown components.
  */
-export type ArdoMDXComponents = Record<string, ElementType>
+export type { ArdoMDXComponents } from "./components-context"
 
 export function useMDXComponents(): ArdoMDXComponents {
   return {
@@ -89,5 +91,6 @@ export function useMDXComponents(): ArdoMDXComponents {
     TabPanels: ArdoTabPanels,
     CodeBlock: ArdoCodeBlock,
     CodeGroup: ArdoCodeGroup,
+    ...use(ArdoMDXComponentsContext),
   }
 }

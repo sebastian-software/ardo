@@ -5,6 +5,7 @@ import type { TOCItem } from "../config/types"
 import { flattenToc } from "../markdown/toc"
 
 import { useArdoLabels, useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
+import { useDomToc } from "./dom-toc"
 import * as styles from "./Toc.css"
 import { resolveTocScrollRegion, scrollToHeading } from "./toc-navigation"
 
@@ -13,6 +14,10 @@ export type ArdoTOCProps = {
   label?: string
   /** Use a native disclosure for the compact outline above an article. */
   collapsible?: boolean
+  /** Use build-time metadata (default), or discover article headings after hydration. */
+  source?: "metadata" | "dom"
+  /** DOM mode's content selector. Defaults to the article body, then #main-content. */
+  scope?: string
 }
 
 function readScrollRegionSnapshot() {
@@ -32,8 +37,9 @@ function subscribeToScrollRegion(onChange: () => void) {
 }
 
 /** The outline of the current page. It links to each heading and marks the section in view. */
-export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps = {}) {
-  const toc = useArdoTOC()
+export function ArdoTOC(props: ArdoTOCProps = {}) {
+  const { label: labelProp, collapsible = false, source = "metadata", scope } = props
+  const toc = useDomToc(useArdoTOC(), { source, scope })
   const siteConfig = useArdoSiteConfig()
   const labels = useArdoLabels()
   const [activeId, setActiveId] = useState<string>("")
@@ -73,8 +79,7 @@ export function ArdoTOC({ label: labelProp, collapsible = false }: ArdoTOCProps 
       },
       {
         root: scrollRegion.root,
-        // Percentage root margins resolve against width, including the vertical
-        // ones. Pixels keep a nonempty detection band on wide, short viewports.
+        // Vertical percentage margins resolve against width; pixels keep the band nonempty.
         rootMargin: `-20px 0px -${Math.round(scrollRegion.height * 0.85)}px 0px`,
         threshold: 0,
       }

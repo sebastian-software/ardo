@@ -13,7 +13,7 @@ import * as footerStyles from "./Footer.css"
 import { getNodeText } from "./text-content"
 import { ArdoVersionBanner } from "./site-controls"
 
-type ContentProps = {
+export type ArdoContentProps = {
   children: ReactNode
   /** Edit link configuration (overrides ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
@@ -23,12 +23,16 @@ type ContentProps = {
   metaPlacement?: "footer" | "footer-on-narrow" | "none"
   /** Optional in-page navigation, displayed after the article heading. */
   outline?: ReactNode
+  /** Replace the article heading; false omits it. Undefined keeps the default. */
+  header?: ReactNode
+  /** Replace edit/updated metadata and previous/next links; false omits them. */
+  footer?: ReactNode
 }
 
 type ContentMetaInput = {
   pageData: ReturnType<typeof useArdoPageData>
-  editLink: ContentProps["editLink"]
-  lastUpdated: ContentProps["lastUpdated"]
+  editLink: ArdoContentProps["editLink"]
+  lastUpdated: ArdoContentProps["lastUpdated"]
   siteConfig: ReturnType<typeof useArdoSiteConfig>
   locale: string
 }
@@ -87,7 +91,9 @@ export function ArdoContent({
   lastUpdated,
   metaPlacement = "footer",
   outline,
-}: ContentProps) {
+  header,
+  footer,
+}: ArdoContentProps) {
   const isBare = useBareContent()
   const pageData = useArdoPageData()
   const siteConfig = useArdoSiteConfig()
@@ -110,25 +116,37 @@ export function ArdoContent({
     <article className={`ardo-content ${docStyles.contentContainer}`}>
       <ArdoVersionBanner />
       <ArdoBreadcrumb />
-      <ContentHeader
-        title={pageData?.frontmatter.title ?? ""}
-        description={pageData?.frontmatter.description ?? ""}
-        showDescription={shouldShowDescription(
-          pageData?.frontmatter.description ?? "",
-          pageData?.frontmatter.lede,
-          children
-        )}
-      />
+      {header === undefined ? (
+        <ContentHeader
+          title={pageData?.frontmatter.title ?? ""}
+          description={pageData?.frontmatter.description ?? ""}
+          showDescription={shouldShowDescription(
+            pageData?.frontmatter.description ?? "",
+            pageData?.frontmatter.lede,
+            children
+          )}
+        />
+      ) : (
+        header
+      )}
       {outline}
       <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>{children}</div>
-      {metaPlacement !== "none" && (
-        <ContentMeta
-          edit={edit}
-          updated={updated}
-          className={metaPlacement === "footer-on-narrow" ? docStyles.narrowPageMeta : undefined}
-        />
+      {footer === undefined ? (
+        <>
+          {metaPlacement !== "none" && (
+            <ContentMeta
+              edit={edit}
+              updated={updated}
+              className={
+                metaPlacement === "footer-on-narrow" ? docStyles.narrowPageMeta : undefined
+              }
+            />
+          )}
+          <ContentPrevNext prev={prev} next={next} />
+        </>
+      ) : (
+        footer
       )}
-      <ContentPrevNext prev={prev} next={next} />
     </article>
   )
 }

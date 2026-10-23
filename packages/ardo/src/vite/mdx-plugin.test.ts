@@ -114,15 +114,16 @@ describe("createMdxPlugin", () => {
     const { default: route } = await loadRoute(
       '```ts title="source.ts" [API] showLineNumbers {1}\nconst answer = 42\n```'
     )
-    const view = renderToStaticMarkup(
-      createElement(route, {
+    function Page() {
+      return createElement(route, {
         components: {
           ...useMDXComponents(),
           wrapper: ({ children }: { children: ReactNode }) =>
             createElement("article", null, children),
         },
       })
-    )
+    }
+    const view = renderToStaticMarkup(createElement(Page))
 
     expect(view.match(/<button\b/gu)).toHaveLength(1)
     expect(view.match(/<pre\b/gu)).toHaveLength(1)

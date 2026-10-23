@@ -3,6 +3,7 @@ import { useArdoPath } from "../../runtime/page-context"
 
 import { useArdoLabels } from "../../runtime/hooks"
 import { ChromeIcon } from "../chrome-icons"
+import { joinClassNames } from "../classnames"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch } from "./Search"
@@ -19,6 +20,8 @@ export type ArdoHeaderSearchProps = {
   variant?: "field" | "icon"
   /** Close related header UI before activating search. */
   onActivate?: () => void
+  /** Additional classes on the search trigger button. */
+  className?: string
 }
 
 /**
@@ -31,6 +34,7 @@ export function ArdoHeaderSearch({
   placeholder,
   variant = "field",
   onActivate,
+  className,
 }: ArdoHeaderSearchProps) {
   const labels = useArdoLabels()
   const { closeOverlay, openOverlay, overlayOpen } = useSearchOverlayState()
@@ -59,7 +63,7 @@ export function ArdoHeaderSearch({
       <button
         ref={triggerRef}
         type="button"
-        className={isIcon ? styles.triggerIcon : styles.trigger}
+        className={joinClassNames(isIcon ? styles.triggerIcon : styles.trigger, className)}
         aria-label={labels.search.label}
         aria-expanded={overlayOpen}
         aria-keyshortcuts="Meta+K Control+K"
