@@ -30,12 +30,21 @@ export type DeclarationExtractionOptions = {
    * merged for inherited properties. Libraries do not become public API pages.
    */
   libFiles?: string[]
+  /**
+   * Import path of each entry point, in the same order, such as `"my-lib/ui"`.
+   * Pages then show how to import the declaration.
+   */
+  importPaths?: ReadonlyArray<string | undefined>
 }
 
 /** Source API documentation using the native TypeScript compiler's async API. */
 export type NativeApiDocsConfig = {
-  /** Source entry points, resolved relative to the current working directory. */
-  entryPoints: string[]
+  /**
+   * Source entry points, resolved relative to the current working directory.
+   * Map import paths to files, such as `{ "my-lib/ui": "./src/ui/index.ts" }`,
+   * and every page shows the import line, while the index groups by import path.
+   */
+  entryPoints: Record<string, string> | string[]
   /** TypeScript project configuration. Ardo applies declaration options in memory. */
   tsconfig: string
   /**
@@ -94,6 +103,8 @@ export type ApiProperty = {
 
 export type ApiDeclaration = {
   name: string
+  /** Import path of the entry point that exports the declaration first, when configured. */
+  importPath?: string
   kind: "class" | "component" | "enum" | "function" | "interface" | "type" | "variable"
   signature: string
   comment: ApiComment

@@ -13,6 +13,7 @@ import type {
 } from "./types"
 
 import { extractDeclarations } from "./extractor"
+import { entryPointFiles, entryPointImportPaths } from "./entry-points"
 
 type CompilerDiagnostic = {
   code: number
@@ -108,8 +109,13 @@ export async function extractNativeDeclarations(
   if (output.emitSkipped || output.diagnostics.some((item) => item.category === 1))
     throw new NativeCompilerError(output.diagnostics, watchFiles)
   const declarations = collectDeclarations(output)
-  const entryPoints = await resolveEntryPoints(config.entryPoints, inputFiles, declarations)
+  const entryPoints = await resolveEntryPoints(
+    entryPointFiles(config.entryPoints),
+    inputFiles,
+    declarations
+  )
   const project = await extractDeclarations(entryPoints, {
+    importPaths: entryPointImportPaths(config.entryPoints),
     declarationFiles: declarations.files,
     libFiles: await selectedLibraryFiles(program, inputFiles),
     packageRoot: path.dirname(config.tsconfig),

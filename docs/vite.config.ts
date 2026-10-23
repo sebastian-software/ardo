@@ -58,7 +58,12 @@ export default defineConfig({
 
       // Native TypeScript API documentation
       api: {
-        entryPoints: ["../packages/ardo/src/index.ts"],
+        // Import paths make every page show its import line.
+        entryPoints: {
+          "ardo/ui": "../packages/ardo/src/ui/index.ts",
+          "ardo/runtime": "../packages/ardo/src/runtime/index.ts",
+          "ardo/config": "../packages/ardo/src/config/index.ts",
+        },
         tsconfig: "../packages/ardo/tsconfig.api.json",
       },
 

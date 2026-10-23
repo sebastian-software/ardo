@@ -16,6 +16,7 @@ import {
   type SharedExtraction,
 } from "./api-shared-extraction"
 import { isPathInsideDirectory, resolveRoutesDir } from "./path-utils"
+import { mapEntryPointFiles } from "../api/entry-points"
 
 type ApiBackend = {
   NativeApiProject: typeof NativeApiProject
@@ -175,7 +176,9 @@ export class ApiPluginState {
     return {
       ...selected,
       tsconfig: path.resolve(this.root, selected.tsconfig),
-      entryPoints: selected.entryPoints.map((file) => path.resolve(this.root, file)),
+      entryPoints: mapEntryPointFiles(selected.entryPoints, (file) =>
+        path.resolve(this.root, file)
+      ),
     }
   }
 

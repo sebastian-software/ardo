@@ -56,8 +56,7 @@ function readParameter(
   const rest = pattern.type === "RestElement"
   const argument = rest ? pattern.argument : pattern
   const annotation = parameterType(parameter)
-  const name =
-    argument.type === "Identifier" ? argument.name : formatType(argument, context).split(":")[0]
+  const name = parameterName(argument, annotation == null ? "" : formatType(annotation, context))
   return {
     name,
     rest,
@@ -65,4 +64,23 @@ function readParameter(
     type: annotation == null ? "/* type not declared */" : formatType(annotation, context),
     description: getParameterDescription(comment, name),
   }
+}
+
+/**
+ * A destructured parameter has no name of its own. Props objects read as
+ * `props`, other objects as `options`, arrays as `values`.
+ */
+function parameterName(
+  argument: { type: string; name?: string; left?: unknown },
+  type: string
+): string {
+  const target =
+    argument.type === "AssignmentPattern" &&
+    typeof argument.left === "object" &&
+    argument.left != null
+      ? (argument.left as { type: string; name?: string })
+      : argument
+  if (target.type === "Identifier" && target.name != null) return target.name
+  if (target.type === "ArrayPattern") return "values"
+  return /Props(?:<.*>)?$/u.test(type.trim()) ? "props" : "options"
 }

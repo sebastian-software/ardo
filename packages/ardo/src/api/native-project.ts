@@ -12,6 +12,7 @@ import type {
 import { resolveGeneratedDocsDirectory } from "../generated-docs"
 import { writeDeclarationProject } from "./generator"
 import { extractNativeDeclarations, updateDocumentationSnapshot } from "./native-snapshot"
+import { entryPointFiles, mapEntryPointFiles } from "./entry-points"
 
 export { NativeCompilerError } from "./native-snapshot"
 
@@ -28,12 +29,12 @@ export class NativeApiProject {
   private invalidateNext = false
 
   constructor(config: NativeApiDocsConfig) {
-    if (config.entryPoints.length === 0)
+    if (entryPointFiles(config.entryPoints).length === 0)
       throw new Error("[ardo:api] At least one source entry point is required.")
     this.config = {
       ...config,
       tsconfig: path.resolve(config.tsconfig),
-      entryPoints: config.entryPoints.map((file) => path.resolve(file)),
+      entryPoints: mapEntryPointFiles(config.entryPoints, (file) => path.resolve(file)),
     }
     this.root = path.dirname(this.config.tsconfig)
   }

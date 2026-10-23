@@ -27,17 +27,29 @@ export async function extractDeclarations(
   const extractor = new DeclarationExtractor(reader)
   const items: ApiDeclaration[] = []
   const added = new Set<string>()
-  for (const entryPoint of entryPoints) {
-    const module = await reader.read(entryPoint)
-    for (const [name, resolved] of await reader.exportsOf(module)) {
-      const key = `${resolved.module.id}:${resolved.name}:${name}`
-      if (added.has(key)) continue
-      added.add(key)
-      const item = await extractor.extract(name, resolved)
-      if (item != null) items.push(item)
-    }
+  for (const [index, entryPoint] of entryPoints.entries()) {
+    const entry = { file: entryPoint, importPath: options.importPaths?.[index] }
+    items.push(...(await extractEntryPoint(entry, { reader, extractor, added })))
   }
   return { items, diagnostics: reader.diagnostics, files: [...reader.modules.keys()] }
+}
+
+async function extractEntryPoint(
+  entry: { file: string; importPath?: string },
+  state: { reader: DeclarationReader; extractor: DeclarationExtractor; added: Set<string> }
+): Promise<ApiDeclaration[]> {
+  const items: ApiDeclaration[] = []
+  const module = await state.reader.read(entry.file)
+  for (const [name, resolved] of await state.reader.exportsOf(module)) {
+    // A declaration that several entry points export belongs to the first one.
+    const key = `${resolved.module.id}:${resolved.name}:${name}`
+    if (state.added.has(key)) continue
+    state.added.add(key)
+    const item = await state.extractor.extract(name, resolved)
+    if (item != null)
+      items.push(entry.importPath == null ? item : { ...item, importPath: entry.importPath })
+  }
+  return items
 }
 
 class DeclarationExtractor {

@@ -58,4 +58,17 @@ describe("renderDeclarationDocs", () => {
       "| Name | Type | Required | Description |"
     )
   })
+
+  it("keeps tag names in prose from turning into JSX", () => {
+    const page = render({
+      comment: {
+        description: "Renders a <div> around `<code>` and links to <https://ardo-docs.dev>.",
+        tags: [],
+      },
+    })
+
+    expect(page).toContain(
+      "Renders a &lt;div> around `<code>` and links to <https://ardo-docs.dev>."
+    )
+  })
 })
