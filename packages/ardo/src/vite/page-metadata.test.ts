@@ -8,6 +8,7 @@ describe("validatePageFrontmatter", () => {
       description: "A page",
       features: [{ details: "Useful", title: "Feature" }],
       hero: { actions: [{ link: "/guide", text: "Read the guide", theme: "brand" }] },
+      layout: "bare",
       next: { link: "/next", text: "Next" },
       order: 2,
       outline: [2, 4],
@@ -22,6 +23,7 @@ describe("validatePageFrontmatter", () => {
       description: "A page",
       features: [{ details: "Useful", title: "Feature" }],
       hero: { actions: [{ link: "/guide", text: "Read the guide", theme: "brand" }] },
+      layout: "bare",
       next: { link: "/next", text: "Next" },
       order: 2,
       outline: [2, 4],
@@ -30,6 +32,18 @@ describe("validatePageFrontmatter", () => {
       title: "Guide",
       twitterCard: "summary_large_image",
     })
+  })
+
+  it("reports layouts that change nothing as invalid", () => {
+    for (const layout of ["doc", "home", "page"]) {
+      expect(validatePageFrontmatter({ layout }).diagnostics).toStrictEqual([
+        {
+          field: "layout",
+          kind: "invalid",
+          message: 'Invalid value for frontmatter field "layout".',
+        },
+      ])
+    }
   })
 
   it("reports invalid and unknown values without emitting untyped metadata", () => {

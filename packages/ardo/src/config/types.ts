@@ -321,7 +321,8 @@ export type PageFrontmatter = {
   twitterTitle?: string
   order?: number
   collapsed?: boolean
-  layout?: "doc" | "home" | "page"
+  /** `bare` drops the sidebar and the page rail, as on a landing page. */
+  layout?: "bare" | "default"
   sidebar?: "leaf" | boolean
   outline?: [number, number] | boolean | number
   editLink?: boolean

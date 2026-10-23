@@ -1,12 +1,12 @@
 ---
 title: Frontmatter
-description: Control page metadata, navigation, layout, and home-page content from the file itself.
+description: Control page metadata, navigation, layout, and build output from the file itself.
 order: 6
 ---
 
 # Frontmatter
 
-Frontmatter keeps page-specific decisions close to the page. Use it for titles, descriptions, sidebar order, layout choices, table-of-contents behavior, edit links, and homepage content.
+Frontmatter keeps page-specific decisions close to the page. Use it for titles, descriptions, sidebar order, layout, the page outline, edit links, and build output.
 
 Ardo normalizes documented frontmatter once for route metadata, sidebars, search, redirects, sitemap,
 and LLM output. Invalid values are reported with the source file during production builds. Unknown
@@ -95,18 +95,16 @@ twitterTitle: Start building with Ardo
 
 ### layout
 
-- Type: `'doc' | 'home' | 'page'`
-- Default: `'doc'`
+- Type: `"bare" | "default"`
+- Default: `"default"`
 
-The layout to use for the page.
-
-- `doc` - Documentation layout with sidebar and TOC
-- `home` - Home page layout with hero and features
-- `page` - Simple page without sidebar
+`bare` drops the sidebar and the page rail, as on a landing page, and the header shows search as an
+icon. `default` is the documentation layout with sidebar and outline. The home page at `/` always
+uses the bare layout.
 
 ```yaml
 ---
-layout: home
+layout: bare
 ---
 ```
 
@@ -115,16 +113,14 @@ layout: home
 - Type: `boolean | "leaf"`
 - Default: `true`
 
-Whether to show the sidebar on this page.
+`sidebar: false` removes the page from the generated sidebar. The page still builds and stays
+reachable by link.
 
 ```yaml
 ---
 sidebar: false
 ---
 ```
-
-For `ArdoGeneratedSidebar`, `sidebar: false` also removes leaf markdown pages from generated
-navigation.
 
 Use `sidebar: leaf` on an `index.md` or `index.mdx` to show the containing directory as one link
 without auto-listing its children.
@@ -134,7 +130,8 @@ without auto-listing its children.
 - Type: `number`
 
 Controls the generated sidebar order for pages within the same directory. Items with `order` appear
-before unordered items; unordered items fall back to alphabetical sorting.
+before unordered items; unordered items fall back to alphabetical sorting. The previous and next
+links at the end of a page follow the same order.
 
 ```yaml
 ---
@@ -157,20 +154,22 @@ collapsed: false
 ```
 
 - `title` sets the group label.
-- `order` sorts the group among sibling sections unless `sidebar.sectionOrder` prioritizes the
-  top-level section.
-- `collapsed` sets the initial collapsed state for the group.
+- `order` sorts the group among its sibling pages and groups. Top-level folders become sidebar
+  sections instead; order those with [`sidebar.sectionOrder`](/guide/configuration#sidebar-sectionorder).
+- `collapsed` sets the initial collapsed state for the group. A collapsed group still opens on the
+  pages inside it.
 
 ### outline
 
-- Type: `boolean | number | [number, number]`
+- Type: `boolean`
 - Default: `true`
 
-Configure the table of contents.
+Set `outline: false` to hide the outline of this page. Which heading levels the outline lists is a
+site-wide setting, [`markdown.toc.level`](/guide/configuration#markdown-toc) in `ardo.config.ts`.
 
 ```yaml
 ---
-outline: [2, 3] # Show h2 and h3 headings
+outline: false
 ---
 ```
 
@@ -248,63 +247,12 @@ redirectFrom:
 ---
 ```
 
-Ardo combines page-level redirects with the global `redirects` array from `ardo()` config and emits
-host-friendly redirect assets during production builds.
+Ardo combines page-level redirects with the [`redirects`](/guide/configuration#redirects) option in
+`ardo.config.ts` and emits host-friendly redirect assets during production builds.
 
-### prev / next
+## Home Page
 
-- Type: `string | { text: string; link: string } | false`
-
-Override the previous/next page links.
-
-```yaml
----
-prev: /guide/introduction
-next:
-  text: Advanced Topics
-  link: /guide/advanced
----
-```
-
-## Home Page Options
-
-### hero
-
-Configure the hero section on home pages:
-
-```yaml
----
-layout: home
-hero:
-  name: Ardo
-  text: React-first Documentation
-  tagline: Build beautiful documentation sites
-  image: /logo.png
-  actions:
-    - text: Get Started
-      link: /guide/getting-started
-      theme: brand
-    - text: GitHub
-      link: https://github.com
-      theme: alt
----
-```
-
-### features
-
-Add feature cards to home pages:
-
-```yaml
----
-layout: home
-features:
-  - title: Fast
-    icon: "⚡"
-    details: Lightning fast builds with Vite
-    link: /guide/performance
-    linkText: Learn more
-  - title: Simple
-    icon: "✨"
-    details: Easy to set up and use
----
-```
+Build the home page as a TSX route, `app/routes/home.tsx`, with `ArdoHero` and `ArdoFeatures`. A
+Markdown page can't render the hero, so frontmatter has no hero or feature fields.
+[Components](/guide/components#hero-and-features) shows both with their props, and
+[Getting Started](/guide/getting-started#6-create-your-first-pages) has a complete home route.

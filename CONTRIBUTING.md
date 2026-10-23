@@ -210,7 +210,7 @@ example.
 
 ### Review UI Components
 
-Use the [Components page](https://ardo-docs.dev/v6/guide/component-playground/)
+Use the [Components page](https://ardo-docs.dev/v6/guide/components/)
 to inspect component variants in the actual Ardo documentation app. Run
 `pnpm docs:dev` and open Components from the guide navigation. The page uses
 the default site header, search, sidebar, theme control, and mobile navigation;

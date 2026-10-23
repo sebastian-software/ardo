@@ -129,7 +129,7 @@
   },
   "peerDependencies": {
     "oxc-parser": "^0.155.0",
-    "typescript": "^7.1.0-dev.20261011.1"
+    "typescript": ">=6.0.0 || ^7.1.0-dev.20261011.1"
   },
   "peerDependenciesMeta": {
     "oxc-parser": {

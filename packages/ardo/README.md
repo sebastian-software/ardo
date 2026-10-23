@@ -29,6 +29,9 @@ pnpm add ardo@6
 pnpm add -D typescript@6
 ```
 
+Any TypeScript 6 or newer typechecks an Ardo site. The optional API documentation needs the
+pinned TypeScript 7.1 nightly named in its guide.
+
 Keep the docs project in its own package or directory. Declare its component libraries locally and import their public exports; sibling application source is outside the docs package boundary.
 
 Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Ardo

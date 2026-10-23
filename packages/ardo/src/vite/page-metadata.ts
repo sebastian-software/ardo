@@ -192,7 +192,7 @@ function normalizeStructuredFrontmatterField(
 }
 
 function normalizeLayout(value: unknown): PageFrontmatterMetadata | undefined {
-  return value === "doc" || value === "home" || value === "page" ? { layout: value } : undefined
+  return value === "bare" || value === "default" ? { layout: value } : undefined
 }
 
 function normalizeSidebar(value: unknown): PageFrontmatterMetadata | undefined {

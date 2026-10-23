@@ -101,7 +101,7 @@ NODE_OPTIONS=--max-old-space-size=4096 pnpm build
 
 ### Styles Not Applied
 
-Make sure you're importing the Ardo styles. If using a custom theme, verify your CSS imports.
+Ardo loads its own stylesheet for every site. If your own styles don't apply, check that `app/root.tsx` imports your CSS file, and see [Stylesheet ownership and cascade](/guide/theming#stylesheet-ownership-and-cascade) for how Ardo's `ardo` cascade layer interacts with yours.
 
 ### Search Not Working
 
@@ -147,7 +147,9 @@ The `ardo:codeblock-highlight` plugin requires a **static** `language` prop. If 
 Code can be provided as plain text children, template literal children, or via the `code` prop:
 
 ```tsx
-<CodeBlock language="typescript">const x = 42</CodeBlock>
+import { ArdoCodeBlock } from "ardo/ui"
+
+;<ArdoCodeBlock language="typescript">const x = 42</ArdoCodeBlock>
 ```
 
 For fully dynamic code, use the `highlightCode` utility from `ardo/vite` at build time:

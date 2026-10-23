@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 import type { Locator, Page } from "@playwright/test"
 
-const galleryPath = "/v6/guide/component-playground/"
+const galleryPath = "/v6/guide/components/"
 const galleryErrors = new WeakMap<Page, string[]>()
 
 test.beforeEach(async ({ page }) => {

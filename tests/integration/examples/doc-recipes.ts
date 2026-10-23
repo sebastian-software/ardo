@@ -31,14 +31,11 @@ export function assertDocRecipes(
   // The example fetches release data; only its public type contract needs execution here.
   fs.rmSync(path.join(consumer, "vite.config.ts"))
 
-  write("app/components/tailwind-home.tsx", example("custom-theme", "export default function Home"))
-  write(
-    "app/components/launch-link.tsx",
-    example("component-playground", "export function LaunchLink")
-  )
+  write("app/components/tailwind-home.tsx", example("theming", "export default function Home"))
+  write("app/components/launch-link.tsx", example("components", "export function LaunchLink"))
   write(
     "app/components/edit-link.tsx",
-    `${example("site-ui", "function MyEditLink")}\nexport { MyEditLink };\n`
+    `${example("layout-and-navigation", "function MyEditLink")}\nexport { MyEditLink };\n`
   )
   write(
     "ardo.config.ts",
