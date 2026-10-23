@@ -56,7 +56,11 @@ export const heroAnimate = style({
 })
 
 globalStyle(`${hero} img`, {
-  maxWidth: "148px",
+  maxWidth: "min(216px, 100%)",
+  height: "auto",
+  border: "none",
+  borderRadius: 0,
+  boxShadow: "none",
   marginBottom: "36px",
   filter: "drop-shadow(0 2px 10px oklch(0 0 0 / 0.08))",
 })

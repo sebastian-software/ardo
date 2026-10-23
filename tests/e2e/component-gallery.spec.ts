@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import type { Page } from "@playwright/test"
+import type { Locator, Page } from "@playwright/test"
 
 const galleryPath = "/v6/guide/component-playground/"
 const galleryErrors = new WeakMap<Page, string[]>()
@@ -158,3 +158,68 @@ test("hero images follow the selected theme and the system preference", async ({
   await expect(dark).toBeVisible()
   await expect(light).toBeHidden()
 })
+
+// Measure resolved browser colors so prose selectors cannot silently erase CTA contrast.
+async function buttonContrast(button: Locator) {
+  return button.evaluate((element) => {
+    const style = getComputedStyle(element)
+    const stops = style.backgroundImage.match(/oklch\([^)]+\)/g)
+    if (stops?.length !== 2)
+      throw new Error(`Expected two gradient stops: ${style.backgroundImage}`)
+    const context = document.createElement("canvas").getContext("2d", { willReadFrequently: true })
+    if (!context) throw new Error("Canvas is unavailable for contrast measurement")
+    context.filter = style.filter
+    const luminance = (color: string) => {
+      if (!CSS.supports("color", color)) throw new Error(`Unsupported color: ${color}`)
+      context.clearRect(0, 0, 1, 1)
+      context.fillStyle = color
+      context.fillRect(0, 0, 1, 1)
+      const channels = [...context.getImageData(0, 0, 1, 1).data].slice(0, 3).map((channel) => {
+        const value = channel / 255
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+      })
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+    }
+    const foreground = luminance(style.color)
+    return Math.min(
+      ...stops.map((stop) => {
+        const background = luminance(stop)
+        return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05)
+      })
+    )
+  })
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`MDX preserves hero typography and readable actions in ${theme} mode`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" })
+    await page.evaluate((theme) => localStorage.setItem("ardo-theme", theme), theme)
+    await page.reload()
+    const hero = page.locator("#gallery-hero")
+    const button = hero.getByRole("link", { name: "Read the guide", exact: true })
+    await expect(button).toBeVisible()
+    await expect(button).toHaveCSS("text-decoration-line", "none")
+    await expect.poll(() => buttonContrast(button)).toBeGreaterThanOrEqual(4.5)
+    await button.hover()
+    await expect.poll(() => buttonContrast(button)).toBeGreaterThanOrEqual(4.5)
+    await button.press("Tab")
+    await page.keyboard.press("Shift+Tab")
+    await expect(button).toBeFocused()
+    expect(await button.evaluate((element) => element.matches(":focus-visible"))).toBe(true)
+    await expect.poll(() => buttonContrast(button)).toBeGreaterThanOrEqual(4.5)
+
+    const title = hero.getByText("Your project, clearly explained.", { exact: true })
+    expect(
+      await title.evaluate((element) => parseFloat(getComputedStyle(element).fontSize))
+    ).toBeGreaterThanOrEqual(26)
+    await expect(title).toHaveCSS("font-weight", "650")
+    await expect(
+      page.locator(".ardo-content").getByRole("link", { name: "Theming", exact: true })
+    ).toHaveCSS("text-decoration-line", "underline")
+    await expect(
+      page
+        .locator(".ardo-content p")
+        .filter({ hasText: "In MDX, use the components without imports" })
+    ).toHaveCSS("font-size", "16px")
+  })
+}

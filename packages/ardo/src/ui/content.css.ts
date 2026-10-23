@@ -3,7 +3,8 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { vars } from "./theme/contract.css"
 
 export const ardoContent = style({})
-const c = `.${ardoContent}`
+// Prose defaults must yield to components embedded in Markdown and MDX.
+const c = `:where(.${ardoContent})`
 
 globalStyle(`${c} h1, ${c} h2, ${c} h3, ${c} h4, ${c} h5, ${c} h6`, {
   fontFamily: vars.font.familyHeading,

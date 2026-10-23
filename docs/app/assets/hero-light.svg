@@ -1,5 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="240" height="144" viewBox="0 0 240 144">
-  <rect x="1" y="1" width="238" height="142" rx="12" fill="#faf7fa" stroke="#a80062"/>
-  <path d="M24 28h48M24 42h30M24 56h36" stroke="#a80062" stroke-width="5" stroke-linecap="round"/>
-  <path d="M96 28h112M96 46h96M96 64h104M96 82h72M96 100h88" stroke="#302331" stroke-width="5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="224" viewBox="0 0 320 224">
+  <ellipse cx="160" cy="201" rx="116" ry="10" fill="#25331e" opacity=".08"/>
+  <path d="M32 48q64-28 128 0 64-28 128 0v141q-64-25-128 3-64-28-128-3Z" fill="#597442"/>
+  <path d="M40 36q62-24 120 4v140q-58-28-120-4Z" fill="#fffef6" stroke="#ced4bc"/>
+  <path d="M160 40q58-28 120-4v140q-62-24-120 4Z" fill="#fffef6" stroke="#ced4bc"/>
+  <path d="M160 42v137" stroke="#ced4bc" stroke-width="2"/>
+  <text x="59" y="81" fill="#25331e" font-family="system-ui,sans-serif" font-size="29" font-weight="750" letter-spacing="-1">Start</text>
+  <text x="59" y="114" fill="#25331e" font-family="system-ui,sans-serif" font-size="29" font-weight="750" letter-spacing="-1">here.</text>
+  <path d="M60 135h65M60 146h49" stroke="#d8dfca" stroke-width="4" stroke-linecap="round"/>
+  <path d="m194 68-13 12 13 12m52-24 13 12-13 12m-23-29-10 34" fill="none" stroke="#597442" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M182 120h74M182 132h58M182 144h67" stroke="#d8dfca" stroke-width="4" stroke-linecap="round"/>
+  <path d="M244 26q9 1 18 4v44l-9-7-9 3Z" fill="#b75d3d"/>
 </svg>
