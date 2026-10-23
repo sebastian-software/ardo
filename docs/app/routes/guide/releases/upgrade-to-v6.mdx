@@ -13,7 +13,7 @@ Most of the migration removes files rather than rewriting them. Your routes in `
 
 ## How the build works now
 
-- `ardo build` runs Vite's builder API in-process. It builds the client and the server bundle, prerenders every route to `build/client/<base path>/<route>/index.html`, writes `404.html`, and checks every internal link and anchor in the finished HTML.
+- `ardo build` runs Vite's builder API in-process. It builds the client and the server bundle, prerenders every route to `build/client/<route>/index.html`, inside a version folder such as `build/client/v6/` when `versioning` is set, writes `404.html`, and checks every internal link and anchor in the finished HTML.
 - `ardo dev` runs a Vite dev server with Ardo's server-rendering middleware. It serves the same document the build would write.
 - `ardo preview` serves the built output like a static host: `/guide` serves `guide/index.html`, and unknown paths get the nearest `404.html`.
 
@@ -37,11 +37,11 @@ Customized entry files have no direct replacement. Move provider setup into the 
 
 ## Update content icons
 
-`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/component-playground#icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
+`ardo/icons` now exports a selected set of Streamline Core Line components instead of forwarding an entire icon library. The [icon catalog](/guide/components#icons) lists all 50 Core exports. Brand exports such as `Github` stay available.
 
 All 50 Core icons are registered automatically. Remove their imports and `registerIcons()` calls from `app/root.tsx`; keep registration calls for additional custom icons. Use `Code` where an older example used `Code2`, including `<Icon name="Code" />` and `<Card icon="Code">` in MDX.
 
-The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/component-playground#icons) for all included motifs and their usage terms.
+The components support `size`, `className`, and SVG attributes. Remove the previous icon-library dependency if nothing else uses it. For other motifs, install your preferred icon library explicitly and register its React components. See the [icon catalog](/guide/components#icons) for all included motifs and their usage terms.
 
 ## Update `app/root.tsx`
 
@@ -49,7 +49,7 @@ The default export stays the root component. `<ArdoRoot>` now reads the site con
 
 - `meta`: typed as `ArdoMetaFunction` from `ardo/runtime`. It takes no arguments and returns the same descriptor objects as before, such as `{ title: "My Docs" }`. Drop it when it only set the site title: pages without a `title` get the title from `ardo.config.ts`.
 - `Layout`: the HTML shell. It now renders on the server only. Ardo uses `ArdoRootLayout` from `ardo/ui` when you omit it, so most projects delete their `Layout` export.
-- `ErrorBoundary`: replaces the root on 404 and error pages. Ardo uses `ArdoErrorBoundary` when you omit it.
+- `ErrorBoundary`: renders inside the root for a missing page and replaces the root for a render error. Ardo uses `ArdoErrorBoundary` when you omit it.
 
 Before:
 
@@ -89,7 +89,7 @@ export default function Root() {
 
 Keep `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children when they carry props or navigation; without children, `ArdoRoot` renders the same three parts with their defaults.
 
-Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/site-ui#layout-the-html-shell).
+Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/layout-and-navigation#layout-the-html-shell).
 
 Route modules keep their `meta` and `handle` exports, for example `export const handle = { layout: "bare" }`.
 
@@ -127,7 +127,7 @@ Import runtime values from `ardo/runtime` or `ardo/ui`. Do not import them from 
 | `githubPages` option, `detectGitHubBasename()`  | Removed. Set `base: "/repo/"` for a GitHub Pages project site. |
 | `ardoRoutesPlugin`                              | Removed. The `ardo()` plugin generates the route table.        |
 | `defineConfig`, `loadConfig` from `ardo`        | Removed. Use `defineArdoConfig` from `ardo/config`.            |
-| `ardo/press.css`                                | Removed. Import `ardo/ui/styles.css`.                          |
+| `ardo/press.css`                                | Removed. Ardo loads its stylesheet itself.                     |
 
 All of these, except `ArdoMetaFunction` and `ArdoMetaDescriptor`, are values exported from `ardo/runtime`. `ArdoLink` and `ArdoActiveLink` are also exported from `ardo/ui`. UI props that took React Router's `To` type now take a `string`.
 
@@ -207,6 +207,7 @@ Declare the module's type in a `.d.ts` file so TypeScript accepts the import. Th
 
 ## Behavior changes
 
+- **Frontmatter `layout` is `bare` or `default`.** `doc`, `home`, and `page` never changed the rendering and now report an invalid-value warning.
 - **Every page has a title.** Pages whose module and root set no `title` meta get the site title from `ardo.config.ts`.
 - **No GitHub remote detection.** Ardo 5 used the repository name from a GitHub remote as the base path unless you set `githubPages: false`. Ardo 6 removes `githubPages` and `detectGitHubBasename`. Set `base` for a subpath; it applies in development and in the build alike.
 - **Full page navigations.** Every link is a plain `<a>`, and each click loads a new prerendered document. Client state, such as an open search dialog, does not survive navigation.

@@ -12,7 +12,7 @@ Hand this sentence to your coding agent, in a fresh repository or one you alread
 
 <SetupPrompt>Set up Ardo in this repository and follow the official instructions.</SetupPrompt>
 
-Without an agent, follow the [manual installation](#manual-installation) below. Ardo 6 has no `create-ardo` starter.
+Without an agent, follow the [manual installation](#manual-installation) below.
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ my-docs/
 
 ## Manual Installation
 
-For setup without an agent, follow these steps and the matching [Basic example](/guide/agent-instructions#the-basic-example). In an existing workspace, merge the required configuration into your application rather than creating a replacement shell. Ardo's CLI supplies the build integration; React handles UI configuration.
+These steps create a new docs project. In an existing repository, put it in its own package or directory: Ardo builds the docs as their own static site and shares no router or entry files with your application.
 
 ### 1. Create a new project
 
@@ -59,6 +59,8 @@ pnpm init
 pnpm add ardo@6
 pnpm add -D typescript@6
 ```
+
+Any TypeScript 6 or newer typechecks an Ardo site. The optional [API documentation](/guide/api-documentation#installation) needs a pinned TypeScript 7.1 nightly; switch to it when you add `api`.
 
 ### 3. Add package scripts
 
@@ -138,7 +140,7 @@ export default function Root() {
 }
 ```
 
-[Layout & Navigation](/guide/site-ui) covers sidebar sections, the footer, and the `Layout` export for a custom HTML shell. `root.tsx` can also export `ErrorBoundary`. Ardo renders it inside the root for a missing page and uses it in place of the root for a render error. Ardo uses `ArdoErrorBoundary` when you leave it out.
+[Layout & Navigation](/guide/layout-and-navigation) covers sidebar sections, the footer, and the optional `Layout` and `ErrorBoundary` exports of `root.tsx`.
 
 **`tsconfig.json`**:
 
@@ -151,19 +153,7 @@ export default function Root() {
 
 The preset sets `jsx`, `jsxImportSource: "ardo"`, and Ardo's type declarations, so React, MDX, and `virtual:` imports typecheck without further setup.
 
-Import React hooks and types from `ardo/react`. Import Ardo's runtime APIs, such as
-`ArdoLink`, `useArdoPath`, and `ArdoMetaFunction`, from `ardo/runtime`, and components from
-`ardo/ui`. Do not import runtime values from the package root `ardo` in browser code: that
-entry also contains Node-only build code.
-
-These public entry points provide types without a separate React dependency. Ardo also
-resolves bare React imports to its own runtime during development and builds, including
-imports in installed component libraries. Components and the renderer therefore use the
-same React installation even if an ancestor package has another version. Other application
-dependencies must still be declared and installed in the documentation package.
-
-For portals and other React DOM APIs, use `ardo/react-dom`. Tailwind and other Vite plugins
-are optional; install them in the documentation package when you use them.
+Import components from `ardo/ui`, runtime APIs such as `ArdoLink` and `useArdoPath` from `ardo/runtime`, and React hooks from `ardo/react`. Ardo brings its own React, so the docs package needs no React dependency of its own.
 
 ### 6. Create your first pages
 
@@ -202,8 +192,8 @@ Welcome to your documentation site!
 Run `pnpm dev` and open `http://localhost:5173`. You should see your home page; choose **Get started** to open the guide.
 
 <Tip>
-  The tested Basic example contains the complete root component and configuration. Use the
-  version-matched reference and Agent Instructions when adapting this setup to your repository.
+  The [Basic example](/guide/agent-instructions#the-basic-example) is this setup plus a markdown
+  guide and a small React component, tested on every change.
 </Tip>
 
 ## Development
@@ -234,8 +224,8 @@ pnpm preview
 
 Your site is running. Now make it yours:
 
-- Add pages, sidebar sections, a logo, and header links with [Layout & Navigation](/guide/site-ui#common-tasks)
-- Write richer content with [Markdown & MDX](/guide/markdown) and the ready-made [Components](/guide/component-playground)
-- Change colors and styles with [Theming](/guide/custom-theme), including optional [Tailwind CSS](/guide/custom-theme#tailwind-css)
+- Add pages, sidebar sections, a logo, and header links with [Layout & Navigation](/guide/layout-and-navigation#common-tasks)
+- Write richer content with [Markdown & MDX](/guide/markdown) and the ready-made [Components](/guide/components)
+- Change colors and styles with [Theming](/guide/theming), including optional [Tailwind CSS](/guide/theming#tailwind-css)
 - [Deploy your site](/guide/deployment) to GitHub Pages, Netlify, Vercel, or any static host
 - Generate reference pages with [API Documentation](/guide/api-documentation)

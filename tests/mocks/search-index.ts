@@ -7,10 +7,10 @@ export default [
     section: "Guide",
   },
   {
-    id: "component-playground",
+    id: "components",
     title: "Component Playground",
     content: "Explore and review Ardo UI components in the component gallery.",
-    path: "/guide/component-playground",
+    path: "/guide/components",
     section: "Guide",
   },
 ]

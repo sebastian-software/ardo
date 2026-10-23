@@ -40,7 +40,9 @@ The static site is written to `build/client/` inside the example.
    to edit the site and `pnpm preview` to inspect its production output.
 
 Use your project's own lockfile. The example's Ardo dependency manages React,
-React DOM, and Vite; TypeScript is only a development tool.
+React DOM, and Vite; TypeScript is only a development tool. Any TypeScript 6 or
+newer works. The example pins the TypeScript 7.1 nightly that the optional API
+documentation needs, so adding `api` later needs no compiler change.
 
 ## Files to edit
 

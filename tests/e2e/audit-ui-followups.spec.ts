@@ -83,7 +83,7 @@ test("a denied shared code copy offers selected exact source for manual copying"
     })
   })
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/guide/component-playground/")
+  await page.goto("/v6/guide/components/")
   const code = page.locator("#gallery-code")
   await code.getByRole("button", { name: "Copy code", exact: true }).click()
   await expect(code.getByRole("status")).toHaveText(

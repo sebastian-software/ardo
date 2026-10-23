@@ -2,6 +2,8 @@
 title: Layout & Navigation
 description: Add pages and sidebar sections, change the logo, header, and footer, and compose the site chrome in root.tsx.
 order: 7
+redirectFrom:
+  - /v6/guide/site-ui
 ---
 
 # Layout & Navigation
@@ -524,6 +526,18 @@ export function Layout({ children }: { children: ReactNode }) {
 
 A custom shell does not include `ArdoRootLayout`'s theme bootstrap or favicons. Prefer wrapping
 `ArdoRootLayout` unless the site needs full control over the document.
+
+## Error Pages
+
+`root.tsx` can export `ErrorBoundary`. For a missing page, Ardo renders it inside the root, so the
+header and sidebar stay. For a render error, it replaces the root, so broken chrome cannot hide the
+error. Without the export, Ardo uses `ArdoErrorBoundary` from `ardo/ui`.
+
+```tsx
+import { ArdoErrorBoundary } from "ardo/ui"
+
+export const ErrorBoundary = ArdoErrorBoundary
+```
 
 ## RootLayout Theme Policy
 

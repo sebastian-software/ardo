@@ -50,7 +50,7 @@ export function Components() {
           around them.
         </p>
         <p className={styles.moreLink}>
-          <ArdoLink to="/guide/component-playground">See every component →</ArdoLink>
+          <ArdoLink to="/guide/components">See every component →</ArdoLink>
         </p>
       </div>
     </section>

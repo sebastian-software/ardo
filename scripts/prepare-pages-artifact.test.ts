@@ -72,8 +72,8 @@ describe("GitHub Pages artifact", () => {
     prepare()
 
     const redirect = await readFile(path.join(root, "pages/storybook/index.html"), "utf8")
-    expect(redirect).toContain('content="0; url=/next/guide/component-playground/"')
-    expect(redirect).toContain('href="/next/guide/component-playground/"')
+    expect(redirect).toContain('content="0; url=/next/guide/components/"')
+    expect(redirect).toContain('href="/next/guide/components/"')
     expect(await readdir(path.join(root, "pages/storybook"))).toEqual(["index.html"])
   })
 

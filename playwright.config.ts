@@ -17,8 +17,8 @@ if (usePrebuiltDocs) {
     missingRoutes.push("v6/guide/markdown/index.html")
   }
 
-  if (!existsSync(`${docsClientDir}/v6/guide/component-playground/index.html`)) {
-    missingRoutes.push("v6/guide/component-playground/index.html")
+  if (!existsSync(`${docsClientDir}/v6/guide/components/index.html`)) {
+    missingRoutes.push("v6/guide/components/index.html")
   }
 
   if (missingRoutes.length > 0) {

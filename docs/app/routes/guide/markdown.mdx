@@ -31,10 +31,11 @@ Use those characters in page titles and content instead.
 
 ### Emphasis
 
+<!-- prettier-ignore -->
 ```markdown
-_italic_ or _italic_
-**bold** or **bold**
-**_bold and italic_**
+*italic* or _italic_
+**bold** or __bold__
+***bold and italic***
 ~~strikethrough~~
 ```
 
@@ -136,6 +137,7 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   api: {
     entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.json",
     title: "API Reference",
   },
 })
@@ -214,18 +216,18 @@ Renders as:
 > [!CAUTION]
 > Negative potential consequences of an action.
 
-For a custom title, use the callout components such as `<Tip title="Pro Tip">` described in [Components](/guide/component-playground#callouts).
+For a custom title, use the callout components such as `<Tip title="Pro Tip">` described in [Components](/guide/components#callouts).
 
 ## Components
 
-Ardo's components work in MDX without imports: callouts, badges, cards, tabs, accordions, steps, code blocks, and icons. [Components](/guide/component-playground) shows each one live, with its MDX and its props.
+Ardo's components work in MDX without imports: callouts, badges, cards, tabs, accordions, steps, code blocks, and icons. [Components](/guide/components) shows each one live, with its MDX and its props.
 
 ### Your Own Components
 
-You can use React components directly in your markdown:
+Import React components into MDX and use them like HTML. Keep them outside `app/routes/`, for example in `app/components/`, because every `.tsx` file in the routes folder becomes a page:
 
-```markdown
-import { MyComponent } from './components/MyComponent'
+```mdx title="app/routes/guide/my-page.mdx"
+import { MyComponent } from "../../components/MyComponent"
 
 # My Page
 
@@ -302,9 +304,7 @@ Add metadata to your pages using YAML frontmatter:
 ---
 title: Page Title
 description: Page description for SEO
-layout: doc
-sidebar: true
-outline: [2, 3]
+order: 2
 ---
 ```
 

@@ -2,8 +2,7 @@
 
 [Basic](basic) is the single public setup reference: a static documentation site
 with Markdown/MDX, search, and a small interactive React component. Add API
-reference, collections, or deployment settings through the recipes in
-[Basic Example](../docs/app/routes/guide/reference-projects.mdx) and
+reference, collections, or deployment settings as described in
 [Agent Instructions](../docs/app/routes/guide/agent-instructions.mdx).
 
 Read the example from the exact `ardo-v<version>` Git tag matching your installed
