@@ -165,18 +165,31 @@ describe("Basic and optional API configuration as packed-package consumers", () 
       path.join(consumer, "openapi.yaml"),
       "openapi: 3.1.0\ninfo:\n  title: Pet API\n  version: 1.0.0\npaths: {}\n"
     )
-    for (const recipe of ["theming", "api-documentation"]) {
-      const source = fs.readFileSync(
-        path.join(repositoryRoot, `docs/app/routes/guide/${recipe}.mdx`),
-        "utf8"
-      )
-      fs.writeFileSync(
-        path.join(consumer, "ardo.config.ts"),
-        manualFile(source, "ardo.config.ts", "ts")
-      )
-      run(consumer, ["exec", "tsc", "--noEmit"])
-      expect(run(consumer, ["build"])).not.toContain("broken internal link")
-    }
+    const guidePage = (name: string) =>
+      fs.readFileSync(path.join(repositoryRoot, `docs/app/routes/guide/${name}.mdx`), "utf8")
+    // The theming recipe lives in root.tsx: theme, logo, and favicon from imported files.
+    fs.writeFileSync(
+      path.join(consumer, "app/root.tsx"),
+      manualFile(guidePage("theming"), "app/root.tsx", "tsx")
+    )
+    run(consumer, ["exec", "tsc", "--noEmit"])
+    expect(run(consumer, ["build"])).not.toContain("broken internal link")
+    const themed = fs.readFileSync(path.join(client, "index.html"), "utf8")
+    expect(themed).toContain(
+      '<style data-ardo-theme="true">:root{--ardo-hue-brand:240;--ardo-hue-accent:170;--ardo-hue-neutral:255;'
+    )
+    const logoUrl = /<img src="([^"]+)" alt="[^"]*"/u.exec(themed)?.[1]
+    expect(logoUrl).toMatch(/^(data:image\/svg\+xml|\/assets\/logo-)/u)
+    // The shell links the page's icon in <head> instead of the generated owl.
+    expect(themed).toContain(`<link rel="icon" href="${logoUrl}"/>`)
+    expect(themed).not.toContain('href="/favicon.ico"')
+
+    fs.writeFileSync(
+      path.join(consumer, "ardo.config.ts"),
+      manualFile(guidePage("api-documentation"), "ardo.config.ts", "ts")
+    )
+    run(consumer, ["exec", "tsc", "--noEmit"])
+    expect(run(consumer, ["build"])).not.toContain("broken internal link")
     expect(fs.existsSync(path.join(client, "api/index.html"))).toBe(true)
     assertDocRecipes(consumer, run)
   }, 240_000)

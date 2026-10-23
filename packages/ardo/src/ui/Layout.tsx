@@ -15,8 +15,13 @@ export type ArdoRootLayoutProps = {
   children: ReactNode
   /** HTML class for inherited site tokens, including UI portaled outside the app root. */
   className?: string
-  /** Custom favicon URL. Its response supplies the MIME type; defaults to /icon.svg. */
-  favicon?: string
+  /**
+   * Favicon URL, usually an imported asset. Defaults to the `icon` passed to
+   * `ArdoRoot`, then to the generated owl icons. Its response supplies the MIME type.
+   */
+  icon?: string
+  /** 180×180 PNG for iOS home screens. Defaults to `ArdoRoot`'s, then to the generated one. */
+  appleTouchIcon?: string
   /**
    * Base URL for generated icon files.
    * Set to `false` to render only the inline fallback favicon link.
@@ -33,7 +38,7 @@ export type ArdoRootLayoutProps = {
    * - `"system"` always follows `prefers-color-scheme` and clears stale stored
    *   preferences.
    */
-  theme?: ArdoThemePreference
+  colorScheme?: ArdoThemePreference
 }
 
 export type ArdoScrollMode = "document" | "viewport"
@@ -42,25 +47,26 @@ export type ArdoScrollMode = "document" | "viewport"
  * Default HTML shell for Ardo sites. Ardo renders it on the server only; the
  * page inside it hydrates. Export a `Layout` from root.tsx to customize it.
  *
- * @example With favicon
+ * @example With a favicon
  * ```tsx
  * // app/root.tsx
  * import type { ReactNode } from "ardo/react"
  * import { ArdoRootLayout } from "ardo/ui"
- * import logo from "./assets/logo.svg"
+ * import icon from "./assets/icon.svg"
  *
  * export function Layout({ children }: { children: ReactNode }) {
- *   return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+ *   return <ArdoRootLayout icon={icon}>{children}</ArdoRootLayout>
  * }
  * ```
  */
 export function ArdoRootLayout({
   children,
   className,
-  favicon,
+  icon: iconProp,
+  appleTouchIcon: appleTouchIconProp,
   iconBasePath,
   lang,
-  theme = "auto",
+  colorScheme = "auto",
 }: ArdoRootLayoutProps) {
   // Use optional context (RootLayout renders before ArdoProvider is available)
   const context = use(ArdoContext)
@@ -69,30 +75,30 @@ export function ArdoRootLayout({
   const resolvedIconBase = iconBasePath ?? document?.iconBasePath ?? "/"
   const iconBaseUrl =
     resolvedIconBase === false ? undefined : normalizeIconBasePath(resolvedIconBase)
+  const icon = iconProp ?? document?.icon
+  const appleTouchIcon =
+    appleTouchIconProp ??
+    document?.appleTouchIcon ??
+    (iconBaseUrl == null ? undefined : `${iconBaseUrl}apple-touch-icon.png`)
 
   return (
     <html lang={resolvedLang} className={className} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script dangerouslySetInnerHTML={{ __html: getArdoThemeBootstrapScript(theme) }} />
-        {iconBaseUrl == null ? (
-          <link
-            rel="icon"
-            type={favicon === undefined ? "image/svg+xml" : undefined}
-            href={favicon ?? ARDO_FAVICON_DATA_URL}
-          />
+        <script dangerouslySetInnerHTML={{ __html: getArdoThemeBootstrapScript(colorScheme) }} />
+        {icon !== undefined ? (
+          // A site icon replaces the owl; the generated favicon.ico stays for old clients.
+          <link rel="icon" href={icon} />
+        ) : iconBaseUrl == null ? (
+          <link rel="icon" type="image/svg+xml" href={ARDO_FAVICON_DATA_URL} />
         ) : (
           <>
             <link rel="icon" href={`${iconBaseUrl}favicon.ico`} sizes="32x32" />
-            <link
-              rel="icon"
-              href={favicon ?? `${iconBaseUrl}icon.svg`}
-              type={favicon === undefined ? "image/svg+xml" : undefined}
-            />
-            <link rel="apple-touch-icon" href={`${iconBaseUrl}apple-touch-icon.png`} />
+            <link rel="icon" href={`${iconBaseUrl}icon.svg`} type="image/svg+xml" />
           </>
         )}
+        {appleTouchIcon !== undefined && <link rel="apple-touch-icon" href={appleTouchIcon} />}
         <ArdoHead />
       </head>
       <body suppressHydrationWarning>

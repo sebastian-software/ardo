@@ -10,7 +10,6 @@ import {
 } from "react"
 import type { ArdoConfig } from "../config/types"
 
-import { createBrandThemeCss } from "../config/brand"
 import { ArdoMDXComponentsContext, type ArdoMDXComponents } from "../mdx/components-context"
 import {
   ArdoConfigContext,
@@ -18,15 +17,19 @@ import {
   type ArdoSiteConfig,
   ArdoSiteConfigProvider,
 } from "../runtime/hooks"
+import { ArdoDocumentIconsContext } from "../runtime/document-context"
 import { ArdoOutlet } from "../runtime/page"
 import { useArdoPage, useArdoPath } from "../runtime/page-context"
 import { ArdoFooter } from "./Footer"
 import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoHeader, type ArdoHeaderProps } from "./Header"
+import type { ArdoLogo } from "./HeaderLogo"
 import { type ArdoLabelsInput, resolveArdoLabels } from "./labels"
 import { ArdoLayout, type ArdoScrollMode } from "./Layout"
 import * as layoutStyles from "./Layout.css"
 import { ArdoSidebar, isArdoSidebarElement, resolveArdoSidebarItems } from "./Sidebar"
+import { ArdoTheme } from "./Theme"
+import type { ArdoThemeProps } from "./theme/theme-css"
 
 // =============================================================================
 // ArdoRoot Component
@@ -40,6 +43,20 @@ export type ArdoRootProps = {
   config?: ArdoConfig
   /** Add to or override the default Markdown component set, including its wrapper. */
   components?: ArdoMDXComponents
+  /** Hues, saturation, callout hues, fonts, and design tokens; see {@link ArdoTheme}. */
+  theme?: ArdoThemeProps
+  /**
+   * Header and mobile menu logo. Import the file, `import logo from "./assets/logo.svg"`,
+   * so Vite fingerprints it; `{ light, dark }` switches with the color scheme.
+   */
+  logo?: ArdoLogo
+  /**
+   * Favicon, usually an imported SVG or PNG. Without it, Ardo links its
+   * generated owl icons.
+   */
+  icon?: string
+  /** 180×180 PNG for iOS home screens. Defaults to the generated owl icon. */
+  appleTouchIcon?: string
   /** Edit link configuration (applied site-wide via ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
@@ -116,12 +133,6 @@ function useRouteChrome(): boolean | undefined {
   return readChromeHandle(useArdoPage().handle)
 }
 
-function ArdoBrandThemeStyle({ brand }: { brand: ArdoConfig["brand"] }) {
-  const css = createBrandThemeCss(brand)
-  if (css === undefined) return null
-  return <style data-ardo-brand dangerouslySetInnerHTML={{ __html: css }} />
-}
-
 type RootChrome = {
   content: ReactNode
   footer: ReactNode
@@ -176,12 +187,8 @@ function isArdoFooterElement(child: ReactNode): boolean {
 }
 
 /** A `header` prop wins over an `ArdoHeader` child; `false` leaves the header out. */
-function resolveHeaderSlot(
-  config: ArdoConfig,
-  header: false | ReactNode,
-  mobileMenuContent: ReactNode
-): ReactNode {
-  return header === false ? null : resolveRootHeader(config, header, mobileMenuContent)
+function resolveHeaderSlot(header: false | ReactNode, mobileMenuContent: ReactNode): ReactNode {
+  return header === false ? null : resolveRootHeader(header, mobileMenuContent)
 }
 
 /** A `footer` prop wins over an `ArdoFooter` child; without either, Ardo renders its default. */
@@ -203,15 +210,11 @@ function resolveRootConfig(config: ArdoConfig | null | undefined): ArdoConfig {
   )
 }
 
-function resolveRootHeader(
-  config: ArdoConfig,
-  header: ReactNode,
-  mobileMenuContent: ReactNode
-): ReactNode {
+function resolveRootHeader(header: ReactNode, mobileMenuContent: ReactNode): ReactNode {
   if (header !== undefined) {
-    return enhanceHeader(header, config, mobileMenuContent)
+    return enhanceHeader(header, mobileMenuContent)
   }
-  return <ArdoHeader logo={config.brand?.logo} mobileMenuContent={mobileMenuContent} />
+  return <ArdoHeader mobileMenuContent={mobileMenuContent} />
 }
 
 /**
@@ -251,6 +254,10 @@ function resolveRootHeader(
 export function ArdoRoot({
   config: configProp,
   components,
+  theme,
+  logo,
+  icon,
+  appleTouchIcon,
   editLink,
   lastUpdated,
   labels,
@@ -263,6 +270,8 @@ export function ArdoRoot({
   children,
 }: ArdoRootProps) {
   const config = resolveRootConfig(configProp ?? use(ArdoConfigContext))
+  // Server only: the HTML shell renders after the page and links these icons.
+  use(ArdoDocumentIconsContext)?.({ icon, appleTouchIcon })
   const pathname = useArdoPath()
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
@@ -280,18 +289,15 @@ export function ArdoRoot({
   // Search lives in the header now. The sidebar no longer carries it.
   const resolvedSidebar = isBareLayout ? undefined : sidebar
   const resolvedHeader = showChrome
-    ? resolveHeaderSlot(config, header ?? chrome.header, resolvedSidebar)
+    ? resolveHeaderSlot(header ?? chrome.header, resolvedSidebar)
     : null
   const resolvedFooter = showChrome ? resolveFooterSlot(footer ?? chrome.footer) : null
 
-  const siteConfig = useMemo<ArdoSiteConfig>(
-    () => ({ editLink, labels: resolveArdoLabels(labels), lastUpdated, tocLabel }),
-    [editLink, labels, lastUpdated, tocLabel]
-  )
+  const siteConfig = useRootSiteConfig({ editLink, labels, lastUpdated, logo, tocLabel })
 
   const content = (
     <>
-      <ArdoBrandThemeStyle brand={config.brand} />
+      {theme != null && <ArdoTheme {...theme} />}
       <ArdoProvider config={config} sidebar={sidebarItems}>
         <ArdoLayout
           className={resolveLayoutClassName(className, isBareLayout)}
@@ -310,16 +316,37 @@ export function ArdoRoot({
     </>
   )
 
+  return siteConfig === undefined ? (
+    content
+  ) : (
+    <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
+  )
+}
+
+type RootSiteConfigInput = Pick<
+  ArdoRootProps,
+  "editLink" | "labels" | "lastUpdated" | "logo" | "tocLabel"
+>
+
+/** The site config `ArdoRoot` provides, or `undefined` when none of its props set one. */
+function useRootSiteConfig({
+  editLink,
+  labels,
+  lastUpdated,
+  logo,
+  tocLabel,
+}: RootSiteConfigInput): ArdoSiteConfig | undefined {
+  const siteConfig = useMemo<ArdoSiteConfig>(
+    () => ({ editLink, labels: resolveArdoLabels(labels), lastUpdated, logo, tocLabel }),
+    [editLink, labels, lastUpdated, logo, tocLabel]
+  )
   const hasSiteConfig =
     editLink !== undefined ||
     labels !== undefined ||
     lastUpdated !== undefined ||
+    logo !== undefined ||
     (tocLabel ?? "") !== ""
-  return hasSiteConfig ? (
-    <ArdoSiteConfigProvider value={siteConfig}>{content}</ArdoSiteConfigProvider>
-  ) : (
-    content
-  )
+  return hasSiteConfig ? siteConfig : undefined
 }
 
 /**
@@ -340,11 +367,7 @@ function withGeneratedSections(
   )
 }
 
-function enhanceHeader(
-  header: ReactNode,
-  config: ArdoConfig,
-  mobileMenuContent: ReactNode
-): ReactNode {
+function enhanceHeader(header: ReactNode, mobileMenuContent: ReactNode): ReactNode {
   if (!isValidElement<ArdoHeaderProps>(header) || header.type !== ArdoHeader) {
     return header
   }
@@ -354,8 +377,5 @@ function enhanceHeader(
     return header
   }
 
-  return cloneElement(header, {
-    logo: header.props.logo ?? config.brand?.logo,
-    mobileMenuContent,
-  })
+  return cloneElement(header, { mobileMenuContent })
 }

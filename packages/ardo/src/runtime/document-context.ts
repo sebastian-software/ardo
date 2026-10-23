@@ -16,6 +16,21 @@ export type ArdoDocument = {
   lang?: string
   /** Deployment root containing generated icon files. */
   iconBasePath?: string
+} & ArdoDocumentIcons
+
+/** Icon URLs the page passed to `ArdoRoot`, usually imported assets. */
+export type ArdoDocumentIcons = {
+  icon?: string
+  appleTouchIcon?: string
 }
 
 export const ArdoDocumentContext = createContext<ArdoDocument | null>(null)
+
+/**
+ * The server renders the page before its HTML shell. `ArdoRoot` hands its
+ * icons to this collector while the page renders, so the shell can link them
+ * in `<head>`. In the browser there is no collector.
+ */
+export const ArdoDocumentIconsContext = createContext<((icons: ArdoDocumentIcons) => void) | null>(
+  null
+)

@@ -4,19 +4,22 @@
  * No more `calc(var(...))` chains — all values are resolved here.
  */
 
-import { createGlobalTheme } from "@vanilla-extract/css"
-
 import { vars } from "./contract.css"
 
 type HueValue = number | string
 type ChromaValue = number | string
-type PrimitiveToken = number | string
-type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends PrimitiveToken ? T[K] : DeepPartial<T[K]>
-}
 
 /** Hues the color recipes read: CSS variables at runtime, plain numbers in tests. */
-export type ColorHues = { brand: HueValue; accent: HueValue; neutral: HueValue }
+export type ColorHues = {
+  brand: HueValue
+  accent: HueValue
+  neutral: HueValue
+  tip: HueValue
+  warning: HueValue
+  danger: HueValue
+  info: HueValue
+  note: HueValue
+}
 /** Chroma multipliers the color recipes read: 1 keeps the designed saturation. */
 export type ColorChroma = { brand: ChromaValue; accent: ChromaValue; neutral: ChromaValue }
 
@@ -42,8 +45,6 @@ const fontFamily =
 const fontMono =
   'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace'
 
-const fontHeading = fontFamily
-
 const shared = {
   layout: {
     sidebarWidth: "20rem",
@@ -64,7 +65,8 @@ const shared = {
   font: {
     family: fontFamily,
     mono: fontMono,
-    familyHeading: fontHeading,
+    // Headings follow the body font unless a theme sets their own.
+    familyHeading: vars.font.family,
     size: "1rem",
     lineHeight: "1.65",
   },
@@ -101,26 +103,21 @@ const shared = {
 }
 
 function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varChroma) {
-  const { brand: primary, accent: secondary, neutral } = hues
+  const { brand: primary, accent: secondary, neutral, tip, warning, danger, info, note } = hues
   const b = (value: number) => scaleChroma(value, chroma.brand)
   const a = (value: number) => scaleChroma(value, chroma.accent)
   const n = (value: number) => scaleChroma(value, chroma.neutral)
   return {
     brand: oklch(0.48, b(0.185), primary),
-    brandLight: oklch(0.64, b(0.16), primary),
     brandDark: oklch(0.42, b(0.175), primary),
     brandSubtle: oklch(0.955, b(0.04), primary),
     brandGradient: `linear-gradient(135deg, ${oklch(0.48, b(0.19), primary)} 0%, ${oklch(0.52, b(0.16), hueOffset(primary, 18))} 100%)`,
     brandInk: oklch(0.99, b(0.01), primary),
     ring: oklch(0.48, b(0.185), primary, 0.38),
     accent: oklch(0.5, a(0.075), secondary),
-    accentLight: oklch(0.62, a(0.07), secondary),
-    accentDark: oklch(0.38, a(0.085), secondary),
-    accentSubtle: oklch(0.963, a(0.012), secondary),
     bg: oklch(0.992, n(0.0015), neutral),
     bgSoft: oklch(0.975, n(0.003), neutral),
     bgMute: oklch(0.955, n(0.004), neutral),
-    bgAlt: oklch(0.935, n(0.005), neutral),
     text: oklch(0.17, n(0.008), neutral),
     textLight: oklch(0.4, n(0.007), neutral),
     textLighter: oklch(0.47, n(0.006), neutral),
@@ -129,7 +126,6 @@ function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varC
     divider: oklch(0.89, n(0.004), neutral),
     sidebarBg: oklch(0.965, n(0.004), neutral),
     sidebarRailBg: oklch(0.94, n(0.005), neutral),
-    sidebarBorder: oklch(0.885, n(0.005), neutral),
     // Code surfaces take the accent hue but stay as quiet as the chrome, so a
     // boosted accent does not tint every code block.
     codeBg: oklch(0.965, n(0.012), secondary),
@@ -143,21 +139,22 @@ function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varC
     headerBg: oklch(0.992, n(0.0015), neutral, 0.82),
     heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.92, b(0.06), primary, 0.6)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.93, a(0.035), secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.978, n(0.003), neutral)} 0%, ${oklch(0.992, n(0.0015), neutral)} 100%)`,
     heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.55, b(0.06), primary, 0.18)} 1px, transparent 1.5px)`,
-    tip: oklch(0.5, 0.15, 155),
-    tipBg: oklch(0.97, 0.025, 155),
-    tipBorder: oklch(0.85, 0.08, 155),
-    warning: oklch(0.55, 0.16, 45),
-    warningBg: oklch(0.98, 0.03, 45),
-    warningBorder: oklch(0.88, 0.1, 45),
-    danger: oklch(0.5, 0.18, 25),
-    dangerBg: oklch(0.97, 0.02, 25),
-    dangerBorder: oklch(0.85, 0.1, 25),
-    info: oklch(0.5, 0.14, 220),
-    infoBg: oklch(0.97, 0.02, 220),
-    infoBorder: oklch(0.85, 0.08, 220),
-    note: oklch(0.5, 0.14, 270),
-    noteBg: oklch(0.97, 0.02, 270),
-    noteBorder: oklch(0.88, 0.08, 270),
+    tip: oklch(0.5, 0.15, tip),
+    tipBg: oklch(0.97, 0.025, tip),
+    tipBorder: oklch(0.85, 0.08, tip),
+    // 0.51 keeps warning text at 4.5:1 for every hue preset, not just orange.
+    warning: oklch(0.51, 0.16, warning),
+    warningBg: oklch(0.98, 0.03, warning),
+    warningBorder: oklch(0.88, 0.1, warning),
+    danger: oklch(0.5, 0.18, danger),
+    dangerBg: oklch(0.97, 0.02, danger),
+    dangerBorder: oklch(0.85, 0.1, danger),
+    info: oklch(0.5, 0.14, info),
+    infoBg: oklch(0.97, 0.02, info),
+    infoBorder: oklch(0.85, 0.08, info),
+    note: oklch(0.5, 0.14, note),
+    noteBg: oklch(0.97, 0.02, note),
+    noteBorder: oklch(0.88, 0.08, note),
     badgeBlue: oklch(0.45, 0.12, 250),
     badgeBlueBg: oklch(0.97, 0.02, 250),
     badgeBlueBorder: oklch(0.88, 0.06, 250),
@@ -180,26 +177,21 @@ function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varC
 }
 
 function createDarkColors(hues: ColorHues = varHues, chroma: ColorChroma = varChroma) {
-  const { brand: primary, accent: secondary, neutral } = hues
+  const { brand: primary, accent: secondary, neutral, tip, warning, danger, info, note } = hues
   const b = (value: number) => scaleChroma(value, chroma.brand)
   const a = (value: number) => scaleChroma(value, chroma.accent)
   const n = (value: number) => scaleChroma(value, chroma.neutral)
   return {
     brand: oklch(0.72, b(0.17), primary),
-    brandLight: oklch(0.82, b(0.14), primary),
     brandDark: oklch(0.6, b(0.18), primary),
     brandSubtle: oklch(0.29, b(0.09), primary),
     brandGradient: `linear-gradient(135deg, ${oklch(0.72, b(0.17), primary)} 0%, ${oklch(0.79, b(0.13), hueOffset(primary, 18))} 100%)`,
     brandInk: oklch(0.16, b(0.055), primary),
     ring: oklch(0.72, b(0.17), primary, 0.5),
     accent: oklch(0.74, a(0.08), secondary),
-    accentLight: oklch(0.84, a(0.07), secondary),
-    accentDark: oklch(0.6, a(0.09), secondary),
-    accentSubtle: oklch(0.26, a(0.03), secondary),
     bg: oklch(0.155, n(0.008), neutral),
     bgSoft: oklch(0.195, n(0.009), neutral),
     bgMute: oklch(0.255, n(0.01), neutral),
-    bgAlt: oklch(0.33, n(0.01), neutral),
     text: oklch(0.94, n(0.004), neutral),
     textLight: oklch(0.72, n(0.007), neutral),
     textLighter: oklch(0.68, n(0.007), neutral),
@@ -208,7 +200,6 @@ function createDarkColors(hues: ColorHues = varHues, chroma: ColorChroma = varCh
     divider: oklch(0.29, n(0.01), neutral),
     sidebarBg: oklch(0.13, n(0.008), neutral),
     sidebarRailBg: oklch(0.105, n(0.008), neutral),
-    sidebarBorder: oklch(0.265, n(0.011), neutral),
     codeBg: oklch(0.21, n(0.016), secondary),
     codeBorder: oklch(0.33, n(0.024), secondary),
     codeShadow: "0 2px 6px oklch(0 0 0 / 0.14), 0 12px 28px -10px oklch(0 0 0 / 0.28)",
@@ -220,21 +211,22 @@ function createDarkColors(hues: ColorHues = varHues, chroma: ColorChroma = varCh
     headerBg: oklch(0.155, n(0.008), neutral, 0.8),
     heroWash: `radial-gradient(90rem 42rem at 50% -12rem, ${oklch(0.36, b(0.09), primary, 0.55)} 0%, transparent 62%), radial-gradient(64rem 36rem at 84% -8rem, ${oklch(0.31, a(0.055), secondary, 0.45)} 0%, transparent 58%), linear-gradient(180deg, ${oklch(0.175, n(0.01), neutral)} 0%, ${oklch(0.155, n(0.008), neutral)} 100%)`,
     heroGrid: `radial-gradient(circle at 1px 1px, ${oklch(0.78, b(0.08), primary, 0.16)} 1px, transparent 1.5px)`,
-    tip: oklch(0.78, 0.13, 155),
-    tipBg: oklch(0.2, 0.04, 155),
-    tipBorder: oklch(0.35, 0.1, 155),
-    warning: oklch(0.8, 0.12, 60),
-    warningBg: oklch(0.22, 0.05, 45),
-    warningBorder: oklch(0.4, 0.12, 45),
-    danger: oklch(0.76, 0.13, 25),
-    dangerBg: oklch(0.2, 0.04, 25),
-    dangerBorder: oklch(0.35, 0.1, 25),
-    info: oklch(0.78, 0.1, 220),
-    infoBg: oklch(0.2, 0.04, 220),
-    infoBorder: oklch(0.35, 0.08, 220),
-    note: oklch(0.78, 0.1, 270),
-    noteBg: oklch(0.2, 0.04, 270),
-    noteBorder: oklch(0.35, 0.08, 270),
+    tip: oklch(0.78, 0.13, tip),
+    tipBg: oklch(0.2, 0.04, tip),
+    tipBorder: oklch(0.35, 0.1, tip),
+    // Warning text leans 15° toward yellow on dark surfaces.
+    warning: oklch(0.8, 0.12, hueOffset(warning, 15)),
+    warningBg: oklch(0.22, 0.05, warning),
+    warningBorder: oklch(0.4, 0.12, warning),
+    danger: oklch(0.76, 0.13, danger),
+    dangerBg: oklch(0.2, 0.04, danger),
+    dangerBorder: oklch(0.35, 0.1, danger),
+    info: oklch(0.78, 0.1, info),
+    infoBg: oklch(0.2, 0.04, info),
+    infoBorder: oklch(0.35, 0.08, info),
+    note: oklch(0.78, 0.1, note),
+    noteBg: oklch(0.2, 0.04, note),
+    noteBorder: oklch(0.35, 0.08, note),
     badgeBlue: oklch(0.7, 0.12, 250),
     badgeBlueBg: oklch(0.22, 0.04, 250),
     badgeBlueBorder: oklch(0.35, 0.08, 250),
@@ -257,203 +249,56 @@ function createDarkColors(hues: ColorHues = varHues, chroma: ColorChroma = varCh
 }
 
 /**
- * Default offset between primary and secondary hue. With the default primary
- * 356 this lands at 230 (cool slate-blue) — the documented duo-tone. Any
- * custom primary picks up an approximately complementary secondary.
+ * Ardo's default hues: berry for the brand, its slate-blue complement for the
+ * accent, and one hue per callout type. Any other brand hue gets the accent
+ * {@link ACCENT_HUE_OFFSET} degrees away.
  */
-const DEFAULT_SECONDARY_OFFSET = 234
-const DEFAULT_PRIMARY_HUE = 356
+export const defaultHues = {
+  brand: 356,
+  accent: 230,
+  neutral: 356,
+  tip: 155,
+  warning: 45,
+  danger: 25,
+  info: 220,
+  note: 270,
+} as const
 
-function defaultSecondary(primary: number): number {
-  return (primary + DEFAULT_SECONDARY_OFFSET) % 360
-}
+/** Distance from the brand hue to the accent hue the theme derives from it. */
+export const ACCENT_HUE_OFFSET = 234
 
-export type ArdoBrandHues = {
-  /** Main brand hue used by primary accents and calls to action. */
-  primary: number
-  /** Accent hue used by secondary accents and code surfaces. Defaults from the primary hue. */
-  secondary?: number
-  /** Neutral chrome hue used by backgrounds, borders, text, header, and sidebar. Defaults to primary. */
-  neutral?: number
-}
+type ThemeColors = ReturnType<typeof createLightColors>
 
 /**
- * Chroma multipliers for the hue-derived colors. `1` keeps Ardo's designed
- * saturation, `0.4` gives a muted palette and `0` turns a hue into pure gray.
- * A single number applies to brand and accent; neutral keeps its own default.
+ * Token overrides a theme can set: any color, font, size, space, radius,
+ * layout, or transition token, as a CSS value.
  */
-export type ArdoThemeChroma =
-  | {
-      /** Multiplier for the brand colors. */
-      brand?: number
-      /** Multiplier for the accent colors and code surfaces. */
-      accent?: number
-      /** Multiplier for backgrounds, borders, text, header, and sidebar. */
-      neutral?: number
-    }
-  | number
-
-type ThemeBase = typeof shared
-type ThemeColors = ReturnType<typeof createLightColors>
-type ThemeChannelTokens = {
-  brand: string
-  accent: string
-  neutral: string
-}
-
 export type ArdoThemeTokens = {
-  hue: ThemeChannelTokens
-  chroma: ThemeChannelTokens
-  color: ThemeColors
-} & ThemeBase
-
-export type ArdoThemeOverrides = DeepPartial<ArdoThemeTokens>
-
-export type ArdoThemeOptions = {
-  /** Overrides applied only to the generated dark token set. */
-  dark?: ArdoThemeOverrides
-  /** Overrides applied only to the generated light token set. */
-  light?: ArdoThemeOverrides
-  /** Saturation of the hue-derived colors; see {@link ArdoThemeChroma}. */
-  chroma?: ArdoThemeChroma
-} & Omit<ArdoThemeOverrides, "chroma"> &
-  Partial<ArdoBrandHues>
-
-export function resolveChroma(chroma: ArdoThemeChroma | undefined): ThemeChannelTokens {
-  const values = typeof chroma === "number" ? { brand: chroma, accent: chroma } : (chroma ?? {})
-  for (const [key, value] of Object.entries(values)) {
-    if (!Number.isFinite(value) || value < 0) {
-      throw new TypeError(`chroma.${key} must be a finite number of 0 or more.`)
-    }
-  }
-  return {
-    brand: String(values.brand ?? 1),
-    accent: String(values.accent ?? 1),
-    neutral: String(values.neutral ?? 1),
-  }
+  [Group in Exclude<keyof typeof lightTokens, "chroma" | "hue">]?: Partial<
+    Record<keyof (typeof lightTokens)[Group], string>
+  >
 }
 
-function createBaseTheme(
-  { primary, secondary, neutral }: Required<ArdoBrandHues>,
-  chroma: ThemeChannelTokens
-) {
-  const hue = {
-    brand: String(primary),
-    accent: String(secondary),
-    neutral: String(neutral),
-  }
-
+function createTokens(colors: ThemeColors) {
   return {
-    light: {
-      hue,
-      chroma,
-      color: createLightColors(),
-      ...shared,
+    hue: {
+      brand: String(defaultHues.brand),
+      accent: String(defaultHues.accent),
+      neutral: String(defaultHues.neutral),
+      tip: String(defaultHues.tip),
+      warning: String(defaultHues.warning),
+      danger: String(defaultHues.danger),
+      info: String(defaultHues.info),
+      note: String(defaultHues.note),
     },
-    dark: {
-      hue,
-      chroma,
-      color: createDarkColors(),
-      ...shared,
-    },
+    chroma: { brand: "1", accent: "1", neutral: "1" },
+    color: colors,
+    ...shared,
   }
 }
 
-function resolveThemeHues(
-  primaryOrOptions: ArdoThemeOptions | number | undefined,
-  secondaryArg?: number
-): Required<ArdoBrandHues> {
-  const primary =
-    typeof primaryOrOptions === "number"
-      ? primaryOrOptions
-      : (primaryOrOptions?.primary ?? DEFAULT_PRIMARY_HUE)
-  const explicitSecondary =
-    typeof primaryOrOptions === "number" ? secondaryArg : primaryOrOptions?.secondary
-  const secondary = explicitSecondary ?? defaultSecondary(primary)
-  const neutral =
-    typeof primaryOrOptions === "number" ? primary : (primaryOrOptions?.neutral ?? primary)
-
-  return { neutral, primary, secondary }
-}
-
-function getSharedThemeOverrides(options: ArdoThemeOptions | undefined): ArdoThemeOverrides {
-  if (options == null) {
-    return {}
-  }
-
-  const {
-    chroma: _chroma,
-    dark: _dark,
-    light: _light,
-    neutral: _neutral,
-    primary: _primary,
-    secondary: _secondary,
-    ...overrides
-  } = options
-  return overrides
-}
-
-function mergeThemeTokens(base: ArdoThemeTokens, override: ArdoThemeOverrides): ArdoThemeTokens {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Merging over a complete token object preserves the full token shape.
-  return mergeRecords(base, override) as ArdoThemeTokens
-}
-
-function mergeRecords(
-  base: Record<string, unknown>,
-  override: Record<string, unknown>
-): Record<string, unknown> {
-  const merged: Record<string, unknown> = { ...base }
-
-  for (const key of Object.keys(override)) {
-    const value = override[key]
-    if (value === undefined) {
-      continue
-    }
-
-    const baseValue = base[key]
-    merged[key] =
-      isPlainObject(baseValue) && isPlainObject(value) ? mergeRecords(baseValue, value) : value
-  }
-
-  return merged
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-}
-
-export function createTheme(
-  primaryOrOptions?: ArdoThemeOptions | number,
-  secondaryArg?: number
-): { dark: ArdoThemeTokens; light: ArdoThemeTokens } {
-  const options = typeof primaryOrOptions === "object" ? primaryOrOptions : undefined
-  const baseTheme = createBaseTheme(
-    resolveThemeHues(primaryOrOptions, secondaryArg),
-    resolveChroma(options?.chroma)
-  )
-  const sharedOverrides = getSharedThemeOverrides(options)
-
-  return {
-    light: mergeThemeTokens(
-      mergeThemeTokens(baseTheme.light, sharedOverrides),
-      options?.light ?? {}
-    ),
-    dark: mergeThemeTokens(mergeThemeTokens(baseTheme.dark, sharedOverrides), options?.dark ?? {}),
-  }
-}
-
-const defaultTheme = createTheme(356)
-export const lightTokens = defaultTheme.light
-export const darkTokens = defaultTheme.dark
-
-export function applyBrandTheme(
-  primaryOrOptions?: ArdoThemeOptions | number,
-  secondaryArg?: number
-) {
-  const theme = createTheme(primaryOrOptions, secondaryArg)
-  createGlobalTheme(":root", vars, theme.light)
-  createGlobalTheme(".dark", vars, theme.dark)
-}
+export const lightTokens = createTokens(createLightColors())
+export const darkTokens = createTokens(createDarkColors())
 
 /**
  * Resolves the color recipes with concrete hues and chroma multipliers instead

@@ -13,7 +13,7 @@ export const meta: ArdoMetaFunction = () => [{ title: "Three Sections" }]
 // Three sections like Ferroni: guide, perf and adr.
 export default function Root() {
   return (
-    <ArdoRoot>
+    <ArdoRoot theme={{ color: "orange" }}>
       <ArdoHeader>
         <ArdoHeaderActions>
           <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />

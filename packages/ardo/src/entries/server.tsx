@@ -8,6 +8,7 @@ import type { ResolvedConfig } from "../config/types"
 
 import { ArdoApp } from "../runtime/app"
 import { ArdoDocumentProvider } from "../runtime/document"
+import { type ArdoDocumentIcons, ArdoDocumentIconsContext } from "../runtime/document-context"
 import {
   ARDO_APP_ELEMENT_ID,
   ARDO_PAGE_DATA_ATTRIBUTE,
@@ -64,8 +65,16 @@ export async function renderPage(
     config.i18n === false
       ? undefined
       : config.i18n.locales.find((entry) => entry.id === pagePath.split("/")[1])?.id
+  // The page renders first, so the icons ArdoRoot receives can go into the shell's head.
+  let icons: ArdoDocumentIcons = {}
   const body = await renderToHtml(
-    <ArdoApp config={config} page={page} root={root} routes={routes} />
+    <ArdoDocumentIconsContext
+      value={(value) => {
+        icons = value
+      }}
+    >
+      <ArdoApp config={config} page={page} root={root} routes={routes} />
+    </ArdoDocumentIconsContext>
   )
   const shell = await renderToHtml(
     <ArdoDocumentProvider
@@ -76,6 +85,7 @@ export async function renderPage(
         stylesheets: assets.stylesheets,
         lang: locale ?? config.lang,
         iconBasePath: config.deploymentBase,
+        ...icons,
       }}
     >
       <Layout>

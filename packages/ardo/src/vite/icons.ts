@@ -14,15 +14,11 @@ const ICON_FILES = new Map([
   ["apple-touch-icon.png", "image/png"],
 ])
 
-export type ArdoIconOptions =
-  | {
-      /**
-       * Source SVG file path, resolved from the Vite root.
-       * Inline SVG strings are also accepted.
-       */
-      source?: string
-    }
-  | false
+/**
+ * `false` skips the generated owl icons. A site icon comes from `ArdoRoot`'s
+ * `icon` and `appleTouchIcon` props, as imported assets.
+ */
+export type ArdoIconOptions = false
 
 export type GeneratedIconAsset = {
   fileName: string
@@ -42,7 +38,7 @@ export function createIconsPlugin(
   let assetsPromise: Promise<GeneratedIconAsset[]> | undefined
 
   const getAssets = async () => {
-    assetsPromise ??= createIconAssets(config.root, options)
+    assetsPromise ??= createIconAssets()
     return assetsPromise
   }
 
@@ -129,11 +125,8 @@ async function serveIconRequest(input: {
   return true
 }
 
-export async function createIconAssets(
-  root: string,
-  options: Exclude<ArdoIconOptions, false> | undefined
-): Promise<GeneratedIconAsset[]> {
-  const svg = await resolveIconSvg(root, options?.source)
+/** favicon.ico, icon.svg, and apple-touch-icon.png, rendered from Ardo's owl by default. */
+export async function createIconAssets(svg = ARDO_FAVICON_SVG): Promise<GeneratedIconAsset[]> {
   const faviconPng = renderPng(svg, 32)
   const appleTouchIcon = renderPng(svg, 180)
 
@@ -154,19 +147,6 @@ export async function createIconAssets(
       source: appleTouchIcon,
     },
   ]
-}
-
-async function resolveIconSvg(root: string, source: string | undefined): Promise<string> {
-  if (source == null) {
-    return ARDO_FAVICON_SVG
-  }
-
-  const trimmedSource = source.trim()
-  if (trimmedSource.startsWith("<svg")) {
-    return trimmedSource
-  }
-
-  return readFile(path.resolve(root, source), "utf8")
 }
 
 function renderPng(svg: string, size: number): Uint8Array {

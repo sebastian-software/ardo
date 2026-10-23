@@ -89,9 +89,62 @@ export default function Root() {
 
 Keep `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children when they carry props or navigation; without children, `ArdoRoot` renders the same three parts with their defaults.
 
-Keep a `Layout` export when it passes options such as `theme`, `favicon`, or `className` to `ArdoRootLayout`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/layout-and-navigation#layout-the-html-shell).
+Keep a `Layout` export when it passes options such as `colorScheme`, `icon`, or `className` to `ArdoRootLayout`; Ardo 5's `theme` and `favicon` props on it are now `colorScheme` and `icon`. A fully custom shell replaces React Router's `<Meta />`, `<Links />`, and `<Scripts />` with `<ArdoHead />` in `<head>` and `<ArdoScripts />` at the end of `<body>`, both from `ardo/runtime`. See [Layout & Navigation](/guide/layout-and-navigation#layout-the-html-shell).
 
 Route modules keep their `meta` and `handle` exports, for example `export const handle = { layout: "bare" }`.
+
+## Move the theme into `app/root.tsx`
+
+Ardo 6 themes the site in JSX. `brand` is gone from the config, and so are `applyBrandTheme` and `createTheme` from `ardo/theme`. The hues, `chroma`, and token overrides move into `ArdoRoot`'s `theme` prop, and the logo and favicon become imported files, so Vite fingerprints them. A config that still sets `brand` fails with a message that points here.
+
+Before:
+
+```ts
+// ardo.config.ts
+export default defineArdoConfig({
+  title: "My Docs",
+  brand: { color: "blue", accent: "teal", neutral: "slate", logo: "./app/assets/logo.svg" },
+  icons: { source: "./app/assets/icon.svg" },
+})
+
+// app/styles/brand.css.ts
+applyBrandTheme({ primary: 240, chroma: { brand: 0.6 }, dark: { color: { bg: "#101010" } } })
+```
+
+After:
+
+```tsx
+// app/root.tsx
+import { ArdoRoot } from "ardo/ui"
+
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return (
+    <ArdoRoot
+      theme={{
+        color: "blue",
+        accent: "teal",
+        neutral: "slate",
+        chroma: { color: 0.6 },
+        dark: { color: { bg: "#101010" } },
+      }}
+      logo={logo}
+      icon={icon}
+    />
+  )
+}
+```
+
+- `applyBrandTheme`'s `primary` and `secondary` are `color` and `accent`, and the chroma key `brand` is `color`, as in the old config.
+- Token overrides that applied to both modes go into `tokens`. Colors usually belong in `light` and `dark`.
+- `icons.source` is gone. Without `icon`, Ardo keeps linking its generated owl icons; `icons: false` still turns them off.
+- `gray` and `slate` now look gray and muted blue. In Ardo 5 both were a saturated blue.
+- `--ardo-color-brandLight`, `accentLight`, `accentDark`, `accentSubtle`, `bgAlt`, and `sidebarBorder` are gone; no component read them.
+- `--ardo-font-familyHeading` follows `--ardo-font-family`, so a new body font reaches the headings too.
+
+[Theming](/guide/theming) covers the props in full.
 
 ## Trim `tsconfig.json`
 
