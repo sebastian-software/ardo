@@ -1,4 +1,5 @@
 import { hydrateRoot } from "react-dom/client"
+import config from "virtual:ardo/config"
 import { rootModule, routes } from "virtual:ardo/routes"
 
 import { ArdoApp } from "../runtime/app"
@@ -20,6 +21,6 @@ if (container != null && pageData != null) {
   const data = JSON.parse(pageData) as ArdoPageData
   const root: ArdoRootModule = rootModule
   const route = routes.find((entry) => entry.id === data.routeId)
-  const page = await resolvePage({ ...data, root, route })
-  hydrateRoot(container, <ArdoApp page={page} root={root} routes={routes} />)
+  const page = await resolvePage({ ...data, root, route, siteTitle: config.title })
+  hydrateRoot(container, <ArdoApp config={config} page={page} root={root} routes={routes} />)
 }

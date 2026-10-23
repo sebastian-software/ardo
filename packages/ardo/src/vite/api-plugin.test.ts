@@ -108,7 +108,7 @@ const pollOptions = { timeout: 10_000 }
 
 describe("native API build and development plugin", () => {
   it("generates native Markdown before route scanning and closes build sessions", async () => {
-    const selected = ardoPlugin({ api: true, githubPages: false })
+    const selected = ardoPlugin({ api: true })
     const apiIndex = selected.findIndex((plugin) => plugin.name === "ardo:api")
     const routesIndex = selected.findIndex((plugin) => plugin.name === "ardo:routes")
     expect(apiIndex).toBeLessThan(routesIndex)
@@ -208,7 +208,6 @@ describe("native API build and development plugin", () => {
 
   it("generates separate native projects before scanning their combined routes", async () => {
     const selected = ardoPlugin({
-      githubPages: false,
       api: [
         { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.json", out: "api/alpha" },
         { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.json", out: "api/beta" },

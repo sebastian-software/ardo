@@ -5,9 +5,28 @@ import { pathToFileURL } from "node:url"
 import { describe, expect, it } from "vitest"
 
 import { isCliEntrypoint, runCli } from "./run"
-import { parseViteArguments, ViteUsageError } from "./vite-command"
+import { createProjectConfigLogger, parseViteArguments, ViteUsageError } from "./vite-command"
 
 describe("Ardo CLI", () => {
+  it("drops Vite's wrapper-path line when the project config fails to load", () => {
+    const wrapper = "/project/node_modules/.ardo/vite-abc123.config.mjs"
+    const errors: string[] = []
+    const originalError = console.error
+    console.error = (...args: unknown[]) => {
+      errors.push(args.map(String).join(" "))
+    }
+    try {
+      const logger = createProjectConfigLogger(wrapper)
+      logger.error(`failed to load config from ${wrapper}`)
+      logger.error('[ardo] Unknown configuration option "Brand".')
+    } finally {
+      console.error = originalError
+    }
+
+    expect(errors).toHaveLength(1)
+    expect(errors[0]).toContain("Unknown configuration option")
+  })
+
   it("prints help and version without resolving a framework command", async () => {
     let help = ""
     let version = ""

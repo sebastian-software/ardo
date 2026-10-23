@@ -181,7 +181,7 @@ describe("llms-text", () => {
     expect(full).toHaveLength(2)
     for (const asset of full) {
       expect(asset.source).toContain(
-        "[tested Basic example](<https://example.com/docs/v6/guide/reference-projects/>)"
+        "[tested Basic example](<https://example.com/docs/v6/guide/agent-instructions/#the-basic-example>)"
       )
       expect(asset.source).toContain(
         "[manual installation](<https://example.com/docs/v6/guide/getting-started#manual-installation>)"

@@ -4,7 +4,7 @@ import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "v
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
-import type { ArdoPluginOptions, PressConfigOptions } from "./plugin-options"
+import type { ArdoPluginOptions, SiteConfigOptions } from "./plugin-options"
 
 import { resolveConfig } from "../config/index"
 import { validateArdoOptionNames } from "../config/plugin-options"
@@ -49,12 +49,9 @@ type PluginState = {
 }
 
 type MainPluginOptions = {
-  githubPages: boolean
-  pressConfig: PressConfigOptions
+  siteConfig: SiteConfigOptions
   routesDirOption: string | undefined
 }
-
-export { detectGitHubBasename } from "./git-utils"
 
 export type { ArdoPluginOptions } from "./plugin-options"
 
@@ -66,18 +63,16 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     openapi,
     routes,
     api,
-    githubPages = true,
     routesDir: routesDirOption,
-    ...pressConfig
+    ...siteConfig
   } = validateArdoOptionNames(options)
   const state: PluginState = {
     collections,
-    outDir: pressConfig.outDir,
+    outDir: siteConfig.outDir,
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
   const mainPluginOptions: MainPluginOptions = {
-    githubPages,
-    pressConfig: { ...pressConfig, ...(openapi == null ? {} : { openapi }) },
+    siteConfig: { ...siteConfig, ...(openapi == null ? {} : { openapi }) },
     routesDirOption,
   }
   const plugins: Plugin[] = [
@@ -86,7 +81,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...createRuntimeBoundaryPlugins(),
   ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
-  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, pressConfig.brand?.logo), state))
+  plugins.push(...createIconsPlugin(resolveBrandIconOptions(icons, siteConfig.brand?.logo), state))
   addContentSourcePlugin(
     plugins,
     [...(content ?? []), ...createCollectionContentSources(collections)],
@@ -95,8 +90,8 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   addRoutesPlugin(plugins, routes, routesDirOption)
   addApiPlugin(plugins, { api, routesDirOption })
 
-  plugins.push(ardoCodeBlockPlugin(pressConfig.markdown))
-  plugins.push(createMdxPlugin(pressConfig.markdown))
+  plugins.push(ardoCodeBlockPlugin(siteConfig.markdown))
+  plugins.push(createMdxPlugin(siteConfig.markdown))
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...createReactPlugins())
 
@@ -156,8 +151,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         userConfig,
         command: env.isPreview ? "build" : env.command,
         isPreview: env.isPreview === true,
-        githubPages: options.githubPages,
-        pressConfig: options.pressConfig,
+        siteConfig: options.siteConfig,
         routesDirOption: options.routesDirOption,
       })
     },
@@ -165,7 +159,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
       state.resolvedConfig = resolveArdoConfig({
         root: config.root,
-        pressConfig: options.pressConfig,
+        siteConfig: options.siteConfig,
         viteBase: config.base,
         deploymentBaseOverride: state.deploymentBase,
       })
@@ -208,14 +202,13 @@ function createMainConfig(
   state: PluginState,
   input: {
     command: string
-    githubPages: boolean
     isPreview: boolean
-    pressConfig: PressConfigOptions
+    siteConfig: SiteConfigOptions
     routesDirOption: string | undefined
     userConfig: UserConfig
   }
 ): UserConfig {
-  const { command, githubPages, isPreview, pressConfig, routesDirOption, userConfig } = input
+  const { command, isPreview, siteConfig, routesDirOption, userConfig } = input
   const root = userConfig.root ?? process.cwd()
   state.routesDir = resolveRoutesDir(root, routesDirOption)
   const config: UserConfig = {
@@ -230,17 +223,16 @@ function createMainConfig(
 
   const baseResult = resolveVersionedMainBase({
     command,
-    githubPages,
-    pressConfig,
+    siteConfig,
     root,
     userBase: userConfig.base,
   })
   state.deploymentBase = baseResult.deploymentBase
   state.previewBase = resolveVersionedPreviewBase({
     deploymentBase: baseResult.deploymentBase,
-    versioning: pressConfig.versioning,
+    versioning: siteConfig.versioning,
     userBase: userConfig.base,
-    viteBase: pressConfig.vite?.base,
+    viteBase: siteConfig.vite?.base,
   })
   if (baseResult.viteBase != null && userConfig.base == null) {
     config.base = isPreview ? (state.previewBase ?? baseResult.viteBase) : baseResult.viteBase
@@ -249,33 +241,33 @@ function createMainConfig(
     console.log(message)
   }
 
-  return mergeArdoViteConfig(pressConfig.vite, config)
+  return mergeArdoViteConfig(siteConfig.vite, config)
 }
 
 function resolveArdoConfig({
   root,
-  pressConfig,
+  siteConfig,
   viteBase,
   deploymentBaseOverride,
 }: {
   deploymentBaseOverride: string | undefined
-  pressConfig: PressConfigOptions
+  siteConfig: SiteConfigOptions
   root: string
   viteBase: string
 }): ResolvedConfig {
   const detectedProject = readProjectMeta(root)
-  const project: ProjectMeta = { ...detectedProject, ...pressConfig.project }
+  const project: ProjectMeta = { ...detectedProject, ...siteConfig.project }
   const deploymentBase =
-    deploymentBaseOverride ?? pressConfig.base ?? normalizeViteBaseForArdo(viteBase)
+    deploymentBaseOverride ?? siteConfig.base ?? normalizeViteBaseForArdo(viteBase)
   const configWithDefaults: ArdoConfig = {
-    title: pressConfig.title ?? "Ardo",
-    description: pressConfig.description ?? "Documentation powered by Ardo",
+    title: siteConfig.title ?? "Ardo",
+    description: siteConfig.description ?? "Documentation powered by Ardo",
   }
 
   return resolveConfig(
     {
       ...configWithDefaults,
-      ...pressConfig,
+      ...siteConfig,
       base: deploymentBase,
       project,
     },

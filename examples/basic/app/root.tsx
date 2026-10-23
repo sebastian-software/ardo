@@ -1,18 +1,8 @@
-import type { ArdoMetaFunction } from "ardo/runtime"
-import { ArdoFooter, ArdoHeader, ArdoRoot, ArdoSidebar } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
+import { ArdoRoot } from "ardo/ui"
 
-export const meta: ArdoMetaFunction = () => [{ title: "Ardo Basic Example" }]
-
+// Header with search and the theme toggle, a sidebar with one section per
+// folder in app/routes, and the footer. Pass ArdoHeader, ArdoSidebar, or
+// ArdoFooter as children to change any of them.
 export default function Root() {
-  return (
-    <ArdoRoot config={config}>
-      <ArdoHeader />
-
-      <ArdoSidebar />
-
-      <ArdoFooter />
-    </ArdoRoot>
-  )
+  return <ArdoRoot />
 }

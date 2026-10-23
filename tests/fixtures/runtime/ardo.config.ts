@@ -8,5 +8,4 @@ export default defineArdoConfig({
     accent: "teal",
     neutral: "slate",
   },
-  githubPages: false,
 })

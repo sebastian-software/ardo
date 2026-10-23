@@ -59,7 +59,6 @@ title: ${title}
 import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig(${JSON.stringify({
       title: "Navigation fixture",
-      githubPages: false,
       base: "/project/",
       lang: localized ? "fr" : "de",
       ...(localized

@@ -6,16 +6,14 @@ import {
   ArdoSidebar,
   ArdoSocialLink,
 } from "ardo/ui"
-import config from "virtual:ardo/config"
 import type { ArdoMetaFunction } from "ardo/runtime"
-import "ardo/ui/styles.css"
 
 export const meta: ArdoMetaFunction = () => [{ title: "Three Sections" }]
 
 // Three sections like Ferroni: guide, perf and adr.
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoHeaderActions>
           <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />

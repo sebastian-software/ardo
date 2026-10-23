@@ -5,12 +5,18 @@ import {
   isValidElement,
   type ReactElement,
   type ReactNode,
+  use,
   useMemo,
 } from "react"
 import type { ArdoConfig } from "../config/types"
 
 import { createBrandThemeCss } from "../config/brand"
-import { ArdoProvider, type ArdoSiteConfig, ArdoSiteConfigProvider } from "../runtime/hooks"
+import {
+  ArdoConfigContext,
+  ArdoProvider,
+  type ArdoSiteConfig,
+  ArdoSiteConfigProvider,
+} from "../runtime/hooks"
 import { ArdoOutlet } from "../runtime/page"
 import { useArdoPage, useArdoPath } from "../runtime/page-context"
 import { ArdoFooter } from "./Footer"
@@ -26,8 +32,11 @@ import { ArdoSidebar, isArdoSidebarElement, resolveArdoSidebarItems } from "./Si
 // =============================================================================
 
 export type ArdoRootProps = {
-  /** Ardo config (from virtual:ardo/config) */
-  config: ArdoConfig
+  /**
+   * The site config. Ardo's entries provide it from `ardo.config.ts`, so a
+   * root component can leave it out; pass it in tests and previews.
+   */
+  config?: ArdoConfig
   /** Edit link configuration (applied site-wide via ArdoSiteConfig) */
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
@@ -50,6 +59,11 @@ export type ArdoRootProps = {
    * `false` for no footer. Without either, Ardo renders its default footer.
    */
   footer?: false | ReactNode
+  /**
+   * Sidebar in place of an `ArdoSidebar` child, or `false` for no sidebar.
+   * Without either, Ardo renders one section per top-level route folder.
+   */
+  sidebar?: false | ReactNode
   /** Site chrome children: ArdoHeader, ArdoSidebar, ArdoFooter, and optional content overrides. */
   children?: ReactNode
 }
@@ -58,12 +72,10 @@ export type ArdoRootProps = {
  * All-in-one root component that combines ArdoProvider, Layout, Header,
  * Sidebar, Footer, and homepage detection into a single component.
  *
- * @example Minimal usage
+ * @example Minimal usage: header with search, a generated sidebar, and the footer
  * ```tsx
- * import config from "virtual:ardo/config"
- *
  * export default function Root() {
- *   return <ArdoRoot config={config} />
+ *   return <ArdoRoot />
  * }
  * ```
  *
@@ -71,7 +83,7 @@ export type ArdoRootProps = {
  * ```tsx
  * export default function Root() {
  *   return (
- *     <ArdoRoot config={config}>
+ *     <ArdoRoot>
  *       <ArdoHeader>
  *         <ArdoNav>
  *           <ArdoNavLink to="/guide">Guide</ArdoNavLink>
@@ -207,6 +219,19 @@ function resolveFooterSlot(footer: false | ReactNode): ReactNode {
   return footer ?? <ArdoFooter />
 }
 
+/** A `sidebar` prop wins over an `ArdoSidebar` child; without either, Ardo generates one. */
+function resolveSidebarSlot(sidebar: false | ReactNode): ReactNode {
+  if (sidebar === false) return undefined
+  return sidebar ?? <ArdoSidebar />
+}
+
+function resolveRootConfig(config: ArdoConfig | null | undefined): ArdoConfig {
+  if (config != null) return config
+  throw new Error(
+    "[ardo] ArdoRoot has no site config. Render it inside Ardo's app, or pass the config prop."
+  )
+}
+
 function resolveRootHeader(
   config: ArdoConfig,
   header: ReactNode,
@@ -219,7 +244,7 @@ function resolveRootHeader(
 }
 
 export function ArdoRoot({
-  config,
+  config: configProp,
   editLink,
   lastUpdated,
   labels,
@@ -228,16 +253,19 @@ export function ArdoRoot({
   scrollMode = "viewport",
   header,
   footer,
+  sidebar: sidebarProp,
   children,
 }: ArdoRootProps) {
+  const config = resolveRootConfig(configProp ?? use(ArdoConfigContext))
   const pathname = useArdoPath()
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
   const showChrome = routeChrome !== false
   const isBareLayout = useBareLayout(pathname)
   const sidebar = useMemo(
-    (): ReactNode => withGeneratedSections(chrome.sidebar, config, pathname),
-    [chrome.sidebar, config, pathname]
+    (): ReactNode =>
+      withGeneratedSections(resolveSidebarSlot(sidebarProp ?? chrome.sidebar), config, pathname),
+    [sidebarProp, chrome.sidebar, config, pathname]
   )
   const sidebarItems = useMemo(
     () => resolveArdoSidebarItems(sidebar, pathname),

@@ -8,8 +8,6 @@ import {
   ArdoSidebar,
   ArdoSocialLink,
 } from "ardo/ui"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
 import "./theme.css"
 
 import logo from "./assets/logo.svg"
@@ -24,7 +22,6 @@ export const ErrorBoundary = ArdoErrorBoundary
 export default function Root() {
   return (
     <ArdoRoot
-      config={config}
       editLink={{
         pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
         text: "Edit this page on GitHub",

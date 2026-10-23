@@ -90,7 +90,7 @@ describe("ArdoSidebar", () => {
   })
 
   it("connects collapsed generated group toggles to inert content", () => {
-    const view = renderSidebar(generatedSection("guide"))
+    const view = renderSidebar(generatedSection("guide"), "/guide/other")
     const toggle =
       /<button[^>]*aria-expanded="false"[^>]*aria-controls="([^"]+)"[^>]*aria-label="Expand Guide"/.exec(
         view
@@ -100,6 +100,23 @@ describe("ArdoSidebar", () => {
     expect(view).toContain(`id="${toggle?.[1]}"`)
     expect(view).toContain('aria-hidden="true"')
     expect(view).toContain("inert")
+  })
+
+  it("opens a collapsed group on a page inside it", () => {
+    const generated = renderSidebar(generatedSection("guide"))
+    const manual = renderSidebar(
+      <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+        <ArdoSidebarGroup title="Guide" collapsed>
+          <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+        </ArdoSidebarGroup>
+      </ArdoSidebarSection>
+    )
+
+    for (const view of [generated, manual]) {
+      expect(view).toContain('aria-label="Collapse Guide"')
+      expect(view).not.toContain('aria-label="Expand Guide"')
+      expect(view).toContain('data-collapsed="false"')
+    }
   })
 
   it("renders manual unlinked groups with a single toggle button", () => {

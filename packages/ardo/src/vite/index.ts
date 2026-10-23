@@ -14,7 +14,6 @@ export { type ArdoIconOptions } from "./icons"
 
 export { ardoPlugin as ardo, ardoPlugin, type ArdoPluginOptions } from "./plugin"
 export { ardoPlugin as default } from "./plugin"
-export { detectGitHubBasename } from "./plugin"
 export { createArdoProjectViteConfig } from "./project-config"
 
 export { generateSearchIndex, type SearchDoc } from "./search-index"

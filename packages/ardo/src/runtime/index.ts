@@ -5,6 +5,7 @@
 
 // React hooks and context
 export {
+  ArdoConfigProvider,
   ArdoContext,
   ArdoPageDataProvider,
   ArdoProvider,

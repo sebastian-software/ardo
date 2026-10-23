@@ -34,9 +34,7 @@ const cases: CleanupCase[] = [
 ]
 
 function staticConfig(input: UserConfig): UserConfig {
-  const plugin = ardoPlugin({ githubPages: false, icons: false }).find(
-    (entry) => entry.name === "ardo:static-site"
-  )
+  const plugin = ardoPlugin({ icons: false }).find((entry) => entry.name === "ardo:static-site")
   const hook = plugin?.config
   if (typeof hook !== "function") throw new Error("Static site plugin not found")
   return Reflect.apply(hook, {}, [

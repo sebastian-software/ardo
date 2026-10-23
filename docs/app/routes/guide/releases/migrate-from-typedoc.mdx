@@ -1,14 +1,16 @@
 ---
 title: Migrate from TypeDoc
-description: Move API documentation to native TypeScript and OXC in the next major release.
+description: Move API documentation from the removed TypeDoc integration to native TypeScript and OXC.
+order: 4
+redirectFrom: /v6/guide/typedoc
 ---
 
 # Migrate from TypeDoc
 
-The next major release removes the TypeDoc integration. Source API documentation
+Ardo 6 removes the TypeDoc integration. Source API documentation
 uses native TypeScript for checked declarations and OXC for Markdown extraction.
 This affects the `typedoc` option, `TypeDocConfig`, `ardo/typedoc`,
-`ardo/typedoc/components`, and the scaffolder's TypeDoc flags.
+`ardo/typedoc/components`, and the TypeDoc flags of the retired `create-ardo` starter.
 
 ## Install the native tools
 
@@ -79,9 +81,8 @@ assuming the native renderer reproduces them. Generated page organization and
 some paths differ, so check links to individual API pages after regeneration.
 
 For several packages, configure an array of projects with distinct output
-directories, as shown in [Native API Documentation](/guide/api-documentation).
-Extend the version-matched [Basic example](/guide/reference-projects#multiple-packages)
-with those API inputs. The docs application keeps the same setup and package boundary.
+directories, as shown in [Multiple packages](/guide/api-documentation#multiple-packages).
+The docs application keeps the same setup and package boundary.
 
 ## Update Programmatic Hosts and Setup
 

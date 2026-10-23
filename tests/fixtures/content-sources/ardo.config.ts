@@ -9,6 +9,5 @@ const recipes = defineCollection<{ summary: string; title: string }>({
 
 export default defineArdoConfig({
   title: "Ardo Content Sources Fixture",
-  githubPages: false,
   collections: { recipes },
 })

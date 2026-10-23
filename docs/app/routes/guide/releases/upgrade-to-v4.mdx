@@ -1,7 +1,8 @@
 ---
 title: Upgrade to Ardo 4.0
 description: Prepare an Ardo project for the 4.0 release and the stable major-version URL contract.
-order: 13
+order: 3
+redirectFrom: /v6/guide/upgrade-to-v4
 ---
 
 # Upgrade to Ardo 4.0
@@ -65,19 +66,8 @@ GitHub Pages replaces the full uploaded artifact on each deploy. Before switchin
 build to a new major folder, keep the final generated folder for the previous major version and copy
 it into the Pages artifact during deployment.
 
-For this repository, older major snapshots live under `docs/version-snapshots/`:
-
-```text
-docs/version-snapshots/v3.tar.gz
-docs/version-snapshots/snapshots.json
-```
-
-Run `pnpm docs:prepare-pages` after building the docs to combine the current build with retained
-snapshots. Both CI and the Pages workflow fail if `versions.json` lists an older major version that
-is missing from the current build and `docs/version-snapshots/`. Archives include the complete major
-folder and are verified against the SHA-256 checksums in `snapshots.json`. Unpacked version folders
-are also supported. This protects stable URLs such as `/v3/...` from
-being deleted by the first `/v4/` deployment.
+Keeping each older folder, for example as an archive in the repository, protects stable URLs such
+as `/v3/...` from being deleted by the first `/v4/` deployment.
 
 ## Check Existing Links
 

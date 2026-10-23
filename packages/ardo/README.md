@@ -1,8 +1,8 @@
 # ardo
 
-Modern, open documentation for React teams.
+React docs, baked into plain HTML.
 
-Ardo is a React-first static documentation framework built on React 19, Vite 8, MDX, TypeScript, and Vanilla Extract. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
+Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
 
 ## Why use it?
 
@@ -14,19 +14,13 @@ Ardo is a React-first static documentation framework built on React 19, Vite 8, 
 
 ## Quick start
 
-Give your coding agent the repository and this instruction:
+Hand this sentence to your coding agent, in a fresh repository or one you already have:
 
 ```text
-Set up Ardo 6 in this repository. Read https://ardo-docs.dev/v6/llms.txt,
-then follow https://ardo-docs.dev/v6/guide/agent-instructions. Adapt the
-tested Basic example from the matching Ardo release tag, preserve
-existing application behavior, and run the applicable checks and build.
+Set up Ardo in this repository and follow the official instructions.
 ```
 
-The versioned instructions cover new sites, adoption, and upgrades. Use the
-reference from the installed package's `ardo-v<version>` tag; for development,
-use the instructions and built package from the same checkout revision.
-Ardo 6 retires `create-ardo`.
+It finds the versioned [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions), adapts the tested Basic example, and reports how typecheck, tests, and build went. The same instructions cover new sites, adoption, and upgrades.
 
 ## Manual installation
 
@@ -39,7 +33,7 @@ Keep the docs project in its own package or directory. Declare its component lib
 
 Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Ardo
 manages the React, React DOM, and Vite dependencies. Follow the
-[Basic example](https://ardo-docs.dev/v6/guide/reference-projects) for app files, TypeScript configuration,
+[Basic example](https://ardo-docs.dev/v6/guide/agent-instructions#the-basic-example) for app files, TypeScript configuration,
 and the minimal pnpm esbuild build-script policy.
 
 ## Ardo configuration
@@ -52,7 +46,6 @@ import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig({
   title: "My Documentation",
   description: "Docs for my React library",
-  githubPages: false,
 })
 ```
 
@@ -68,6 +61,20 @@ or `icons: false` to manage them from `public/`.
 
 ## Root layout
 
+`app/root.tsx` exports the root component. `<ArdoRoot />` is a complete site: header with
+search, a sidebar with one section per route folder, and the footer. Ardo supplies the site
+config and its stylesheet.
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Pass the chrome as children to change it:
+
 ```tsx
 import {
   ArdoGeneratedSidebar,
@@ -75,21 +82,13 @@ import {
   ArdoNav,
   ArdoNavLink,
   ArdoRoot,
-  ArdoRootLayout,
   ArdoSidebar,
   ArdoSidebarSection,
 } from "ardo/ui"
-import type { ReactNode } from "ardo/react"
-import config from "virtual:ardo/config"
-import "ardo/ui/styles.css"
-
-export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
-}
 
 export default function Root() {
   return (
-    <ArdoRoot config={config}>
+    <ArdoRoot>
       <ArdoHeader>
         <ArdoNav>
           <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
@@ -142,8 +141,8 @@ LLM-optimized documentation: [llms-full.txt](https://ardo-docs.dev/v6/llms-full.
 
 Changelog: [CHANGELOG.md](./CHANGELOG.md)
 
-Example: [Basic](https://ardo-docs.dev/v6/guide/reference-projects). Optional [API](https://ardo-docs.dev/v6/guide/api-documentation), [content](https://ardo-docs.dev/v6/guide/content-sources), and [deployment](https://ardo-docs.dev/v6/guide/deployment) recipes extend the same setup.
+Example: [Basic](https://ardo-docs.dev/v6/guide/agent-instructions#the-basic-example). Optional [API](https://ardo-docs.dev/v6/guide/api-documentation), [content](https://ardo-docs.dev/v6/guide/content-sources), and [deployment](https://ardo-docs.dev/v6/guide/deployment) recipes extend the same setup.
 
 ## License
 
-[MIT](../../LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./ICONS-LICENSE.md).
+[MIT](https://github.com/sebastian-software/ardo/blob/main/LICENSE) © [Sebastian Software GmbH](https://sebastian-software.de). The sidebar section icons are from [Streamline](https://streamlinehq.com) and come under [their own terms](./ICONS-LICENSE.md).

@@ -45,20 +45,28 @@ export async function renderPage(
   path: string,
   options: ArdoRenderOptions
 ): Promise<ArdoRenderResult> {
+  const config: ResolvedConfig = virtualConfig
   const root: ArdoRootModule = rootModule
   // `/guide/` and `/guide` are the same page; components see one path.
   const pagePath = path.length > 1 ? path.replace(/\/+$/u, "") : path
   const route = options.notFound === true ? undefined : matchRoute(routes, pagePath)
-  const page = await resolvePage({ base: options.base, path: pagePath, root, route })
+  const page = await resolvePage({
+    base: options.base,
+    path: pagePath,
+    root,
+    route,
+    siteTitle: config.title,
+  })
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
 
-  const config: ResolvedConfig = virtualConfig
   const locale =
     config.i18n === false
       ? undefined
       : config.i18n.locales.find((entry) => entry.id === pagePath.split("/")[1])?.id
-  const body = await renderToHtml(<ArdoApp page={page} root={root} routes={routes} />)
+  const body = await renderToHtml(
+    <ArdoApp config={config} page={page} root={root} routes={routes} />
+  )
   const shell = await renderToHtml(
     <ArdoDocumentProvider
       value={{

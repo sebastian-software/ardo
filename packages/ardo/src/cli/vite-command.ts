@@ -2,7 +2,14 @@ import { readFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
-import { createBuilder, createServer, type InlineConfig, type LogLevel } from "vite"
+import {
+  createBuilder,
+  createLogger,
+  createServer,
+  type InlineConfig,
+  type Logger,
+  type LogLevel,
+} from "vite"
 
 import { prepareProjectConfig } from "./project-config"
 
@@ -111,7 +118,12 @@ export async function runViteCommand(
     parsed.root,
     explicitVitePath
   )
-  const inline: InlineConfig = { ...parsed.inline, root: parsed.root, configFile }
+  const inline: InlineConfig = {
+    ...parsed.inline,
+    root: parsed.root,
+    configFile,
+    customLogger: createProjectConfigLogger(configFile, parsed.inline),
+  }
 
   if (command === "build") {
     const builder = await createBuilder(inline)
@@ -188,6 +200,24 @@ export function parseViteArguments(
     inline,
     help: values.help === true,
   }
+}
+
+/**
+ * Vite names a failing config by the file it loaded, which is Ardo's generated
+ * wrapper under `node_modules/.ardo`. Ardo reports the failure itself with the
+ * real cause, so that line is dropped.
+ */
+export function createProjectConfigLogger(
+  wrapperPath: string,
+  options: Pick<InlineConfig, "clearScreen" | "logLevel"> = {}
+): Logger {
+  const logger = createLogger(options.logLevel, { allowClearScreen: options.clearScreen })
+  const logError = logger.error.bind(logger)
+  logger.error = (message, errorOptions) => {
+    if (message.includes(`failed to load config from ${wrapperPath}`)) return
+    logError(message, errorOptions)
+  }
+  return logger
 }
 
 export function resolveArdoVersion(): string {

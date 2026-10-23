@@ -6,12 +6,10 @@ import {
   resolveVersioningConfig,
 } from "../config/versioning"
 import { normalizeViteBaseForArdo } from "./base"
-import { detectGitHubRepoName, getGitHubPagesBase } from "./git-utils"
 
 export type VersionedMainBaseInput = {
   command: string
-  githubPages: boolean
-  pressConfig: Pick<ArdoConfig, "base" | "i18n" | "versioning">
+  siteConfig: Pick<ArdoConfig, "base" | "i18n" | "versioning">
   root: string
   userBase: string | undefined
 }
@@ -24,14 +22,10 @@ export type VersionedMainBaseResult = {
 
 export function resolveVersionedMainBase(input: VersionedMainBaseInput): VersionedMainBaseResult {
   const logMessages: string[] = []
-  const githubPagesBase = resolveGitHubPagesBase(input)
-  const deploymentBase = resolveDeploymentBase(input, githubPagesBase)
-  const versionBase = resolveViteVersionedBase(input.pressConfig.versioning, deploymentBase)
-  const viteBase = versionBase ?? input.pressConfig.base ?? githubPagesBase
+  const deploymentBase = resolveDeploymentBase(input)
+  const versionBase = resolveViteVersionedBase(input.siteConfig.versioning, deploymentBase)
+  const viteBase = versionBase ?? input.siteConfig.base
 
-  if (githubPagesBase != null) {
-    logMessages.push(`[ardo] GitHub Pages detected, using base: ${githubPagesBase}`)
-  }
   if (versionBase != null) {
     logMessages.push(`[ardo] Documentation versioning enabled, using base: ${versionBase}`)
   }
@@ -56,26 +50,14 @@ export function resolveVersionedPreviewBase(input: {
   return input.deploymentBase
 }
 
-function resolveGitHubPagesBase(input: VersionedMainBaseInput): string | undefined {
-  if (!input.githubPages || input.command !== "build" || input.userBase != null) {
-    return undefined
-  }
-
-  const repoName = detectGitHubRepoName(input.root)
-  return repoName == null ? undefined : getGitHubPagesBase(repoName)
-}
-
-function resolveDeploymentBase(
-  input: VersionedMainBaseInput,
-  githubPagesBase: string | undefined
-): string {
-  const configuredBase = input.pressConfig.base ?? githubPagesBase
+function resolveDeploymentBase(input: VersionedMainBaseInput): string {
+  const configuredBase = input.siteConfig.base
   if (configuredBase != null) {
     return normalizeBasePath(configuredBase)
   }
 
   const userBase = normalizeViteBaseForArdo(input.userBase ?? "/")
-  const versioning = input.pressConfig.versioning
+  const versioning = input.siteConfig.versioning
   if (input.userBase == null || versioning == null || versioning === false) {
     return normalizeBasePath(userBase)
   }

@@ -30,7 +30,7 @@ function configure(directory: string, options: Record<string, unknown>): void {
   fs.writeFileSync(
     path.join(directory, "ardo.config.ts"),
     `import { defineArdoConfig } from "ardo/config";
-export default defineArdoConfig(${JSON.stringify({ title: "Output regression", githubPages: false, ...options })});
+export default defineArdoConfig(${JSON.stringify({ title: "Output regression", ...options })});
 `
   )
 }

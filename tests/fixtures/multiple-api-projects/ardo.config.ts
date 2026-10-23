@@ -2,7 +2,6 @@ import { defineArdoConfig } from "ardo/config"
 
 export default defineArdoConfig({
   title: "Ardo Multiple API Projects Fixture",
-  githubPages: false,
   api: [
     {
       entryPoints: ["./packages/alpha/src/index.ts"],
