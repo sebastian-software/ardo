@@ -1,4 +1,4 @@
-import { CopyPromptButton, SETUP_PROMPT } from "./CopyPromptButton"
+import { CopyPromptButton, PromptText, SETUP_PROMPT } from "./CopyPromptButton"
 import { CoffeeRing, Paperclip } from "./doodles"
 import * as styles from "./home.css"
 import { NoteLabel } from "./NoteLabel"
@@ -50,16 +50,18 @@ export function AgentSetup() {
           <h2 className={styles.h2}>Let your agent do the setup.</h2>
           <p className={styles.lead}>
             No starter template, no copy-paste marathon. Hand this sentence to your coding agent, in
-            a fresh repo or one you already have. It finds Ardo’s official instructions, adapts the
-            tested example and tells you how typecheck, tests and build went. You review it like any
-            other pull request.
+            a fresh repo or one you already have. The link points it to Ardo’s official
+            instructions. It adapts the tested example and tells you how typecheck, tests and build
+            went. You review it like any other pull request.
           </p>
         </div>
         <div className={styles.promptColumn}>
           <CoffeeRing className={`${styles.hideSmall} ${styles.coffee}`} />
           <div className={`${styles.sticky} ${styles.promptNote}`}>
             <Paperclip style={{ left: 34, top: -22, transform: "rotate(-8deg)" }} />
-            <p className={`${styles.mono} ${styles.promptText}`}>{SETUP_PROMPT}</p>
+            <p className={`${styles.mono} ${styles.promptText}`}>
+              <PromptText text={SETUP_PROMPT} />
+            </p>
             <div className={styles.promptAction}>
               <CopyPromptButton />
             </div>

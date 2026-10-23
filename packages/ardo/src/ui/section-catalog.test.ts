@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
-import { resolveSectionIcon, resolveSectionKind, resolveSectionLabel } from "./section-catalog"
+import { resolveSectionIcon } from "./section-catalog"
+import { resolveSectionKind, resolveSectionLabel } from "./section-kinds"
 
 const rank = (folder: string) => resolveSectionKind(folder)?.rank ?? -1
 

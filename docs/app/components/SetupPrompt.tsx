@@ -2,7 +2,7 @@ import type { ReactNode } from "ardo/react"
 
 import { ArdoCopyButton } from "ardo/ui"
 
-import { SETUP_PROMPT } from "../home/CopyPromptButton"
+import { PromptText, SETUP_PROMPT } from "../home/CopyPromptButton"
 import * as styles from "./setup-prompt.css"
 
 /**
@@ -14,7 +14,9 @@ export function SetupPrompt({ children }: { children?: ReactNode }) {
   const prompt = typeof children === "string" ? children : SETUP_PROMPT
   return (
     <div className={styles.frame}>
-      <p className={styles.prompt}>{prompt}</p>
+      <p className={styles.prompt}>
+        <PromptText text={prompt} />
+      </p>
       <ArdoCopyButton code={prompt} />
     </div>
   )

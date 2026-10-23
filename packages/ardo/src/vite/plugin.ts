@@ -8,7 +8,7 @@ import type { ArdoPluginOptions, SiteConfigOptions } from "./plugin-options"
 
 import { resolveConfig } from "../config/index"
 import { validateArdoOptionNames } from "../config/plugin-options"
-import { addApiPlugin } from "./api-plugin"
+import { addApiPlugin, apiOutputDirectories } from "./api-plugin"
 import { normalizeViteBaseForArdo } from "./base"
 import { resolveBrandIconOptions } from "./brand"
 import { createBuildOutputAssets } from "./build-outputs"
@@ -44,6 +44,8 @@ type PluginState = {
   deploymentBase?: string
   outDir?: string
   previewBase?: string
+  /** Generated API and OpenAPI folders, which `llms.txt` links by their index. */
+  referenceDirs: string[]
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -69,6 +71,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const state: PluginState = {
     collections,
     outDir: siteConfig.outDir,
+    referenceDirs: [
+      ...apiOutputDirectories(api),
+      ...(openapi == null ? [] : [openapi.out ?? "api"]),
+    ],
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
   const mainPluginOptions: MainPluginOptions = {
@@ -190,7 +196,9 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
-        for (const asset of createBuildOutputAssets(manifest, resolvedConfig)) {
+        for (const asset of createBuildOutputAssets(manifest, resolvedConfig, {
+          referenceDirs: state.referenceDirs,
+        })) {
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
         }
       })

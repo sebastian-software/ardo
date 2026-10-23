@@ -33,12 +33,12 @@ ships as plain HTML that any static host can serve.
 Hand this sentence to your coding agent, in a fresh repository or one you already have:
 
 ```text
-Set up Ardo in this repository and follow the official instructions.
+Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.
 ```
 
-It finds Ardo's [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions), adapts the
-tested [Basic example](./examples/basic), and tells you how typecheck, tests, and build went. You
-review the result like any other pull request. Prefer to do it by hand? Follow the
+The link points it to Ardo's [Agent Instructions](https://ardo-docs.dev/v6/guide/agent-instructions).
+It adapts the tested [Basic example](./examples/basic) and tells you how typecheck, tests, and build
+went. You review the result like any other pull request. Prefer to do it by hand? Follow the
 [manual installation](https://ardo-docs.dev/v6/guide/getting-started#manual-installation).
 
 ## How it works

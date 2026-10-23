@@ -2,13 +2,26 @@ import type { LlmsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { getCurrentVersion } from "../config/versioning"
+import { resolveSectionLabel } from "../ui/section-kinds"
 import { resolveLlmsContentLinks } from "./llms-links"
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
+import { type ReadingOrderEntry, sortByReadingOrder } from "./reading-order"
 import { buildPublicPath } from "./route-identity"
 
 type LlmsRouteEntry = {
   source: "markdown"
 } & RouteManifestEntry
+
+/** One line of `llms.txt`; a generated reference index counts the pages it stands for. */
+type LlmsLink = ReadingOrderEntry<LlmsRouteEntry> & { referencePages?: number }
+
+export type LlmsTextOptions = {
+  /**
+   * Folders of generated reference pages, relative to the routes directory.
+   * `llms.txt` links each one's index instead of every page.
+   */
+  referenceDirs?: readonly string[]
+}
 
 type ResolvedLlmsConfig = Pick<LlmsConfig, "description" | "title"> &
   Required<Pick<LlmsConfig, "fullFileName" | "includeFull" | "indexFileName">>
@@ -18,12 +31,16 @@ type LlmsTextAsset = {
   source: string
 }
 
-export function generateLlmsTxt(entries: RouteManifestEntry[], config: ResolvedConfig): string {
+export function generateLlmsTxt(
+  entries: RouteManifestEntry[],
+  config: ResolvedConfig,
+  options: LlmsTextOptions = {}
+): string {
   const llmsConfig = resolveLlmsConfig(config)
-  const docs = getLlmsEntries(entries)
+  const links = collapseReferences(getLlmsEntries(entries, config), options.referenceDirs)
   const lines = createHeaderLines(llmsConfig, config)
 
-  appendDocsSection(lines, docs, config)
+  appendDocsSections(lines, links, config)
   appendFullDocSection(lines, llmsConfig, config)
 
   return `${lines.join("\n").trimEnd()}\n`
@@ -34,7 +51,7 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
   const lines = createHeaderLines(llmsConfig, config)
   const routePaths = new Set(entries.map((entry) => entry.routePath))
 
-  for (const entry of getLlmsEntries(entries)) {
+  for (const { entry } of getLlmsEntries(entries, config)) {
     const title = getEntryTitle(entry)
     const description = entry.metadata.description
     // A Markdown page is not MDX: a line starting with "export" is prose there.
@@ -69,10 +86,13 @@ export function getLlmsAssetNames(config: ResolvedConfig) {
 
 export function createLlmsTextAssets(
   entries: RouteManifestEntry[],
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  options: LlmsTextOptions = {}
 ): LlmsTextAsset[] {
   const llmsAssets = getLlmsAssetNames(config)
-  const assets = [{ fileName: llmsAssets.indexFileName, source: generateLlmsTxt(entries, config) }]
+  const assets = [
+    { fileName: llmsAssets.indexFileName, source: generateLlmsTxt(entries, config, options) },
+  ]
 
   if (llmsAssets.includeFull) {
     assets.push({
@@ -88,7 +108,7 @@ export function createLlmsTextAssets(
       const versionedConfig = { ...config, deploymentBase: version.path }
       assets.push({
         fileName: `${versionFolder}/${llmsAssets.indexFileName}`,
-        source: generateLlmsTxt(entries, versionedConfig),
+        source: generateLlmsTxt(entries, versionedConfig, options),
       })
       if (llmsAssets.includeFull) {
         assets.push({
@@ -113,10 +133,58 @@ function resolveLlmsConfig(config: ResolvedConfig): ResolvedLlmsConfig {
   }
 }
 
-function getLlmsEntries(entries: RouteManifestEntry[]): LlmsRouteEntry[] {
-  return entries.filter(
-    (entry): entry is LlmsRouteEntry => entry.source === "markdown" && entry.metadata.llms !== false
+/** Exported pages in sidebar order, so a reader meets the guide before the reference. */
+function getLlmsEntries(
+  entries: RouteManifestEntry[],
+  config: ResolvedConfig
+): Array<ReadingOrderEntry<LlmsRouteEntry>> {
+  return sortByReadingOrder(
+    entries.filter(
+      (entry): entry is LlmsRouteEntry =>
+        entry.source === "markdown" && entry.metadata.llms !== false
+    ),
+    {
+      localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),
+      sectionOrder: config.sidebar.sectionOrder,
+    }
   )
+}
+
+/** Replaces the pages of each generated reference folder with a link to its index. */
+function collapseReferences(
+  docs: Array<ReadingOrderEntry<LlmsRouteEntry>>,
+  referenceDirs: readonly string[] = []
+): LlmsLink[] {
+  const dirs = referenceDirs.map((dir) => toPosixSegments(dir)).filter((dir) => dir !== "")
+  const referenceDir = (entry: LlmsRouteEntry) => {
+    const sourcePath = toPosixSegments(entry.metadata.sourcePath)
+    const dir = dirs.find((candidate) => sourcePath.startsWith(`${candidate}/`))
+    return dir == null ? undefined : { dir, file: sourcePath.slice(dir.length + 1) }
+  }
+  const indexes = new Map<string, LlmsLink>()
+  for (const doc of docs) {
+    const reference = referenceDir(doc.entry)
+    if (reference != null && /^index\.mdx?$/u.test(reference.file))
+      indexes.set(reference.dir, { ...doc, referencePages: 0 })
+  }
+
+  const links: LlmsLink[] = []
+  for (const doc of docs) {
+    const reference = referenceDir(doc.entry)
+    const index = reference == null ? undefined : indexes.get(reference.dir)
+    if (index == null) links.push(doc)
+    else if (index.entry === doc.entry) links.push(index)
+    else index.referencePages = (index.referencePages ?? 0) + 1
+  }
+  return links
+}
+
+function toPosixSegments(value: string): string {
+  return value
+    .replaceAll("\\", "/")
+    .split("/")
+    .filter((segment) => segment !== "" && segment !== ".")
+    .join("/")
 }
 
 function createHeaderLines(llmsConfig: ResolvedLlmsConfig, config: ResolvedConfig): string[] {
@@ -131,23 +199,33 @@ function createHeaderLines(llmsConfig: ResolvedLlmsConfig, config: ResolvedConfi
   return lines
 }
 
-function appendDocsSection(
-  lines: string[],
-  entries: LlmsRouteEntry[],
-  config: ResolvedConfig
-): void {
-  if (entries.length === 0) {
-    return
-  }
-
-  lines.push("## Docs", "")
-  for (const entry of entries) {
-    const title = getEntryTitle(entry)
-    const description = entry.metadata.description
+/** One `##` list per section tab; pages outside a section folder go under "Docs". */
+function appendDocsSections(lines: string[], links: LlmsLink[], config: ResolvedConfig): void {
+  const localized = new Set(links.map((link) => link.localeId)).size > 1
+  let currentGroup: string | undefined
+  for (const link of links) {
+    const group = `${link.localeId ?? ""}/${link.section ?? ""}`
+    if (group !== currentGroup) {
+      const label = link.section == null ? "Docs" : resolveSectionLabel(link.section)
+      if (currentGroup != null) lines.push("")
+      lines.push(
+        `## ${localized && link.localeId != null ? `${label} (${link.localeId})` : label}`,
+        ""
+      )
+      currentGroup = group
+    }
+    const { entry } = link
+    const description =
+      entry.metadata.description ??
+      (link.referencePages
+        ? `Index of ${link.referencePages} generated reference page${link.referencePages === 1 ? "" : "s"}.`
+        : undefined)
     const suffix = description == null ? "" : `: ${description}`
-    lines.push(`- [${title}](${toAbsolutePublicUrl(entry.publicPath, config)})${suffix}`)
+    lines.push(
+      `- [${getEntryTitle(entry)}](${toAbsolutePublicUrl(entry.publicPath, config)})${suffix}`
+    )
   }
-  lines.push("")
+  if (currentGroup != null) lines.push("")
 }
 
 function appendFullDocSection(

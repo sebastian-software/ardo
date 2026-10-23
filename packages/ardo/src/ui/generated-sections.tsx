@@ -5,7 +5,7 @@ import generatedSidebarsModule, { sectionIndexes } from "virtual:ardo/generated-
 import type { ArdoConfig, SidebarItem } from "../config/types"
 
 import { ArdoGeneratedSidebar } from "./GeneratedSidebar"
-import { resolveSectionKind, resolveSectionLabel } from "./section-catalog"
+import { compareSectionIds, resolveSectionLabel } from "./section-kinds"
 import { ArdoSidebarSection, type ArdoSidebarSectionProps } from "./Sidebar"
 import { getLocaleFromPath } from "./version-path"
 
@@ -36,7 +36,8 @@ export function createGeneratedSidebarSections(
     }))
     .filter((section): section is { id: string; to: string } => section.to != null)
 
-  sortSections(sections, config.sidebar?.sectionOrder)
+  const compare = compareSectionIds(config.sidebar?.sectionOrder)
+  sections.sort((left, right) => compare(left.id, right.id))
 
   return sections.map(({ id, to }) => (
     <ArdoSidebarSection
@@ -58,21 +59,6 @@ function firstLink(items: SidebarItem[] | undefined): string | undefined {
     if (nested != null) return nested
   }
   return undefined
-}
-
-function sortSections(sections: Array<{ id: string }>, sectionOrder: string[] | undefined): void {
-  const explicitRank = new Map((sectionOrder ?? []).map((id, index) => [id, index]))
-  const rank = (id: string): [number, number] => [
-    explicitRank.get(id) ?? Number.MAX_SAFE_INTEGER,
-    resolveSectionKind(id)?.rank ?? Number.MAX_SAFE_INTEGER,
-  ]
-  sections.sort((left, right) => {
-    const [leftExplicit, leftCatalog] = rank(left.id)
-    const [rightExplicit, rightCatalog] = rank(right.id)
-    return (
-      leftExplicit - rightExplicit || leftCatalog - rightCatalog || left.id.localeCompare(right.id)
-    )
-  })
 }
 
 function sectionMatcher(root: string): (pathname: string) => boolean {
