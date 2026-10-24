@@ -77,28 +77,6 @@ describe("resolveConfig", () => {
     })
   })
 
-  it("preserves brand configuration", () => {
-    const resolved = resolveConfig(
-      {
-        title: "Test",
-        brand: {
-          color: "blue",
-          accent: "teal",
-          neutral: "slate",
-          logo: "./app/assets/logo.svg",
-        },
-      },
-      "/project"
-    )
-
-    expect(resolved.brand).toStrictEqual({
-      color: "blue",
-      accent: "teal",
-      neutral: "slate",
-      logo: "./app/assets/logo.svg",
-    })
-  })
-
   it("resolves major versioning paths against the deployment base", () => {
     const resolved = resolveConfig(
       {
@@ -288,18 +266,5 @@ describe("resolveConfig", () => {
         "/project"
       )
     ).toThrow("openapi.spec must be a local file path")
-  })
-
-  it("rejects unknown brand hue presets", () => {
-    expect(() =>
-      resolveConfig(
-        {
-          title: "Test",
-          // @ts-expect-error exercising runtime validation for JavaScript configs.
-          brand: { color: "cerulean" },
-        },
-        "/project"
-      )
-    ).toThrow("brand.color must be one of")
   })
 })

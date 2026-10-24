@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, use, useMemo } from "react"
 
 import type { ArdoConfig, PageData, SidebarItem, TOCItem } from "../config/types"
+import type { ArdoLogo } from "../ui/HeaderLogo"
 import type { ArdoLabels } from "../ui/labels"
 
 import { defaultArdoLabels } from "../ui/labels"
@@ -146,13 +147,15 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
 export type ArdoSiteConfig = {
   editLink?: { pattern: string; text?: string }
   labels?: ArdoLabels
+  /** Header and mobile menu logo. */
+  logo?: ArdoLogo
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
   tocLabel?: string
 }
 
 const ArdoSiteConfigContext = createContext<ArdoSiteConfig>({})
 
-/** The `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings passed to `ArdoRoot`. */
+/** The `editLink`, `lastUpdated`, `labels`, `logo`, and `tocLabel` settings passed to `ArdoRoot`. */
 export function useArdoSiteConfig(): ArdoSiteConfig {
   return use(ArdoSiteConfigContext)
 }
@@ -168,7 +171,7 @@ type ArdoSiteConfigProviderProps = {
 }
 
 /**
- * Provides the `editLink`, `lastUpdated`, `labels`, and `tocLabel` settings. `ArdoRoot` renders
+ * Provides the `editLink`, `lastUpdated`, `labels`, `logo`, and `tocLabel` settings. `ArdoRoot` renders
  * it from its props.
  */
 export function ArdoSiteConfigProvider({ value, children }: ArdoSiteConfigProviderProps) {

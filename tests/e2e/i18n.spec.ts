@@ -102,10 +102,8 @@ for (const language of languages) {
     })
     await page.goto(`/v6/${language.id}/guide/getting-started/`)
     expect(indexes).toEqual([])
-    await page.getByRole("combobox", { name: language.search, exact: true }).click()
-    const dialog = page.getByRole("dialog", { name: language.search, exact: true })
-    await dialog.getByRole("combobox", { name: language.search, exact: true }).fill(language.query)
-    const results = dialog.getByRole("option")
+    await page.getByRole("combobox", { name: language.search, exact: true }).fill(language.query)
+    const results = page.getByRole("listbox").getByRole("option")
     await expect(results.first()).toBeVisible()
     for (const href of await results.evaluateAll((elements) =>
       elements.map((element) => element.getAttribute("href"))
@@ -157,8 +155,8 @@ test("mobile language controls and the logo retain the selected language without
     .click()
   await expect(page).toHaveURL(/\/v6\/es\/$/)
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
-  await expect(page.getByRole("link", { name: "Primeros pasos", exact: true })).toBeVisible()
-  await page.screenshot({ path: testInfo.outputPath("spanish-home-mobile.png"), fullPage: true })
+  await expect(page.getByRole("link", { name: "Empieza", exact: true })).toBeVisible()
+  await page.screenshot({ path: testInfo.outputPath("spanish-home-mobile.png"), fullPage: false })
 })
 
 test("legacy links preserve query and fragment, and older versions drop the locale prefix", async ({
@@ -173,3 +171,20 @@ test("legacy links preserve query and fragment, and older versions drop the loca
     page.getByRole("heading", { level: 1, name: "Getting Started", exact: true })
   ).toBeVisible()
 })
+
+for (const language of languages) {
+  test(`${language.id} homepage fits narrow and wide viewports`, async ({ page }, testInfo) => {
+    for (const width of [320, 1440]) {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.goto(`/v6/${language.id}/`)
+      await expect(page.locator("html")).toHaveAttribute("lang", language.id)
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+        width
+      )
+      if (language.id === "de" && width === 1440) {
+        await page.screenshot({ path: testInfo.outputPath("german-home-desktop.png") })
+      }
+    }
+  })
+}

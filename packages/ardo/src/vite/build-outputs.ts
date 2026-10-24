@@ -40,7 +40,8 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
       config.i18n !== false &&
       config.i18n.redirectUnlocalized === true &&
       entry.sourceLocaleId === config.i18n.defaultLocale &&
-      entry.routePath !== "/"
+      entry.routePath !== "/" &&
+      !config.i18n.locales.some(({ id }) => id === entry.routePath.split("/")[1])
     ) {
       redirects.push({
         from: buildPublicPath({ basePath: config.base, routePath: entry.routePath }),

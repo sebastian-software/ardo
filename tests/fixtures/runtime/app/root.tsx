@@ -40,6 +40,7 @@ export default function Root() {
       )}
 
       <ArdoRoot
+        theme={{ color: "blue", accent: "teal", neutral: "slate" }}
         className={isDocumentScrollPage ? "document-scroll-custom-layout" : undefined}
         scrollMode={isDocumentScrollPage ? "document" : undefined}
       >

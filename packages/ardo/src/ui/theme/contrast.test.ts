@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
-import { brandHuePresets } from "../../config/brand"
-import { type ColorChroma, createColorTokens } from "./tokens"
+import { huePresets } from "./theme-css"
+import { type ColorChroma, createColorTokens, defaultHues } from "./tokens"
 
 type Rgb = [number, number, number]
 
@@ -66,10 +66,10 @@ describe("default theme contrast", () => {
     for (const [level, chroma] of Object.entries(CHROMA_LEVELS)) {
       it(`meets WCAG AA for every hue preset in ${mode} mode (${level} chroma)`, () => {
         const failures: string[] = []
-        for (const [preset, hue] of Object.entries(brandHuePresets)) {
+        for (const [preset, { hue }] of Object.entries(huePresets)) {
           const colors = createColorTokens(
             mode,
-            { brand: hue, accent: (hue + 234) % 360, neutral: hue },
+            { ...defaultHues, brand: hue, accent: (hue + 234) % 360, neutral: hue },
             chroma
           )
           for (const [foreground, background, minimum] of TEXT_PAIRS) {
@@ -82,5 +82,31 @@ describe("default theme contrast", () => {
         expect(failures).toStrictEqual([])
       })
     }
+  }
+})
+
+const CALLOUTS = ["tip", "warning", "danger", "info", "note"] as const
+
+describe("callout contrast", () => {
+  for (const mode of ["light", "dark"] as const) {
+    it(`meets WCAG AA for every hue preset as a callout hue in ${mode} mode`, () => {
+      const failures = Object.entries(huePresets).flatMap(([preset, { hue }]) => {
+        const colors = createColorTokens(mode, {
+          ...defaultHues,
+          tip: hue,
+          warning: hue,
+          danger: hue,
+          info: hue,
+          note: hue,
+        })
+        return CALLOUTS.map((kind) => ({
+          kind,
+          ratio: contrast(colors[kind], colors[`${kind}Bg`]),
+        }))
+          .filter(({ ratio }) => ratio < 4.5)
+          .map(({ kind, ratio }) => `${preset} as ${kind}: ${ratio.toFixed(2)}:1`)
+      })
+      expect(failures).toStrictEqual([])
+    })
   }
 })

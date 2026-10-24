@@ -39,6 +39,25 @@ function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"
 }
 
 describe("UI shell landmarks", () => {
+  it("keeps header and mobile panel home links in the active locale", () => {
+    const localizedConfig = {
+      ...config,
+      i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
+    }
+    const view = renderToStaticMarkup(
+      <ArdoPageProvider path="/de/guide/start" base="/v6/">
+        <ArdoProvider config={localizedConfig} sidebar={[]}>
+          <ArdoHeader />
+          <MobileSlidePanel title="Docs" triggerRef={triggerRef} onClose={closeMobilePanel}>
+            <span>Panel</span>
+          </MobileSlidePanel>
+        </ArdoProvider>
+      </ArdoPageProvider>
+    )
+    expect(view.match(/href="\/v6\/de\/"/gu)).toHaveLength(2)
+    expect(view).not.toContain('href="/v6/"')
+  })
+
   it("keeps stable hook classes on default landmarks", () => {
     const view = renderShell(
       <>
@@ -151,27 +170,31 @@ describe("UI shell landmarks", () => {
     expect(view).toContain(headerStyles.headerContainerPage)
   })
 
-  it("applies brand hue styles and logo defaults", () => {
+  it("renders the theme and gives the header the logo", () => {
     const view = renderRootRoute(
       <ArdoRoot
-        config={{
-          title: "Docs",
-          brand: {
-            color: "blue",
-            accent: "teal",
-            neutral: "slate",
-            logo: "/logo.svg",
-          },
-        }}
+        config={{ title: "Docs" }}
+        theme={{ color: "blue", accent: "teal", neutral: "slate" }}
+        logo="/assets/logo-a1b2.svg"
       >
         <p>Content</p>
       </ArdoRoot>
     )
 
-    expect(view).toContain("data-ardo-brand")
-    expect(view).toContain("--ardo-hue-brand:240")
-    expect(view).toContain("--ardo-hue-accent:170")
-    expect(view).toContain("--ardo-hue-neutral:260")
-    expect(view).toContain('<img src="/logo.svg" alt="Docs"')
+    expect(view).toContain("data-ardo-theme")
+    expect(view).toContain(
+      ":root{--ardo-hue-brand:240;--ardo-hue-accent:170;--ardo-hue-neutral:255;"
+    )
+    expect(view).toContain('<img src="/assets/logo-a1b2.svg" alt="Docs"')
+  })
+
+  it("renders no theme style without a theme", () => {
+    const view = renderRootRoute(
+      <ArdoRoot config={{ title: "Docs" }}>
+        <p>Content</p>
+      </ArdoRoot>
+    )
+
+    expect(view).not.toContain("data-ardo-theme")
   })
 })

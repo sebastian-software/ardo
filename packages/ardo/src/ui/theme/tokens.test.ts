@@ -1,123 +1,35 @@
 import { describe, expect, it } from "vitest"
 
-import { createTheme } from "./tokens"
+import { darkTokens, lightTokens } from "./tokens"
 
-describe("createTheme", () => {
-  it("keeps the number API compatible while exposing CSS hue tokens", () => {
-    const theme = createTheme(130)
-
-    expect(theme.light.hue).toStrictEqual({
-      brand: "130",
-      accent: "4",
-      neutral: "130",
-    })
-    expect(theme.dark.hue).toStrictEqual(theme.light.hue)
-    expect(theme.light.color.brand).toBe(
-      "oklch(0.48 calc(0.185 * var(--ardo-chroma-brand)) var(--ardo-hue-brand))"
-    )
-    expect(theme.light.color.bg).toBe(
-      "oklch(0.992 calc(0.0015 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
-    )
-    expect(theme.dark.color.sidebarBg).toBe(
-      "oklch(0.13 calc(0.008 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
-    )
-  })
-
-  it("supports a neutral hue independent from brand and accent hues", () => {
-    const theme = createTheme({ primary: 130, secondary: 45, neutral: 260 })
-
-    expect(theme.light.hue).toStrictEqual({
-      brand: "130",
-      accent: "45",
-      neutral: "260",
-    })
-    expect(theme.light.color.accent).toBe(
-      "oklch(0.5 calc(0.075 * var(--ardo-chroma-accent)) var(--ardo-hue-accent))"
-    )
-    expect(theme.light.color.border).toBe(
-      "oklch(0.88 calc(0.005 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
-    )
-    expect(theme.dark.color.text).toBe(
-      "oklch(0.94 calc(0.004 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
-    )
-  })
-
-  it("merges shared token overrides into light and dark themes", () => {
-    const theme = createTheme({
-      color: {
-        bg: "#fbfbf8",
-        brand: "#0038ff",
-        brandGradient: "#0038ff",
-        shadowSm: "0 0 0 0 transparent",
-      },
-      radius: {
-        base: "0px",
-        lg: "0px",
-        sm: "0px",
-      },
-    })
-
-    expect(theme.light.hue).toStrictEqual({
+describe("default tokens", () => {
+  it("keep every hue in a CSS variable with Ardo's defaults", () => {
+    expect(lightTokens.hue).toStrictEqual({
       brand: "356",
       accent: "230",
       neutral: "356",
+      tip: "155",
+      warning: "45",
+      danger: "25",
+      info: "220",
+      note: "270",
     })
-    expect(theme.light.color.bg).toBe("#fbfbf8")
-    expect(theme.dark.color.bg).toBe("#fbfbf8")
-    expect(theme.light.color.brandGradient).toBe("#0038ff")
-    expect(theme.dark.color.shadowSm).toBe("0 0 0 0 transparent")
-    expect(theme.light.radius).toStrictEqual({
-      base: "0px",
-      lg: "0px",
-      sm: "0px",
-      xl: "1rem",
-      full: "999px",
-    })
+    expect(darkTokens.hue).toStrictEqual(lightTokens.hue)
+    expect(lightTokens.chroma).toStrictEqual({ brand: "1", accent: "1", neutral: "1" })
   })
 
-  it("supports light and dark specific token overrides", () => {
-    const theme = createTheme({
-      primary: 210,
-      color: {
-        brand: "#0038ff",
-      },
-      dark: {
-        color: {
-          bg: "#101010",
-          text: "#fbfbf8",
-        },
-      },
-      light: {
-        color: {
-          bg: "#fbfbf8",
-          text: "#101010",
-        },
-      },
-    })
-
-    expect(theme.light.hue.brand).toBe("210")
-    expect(theme.light.color.brand).toBe("#0038ff")
-    expect(theme.dark.color.brand).toBe("#0038ff")
-    expect(theme.light.color.bg).toBe("#fbfbf8")
-    expect(theme.light.color.text).toBe("#101010")
-    expect(theme.dark.color.bg).toBe("#101010")
-    expect(theme.dark.color.text).toBe("#fbfbf8")
+  it("derive brand, chrome, and callout colors from those variables", () => {
+    expect(lightTokens.color.brand).toBe(
+      "oklch(0.48 calc(0.185 * var(--ardo-chroma-brand)) var(--ardo-hue-brand))"
+    )
+    expect(lightTokens.color.bg).toBe(
+      "oklch(0.992 calc(0.0015 * var(--ardo-chroma-neutral)) var(--ardo-hue-neutral))"
+    )
+    expect(lightTokens.color.warningBg).toBe("oklch(0.98 0.03 var(--ardo-hue-warning))")
+    expect(darkTokens.color.warning).toBe("oklch(0.8 0.12 calc(var(--ardo-hue-warning) + 15))")
   })
 
-  it("scales hue-derived chroma and leaves the hue tokens alone", () => {
-    const theme = createTheme({ primary: 123, chroma: { brand: 0.4, accent: 2, neutral: 0 } })
-
-    expect(theme.light.chroma).toStrictEqual({ brand: "0.4", accent: "2", neutral: "0" })
-    expect(theme.dark.chroma).toStrictEqual(theme.light.chroma)
-    expect(createTheme({ primary: 123, chroma: 0.5 }).light.chroma).toStrictEqual({
-      brand: "0.5",
-      accent: "0.5",
-      neutral: "1",
-    })
-  })
-
-  it("rejects negative or non-finite chroma", () => {
-    expect(() => createTheme({ chroma: -1 })).toThrow("chroma.brand")
-    expect(() => createTheme({ chroma: { neutral: Number.NaN } })).toThrow("chroma.neutral")
+  it("let headings follow the body font", () => {
+    expect(lightTokens.font.familyHeading).toBe("var(--ardo-font-family)")
   })
 })

@@ -8,6 +8,7 @@ import type { ResolvedConfig } from "../config/types"
 
 import { ArdoApp } from "../runtime/app"
 import { ArdoDocumentProvider } from "../runtime/document"
+import { type ArdoDocumentIcons, ArdoDocumentIconsContext } from "../runtime/document-context"
 import {
   ARDO_APP_ELEMENT_ID,
   ARDO_PAGE_DATA_ATTRIBUTE,
@@ -61,7 +62,7 @@ export async function renderPage(
   const Layout = root.Layout ?? ArdoRootLayout
 
   const locale = applyLocaleMetadata(page, config, { path: pagePath, base: options.base })
-  const body = await renderToHtml(
+  const { body, icons } = await renderWithIcons(
     <ArdoApp config={config} page={page} root={root} routes={routes} />
   )
   const shell = await renderToHtml(
@@ -73,6 +74,7 @@ export async function renderPage(
         stylesheets: assets.stylesheets,
         lang: locale ?? config.lang,
         iconBasePath: config.deploymentBase,
+        ...icons,
       }}
     >
       <Layout>
@@ -146,4 +148,18 @@ function applyLocaleMetadata(
     )
   }
   return locale
+}
+
+async function renderWithIcons(element: ReactNode) {
+  let icons: ArdoDocumentIcons = {}
+  const body = await renderToHtml(
+    <ArdoDocumentIconsContext
+      value={(value) => {
+        icons = value
+      }}
+    >
+      {element}
+    </ArdoDocumentIconsContext>
+  )
+  return { body, icons }
 }

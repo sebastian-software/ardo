@@ -27,7 +27,7 @@ test("a denied homepage copy offers a selected manual prompt", async ({ page }) 
 
 test("an overflowing API code block can be reached and scrolled by keyboard", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/en/api-reference/types/ardobrandhuepreset/")
+  await page.goto("/v6/en/api-reference/types/sitemapchangefreq/")
   const code = page.locator(".ardo-code-block pre").first()
   await expect(code).toHaveAttribute("tabindex", "0")
   expect(await code.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true)

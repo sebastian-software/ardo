@@ -1,6 +1,6 @@
 ---
-title: "Layout und Navigation"
-description: "Ergänze Seiten und Abschnitte, ändere Logo, Kopf- und Fußzeile und komponiere das Layout in root.tsx."
+title: '"Layout und Navigation"'
+description: '"Ergänze Seiten und Abschnitte, ändere Logo, Kopf- und Fußzeile und komponiere das Layout in root.tsx."'
 order: 7
 ---
 
@@ -110,18 +110,20 @@ export default function Root() {
 
 ### Logo und Favicon ändern {#change-the-logo-and-favicon}
 
-Setze `brand.logo` in `ardo.config.ts`. Ein lokales SVG dient als Kopfzeilenlogo und Faviconquelle:
+Importiere Dateien und übergib sie an `ArdoRoot`. Vites Fingerprints bringen neue Logos beim nächsten Deployment zu den Lesern:
 
-```ts title="ardo.config.ts"
-import { defineArdoConfig } from "ardo/config"
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
 
-export default defineArdoConfig({
-  title: "My Docs",
-  brand: { logo: "./app/assets/logo.svg" },
-})
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return <ArdoRoot logo={logo} icon={icon} />
+}
 ```
 
-`brand.logo` akzeptiert auch `{ light, dark }`. Für eine andere Faviconquelle nutze [`icons.source`](/de/guide/configuration#icons); für eigene Dateien in `public/` setze `icons: false`.
+`logo` akzeptiert `{ light, dark }`, `appleTouchIcon` ein 180×180-PNG für iOS. Ohne `icon` verlinkt Ardo seine Eulenicons. Details unter [Theming](/de/guide/theming#colors-logo-and-favicon).
 
 ### Fußzeile ändern {#change-the-footer}
 
@@ -191,20 +193,24 @@ export default function Root() {
 
 `ArdoRoot` erhält Website-Einstellungen als Props und Layoutelemente als Kinder.
 
-| Prop          | Typ                                                                                | Zweck                                                                        |
-| ------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `header`      | `ReactNode \| false`                                                               | Eigene Kopfzeile oder `false`.                                               |
-| `sidebar`     | `ReactNode \| false`                                                               | Eigene Seitenleiste oder `false`.                                            |
-| `footer`      | `ReactNode \| false`                                                               | Eigene Fußzeile oder `false`.                                                |
-| `editLink`    | `{ pattern: string; text?: string }`                                               | Bearbeitungslink-Muster für Markdown.                                        |
-| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Anzeige des Änderungsdatums.                                                 |
-| `labels`      | `ArdoLabelsInput`                                                                  | Standardtexte der Oberfläche ersetzen.                                       |
-| `scrollMode`  | `"viewport" \| "document"`                                                         | Viewport-Hülle (Standard) oder Dokument-Scrollen.                            |
-| `tocLabel`    | `string`                                                                           | Beschriftung des Inhaltsverzeichnisses.                                      |
-| `className`   | `string`                                                                           | Standard-Layoutklasse ersetzen.                                              |
-| `config`      | `ArdoConfig`                                                                       | Konfiguration aus Ardos Einstiegspunkten; explizit für Tests und Vorschauen. |
-| `components`  | `ArdoMDXComponents`                                                                | Markdown-Komponenten samt Wrapper ergänzen oder ersetzen.                    |
-| `children`    | `ReactNode`                                                                        | Kopfzeile, Seitenleiste, Fußzeile oder Inhaltsüberschreibung.                |
+| Prop             | Typ                                                                                | Zweck                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `theme`          | `ArdoThemeProps`                                                                   | Farbtöne, Sättigung, Callouts, Schriften und Tokens; siehe [Theming](/de/guide/theming). |
+| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Kopfzeilen- und Menülogo, meist importiert.                                              |
+| `icon`           | `string`                                                                           | Favicon als SVG- oder PNG-Import. Standard: Eulenicons.                                  |
+| `appleTouchIcon` | `string`                                                                           | 180×180-PNG für iOS.                                                                     |
+| `header`         | `ReactNode \| false`                                                               | Eigene Kopfzeile oder `false`.                                                           |
+| `sidebar`        | `ReactNode \| false`                                                               | Eigene Seitenleiste oder `false`.                                                        |
+| `footer`         | `ReactNode \| false`                                                               | Eigene Fußzeile oder `false`.                                                            |
+| `editLink`       | `{ pattern: string; text?: string }`                                               | Bearbeitungslink-Muster für Markdown.                                                    |
+| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Anzeige des Änderungsdatums.                                                             |
+| `labels`         | `ArdoLabelsInput`                                                                  | Standardtexte der Oberfläche ersetzen.                                                   |
+| `scrollMode`     | `"viewport" \| "document"`                                                         | Viewport-Hülle (Standard) oder Dokument-Scrollen.                                        |
+| `tocLabel`       | `string`                                                                           | Beschriftung des Inhaltsverzeichnisses.                                                  |
+| `className`      | `string`                                                                           | Standard-Layoutklasse ersetzen.                                                          |
+| `config`         | `ArdoConfig`                                                                       | Konfiguration aus Ardos Einstiegspunkten; explizit für Tests und Vorschauen.             |
+| `components`     | `ArdoMDXComponents`                                                                | Markdown-Komponenten samt Wrapper ergänzen oder ersetzen.                                |
+| `children`       | `ReactNode`                                                                        | Kopfzeile, Seitenleiste, Fußzeile oder Inhaltsüberschreibung.                            |
 
 ## Kopfzeile {#header}
 
@@ -224,7 +230,7 @@ import logo from "./assets/logo.svg"
 </ArdoHeader>
 ```
 
-`ArdoRoot` reicht `brand.logo` aus der Konfiguration weiter, sofern die Kopfzeile kein eigenes `logo` setzt.
+Das `logo` von `ArdoRoot` gilt für Kopfzeile und mobiles Menü, sofern die Kopfzeile kein eigenes setzt.
 
 | Prop                | Zweck                                                   |
 | ------------------- | ------------------------------------------------------- |
@@ -480,7 +486,7 @@ Komponenten lesen Ardos Zustand über Hooks aus `ardo/runtime`:
 
 | Hook                  | Rückgabe                                                               |
 | --------------------- | ---------------------------------------------------------------------- |
-| `useArdoConfig()`     | Website-Konfiguration, etwa `title`, `description` und `brand`.        |
+| `useArdoConfig()`     | Website-Konfiguration, etwa `title`, `description` und `base`.         |
 | `useArdoSiteConfig()` | `editLink`, `lastUpdated`, `labels` und `tocLabel` von `ArdoRoot`.     |
 | `useArdoSidebar()`    | Seitenleisteneinträge des aktuellen Abschnitts.                        |
 | `useArdoPageData()`   | In Markdown/MDX: Titel, Frontmatter, Inhaltsverzeichnis und Quellpfad. |
@@ -548,10 +554,9 @@ Exportiere `Layout` aus `root.tsx`, um `ArdoRootLayout` Optionen zu übergeben:
 ```tsx
 import type { ReactNode } from "ardo/react"
 import { ArdoRootLayout } from "ardo/ui"
-import logo from "./assets/logo.svg"
 
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
@@ -590,22 +595,22 @@ import { ArdoErrorBoundary } from "ardo/ui"
 export const ErrorBoundary = ArdoErrorBoundary
 ```
 
-## Theme-Richtlinie von RootLayout {#rootlayout-theme-policy}
+## Farbschema von RootLayout {#rootlayout-color-scheme}
 
-`theme="auto"` nutzt zuerst gespeichertes `ardo-theme`, danach `prefers-color-scheme`. Setze eine feste Richtlinie, wenn keine Benutzerauswahl gewünscht ist:
+`ArdoRootLayout` nutzt mit `colorScheme="auto"` zuerst gespeichertes `ardo-theme`, danach `prefers-color-scheme`. Setze ein festes Farbschema, wenn Benutzer nicht wählen sollen:
 
 ```tsx
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
-| Theme-Regel | Verhalten                                                   |
-| ----------- | ----------------------------------------------------------- |
-| `auto`      | Gespeicherte Auswahl, sonst Systemeinstellung. Standard.    |
-| `light`     | Immer hell; alte gespeicherte Auswahl löschen.              |
-| `dark`      | Immer dunkel; alte gespeicherte Auswahl löschen.            |
-| `system`    | Immer `prefers-color-scheme`; gespeicherte Auswahl löschen. |
+| Farbschema | Verhalten                                                   |
+| ---------- | ----------------------------------------------------------- |
+| `auto`     | Gespeicherte Auswahl, sonst Systemeinstellung. Standard.    |
+| `light`    | Immer hell; alte gespeicherte Auswahl löschen.              |
+| `dark`     | Immer dunkel; alte gespeicherte Auswahl löschen.            |
+| `system`   | Immer `prefers-color-scheme`; gespeicherte Auswahl löschen. |
 
 ## Dokument-Scrollen mit eigenem Layout {#document-scrolling-with-site-owned-chrome}
 

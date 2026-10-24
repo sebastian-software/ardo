@@ -1,7 +1,6 @@
 import type { ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
 
-import { serializeVirtualConfigModule } from "./brand"
 import { readCollections } from "./collections"
 import { detectGitHash } from "./git-utils"
 import { createRouteManifestOptions } from "./route-manifest"
@@ -50,7 +49,6 @@ export async function loadVirtualModule(
       base: state.resolvedConfig.base,
       deploymentBase: state.resolvedConfig.deploymentBase,
       lang: state.resolvedConfig.lang,
-      brand: state.resolvedConfig.brand,
       versioning: state.resolvedConfig.versioning,
       sidebar: state.resolvedConfig.sidebar,
       i18n: state.resolvedConfig.i18n,
@@ -58,7 +56,7 @@ export async function loadVirtualModule(
       buildTime: new Date().toISOString(),
       buildHash: detectGitHash(state.resolvedConfig.root),
     }
-    return serializeVirtualConfigModule(clientConfig, state.resolvedConfig.root)
+    return `export default ${JSON.stringify(clientConfig)}`
   }
 
   if (id === RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID]) {

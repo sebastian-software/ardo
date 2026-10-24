@@ -16,6 +16,7 @@ import {
   ArdoSidebarSection,
   ArdoGeneratedSidebar,
   ArdoSocialLink,
+  type ArdoThemeProps,
 } from "ardo/ui"
 import "./theme.css"
 
@@ -28,6 +29,21 @@ export const meta: ArdoMetaFunction = () => [
 
 export const ErrorBoundary = ArdoErrorBoundary
 
+// The owl palette from the logo: olive brand, terracotta accent, and a barely
+// warm off-white. The owl colors are calmer than Ardo's default, so chroma turns
+// the brand down and the accent up; Ardo derives everything else.
+const theme: ArdoThemeProps = {
+  color: 123, // olive, the owl's body
+  accent: 38, // terracotta, the owl's wing
+  neutral: 95, // a barely warm off-white
+  chroma: { color: 0.4, accent: 2, neutral: 1.6 },
+  // Warnings take the owl's mustard, so they don't read as the accent.
+  status: { warning: 72 },
+  // Code sits on the off-white instead of a terracotta tint.
+  light: { color: { codeBg: "oklch(0.973 0.006 95)", codeBorder: "oklch(0.9 0.009 95)" } },
+  dark: { color: { codeBg: "oklch(0.205 0.01 95)", codeBorder: "oklch(0.31 0.014 95)" } },
+}
+
 export default function Root() {
   const locale = getI18n().locale
   const labels = translatedLabels()
@@ -35,6 +51,8 @@ export default function Root() {
     <ArdoRoot
       labels={labels}
       components={{ wrapper: LocalizedContent }}
+      theme={theme}
+      logo={logo}
       editLink={{
         pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
         text: t`Edit this page on GitHub`,
@@ -44,7 +62,7 @@ export default function Root() {
         text: labels.page.lastUpdated,
       }}
     >
-      <ArdoHeader logo={logo} searchPlaceholder={t`Search documentation...`}>
+      <ArdoHeader searchPlaceholder={t`Search documentation...`}>
         <ArdoHeaderActions>
           <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />
         </ArdoHeaderActions>

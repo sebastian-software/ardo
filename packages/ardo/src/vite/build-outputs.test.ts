@@ -145,9 +145,20 @@ describe("build outputs", () => {
       ...item,
       sourceLocaleId: "en",
     }))
-    const redirects = collectRedirects(localizedEntries, localized)
+    const redirects = collectRedirects(
+      [
+        ...localizedEntries,
+        ...localizedEntries.map((item) => ({
+          ...item,
+          routePath: "/de",
+          publicPath: "/docs/en/de",
+        })),
+      ],
+      localized
+    )
     expect(redirects).toContainEqual({ from: "/docs/guide", to: "/docs/en/guide" })
     expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/docs/de/guide" }))
+    expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/docs/de" }))
   })
 
   it("uses the current version path for sitemap URLs", () => {

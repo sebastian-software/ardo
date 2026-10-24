@@ -1,6 +1,6 @@
 ---
-title: "Mise en page et navigation"
-description: "Ajoutez pages et sections, personnalisez logo, en-tête et pied de page, et composez l’interface dans root.tsx."
+title: '"Mise en page et navigation"'
+description: '"Ajoutez pages et sections, personnalisez logo, en-tête et pied de page, et composez l’interface dans root.tsx."'
 order: 7
 ---
 
@@ -110,18 +110,20 @@ export default function Root() {
 
 ### Changer logo et favicon {#change-the-logo-and-favicon}
 
-Définissez `brand.logo` dans `ardo.config.ts`. Un SVG local devient le logo et la source des favicons :
+Importez les fichiers et passez-les à `ArdoRoot`. Les fingerprints Vite transmettent le nouveau logo au prochain déploiement :
 
-```ts title="ardo.config.ts"
-import { defineArdoConfig } from "ardo/config"
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
 
-export default defineArdoConfig({
-  title: "My Docs",
-  brand: { logo: "./app/assets/logo.svg" },
-})
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return <ArdoRoot logo={logo} icon={icon} />
+}
 ```
 
-`brand.logo` accepte aussi `{ light, dark }`. Utilisez [`icons.source`](/fr/guide/configuration#icons) pour une autre source ou `icons: false` pour gérer les fichiers dans `public/`.
+`logo` accepte `{ light, dark }` et `appleTouchIcon` un PNG 180×180 pour iOS. Sans `icon`, Ardo lie ses icônes de chouette. Voir [Thèmes](/fr/guide/theming#colors-logo-and-favicon).
 
 ### Changer le pied de page {#change-the-footer}
 
@@ -191,20 +193,24 @@ export default function Root() {
 
 `ArdoRoot` reçoit les réglages du site comme props et l’interface comme enfants.
 
-| Prop          | Type                                                                               | Usage                                                             |
-| ------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `header`      | `ReactNode \| false`                                                               | En-tête personnalisé ou `false`.                                  |
-| `sidebar`     | `ReactNode \| false`                                                               | Navigation personnalisée ou `false`.                              |
-| `footer`      | `ReactNode \| false`                                                               | Pied personnalisé ou `false`.                                     |
-| `editLink`    | `{ pattern: string; text?: string }`                                               | Motif des liens d’édition Markdown.                               |
-| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Affichage de la date de modification.                             |
-| `labels`      | `ArdoLabelsInput`                                                                  | Remplace les textes de l’interface.                               |
-| `scrollMode`  | `"viewport" \| "document"`                                                         | Shell viewport (défaut) ou défilement du document.                |
-| `tocLabel`    | `string`                                                                           | Libellé du sommaire.                                              |
-| `className`   | `string`                                                                           | Remplace la classe de mise en page.                               |
-| `config`      | `ArdoConfig`                                                                       | Configuration fournie par Ardo ; explicite pour tests et aperçus. |
-| `components`  | `ArdoMDXComponents`                                                                | Ajoute ou remplace les composants Markdown et leur wrapper.       |
-| `children`    | `ReactNode`                                                                        | En-tête, navigation, pied ou contenu personnalisé.                |
+| Prop             | Type                                                                               | Usage                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `theme`          | `ArdoThemeProps`                                                                   | Teintes, saturation, encadrés, polices et tokens ; voir [Thèmes](/fr/guide/theming). |
+| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Logo d’en-tête et de menu, généralement importé.                                     |
+| `icon`           | `string`                                                                           | Favicon importé en SVG ou PNG. Défaut : chouette.                                    |
+| `appleTouchIcon` | `string`                                                                           | PNG 180×180 pour iOS.                                                                |
+| `header`         | `ReactNode \| false`                                                               | En-tête personnalisé ou `false`.                                                     |
+| `sidebar`        | `ReactNode \| false`                                                               | Navigation personnalisée ou `false`.                                                 |
+| `footer`         | `ReactNode \| false`                                                               | Pied personnalisé ou `false`.                                                        |
+| `editLink`       | `{ pattern: string; text?: string }`                                               | Motif des liens d’édition Markdown.                                                  |
+| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Affichage de la date de modification.                                                |
+| `labels`         | `ArdoLabelsInput`                                                                  | Remplace les textes de l’interface.                                                  |
+| `scrollMode`     | `"viewport" \| "document"`                                                         | Shell viewport (défaut) ou défilement du document.                                   |
+| `tocLabel`       | `string`                                                                           | Libellé du sommaire.                                                                 |
+| `className`      | `string`                                                                           | Remplace la classe de mise en page.                                                  |
+| `config`         | `ArdoConfig`                                                                       | Configuration fournie par Ardo ; explicite pour tests et aperçus.                    |
+| `components`     | `ArdoMDXComponents`                                                                | Ajoute ou remplace les composants Markdown et leur wrapper.                          |
+| `children`       | `ReactNode`                                                                        | En-tête, navigation, pied ou contenu personnalisé.                                   |
 
 ## En-tête {#header}
 
@@ -224,7 +230,7 @@ import logo from "./assets/logo.svg"
 </ArdoHeader>
 ```
 
-`ArdoRoot` transmet `brand.logo` à l’en-tête, sauf s’il définit son propre `logo`.
+Le `logo` d’`ArdoRoot` atteint en-tête et menu mobile, sauf si l’en-tête définit le sien.
 
 | Prop                | Usage                                                  |
 | ------------------- | ------------------------------------------------------ |
@@ -478,16 +484,16 @@ Gardez des identifiants explicites et uniques pour les liens durables. Le mode D
 
 Les composants lisent l’état via les hooks d’`ardo/runtime` :
 
-| Hook                  | Retour                                                                 |
-| --------------------- | ---------------------------------------------------------------------- |
-| `useArdoConfig()`     | Configuration du site : `title`, `description`, `brand`.               |
-| `useArdoSiteConfig()` | Réglages `editLink`, `lastUpdated`, `labels`, `tocLabel` d’`ArdoRoot`. |
-| `useArdoSidebar()`    | Éléments de navigation de la section courante.                         |
-| `useArdoPageData()`   | Dans Markdown/MDX : titre, frontmatter, sommaire et source.            |
-| `useArdoTOC()`        | Sommaire courant ou liste vide.                                        |
-| `useArdoPath()`       | Chemin de page sans base.                                              |
-| `useArdoLocale()`     | Langue active, y compris au rendu serveur.                             |
-| `useArdoContext()`    | Configuration, navigation et page réunies.                             |
+| Hook                  | Retour                                                                         |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `useArdoConfig()`     | Configuration du site : `title`, `description`, `base`.                        |
+| `useArdoSiteConfig()` | Réglages `editLink`, `lastUpdated`, `labels`, `logo`, `tocLabel` d’`ArdoRoot`. |
+| `useArdoSidebar()`    | Éléments de navigation de la section courante.                                 |
+| `useArdoPageData()`   | Dans Markdown/MDX : titre, frontmatter, sommaire et source.                    |
+| `useArdoTOC()`        | Sommaire courant ou liste vide.                                                |
+| `useArdoPath()`       | Chemin de page sans base.                                                      |
+| `useArdoLocale()`     | Langue active, y compris au rendu serveur.                                     |
+| `useArdoContext()`    | Configuration, navigation et page réunies.                                     |
 
 Lien d’édition à partir des réglages et de la page courante :
 
@@ -548,10 +554,9 @@ Exportez `Layout` depuis `root.tsx` pour configurer `ArdoRootLayout` :
 ```tsx
 import type { ReactNode } from "ardo/react"
 import { ArdoRootLayout } from "ardo/ui"
-import logo from "./assets/logo.svg"
 
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
@@ -590,22 +595,22 @@ import { ArdoErrorBoundary } from "ardo/ui"
 export const ErrorBoundary = ArdoErrorBoundary
 ```
 
-## Politique de thème RootLayout {#rootlayout-theme-policy}
+## Schéma de couleurs RootLayout {#rootlayout-color-scheme}
 
-`theme="auto"` privilégie `ardo-theme` enregistré, puis `prefers-color-scheme`. Fixez une politique pour désactiver le choix utilisateur :
+Avec `colorScheme="auto"`, `ArdoRootLayout` privilégie `ardo-theme` enregistré, puis `prefers-color-scheme`. Fixez un schéma pour désactiver le choix utilisateur :
 
 ```tsx
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
-| Politique | Comportement                                                  |
-| --------- | ------------------------------------------------------------- |
-| `auto`    | Préférence enregistrée, sinon système. Défaut.                |
-| `light`   | Toujours clair ; efface l’ancien choix enregistré.            |
-| `dark`    | Toujours sombre ; efface l’ancien choix enregistré.           |
-| `system`  | Toujours `prefers-color-scheme` ; efface le choix enregistré. |
+| Schéma de couleurs | Comportement                                                  |
+| ------------------ | ------------------------------------------------------------- |
+| `auto`             | Préférence enregistrée, sinon système. Défaut.                |
+| `light`            | Toujours clair ; efface l’ancien choix enregistré.            |
+| `dark`             | Toujours sombre ; efface l’ancien choix enregistré.           |
+| `system`           | Toujours `prefers-color-scheme` ; efface le choix enregistré. |
 
 ## Défilement du document avec interface personnalisée {#document-scrolling-with-site-owned-chrome}
 

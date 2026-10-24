@@ -179,7 +179,11 @@ export function getDevRedirect(
   )
     return
   const relative = `/${pathname.slice(config.base.length)}`
-  if (normalizeRedirectPath(relative) === "/") return
+  if (
+    normalizeRedirectPath(relative) === "/" ||
+    config.i18n.locales.some(({ id }) => id === relative.split("/")[1])
+  )
+    return
   const target = `/${config.i18n.defaultLocale}${normalizeRedirectPath(relative)}`.replace(
     /\/$/u,
     ""

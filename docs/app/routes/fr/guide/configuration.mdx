@@ -1,6 +1,6 @@
 ---
-title: "Configuration"
-description: "Configurez la CLI, les routes générées, le traitement Markdown, la référence API et l’interface React d’Ardo."
+title: '"Configuration"'
+description: '"Configurez la CLI, les routes générées, le traitement Markdown, la référence API et l’interface React d’Ardo."'
 order: 12
 ---
 
@@ -141,29 +141,6 @@ defineArdoConfig({
 })
 ```
 
-### brand {#brand}
-
-- **Type :** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; chroma?: number | { color?: number; accent?: number; neutral?: number }; logo?: string | { light: string; dark: string } }`
-- **Défaut :** `{}`
-
-Couleurs et logo de marque pour le thème et l’en-tête par défaut. `color`, `accent` et `neutral` acceptent une teinte OKLCH numérique ou `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` et `gray`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  brand: {
-    color: "blue",
-    accent: "teal",
-    neutral: "slate",
-    logo: "./app/assets/logo.svg",
-  },
-})
-```
-
-`chroma` règle la saturation : `1` conserve le défaut, `0.4` atténue la palette et `0` produit du gris. Un nombre s’applique à `color` et `accent` ; un objet règle chaque teinte. [Thèmes](/fr/guide/theming#brand-shortcut) illustre le résultat.
-
-Sans `accent`, Ardo déduit l’accent de `color`. Sans `neutral`, les surfaces neutres suivent `color`. Les logos SVG locaux sont intégrés à l’en-tête et servent de source par défaut aux favicons. Définissez `logo` sur `ArdoHeader` ou `icons.source` pour utiliser des fichiers différents.
-
 ### seo.llms {#seo-llms}
 
 - **Type :** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
@@ -247,14 +224,16 @@ Définissez `seo.robots: false` pour fournir votre `robots.txt` depuis `public/`
 
 Vérifie les liens internes du build avec [ferrolink](https://github.com/sebastian-software/ferrolink). Après l’écriture des pages, Ardo vérifie liens, images, scripts, feuilles de style, `srcset` et redirections meta de tout le HTML, issu de Markdown, de composants ou de pages générées. Il vérifie aussi les destinations dans `_redirects` et `vercel.json`, et les chemins de `versions.json`. Par défaut, chaque `#fragment` doit correspondre à un identifiant. Les sources de redirection sont valides puisqu’Ardo génère leurs pages.
 
-Les liens externes sont exclus car ils dépendent de serveurs tiers. Les autres versions configurées sont considérées comme présentes et déployées séparément. Un lien hors de `base`, tel `/guide/` pour un site sous `/docs/`, est signalé. Les motifs `exclude` désignent des cibles avec ou sans chemin de base ; un `*` correspond à toute séquence. Chaque diagnostic indique fichier et ligne.
+Les liens externes sont exclus car ils dépendent de serveurs tiers. Les autres versions configurées sont considérées comme présentes et déployées séparément. Un lien hors de `base`, tel `/guide/` sous `/docs/`, est signalé. Chaque diagnostic indique fichier et ligne.
+
+`exclude` contient des globs de cibles à ignorer. Avec `/` initial, le motif couvre le chemin URL complet, base comprise, comme `/generated/**` ou `/blog/**` pour une autre application du même hôte. Les autres motifs sont relatifs à la base. Une cible ignorée ne produit de diagnostic ni pour fichier ni pour ancre absente.
 
 ```ts
 defineArdoConfig({
   title: "My Docs",
   linkCheck: {
     level: "error",
-    exclude: ["/generated/*"],
+    exclude: ["/generated/**"],
   },
 })
 ```
@@ -446,21 +425,10 @@ Configuration de la génération automatique des routes. `false` la désactive e
 
 ### icons {#icons}
 
-- **Type :** `false | { source?: string }`
-- **Défaut :** icônes Ardo automatiques
+- **Type :** `false`
+- **Défaut :** icônes de chouette générées
 
-Ardo génère les favicons au build et les sert en développement : `/favicon.ico`, `/icon.svg` et `/apple-touch-icon.png`. Cet ensemble minimal moderne n’ajoute ni manifeste web ni anciens fichiers `apple-touch-icon-precomposed.png`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  icons: {
-    source: "./app/assets/logo.svg",
-  },
-})
-```
-
-Définissez `icons: false` pour gérer les icônes racine depuis `public/`.
+Ardo génère `/favicon.ico`, `/icon.svg` et `/apple-touch-icon.png` depuis sa chouette, au build et en développement. Importez votre icône avec `<ArdoRoot icon={icon} />` pour le fingerprint Vite ; voir [Thèmes](/fr/guide/theming#colors-logo-and-favicon). Un fichier homonyme dans `public/` remplace l’icône générée. `icons: false` vous confie les trois.
 
 ### content {#content}
 
@@ -654,9 +622,9 @@ Ardo sépare les imports utilisables dans le navigateur de ceux du build Node.js
 | `ardo/config`        | `defineArdoConfig` et types de configuration.                                                                    |
 | `ardo/vite`          | Plugin Vite `ardo()`, `defineConfig`, `defineCollection`, `highlightCode` et utilitaires de build.               |
 | `ardo/runtime`       | Providers React, hooks, liens, métadonnées, scripts et navigation précédente/suivante.                           |
-| `ardo/ui`            | Interface par défaut, mises en page, composants MDX et enregistrement d’icônes.                                  |
+| `ardo/ui`            | Interface par défaut, mises en page, composants MDX et enregistrement d’icônes. `ArdoTheme`.                     |
 | `ardo/icons`         | Les 50 icônes de contenu et les icônes de marque comme composants React.                                         |
-| `ardo/theme`         | Tokens Vanilla Extract et utilitaires de thème de marque.                                                        |
+| `ardo/theme`         | `vars` : tokens Vanilla Extract pour vos styles.                                                                 |
 | `ardo/mdx-provider`  | Provider MDX pour l’enregistrement automatique des composants Ardo.                                              |
 | `ardo/virtual`       | Déclarations de types des modules virtuels.                                                                      |
 | `ardo/react`         | API et types de l’installation React gérée par Ardo.                                                             |

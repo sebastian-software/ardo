@@ -2,6 +2,7 @@ import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } fr
 import { ArdoLink } from "../runtime/page"
 
 import { useArdoLabels } from "../runtime/hooks"
+import { useArdoHomePath } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoThemeToggle } from "./components/ThemeToggle"
@@ -18,7 +19,6 @@ import * as controlStyles from "./site-controls.css"
 
 export function MobileSlidePanel({
   id,
-  homePath = "/",
   logo,
   title,
   nav,
@@ -29,7 +29,6 @@ export function MobileSlidePanel({
   onClose,
 }: {
   id?: string
-  homePath?: string
   logo?: ArdoLogo
   title: string
   nav?: ReactNode
@@ -41,6 +40,7 @@ export function MobileSlidePanel({
   onClose: () => void
 }) {
   const labels = useArdoLabels()
+  const homePath = useArdoHomePath()
   const panelRef = useRef<HTMLDivElement>(null)
 
   useMobilePanelFocus({ onClose, panelRef, triggerRef })

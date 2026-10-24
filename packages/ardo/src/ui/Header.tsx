@@ -12,8 +12,8 @@ import {
 import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
-import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
-import { useArdoLocale } from "../runtime/locale"
+import { useArdoConfig, useArdoLabels, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoHomePath } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
@@ -153,18 +153,17 @@ export function ArdoHeader({
   className,
 }: ArdoHeaderProps) {
   const config = useArdoConfig()
+  const siteLogo = useArdoSiteConfig().logo
   const labels = useArdoLabels()
-  const homePath = useHomePath()
+  const homePath = useArdoHomePath()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const { actions, nav } = splitHeaderChildren(children)
   const layout = useArdoLayoutVariant()
   const searchMode = resolveHeaderSearch(search, layout)
 
-  const resolvedLogo = logo
+  const resolvedLogo = logo ?? siteLogo
   const resolvedTitle = title ?? config.title
-  const hasLogo = resolvedLogo !== undefined
-  const hasTitle = resolvedTitle !== ""
   const hasMobileMenu = useHasMobileMenu([mobileMenuContent, nav, actions], themeToggle)
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
@@ -196,8 +195,8 @@ export function ArdoHeader({
               </button>
             )}
             <ArdoLink to={homePath} className={styles.logoLink}>
-              {hasLogo && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
-              {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
+              {resolvedLogo !== undefined && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
+              {resolvedTitle !== "" && <span className={styles.siteTitle}>{resolvedTitle}</span>}
             </ArdoLink>
           </div>
 
@@ -227,7 +226,6 @@ export function ArdoHeader({
 
       {hasMobileMenu && mobileMenuOpen && (
         <MobileSlidePanel
-          homePath={homePath}
           logo={resolvedLogo}
           title={resolvedTitle}
           nav={nav}
@@ -285,10 +283,4 @@ const socialIcons = {
 function SocialIcon({ icon }: { icon: keyof typeof socialIcons }) {
   const IconComponent = socialIcons[icon]
   return <IconComponent size={20} />
-}
-
-function useHomePath(): string {
-  const { i18n } = useArdoConfig()
-  const locale = useArdoLocale()
-  return i18n === false || i18n == null ? "/" : `/${locale}/`
 }

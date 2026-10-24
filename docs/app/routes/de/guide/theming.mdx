@@ -1,192 +1,173 @@
 ---
-title: "Theming"
-description: "Passe Ardos Farben mit drei Farbtönen an, überschreibe CSS-Variablen und Vanilla-Extract-Tokens und nutze Tailwind CSS für eigene Inhalte."
+title: '"Theming"'
+description: "Gestalte Ardo in app/root.tsx mit Farben, Sättigung, Callouts, Schriften und Tokens, importiere Logos und Favicons und nutze Vanilla Extract oder Tailwind für eigene Komponenten."
 order: 8
 ---
 
 # Theming
 
-Ardos Standardtheme ist durchdacht und offen anpassbar. Übernimm Marke und Designsystem in die Dokumentation und beginne mit der einfachsten passenden Stufe:
+Ardos Standardtheme ist vollständig. Du passt es dort an, wo du die Website komponierst: in `app/root.tsx` mit React-Props und importierten Dateien. Beginne mit wenigen Farben und verfeinere nach Bedarf:
 
-1. **Markeneinstellungen:** Farben für Marke, Akzent und neutrale Flächen sowie Logo in `ardo.config.ts`.
-2. **CSS-Variablen:** Farben, Abstände und Typografie ohne Komponentenänderungen.
-3. **Vanilla-Extract-Tokens:** typsichere Importe aus `ardo/theme` in `.css.ts`.
+1. **`theme`-Prop:** Farben, Sättigung, Callouts, Schriften und alle Designtokens.
+2. **Logo und Favicon:** importierte Dateien mit Vite-Fingerprints.
+3. **CSS-Variablen und Vanilla Extract:** eigene Styles mit Ardos Tokens.
 4. **Tailwind CSS:** Utility-Klassen für eigene Seiten und Komponenten.
 
 Eigene React-Komponenten für Kopfzeile, Seitenleiste und Fußzeile behandelt [Layout und Navigation](/de/guide/layout-and-navigation#replace-parts-of-the-chrome).
 
-## Markeneinstellungen {#brand-shortcut}
+## Farben, Logo und Favicon {#colors-logo-and-favicon}
 
-Nutze `brand` in `ardo.config.ts` für eine primäre Markenfarbe, eine Akzentfarbe, einen neutralen Oberflächenton und ein Logo.
+**`app/root.tsx`**:
 
-**`ardo.config.ts`**:
+```tsx
+import { ArdoRoot } from "ardo/ui"
 
-```ts
-import { defineArdoConfig } from "ardo/config"
+import logo from "./assets/logo.svg"
 
-export default defineArdoConfig({
-  title: "Acme Docs",
-  brand: {
-    color: "blue",
-    accent: "teal",
-    neutral: "slate",
-    logo: "./app/assets/logo.svg",
-  },
-})
+export default function Root() {
+  return (
+    <ArdoRoot theme={{ color: "blue", accent: "teal", neutral: "slate" }} logo={logo} icon={logo} />
+  )
+}
 ```
 
-Ergänze die Einstellungen in deiner bestehenden Konfiguration. Verweise mit `logo` auf eine eigene SVG-Datei oder lasse es weg. Die CLI liefert die Vite-Integration.
+`theme` setzt drei Farbtöne: `color` für Links, Tasten und Fokusringe, `accent` für weitere Highlights und Codeflächen und `neutral` für Hintergründe, Rahmen, Text, Kopfzeile und Seitenleiste. Daraus leitet Ardo alle übrigen Farben für Hell und Dunkel ab.
 
-`color`, `accent` und `neutral` akzeptieren Voreinstellungen oder numerische OKLCH-Farbtöne:
+`logo` und `icon` nehmen importierte Dateien. Vite versieht URLs mit Fingerprints, damit neue Logos nach dem Deployment statt aus altem Cache erscheinen. Hier dient das Logo auch als Favicon. Für Wortmarken nutze ein eigenes quadratisches `icon`.
 
-```ts
-defineArdoConfig({
-  title: "Acme Docs",
-  brand: {
-    color: 240,
-    accent: 170,
-    neutral: 260,
-  },
-})
+- **Helles und dunkles Logo:** `logo={{ light: logoLight, dark: logoDark }}`.
+- **iOS-Startbildschirme:** `appleTouchIcon` nimmt ein 180×180-PNG.
+- **Ohne `icon`:** Ardo verlinkt seine Eulenicons. Direkte Zugriffe auf `/favicon.ico` liefern ebenfalls die Eule, außer du hinterlegst eine eigene Datei in `public/`.
+
+Die Konfigurationsdatei enthält weder Farben noch Assets. Sie regelt Build-Daten wie Titel, Basispfad, Versionen und API-Referenz.
+
+## Farbtöne und Voreinstellungen {#hues-and-presets}
+
+`color`, `accent` und `neutral` akzeptieren Voreinstellungen oder OKLCH-Winkel von `0` bis `360`:
+
+```tsx
+<ArdoRoot theme={{ color: 240, accent: 170, neutral: 260 }} />
 ```
 
-Voreinstellungen: `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` und `gray`.
+Voreinstellungen: `berry` (Standard), `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` und `gray`. `gray` ist ohne Farbton, `slate` ein gedämpftes Blau.
 
-`chroma` steuert die Sättigung der abgeleiteten Farben. `1` erhält den Standard, kleinere Werte beruhigen die Palette und `0` ergibt Grau. Eine Zahl gilt für `color` und `accent`; die Objektform setzt auch `neutral` getrennt:
+Ohne `accent` wählt Ardo eine Komplementärfarbe, ohne `neutral` eine schwache Markenfärbung. `neutral: "gray"` bleibt völlig neutral.
 
-```ts
-defineArdoConfig({
-  title: "Acme Docs",
-  brand: {
+## Sättigung {#saturation}
+
+`chroma` steuert die Sättigung. `1` erhält die Palette, kleinere Werte beruhigen sie, `0` macht eine Rolle grau. Eine Zahl gilt für `color` und `accent`; das Objekt setzt jede Rolle einschließlich `neutral`:
+
+```tsx
+<ArdoRoot
+  theme={{
     color: "green",
     accent: "orange",
     neutral: 95,
     chroma: { color: 0.4, accent: 2, neutral: 1.6 },
-  },
-})
+  }}
+/>
 ```
 
-`neutral: "gray"` mit `chroma: { neutral: 0 }` ergibt ungetönte Flächen. Werte über `1` schieben manche Farben, etwa Petrol, aus dem sRGB-Farbraum. Prüfe den Linkkontrast, wenn du `color` stärker sättigst.
+Über `1` können Farben wie Türkis den sRGB-Farbraum verlassen. Prüfe deshalb den Linkkontrast, wenn du `color` erhöhst.
 
-Ohne `accent` leitet Ardo aus `color` eine Komplementärfarbe ab. Ohne `neutral` folgt die neutrale Oberfläche der Markenfarbe. `brand.logo` dient dem Standardheader und bei lokalen SVG-Pfaden auch den Favicons. Explizites `ArdoHeader.logo` und `icons.source` haben Vorrang.
+## Callout-Farben {#callout-colors}
 
-## Helfer für Markenfarben {#brand-color-helper}
+Callouts behalten eigene Farben, damit Warnungen bei jeder Marke erkennbar bleiben. Bei Konflikten mit dem Akzent setzt `status` neue Farbtöne. Ardo leitet Text, Fläche und Rahmen für beide Modi ab:
 
-Nutze den TypeScript-Helfer, wenn du Theme-Werte lieber im Anwendungscode definierst. Die OKLCH-Tokens für Marke, Akzent und neutrale Flächen erlauben Markenwechsel bei getrennter neutraler Basis für Hintergrund, Rahmen, Kopf- und Seitenleiste sowie Text.
-
-Erstelle eine `.css.ts`-Datei:
-
-```ts
-// styles/brand.css.ts
-import { applyBrandTheme } from "ardo/theme"
-
-applyBrandTheme(240) // deep blue
+```tsx
+<ArdoRoot theme={{ accent: 38, status: { warning: 72 } }} />
 ```
 
-Nutze die Objektform, wenn die Markenfarbe neutrale Flächen nicht tönen soll:
+`status` akzeptiert `tip`, `warning`, `danger` (Vorsicht), `info` (wichtig) und `note` als Voreinstellung oder Farbton. Alle Voreinstellungen halten mindestens 4,5:1 Textkontrast.
 
-```ts
-// styles/brand.css.ts
-import { applyBrandTheme } from "ardo/theme"
+## Schriften {#fonts}
 
-applyBrandTheme({
-  primary: 130, // green brand
-  neutral: 260, // neutral slate chrome
-})
+Lade eine Schrift als Abhängigkeit und setze ihren Namen in `fonts`, etwa mit [Fontsource](https://fontsource.org/):
+
+```bash
+pnpm add @fontsource-variable/inter
 ```
 
-Die Objektform akzeptiert außerdem `chroma` mit Multiplikatoren für `brand`, `accent` und `neutral`. Ardos Dokumentation nutzt dies für das gedämpfte Olivgrün der Eule:
+```tsx title="app/root.tsx"
+import "@fontsource-variable/inter"
+import { ArdoRoot } from "ardo/ui"
 
-```ts
-applyBrandTheme({
-  primary: 123, // olive
-  secondary: 38, // terracotta
-  neutral: 95, // a barely warm off-white
-  chroma: { brand: 0.4, accent: 2, neutral: 1.6 },
-})
-```
-
-Importiere sie in `root.tsx`:
-
-```ts
-import "./styles/brand.css"
-```
-
-Der Standardfarbton ist `356`, ein gedämpfter Beerenton. Einige Startwerte:
-
-| Farbton | Farbe            |
-| ------- | ---------------- |
-| `356`   | Beere (Standard) |
-| `170`   | Petrol           |
-| `240`   | Blau             |
-| `270`   | Indigo           |
-| `290`   | Violett          |
-| `330`   | Pink             |
-| `25`    | Rot              |
-| `45`    | Orange           |
-| `130`   | Grün             |
-
-Für volle Kontrolle liefert `createTheme()` vollständige Tokensätze `{ light, dark }` für die Farbtöne. Du kannst sie vor der Übergabe an `createGlobalTheme` bearbeiten.
-
-Du kannst Tokens auch direkt überschreiben. Gemeinsame Werte gelten in beiden Modi; `light` und `dark` ändern jeweils nur einen:
-
-```ts
-import { applyBrandTheme } from "ardo/theme"
-
-applyBrandTheme({
-  color: {
-    bg: "#fbfbf8",
-    text: "#101010",
-    brand: "#0038ff",
-    brandGradient: "#0038ff",
-    shadowSm: "0 0 0 0 transparent",
-    shadowMd: "0 0 0 0 transparent",
-    shadowLg: "0 0 0 0 transparent",
-  },
-  radius: {
-    sm: "0px",
-    base: "0px",
-    lg: "0px",
-  },
-  dark: {
-    color: {
-      bg: "#101010",
-      text: "#fbfbf8",
-    },
-  },
-})
-```
-
-`shadowSm`, `shadowMd`, `shadowLg` und `codeShadow` sind vollständige `box-shadow`-Werte. Für schattenfreie Marken nutze `0 0 0 0 transparent`: `none` kann kombinierte Schatten ungültig machen. `brandGradient` akzeptiert auch eine einfache Farbe.
-
-## CSS-Variablen {#css-variables}
-
-Der schnellste Weg zur Anpassung: Überschreibe wenige CSS-Variablen und die gesamte Website folgt:
-
-Erstelle eine eigene CSS-Datei:
-
-```css
-/* styles/custom.css */
-:root {
-  --ardo-hue-brand: 260;
-  --ardo-hue-accent: 134;
-  --ardo-hue-neutral: 260;
-
-  --ardo-color-brand: oklch(0.6 0.2 260);
-  --ardo-color-brandLight: oklch(0.7 0.15 260);
-  --ardo-color-brandDark: oklch(0.5 0.25 260);
+export default function Root() {
+  return <ArdoRoot theme={{ fonts: { body: '"Inter Variable", system-ui, sans-serif' } }} />
 }
 ```
 
-Importiere sie in `root.tsx`:
+Überschriften folgen `body`, sofern `heading` fehlt. `mono` bestimmt die Schrift für Codeblöcke und Inline-Code.
 
-```ts
-import "./styles/custom.css"
+## Designtokens {#design-tokens}
+
+`tokens` setzt Ardos Designtokens für beide Modi. `light` und `dark` überschreiben sie einzeln; dort gehören die meisten Farben hin:
+
+```tsx title="app/root.tsx"
+import { ArdoRoot, type ArdoThemeProps } from "ardo/ui"
+
+const theme: ArdoThemeProps = {
+  tokens: {
+    radius: { sm: "0px", base: "0px", lg: "0px" },
+    color: {
+      shadowSm: "0 0 0 0 transparent",
+      shadowMd: "0 0 0 0 transparent",
+      shadowLg: "0 0 0 0 transparent",
+    },
+  },
+  light: { color: { bg: "#fbfbf8", text: "#101010", brand: "#0038ff", brandGradient: "#0038ff" } },
+  dark: { color: { bg: "#101010", text: "#fbfbf8" } },
+}
+
+export default function Root() {
+  return <ArdoRoot theme={theme} />
+}
 ```
 
-`--ardo-*` sind öffentliche Anpassungspunkte. Standardwerte liegen auf `:root`, Dunkelmoduswerte auf `.dark`. Eigene CSS-Dateien können beide überschreiben. Diese Variablen bleiben auch bei Änderungen der höheren Theme-Helfer unterstützt.
+TypeScript meldet unbekannte Tokens; Ardo lehnt sie auch beim Rendern ab. `shadowSm`, `shadowMd`, `shadowLg` und `codeShadow` sind vollständige `box-shadow`-Werte. Für keinen Schatten nutze `0 0 0 0 transparent`; `none` bricht zusammengesetzte Schatten. `brandGradient` akzeptiert auch eine einfache Farbe.
 
-CSS ohne Layer gewinnt gegen beide Ardo-Selektoren; eine Farbe auf `:root` gilt deshalb auch im Dunkelmodus. Farbtöne, Chroma, Layout und Typografie sind dort unproblematisch. Setze konkrete Farben pro Modus:
+Ardos Dokumentation nutzt damit die Eulenpalette: Oliv, Terrakotta, leicht warmes Weiß und Senfgelb für Warnungen:
+
+```tsx
+const theme: ArdoThemeProps = {
+  color: 123,
+  accent: 38,
+  neutral: 95,
+  chroma: { color: 0.4, accent: 2, neutral: 1.6 },
+  status: { warning: 72 },
+  light: { color: { codeBg: "oklch(0.973 0.006 95)", codeBorder: "oklch(0.9 0.009 95)" } },
+  dark: { color: { codeBg: "oklch(0.205 0.01 95)", codeBorder: "oklch(0.31 0.014 95)" } },
+}
+```
+
+## Eigene Root-Komponente {#your-own-root}
+
+`ArdoRoot` rendert das Theme automatisch. Eigene Hüllen aus etwa `ArdoProvider` und `ArdoLayout` rendern `<ArdoTheme>` mit denselben Props, setzen `logo` auf `ArdoHeader` und übergeben das Favicon an die HTML-Hülle `ArdoRootLayout`:
+
+```tsx title="app/root.tsx"
+import type { ReactNode } from "ardo/react"
+import { ArdoRootLayout, ArdoTheme } from "ardo/ui"
+
+import icon from "./assets/icon.svg"
+import { SiteShell } from "./site-shell"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout icon={icon}>{children}</ArdoRootLayout>
+}
+
+export default function Root() {
+  return (
+    <>
+      <ArdoTheme color="blue" neutral="slate" />
+      <SiteShell />
+    </>
+  )
+}
+```
+
+## CSS-Variablen {#css-variables}
+
+Jeder Token ist auch eine CSS-Variable wie `--ardo-hue-brand` oder `--ardo-color-bg`. Eigene Styles überschreiben Ardos `ardo`-Kaskadenebene ohne zusätzliche Spezifität. Farben auf `:root` gelten deshalb auch dunkel; grenze Farben je Modus ein:
 
 ```css
 :root:not(.dark) {
@@ -198,16 +179,19 @@ CSS ohne Layer gewinnt gegen beide Ardo-Selektoren; eine Farbe auf `:root` gilt 
 }
 ```
 
-### Verfügbare Variablen {#available-variables}
-
-Hier sind die häufigsten Einstellungen mit Standardwerten. Setze nur die benötigten. Jeder Token in `vars` hat eine entsprechende Variable.
+Variablen für Farbton, Sättigung, Layout und Typografie sind auf `:root` sicher. Häufige Werte und ihre Standards:
 
 ```css
 :root {
-  /* Hue knobs */
+  /* Hues */
   --ardo-hue-brand: 356;
   --ardo-hue-accent: 230;
   --ardo-hue-neutral: 356;
+  --ardo-hue-tip: 155;
+  --ardo-hue-warning: 45;
+  --ardo-hue-danger: 25;
+  --ardo-hue-info: 220;
+  --ardo-hue-note: 270;
 
   /* Chroma multipliers: 1 is the default saturation, 0 is gray */
   --ardo-chroma-brand: 1;
@@ -223,7 +207,7 @@ Hier sind die häufigsten Einstellungen mit Standardwerten. Setze nur die benöt
 
   /* Typography */
   --ardo-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
-  --ardo-font-familyHeading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-familyHeading: var(--ardo-font-family);
   --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
   --ardo-font-lineHeight: 1.65;
 
@@ -231,14 +215,6 @@ Hier sind die häufigsten Einstellungen mit Standardwerten. Setze nur die benöt
   --ardo-radius-sm: 0.25rem;
   --ardo-radius-base: 0.5rem;
   --ardo-radius-lg: 0.75rem;
-}
-```
-
-Die meisten Farb-Tokens verweisen auf Farbtöne. Für neutrale Flächen reicht daher oft eine einzige Deklaration:
-
-```css
-:root {
-  --ardo-hue-neutral: 260;
 }
 ```
 
@@ -303,13 +279,13 @@ Begrenze Anpassungen in einem bestehenden Designsystem auf den Website-Wrapper. 
 
 `vars` enthält Tokens für:
 
-- **`vars.color`** — Markenfarben, Hintergründe, Text, Rahmen, Schatten und semantische Farben für Hinweise.
-- **`vars.hue`** — Farbtöne für Marke, Akzent und neutrale Flächen.
-- **`vars.chroma`** — Sättigungsmultiplikatoren derselben Palette.
-- **`vars.layout`** — Breite von Seitenleiste, Inhaltsverzeichnis und Inhalt, gemeinsamer Seitenrahmen sowie Headerhöhe.
-- **`vars.transition`** — schnelle, normale und langsame Übergänge.
-- **`vars.font`** — Schriftfamilien für Text, Überschriften und Code, Grundgröße und Zeilenhöhe.
-- **`vars.fontSize`** — Skala von `xs` bis `4xl`.
+- **`vars.color`** — Farben, Flächen, Text, Rahmen, Schatten und semantische Farben.
+- **`vars.hue`** — Marken-, Akzent-, Neutral- und Callout-Farbtöne.
+- **`vars.chroma`** — Sättigungsfaktoren für Marke, Akzent und neutrale Farben.
+- **`vars.layout`** — Seitenleisten-, Inhaltsverzeichnis-, Inhalts- und Seitenbreite sowie Kopfzeilenhöhe.
+- **`vars.transition`** — Schnelle, normale und langsame Übergänge.
+- **`vars.font`** — Text-, Überschriften- und Codeschriften, Grundgröße und Zeilenhöhe.
+- **`vars.fontSize`** — Typografieskala von `xs` bis `4xl`.
 - **`vars.space`** — Abstandsskala von `xs` bis `4xl`.
 - **`vars.radius`** — Radien `sm`, `base`, `lg`, `xl` und `full`.
 

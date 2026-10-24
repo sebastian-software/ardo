@@ -40,6 +40,7 @@ describe("locale migration redirects in development", () => {
     expect(
       getDevRedirect("/project/de/guide/start/", config, ["/en/guide/start", "/de/guide/start"])
     ).toBeUndefined()
+    expect(getDevRedirect("/project/de/", config, ["/de", "/en/de"])).toBeUndefined()
     expect(getDevRedirect("/project/guide/missing", config, ["/en/guide/start"])).toBeUndefined()
     expect(getDevRedirect("/outside/guide/start", config, ["/en/guide/start"])).toBeUndefined()
   })

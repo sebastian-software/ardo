@@ -1,6 +1,6 @@
 ---
-title: "Diseño y navegación"
-description: "Añade páginas y secciones, personaliza logotipo, cabecera y pie, y compón la interfaz en root.tsx."
+title: '"Diseño y navegación"'
+description: '"Añade páginas y secciones, personaliza logotipo, cabecera y pie, y compón la interfaz en root.tsx."'
 order: 7
 ---
 
@@ -110,18 +110,20 @@ export default function Root() {
 
 ### Cambiar logotipo y favicon {#change-the-logo-and-favicon}
 
-Define `brand.logo` en `ardo.config.ts`. Un SVG local sirve de logotipo y fuente de favicons:
+Importa los archivos y pásalos a `ArdoRoot`. Las huellas de Vite llevan el nuevo logotipo a los lectores en el siguiente despliegue:
 
-```ts title="ardo.config.ts"
-import { defineArdoConfig } from "ardo/config"
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
 
-export default defineArdoConfig({
-  title: "My Docs",
-  brand: { logo: "./app/assets/logo.svg" },
-})
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return <ArdoRoot logo={logo} icon={icon} />
+}
 ```
 
-`brand.logo` también acepta `{ light, dark }`. Usa [`icons.source`](/es/guide/configuration#icons) para otra fuente o `icons: false` para gestionar los archivos en `public/`.
+`logo` admite `{ light, dark }` y `appleTouchIcon` un PNG de 180×180 para iOS. Sin `icon`, Ardo enlaza sus iconos de búho. Consulta [Temas](/es/guide/theming#colors-logo-and-favicon).
 
 ### Cambiar el pie de página {#change-the-footer}
 
@@ -191,20 +193,24 @@ export default function Root() {
 
 `ArdoRoot` recibe los ajustes del sitio como props y la interfaz como hijos.
 
-| Prop          | Tipo                                                                               | Uso                                                                            |
-| ------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `header`      | `ReactNode \| false`                                                               | Cabecera propia o `false`.                                                     |
-| `sidebar`     | `ReactNode \| false`                                                               | Navegación propia o `false`.                                                   |
-| `footer`      | `ReactNode \| false`                                                               | Pie propio o `false`.                                                          |
-| `editLink`    | `{ pattern: string; text?: string }`                                               | Patrón de enlaces de edición Markdown.                                         |
-| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Visualización de la fecha de modificación.                                     |
-| `labels`      | `ArdoLabelsInput`                                                                  | Reemplaza los textos de interfaz.                                              |
-| `scrollMode`  | `"viewport" \| "document"`                                                         | Shell de viewport (predeterminado) o desplazamiento del documento.             |
-| `tocLabel`    | `string`                                                                           | Etiqueta del índice.                                                           |
-| `className`   | `string`                                                                           | Reemplaza la clase de diseño.                                                  |
-| `config`      | `ArdoConfig`                                                                       | Configuración proporcionada por Ardo; explícita para pruebas y vistas previas. |
-| `components`  | `ArdoMDXComponents`                                                                | Añade o reemplaza componentes Markdown y su wrapper.                           |
-| `children`    | `ReactNode`                                                                        | Cabecera, navegación, pie o contenido propio.                                  |
+| Prop             | Tipo                                                                               | Uso                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `theme`          | `ArdoThemeProps`                                                                   | Tonos, saturación, avisos, fuentes y tokens; consulta [Temas](/es/guide/theming). |
+| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Logotipo de cabecera y menú, normalmente importado.                               |
+| `icon`           | `string`                                                                           | Favicon importado SVG o PNG. Predeterminado: búho.                                |
+| `appleTouchIcon` | `string`                                                                           | PNG de 180×180 para iOS.                                                          |
+| `header`         | `ReactNode \| false`                                                               | Cabecera propia o `false`.                                                        |
+| `sidebar`        | `ReactNode \| false`                                                               | Navegación propia o `false`.                                                      |
+| `footer`         | `ReactNode \| false`                                                               | Pie propio o `false`.                                                             |
+| `editLink`       | `{ pattern: string; text?: string }`                                               | Patrón de enlaces de edición Markdown.                                            |
+| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Visualización de la fecha de modificación.                                        |
+| `labels`         | `ArdoLabelsInput`                                                                  | Reemplaza los textos de interfaz.                                                 |
+| `scrollMode`     | `"viewport" \| "document"`                                                         | Shell de viewport (predeterminado) o desplazamiento del documento.                |
+| `tocLabel`       | `string`                                                                           | Etiqueta del índice.                                                              |
+| `className`      | `string`                                                                           | Reemplaza la clase de diseño.                                                     |
+| `config`         | `ArdoConfig`                                                                       | Configuración proporcionada por Ardo; explícita para pruebas y vistas previas.    |
+| `components`     | `ArdoMDXComponents`                                                                | Añade o reemplaza componentes Markdown y su wrapper.                              |
+| `children`       | `ReactNode`                                                                        | Cabecera, navegación, pie o contenido propio.                                     |
 
 ## Cabecera {#header}
 
@@ -224,7 +230,7 @@ import logo from "./assets/logo.svg"
 </ArdoHeader>
 ```
 
-`ArdoRoot` pasa `brand.logo` a la cabecera salvo que esta defina su propio `logo`.
+El `logo` de `ArdoRoot` llega a cabecera y menú móvil salvo que la cabecera defina otro.
 
 | Prop                | Uso                                                         |
 | ------------------- | ----------------------------------------------------------- |
@@ -478,16 +484,16 @@ Mantén identificadores explícitos y únicos para enlaces duraderos. El modo DO
 
 Los componentes leen el estado mediante hooks de `ardo/runtime`:
 
-| Hook                  | Devuelve                                                               |
-| --------------------- | ---------------------------------------------------------------------- |
-| `useArdoConfig()`     | Configuración del sitio: `title`, `description`, `brand`.              |
-| `useArdoSiteConfig()` | Ajustes `editLink`, `lastUpdated`, `labels`, `tocLabel` de `ArdoRoot`. |
-| `useArdoSidebar()`    | Elementos de navegación de la sección actual.                          |
-| `useArdoPageData()`   | En Markdown/MDX: título, frontmatter, índice y fuente.                 |
-| `useArdoTOC()`        | Índice actual o lista vacía.                                           |
-| `useArdoPath()`       | Ruta de página sin base.                                               |
-| `useArdoLocale()`     | Idioma activo, también durante el render servidor.                     |
-| `useArdoContext()`    | Configuración, navegación y página juntas.                             |
+| Hook                  | Devuelve                                                                       |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `useArdoConfig()`     | Configuración del sitio: `title`, `description`, `base`.                       |
+| `useArdoSiteConfig()` | Ajustes `editLink`, `lastUpdated`, `labels`, `logo`, `tocLabel` de `ArdoRoot`. |
+| `useArdoSidebar()`    | Elementos de navegación de la sección actual.                                  |
+| `useArdoPageData()`   | En Markdown/MDX: título, frontmatter, índice y fuente.                         |
+| `useArdoTOC()`        | Índice actual o lista vacía.                                                   |
+| `useArdoPath()`       | Ruta de página sin base.                                                       |
+| `useArdoLocale()`     | Idioma activo, también durante el render servidor.                             |
+| `useArdoContext()`    | Configuración, navegación y página juntas.                                     |
 
 Enlace de edición desde los ajustes y la página actual:
 
@@ -548,10 +554,9 @@ Exporta `Layout` desde `root.tsx` para configurar `ArdoRootLayout`:
 ```tsx
 import type { ReactNode } from "ardo/react"
 import { ArdoRootLayout } from "ardo/ui"
-import logo from "./assets/logo.svg"
 
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
@@ -590,22 +595,22 @@ import { ArdoErrorBoundary } from "ardo/ui"
 export const ErrorBoundary = ArdoErrorBoundary
 ```
 
-## Política de tema de RootLayout {#rootlayout-theme-policy}
+## Esquema de color de RootLayout {#rootlayout-color-scheme}
 
-`theme="auto"` prioriza `ardo-theme` guardado y después `prefers-color-scheme`. Fija una política para desactivar la elección del usuario:
+Con `colorScheme="auto"`, `ArdoRootLayout` prioriza `ardo-theme` guardado y después `prefers-color-scheme`. Fija un esquema para desactivar la elección del usuario:
 
 ```tsx
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+  return <ArdoRootLayout colorScheme="light">{children}</ArdoRootLayout>
 }
 ```
 
-| Política | Comportamiento                                              |
-| -------- | ----------------------------------------------------------- |
-| `auto`   | Preferencia guardada o del sistema. Predeterminado.         |
-| `light`  | Siempre claro; borra la elección guardada.                  |
-| `dark`   | Siempre oscuro; borra la elección guardada.                 |
-| `system` | Siempre `prefers-color-scheme`; borra la elección guardada. |
+| Esquema de color | Comportamiento                                              |
+| ---------------- | ----------------------------------------------------------- |
+| `auto`           | Preferencia guardada o del sistema. Predeterminado.         |
+| `light`          | Siempre claro; borra la elección guardada.                  |
+| `dark`           | Siempre oscuro; borra la elección guardada.                 |
+| `system`         | Siempre `prefers-color-scheme`; borra la elección guardada. |
 
 ## Desplazamiento del documento con interfaz propia {#document-scrolling-with-site-owned-chrome}
 

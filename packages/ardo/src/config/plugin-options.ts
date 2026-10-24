@@ -20,7 +20,6 @@ const optionNames = {
   markdown: true,
   sidebar: true,
   metadata: true,
-  brand: true,
   seo: true,
   linkCheck: true,
   redirects: true,
@@ -36,6 +35,11 @@ const optionNames = {
 
 /** JavaScript configs and computed exports need the same spelling checks as TS literals. */
 export function validateArdoOptionNames(options: ArdoPluginOptions): ArdoPluginOptions {
+  if ("brand" in options) {
+    throw new Error(
+      "[ardo] The brand option moved into JSX. Pass colors as <ArdoRoot theme={{ color }} />, and import the logo: <ArdoRoot logo={logo} />."
+    )
+  }
   if ("typedoc" in options) {
     throw new Error(
       "[ardo] The typedoc option was removed. Configure api instead; see the TypeDoc migration guide."

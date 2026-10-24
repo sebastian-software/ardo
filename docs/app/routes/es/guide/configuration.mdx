@@ -1,6 +1,6 @@
 ---
-title: "Configuración"
-description: "Configura la CLI, las rutas generadas, el procesamiento Markdown, la referencia API y la interfaz React de Ardo."
+title: '"Configuración"'
+description: '"Configura la CLI, las rutas generadas, el procesamiento Markdown, la referencia API y la interfaz React de Ardo."'
 order: 12
 ---
 
@@ -141,29 +141,6 @@ defineArdoConfig({
 })
 ```
 
-### brand {#brand}
-
-- **Tipo:** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; chroma?: number | { color?: number; accent?: number; neutral?: number }; logo?: string | { light: string; dark: string } }`
-- **Predeterminado:** `{}`
-
-Colores y logotipo de marca para el tema y la cabecera predeterminados. `color`, `accent` y `neutral` aceptan tonos OKLCH numéricos o `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` y `gray`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  brand: {
-    color: "blue",
-    accent: "teal",
-    neutral: "slate",
-    logo: "./app/assets/logo.svg",
-  },
-})
-```
-
-`chroma` ajusta la saturación: `1` mantiene el valor predeterminado, `0.4` suaviza la paleta y `0` produce grises. Un número se aplica a `color` y `accent`; un objeto ajusta cada tono. [Temas](/es/guide/theming#brand-shortcut) muestra el resultado.
-
-Si falta `accent`, Ardo lo deriva de `color`. Si falta `neutral`, las superficies neutras siguen `color`. Los logotipos SVG locales se incluyen en la cabecera y sirven de fuente para los favicons. Define `logo` en `ArdoHeader` o `icons.source` si deben usar archivos distintos.
-
 ### seo.llms {#seo-llms}
 
 - **Tipo:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
@@ -247,14 +224,16 @@ Define `seo.robots: false` para servir tu propio `robots.txt` desde `public/`.
 
 Comprueba los enlaces internos del build con [ferrolink](https://github.com/sebastian-software/ferrolink). Tras escribir las páginas, Ardo comprueba enlaces, imágenes, scripts, hojas de estilo, `srcset` y redirecciones meta de todo el HTML, procedente de Markdown, componentes o páginas generadas. También revisa destinos en `_redirects` y `vercel.json` y rutas en `versions.json`. Por defecto, cada `#fragment` debe coincidir con un identificador. Los orígenes de redirección son válidos porque Ardo genera sus páginas.
 
-Los enlaces externos se excluyen porque dependen de servidores ajenos. Las otras versiones configuradas se consideran presentes y se despliegan por separado. Se informa de los enlaces fuera de `base`, como `/guide/` en un sitio bajo `/docs/`. Los patrones `exclude` designan destinos con o sin ruta base; un `*` coincide con cualquier secuencia. Cada aviso indica archivo y línea.
+Los enlaces externos se excluyen porque dependen de servidores ajenos. Las otras versiones configuradas se consideran presentes y se despliegan por separado. Se informa de enlaces fuera de `base`, como `/guide/` bajo `/docs/`. Cada aviso indica archivo y línea.
+
+`exclude` contiene patrones glob de destinos que se omiten. Con `/` inicial, cubren la ruta URL completa incluida la base, como `/generated/**` o `/blog/**` para otra aplicación del mismo host. Los demás son relativos a la base. Un destino omitido no genera avisos por archivo ni ancla ausentes.
 
 ```ts
 defineArdoConfig({
   title: "My Docs",
   linkCheck: {
     level: "error",
-    exclude: ["/generated/*"],
+    exclude: ["/generated/**"],
   },
 })
 ```
@@ -446,21 +425,10 @@ Configuración de la generación automática de rutas. `false` la desactiva por 
 
 ### icons {#icons}
 
-- **Tipo:** `false | { source?: string }`
-- **Predeterminado:** iconos automáticos de Ardo
+- **Tipo:** `false`
+- **Predeterminado:** iconos de búho generados
 
-Ardo genera favicons durante el build y los sirve en desarrollo: `/favicon.ico`, `/icon.svg` y `/apple-touch-icon.png`. Este conjunto mínimo moderno no añade manifiesto web ni antiguos archivos `apple-touch-icon-precomposed.png`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  icons: {
-    source: "./app/assets/logo.svg",
-  },
-})
-```
-
-Define `icons: false` para gestionar los iconos raíz desde `public/`.
+Ardo genera `/favicon.ico`, `/icon.svg` y `/apple-touch-icon.png` desde su búho durante build y desarrollo. Importa tu icono con `<ArdoRoot icon={icon} />` para que Vite añada su huella; consulta [Temas](/es/guide/theming#colors-logo-and-favicon). Un archivo homónimo en `public/` reemplaza el generado. `icons: false` te deja gestionar los tres.
 
 ### content {#content}
 
@@ -654,9 +622,9 @@ Ardo separa los imports para navegador de los imports del build de Node.js:
 | `ardo/config`        | `defineArdoConfig` y tipos de configuración.                                                          |
 | `ardo/vite`          | Plugin Vite `ardo()`, `defineConfig`, `defineCollection`, `highlightCode` y utilidades de build.      |
 | `ardo/runtime`       | Providers React, hooks, enlaces, metadatos, scripts y navegación anterior/siguiente.                  |
-| `ardo/ui`            | Interfaz predeterminada, diseños, componentes MDX y registro de iconos.                               |
+| `ardo/ui`            | Interfaz predeterminada, diseños, componentes MDX y registro de iconos. `ArdoTheme`.                  |
 | `ardo/icons`         | Los 50 iconos de contenido y los de marca como componentes React.                                     |
-| `ardo/theme`         | Tokens de Vanilla Extract y utilidades de temas de marca.                                             |
+| `ardo/theme`         | `vars`: tokens Vanilla Extract para tus estilos.                                                      |
 | `ardo/mdx-provider`  | Provider MDX para el registro automático de componentes Ardo.                                         |
 | `ardo/virtual`       | Declaraciones de tipos de los módulos virtuales.                                                      |
 | `ardo/react`         | API y tipos de la instalación de React gestionada por Ardo.                                           |

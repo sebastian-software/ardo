@@ -42,30 +42,30 @@ const budgets = {
     // checked separately because the active catalog loads before hydration.
     label: "largest locale eager JS gzip",
     budget: 650_000,
-    baseline: "≈560 KB per locale (2026-10, four-locale docs and expanded public API)",
+    baseline: "≈548 KB per locale (2026-10, four-locale docs and expanded public API)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
     budget: 2_700_000,
-    baseline: "≈2.1 MB (2026-10, four route trees, catalogs, and search indexes)",
+    baseline: "≈2.0 MB (2026-10, four route trees, catalogs, and search indexes)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
     budget: 100_000,
-    baseline: "≈90 KB per locale (2026-10, emitted client search data)",
+    baseline: "≈81 KB per locale (2026-10, emitted client search data)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",
     budget: 10_000,
-    baseline: "≈6.5 KB (2026-10, 191 shared UI and MDX messages)",
+    baseline: "≈6.5 KB (2026-10, 192 shared UI and MDX messages)",
   },
   buildDurationMs: {
     label: "docs build duration",
     budget: 300_000,
-    baseline: "≈6 s local (2026-10, static site without React Router)",
+    baseline: "≈15 s local (2026-10, four-locale static site)",
   },
 }
 

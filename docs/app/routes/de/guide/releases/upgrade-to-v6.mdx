@@ -1,6 +1,6 @@
 ---
-title: "Upgrade auf Ardo 6"
-description: "Wechsle von React Router zum statischen Build, entferne Routerdateien und nutze Ardos Link- und Seiten-APIs."
+title: '"Upgrade auf Ardo 6"'
+description: '"Wechsle von React Router zum statischen Build, entferne Routerdateien und nutze Ardos Link- und Seiten-APIs."'
 order: 1
 ---
 
@@ -88,9 +88,62 @@ export default function Root() {
 
 Behalte `ArdoHeader`, `ArdoSidebar` oder `ArdoFooter` als Kinder bei eigenen Props. Ohne Kinder rendert `ArdoRoot` dieselben Standardteile.
 
-Behalte `Layout` für Optionen wie `theme`, `favicon` und `className`. Eigene HTML-Hüllen ersetzen `<Meta />`, `<Links />` und `<Scripts />` durch `<ArdoHead />` in `<head>` und `<ArdoScripts />` am Body-Ende, aus `ardo/runtime`. Siehe [Layout](/de/guide/layout-and-navigation#layout-the-html-shell).
+Behalte `Layout` für `colorScheme`, `icon` oder `className` auf `ArdoRootLayout`. Die früheren Props `theme` und `favicon` heißen jetzt `colorScheme` und `icon`. Eigene Hüllen ersetzen `<Meta />`, `<Links />` und `<Scripts />` durch `<ArdoHead />` in `<head>` und `<ArdoScripts />` am Body-Ende aus `ardo/runtime`. Siehe [Layout](/de/guide/layout-and-navigation#layout-the-html-shell).
 
 Routen behalten `meta` und `handle`, etwa `export const handle = { layout: "bare" }`.
+
+## Theme nach `app/root.tsx` verschieben {#move-the-theme-into-app-root-tsx}
+
+Ardo 6 gestaltet die Website in JSX. `brand` entfällt in der Konfiguration, ebenso `applyBrandTheme` und `createTheme` aus `ardo/theme`. Farben, `chroma` und Tokens gehören in `ArdoRoot`-`theme`, Logos und Favicons werden importierte Dateien mit Vite-Fingerprints. Verbliebenes `brand` erzeugt einen Fehler mit Verweis hierher.
+
+Vorher:
+
+```ts
+// ardo.config.ts
+export default defineArdoConfig({
+  title: "My Docs",
+  brand: { color: "blue", accent: "teal", neutral: "slate", logo: "./app/assets/logo.svg" },
+  icons: { source: "./app/assets/icon.svg" },
+})
+
+// app/styles/brand.css.ts
+applyBrandTheme({ primary: 240, chroma: { brand: 0.6 }, dark: { color: { bg: "#101010" } } })
+```
+
+Nachher:
+
+```tsx
+// app/root.tsx
+import { ArdoRoot } from "ardo/ui"
+
+import icon from "./assets/icon.svg"
+import logo from "./assets/logo.svg"
+
+export default function Root() {
+  return (
+    <ArdoRoot
+      theme={{
+        color: "blue",
+        accent: "teal",
+        neutral: "slate",
+        chroma: { color: 0.6 },
+        dark: { color: { bg: "#101010" } },
+      }}
+      logo={logo}
+      icon={icon}
+    />
+  )
+}
+```
+
+- `primary` und `secondary` aus `applyBrandTheme` werden `color` und `accent`; der Chroma-Schlüssel `brand` wird `color`.
+- Gemeinsame Tokenüberschreibungen gehören in `tokens`, Farben meist in `light` und `dark`.
+- `icons.source` entfällt. Ohne `icon` bleiben Eulenicons; `icons: false` deaktiviert sie weiterhin.
+- `gray` und `slate` sind jetzt Grau und gedämpftes Blau statt des gesättigten Blaus aus Ardo 5.
+- Die ungenutzten Variablen `--ardo-color-brandLight`, `accentLight`, `accentDark`, `accentSubtle`, `bgAlt` und `sidebarBorder` entfallen.
+- `--ardo-font-familyHeading` folgt `--ardo-font-family`; neue Textschriften gelten auch für Überschriften.
+
+[Theming](/de/guide/theming) beschreibt alle Props.
 
 ## `tsconfig.json` vereinfachen {#trim-tsconfig-json}
 

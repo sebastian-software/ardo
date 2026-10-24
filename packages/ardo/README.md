@@ -56,11 +56,11 @@ The Ardo CLI supplies build integration. Keep `vite.config.ts` only for addition
 Vite plugins or settings. UI configuration stays in React through `ArdoRoot`
 and JSX components.
 
-Use `brand` for the common theme setup: primary color, accent color, neutral chrome tone, and the
-default header logo. Ardo also generates the modern lean favicon set (`favicon.ico`, `icon.svg`, and
-`apple-touch-icon.png`) from that local SVG logo when available. Use
-`icons: { source: "./app/assets/favicon.svg" }` when favicon assets should come from a different SVG,
-or `icons: false` to manage them from `public/`.
+Theme the site in `app/root.tsx`: `<ArdoRoot theme={{ color: "blue", neutral: "slate" }} />` sets
+the brand, accent, and neutral hues, saturation, callout colors, fonts, and any design token. The
+logo and favicon are imported files, `<ArdoRoot logo={logo} icon={icon} />`, so Vite fingerprints
+them. Without an icon, Ardo generates its owl favicon set (`favicon.ico`, `icon.svg`, and
+`apple-touch-icon.png`).
 
 ## Root layout
 

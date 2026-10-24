@@ -153,34 +153,6 @@ defineArdoConfig({
 })
 ```
 
-### brand
-
-- **Type:** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; chroma?: number | { color?: number; accent?: number; neutral?: number }; logo?: string | { light: string; dark: string } }`
-- **Default:** `{}`
-
-Simple brand configuration for the default theme and header logo. `color`, `accent`, and `neutral`
-accept OKLCH hue numbers or preset names: `berry`, `red`, `orange`, `amber`, `green`, `teal`,
-`blue`, `indigo`, `purple`, `pink`, `slate`, and `gray`.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  brand: {
-    color: "blue",
-    accent: "teal",
-    neutral: "slate",
-    logo: "./app/assets/logo.svg",
-  },
-})
-```
-
-`chroma` scales the saturation: `1` keeps the default, `0.4` mutes the palette, and `0` turns it gray. A number applies to `color` and `accent`; an object sets each hue separately. [Theming](/en/guide/theming#brand-shortcut) shows the effect.
-
-When `color` is set without `accent`, Ardo derives an accent hue. When `neutral` is omitted, the
-neutral chrome follows `color`. Local SVG logo paths are bundled for the default header and also
-become the default source for generated favicons. Use an explicit `logo` on `ArdoHeader` or
-`icons.source` when the header and favicon should use different assets.
-
 ### seo.llms
 
 - **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
@@ -289,16 +261,20 @@ target page. Redirect sources are valid targets, because Ardo writes a page for 
 External links are out of scope, because their availability depends on third-party servers rather
 than on the build. Links to the other versions in [`versioning`](#versioning) count as present,
 because each version is deployed on its own. A link that leaves the deployment base, such as
-`/guide/` on a site served below `/docs/`, is reported. Patterns in `exclude` name link targets to
-skip, with or without the base path; a single `*` matches any infix. Each finding names the file and
-line it comes from.
+`/guide/` on a site served below `/docs/`, is reported. Each finding names the file and line it
+comes from.
+
+Patterns in `exclude` are globs of link targets to skip. A pattern with a leading `/` matches the URL
+path, base path included, such as `/generated/**`, or `/blog/**` for another app on the same host.
+Any other pattern is relative to the deployment base. A skipped target is reported neither as missing
+nor for a missing anchor.
 
 ```ts
 defineArdoConfig({
   title: "My Docs",
   linkCheck: {
     level: "error",
-    exclude: ["/generated/*"],
+    exclude: ["/generated/**"],
   },
 })
 ```
@@ -401,8 +377,7 @@ than one locale is configured. Put the translated documents in `app/routes/<loca
 `app/routes/de/guide/getting-started.mdx`.
 
 This is deliberately strict: every visible route must be present in every configured locale. The
-build fails for a missing translation or for a page outside a locale directory. There is no runtime
-fallback, so a localized URL never silently serves a different language.
+build fails for a missing translation or for a page outside a locale directory. There is no runtime fallback, so a localized URL never silently serves a different language. Search loads only the active locale. Ardo emits canonical and alternate-language links when `siteUrl` is configured. Translate UI labels through `ArdoRoot` and read the current locale with `useArdoLocale()`. See [Internationalization](/en/guide/internationalization) for the complete Palamedes example.
 
 When enabled, Ardo always includes the locale in canonical public URLs. With versioning active, the
 version segment comes first:
@@ -426,8 +401,7 @@ defineArdoConfig({
 
 This produces URLs such as `/v3/en/guide/getting-started`. The root redirect points to the current
 version plus the default locale, and the version root redirects to the default locale root. The
-default locale is not hidden when i18n is active. Routes such as `app/routes/root.tsx` remain the
-application shell and are not locale documents.
+default locale is not hidden when i18n is active. The application shell is `app/root.tsx`; it is not a locale document. Set `redirectUnlocalized: true` to redirect existing unprefixed routes to the default locale in development and static builds.
 
 ### outDir
 
@@ -526,23 +500,14 @@ Configuration for the automatic route generation plugin. Set to `false` to disab
 
 ### icons
 
-- **Type:** `false | { source?: string }`
-- **Default:** automatic Ardo icon set
+- **Type:** `false`
+- **Default:** the generated owl icons
 
-Ardo generates a lean favicon set at build time and serves it during development:
-`/favicon.ico`, `/icon.svg`, and `/apple-touch-icon.png`. This matches the modern minimal browser
-set without adding a web app manifest or legacy `apple-touch-icon-precomposed.png` files.
-
-```ts
-defineArdoConfig({
-  title: "My Docs",
-  icons: {
-    source: "./app/assets/logo.svg",
-  },
-})
-```
-
-Set `icons: false` if you want to manage all root icon files yourself from `public/`.
+Ardo generates a lean favicon set from its owl at build time and serves it during development:
+`/favicon.ico`, `/icon.svg`, and `/apple-touch-icon.png`. Your own icon is an imported file on
+`ArdoRoot`, `<ArdoRoot icon={icon} />`, so Vite fingerprints it; see [Theming](/en/guide/theming#colors-logo-and-favicon).
+A file of the same name in `public/` replaces the generated one, and `icons: false` leaves all three
+to you.
 
 ### content
 
@@ -757,9 +722,9 @@ Ardo keeps browser-safe runtime imports separate from build-time Node.js imports
 | `ardo/config`        | `defineArdoConfig` and the config types.                                                                                                 |
 | `ardo/vite`          | The `ardo()` Vite plugin, Vite's `defineConfig`, `defineCollection`, `highlightCode`, and build helpers.                                 |
 | `ardo/runtime`       | React providers, runtime hooks, `ArdoLink`, `useArdoPath`, `ArdoHead`, `ArdoScripts`, `ArdoMetaFunction`, and sidebar prev/next helpers. |
-| `ardo/ui`            | Default UI components, layout components, MDX components, and icon registration helpers.                                                 |
+| `ardo/ui`            | Default UI components, layout components, MDX components, `ArdoTheme`, and icon registration helpers.                                    |
 | `ardo/icons`         | The 50 built-in content icons and the brand icons as React components.                                                                   |
-| `ardo/theme`         | Vanilla Extract theme tokens and brand-theme helpers.                                                                                    |
+| `ardo/theme`         | `vars`, the Vanilla Extract theme tokens for your own styles.                                                                            |
 | `ardo/mdx-provider`  | The MDX provider used to auto-register Ardo's MDX components.                                                                            |
 | `ardo/virtual`       | Type declarations for Ardo virtual modules.                                                                                              |
 | `ardo/react`         | React APIs and types from Ardo's managed React installation.                                                                             |

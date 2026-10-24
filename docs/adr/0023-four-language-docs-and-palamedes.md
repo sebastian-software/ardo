@@ -1,4 +1,4 @@
-# ADR 0022: Publish four static language trees with Palamedes interface catalogs
+# ADR 0023: Publish four static language trees with Palamedes interface catalogs
 
 ## Status
 
