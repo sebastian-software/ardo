@@ -73,6 +73,69 @@ function entry({
 }
 
 describe("llms-text", () => {
+  it.each(["", "https://example.com"])(
+    "projects JSX-wrapped links before resolving them with siteUrl=%j",
+    (siteUrl) => {
+      const text = generateLlmsFullTxt(
+        [
+          entry({
+            content: [
+              'export const handle = { layout: "bare", chrome: false };',
+              "",
+              "<section>",
+              "",
+              '[**Start**](/guide/start "Start here") and [reference][start].',
+              "",
+              "`[example](/guide/start)`",
+              "",
+              "```md",
+              "[example](/guide/start)",
+              "```",
+              "",
+              "</section>",
+              "",
+              "[start]: /guide/start",
+            ].join("\n"),
+          }),
+          entry({ routePath: "/guide/start" }),
+        ],
+        { ...config, siteUrl }
+      )
+      expect(text).toContain(`[**Start**](<${siteUrl}/docs/guide/start/> "Start here")`)
+      expect(text).toContain(`[reference](<${siteUrl}/docs/guide/start/>)`)
+      expect(text).toContain("`[example](/guide/start)`")
+      expect(text).toContain("```md\n[example](/guide/start)\n```")
+      expect(text).not.toContain("<section>")
+      expect(text).not.toContain("export const handle")
+    }
+  )
+
+  it("keeps local deployment, version, and locale paths through JSX projection", () => {
+    const localized = resolveConfig(
+      {
+        title: "Docs",
+        base: "/project/",
+        versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
+        i18n: { defaultLocale: "de", locales: [{ id: "de" }] },
+      },
+      "/tmp"
+    )
+    const page = entry({
+      routePath: "/guide/setup",
+      publicPath: "/project/v6/de/guide/setup",
+      content: "<section>\n\n## Details\n\n[next](/guide/next) [here](#details)\n\n</section>",
+    })
+    const full = createLlmsTextAssets([page], localized).filter((asset) =>
+      asset.fileName.endsWith("llms-full.txt")
+    )
+    expect(full).toHaveLength(2)
+    for (const asset of full) {
+      expect(asset.source).toContain("[next](</project/v6/de/guide/next/>)")
+      expect(asset.source).toContain("[here](</project/v6/de/guide/setup#details>)")
+      expect(asset.source).toContain("### Details")
+    }
+  })
+
   it("passes the full route set to links in exported Markdown", () => {
     const text = generateLlmsFullTxt(
       [

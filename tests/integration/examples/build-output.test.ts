@@ -36,6 +36,42 @@ export default defineArdoConfig(${JSON.stringify({ title: "Output regression", .
 }
 
 describe("real CLI build output and preview", () => {
+  it("builds JSX-wrapped documentation links and clean search text without siteUrl", () => {
+    const directory = project()
+    fs.writeFileSync(
+      path.join(directory, "app/routes/guide/rendering.mdx"),
+      [
+        "---",
+        "title: Rendering guide",
+        "---",
+        "",
+        'export const handle = { layout: "bare", chrome: false };',
+        "",
+        '<section data-note="internal-prop-only">',
+        "",
+        "For untrusted Markdown, enable sanitize.",
+        "",
+        "[Start](/guide/getting-started/)",
+        "",
+        "</section>",
+      ].join("\n")
+    )
+    build(directory)
+    const client = path.join(directory, "build/client")
+    expect(fs.existsSync(path.join(client, "guide/rendering/index.html"))).toBe(true)
+    const full = fs.readFileSync(path.join(client, "llms-full.txt"), "utf8")
+    expect(full).toContain("[Start](</guide/getting-started/>)")
+    expect(full).toContain("For untrusted Markdown, enable sanitize.")
+    const chunks = fs
+      .readdirSync(path.join(client, "assets"))
+      .filter((file) => /^search-index-.*\.js$/u.test(file))
+    expect(chunks).toHaveLength(1)
+    const search = fs.readFileSync(path.join(client, "assets", chunks[0]), "utf8")
+    expect(search).toContain("For untrusted Markdown, enable sanitize.")
+    expect(search).not.toContain("internal-prop-only")
+    expect(search).not.toContain("export const handle")
+  })
+
   it("preserves explicit output files and still cleans the default build", () => {
     const directory = project()
     build(directory)

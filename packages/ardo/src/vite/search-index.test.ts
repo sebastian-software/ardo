@@ -16,6 +16,125 @@ afterEach(async () => {
 })
 
 describe("generateSearchIndex", () => {
+  it("indexes authored MDX text without exports, JSX tags, or props", async () => {
+    await writeRoute(
+      "rendering.mdx",
+      [
+        "---",
+        "title: Rendering guide",
+        "---",
+        "",
+        'export const handle = { layout: "bare", chrome: false };',
+        "",
+        '<section data-note="internal-prop">',
+        "",
+        "For untrusted Markdown, enable sanitize.",
+        "",
+        "</section>",
+      ].join("\n")
+    )
+    const [doc] = await generateSearchIndex(routesDir)
+    expect(doc?.excerpt).toBe("For untrusted Markdown, enable sanitize.")
+    expect(doc?.content).toBe("Rendering guide For untrusted Markdown, enable sanitize.")
+  })
+
+  it("keeps section anchors and hierarchy across multiline MDX wrappers", async () => {
+    await writeRoute(
+      "rendering.mdx",
+      [
+        "---",
+        "title: Rendering guide",
+        "---",
+        "",
+        "import {",
+        "  Section,",
+        '} from "./not-evaluated"',
+        "",
+        'export const handle = { layout: "bare", chrome: false };',
+        "",
+        "# Rendering guide",
+        "",
+        "<Section",
+        '  id="internal-prop"',
+        '  label="Internal label"',
+        '  intro={"Runtime-only description"}',
+        ">",
+        "",
+        "日本語 introduction.",
+        "",
+        "## Install",
+        "",
+        "For untrusted Markdown, enable `sanitize_input`.",
+        "",
+        "````mdx",
+        "```tsx",
+        '<Demo secret="not-indexed" />',
+        "```",
+        "````",
+        "",
+        "### Safety",
+        "",
+        "Use [safe defaults](/guide/defaults).",
+        "",
+        "## Install",
+        "",
+        "Second section.",
+        "",
+        "</Section>",
+      ].join("\n")
+    )
+    const records = await generateSearchIndex(routesDir, {
+      basePath: "/project/v6/",
+      localeId: "de",
+      versionId: "v6",
+      markdown: { headingOffset: 1, headingIdPrefix: "page-" },
+    })
+    expect(
+      records.map(({ title, excerpt, publicPath, headingHierarchy }) => ({
+        title,
+        excerpt,
+        publicPath,
+        headingHierarchy,
+      }))
+    ).toStrictEqual([
+      {
+        title: "Rendering guide",
+        excerpt: "日本語 introduction.",
+        publicPath: "/project/v6/de/rendering",
+        headingHierarchy: ["Rendering guide"],
+      },
+      {
+        title: "Install",
+        excerpt: "For untrusted Markdown, enable sanitize_input.",
+        publicPath: "/project/v6/de/rendering#page-install",
+        headingHierarchy: ["Install"],
+      },
+      {
+        title: "Safety",
+        excerpt: "Use safe defaults.",
+        publicPath: "/project/v6/de/rendering#page-safety",
+        headingHierarchy: ["Install", "Safety"],
+      },
+      {
+        title: "Install",
+        excerpt: "Second section.",
+        publicPath: "/project/v6/de/rendering#page-install-1",
+        headingHierarchy: ["Install"],
+      },
+    ])
+  })
+
+  it("keeps literal export prose in Markdown and readable headings without anchors", async () => {
+    await writeRoute(
+      "export.md",
+      "export a value and import a helper.\n\n## Example\n\nKeep `source_name`.\n"
+    )
+    const records = await generateSearchIndex(routesDir, { markdown: { anchor: false } })
+    expect(records).toHaveLength(1)
+    expect(records[0].excerpt).toBe("export a value and import a helper. Example Keep source_name.")
+    expect(records[0].anchor).toBeUndefined()
+  })
+
   it("only strips markdown extensions from the end of search paths", async () => {
     await writeRoute("v1.md/changelog.md", "---\ntitle: Changelog\n---\nBody")
 

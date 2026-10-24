@@ -1,9 +1,8 @@
-import type { JsxHeading } from "ferromark"
+import type { TextExtraction } from "ferromark"
 
 import path from "node:path"
 
 import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
-import { getMarkdownFenceMarker, type MarkdownFenceMarker } from "./markdown-fence"
 import { stripTrailingExtension } from "./path-utils"
 import {
   type RouteManifestEntry,
@@ -46,15 +45,15 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
   const pageTitle =
     entry.metadata.title ?? formatTitle(getSearchTitleSource(entry.metadata.sourcePath))
   const routeGroup = createSectionFromSourcePath(entry.metadata.sourcePath)
-  const headings =
-    entry.headings ??
+  const text =
+    entry.searchText ??
     readNativeMarkdownMetadata(
       entry.content,
       entry.metadata.sourcePath.endsWith(".mdx") ? "mdx" : "md"
-    ).headings
-  const sections = splitMarkdownSections(entry.content, headings)
+    ).searchText
+  const sections = splitTextSections(text)
   return sections.flatMap((section, index): SearchDoc[] => {
-    const excerpt = sanitizeSearchContent(section.content)
+    const excerpt = collapseWhitespace(section.content).slice(0, 2000)
     if (excerpt === "" && section.anchor == null) {
       return []
     }
@@ -85,33 +84,36 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
   })
 }
 
-type MarkdownSection = {
+type SearchSection = {
   anchor?: string
   content: string
   headingHierarchy: string[]
   title?: string
 }
 
-function splitMarkdownSections(content: string, headings: JsxHeading[]): MarkdownSection[] {
-  const source = Buffer.from(content)
-  const sections: MarkdownSection[] = []
+function splitTextSections(extraction: TextExtraction): SearchSection[] {
+  const text = Buffer.from(extraction.text)
+  const sections: SearchSection[] = []
   const headingStack: Array<{ level: number; title: string }> = []
-  const linkedHeadings = headings.filter((heading) => heading.id != null)
+  const linkedHeadings = extraction.sections.filter((heading) => heading.id != null)
   const firstHeading = linkedHeadings.at(0)
   sections.push({
-    content: source.subarray(0, firstHeading?.start ?? source.length).toString(),
+    content: text.subarray(0, firstHeading?.textRange.start ?? text.length).toString(),
     headingHierarchy: [],
   })
   for (const [index, heading] of linkedHeadings.entries()) {
     removeCompletedHeadings(headingStack, heading.level)
-    headingStack.push({ level: heading.level, title: heading.text })
+    headingStack.push({ level: heading.level, title: heading.heading })
     sections.push({
       anchor: heading.id,
-      content: source
-        .subarray(heading.end, linkedHeadings.at(index + 1)?.start ?? source.length)
+      content: text
+        .subarray(
+          heading.textRange.start + Buffer.byteLength(heading.heading),
+          linkedHeadings.at(index + 1)?.textRange.start ?? text.length
+        )
         .toString(),
       headingHierarchy: headingStack.map((entry) => entry.title),
-      title: heading.text,
+      title: heading.heading,
     })
   }
 
@@ -147,66 +149,6 @@ function removeCompletedHeadings(
 
 function appendAnchor(routePath: string, anchor: string | undefined): string {
   return anchor == null ? routePath : `${routePath}#${anchor}`
-}
-
-// The `| --- | :---: |` row under a table header. It is syntax, not text, and
-// would otherwise show up in result excerpts.
-const TABLE_DELIMITER_ROW = /^[ \t]*\|?(?:[ \t]*:?-+:?[ \t]*\|)+[ \t]*(?::?-+:?[ \t]*)?$/gmu
-
-function sanitizeSearchContent(content: string): string {
-  const withoutCodeFences = removeCodeFences(content)
-  const withoutImportLines = removeImportLines(withoutCodeFences)
-  const withoutTableRules = withoutImportLines.replaceAll(TABLE_DELIMITER_ROW, "")
-  const normalizedText = replacePunctuationWithSpaces(withoutTableRules)
-  const collapsedWhitespace = collapseWhitespace(normalizedText)
-  return collapsedWhitespace.slice(0, 2000)
-}
-
-function removeCodeFences(content: string): string {
-  const lines = content.split("\n")
-  const keptLines: string[] = []
-  let fenceMarker: MarkdownFenceMarker | null = null
-
-  for (const line of lines) {
-    const nextFenceMarker = getMarkdownFenceMarker(line)
-    if (fenceMarker != null) {
-      if (nextFenceMarker === fenceMarker) {
-        fenceMarker = null
-      }
-      continue
-    }
-
-    if (nextFenceMarker != null) {
-      fenceMarker = nextFenceMarker
-      continue
-    }
-
-    keptLines.push(line)
-  }
-
-  return keptLines.join("\n")
-}
-
-function removeImportLines(content: string): string {
-  const lines = content.split("\n")
-  const keptLines: string[] = []
-
-  for (const line of lines) {
-    if (!line.trimStart().startsWith("import ")) {
-      keptLines.push(line)
-    }
-  }
-
-  return keptLines.join("\n")
-}
-
-function replacePunctuationWithSpaces(content: string): string {
-  let normalized = content
-  for (const token of ["`", "#", "*", "_", "~", "[", "]", "(", ")", "<", ">", "|", "!"]) {
-    normalized = normalized.replaceAll(token, " ")
-  }
-
-  return normalized
 }
 
 function collapseWhitespace(content: string): string {
