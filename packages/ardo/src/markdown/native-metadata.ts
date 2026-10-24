@@ -1,4 +1,10 @@
-import type { CompileJsxOptions, JsxModuleResult, JsxRenderOptions, JsxResult } from "ferromark"
+import type {
+  CompileJsxOptions,
+  JsxModuleResult,
+  JsxRenderOptions,
+  JsxResult,
+  TextExtraction,
+} from "ferromark"
 
 import { parse as parseYaml } from "yaml"
 
@@ -108,7 +114,7 @@ export function readNativeMarkdownMetadata(
   source: string,
   format: NativeMarkdownFormat,
   markdownConfig: MarkdownConfig = {}
-): NativeMarkdownMetadata {
+): NativeMarkdownMetadata & { searchText: TextExtraction } {
   const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
     source,
     format,
@@ -116,7 +122,19 @@ export function readNativeMarkdownMetadata(
   )
   // Metadata consumers need final heading planning, but never highlighted JSX.
   const result = prepared.render(renderOptions, () => "<pre />")
-  return createNativeMarkdownMetadata(source, frontmatter, result)
+  const { headingIds, headingOffset, headingIdPrefix, omitTitleHeading, callouts } = renderOptions
+  return {
+    ...createNativeMarkdownMetadata(source, frontmatter, result),
+    // Analyze the complete prepared tree; heading slices can contain unmatched JSX wrappers.
+    searchText: prepared.extractText({
+      includeBlockCode: false,
+      headingIds,
+      headingOffset,
+      headingIdPrefix,
+      omitTitleHeading,
+      callouts,
+    }),
+  }
 }
 
 /** Prepare per invocation so HMR always uses the current source and options. */

@@ -1,4 +1,4 @@
-import type { JsxHeading } from "ferromark"
+import type { JsxHeading, TextExtraction } from "ferromark"
 import type { Dirent } from "node:fs"
 
 import fs from "node:fs/promises"
@@ -25,6 +25,8 @@ export type RouteManifestEntry = {
   frontmatter: PageFrontmatterMetadata
   /** Native heading ranges refer to UTF-8 bytes in content. */
   headings?: JsxHeading[]
+  /** Authored text and final heading sections from the complete prepared document. */
+  searchText?: TextExtraction
   frontmatterDiagnostics?: PageMetadataDiagnostic[]
   identity: RouteIdentity
   lastmod: Date
@@ -108,7 +110,7 @@ async function createManifestEntry(
   const content = await fs.readFile(filePath, "utf8")
   const parsed =
     extension === ".tsx"
-      ? { content, frontmatter: {}, headings: [] }
+      ? { content, frontmatter: {}, headings: [], searchText: undefined }
       : readNativeMarkdownMetadata(content, extension === ".mdx" ? "mdx" : "md", options.markdown)
   const data = toFrontmatterRecord(parsed.frontmatter)
   const stat = await fs.stat(filePath)
@@ -127,6 +129,7 @@ async function createManifestEntry(
     anchors: parsed.headings.flatMap((heading) => (heading.id == null ? [] : [heading.id])),
     content: parsed.content,
     headings: parsed.headings,
+    ...(parsed.searchText == null ? {} : { searchText: parsed.searchText }),
     filePath,
     frontmatter,
     frontmatterDiagnostics: frontmatterResult.diagnostics,

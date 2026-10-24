@@ -57,10 +57,11 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     const description = entry.metadata.description
     // A Markdown page is not MDX: a line starting with "export" is prose there.
     const format = entry.filePath.endsWith(".mdx") ? "mdx" : "md"
-    const content = stripMdxSyntaxOutsideCodeFences(
-      resolveLlmsContentLinks(entry.content, { ...entry, routePaths, format }, config),
-      title,
-      format
+    // Rewrite projected Markdown as Markdown: angle-wrapped local URLs are not MDX JSX.
+    const content = resolveLlmsContentLinks(
+      stripMdxSyntaxOutsideCodeFences(entry.content, title, format),
+      { ...entry, routePaths, format: "md" },
+      config
     )
 
     lines.push(`## ${title}`, "")
