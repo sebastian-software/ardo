@@ -1,0 +1,180 @@
+---
+title: "¿Qué es Ardo?"
+description: "Un framework de documentación estática para React, comparado con Docusaurus, Starlight, VitePress, Nextra, Fumadocs y Mintlify."
+order: 1
+---
+
+# ¿Qué es Ardo?
+
+Conoces React. Tus componentes, proveedores, estilos, ejemplos y tipos TypeScript ya explican el producto. Entonces llega la documentación y, demasiado a menudo, sus herramientas exigen aprender otro modelo de componentes antes de publicar una guía útil.
+
+**Ardo existe para que no tengas que empezar de nuevo.**
+
+Este framework estático usa [React](https://react.dev/) y [Vite](https://vite.dev/). Ofrece un flujo sencillo, sin plataforma cerrada, un segundo framework de interfaz ni un modelo exclusivo para documentación.
+
+## El problema de los frameworks de documentación {#the-problem-with-documentation-frameworks}
+
+Muchas herramientas aportan sus propios componentes, convenciones y aprendizaje. Está bien al empezar, pero un equipo que ya usa React acaba teniendo que:
+
+- reescribir componentes existentes;
+- aprender patrones que no sirven en otros trabajos;
+- mantener dos modelos mentales para la misma interfaz.
+
+Ardo se apoya en las posibilidades que React ya ofrece.
+
+## Qué distingue a Ardo {#what-makes-ardo-different}
+
+### Aplicar directamente lo que sabes de React {#your-react-knowledge-applied-directly}
+
+Cada componente Ardo es React. Diseños, avisos y ejemplos interactivos usan React normal. Guarda tus componentes en el proyecto o instala una biblioteca e importa sus exports públicos. Usa los hooks que conoces y TypeScript.
+
+El sitio se compila como paquete propio con React gestionado por Ardo. Reutiliza un sistema de diseño instalado en lugar de importar fuentes de una aplicación vecina. Las [instrucciones para agentes](/es/guide/agent-instructions#inspect-the-repository) explican este límite.
+
+### Páginas HTML normales {#plain-html-pages}
+
+Cada archivo de `app/routes` genera una página HTML prerenderizada. Los enlaces normales cargan rápido desde cualquier alojamiento estático y las partes interactivas se hidratan en el navegador. No hay router del cliente que configurar; la compilación comprueba los destinos internos.
+
+### Basado en Vite {#powered-by-vite}
+
+Vite aporta un ciclo local rápido, compilaciones optimizadas y un ecosistema abierto. Ardo añade el procesamiento documental sin ocultarlo detrás de una plataforma.
+
+## Qué incluye {#what-you-get}
+
+### Markdown y componentes React {#markdown-react-components}
+
+Escribe en Markdown y añade componentes React cuando hagan falta:
+
+```markdown
+# My Documentation
+
+Regular markdown content...
+
+<CustomComponent prop="value" />
+
+More markdown content...
+```
+
+Sin sintaxis especial ni wrappers. Solo MDX, tal como fue diseñado.
+
+### Un tema predeterminado cuidado {#a-polished-default-theme}
+
+Ardo incluye un tema completo para que te centres en el contenido:
+
+- diseño adaptable;
+- modos claro y oscuro con detección automática;
+- búsqueda de texto completo;
+- índice automático;
+- resaltado con números y líneas destacadas.
+
+### Estilos tipados con Vanilla Extract {#type-safe-styling-with-vanilla-extract}
+
+La interfaz usa [Vanilla Extract](https://vanilla-extract.style/), CSS en TypeScript sin runtime de estilos. Colores, espacios, radios y transiciones están disponibles como imports tipados:
+
+```ts
+import { style } from "@vanilla-extract/css"
+import { vars } from "ardo/theme"
+
+// Full autocomplete for all design tokens
+const myStyle = style({
+  color: vars.color.brand,
+  borderRadius: vars.radius.base,
+})
+```
+
+La CLI incluye el plugin Vanilla Extract. Instala `@vanilla-extract/css` para escribir `.css.ts`; no hace falta configuración Vite adicional.
+
+### Completamente personalizable {#fully-customizable}
+
+Los colores, diseños, procesamiento Markdown y pipeline usan piezas normales de React y Vite. Personalízalos con los métodos habituales de tu equipo.
+
+## Comparar Ardo {#how-ardo-compares}
+
+Ardo se dirige a equipos React que quieren documentación estática moderna en su repositorio. Docusaurus, Starlight, VitePress, Nextra, Fumadocs y Mintlify son buenas herramientas. La pregunta es: **¿dónde debe vivir tu documentación y cuánto código React debe reutilizar?**
+
+|                  | **Ardo**                         | **Docusaurus**           | **Starlight**               | **VitePress**     | **Nextra**            | **Fumadocs**                   | **Mintlify**              |
+| ---------------- | -------------------------------- | ------------------------ | --------------------------- | ----------------- | --------------------- | ------------------------------ | ------------------------- |
+| Uso ideal        | React, documentación estática    | Documentación OSS madura | Documentación Astro extensa | Documentación Vue | Documentación Next.js | Documentación React componible | Documentación API alojada |
+| Modelo UI        | React 19                         | React                    | Astro                       | Vue               | Next.js               | React                          | Plataforma alojada        |
+| Compilación      | Vite 8, HTML por página          | Webpack                  | Astro/Vite                  | Vite              | Next.js               | Según el framework React       | Flujo SaaS/Git            |
+| Reutilizar React | Nativo                           | Nativo                   | Mediante islas              | No                | Nativo                | Nativo                         | Según la plataforma       |
+| API TypeScript   | TypeScript nativo y OXC          | Plugin                   | Plugin                      | Externo           | TSDoc                 | Tablas de tipos/OpenAPI        | Herramientas API          |
+| Control          | Código abierto, archivos propios | Código abierto           | Código abierto              | Código abierto    | Código abierto        | Código abierto                 | SaaS alojado              |
+
+La reutilización se refiere a componentes del proyecto o paquetes instalados. Declara el sistema de diseño en el paquete de documentación e importa sus exports públicos. Se rechazan fuentes vecinas, alias y enlaces que crucen ese límite.
+
+### Docusaurus {#docusaurus}
+
+[Docusaurus](https://docusaurus.io/) es el framework React consolidado, ampliamente usado y respaldado por Meta. Incluye versiones, localización, blogs, búsqueda y muchos plugins.
+
+Ardo usa Vite y motores Rust para Markdown y resaltado en lugar de una arquitectura Webpack. Prerenderiza sin router del cliente y ofrece menos configuración para equipos React modernos.
+
+Elige Docusaurus si la madurez, los plugins y las versiones importan más que la cercanía a Vite y React.
+
+### Starlight {#starlight}
+
+[Starlight](https://starlight.astro.build/) es un framework Astro rápido, accesible y cuidado, especialmente útil para mucho contenido con poca interactividad de aplicación.
+
+React es el modelo nativo de Ardo: proveedores, hooks y ejemplos MDX interactivos funcionan también con sistemas de diseño instalados. Starlight usa islas Astro, potentes pero con otro límite.
+
+Elige Starlight si priorizas el peso de página y el modelo de contenido Astro.
+
+### VitePress {#vitepress}
+
+[VitePress](https://vitepress.dev/) es la comparación más cercana: framework estático Vite, buen tema y flujo centrado en contenido, para Vue.
+
+Ardo lleva esa sencillez a React. Si la aplicación, ejemplos y sistema de diseño usan React, reutilízalos en lugar de reescribirlos en Vue.
+
+Elige VitePress para un equipo Vue o si no necesitas reutilizar React.
+
+### Nextra {#nextra}
+
+[Nextra](https://nextra.site/) combina MDX con rutas Next.js, enlaces e imágenes optimizados, búsqueda, i18n y los modos de renderizado de Next.
+
+Ardo no depende de Next.js. Su build Vite/React escribe HTML estático por ruta, sin router del cliente. Encaja fuera de Next o para una documentación estática independiente y acotada.
+
+Elige Nextra si tu documentación debe ser una aplicación Next.js completa.
+
+### Fumadocs {#fumadocs}
+
+[Fumadocs](https://www.fumadocs.dev/) es un conjunto React muy componible, compatible con varios frameworks y con muchas piezas para crear un sistema propio.
+
+Ardo es deliberadamente más acotado: un producto estático completo con React, Vite, MDX y API nativa, con menos decisiones de arquitectura.
+
+Elige Fumadocs para un toolkit y Ardo para un sitio React estático listo para publicar.
+
+### Mintlify {#mintlify}
+
+[Mintlify](https://www.mintlify.com/docs/what-is-mintlify) es una plataforma alojada con puntos fuertes en API comerciales, edición, playgrounds, analítica e IA.
+
+Ardo es de código abierto y vive en tu repositorio: compilación en CI, archivos estáticos y renderizado con tus componentes React.
+
+Elige Mintlify para un producto alojado y Ardo para controlar fuentes, alojamiento y React.
+
+## ¿Encaja Ardo contigo? {#is-ardo-a-good-fit}
+
+Ardo encaja especialmente junto a una base de código React:
+
+- bibliotecas de componentes con ejemplos y referencia API;
+- equipos con sistema de diseño React;
+- proyectos abiertos que quieren páginas estáticas sin plataforma;
+- equipos que buscan la sencillez de VitePress sin Vue o Astro.
+
+Puede no ser la herramienta adecuada si:
+
+- necesitas i18n o versiones maduras: siguen siendo experimentales;
+- buscas el mínimo JavaScript y no necesitas React;
+- quieres un flujo SaaS con analítica y gestión de playgrounds;
+- tu stack Vue, Astro o Next.js debe alojar también la documentación;
+- necesitas una consola API interactiva: OpenAPI en Ardo es estático.
+
+[Versiones](/es/guide/releases) distingue funciones disponibles, experimentales y previstas.
+
+## Versiones y navegadores {#versioning-and-browser-support}
+
+Framework, interfaz y runtime se publican juntos. La instalación sigue las [instrucciones versionadas](/es/guide/agent-instructions) y Basic probado. Consulta el [historial](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md).
+
+Ardo se dirige a navegadores modernos compatibles con React 19 y Vite 8. El tema usa OKLCH y propiedades CSS personalizadas. Prueba el build final con tu matriz si necesitas navegadores antiguos.
+
+## Primeros pasos {#getting-started}
+
+¿Quieres probarlo? [Primeros pasos](/es/guide/getting-started) incluye el prompt para tu agente y la instalación manual con pocos archivos.

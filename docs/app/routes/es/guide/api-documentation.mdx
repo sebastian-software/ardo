@@ -1,0 +1,183 @@
+---
+title: "Documentación de la API"
+description: "Genera referencias a partir de puntos de entrada TypeScript con TypeScript nativo y OXC, o de una especificación OpenAPI local."
+order: 9
+---
+
+# Documentación de la API
+
+La opción `api` genera Markdown desde tus puntos de entrada públicos: tipos inferidos, firmas, sobrecargas, JSDoc y propiedades heredadas o compuestas compatibles. Así se genera la [referencia de Ardo](/es/api-reference). Para una API REST, usa una [especificación OpenAPI](#openapi-specs).
+
+## Instalación {#installation}
+
+La integración usa una nightly de TypeScript 7.1 fijada y el parser OXC:
+
+```bash
+pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.155.0
+```
+
+Ardo lee las declaraciones con la API nativa de TypeScript 7.1, que también comprueba los tipos. TypeScript 7.0 no sirve: su API inestable carece de las llamadas de snapshot, emisión y resolución necesarias. Se admite una nightly fijada, no una beta 7.1 publicada. Los proyectos que usan el alias `@typescript/native` siguen funcionando.
+
+## Configuración {#configuration}
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.api.json",
+    out: "api-reference",
+    title: "API Reference",
+  },
+})
+```
+
+Pon la configuración en `ardo.config.ts`. Las rutas son relativas a la raíz del proyecto; `out` debe estar dentro del directorio de rutas. `api: true` usa `./src/index.ts`, `./tsconfig.json` y la salida y título predeterminados del ejemplo. `api` es el backend de documentación del código fuente.
+
+Elige una configuración TypeScript que incluya las entradas públicas y sus dependencias. Puedes limitar la comprobación al grafo público:
+
+```json
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/index.ts"],
+  "include": []
+}
+```
+
+Añade las declaraciones globales necesarias a `files`. Ardo activa la emisión comprobada de declaraciones y conserva los comentarios en memoria, incluso con `noEmit` o `removeComments`. No modifica la configuración ni necesita declaraciones en disco.
+
+## Rutas de importación {#import-paths}
+
+Para exportaciones de subrutas, asocia cada ruta de importación con su punto de entrada. Cada página muestra el import y el índice agrupa por ruta:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: {
+      "my-lib/ui": "./src/ui/index.ts",
+      "my-lib/hooks": "./src/hooks/index.ts",
+    },
+    tsconfig: "./tsconfig.api.json",
+  },
+})
+```
+
+Una declaración exportada por varias entradas pertenece a la primera. La [referencia de Ardo](/es/api-reference) lo usa para `ardo/ui`, `ardo/runtime` y `ardo/config`.
+
+## Contenido de las páginas {#what-the-pages-show}
+
+Una función cuyo nombre empieza por mayúscula se considera un componente React. Su página muestra import, ejemplo JSX con props obligatorias y tabla de todas las props. Un tipo como `ButtonProps` para `Button` no tiene página propia si la tabla es completa; sus enlaces llevan a las props del componente.
+
+Las funciones, hooks y tipos muestran su firma o definición. Los nombres de tipos en tablas enlazan a sus páginas. Se muestran las descripciones JSDoc, `@example`, `@remarks`, `@deprecated`, `@default` y `{@link Name}`.
+
+## Varios paquetes {#multiple-packages}
+
+Pasa un array cuando los paquetes necesiten configuraciones TypeScript o prefijos de rutas separados:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: [
+    {
+      entryPoints: ["./packages/alpha/src/index.ts"],
+      tsconfig: "./packages/alpha/tsconfig.json",
+      out: "api-reference/alpha",
+    },
+    {
+      entryPoints: ["./packages/beta/src/index.ts"],
+      tsconfig: "./packages/beta/tsconfig.json",
+      out: "api-reference/beta",
+    },
+  ],
+})
+```
+
+Los directorios de salida deben ser distintos sin distinguir mayúsculas y no contenerse entre sí. Cada proyecto participa en el descubrimiento inicial y las actualizaciones. Un fallo inicial cierra todas las sesiones iniciadas en ese intento. No se ofrece orquestación del solution builder de TypeScript.
+
+## Compilación y desarrollo {#build-and-development}
+
+`ardo build` genera Markdown antes de descubrir las rutas, sin precompilación ni declaraciones en disco. Un error inicial del compilador detiene la generación. En desarrollo, la sesión nativa actualiza las páginas al cambiar fuentes, dependencias o configuración. Los errores de tipos aparecen en la superposición; se conservan las últimas páginas válidas y la generación se reanuda al corregirlos.
+
+Los archivos sin cambios conservan su fecha; los exports retirados pierden sus páginas. Mantén el contenido manual fuera del directorio generado: Ardo no sustituye carpetas no vacías sin su marcador de generación.
+
+Vite suele ignorar `node_modules`. Reinicia el servidor tras instalar o editar dependencias allí.
+
+## Uso programático {#programmatic-use}
+
+En una generación única, la sesión se cierra automáticamente:
+
+```ts
+import { generateNativeDocs } from "ardo/api"
+
+const result = await generateNativeDocs(
+  { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.api.json" },
+  "./app/routes"
+)
+```
+
+Un host que ya vigile archivos puede reutilizar `NativeApiProject`, llamar a `extract` o `generate` con listas `changed`, `created` y `deleted`, y ejecutar `close()` al terminar. Usa rutas absolutas en las notificaciones. El mismo backend nativo gestiona generación inicial y actualizaciones.
+
+## Límites actuales {#current-limits}
+
+Las props heredadas se expanden, incluso desde namespaces como React. Los atributos DOM aparecen junto a las props propias conservando argumentos genéricos, miembros omitidos y sustituciones.
+
+Se conservan las expresiones de tipos y se avisa de expansiones no admitidas. Quedan pendientes tipos mapeados o condicionales arbitrarios, TSDoc completo, páginas de namespaces o entradas `export =`, miembros globales y enlaces a fuentes originales. Las referencias globales no admitidas avisan de expansión incompleta. Cada proyecto tiene su sesión; no se ofrece comportamiento de solution builder.
+
+Pon el JSDoc de cada miembro en una línea propia anterior. El compilador puede omitir comentarios junto a la llave de apertura. Si una petición de paquete resuelve declaraciones distintas en modos import y require dentro de un archivo, el extractor avisa de expansión incompleta en lugar de elegir una declaración incierta.
+
+Los proyectos con la integración TypeDoc retirada deben seguir la [migración desde TypeDoc](/es/guide/releases/migrate-from-typedoc). La vía nativa usa el cliente Node oficial de TypeScript, sin bindings Go propios.
+
+## Especificaciones OpenAPI {#openapi-specs}
+
+Ardo convierte una especificación OpenAPI 3.0 o 3.1 local en páginas MDX estáticas. Usan las mismas rutas, barras laterales, búsqueda, sitemap, comprobaciones y exportaciones LLM que el resto del sitio.
+
+### Configurar una especificación local {#configure-a-local-spec}
+
+Conserva la especificación en el repositorio e indica su ruta relativa en `ardo.config.ts`. Añade `openapi` a la configuración existente:
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Pet API",
+  openapi: {
+    spec: "./openapi.yaml",
+    out: "api",
+  },
+})
+```
+
+`spec` admite `.json`, `.yaml` y `.yml`. `out` es `api` por defecto: el índice está en `/api` y las operaciones se agrupan por etiqueta, como `/api/pets/get-pets`.
+
+### Contenido generado {#generated-content}
+
+La referencia estática inicial incluye:
+
+- título y descripción de la API;
+- método y ruta;
+- agrupación por etiquetas;
+- resumen o descripción;
+- parámetros declarados y marcadores obligatorios;
+- códigos de respuesta declarados y descripciones.
+
+Los directorios generados están marcados como gestionados por Ardo. Edita la fuente OpenAPI, no los MDX generados.
+
+### Estático por diseño {#static-by-design}
+
+La compilación no descarga especificaciones remotas, envía peticiones, guarda credenciales ni muestra una consola interactiva. Así los builds son reproducibles y los despliegues estáticos seguros. Puedes añadir después un playground React específico sin cambiar el contrato de la referencia.
+
+### Validar {#validate}
+
+Tras cambiar la especificación, ejecuta la compilación habitual:
+
+```bash
+pnpm build
+```
+
+Un documento no válido, una versión principal no admitida o una especificación que no sea un objeto hace fallar la compilación con un error útil de Ardo.

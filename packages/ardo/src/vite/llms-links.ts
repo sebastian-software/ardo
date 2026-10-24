@@ -12,7 +12,10 @@ type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath"> & {
   format?: "md" | "mdx"
   routePaths?: ReadonlySet<string>
 }
-type LinkConfig = Pick<ResolvedConfig, "base" | "deploymentBase" | "siteUrl" | "versioning">
+type LinkConfig = Pick<
+  ResolvedConfig,
+  "base" | "deploymentBase" | "siteUrl" | "versioning" | "i18n"
+>
 
 /** Native source spans identify links without touching code, images, or external URLs. */
 export function resolveLlmsContentLinks(
@@ -48,7 +51,10 @@ function resolveDestination(destination: string, entry: LinkContext, config: Lin
   const base = entry.publicPath.endsWith(entry.routePath)
     ? entry.publicPath.slice(0, -entry.routePath.length) || "/"
     : config.base
-  const page = { base, path: entry.routePath }
+  const firstSegment = destination.startsWith("/") ? destination.split(/[/?#]/u)[1] : undefined
+  const explicitLocale =
+    config.i18n !== false && config.i18n.locales.some((locale) => locale.id === firstSegment)
+  const page = { base: explicitLocale ? config.base : base, path: entry.routePath }
   const publicPage = new URL(entry.publicPath, config.siteUrl || localOrigin)
   const mounted = isMountedPath(destination, config)
   const href = mounted ? destination : resolveArdoHref(destination, page, entry.routePaths)

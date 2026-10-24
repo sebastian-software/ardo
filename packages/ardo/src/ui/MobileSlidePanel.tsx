@@ -18,6 +18,7 @@ import * as controlStyles from "./site-controls.css"
 
 export function MobileSlidePanel({
   id,
+  homePath = "/",
   logo,
   title,
   nav,
@@ -28,6 +29,7 @@ export function MobileSlidePanel({
   onClose,
 }: {
   id?: string
+  homePath?: string
   logo?: ArdoLogo
   title: string
   nav?: ReactNode
@@ -64,7 +66,7 @@ export function MobileSlidePanel({
       >
         <div className={styles.mobilePanelHeader}>
           <ArdoLink
-            to="/"
+            to={homePath}
             className={styles.logoLink}
             onClick={onClose}
             aria-label={title || labels.mobilePanel.home}

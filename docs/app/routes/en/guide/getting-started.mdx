@@ -1,0 +1,231 @@
+---
+title: Getting Started
+description: Hand the setup prompt to your coding agent, or install Ardo 6 by hand in a few files.
+order: 2
+---
+
+import { SetupPrompt } from "../../../components/SetupPrompt"
+
+# Getting Started
+
+Hand this sentence to your coding agent, in a fresh repository or one you already have. The link points it to Ardo's versioned [Agent Instructions](/en/guide/agent-instructions). It adapts the [tested Basic example](/en/guide/agent-instructions#the-basic-example) and reports how typecheck, tests, and build went. You review the result like any other pull request.
+
+<SetupPrompt>Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.</SetupPrompt>
+
+Without an agent, follow the [manual installation](#manual-installation) below.
+
+## Prerequisites
+
+You'll need:
+
+- [Node.js](https://nodejs.org/) version 22.22.0 or higher
+- Linux or Windows on x64/arm64, or macOS on Apple Silicon, with optional native package dependencies enabled
+- [pnpm](https://pnpm.io/) (recommended) or npm/yarn
+
+## Project Structure
+
+Here's what an Ardo project looks like. Files under `app/routes/` become pages, `app/root.tsx` holds the site chrome, and everything else is configuration:
+
+```text
+my-docs/
+├── app/
+│   ├── routes/                  # Pages: .md, .mdx, and .tsx files
+│   │   ├── guide/
+│   │   │   └── getting-started.mdx
+│   │   └── home.tsx             # Home page
+│   └── root.tsx                 # Root component (header, sidebar, footer)
+├── ardo.config.ts               # Optional site configuration
+├── vite.config.ts               # Optional extra Vite plugins or settings
+├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
+├── tsconfig.json
+└── package.json
+```
+
+## Manual Installation
+
+These steps create a new docs project. In an existing repository, put it in its own package or directory: Ardo builds the docs as their own static site and shares no router or entry files with your application.
+
+### 1. Create a new project
+
+```bash
+mkdir my-docs
+cd my-docs
+pnpm init
+```
+
+### 2. Install dependencies
+
+```bash
+pnpm add ardo@6
+pnpm add -D typescript@6
+```
+
+Any TypeScript 6 or newer typechecks an Ardo site. The optional [API documentation](/en/guide/api-documentation#installation) needs a pinned TypeScript 7.1 nightly; switch to it when you add `api`.
+
+### 3. Add package scripts
+
+Ardo manages React, React DOM, and Vite as its own dependencies. Its CLI starts the development server, builds the static site, and previews the generated client output:
+
+```json
+{
+  "scripts": {
+    "dev": "ardo dev",
+    "build": "ardo build",
+    "preview": "ardo preview"
+  }
+}
+```
+
+When you use pnpm, add a build-script allowlist so esbuild can
+prepare Vite's native dependency:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "."
+
+allowBuilds:
+  esbuild: true
+```
+
+### 4. Add optional Ardo configuration
+
+Ardo works without a configuration file. Add `ardo.config.ts` when you want to set site metadata, theme, deployment, or content options. UI configuration (navigation, sidebar, footer) stays in JSX props in `root.tsx`:
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "My awesome documentation site",
+})
+```
+
+The site serves from the domain root. For a subpath, such as a GitHub Pages project site, set `base`; the [Deployment](/en/guide/deployment) guide covers every host.
+
+Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
+adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.
+
+### 5. Create app files
+
+An Ardo project needs one app file besides its content: `app/root.tsx`. Its default export is the root component, and `<ArdoRoot />` on its own is a complete site: a header with search and the theme toggle, a sidebar with one section per folder in `app/routes/`, and a footer. Ardo renders the HTML shell around it, generates the route table, and supplies the client and server entries, the site config, and its stylesheet.
+
+**`app/root.tsx`**:
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Pass `ArdoHeader`, `ArdoSidebar`, or `ArdoFooter` as children to change any part of the chrome, for example to add a navigation link:
+
+```tsx
+import { ArdoHeader, ArdoNav, ArdoNavLink, ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+    </ArdoRoot>
+  )
+}
+```
+
+[Layout & Navigation](/en/guide/layout-and-navigation) covers sidebar sections, the footer, and the optional `Layout` and `ErrorBoundary` exports of `root.tsx`.
+
+**`tsconfig.json`**:
+
+```json
+{
+  "extends": "ardo/tsconfig",
+  "include": ["app/**/*", "*.ts"]
+}
+```
+
+The preset sets `jsx`, `jsxImportSource: "ardo"`, and Ardo's type declarations, so React, MDX, and `virtual:` imports typecheck without further setup.
+
+Import components from `ardo/ui`, runtime APIs such as `ArdoLink` and `useArdoPath` from `ardo/runtime`, and React hooks from `ardo/react`. Ardo brings its own React, so the docs package needs no React dependency of its own.
+
+### 6. Create your first pages
+
+Create a home page so the root URL and header logo have a destination:
+
+**`app/routes/home.tsx`**:
+
+```tsx
+import { ArdoHero } from "ardo/ui"
+
+export default function HomePage() {
+  return (
+    <ArdoHero
+      name="My Documentation"
+      tagline="Guides and examples for your project."
+      actions={[{ text: "Get started", link: "/guide/getting-started", theme: "brand" }]}
+    />
+  )
+}
+```
+
+Add the guide linked from your home page, header, and sidebar:
+
+**`app/routes/guide/getting-started.mdx`**:
+
+```markdown
+---
+title: Getting Started
+---
+
+# Getting Started
+
+Welcome to your documentation site!
+```
+
+Run `pnpm dev` and open `http://localhost:5173`. You should see your home page; choose **Get started** to open the guide.
+
+<Tip>
+  The [Basic example](/en/guide/agent-instructions#the-basic-example) is this setup plus a markdown
+  guide and a small React component, tested on every change.
+</Tip>
+
+## Development
+
+Start the development server:
+
+```bash
+pnpm dev
+```
+
+Your site will be running at `http://localhost:5173`. Changes to MDX and TSX routes flow through Vite's development server.
+
+## Production Build
+
+When you're ready to publish:
+
+```bash
+pnpm build
+```
+
+The output lands in `build/client/`: one prerendered `index.html` per page, a `404.html`, and the hashed assets, ready for any static host. The build should report two prerendered pages and no broken internal links. It checks every internal link and anchor in the generated HTML. Preview it locally before deploying:
+
+```bash
+pnpm preview
+```
+
+## Next Steps
+
+Your site is running. Now make it yours:
+
+- Add pages, sidebar sections, a logo, and header links with [Layout & Navigation](/en/guide/layout-and-navigation#common-tasks)
+- Write richer content with [Markdown & MDX](/en/guide/markdown) and the ready-made [Components](/en/guide/components)
+- Change colors and styles with [Theming](/en/guide/theming), including optional [Tailwind CSS](/en/guide/theming#tailwind-css)
+- [Deploy your site](/en/guide/deployment) to GitHub Pages, Netlify, Vercel, or any static host
+- Generate reference pages with [API Documentation](/en/guide/api-documentation)

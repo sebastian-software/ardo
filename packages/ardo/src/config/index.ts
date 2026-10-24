@@ -252,6 +252,17 @@ function validateVersionEntry(
   if (ids.has(version.id)) {
     errors.push(`versioning.versions contains duplicate id "${version.id}".`)
   }
+  if (version.locales != null) {
+    const localeIds = new Set<string>()
+    for (const locale of version.locales) {
+      validateLocaleId(`versioning.versions["${version.id}"].locales entries`, locale, errors)
+      if (localeIds.has(locale))
+        errors.push(
+          `versioning.versions["${version.id}"].locales contains duplicate id "${locale}".`
+        )
+      localeIds.add(locale)
+    }
+  }
   if (!isValidBasePath(version.path)) {
     errors.push(`versioning.versions["${version.id}"].path must start and end with "/".`)
   }

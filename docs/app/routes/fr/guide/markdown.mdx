@@ -1,0 +1,308 @@
+---
+title: "Markdown et MDX"
+description: "Écrivez simplement en Markdown, puis ajoutez React lorsqu’une page en a besoin."
+order: 4
+---
+
+# Markdown et MDX
+
+Ardo privilégie Markdown sans vous y enfermer. Commencez par du texte et des blocs de code ; passez à MDX pour un exemple React interactif, un composant ou un encadré de design system, sans changer d’outils.
+
+## Noms des fichiers de pages {#page-filenames}
+
+Les fichiers d’`app/routes/` deviennent des URL. Choisissez des noms explicites comme `guide/getting-started.mdx` ou `guide/c-sharp.mdx`. Ardo refuse `#` et `?` dans les noms de fichiers et dossiers : ils délimitent fragments et requêtes. Utilisez-les dans les titres et le contenu.
+
+## Syntaxe de base {#basic-syntax}
+
+### Titres {#headings}
+
+```markdown
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+```
+
+### Emphase {#emphasis}
+
+<!-- prettier-ignore -->
+```markdown
+*italic* or _italic_
+**bold** or __bold__
+***bold and italic***
+~~strikethrough~~
+```
+
+### Listes {#lists}
+
+```markdown
+- Unordered item 1
+- Unordered item 2
+  - Nested item
+
+1. Ordered item 1
+2. Ordered item 2
+```
+
+### Liens et images {#links-and-images}
+
+```markdown
+[Link text](https://example.com)
+![Alt text](/path/to/image.png)
+```
+
+## GitHub Flavored Markdown {#github-flavored-markdown}
+
+Ardo prend en charge GitHub Flavored Markdown (GFM) directement.
+
+### Tableaux {#tables}
+
+| Fonction           | Prise en charge |
+| ------------------ | --------------- |
+| Tableaux           | Oui             |
+| Listes de tâches   | Oui             |
+| Liens automatiques | Oui             |
+
+### Listes de tâches {#task-lists}
+
+- [x] Rédiger la documentation
+- [x] Ajouter la coloration syntaxique
+- [ ] Déployer en production
+
+### Liens automatiques {#autolinks}
+
+Les URL deviennent automatiquement des liens : https://vite.dev
+
+## Coloration syntaxique {#syntax-highlighting}
+
+Ferromark colore les blocs de code au build avec son intégration native [Ferriki](https://ferriki.dev/). Grammaires et thèmes standards sont téléchargés et mis en cache à la première utilisation. Exemples :
+
+| Catégorie                | Langages                                                        |
+| ------------------------ | --------------------------------------------------------------- |
+| Web                      | `javascript`, `typescript`, `jsx`, `tsx`, `html`, `css`, `scss` |
+| Données et configuration | `json`, `jsonc`, `yaml`, `toml`, `xml`, `graphql`               |
+| Markdown                 | `markdown`, `mdx`                                               |
+| Shell et DevOps          | `bash`, `shell`, `dockerfile`                                   |
+| Généralistes             | `python`, `rust`, `go`, `sql`, `diff`                           |
+
+```typescript
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greetUser(user: User): string {
+  return `Hello, ${user.name}!`
+}
+```
+
+### Surligner des lignes {#line-highlighting}
+
+Surlignez des lignes avec la syntaxe `{lines}` :
+
+```typescript {2,4-5}
+function example() {
+  const highlighted = true
+  const normal = false
+  const alsoHighlighted = true
+  const highlighted = true
+  const notHighlighted = false
+}
+```
+
+### Numéros de ligne {#line-numbers}
+
+Activez les numéros avec `showLineNumbers` :
+
+```typescript showLineNumbers
+const first = 1
+const second = 2
+const third = 3
+```
+
+### Titre {#title}
+
+Ajoutez un titre au bloc, combinable avec le surlignage :
+
+```typescript title="ardo.config.ts" {4-7}
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.json",
+    title: "API Reference",
+  },
+})
+```
+
+### Prompts {#prompts}
+
+Utilisez le langage `prompt` pour le texte à copier dans un agent. Les lignes se replient au lieu de défiler horizontalement ; rédigez chaque paragraphe sur une seule ligne source :
+
+````md
+```prompt
+Add a Deployment page that explains the GitHub Pages workflow of this repository.
+```
+````
+
+### Groupes de code {#code-groups}
+
+Affichez plusieurs variantes de code dans des onglets :
+
+<CodeGroup labels="JavaScript,TypeScript,Python">
+
+```js
+function greet(name) {
+  return `Hello, ${name}!`
+}
+```
+
+```ts
+function greet(name: string): string {
+  return `Hello, ${name}!`
+}
+```
+
+```python
+def greet(name):
+    return f"Hello, {name}!"
+```
+
+</CodeGroup>
+
+## Encadrés {#callouts}
+
+Du Markdown sans imports : Ardo reconnaît les alertes GitHub et les associe aux encadrés correspondants.
+
+```md
+> [!NOTE]
+> Useful information that users should know.
+
+> [!TIP]
+> Helpful advice for doing things better.
+
+> [!IMPORTANT]
+> Key information users need to know.
+
+> [!WARNING]
+> Urgent info that needs immediate attention.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+```
+
+Résultat :
+
+> [!NOTE]
+> Informations utiles à connaître.
+
+> [!TIP]
+> Un conseil pour mieux faire.
+
+> [!IMPORTANT]
+> Informations essentielles pour les utilisateurs.
+
+> [!WARNING]
+> Informations urgentes nécessitant une attention immédiate.
+
+> [!CAUTION]
+> Conséquences négatives possibles d’une action.
+
+Pour un titre personnalisé, utilisez les composants comme `<Tip title="Conseil pratique">`, décrits dans [Composants](/fr/guide/components#callouts).
+
+## Composants {#components}
+
+Les composants Ardo fonctionnent sans import dans MDX : encadrés, badges, cartes, onglets, accordéons, étapes, blocs de code et icônes. [Composants](/fr/guide/components) les présente avec leur MDX et leurs props.
+
+### Vos composants {#your-own-components}
+
+Importez les composants React et utilisez-les comme du HTML. Gardez-les hors d’`app/routes/`, par exemple dans `app/components/` : chaque fichier `.tsx` des routes devient une page.
+
+```mdx title="app/routes/guide/my-page.mdx"
+import { MyComponent } from "../../components/MyComponent"
+
+# My Page
+
+<MyComponent prop="value" />
+```
+
+## Fragments réutilisables {#reusable-snippets}
+
+Ardo utilise des modules MDX standards : aucun plugin ou syntaxe spéciale n’est nécessaire pour partager du contenu. Placez les fragments dans `snippets/` et importez-les où vous en avez besoin.
+
+Définissez par exemple une note commune dans `app/snippets/prerequisites.mdx`. Un fragment intégré dans une autre page n’a pas besoin de frontmatter :
+
+```mdx
+<Tip title="Before you start">
+  This guide assumes you have {props.runtime} installed and can run packages with{" "}
+  {props.packageManager}.
+</Tip>
+```
+
+Importez-le dans une page MDX et placez-le dans `ArdoBareContent` pour retirer son wrapper de page :
+
+```mdx
+import { ArdoBareContent } from "ardo/ui"
+import Prerequisites from "../../snippets/prerequisites.mdx"
+
+# Getting Started
+
+<ArdoBareContent>
+  <Prerequisites runtime="Node.js 22.22.0+" packageManager="pnpm" />
+</ArdoBareContent>
+```
+
+Les fragments acceptent des props via des expressions MDX, composent des composants Ardo et vivent avec le code. Vite gère leurs imports et rechargements comme ceux des autres dépendances de route.
+
+<Note>
+  Adaptez l’import relatif à la profondeur de la route. Une page d’`app/routes/guide/` importe
+  généralement `../../snippets/prerequisites.mdx`.
+</Note>
+
+### Dans les routes TSX {#in-tsx-routes}
+
+Un fichier `.mdx` importé en `.tsx` utilise normalement le wrapper `Content` complet : article, en-tête, pied et navigation. C’est utile pour une page entière, mais rarement pour un fragment. Placez-le dans `ArdoBareContent` pour l’intégrer comme contenu seul :
+
+```tsx
+import { ArdoBareContent } from "ardo/ui"
+import MySnippet from "./snippet.mdx"
+
+export default function MyPage() {
+  return (
+    <ArdoBareContent>
+      <MySnippet />
+    </ArdoBareContent>
+  )
+}
+```
+
+## Compilation MDX {#how-mdx-compiles}
+
+Ferromark analyse `.md` et `.mdx`. MDX ajoute expressions JavaScript, imports, exports et composants JSX ; React compile le JSX via Vite. Utilisez le frontmatter YAML pour les métadonnées.
+
+Ferromark compile chaque route en module MDX suivant le contrat de `@mdx-js/mdx` :
+
+- `import` et `export` sont du JavaScript. La syntaxe TypeScript est refusée ; déplacez le code typé dans un module `.ts` importé.
+- Les composants importés sont utilisés directement. Les autres viennent d’Ardo, puis de la prop `components`. Une erreur nomme tout composant manquant.
+- `export default` devient la mise en page et remplace le wrapper Ardo : votre layout entoure la page au lieu d’`ArdoDocContent`.
+- Le JSX dans une expression comme `{items.map((item) => <Card />)}` n’accède pas aux composants Ardo : importez-les explicitement.
+- Les noms `_components`, `_createMdxContent`, `_missingMdxReference`, `_provideComponents`, `MDXLayout`, `MDXContent`, `_ArdoPageDataProvider`, `_ardoFrontmatter`, `_ardoRoute` et `_ardoToc` sont réservés. Les déclarer provoque une erreur de compilation.
+
+## Frontmatter {#frontmatter}
+
+Ajoutez les métadonnées avec le frontmatter YAML :
+
+```yaml
+---
+title: Page Title
+description: Page description for SEO
+order: 2
+---
+```
+
+Toutes les options figurent dans la [référence du frontmatter](/fr/guide/frontmatter).

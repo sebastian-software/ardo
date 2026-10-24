@@ -1,5 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react"
 
+import { useArdoLabels } from "../../runtime/hooks"
+
 import { ChromeIcon } from "../chrome-icons"
 import {
   applyThemeMode,
@@ -13,6 +15,7 @@ import * as styles from "./ThemeToggle.css"
 
 /** A button that switches between light and dark mode and remembers the choice. */
 export function ArdoThemeToggle() {
+  const labels = useArdoLabels().theme
   const [theme, setTheme] = useState<ArdoThemeMode>(getInitialThemeMode)
   const mounted = useSyncExternalStore(subscribeMounted, getClientMounted, getServerMounted)
   const configuredTheme = mounted ? getConfiguredThemeMode() : undefined
@@ -38,7 +41,7 @@ export function ArdoThemeToggle() {
 
   if (!mounted) {
     return (
-      <button type="button" className={styles.themeToggle} aria-label="Toggle theme">
+      <button type="button" className={styles.themeToggle} aria-label={labels.toggle}>
         <span className={styles.themeIcon}>
           <ChromeIcon name="light-theme" />
         </span>
@@ -54,8 +57,8 @@ export function ArdoThemeToggle() {
       disabled={configuredTheme != null}
       aria-label={
         configuredTheme == null
-          ? `Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} theme`
-          : `Theme fixed to ${configuredTheme}`
+          ? labels[theme === "light" ? "dark" : theme === "dark" ? "system" : "light"]
+          : labels.fixed(configuredTheme)
       }
     >
       <span className={styles.themeIcon}>

@@ -1,0 +1,411 @@
+---
+title: "Thèmes"
+description: "Adaptez trois teintes, redéfinissez les variables CSS et tokens Vanilla Extract, et ajoutez Tailwind pour vos contenus."
+order: 8
+---
+
+# Thèmes
+
+Le thème par défaut est soigné et personnalisable. Intégrez votre marque et design system en commençant par le niveau le plus simple :
+
+1. **Réglages de marque :** teintes de marque, d’accent et neutre, logo dans `ardo.config.ts`.
+2. **Variables CSS :** couleurs, espacements et typographie sans modifier les composants.
+3. **Tokens Vanilla Extract :** imports typés d’`ardo/theme` dans les `.css.ts`.
+4. **Tailwind CSS :** utilitaires pour vos pages et composants.
+
+Pour remplacer l’en-tête, la barre latérale ou le pied de page, consultez [Mise en page et navigation](/fr/guide/layout-and-navigation#replace-parts-of-the-chrome).
+
+## Réglages de marque {#brand-shortcut}
+
+Utilisez `brand` dans `ardo.config.ts` pour une couleur de marque, un accent, une teinte neutre et un logo.
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: "blue",
+    accent: "teal",
+    neutral: "slate",
+    logo: "./app/assets/logo.svg",
+  },
+})
+```
+
+Ajoutez ces réglages à votre configuration. Faites pointer `logo` vers votre SVG ou omettez-le. La CLI fournit l’intégration Vite.
+
+`color`, `accent` et `neutral` acceptent des préréglages ou des teintes OKLCH numériques :
+
+```ts
+defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: 240,
+    accent: 170,
+    neutral: 260,
+  },
+})
+```
+
+Préréglages : `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` et `gray`.
+
+`chroma` règle la saturation. `1` conserve le défaut, moins donne une palette plus calme et `0` du gris. Un nombre s’applique à `color` et `accent` ; l’objet règle chaque teinte, dont `neutral` :
+
+```ts
+defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: "green",
+    accent: "orange",
+    neutral: 95,
+    chroma: { color: 0.4, accent: 2, neutral: 1.6 },
+  },
+})
+```
+
+`neutral: "gray"` avec `chroma: { neutral: 0 }` donne une interface sans teinte. Au-dessus de `1`, certains tons comme le bleu canard sortent du gamut sRGB. Vérifiez le contraste des liens en augmentant `color`.
+
+Sans `accent`, Ardo dérive un complément de `color`. Sans `neutral`, l’interface suit la teinte de marque. `brand.logo` alimente l’en-tête et, pour un SVG local, les favicons. `ArdoHeader.logo` et `icons.source` explicites restent prioritaires.
+
+## Helper de couleurs de marque {#brand-color-helper}
+
+Utilisez le helper TypeScript pour définir les valeurs dans le code. Les tokens OKLCH de marque, d’accent et neutres permettent de changer la marque tout en gardant une base distincte pour fonds, bordures, en-tête, barre latérale et texte.
+
+Créez un fichier `.css.ts` :
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme(240) // deep blue
+```
+
+Utilisez l’objet pour ne pas teinter les surfaces neutres avec la marque :
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  primary: 130, // green brand
+  neutral: 260, // neutral slate chrome
+})
+```
+
+L’objet accepte aussi `chroma`, avec des multiplicateurs `brand`, `accent` et `neutral`. Cette documentation l’utilise pour l’olive discret du hibou :
+
+```ts
+applyBrandTheme({
+  primary: 123, // olive
+  secondary: 38, // terracotta
+  neutral: 95, // a barely warm off-white
+  chroma: { brand: 0.4, accent: 2, neutral: 1.6 },
+})
+```
+
+Importez-le dans `root.tsx` :
+
+```ts
+import "./styles/brand.css"
+```
+
+La teinte par défaut est `356`, un ton baie discret. Quelques points de départ :
+
+| Teinte | Couleur       |
+| ------ | ------------- |
+| `356`  | Baie (défaut) |
+| `170`  | Bleu canard   |
+| `240`  | Bleu          |
+| `270`  | Indigo        |
+| `290`  | Violet        |
+| `330`  | Rose          |
+| `25`   | Rouge         |
+| `45`   | Orange        |
+| `130`  | Vert          |
+
+Pour tout contrôler, `createTheme()` retourne les jeux complets `{ light, dark }`, modifiables avant `createGlobalTheme`.
+
+Les remplacements directs communs affectent les deux modes ; `light` et `dark` n’en modifient qu’un :
+
+```ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  color: {
+    bg: "#fbfbf8",
+    text: "#101010",
+    brand: "#0038ff",
+    brandGradient: "#0038ff",
+    shadowSm: "0 0 0 0 transparent",
+    shadowMd: "0 0 0 0 transparent",
+    shadowLg: "0 0 0 0 transparent",
+  },
+  radius: {
+    sm: "0px",
+    base: "0px",
+    lg: "0px",
+  },
+  dark: {
+    color: {
+      bg: "#101010",
+      text: "#fbfbf8",
+    },
+  },
+})
+```
+
+`shadowSm`, `shadowMd`, `shadowLg` et `codeShadow` sont des valeurs `box-shadow` complètes. Pour supprimer les ombres, utilisez `0 0 0 0 transparent` : `none` peut invalider des couches combinées. `brandGradient` accepte aussi une couleur unie.
+
+## Variables CSS {#css-variables}
+
+Le moyen le plus rapide : redéfinissez quelques variables et tout le site suit :
+
+Créez un fichier CSS personnalisé :
+
+```css
+/* styles/custom.css */
+:root {
+  --ardo-hue-brand: 260;
+  --ardo-hue-accent: 134;
+  --ardo-hue-neutral: 260;
+
+  --ardo-color-brand: oklch(0.6 0.2 260);
+  --ardo-color-brandLight: oklch(0.7 0.15 260);
+  --ardo-color-brandDark: oklch(0.5 0.25 260);
+}
+```
+
+Importez-le dans `root.tsx` :
+
+```ts
+import "./styles/custom.css"
+```
+
+Les variables `--ardo-*` sont publiques. Les valeurs de base sont sur `:root`, celles du mode sombre sur `.dark`. Votre CSS peut remplacer les deux, même si les helpers de thème évoluent.
+
+Votre CSS sans couche prime sur les deux sélecteurs : une couleur sur `:root` vaut donc aussi en sombre. Teintes, chroma, disposition et typographie peuvent y être définis. Réglez les couleurs par mode :
+
+```css
+:root:not(.dark) {
+  --ardo-color-bg: oklch(0.99 0.004 95);
+}
+
+.dark {
+  --ardo-color-bg: oklch(0.17 0.006 95);
+}
+```
+
+### Variables disponibles {#available-variables}
+
+Voici les réglages courants et leurs valeurs par défaut. Modifiez uniquement ceux nécessaires. Chaque token de `vars` a sa variable.
+
+```css
+:root {
+  /* Hue knobs */
+  --ardo-hue-brand: 356;
+  --ardo-hue-accent: 230;
+  --ardo-hue-neutral: 356;
+
+  /* Chroma multipliers: 1 is the default saturation, 0 is gray */
+  --ardo-chroma-brand: 1;
+  --ardo-chroma-accent: 1;
+  --ardo-chroma-neutral: 1;
+
+  /* Layout */
+  --ardo-layout-sidebarWidth: 20rem;
+  --ardo-layout-tocWidth: 15rem;
+  --ardo-layout-contentMaxWidth: 36em; /* em: the measure follows each element's font size */
+  --ardo-layout-pageMaxWidth: 69rem; /* header, hero, features, footer on bare pages */
+  --ardo-layout-headerHeight: 3.5rem;
+
+  /* Typography */
+  --ardo-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-familyHeading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
+  --ardo-font-lineHeight: 1.65;
+
+  /* Border radius */
+  --ardo-radius-sm: 0.25rem;
+  --ardo-radius-base: 0.5rem;
+  --ardo-radius-lg: 0.75rem;
+}
+```
+
+La plupart des couleurs dépendent des teintes ; une déclaration suffit souvent pour les surfaces neutres :
+
+```css
+:root {
+  --ardo-hue-neutral: 260;
+}
+```
+
+## Tokens Vanilla Extract {#vanilla-extract-tokens}
+
+L’interface utilise [Vanilla Extract](https://vanilla-extract.style/). Les tokens typés d’`ardo/theme` fournissent autocomplétion et erreurs de compilation en cas de référence incorrecte.
+
+La CLI inclut le plugin : les `.css.ts` fonctionnent sans réglage Vite supplémentaire. Installez d’abord l’API de styles dans le paquet :
+
+```bash
+pnpm add @vanilla-extract/css
+```
+
+### Utiliser les tokens {#using-tokens-in-your-styles}
+
+Créez un fichier `.css.ts` dans le projet :
+
+```ts
+// styles/custom.css.ts
+import { style, globalStyle } from "@vanilla-extract/css"
+import { vars } from "ardo/theme"
+
+export const highlight = style({
+  background: vars.color.brandSubtle,
+  borderLeft: `3px solid ${vars.color.brand}`,
+  padding: "16px",
+  borderRadius: vars.radius.base,
+})
+
+// Override Ardo's default styles
+globalStyle(".ardo-content a", {
+  color: vars.color.brand,
+  textDecoration: "underline",
+})
+```
+
+### Stylesheets et cascade {#stylesheet-ownership-and-cascade}
+
+Ardo charge `ardo/ui/styles.css` après les imports CSS de la racine. Il contient interface, reset et thème dans la couche `ardo`. Les imports de composants ou un import explicite n’ajoutent aucune seconde copie.
+
+Le CSS normal sans couche prime, quel que soit l’ordre de chargement. Vous pouvez redéfinir `.ardo-footer` directement. Avec vos propres couches, déclarez leur ordre dans le premier stylesheet racine, par exemple `@layer ardo, app;`.
+
+### Sélecteurs stables {#stable-override-hooks}
+
+Les classes générées sont internes. Utilisez les classes stables pour des ajustements ciblés :
+
+| Région                         | Classes                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| En-tête et navigation          | `.ardo-header`, `.ardo-nav`, `.ardo-mobile-panel`                                                                 |
+| Barre latérale                 | `.ardo-sidebar`, `.ardo-sidebar-tabs`, `.ardo-sidebar-panel`, `.ardo-sidebar-header`, `.ardo-sidebar-nav`         |
+| Grille et rail droit optionnel | `.ardo-doc-page`, `.ardo-page-rail`, `.ardo-page-rail-section`                                                    |
+| Article et introduction        | `.ardo-content`, `.ardo-content-header`, `.ardo-content-title`, `.ardo-content-description`, `.ardo-content-body` |
+| Sommaire                       | `.ardo-toc`                                                                                                       |
+| Blocs de code                  | `.ardo-code-block`, `.ardo-code-title`, `.ardo-code-wrapper`, `.ardo-copy-button`                                 |
+| Pied de page                   | `.ardo-footer`                                                                                                    |
+
+Ces classes sont des points de personnalisation, pas une autre API. Préférez tokens et props, puis ces sélecteurs pour les ajustements propres au projet.
+
+Limitez les remplacements au wrapper du site. Vous pouvez masquer `.ardo-sidebar-tabs` si votre navigation garde toutes les sections accessibles sur ordinateur et mobile. Placez les variables nécessaires aux portails du body, comme la recherche, sur le `className` d’`ArdoRootLayout`.
+
+### Catégories de tokens {#available-token-categories}
+
+`vars` fournit les catégories suivantes :
+
+- **`vars.color`** — marque, fonds, texte, bordures, ombres et couleurs sémantiques.
+- **`vars.hue`** — teintes de marque, d’accent et neutres.
+- **`vars.chroma`** — multiplicateurs de saturation de cette palette.
+- **`vars.layout`** — largeurs des barres, sommaire, contenu, cadre partagé de page et hauteur d’en-tête.
+- **`vars.transition`** — durées rapides, normales et lentes.
+- **`vars.font`** — familles du corps, titres et code, taille de base et interligne.
+- **`vars.fontSize`** — échelle de `xs` à `4xl`.
+- **`vars.space`** — espacements de `xs` à `4xl`.
+- **`vars.radius`** — rayons `sm`, `base`, `lg`, `xl` et `full`.
+
+## Tailwind CSS {#tailwind-css}
+
+[Tailwind CSS v4](https://tailwindcss.com/) est optionnel pour vos pages, exemples et contenus MDX. Conservez votre solution de styles existante en adoptant Ardo.
+
+Ardo utilise Vanilla Extract pour son interface. Tailwind sert à vos contenus : des styles dans React sans second système de thèmes.
+
+### Installation {#setup}
+
+Installez `tailwindcss` et `@tailwindcss/vite` en développement, puis configurez :
+
+1. `@tailwindcss/vite` dans les `plugins` de `vite.config.ts`.
+2. `tailwindcss` comme dépendance de développement.
+3. `app/app.css` avec les couches de thème et d’utilitaires.
+
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Follow Ardo's theme toggle, which sets the .dark class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Importez le fichier dans `app/root.tsx`. Ardo charge son stylesheet ensuite ; l’ordre déclaré ici s’applique. Placez `ardo` avant `components` et `utilities` pour donner priorité aux utilitaires.
+
+La variante `dark:` suit normalement le système. `@custom-variant` la fait suivre le sélecteur Ardo pour changer avec le site.
+
+### Exemples {#examples}
+
+#### Encadré dans MDX {#callout-box-in-mdx}
+
+Ce contenu fonctionne directement dans tout `.mdx` :
+
+```html
+<div
+  className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950"
+>
+  <span className="text-xl">💡</span>
+  <div>
+    <p className="font-semibold text-blue-900 dark:text-blue-100">Good to know</p>
+    <p className="text-sm text-blue-700 dark:text-blue-300">
+      Tailwind classes work in MDX files, TSX components, and anywhere else in your Ardo project.
+    </p>
+  </div>
+</div>
+```
+
+#### Hero personnalisé {#custom-hero-section}
+
+Créez un en-tête d’accueil sans écrire de CSS :
+
+```tsx title="app/routes/home.tsx"
+import { ArdoLink } from "ardo/ui"
+
+export default function Home() {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+      <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+        My Project
+      </h1>
+      <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        A short description that tells visitors exactly what this is and why they should care.
+      </p>
+      <div className="flex gap-3">
+        <ArdoLink
+          to="/guide/getting-started"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Get Started
+        </ArdoLink>
+        <a
+          href="https://github.com/your/repo"
+          className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  )
+}
+```
+
+### Pourquoi sans Preflight ? {#why-no-preflight}
+
+Ardo fournit les styles de base du contenu : typographie, titres, liens, listes et code. Le reset Preflight entrerait en conflit avec cette apparence.
+
+Si vous contrôlez tous les styles d’un site très personnalisé, activez Preflight dans `app/app.css` :
+
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+```
+
+Les styles Ardo définissent explicitement marqueurs, bordures de tableaux, code et espaces. Le contenu reste lisible avec un reset hôte. `ardo` suit `base`, donc Preflight ne l’annule pas, et précède `utilities`, qui garde priorité.

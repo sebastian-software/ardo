@@ -1,0 +1,82 @@
+---
+title: "Anleitung für Agenten"
+description: "Ardo 6 mit einem Coding-Agenten einrichten, ergänzen oder aktualisieren – anhand versionsgleicher Anleitungen und des getesteten Basic-Beispiels."
+order: 3
+---
+
+# Anleitung für Agenten
+
+Diese Anleitung behandelt drei Aufgaben mit Ardo 6: eine neue Dokumentationswebsite, Dokumentation in einem bestehenden Repository und das Upgrade von einer älteren Hauptversion. Anwender geben ihrem Agenten den Setup-Prompt aus [Erste Schritte](/de/guide/getting-started); der Agent folgt dieser Seite.
+
+Agenten mit Skill-Unterstützung können den [Ardo-Skill](https://github.com/sebastian-software/ardo/tree/main/skills/ardo) installieren. Er folgt dieser Anleitung und pflegt keine eigene Setup-Vorlage. Die Dokumentation steht Agenten auch als Markdown zur Verfügung: `https://ardo-docs.dev/v6/llms.txt` ist ein kurzer Index; `https://ardo-docs.dev/v6/llms-full.txt` enthält alle Seiten. Das unversionierte `/llms.txt` folgt der aktuellen Hauptversion.
+
+Ardo 6 hat keinen `create-ardo`-Starter. Websites aus einem älteren Starter sind gewöhnliche Ardo-Projekte und werden mit dieser Anleitung aktualisiert.
+
+## Zuerst die Version abgleichen {#match-the-version-first}
+
+Lies Manifest und Lockdatei des Repositorys, um die installierte Ardo-Version zu bestimmen. Nutze für eine neue Website die neueste veröffentlichte Version, sofern keine bestimmte Version oder Hauptversion gewünscht ist. Wähle dann die passende Dokumentation und das passende Basic-Beispiel. Diese Anleitung gilt, wenn die gewählte Hauptversion Ardo 6 ist. Behalte bei bestehenden Websites die installierte Hauptversion bei, sofern die Aufgabe kein Upgrade umfasst.
+
+Lies `examples/basic` aus dem passenden Git-Tag `ardo-v<exact-version>` im [Ardo-Repository](https://github.com/sebastian-software/ardo/tags). Ardo `6.0.0` verwendet beispielsweise `ardo-v6.0.0`. Kombiniere kein veröffentlichtes Paket mit Beispielen aus `main`. Nutze während der Entwicklung Anleitung, Beispiele und gebautes Paket aus derselben Checkout-Revision.
+
+Lies beim Upgrade von einer anderen Hauptversion deren Dokumentation und die Migrationsanleitung der Zielversion, bevor du die Konfiguration änderst. Folge für Ardo 5 dem [Upgrade auf Ardo 6](/de/guide/releases/upgrade-to-v6). Fehlt ein passender Release-Tag oder eine Anleitung, melde die Lücke, statt Angaben aus einer anderen Version zu erraten.
+
+## Das Basic-Beispiel {#the-basic-example}
+
+`examples/basic` ist die einzige öffentliche Setup-Referenz: eine kleine statische Website mit Markdown- und MDX-Seiten, Suche und einer interaktiven React-Komponente. Die README nennt die zu bearbeitenden und die generierten Dateien sowie die Befehle zum Ausführen innerhalb des Ardo-Repositorys und als eigenständiges Projekt.
+
+So übernimmst du es in ein eigenständiges Projekt:
+
+1. Kopiere das Verzeichnis aus dem versionsgleichen Tag.
+2. Ersetze `ardo: workspace:*` in `package.json` durch diese veröffentlichte Version und verwende die eigene Lockdatei des Projekts.
+3. Ergänze mit pnpm die esbuild-Buildskriptregel aus der [manuellen Installation](/de/guide/getting-started#manual-installation). Kopiere nicht Ardos gesamte Workspace-Richtlinie.
+
+Dasselbe Setup eignet sich für Produktdokumentation, eine Bibliotheksreferenz und Dokumentation mehrerer Pakete. Ergänze nur die optionalen Funktionen, die das Projekt benötigt.
+
+## Das Repository untersuchen {#inspect-the-repository}
+
+Prüfe Paketmanager, Workspace-Aufbau, Node.js-Version, Abhängigkeiten, `ardo.config.*`, Vite-Konfiguration, Anwendungswurzel, vorhandene Framework- oder Router-Konfiguration, Routen, Stile und Deployment-Workflow. Ardo benötigt Node.js 22.22.0 oder neuer und eine unterstützte native Zielplattform mit aktivierten optionalen Abhängigkeiten.
+
+Wähle optionale Funktionen nach dem Bedarf des Projekts:
+
+| Bedarf                                                        | Anleitung                                                            |
+| ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| API-Referenz für ein TypeScript-Projekt                       | [API-Dokumentation](/de/guide/api-documentation)                     |
+| API-Referenz für mehrere Pakete                               | [Mehrere Pakete](/de/guide/api-documentation#multiple-packages)      |
+| API-Referenz aus einer OpenAPI-Spezifikation                  | [OpenAPI-Spezifikationen](/de/guide/api-documentation#openapi-specs) |
+| Markdown außerhalb des Routenbaums oder typisierte Sammlungen | [Inhaltsquellen](/de/guide/content-sources)                          |
+| Hosting und Basispfad                                         | [Deployment](/de/guide/deployment)                                   |
+
+Ein Monorepo ändert die API-Eingaben, nicht die Laufzeitgrenze der Dokumentationsanwendung. Deklariere und installiere die Abhängigkeiten im Dokumentationspaket selbst. Importiere Workspace-Komponenten über eine installierte Paketabhängigkeit, nicht über benachbarte Quellpfade oder Aliasse. Die API-Generierung kann separat konfigurierte TypeScript-Projekte lesen.
+
+## Die kleinste passende Änderung umsetzen {#make-the-smallest-compatible-change}
+
+Nenne vor dem Bearbeiten die Beispielrevision, die hinzuzufügenden oder zu ändernden Dateien, die Prüfbefehle und offene Entscheidungen. Beachte die Repository-Anweisungen und den gewünschten Umfang.
+
+Ersetze niemals stillschweigend ein angepasstes `app/root.tsx`, Provider, Designsystem-Komponenten, Deployment-Konfiguration, Routenmodell, Workspace-Regeln, Zugangsdaten oder Hosting-Entscheidungen. Weichen Basic-Beispiel und Projekt voneinander ab, behalte die Entscheidung des Projekts bei und erläutere die Anpassung. Frage nach, wenn eine Änderung Laufzeitverhalten oder Deployment-Verantwortung betrifft.
+
+Passe für eine **neue Website** das Basic-Beispiel wie oben beschrieben im gewünschten Verzeichnis an. Setze den Titel in `ardo.config.ts`, ergänze die Inhalte und wähle dann die Deployment-Einstellungen für den gewünschten Hoster.
+
+Führe Ardo bei einem **bestehenden Projekt** rund um die Dokumentationsrouten ein. Ardo baut die Dokumentation als eigene statische Website mit eigenem Vite-Build und ohne clientseitigen Router; Router und Einstiegsdateien werden daher nicht mit der Anwendung geteilt. Halte die Dokumentation in einem eigenen Paket oder Verzeichnis mit `app/routes/`, `app/root.tsx` und optionaler `ardo.config.ts`. Verlinke Anwendung und Dokumentation mit normalen URLs. Verschiebe Ardos Optionen nach `ardo.config.ts` mit `defineArdoConfig` aus `ardo/config`. Eigene Vite-Plugins und Einstellungen bleiben in `vite.config.ts`; die Ardo-CLI ergänzt ihre Integration ohne Aufruf von `ardo()`. Entferne React, React DOM und Vite als direkte Abhängigkeiten, sobald das Dokumentationspaket sie nicht mehr selbst importiert: Ardo verwaltet sie jetzt.
+
+Aktualisiere bei einem **Upgrade** die Abhängigkeit und die dokumentierten Integrationsänderungen. Vergleiche das bestehende Setup mit dem passenden Basic-Beispiel. Bewahre verfasste Inhalte und anwendungsspezifisches Verhalten; ersetze weder Root-Komponente noch eigene Shell pauschal. Lösche nur die Dateien, die die [Upgrade-Anleitung](/de/guide/releases/upgrade-to-v6) als entfernt aufführt.
+
+### Projektregeln für Ardo 6 {#ardo-6-project-rules}
+
+- Ein Projekt besteht aus `app/routes/**` mit Markdown-, MDX- und TSX-Routen, `app/root.tsx` und optionaler Konfiguration. `<ArdoRoot />` in `root.tsx` rendert eine vollständige Website. `root.tsx` darf auch `meta`, `ErrorBoundary` und `Layout` exportieren. Lass `Layout` weg, wenn keine eigene HTML-Shell nötig ist.
+- Verwende `ardo dev`, `ardo build` und `ardo preview` als Paketskripte.
+- Importiere React-APIs aus `ardo/react`, Laufzeit-APIs wie `ArdoLink`, `useArdoPath` und `ArdoMetaFunction` aus `ardo/runtime`, Komponenten aus `ardo/ui` und Vite-Helfer aus `ardo/vite`. Importiere im Browser niemals Laufzeitwerte aus der Paketwurzel `ardo`; sie enthält auch Node-Buildcode.
+- Erweitere `ardo/tsconfig` in `tsconfig.json`; es setzt `jsxImportSource` und Ardos Typdeklarationen. TypeScript ist ein Entwicklungswerkzeug: Das Basic-Beispiel benötigt zur Laufzeit nur Ardo. TypeScript 6 oder neuer prüft eine Website; behalte die Projektversion bei. Native API-Dokumentation benötigt den festgelegten TypeScript-7.1-Nightly-Build aus der [API-Dokumentation](/de/guide/api-documentation#installation), den das Basic-Beispiel bereits verwendet.
+- Konfiguriere den Basispfad einmal in `ardo.config.ts`, mit `base` oder `versioning`.
+- Ergänze keine `react-router.config.ts`, `app/entry.server.tsx`, `app/entry.client.tsx` oder generierte `app/routes.ts`. Importiere nicht die entfernten APIs `ardo/router`, `ardo/router/dom`, `ardo/router/routes`, `ardo/entry.server`, `ReactRouterConfig`, `withArdoGitHubPages` oder `withArdoVersioning`.
+- Routen-Loader und Actions werden nicht unterstützt. Stelle Build-Daten über ein Vite-Plugin mit virtuellem Modul bereit.
+- Generierte API-Routen, materialisierte Sammlungsrouten und die Routentabelle sind Build-Ausgaben. Bearbeite sie nicht von Hand.
+- Native API-Dokumentation ist optional. Ergänze den festgelegten Compiler, `oxc-parser` und die Option `api` nur bei Bedarf und mit den Versionen aus der [API-Dokumentation](/de/guide/api-documentation#installation).
+- Tailwind ist optional. Behalte die Styling-Entscheidung des Repositorys bei.
+
+## Prüfen und berichten {#validate-and-report}
+
+Installiere Abhängigkeiten mit dem Paketmanager des Repositorys. Führe die passenden Typprüfungen und Tests aus und baue anschließend die Website. Prüfe bei einer bestehenden Anwendung auch ihre bisherigen Routen. Ist eine Prüfung nicht verfügbar, benenne das ungeprüfte Verhalten. Verwende `CI=true` für nicht interaktive pnpm-Umgebungen.
+
+Untersuche das generierte HTML der Startseite und einer verfassten Dokumentationsroute. Prüfe gegebenenfalls generierte API- oder Sammlungsseiten. Bestätige, dass `ardo build` keine defekten internen Links meldet. Starte den Entwicklungsserver und prüfe, ob Links die erwarteten Seiten laden und der Browser keine Laufzeitfehler meldet. Ein erfolgreicher Build allein belegt keine korrekte Integration in eine bestehende Anwendung.
+
+Berichte über geänderte Dateien, Abhängigkeitsversion, gewählten Referenz-Tag oder Checkout-Revision, Prüfergebnisse und verbleibende Lücken. Veröffentliche nichts und ändere keine Hosting-Verantwortung, sofern dies nicht beauftragt ist.

@@ -13,6 +13,7 @@ import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { useArdoLocale } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
@@ -153,6 +154,7 @@ export function ArdoHeader({
 }: ArdoHeaderProps) {
   const config = useArdoConfig()
   const labels = useArdoLabels()
+  const homePath = useHomePath()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const { actions, nav } = splitHeaderChildren(children)
@@ -193,7 +195,7 @@ export function ArdoHeader({
                 <ChromeIcon name="menu" />
               </button>
             )}
-            <ArdoLink to="/" className={styles.logoLink}>
+            <ArdoLink to={homePath} className={styles.logoLink}>
               {hasLogo && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
               {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
             </ArdoLink>
@@ -225,6 +227,7 @@ export function ArdoHeader({
 
       {hasMobileMenu && mobileMenuOpen && (
         <MobileSlidePanel
+          homePath={homePath}
           logo={resolvedLogo}
           title={resolvedTitle}
           nav={nav}
@@ -282,4 +285,10 @@ const socialIcons = {
 function SocialIcon({ icon }: { icon: keyof typeof socialIcons }) {
   const IconComponent = socialIcons[icon]
   return <IconComponent size={20} />
+}
+
+function useHomePath(): string {
+  const { i18n } = useArdoConfig()
+  const locale = useArdoLocale()
+  return i18n === false || i18n == null ? "/" : `/${locale}/`
 }

@@ -210,7 +210,7 @@ example.
 
 ### Review UI Components
 
-Use the [Components page](https://ardo-docs.dev/v6/guide/components/)
+Use the [Components page](https://ardo-docs.dev/v6/en/guide/components/)
 to inspect component variants in the actual Ardo documentation app. Run
 `pnpm docs:dev` and open Components from the guide navigation. The page uses
 the default site header, search, sidebar, theme control, and mobile navigation;
@@ -312,7 +312,7 @@ Include:
 
 When a feature lands, an issue is closed as not planned, or a roadmap item is
 split, update the status tables on the
-[Releases page](docs/app/routes/guide/releases/index.mdx).
+[Releases page](docs/app/routes/en/guide/releases/index.mdx).
 
 ## Reporting Issues
 
@@ -343,3 +343,20 @@ When requesting features, please include:
 ## License
 
 By contributing, you agree that your contributions will be licensed under the [MIT License](./LICENSE).
+
+### Documentation translations
+
+The V6 site includes English, German, French, and Spanish route trees under
+`docs/app/routes/<locale>/`. Keep the same slugs and explicit heading IDs when
+updating translations so language switches retain the current section. The API
+reference retains the English source comments in each localized shell.
+
+Shared interface copy and the imported MDX example use Palamedes catalogs:
+
+```bash
+pnpm --filter ardo-docs i18n:extract
+pnpm --filter ardo-docs i18n:check
+```
+
+Update all four route trees and catalogs together. Build the docs and run the
+i18n browser tests before submitting changes to navigation or translated UI.

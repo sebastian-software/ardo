@@ -47,3 +47,9 @@ declare module "virtual:ardo/routes" {
   /** Every page route, loaded lazily so each page gets its own chunk. */
   export const routes: ArdoRouteEntry[]
 }
+
+declare module "virtual:ardo/search-loaders" {
+  import type searchDocs from "virtual:ardo/search-index"
+  const loaders: Record<string, () => Promise<{ default: typeof searchDocs }>>
+  export default loaders
+}

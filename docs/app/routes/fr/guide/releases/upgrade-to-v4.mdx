@@ -1,0 +1,71 @@
+---
+title: "Migrer vers Ardo 4.0"
+description: "Préparez un projet Ardo à la version 4.0 et aux URL stables par version majeure."
+order: 3
+---
+
+# Migrer vers Ardo 4.0
+
+Ardo 4.0 profite du changement de version majeure pour stabiliser les URL de documentation. Le changement public principal concerne leur structure : la documentation publiée doit vivre dans un dossier stable comme `/v3/` ou `/v4/`, et `/` redirige vers la version majeure actuelle.
+
+## Changements {#what-changes}
+
+- Les URL avec version majeure deviennent la forme publique recommandée.
+- L’`index.html` racine, `versions.json`, `sitemap.xml`, `robots.txt`, `llms.txt`, les ressources de recherche et les redirections sont des sorties statiques du build.
+- `sitemap.xml` référence uniquement la version majeure canonique actuelle. Les anciens dossiers restent accessibles sans être indexés comme contenu actuel dupliqué.
+- Les déploiements GitHub Pages doivent conserver les anciens dossiers lors du passage à une nouvelle version majeure.
+
+## Mettre à jour la documentation versionnée {#update-versioned-docs}
+
+Configurez la version majeure actuelle dans `vite.config.ts` :
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Docs",
+      siteUrl: "https://docs.example.com",
+      versioning: {
+        current: "v4",
+        versions: [
+          { id: "v4", label: "4.x", path: "/v4/" },
+          { id: "v3", label: "3.x", path: "/v3/" },
+        ],
+      },
+    }),
+  ],
+})
+```
+
+Définissez le même chemin de base dans `react-router.config.ts` :
+
+```ts
+import type { Config } from "@react-router/dev/config"
+import { withArdoVersioning } from "ardo/vite"
+
+const config = {
+  ssr: false,
+  prerender: true,
+} satisfies Config
+
+export default withArdoVersioning(config, { basename: "/v4/" })
+```
+
+## Conserver les anciennes versions GitHub Pages {#preserve-older-github-pages-versions}
+
+GitHub Pages remplace l’artefact entier à chaque déploiement. Avant de changer de dossier majeur, conservez le dernier dossier généré de la version précédente et copiez-le dans l’artefact Pages au déploiement.
+
+Conserver chaque ancien dossier, par exemple dans une archive du dépôt, protège les URL stables comme `/v3/...` contre leur suppression au premier déploiement de `/v4/`.
+
+## Vérifier les liens existants {#check-existing-links}
+
+Mettez à jour les liens externes vers l’URL canonique versionnée :
+
+```text
+https://docs.example.com/v4/guide/getting-started
+```
+
+N’utilisez pas `latest` comme URL canonique. Si un alias `latest` est ajouté ultérieurement, il doit rediriger vers le dossier majeur actuel.

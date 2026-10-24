@@ -1,0 +1,63 @@
+---
+title: "Sources de contenu"
+description: "Publiez du Markdown et du MDX hors de app/routes en conservant une seule source de référence."
+order: 10
+---
+
+# Sources de contenu
+
+Utilisez les sources de contenu lorsque votre Markdown appartient déjà à un autre emplacement du dépôt : ADR, guides de paquets, historiques des versions ou documentation partagée. Ardo matérialise une vue de routes en lecture seule pendant le build ; le fichier original reste la source de référence.
+
+## Associer un répertoire {#map-a-directory}
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Workspace Docs",
+  content: [{ from: "../../adr", to: "decisions" }],
+})
+```
+
+La source `../../adr/0001-routing.md` devient `/decisions/0001-routing`. Le frontmatter existant est conservé. Sinon, Ardo déduit le titre du premier titre ou du nom de fichier, et utilise un préfixe numérique du nom pour l’ordre dans la barre latérale.
+
+## Intégration au build {#what-participates}
+
+Les fichiers Markdown et MDX associés deviennent des routes générées ordinaires. Ils participent à la barre latérale, à la recherche par section, au sitemap, aux exports pour les LLM, aux redirections, à la vérification des liens internes et à la [validation du frontmatter](/fr/guide/frontmatter).
+
+## Limites des fichiers générés {#generated-file-boundary}
+
+Ardo écrit les fichiers associés dans le répertoire `to` choisi et le marque comme généré. Modifiez la source originale, jamais la route matérialisée. Le plugin refuse de supprimer un répertoire cible non vide créé manuellement. Utilisez donc un préfixe dédié, comme `decisions/`.
+
+## Périmètre {#boundaries}
+
+Les sources de contenu ne récupèrent pas d’URL distantes, ne remplacent pas un CMS et ne transforment pas de types de fichiers arbitraires. Elles associent des fichiers locaux. Les [collections avec schéma](#schema-backed-collections) ajoutent la validation et des enregistrements typés.
+
+## Collections avec schéma {#schema-backed-collections}
+
+Utilisez `collections` lorsque les mêmes fichiers Markdown locaux doivent à la fois devenir des routes et être disponibles comme données de build typées dans une route React personnalisée :
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+import { defineCollection } from "ardo/vite"
+
+const recipes = defineCollection<{ title: string }>({
+  from: "../../recipes",
+  to: "recipes",
+  schema: (data) => ({ title: String(data.title) }),
+})
+
+export default defineArdoConfig({ title: "Docs", collections: { recipes } })
+```
+
+Importez `getCollection<T>()` depuis `virtual:ardo/collections` dans une route personnalisée pour lire les enregistrements générés typés :
+
+```tsx
+import { getCollection } from "virtual:ardo/collections"
+
+const recipes = getCollection<{ title: string }>("recipes")
+```
+
+Les collections restent locales et statiques : le schéma s’exécute pendant le build, tandis que les pages générées suivent les traitements habituels pour la barre latérale, la recherche, le sitemap, les redirections et les exports LLM. Les chemins sources sont relatifs au projet ; le module virtuel ne révèle donc pas les chemins absolus de l’auteur.
+
+Ajoutez ces options à l’[exemple Basic](/fr/guide/agent-instructions#the-basic-example) de la même version. Les fichiers rédigés restent la référence : le build en génère les pages `/recipes/*`, et une route React personnalisée peut afficher les mêmes enregistrements.

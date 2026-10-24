@@ -2,6 +2,9 @@ import type { Connect, EnvironmentModuleNode, RunnableDevEnvironment, ViteDevSer
 
 import path from "node:path"
 
+import type { ResolvedConfig } from "../config/types"
+import { getVersioningRedirects } from "./build-versioning"
+
 import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
@@ -19,16 +22,18 @@ const CSS_REQUEST = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:$|\?)|\
  */
 export function createDevRenderMiddleware(
   server: ViteDevServer,
-  routesDir: string
+  routesDir: string,
+  config?: ResolvedConfig
 ): Connect.NextHandleFunction {
   return (request, response, next) => {
-    void handleRequest(server, request, routesDir)
+    void handleRequest(server, request, { routesDir, config })
       .then((page) => {
         if (page == null) {
           next()
           return
         }
         response.statusCode = page.status
+        if (page.location != null) response.setHeader("Location", page.location)
         response.setHeader("Content-Type", "text/html; charset=utf-8")
         response.end(request.method === "HEAD" ? undefined : page.html)
       })
@@ -42,12 +47,22 @@ export function createDevRenderMiddleware(
 async function handleRequest(
   server: ViteDevServer,
   request: Connect.IncomingMessage,
-  routesDir: string
-): Promise<{ html: string; status: number } | undefined> {
-  const pagePath = toPagePath(request, server.config.base, (pathname) =>
-    scanRoutesSync({ dir: routesDir, rootDir: routesDir }).some(
-      (route) => route.path === pathname.replace(/\/+$/u, "")
-    )
+  { routesDir, config }: { routesDir: string; config?: ResolvedConfig }
+): Promise<{ html: string; status: number; location?: string } | undefined> {
+  const pathname = readRequestPathname(request)
+  if (pathname == null) return undefined
+  const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
+  const redirect =
+    config == null
+      ? undefined
+      : getDevRedirect(
+          pathname,
+          config,
+          routes.map((route) => route.path)
+        )
+  if (redirect != null) return redirectResponse(request, redirect)
+  const pagePath = toPagePath(request, server.config.base, (value) =>
+    routes.some((route) => route.path === value.replace(/\/+$/u, ""))
   )
   if (pagePath == null) return undefined
 
@@ -70,8 +85,10 @@ async function handleRequest(
   const first = await render([])
   const stylesheets = collectStylesheets(environment, base)
   const result = stylesheets.length === 0 ? first : await render(stylesheets)
-  const html = await injectViteTags(server, request.originalUrl ?? "/", result.html)
-  return { html, status: result.status }
+  return {
+    html: await injectViteTags(server, request.originalUrl ?? "/", result.html),
+    status: result.status,
+  }
 }
 
 const EMPTY_DOCUMENT = "<!DOCTYPE html><html><head></head><body></body></html>"
@@ -143,4 +160,46 @@ function collectStylesheets(environment: RunnableDevEnvironment, base: string): 
     pending.push(...module.importedModules)
   }
   return stylesheets
+}
+
+/** The same locale migration and root destinations used by the static build. */
+export function getDevRedirect(
+  pathname: string,
+  config: ResolvedConfig,
+  routes: string[]
+): string | undefined {
+  const configured = [...config.redirects, ...getVersioningRedirects(config)].find(
+    (redirect) => normalizeRedirectPath(redirect.from) === normalizeRedirectPath(pathname)
+  )
+  if (configured != null) return configured.to
+  if (
+    config.i18n === false ||
+    config.i18n.redirectUnlocalized !== true ||
+    !pathname.startsWith(config.base)
+  )
+    return
+  const relative = `/${pathname.slice(config.base.length)}`
+  if (normalizeRedirectPath(relative) === "/") return
+  const target = `/${config.i18n.defaultLocale}${normalizeRedirectPath(relative)}`.replace(
+    /\/$/u,
+    ""
+  )
+  if (routes.includes(target)) return `${config.base}${target.slice(1)}/`
+}
+
+function redirectResponse(request: Connect.IncomingMessage, redirect: string) {
+  const origin = "http://ardo.invalid"
+  const target = new URL(redirect, origin)
+  const source = new URL(request.originalUrl ?? request.url ?? "/", origin)
+  if (target.origin === source.origin && target.search === "") target.search = source.search
+  return {
+    html: "",
+    status: 302,
+    location:
+      target.origin === origin ? target.pathname + target.search + target.hash : target.href,
+  }
+}
+
+function normalizeRedirectPath(value: string): string {
+  return value.replace(/\/+$/u, "") || "/"
 }

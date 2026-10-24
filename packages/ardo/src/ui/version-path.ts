@@ -6,7 +6,20 @@ import { normalizeBasePath } from "../config/versioning"
  * `targetVersionPath` a resolved version path, which includes the deployment
  * base.
  */
-export function getVersionHref(pagePath: string, targetVersionPath: string): string {
+export function getVersionHref(
+  pagePath: string,
+  targetVersionPath: string,
+  options: { locale?: string; locales?: string[] } = {}
+): string {
+  if (options.locales != null) {
+    const segments = pagePath.split("/").filter(Boolean)
+    if (options.locale != null && segments[0] === options.locale) segments.shift()
+    const targetLocale = options.locales.includes(options.locale ?? "")
+      ? options.locale
+      : options.locales[0]
+    if (targetLocale != null) segments.unshift(targetLocale)
+    pagePath = segments.length === 0 ? "/" : `/${segments.join("/")}`
+  }
   const target = normalizeBasePath(targetVersionPath)
   return pagePath === "/" || pagePath === "" ? target : `${target.replace(/\/$/u, "")}${pagePath}`
 }

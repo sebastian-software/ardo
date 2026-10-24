@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-const docsBasePath = "/v6"
+const docsBasePath = "/v6/en"
 const gettingStartedPath = `${docsBasePath}/guide/getting-started`
 
 test("versioned agent onboarding is available in HTML and machine-readable documentation", async ({
@@ -12,11 +12,11 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions/`)
   await expect(page.getByRole("heading", { level: 1, name: "Agent Instructions" })).toBeVisible()
 
-  const index = await request.get(`${docsBasePath}/llms.txt`)
+  const index = await request.get(`/v6/llms.txt`)
   expect(index.ok()).toBe(true)
-  expect(await index.text()).toContain("https://ardo-docs.dev/v6/guide/agent-instructions")
+  expect(await index.text()).toContain("https://ardo-docs.dev/v6/en/guide/agent-instructions")
   expect(await index.text()).toContain("https://ardo-docs.dev/v6/llms-full.txt")
-  const full = await request.get(`${docsBasePath}/llms-full.txt`)
+  const full = await request.get(`/v6/llms-full.txt`)
   expect(full.ok()).toBe(true)
   const instructions = await full.text()
   expect(instructions).toContain("\n### Match the Version First\n")
@@ -26,7 +26,7 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   }
 
   // The former Basic Example page redirects to its section of the instructions.
-  await page.goto(`${docsBasePath}/guide/reference-projects`)
+  await page.goto("/v6/guide/reference-projects")
   await expect(page).toHaveURL(`${docsBasePath}/guide/agent-instructions/`)
   await expect(page.getByRole("heading", { level: 2, name: "The Basic Example" })).toBeVisible()
 })
@@ -62,7 +62,7 @@ test("built docs persist the selected theme and navigate search by keyboard", as
   const selected = page.getByRole("listbox", { name: "Search results" }).getByRole("option").nth(1)
   await expect(selected).toHaveAttribute("aria-selected", "true")
   const target = (await selected.getAttribute("href")) ?? ""
-  expect(target).toMatch(/^\/v6\/guide\//)
+  expect(target).toMatch(/^\/v6\/en\/guide\//)
   await searchInput.press("Enter")
   await expect(page).toHaveURL(new URL(target, page.url()).href)
 
@@ -88,7 +88,7 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
 
   await menu.getByRole("link", { name: "Markdown & MDX" }).click()
 
-  await expect(page).toHaveURL(/\/v6\/guide\/markdown/)
+  await expect(page).toHaveURL(/\/v6\/en\/guide\/markdown/)
   await expect(menu).toBeHidden()
 })
 

@@ -1,0 +1,184 @@
+---
+title: "Dépannage"
+description: "Résolvez les problèmes courants d’installation, de build, de styles, de contenu et de déploiement."
+order: 13
+---
+
+# Dépannage
+
+La plupart des problèmes concernent la frontière entre configuration CLI, routes d’`app/routes` et contenu Markdown/MDX. Partez du symptôme, puis comparez avec l’[exemple Basic de la même version](/fr/guide/agent-instructions#the-basic-example).
+
+## Problèmes d’installation {#installation-issues}
+
+### `Cannot find module 'ardo'` {#cannot-find-module-ardo}
+
+Vérifiez que toutes les dépendances requises sont installées :
+
+```bash
+pnpm add ardo@6
+```
+
+### Erreur de version Node.js {#node-js-version-error}
+
+Ardo nécessite Node.js 22.22.0 ou ultérieur. Vérifiez votre version :
+
+```bash
+node --version
+```
+
+Pour une mise à jour, vous pouvez utiliser [nvm](https://github.com/nvm-sh/nvm) ou [fnm](https://github.com/Schniz/fnm).
+
+## Problèmes de build {#build-issues}
+
+### `Failed to resolve import` {#failed-to-resolve-import}
+
+La CLI ajoute l’intégration automatiquement. Placez les paramètres du site dans le fichier optionnel `ardo.config.ts` :
+
+```typescript
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Documentation",
+})
+```
+
+Réservez `vite.config.ts` aux plugins supplémentaires ou réglages propres à Vite. Ardo fournit son intégration.
+
+### Frontière du paquet de documentation {#documentation-package-boundary}
+
+Ardo traite la racine Vite comme un paquet indépendant. Conservez-y une `package.json` et installez ses dépendances dans son propre `node_modules`. Une installation dans un parent ou à la racine du monorepo ne remplace pas une installation locale manquante.
+
+Ardo gère React, React DOM, Vite et les icônes par défaut, résolus depuis son arbre de dépendances. Les autres imports directs doivent être déclarés dans le paquet de documentation, même si une dépendance les utilise déjà. Chaque dépendance peut utiliser ses propres dépendances transitives déclarées. Les liens pnpm standards vers le store virtuel sont pris en charge ; son emplacement ne change pas la propriété des paquets.
+
+Gardez les composants dans le projet, par exemple sous `app/components/`. Imports relatifs, alias et symlinks vers les sources voisines du workspace sont refusés en développement et au build, tout comme les liens de paquets vers ces sources. Installez une bibliothèque publiée. Le lien workspace d’Ardo lui-même est pris en charge pour son développement via les fichiers `dist` compilés.
+
+Ardo bundle les dépendances SSR avec React. Composants et renderer partagent cette exécution ; aucune liste `ssr.noExternal` par composant n’est nécessaire. Une dépendance manquante produit une erreur `[ardo]`, sans repli sur une installation parente. Vite optimise automatiquement les dépendances SSR en développement pour exécuter CommonJS dans le même graphe.
+
+Cette frontière concerne le graphe de l’application. Les entrées API et sources de contenu explicites restent lisibles pour générer les pages ; cela n’autorise pas l’import de composants extérieurs.
+
+### Erreurs TypeScript dans les routes {#typescript-errors-in-routes}
+
+La table des routes est virtuelle ; aucun type de routeur n’est à régénérer. Vérifiez la route et ses imports :
+
+1. Vérifiez que `tsconfig.json` étend `ardo/tsconfig` et inclut `app`.
+2. Importez React et ses types depuis `ardo/react`.
+3. Lancez `pnpm exec tsc --noEmit`, puis redémarrez le serveur TypeScript de l’éditeur si ses diagnostics restent périmés.
+4. Corrigez les erreurs API et collections dans leurs sources et configurations, pas dans le Markdown généré.
+
+### Mémoire insuffisante au build {#build-fails-with-memory-error}
+
+Pour les grands sites, augmentez la mémoire Node.js :
+
+```bash
+NODE_OPTIONS=--max-old-space-size=4096 pnpm build
+```
+
+## Problèmes de développement {#development-issues}
+
+### Le rechargement à chaud ne fonctionne pas {#hot-reload-not-working}
+
+1. Vérifiez que vous modifiez des fichiers d’`app/routes/`.
+2. Vérifiez que le serveur Vite tourne.
+3. Redémarrez-le.
+
+### Les styles ne s’appliquent pas {#styles-not-applied}
+
+Ardo charge ses styles automatiquement. Vérifiez l’import CSS dans `app/root.tsx` et la [cascade](/fr/guide/theming#stylesheet-ownership-and-cascade) pour comprendre l’interaction avec la couche `ardo`.
+
+### La recherche ne fonctionne pas {#search-not-working}
+
+Les données de recherche sont générées depuis les routes en développement et au build. Aucun build préalable n’est nécessaire pour chercher en développement.
+
+1. Vérifiez que le document appartient à `app/routes/` ou à une source activée.
+2. Cherchez un mot d’un titre ou paragraphe Markdown/MDX.
+3. Vérifiez la console et le terminal pour les échecs de chargement de l’index.
+4. Redémarrez si une modification de configuration ajoute une source.
+
+## Problèmes de contenu {#content-issues}
+
+### Le Markdown ne s’affiche pas {#markdown-not-rendering}
+
+Vérifiez que le fichier :
+
+1. Porte l’extension `.md` ou `.mdx`.
+2. Se trouve dans `app/routes/`.
+3. Contient un frontmatter valide, le cas échéant.
+
+### Blocs de code non colorés {#code-blocks-not-highlighted}
+
+La coloration utilise Ferriki. Indiquez le langage :
+
+````markdown
+```javascript
+const foo = "bar"
+```
+````
+
+Les [ressources standards Ferriki](https://github.com/sebastian-software/ferriki/blob/main/docs/ferriki-api.md#standard-assets) listent langages et thèmes. Un langage inconnu produit un avertissement et du texte brut.
+
+### Échec du moteur natif ou des ressources {#native-engine-or-asset-loading-fails}
+
+Ardo nécessite Node.js 22.22 ou ultérieur et les binaires Linux/Windows x64/arm64 ou macOS Apple Silicon. Activez les dépendances optionnelles à l’installation.
+
+Ferriki télécharge ses ressources au premier usage. Pour la CI hors ligne, préparez et conservez un cache, puis définissez `FERRIKI_CACHE_DIR` et `FERRIKI_ASSETS_REMOTE=0`. Un thème ou binaire manquant fait échouer le build ; voir le [dépannage Ferriki](https://github.com/sebastian-software/ferriki/blob/main/docs/troubleshooting.md).
+
+### CodeBlock non coloré en `.tsx` {#codeblock-not-highlighted-in-tsx-routes}
+
+`ardo:codeblock-highlight` exige une prop `language` **statique**. Avec une variable ou expression dynamique, la coloration est ignorée et le code reste brut.
+
+Fournissez le code comme texte enfant, template literal ou prop `code` :
+
+```tsx
+import { ArdoCodeBlock } from "ardo/ui"
+
+;<ArdoCodeBlock language="typescript">const x = 42</ArdoCodeBlock>
+```
+
+Pour du code entièrement dynamique, utilisez `highlightCode` d’`ardo/vite` au build :
+
+```typescript
+import { highlightCode } from "ardo/vite"
+const html = await highlightCode(dynamicCode, "typescript")
+```
+
+### Les images ne chargent pas {#images-not-loading}
+
+Utilisez des chemins relatifs au fichier Markdown :
+
+```markdown
+![Alt text](./images/screenshot.png)
+```
+
+Ou des chemins absolus depuis le répertoire public :
+
+```markdown
+![Alt text](/images/screenshot.png)
+```
+
+## Problèmes de déploiement {#deployment-issues}
+
+### Erreur 404 au rechargement {#404-on-page-refresh}
+
+Ardo écrit un HTML par page et utilise la navigation documentaire ordinaire. Déployez tout `build/client/` et servez les index de répertoires, par exemple `/guide/intro/index.html` pour `/guide/intro/`. Conservez le chemin de base et utilisez `404.html` pour les pages absentes. Voir [Déploiement](/fr/guide/deployment).
+
+Si la racine renvoie aussi 404 en développement, ajoutez `app/routes/home.tsx` ou `app/routes/index.mdx`. Vérifiez que l’accueil pointe vers un document existant avant de reconstruire.
+
+### Problèmes de chemin de base {#base-path-issues}
+
+Pour un sous-répertoire, définissez `base` dans `ardo.config.ts` :
+
+```typescript
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  base: "/my-docs/",
+})
+```
+
+## Obtenir de l’aide {#getting-help}
+
+Si votre problème n’est pas décrit ici :
+
+1. Cherchez un problème similaire dans les [issues GitHub](https://github.com/sebastian-software/ardo/issues).
+2. Posez vos questions dans [GitHub Discussions](https://github.com/sebastian-software/ardo/discussions).
+3. Ouvrez une issue avec une reproduction minimale.

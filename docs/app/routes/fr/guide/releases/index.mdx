@@ -1,0 +1,81 @@
+---
+title: "Versions"
+description: "Ce qu’Ardo 6 fournit, les fonctions expérimentales ou prévues et les guides de migration."
+order: 20
+collapsed: true
+---
+
+# Versions
+
+Ardo publie framework, interface et exécution dans un paquet unique. Cette page distingue fonctions disponibles, expérimentales et prévues. Le [journal des modifications](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md) détaille chaque version.
+
+## Guides de migration {#upgrade-guides}
+
+- [Passer à Ardo 6](/fr/guide/releases/upgrade-to-v6) depuis Ardo 5 : build statique sans React Router et moins de fichiers.
+- [Passer à Ardo 5](/fr/guide/releases/upgrade-to-v5) depuis Ardo 4 : Ferromark pour Markdown/MDX et Ferriki pour la coloration.
+- [Passer à Ardo 4.0](/fr/guide/releases/upgrade-to-v4) depuis Ardo 3 : URL stables par version majeure.
+- [Migrer depuis TypeDoc](/fr/guide/releases/migrate-from-typedoc) : la référence native remplace `typedoc`.
+
+Les agents suivent ces guides via les [Instructions pour agents](/fr/guide/agent-instructions).
+
+## Disponible {#shipped}
+
+Ces fonctions sont disponibles dans la branche actuelle.
+
+| Domaine               | Notes                                                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Build statique        | Vite avec HTML par page, routes par fichiers et sans routeur client.                                                               |
+| Markdown et MDX       | Markdown, MDX, GFM, frontmatter, sommaire et composants intégrés.                                                                  |
+| Coloration syntaxique | Ferriki au build pour le code Markdown et les `CodeBlock` statiques.                                                               |
+| Recherche             | Données générées et interface intégrée.                                                                                            |
+| Référence API native  | API TypeScript via `api` dans `ardo.config.ts`.                                                                                    |
+| Collections           | Fichiers locaux validés par schéma, routes et données typées pour React.                                                           |
+| Métadonnées sociales  | URL canoniques, Open Graph et Twitter pour Markdown.                                                                               |
+| Sorties SEO           | Sitemap, robots, textes LLM, liens et redirections.                                                                                |
+| Couleurs de thème     | Teintes de marque, accent et neutre par configuration ou CSS.                                                                      |
+| Composants            | Encadrés, badges, cartes, onglets, accordéons, étapes, code, icônes, hero et fonctionnalités : [Composants](/fr/guide/components). |
+
+## Expérimental {#experimental}
+
+Ces domaines fonctionnent, mais leur API ou maintenance peut encore évoluer.
+
+| Domaine                  | Notes                                                                                                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SDK du compilateur natif | TypeScript 7.1 nightly épinglé ; compatibilité et stabilité à surveiller.                                                                                         |
+| Tokens de thème          | Variables CSS et tokens Vanilla Extract publics ; les autres API peuvent évoluer.                                                                                 |
+| Versions documentaires   | Dossiers statiques, redirections racine, `versions.json`, sélecteur et bandeau d’ancienne version.                                                                |
+| i18n statique            | Arbres complets, recherche et interface localisées, liens alternatifs et rejet des traductions absentes : [Internationalisation](/fr/guide/internationalization). |
+| OpenAPI statique         | Références locales OpenAPI 3.0/3.1 JSON/YAML ; pas de playground interactif.                                                                                      |
+
+## Prévu {#planned}
+
+| Domaine             | Ticket                                                                      | Notes                                                                            |
+| ------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Guides de migration | [#134](https://github.com/sebastian-software/ardo/issues/134)               | Les guides depuis Docusaurus, Starlight, VitePress et Mintlify restent à écrire. |
+| Diagrammes Mermaid  | [ferromark#531](https://github.com/sebastian-software/ferromark/issues/531) | SVG statique à la compilation. En attendant, `mermaid` reste du code.            |
+
+## Améliorations possibles {#nice-to-have}
+
+Utiles à certaines équipes, mais pas centrales pour le framework.
+
+| Domaine                  | Ticket                                                      | Notes                                                                            |
+| ------------------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Infobulle                | [#81](https://github.com/sebastian-software/ardo/issues/81) | Demande une conception accessible et adaptée au mobile.                          |
+| Retours par page         | [#74](https://github.com/sebastian-software/ardo/issues/74) | Petite interface ; la destination des données est plus délicate.                 |
+| Notation mathématique    | [#68](https://github.com/sebastian-software/ardo/issues/68) | MathML natif pourrait rester léger avec une intégration simple.                  |
+| Polices personnalisées   | [#77](https://github.com/sebastian-software/ardo/issues/77) | Généralement possible via CSS et personnalisation du head.                       |
+| Arbre de fichiers        |                                                             | Les structures de projet utilisent des blocs de code.                            |
+| Onglets de gestionnaires |                                                             | Déjà possible avec `Tabs` et un bloc par gestionnaire.                           |
+| Cadre d’exemple          |                                                             | Les exemples React interactifs demandent des règles de sandbox et d’hydratation. |
+
+## Non prévu {#not-planned}
+
+Ardo se concentre sur une approche précise de la documentation.
+
+| Domaine                             | Raison                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Édition hébergée                    | Ardo reste lié au dépôt et auto-hébergé. Choisissez une plateforme hébergée pour ce type de collaboration. |
+| Produit analytics intégré           | Les sites statiques intègrent directement des prestataires ; Ardo n’a pas à stocker les événements.        |
+| Site de prose au JavaScript minimal | La réutilisation React prime. Astro, VitePress ou Starlight peuvent mieux convenir à la prose seule.       |
+| Exemples TypeScript au survol       | Les indications Twoslash demandent beaucoup de maintenance et d’outillage.                                 |
+| Playgrounds intégrés                | Les éditeurs Sandpack ne cadrent pas avec la sortie statique et les petits bundles.                        |

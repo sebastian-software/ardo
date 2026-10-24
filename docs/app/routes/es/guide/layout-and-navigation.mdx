@@ -1,0 +1,660 @@
+---
+title: "Diseño y navegación"
+description: "Añade páginas y secciones, personaliza logotipo, cabecera y pie, y compón la interfaz en root.tsx."
+order: 7
+---
+
+# Diseño y navegación
+
+Las opciones de build van en `ardo.config.ts`. Todo lo que rodea al contenido se compone con React en `app/root.tsx`. Normalmente bastan algunas tareas habituales; después viene la referencia.
+
+## Tareas habituales {#common-tasks}
+
+### Añadir una página {#add-a-page}
+
+Crea un archivo Markdown o MDX bajo `app/routes/`. Su ruta determina la URL: `app/routes/guide/install.mdx` se sirve en `/guide/install/`. El servidor lo detecta al instante y aparece en la navegación y búsqueda.
+
+```mdx title="app/routes/guide/install.mdx"
+---
+title: Install
+description: Add the package to your project.
+---
+
+# Install
+
+Run the installer for your package manager.
+```
+
+`title` define la etiqueta de navegación y el título del navegador. Los archivos TSX también crean páginas, pero la navegación generada solo enumera Markdown y MDX: enlaza las páginas TSX desde la cabecera u otra página.
+
+### Ordenar las páginas {#order-pages}
+
+Las páginas con `order` aparecen primero, por número ascendente. Las demás siguen el orden alfabético del título.
+
+```yaml
+---
+title: Install
+order: 2
+---
+```
+
+### Agrupar páginas {#group-pages}
+
+Coloca las páginas relacionadas en una carpeta. Su `index.mdx` define la etiqueta, el orden y el estado inicial del grupo. También es la página propia del grupo.
+
+```mdx title="app/routes/guide/releases/index.mdx"
+---
+title: Releases
+order: 20
+collapsed: true
+---
+
+# Releases
+```
+
+Sin índice, el nombre de la carpeta sirve de etiqueta. Opciones en [Frontmatter](/es/guide/frontmatter#directory-index-metadata).
+
+### Ocultar una página de la navegación {#hide-a-page-from-the-sidebar}
+
+Define `sidebar: false` en el frontmatter. La página se sigue construyendo y continúa accesible por enlace.
+
+### Añadir una sección {#add-a-sidebar-section}
+
+Cada carpeta principal de `app/routes/` crea una sección con pestaña, como `guide/` o `api-reference/`. Los nombres conocidos (`guide`, `reference`, `api`, `examples`, `adr`) reciben etiqueta e icono; los demás conservan el nombre de carpeta. La pestaña abre el índice o la primera página.
+
+Ordena las pestañas en `ardo.config.ts`:
+
+```ts title="ardo.config.ts"
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  sidebar: { sectionOrder: ["guide", "reference", "api"] },
+})
+```
+
+Para secciones manuales, consulta [Secciones de navegación](#sidebar-sections).
+
+### Añadir enlaces en la cabecera {#add-links-to-the-header}
+
+Pasa `ArdoHeader` con enlaces. `ArdoNavLink` añade la base a `to`; `href` acepta cualquier URL. Coloca los enlaces sociales en `ArdoHeaderActions`:
+
+```tsx title="app/root.tsx"
+import {
+  ArdoHeader,
+  ArdoHeaderActions,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoSocialLink,
+} from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+          <ArdoNavLink href="https://github.com/example/project/releases">Releases</ArdoNavLink>
+        </ArdoNav>
+        <ArdoHeaderActions>
+          <ArdoSocialLink href="https://github.com/example/project" icon="github" />
+        </ArdoHeaderActions>
+      </ArdoHeader>
+    </ArdoRoot>
+  )
+}
+```
+
+`ArdoSocialLink` incluye los iconos `github`, `discord`, `linkedin`, `npm`, `twitter` y `youtube`.
+
+### Cambiar logotipo y favicon {#change-the-logo-and-favicon}
+
+Define `brand.logo` en `ardo.config.ts`. Un SVG local sirve de logotipo y fuente de favicons:
+
+```ts title="ardo.config.ts"
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  brand: { logo: "./app/assets/logo.svg" },
+})
+```
+
+`brand.logo` también acepta `{ light, dark }`. Usa [`icons.source`](/es/guide/configuration#icons) para otra fuente o `icons: false` para gestionar los archivos en `public/`.
+
+### Cambiar el pie de página {#change-the-footer}
+
+Pasa `ArdoFooter` con tu texto:
+
+```tsx title="app/root.tsx"
+import { ArdoFooter, ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoFooter message="Released under the MIT License." copyright="© 2026 Example Co" />
+    </ArdoRoot>
+  )
+}
+```
+
+Sin `ArdoFooter`, aparece el pie predeterminado; `footer={false}` en `ArdoRoot` lo oculta. Props en [Pie de página](#footer).
+
+## Raíz mínima {#minimal-root}
+
+`<ArdoRoot />` proporciona cabecera con búsqueda y tema, navegación por carpeta principal y pie. La configuración y los estilos llegan desde las entradas de Ardo; `root.tsx` solo importa los componentes usados.
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Compón la navegación con React. Pasa `ArdoHeader`, `ArdoSidebar` y `ArdoFooter` como hijos o define `header`, `sidebar` o `footer` como `false`:
+
+```tsx
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeader,
+  ArdoNav,
+  ArdoNavLink,
+  ArdoRoot,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+
+      <ArdoSidebar>
+        <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+          <ArdoGeneratedSidebar section="guide" />
+        </ArdoSidebarSection>
+      </ArdoSidebar>
+    </ArdoRoot>
+  )
+}
+```
+
+`ArdoRoot` gestiona providers, contenido y espacios JSX. Esta parte se hidrata en el navegador.
+
+## ArdoRoot {#ardoroot}
+
+`ArdoRoot` recibe los ajustes del sitio como props y la interfaz como hijos.
+
+| Prop          | Tipo                                                                               | Uso                                                                            |
+| ------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `header`      | `ReactNode \| false`                                                               | Cabecera propia o `false`.                                                     |
+| `sidebar`     | `ReactNode \| false`                                                               | Navegación propia o `false`.                                                   |
+| `footer`      | `ReactNode \| false`                                                               | Pie propio o `false`.                                                          |
+| `editLink`    | `{ pattern: string; text?: string }`                                               | Patrón de enlaces de edición Markdown.                                         |
+| `lastUpdated` | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Visualización de la fecha de modificación.                                     |
+| `labels`      | `ArdoLabelsInput`                                                                  | Reemplaza los textos de interfaz.                                              |
+| `scrollMode`  | `"viewport" \| "document"`                                                         | Shell de viewport (predeterminado) o desplazamiento del documento.             |
+| `tocLabel`    | `string`                                                                           | Etiqueta del índice.                                                           |
+| `className`   | `string`                                                                           | Reemplaza la clase de diseño.                                                  |
+| `config`      | `ArdoConfig`                                                                       | Configuración proporcionada por Ardo; explícita para pruebas y vistas previas. |
+| `components`  | `ArdoMDXComponents`                                                                | Añade o reemplaza componentes Markdown y su wrapper.                           |
+| `children`    | `ReactNode`                                                                        | Cabecera, navegación, pie o contenido propio.                                  |
+
+## Cabecera {#header}
+
+`ArdoHeader` proporciona la cabecera adaptable. Coloca `ArdoNav` dentro y las acciones de la derecha en `ArdoHeaderActions`.
+
+```tsx
+import { ArdoHeader, ArdoHeaderActions, ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
+import logo from "./assets/logo.svg"
+;<ArdoHeader logo={logo} title="My Docs" searchPlaceholder="Search documentation...">
+  <ArdoNav>
+    <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+    <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+  </ArdoNav>
+  <ArdoHeaderActions>
+    <ArdoSocialLink href="https://github.com/example/project" icon="github" />
+  </ArdoHeaderActions>
+</ArdoHeader>
+```
+
+`ArdoRoot` pasa `brand.logo` a la cabecera salvo que esta defina su propio `logo`.
+
+| Prop                | Uso                                                         |
+| ------------------- | ----------------------------------------------------------- |
+| `logo`              | URL o variantes `{ light, dark }`.                          |
+| `title`             | Título; predeterminado: `config.title`.                     |
+| `search`            | `auto`, `field`, `icon` o `false`. Predeterminado: `auto`.  |
+| `searchPlaceholder` | Texto de ayuda de búsqueda.                                 |
+| `themeToggle`       | `false` oculta el selector de tema. Predeterminado: `true`. |
+| `className`         | Reemplaza la clase de cabecera.                             |
+
+### Búsqueda en la cabecera {#search-in-the-header}
+
+Con `search="auto"`, decide el diseño:
+
+- Las páginas de documentación muestran un campo central.
+- Las páginas libres (`handle = { layout: "bare" }`, incluido el inicio) muestran un icono para dar espacio al hero.
+
+`search="field"` o `search="icon"` fija una presentación. Bajo 1024 px, el campo pasa a icono. ⌘K, o Ctrl+K en Windows y Linux, abre siempre la búsqueda.
+
+### Pantallas pequeñas {#narrow-screens}
+
+Bajo 1024 px, quedan menú, logotipo y búsqueda. El menú termina con los selectores de versión, idioma y tema y las `ArdoHeaderActions`, como enlaces sociales.
+
+### Controles de versión {#version-controls}
+
+Con [`versioning`](/es/guide/configuration#versioning), el selector aparece al final de la navegación o en el pie de páginas libres. Las versiones antiguas muestran un aviso hacia la misma página de la última versión.
+
+Tus diseños pueden colocar `ArdoVersionSwitcher` (select), `ArdoVersionControl` (con etiqueta) y `ArdoVersionBanner` (aviso). No muestran nada con menos de dos versiones.
+
+En páginas libres, la cabecera comparte anchura con `ArdoHero`, `ArdoFeatures` y `ArdoFooter`. Los documentos mantienen una cabecera completa. Ajusta `--ardo-layout-pageMaxWidth` y usa `vars.layout.pageMaxWidth` para alinear tus secciones.
+
+## Secciones de navegación {#sidebar-sections}
+
+La navegación izquierda combina barra de secciones y panel. Las props de `ArdoSidebarSection` definen la sección y sus hijos el panel.
+
+```tsx
+import { ArdoGeneratedSidebar, ArdoSidebar, ArdoSidebarSection } from "ardo/ui"
+import { BookOpen, Code } from "ardo/icons"
+;<ArdoSidebar>
+  <ArdoSidebarSection
+    id="guide"
+    label="Guide"
+    to="/guide/getting-started"
+    icon={<BookOpen size={18} />}
+  >
+    <ArdoGeneratedSidebar section="guide" />
+  </ArdoSidebarSection>
+
+  <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code size={18} />}>
+    <ArdoGeneratedSidebar section="api-reference" />
+  </ArdoSidebarSection>
+</ArdoSidebar>
+```
+
+`ArdoGeneratedSidebar` muestra la navegación Markdown y API generada de una sección principal. Para navegación manual, combina enlaces y grupos:
+
+```tsx
+<ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+  <ArdoSidebarGroup title="Guide">
+    <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
+    <ArdoSidebarLink to="/guide/configuration">Configuration</ArdoSidebarLink>
+  </ArdoSidebarGroup>
+</ArdoSidebarSection>
+```
+
+## Pie de página {#footer}
+
+Pasa `ArdoFooter` como hijo de `ArdoRoot`.
+
+```tsx
+<ArdoFooter
+  sponsor={{ text: "Example Co", link: "https://example.com" }}
+  message="Released under the MIT License."
+  copyright="Copyright 2026 Example Co"
+/>
+```
+
+## Enlaces de edición y fecha de modificación {#edit-links-and-last-updated}
+
+`editLink` y `lastUpdated` se aplican a documentos Markdown y MDX. El frontmatter puede desactivarlos con `editLink: false` o `lastUpdated: false`.
+
+```tsx
+<ArdoRoot
+  editLink={{
+    pattern: "https://github.com/example/project/edit/main/docs/app/routes/:path",
+    text: "Edit this page on GitHub",
+  }}
+  lastUpdated={{
+    enabled: true,
+    text: "Last updated",
+    formatOptions: { dateStyle: "medium" },
+  }}
+  tocLabel="On this page"
+>
+  {/* Header, sidebar, and footer here */}
+</ArdoRoot>
+```
+
+`:path` recibe la ruta fuente relativa a `app/routes` o `routesDir`, incluida la extensión. Mantén el prefijo del repositorio y directorio fuente en el patrón. Los enlaces son opcionales.
+
+Las fechas proceden del último commit Git. Descarga todo el historial en CI (`fetch-depth: 0` con `actions/checkout`). Sin historial, se usa la fecha del archivo. El formato sigue el idioma activo y UTC salvo otra zona en `formatOptions`. Las API generadas desactivan enlaces y fechas; los contenidos materializados también, salvo activación explícita en el frontmatter con un patrón fuente adecuado.
+
+Hasta 1280 px, el índice se despliega bajo el título y las acciones aparecen al final del artículo. Las pantallas grandes conservan el panel derecho.
+
+## Interfaz por ruta {#route-level-chrome}
+
+Exporta `handle` para ocultar elementos por ruta:
+
+```tsx title="app/routes/landing.tsx"
+export const handle = { layout: "bare", chrome: false }
+```
+
+`chrome: false` elimina cabecera y pie. `layout: "bare"` elimina navegación lateral y panel.
+
+### Rutas libres con interfaz propia {#bare-routes-with-custom-chrome}
+
+Usa `export const handle = { layout: "bare", chrome: false }` si la ruta gestiona su cabecera y pie. Ardo no reserva espacio ni enlace de salto adicional; márgenes, fondo y desbordamiento del contenido son tuyos. Proporciona un enlace de salto para teclado.
+
+Las rutas libres con cabecera Ardo conservan su desplazamiento y enlace de salto. Los documentos mantienen el desplazamiento interno.
+
+## Reemplazar elementos de la interfaz {#replace-parts-of-the-chrome}
+
+Si el CSS no basta, escribe tu componente React:
+
+```tsx title="app/components/MyHeader.tsx"
+import { useArdoConfig } from "ardo/runtime"
+
+export function MyHeader() {
+  const config = useArdoConfig()
+
+  return (
+    <header className="my-custom-header">
+      <h1>{config.title}</h1>
+      {/* Your custom header content */}
+    </header>
+  )
+}
+```
+
+Pásalo a `ArdoRoot` conservando los demás elementos predeterminados:
+
+```tsx title="app/root.tsx"
+import { ArdoRoot } from "ardo/ui"
+
+import { MyHeader } from "./components/MyHeader"
+
+export default function Root() {
+  return <ArdoRoot header={<MyHeader />} />
+}
+```
+
+`header`, `sidebar` y `footer` aceptan elementos React o `false`. Entre sus hijos, `ArdoRoot` solo reconoce sus componentes de interfaz; cualquier otro reemplaza el contenido. Mantén `ArdoRoot` alrededor para proporcionar contexto a los hooks.
+
+`message` y `copyright` renderizan contenido React y escapan las cadenas. Para HTML de confianza, usa `trustedMessageHtml` y `trustedCopyrightHtml`, nunca con contenido de usuarios o CMS.
+
+### Reutilizar búsqueda y navegación móvil {#reuse-search-and-mobile-navigation}
+
+`ArdoHeaderSearch` y `ArdoMobileNavigation` de `ardo/ui` comparten diálogos, atajos y gestión de foco de la cabecera predeterminada. Úsalos en el espacio `header` de `ArdoRoot` para compartir providers.
+
+```tsx
+import { useState } from "ardo/react"
+import {
+  ArdoGeneratedSidebar,
+  ArdoHeaderSearch,
+  ArdoMobileNavigation,
+  ArdoRoot,
+  ArdoSidebar,
+  ArdoSidebarSection,
+} from "ardo/ui"
+
+function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  return (
+    <header className="site-header">
+      <a href="/">My project</a>
+      <ArdoMobileNavigation open={menuOpen} onOpenChange={setMenuOpen}>
+        <ArdoSidebar>
+          <ArdoSidebarSection id="guide" label="Guide" to="/guide/install/">
+            <ArdoGeneratedSidebar section="guide" />
+          </ArdoSidebarSection>
+        </ArdoSidebar>
+      </ArdoMobileNavigation>
+      <ArdoHeaderSearch variant="icon" onActivate={() => setMenuOpen(false)} />
+    </header>
+  )
+}
+
+export default function Root() {
+  return <ArdoRoot header={<SiteHeader />} scrollMode="document" />
+}
+```
+
+Sin `open`, `ArdoMobileNavigation` gestiona su estado. `nav`, `actions`, `logo`, `title` y `themeToggle` ajustan el panel; `label`, `trigger` y `className` ajustan el botón visible bajo 1024 px. El estado controlado permite cerrar el menú antes de buscar. Escape cierra los diálogos y restaura el foco. `ArdoHeaderSearch` acepta `variant="field"` o `variant="icon"`.
+
+## Personalizar componentes Markdown {#customize-the-markdown-component-set}
+
+`components` añade o reemplaza los componentes predeterminados. La prop MDX explícita de una página tiene prioridad; su layout MDX conserva el wrapper. Define el mapa y los componentes fuera de la función raíz para mantener identidades estables.
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { useArdoPageData } from "ardo/runtime"
+import { ArdoDocContent, ArdoRoot } from "ardo/ui"
+
+function Article({ children }: { children: ReactNode }) {
+  const page = useArdoPageData()
+  return (
+    <ArdoDocContent
+      header={
+        <header className="article-hero">
+          <h1>{page?.title}</h1>
+        </header>
+      }
+      tocSource="dom"
+    >
+      {children}
+    </ArdoDocContent>
+  )
+}
+
+const components = { wrapper: Article }
+
+export default function Root() {
+  return <ArdoRoot components={components} />
+}
+```
+
+Reemplaza `table`, `a`, `CodeBlock` o registra nombres MDX. Un `a` propio debe conservar la gestión de rutas internas. Reemplazar `CodeBlock` también reemplaza copia y resaltado.
+
+### Espacios de artículo {#article-slots}
+
+`ArdoDocContent` y `ArdoDocPage` aceptan estos espacios React. Omítelos para mantener el valor predeterminado; `false` o `null` los oculta.
+
+| Slot      | Reemplaza                                                   |
+| --------- | ----------------------------------------------------------- |
+| `header`  | Título y descripción. Permanecen migas y avisos de versión. |
+| `outline` | Índice compacto en el artículo.                             |
+| `rail`    | Panel de escritorio con índice y acciones.                  |
+| `footer`  | Acciones y enlaces anterior/siguiente.                      |
+
+`ArdoContent` expone los mismos espacios `header`, `outline` y `footer`. Un `outline` explícito tiene prioridad sobre `outline: false` del frontmatter.
+
+### Detectar títulos de componentes {#discover-headings-from-components}
+
+El índice usa metadatos Markdown por defecto. `tocSource="dom"` en `ArdoDocContent` o `ArdoDocPage` detecta los títulos de componentes tras hidratar. El HTML servidor y el primer render conservan el índice estático; después se siguen adiciones, eliminaciones y cambios.
+
+Usa de forma independiente `<ArdoTOC source="dom" scope="#article-body" />`. `scope` es un selector CSS opcional; si falta, Ardo lee `.ardo-content-body` dentro de `#main-content` o este último. Ambos modos siguen `markdown.toc.level`. Se excluyen navegación, índice, títulos ocultos y subárboles `data-ardo-toc="exclude"`. Marca así ejemplos que no deban convertirse en secciones.
+
+Mantén identificadores explícitos y únicos para enlaces duraderos. El modo DOM añade `ardo-heading-N` sin colisiones, pero dependiente del orden. No amplía la búsqueda del build, el sitemap ni los exports LLM. Escribe el contenido indexable en Markdown.
+
+### Hooks de ejecución {#runtime-hooks}
+
+Los componentes leen el estado mediante hooks de `ardo/runtime`:
+
+| Hook                  | Devuelve                                                               |
+| --------------------- | ---------------------------------------------------------------------- |
+| `useArdoConfig()`     | Configuración del sitio: `title`, `description`, `brand`.              |
+| `useArdoSiteConfig()` | Ajustes `editLink`, `lastUpdated`, `labels`, `tocLabel` de `ArdoRoot`. |
+| `useArdoSidebar()`    | Elementos de navegación de la sección actual.                          |
+| `useArdoPageData()`   | En Markdown/MDX: título, frontmatter, índice y fuente.                 |
+| `useArdoTOC()`        | Índice actual o lista vacía.                                           |
+| `useArdoPath()`       | Ruta de página sin base.                                               |
+| `useArdoLocale()`     | Idioma activo, también durante el render servidor.                     |
+| `useArdoContext()`    | Configuración, navegación y página juntas.                             |
+
+Enlace de edición desde los ajustes y la página actual:
+
+```tsx
+import { useArdoPageData, useArdoSiteConfig } from "ardo/runtime"
+
+function MyEditLink() {
+  const { editLink } = useArdoSiteConfig()
+  const page = useArdoPageData()
+  if (!editLink?.pattern || !page?.relativePath || page.frontmatter.editLink === false) {
+    return null
+  }
+  const sourcePath = page.relativePath.split("/").map(encodeURIComponent).join("/")
+  const href = editLink.pattern.replace(":path", sourcePath)
+  return <a href={href}>{editLink.text ?? "Edit this page"}</a>
+}
+```
+
+`findCurrentSidebarItem` y `getPrevNextLinks` ayudan a reemplazar los enlaces anterior/siguiente:
+
+```tsx
+import {
+  ArdoLink,
+  findCurrentSidebarItem,
+  getPrevNextLinks,
+  useArdoPageData,
+  useArdoPath,
+  useArdoSidebar,
+} from "ardo/runtime"
+
+function MyPrevNext() {
+  const pathname = useArdoPath()
+  const page = useArdoPageData()
+  const sidebar = useArdoSidebar()
+  if (!page) return null
+
+  const current = findCurrentSidebarItem(sidebar, pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, pathname)
+
+  return (
+    <nav>
+      <span>{current?.text}</span>
+      {prev?.link && <ArdoLink to={prev.link}>{prev.text}</ArdoLink>}
+      {next?.link && <ArdoLink to={next.link}>{next.text}</ArdoLink>}
+    </nav>
+  )
+}
+```
+
+`ArdoLink` añade la base y renderiza un `<a>`; cada clic carga la página prerrenderizada. `ArdoProvider` y `ArdoSiteConfigProvider` proporcionan ese contexto en pruebas y vistas aisladas.
+
+## Layout: el shell HTML {#layout-the-html-shell}
+
+Cada página tiene un shell `<html>`, `<head>`, `<body>`, renderizado solo en servidor durante desarrollo y build; la raíz interior se hidrata. Por defecto, `ArdoRootLayout` de `ardo/ui` proporciona codificación, viewport, script de tema, favicons, título, metadatos, estilos y script cliente. Rara vez necesitas un export `Layout`.
+
+Exporta `Layout` desde `root.tsx` para configurar `ArdoRootLayout`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoRootLayout } from "ardo/ui"
+import logo from "./assets/logo.svg"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout favicon={logo}>{children}</ArdoRootLayout>
+}
+```
+
+Un shell propio renderiza `ArdoHead` en `<head>` y `ArdoScripts` al final de `<body>`, desde `ardo/runtime`. El primero aporta metadatos, estilos y precargas; el segundo carga el cliente de hidratación. Debes renderizar `children`:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import { ArdoHead, ArdoScripts } from "ardo/runtime"
+
+export function Layout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ArdoHead />
+      </head>
+      <body>
+        {children}
+        <ArdoScripts />
+      </body>
+    </html>
+  )
+}
+```
+
+Un shell propio no incluye inicialización del tema ni favicons. Prefiere envolver `ArdoRootLayout` salvo que necesites control total.
+
+## Páginas de error {#error-pages}
+
+`root.tsx` puede exportar `ErrorBoundary`. Una página ausente aparece dentro de la raíz con navegación; un error de render reemplaza la raíz para seguir visible. Sin export, Ardo usa `ArdoErrorBoundary` de `ardo/ui`.
+
+```tsx
+import { ArdoErrorBoundary } from "ardo/ui"
+
+export const ErrorBoundary = ArdoErrorBoundary
+```
+
+## Política de tema de RootLayout {#rootlayout-theme-policy}
+
+`theme="auto"` prioriza `ardo-theme` guardado y después `prefers-color-scheme`. Fija una política para desactivar la elección del usuario:
+
+```tsx
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout theme="light">{children}</ArdoRootLayout>
+}
+```
+
+| Política | Comportamiento                                              |
+| -------- | ----------------------------------------------------------- |
+| `auto`   | Preferencia guardada o del sistema. Predeterminado.         |
+| `light`  | Siempre claro; borra la elección guardada.                  |
+| `dark`   | Siempre oscuro; borra la elección guardada.                 |
+| `system` | Siempre `prefers-color-scheme`; borra la elección guardada. |
+
+## Desplazamiento del documento con interfaz propia {#document-scrolling-with-site-owned-chrome}
+
+`scrollMode="document"` sirve para cabeceras y pies externos o desplazamiento normal. El shell de viewport sigue siendo el predeterminado. En modo documento, navegación y panel se fijan bajo la altura de cabecera configurada; el pie externo sigue accesible. También funciona con `className` propia, que debe aportar las reglas de visualización y anchura.
+
+Coloca cabecera adherente y pie junto a `ArdoRoot`. Desactiva los equivalentes de Ardo si son externos:
+
+```tsx
+export default function Root() {
+  return (
+    <>
+      <SiteHeader />
+      <ArdoRoot scrollMode="document" header={false} footer={false} />
+      <SiteFooter />
+    </>
+  )
+}
+```
+
+`--ardo-layout-headerHeight` ajusta posiciones y espacio de anclas. Defínela en `ArdoRootLayout` mediante `Layout` para compartirla con la cabecera y adáptala al breakpoint móvil:
+
+```tsx
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout className="docs-site">{children}</ArdoRootLayout>
+}
+```
+
+```css
+.docs-site {
+  --ardo-layout-headerHeight: 4rem;
+}
+
+@media (max-width: 640px) {
+  .docs-site {
+    --ardo-layout-headerHeight: 6rem;
+  }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  height: var(--ardo-layout-headerHeight);
+}
+```
+
+Una cabecera `sticky` sigue en el flujo y no necesita espacio adicional. Una cabecera `fixed` requiere una sola reserva `padding-top: var(--ardo-layout-headerHeight)` en el wrapper. Para MDX con interfaz propia, exporta:
+
+```mdx
+export const handle = { chrome: false }
+```
+
+La cabecera y pie externos siguen la misma regla; Ardo conserva navegación y panel. Las rutas sin su interfaz deben proporcionar un enlace de salto.

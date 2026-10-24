@@ -1,0 +1,411 @@
+---
+title: "Theming"
+description: "Passe Ardos Farben mit drei Farbtönen an, überschreibe CSS-Variablen und Vanilla-Extract-Tokens und nutze Tailwind CSS für eigene Inhalte."
+order: 8
+---
+
+# Theming
+
+Ardos Standardtheme ist durchdacht und offen anpassbar. Übernimm Marke und Designsystem in die Dokumentation und beginne mit der einfachsten passenden Stufe:
+
+1. **Markeneinstellungen:** Farben für Marke, Akzent und neutrale Flächen sowie Logo in `ardo.config.ts`.
+2. **CSS-Variablen:** Farben, Abstände und Typografie ohne Komponentenänderungen.
+3. **Vanilla-Extract-Tokens:** typsichere Importe aus `ardo/theme` in `.css.ts`.
+4. **Tailwind CSS:** Utility-Klassen für eigene Seiten und Komponenten.
+
+Eigene React-Komponenten für Kopfzeile, Seitenleiste und Fußzeile behandelt [Layout und Navigation](/de/guide/layout-and-navigation#replace-parts-of-the-chrome).
+
+## Markeneinstellungen {#brand-shortcut}
+
+Nutze `brand` in `ardo.config.ts` für eine primäre Markenfarbe, eine Akzentfarbe, einen neutralen Oberflächenton und ein Logo.
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: "blue",
+    accent: "teal",
+    neutral: "slate",
+    logo: "./app/assets/logo.svg",
+  },
+})
+```
+
+Ergänze die Einstellungen in deiner bestehenden Konfiguration. Verweise mit `logo` auf eine eigene SVG-Datei oder lasse es weg. Die CLI liefert die Vite-Integration.
+
+`color`, `accent` und `neutral` akzeptieren Voreinstellungen oder numerische OKLCH-Farbtöne:
+
+```ts
+defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: 240,
+    accent: 170,
+    neutral: 260,
+  },
+})
+```
+
+Voreinstellungen: `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` und `gray`.
+
+`chroma` steuert die Sättigung der abgeleiteten Farben. `1` erhält den Standard, kleinere Werte beruhigen die Palette und `0` ergibt Grau. Eine Zahl gilt für `color` und `accent`; die Objektform setzt auch `neutral` getrennt:
+
+```ts
+defineArdoConfig({
+  title: "Acme Docs",
+  brand: {
+    color: "green",
+    accent: "orange",
+    neutral: 95,
+    chroma: { color: 0.4, accent: 2, neutral: 1.6 },
+  },
+})
+```
+
+`neutral: "gray"` mit `chroma: { neutral: 0 }` ergibt ungetönte Flächen. Werte über `1` schieben manche Farben, etwa Petrol, aus dem sRGB-Farbraum. Prüfe den Linkkontrast, wenn du `color` stärker sättigst.
+
+Ohne `accent` leitet Ardo aus `color` eine Komplementärfarbe ab. Ohne `neutral` folgt die neutrale Oberfläche der Markenfarbe. `brand.logo` dient dem Standardheader und bei lokalen SVG-Pfaden auch den Favicons. Explizites `ArdoHeader.logo` und `icons.source` haben Vorrang.
+
+## Helfer für Markenfarben {#brand-color-helper}
+
+Nutze den TypeScript-Helfer, wenn du Theme-Werte lieber im Anwendungscode definierst. Die OKLCH-Tokens für Marke, Akzent und neutrale Flächen erlauben Markenwechsel bei getrennter neutraler Basis für Hintergrund, Rahmen, Kopf- und Seitenleiste sowie Text.
+
+Erstelle eine `.css.ts`-Datei:
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme(240) // deep blue
+```
+
+Nutze die Objektform, wenn die Markenfarbe neutrale Flächen nicht tönen soll:
+
+```ts
+// styles/brand.css.ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  primary: 130, // green brand
+  neutral: 260, // neutral slate chrome
+})
+```
+
+Die Objektform akzeptiert außerdem `chroma` mit Multiplikatoren für `brand`, `accent` und `neutral`. Ardos Dokumentation nutzt dies für das gedämpfte Olivgrün der Eule:
+
+```ts
+applyBrandTheme({
+  primary: 123, // olive
+  secondary: 38, // terracotta
+  neutral: 95, // a barely warm off-white
+  chroma: { brand: 0.4, accent: 2, neutral: 1.6 },
+})
+```
+
+Importiere sie in `root.tsx`:
+
+```ts
+import "./styles/brand.css"
+```
+
+Der Standardfarbton ist `356`, ein gedämpfter Beerenton. Einige Startwerte:
+
+| Farbton | Farbe            |
+| ------- | ---------------- |
+| `356`   | Beere (Standard) |
+| `170`   | Petrol           |
+| `240`   | Blau             |
+| `270`   | Indigo           |
+| `290`   | Violett          |
+| `330`   | Pink             |
+| `25`    | Rot              |
+| `45`    | Orange           |
+| `130`   | Grün             |
+
+Für volle Kontrolle liefert `createTheme()` vollständige Tokensätze `{ light, dark }` für die Farbtöne. Du kannst sie vor der Übergabe an `createGlobalTheme` bearbeiten.
+
+Du kannst Tokens auch direkt überschreiben. Gemeinsame Werte gelten in beiden Modi; `light` und `dark` ändern jeweils nur einen:
+
+```ts
+import { applyBrandTheme } from "ardo/theme"
+
+applyBrandTheme({
+  color: {
+    bg: "#fbfbf8",
+    text: "#101010",
+    brand: "#0038ff",
+    brandGradient: "#0038ff",
+    shadowSm: "0 0 0 0 transparent",
+    shadowMd: "0 0 0 0 transparent",
+    shadowLg: "0 0 0 0 transparent",
+  },
+  radius: {
+    sm: "0px",
+    base: "0px",
+    lg: "0px",
+  },
+  dark: {
+    color: {
+      bg: "#101010",
+      text: "#fbfbf8",
+    },
+  },
+})
+```
+
+`shadowSm`, `shadowMd`, `shadowLg` und `codeShadow` sind vollständige `box-shadow`-Werte. Für schattenfreie Marken nutze `0 0 0 0 transparent`: `none` kann kombinierte Schatten ungültig machen. `brandGradient` akzeptiert auch eine einfache Farbe.
+
+## CSS-Variablen {#css-variables}
+
+Der schnellste Weg zur Anpassung: Überschreibe wenige CSS-Variablen und die gesamte Website folgt:
+
+Erstelle eine eigene CSS-Datei:
+
+```css
+/* styles/custom.css */
+:root {
+  --ardo-hue-brand: 260;
+  --ardo-hue-accent: 134;
+  --ardo-hue-neutral: 260;
+
+  --ardo-color-brand: oklch(0.6 0.2 260);
+  --ardo-color-brandLight: oklch(0.7 0.15 260);
+  --ardo-color-brandDark: oklch(0.5 0.25 260);
+}
+```
+
+Importiere sie in `root.tsx`:
+
+```ts
+import "./styles/custom.css"
+```
+
+`--ardo-*` sind öffentliche Anpassungspunkte. Standardwerte liegen auf `:root`, Dunkelmoduswerte auf `.dark`. Eigene CSS-Dateien können beide überschreiben. Diese Variablen bleiben auch bei Änderungen der höheren Theme-Helfer unterstützt.
+
+CSS ohne Layer gewinnt gegen beide Ardo-Selektoren; eine Farbe auf `:root` gilt deshalb auch im Dunkelmodus. Farbtöne, Chroma, Layout und Typografie sind dort unproblematisch. Setze konkrete Farben pro Modus:
+
+```css
+:root:not(.dark) {
+  --ardo-color-bg: oklch(0.99 0.004 95);
+}
+
+.dark {
+  --ardo-color-bg: oklch(0.17 0.006 95);
+}
+```
+
+### Verfügbare Variablen {#available-variables}
+
+Hier sind die häufigsten Einstellungen mit Standardwerten. Setze nur die benötigten. Jeder Token in `vars` hat eine entsprechende Variable.
+
+```css
+:root {
+  /* Hue knobs */
+  --ardo-hue-brand: 356;
+  --ardo-hue-accent: 230;
+  --ardo-hue-neutral: 356;
+
+  /* Chroma multipliers: 1 is the default saturation, 0 is gray */
+  --ardo-chroma-brand: 1;
+  --ardo-chroma-accent: 1;
+  --ardo-chroma-neutral: 1;
+
+  /* Layout */
+  --ardo-layout-sidebarWidth: 20rem;
+  --ardo-layout-tocWidth: 15rem;
+  --ardo-layout-contentMaxWidth: 36em; /* em: the measure follows each element's font size */
+  --ardo-layout-pageMaxWidth: 69rem; /* header, hero, features, footer on bare pages */
+  --ardo-layout-headerHeight: 3.5rem;
+
+  /* Typography */
+  --ardo-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-familyHeading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", ...;
+  --ardo-font-mono: ui-monospace, SFMono-Regular, ...;
+  --ardo-font-lineHeight: 1.65;
+
+  /* Border radius */
+  --ardo-radius-sm: 0.25rem;
+  --ardo-radius-base: 0.5rem;
+  --ardo-radius-lg: 0.75rem;
+}
+```
+
+Die meisten Farb-Tokens verweisen auf Farbtöne. Für neutrale Flächen reicht daher oft eine einzige Deklaration:
+
+```css
+:root {
+  --ardo-hue-neutral: 260;
+}
+```
+
+## Vanilla-Extract-Tokens {#vanilla-extract-tokens}
+
+Ardos Oberfläche nutzt [Vanilla Extract](https://vanilla-extract.style/). Alle Tokens lassen sich typsicher aus `ardo/theme` importieren – mit Autovervollständigung und Compilerfehlern bei falschen Verweisen.
+
+Die CLI enthält das Vanilla-Extract-Plugin. `.css.ts` funktioniert ohne weitere Vite-Konfiguration. Installiere zuvor die Styling-API im Dokumentationspaket:
+
+```bash
+pnpm add @vanilla-extract/css
+```
+
+### Tokens in eigenen Stilen nutzen {#using-tokens-in-your-styles}
+
+Erstelle eine `.css.ts`-Datei im Projekt:
+
+```ts
+// styles/custom.css.ts
+import { style, globalStyle } from "@vanilla-extract/css"
+import { vars } from "ardo/theme"
+
+export const highlight = style({
+  background: vars.color.brandSubtle,
+  borderLeft: `3px solid ${vars.color.brand}`,
+  padding: "16px",
+  borderRadius: vars.radius.base,
+})
+
+// Override Ardo's default styles
+globalStyle(".ardo-content a", {
+  color: vars.color.brand,
+  textDecoration: "underline",
+})
+```
+
+### Stylesheet-Zuständigkeit und Kaskade {#stylesheet-ownership-and-cascade}
+
+Ardo lädt `ardo/ui/styles.css` nach den CSS-Importen des Root-Moduls. Es enthält Oberfläche, Reset und Theme im Layer `ardo`. Komponentenimporte oder ein zusätzlicher eigener Import laden keine zweite Kopie.
+
+Normales CSS ohne Layer hat unabhängig von der Ladereihenfolge Vorrang. Du kannst etwa `.ardo-footer` direkt überschreiben. Bei eigenen Layern lege deren Reihenfolge im ersten Root-Stylesheet fest, zum Beispiel `@layer ardo, app;`.
+
+### Stabile CSS-Anpassungspunkte {#stable-override-hooks}
+
+Generierte Vanilla-Extract-Klassennamen sind Implementierungsdetails. Nutze für gezielte Anpassungen die stabilen Klassen:
+
+| Bereich                                    | Klassen                                                                                                           |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Kopfzeile und Navigation                   | `.ardo-header`, `.ardo-nav`, `.ardo-mobile-panel`                                                                 |
+| Seitenleiste                               | `.ardo-sidebar`, `.ardo-sidebar-tabs`, `.ardo-sidebar-panel`, `.ardo-sidebar-header`, `.ardo-sidebar-nav`         |
+| Dokumentraster und optionale rechte Spalte | `.ardo-doc-page`, `.ardo-page-rail`, `.ardo-page-rail-section`                                                    |
+| Artikel und Einleitung                     | `.ardo-content`, `.ardo-content-header`, `.ardo-content-title`, `.ardo-content-description`, `.ardo-content-body` |
+| Inhaltsverzeichnis                         | `.ardo-toc`                                                                                                       |
+| Codeblöcke                                 | `.ardo-code-block`, `.ardo-code-title`, `.ardo-code-wrapper`, `.ardo-copy-button`                                 |
+| Fußzeile                                   | `.ardo-footer`                                                                                                    |
+
+Diese Klassen sind Anpassungspunkte, keine eigene Styling-API. Nutze zuerst Tokens und Props und anschließend diese Selektoren für projektspezifische Änderungen.
+
+Begrenze Anpassungen in einem bestehenden Designsystem auf den Website-Wrapper. Hat die Website bereits eine Abschnittsnavigation, darf sie `.ardo-sidebar-tabs` ausblenden, solange alle Bereiche auf Desktop und Mobilgeräten erreichbar bleiben. Theme-Variablen für Body-Portale wie die Suche gehören auf `className` von `ArdoRootLayout`.
+
+### Token-Kategorien {#available-token-categories}
+
+`vars` enthält Tokens für:
+
+- **`vars.color`** — Markenfarben, Hintergründe, Text, Rahmen, Schatten und semantische Farben für Hinweise.
+- **`vars.hue`** — Farbtöne für Marke, Akzent und neutrale Flächen.
+- **`vars.chroma`** — Sättigungsmultiplikatoren derselben Palette.
+- **`vars.layout`** — Breite von Seitenleiste, Inhaltsverzeichnis und Inhalt, gemeinsamer Seitenrahmen sowie Headerhöhe.
+- **`vars.transition`** — schnelle, normale und langsame Übergänge.
+- **`vars.font`** — Schriftfamilien für Text, Überschriften und Code, Grundgröße und Zeilenhöhe.
+- **`vars.fontSize`** — Skala von `xs` bis `4xl`.
+- **`vars.space`** — Abstandsskala von `xs` bis `4xl`.
+- **`vars.radius`** — Radien `sm`, `base`, `lg`, `xl` und `full`.
+
+## Tailwind CSS {#tailwind-css}
+
+[Tailwind CSS v4](https://tailwindcss.com/) ist optional für eigene Landingpages, Beispiele, Komponentendemos und MDX. Behalte beim Ardo-Einstieg deine bestehende Styling-Lösung bei.
+
+Ardo gestaltet seine Oberfläche mit Vanilla Extract. Tailwind ist für deine Inhalte gedacht: Styling direkt in React, ohne ein zweites Themesystem.
+
+### Einrichtung {#setup}
+
+Installiere `tailwindcss` und `@tailwindcss/vite` als Entwicklungsabhängigkeiten und konfiguriere:
+
+1. `@tailwindcss/vite` in `vite.config.ts` unter `plugins`.
+2. `tailwindcss` als Entwicklungsabhängigkeit.
+3. `app/app.css` mit Tailwinds Theme- und Utility-Layern.
+
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Follow Ardo's theme toggle, which sets the .dark class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Importiere die Datei in `app/root.tsx`. Da Ardo sein Stylesheet danach lädt, gilt die hier deklarierte Layerreihenfolge: Nenne `ardo` vor `components` und `utilities`, damit Utility-Klassen gegen die Inhaltsstile gewinnen.
+
+Tailwinds Variante `dark:` folgt standardmäßig dem Betriebssystem. Mit `@custom-variant` folgt sie Ardos Theme-Schalter und wechselt gemeinsam mit der Website.
+
+### Beispiele {#examples}
+
+#### Hinweisbox in MDX {#callout-box-in-mdx}
+
+Das funktioniert direkt in jeder `.mdx`-Datei:
+
+```html
+<div
+  className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950"
+>
+  <span className="text-xl">💡</span>
+  <div>
+    <p className="font-semibold text-blue-900 dark:text-blue-100">Good to know</p>
+    <p className="text-sm text-blue-700 dark:text-blue-300">
+      Tailwind classes work in MDX files, TSX components, and anywhere else in your Ardo project.
+    </p>
+  </div>
+</div>
+```
+
+#### Eigener Hero-Bereich {#custom-hero-section}
+
+Erstelle einen Landingpage-Kopf ohne eigene CSS-Zeilen:
+
+```tsx title="app/routes/home.tsx"
+import { ArdoLink } from "ardo/ui"
+
+export default function Home() {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+      <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+        My Project
+      </h1>
+      <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        A short description that tells visitors exactly what this is and why they should care.
+      </p>
+      <div className="flex gap-3">
+        <ArdoLink
+          to="/guide/getting-started"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Get Started
+        </ArdoLink>
+        <a
+          href="https://github.com/your/repo"
+          className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  )
+}
+```
+
+### Warum ohne Preflight? {#why-no-preflight}
+
+Ardo bringt Basisstile für Typografie, Überschriften, Links, Listen und Codeblöcke mit. Tailwinds Preflight-Reset würde damit kollidieren und das Standardbild verändern.
+
+Wenn du alle Stile einer stark angepassten Website selbst kontrollierst, kannst du Preflight in `app/app.css` aktivieren:
+
+```css title="app/app.css"
+@layer theme, base, ardo, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+```
+
+Ardos Inhaltsstile setzen Listenzeichen, Tabellenrahmen, Code und Abstände ausdrücklich. Markdown bleibt auch unter einem Host-Reset lesbar. `ardo` liegt nach `base`, sodass Preflight diese Stile nicht aufhebt, und vor `utilities`, damit angewendete Utility-Klassen gewinnen.

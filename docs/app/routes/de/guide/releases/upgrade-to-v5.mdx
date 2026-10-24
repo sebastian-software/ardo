@@ -1,0 +1,50 @@
+---
+title: "Upgrade auf Ardo 5"
+description: "Auf Markdown- und MDX-Kompilierung mit Ferromark und Syntaxhervorhebung mit Ferriki umstellen."
+order: 2
+---
+
+# Upgrade auf Ardo 5
+
+Ardo 5 verwendet Ferromark für Markdown und MDX, einschließlich nativer Syntaxhervorhebung mit Ferriki. Ferromark erzeugt frameworkneutrales JSX; Ardo liefert React-Komponentenbindung, Layouts, Seitenkontext und Routenmetadaten. Dein bestehendes React-Routensetup bleibt der Integrationspunkt.
+
+## Laufzeit und Installation {#runtime-and-installation}
+
+Nutze Node.js 22.13 oder neuer auf Linux oder Windows x64/arm64 oder macOS Apple Silicon. Lasse optionale Abhängigkeiten aktiviert, damit der Paketmanager die passenden nativen Binärdateien installiert. Es gibt keinen JavaScript-Ersatz für die Engines.
+
+Standardgrammatiken und Themes von Ferriki werden bei der ersten Verwendung heruntergeladen und zwischengespeichert. Fülle den Cache bei einem Build mit Netzwerkzugang, erhalte ihn in CI und konfiguriere Offline-Ausführungen mit:
+
+```sh
+FERRIKI_CACHE_DIR=/path/to/persisted/ferriki-cache
+FERRIKI_ASSETS_REMOTE=0
+```
+
+Siehe [Ferrikis Standardressourcen](https://github.com/sebastian-software/ferriki/blob/main/docs/ferriki-api.md#standard-assets) für Mirrors und Cache-Verhalten.
+
+## Markdown-Konfiguration {#markdown-configuration}
+
+Entferne `markdown.remarkPlugins`, `markdown.rehypePlugins` und recma-Anpassungen. Konfiguriere unterstützte Ferromark-Syntaxoptionen und geordnete native Transformationen direkt:
+
+```ts
+markdown: {
+  theme: { light: "github-light-default", dark: "github-dark-default" },
+  lineNumbers: true,
+  headingAttributes: true,
+  passes: [
+    { kind: "typography", language: "en" },
+    { kind: "emojiShortcodes" },
+  ],
+}
+```
+
+GFM-Tabellen, durchgestrichener Text, Aufgabenlisten, automatische Links, Fußnoten und Hinweise bleiben standardmäßig aktiv. Nutze YAML-Frontmatter. MDX-Importe, benannte Exporte, Ausdrücke, Komponentenüberschreibungen und ein Standard-Layout-Export werden weiterhin unterstützt. `import`- und `export`-Blöcke sind JavaScript; ein Standard-Layout-Export ersetzt Ardos Inhaltswrapper. Der Modulvertrag steht unter [MDX-Module](/de/guide/markdown). Ferromark rendert Blocktitel, Bezeichnungen, hervorgehobene Zeilen und Zeilennummern mit Ferriki. Statische `ArdoCodeBlock`-Verwendung in TSX-Routen nutzt Ardos direkten Ferriki-Vorlauf.
+
+## Überschriftenlinks {#heading-links}
+
+Ferromark bestimmt Überschriften-IDs. Satzzeichen trennen Wörter: `What's included?` wird zu `what-s-included`. Doppelte IDs erhalten numerische Suffixe. Eine erste H1, die dem Frontmatter-Titel entspricht, entfällt und reserviert keine ID. Setext-Überschriften und Markdown in JSX verwenden dasselbe Inhaltsverzeichnis wie ATX-Überschriften.
+
+Aktualisiere handgeschriebene Fragmentlinks, wenn eine ID sich ändert. Gerenderte Überschriften, Inhaltsverzeichnis, Suchdatensätze und Linkprüfung teilen die nativen IDs. Ein Produktionsbuild mit aktivierter Linkprüfung findet veraltete Sprungmarken.
+
+## Entfernte eigenständige APIs {#removed-standalone-apis}
+
+`transformMarkdown`, `transformMarkdownToReact`, `loadDoc` und `loadAllDocs` wurden entfernt. Kompiliere eigenständiges HTML direkt mit Ferromark. Nutze für Routeninhalte Ardos Vite-Integration und öffentliche Laufzeit-Hooks.

@@ -1,6 +1,6 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import react from "@vitejs/plugin-react"
-import { mergeConfig, type Plugin, type UserConfig, type ViteDevServer } from "vite"
+import { mergeConfig, type Plugin, type UserConfig } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
@@ -24,20 +24,14 @@ import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
-import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
+import { normalizePath, resolveRoutesDir } from "./path-utils"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
 import { createStaticSitePlugin } from "./static-site-plugin"
 import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
-import {
-  loadVirtualModule,
-  RESOLVED_IDS,
-  resolveVirtualModuleId,
-  VIRTUAL_COLLECTIONS_ID,
-  VIRTUAL_GENERATED_SIDEBARS_ID,
-  VIRTUAL_SEARCH_ID,
-} from "./virtual-modules"
+import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
+import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 
 type PluginState = {
   collections?: CollectionsConfig
@@ -292,44 +286,4 @@ function mergeArdoViteConfig(
   }
 
   return mergeConfig(ardoConfig, viteConfig as UserConfig)
-}
-
-function configureVirtualModuleInvalidation(server: ViteDevServer, state: PluginState): void {
-  server.watcher.add(state.routesDir)
-
-  const handleRouteContentChange = (changedPath: string) => {
-    if (!shouldInvalidateRouteVirtualModules(changedPath, state.routesDir)) {
-      return
-    }
-
-    invalidateVirtualModules(server)
-    server.ws.send({ type: "full-reload" })
-  }
-
-  server.watcher.on("add", handleRouteContentChange)
-  server.watcher.on("change", handleRouteContentChange)
-  server.watcher.on("unlink", handleRouteContentChange)
-}
-
-function shouldInvalidateRouteVirtualModules(changedPath: string, routesDir: string): boolean {
-  const normalizedPath = normalizePath(changedPath)
-  return (
-    isPathInsideDirectory(normalizedPath, routesDir) &&
-    (normalizedPath.endsWith(".md") || normalizedPath.endsWith(".mdx"))
-  )
-}
-
-function invalidateVirtualModules(server: ViteDevServer): void {
-  const virtualIds = [
-    RESOLVED_IDS[VIRTUAL_COLLECTIONS_ID],
-    RESOLVED_IDS[VIRTUAL_GENERATED_SIDEBARS_ID],
-    RESOLVED_IDS[VIRTUAL_SEARCH_ID],
-  ]
-
-  for (const id of virtualIds) {
-    const module = server.moduleGraph.getModuleById(id)
-    if (module != null) {
-      server.moduleGraph.invalidateModule(module)
-    }
-  }
 }

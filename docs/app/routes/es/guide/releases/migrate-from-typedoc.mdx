@@ -1,0 +1,88 @@
+---
+title: "Migrar desde TypeDoc"
+description: "Sustituye la integración TypeDoc retirada por TypeScript nativo y OXC."
+order: 4
+---
+
+# Migrar desde TypeDoc
+
+Ardo 6 retira la integración TypeDoc. La documentación del código usa TypeScript nativo para declaraciones comprobadas y OXC para extraer Markdown. Afecta a `typedoc`, `TypeDocConfig`, `ardo/typedoc`, `ardo/typedoc/components` y las opciones TypeDoc del generador retirado `create-ardo`.
+
+## Instalar las herramientas nativas {#install-the-native-tools}
+
+Instala el compilador y parser compatibles en el proyecto de documentación:
+
+```bash
+pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.155.0
+```
+
+El compilador es una nightly TypeScript 7.1 fijada y también comprueba los tipos. La API nativa 7.0 no aporta lo necesario. Los sitios generales no necesitan estos paquetes opcionales. Retira las dependencias TypeDoc y plugins usados solo por la integración anterior.
+
+## Actualizar la configuración Ardo {#update-the-ardo-configuration}
+
+Retira `typedoc` de la configuración Vite anterior. Añade `api` a `ardo.config.ts` con una configuración TypeScript explícita:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  api: {
+    entryPoints: ["./src/index.ts"],
+    tsconfig: "./tsconfig.api.json",
+    out: "api-reference",
+    title: "API Reference",
+  },
+})
+```
+
+Cualquier opción `typedoc`, incluso `typedoc: false`, produce un error de migración. Retírala para desactivar la generación. `api: true` usa `src/index.ts` y `tsconfig.json`; un límite explícito es útil si documentación y fuentes comparten directorio:
+
+```json
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/index.ts"],
+  "include": []
+}
+```
+
+Incluye las declaraciones globales necesarias en `files`. Ardo emite declaraciones comprobadas y conserva comentarios en memoria sin cambiar la configuración ni escribir en disco. Los errores iniciales detienen la compilación. En desarrollo se conservan las últimas páginas válidas y los errores aparecen en el overlay; la generación continúa al corregirlos.
+
+## Adaptar las personalizaciones {#map-existing-customization}
+
+| Ajuste o API anterior                                          | Migración                                                                                 |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `typedoc.entryPoints`, `tsconfig`, `out`                       | Usa los campos `api` correspondientes. `tsconfig` es obligatorio en configuración objeto. |
+| `typedoc.sidebar.title`                                        | Usa `api.title` para el índice y los componentes laterales normales para navegar.         |
+| `typedoc.enabled: false`                                       | Retira la configuración API.                                                              |
+| `typedoc.watch` o script prebuild                              | Usa la integración Vite para generar y actualizar.                                        |
+| `typedoc.readme`                                               | Mantén la introducción manual fuera del directorio generado.                              |
+| Plugins TypeDoc, orden, categorías, grupos y opciones Markdown | Retíralos; no son campos nativos.                                                         |
+| `TypeDocConfig`                                                | Importa `NativeApiDocsConfig` de `ardo/api`.                                              |
+| `ardo/typedoc/components`                                      | Sustituye los usos de `ApiItem` o `ApiSignature` por Markdown, MDX o React mantenido.     |
+
+El extractor respeta `@internal` y no expande miembros privados o protegidos. Selecciona los exports mediante las entradas públicas. Revisa exclusiones y grupos TypeDoc sin asumir resultados idénticos. Cambian la organización y algunas rutas; comprueba los enlaces tras regenerar.
+
+Para varios paquetes, configura un array de proyectos con salidas distintas, como en [Varios paquetes](/es/guide/api-documentation#multiple-packages). Se conservan la instalación y el límite de la aplicación.
+
+## Actualizar los hosts programáticos {#update-programmatic-hosts-and-setup}
+
+Sustituye `generateApiDocs` de `ardo/typedoc` por la API nativa de una ejecución:
+
+```ts
+import { generateNativeDocs } from "ardo/api"
+
+await generateNativeDocs(
+  { entryPoints: ["./src/index.ts"], tsconfig: "./tsconfig.api.json" },
+  "./app/routes"
+)
+```
+
+En un watcher propio, reutiliza `NativeApiProject`, pasa rutas absolutas modificadas, creadas y borradas a `extract` o `generate`, y cierra el proyecto al terminar. La integración Vite ya gestiona este ciclo.
+
+Ardo 6 retira `create-ardo`. Las [instrucciones para agentes](/es/guide/agent-instructions) y la [documentación API](/es/guide/api-documentation) cubren herramientas, configuración y un ejemplo. Migra tu configuración Vite personalizada en lugar de sustituirla.
+
+## Verificar la migración {#verify-the-migration}
+
+Ejecuta tipos y compilación, revisa páginas y enlaces y prueba un cambio de fuente o JSDoc en desarrollo. Mantén el contenido manual fuera de la salida. Las páginas Ardo se actualizan in situ y las obsoletas se eliminan; las carpetas manuales sin marcador están protegidas.
+
+El compilador nativo puede rechazar código aceptado por TypeScript JavaScript. El extractor no cubre todo TypeDoc: namespaces, enlaces originales, TSDoc completo y miembros mapeados o condicionales siguen siendo [límites](/es/guide/api-documentation). Las expansiones no admitidas conservan la expresión y generan diagnósticos. Revísalos para tu API. Para aplazar el cambio, mantén la versión y configuración anteriores.

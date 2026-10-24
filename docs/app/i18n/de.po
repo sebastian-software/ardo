@@ -1,0 +1,915 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"X-Generator: palamedes\n"
+
+#: docs/app/i18n/messages.ts
+msgid " on 50 real documents."
+msgstr " auf 50 echten Dokumenten."
+
+#: docs/app/i18n/messages.ts
+msgid ", same HTML."
+msgstr ", identisches HTML."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"“I went looking for a modern, lightweight docs framework that was simply "
+"React. It didn’t exist. So I built it.”"
+msgstr ""
+"„Ich habe ein modernes, schlankes Dokumentationsframework gesucht, das "
+"einfach React ist. Das gab es nicht. Also habe ich es gebaut.“"
+
+#: docs/app/examples/LocaleCounter.tsx#LocaleCounter
+msgid "{count, plural, one {# click} other {# clicks}}"
+msgstr "{count, plural, one {# Klick} other {# Klicks}}"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "{count, plural, one {# result} other {# results}}"
+msgstr "{count, plural, one {# Ergebnis} other {# Ergebnisse}}"
+
+#: docs/app/home/Hero.tsx#NpmLabel
+msgid "{downloads} downloads last month"
+msgstr "{downloads} Downloads im letzten Monat"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "{title} navigation menu"
+msgstr "Navigationsmenü: {title}"
+
+#: docs/app/root.tsx
+msgid "© 2026 Sebastian Software GmbH, Mainz, Germany"
+msgstr "© 2026 Sebastian Software GmbH, Mainz, Deutschland"
+
+#: docs/app/i18n/messages.ts
+msgid "← fresh from npm at every build"
+msgstr "← bei jedem Build frisch von npm"
+
+#: docs/app/i18n/messages.ts
+msgid "2.6× faster than pulldown-cmark"
+msgstr "2,6× schneller als pulldown-cmark"
+
+#: docs/app/i18n/messages.ts
+msgid "4.7× faster than Shiki on WebAssembly"
+msgstr "4,7× schneller als Shiki auf WebAssembly"
+
+#: docs/app/i18n/messages.ts
+msgid "A generated API page for defineConfig"
+msgstr "Eine generierte API-Seite für defineConfig"
+
+#: docs/app/i18n/messages.ts
+msgid "A great fit if"
+msgstr "Passt gut, wenn"
+
+#: docs/app/i18n/messages.ts
+msgid "A hosted platform. Ardo is open source and lives in your repo."
+msgstr ""
+"Eine gehostete Plattform. Ardo ist Open Source und liegt in deinem Repository."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your "
+"TypeScript."
+msgstr ""
+"Ebenfalls ein Build mit Rust, auf Basis von Rspack. Ardo nutzt Vite und liest "
+"dein TypeScript."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+#: docs/app/root.tsx
+msgid "API reference"
+msgstr "API-Referenz"
+
+#: docs/app/i18n/messages.ts
+msgid "API reference for TypeScript"
+msgstr "API-Referenz für TypeScript"
+
+#: docs/app/i18n/messages.ts
+msgid "API reference from TypeScript"
+msgstr "API-Referenz aus TypeScript"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Appearance"
+msgstr "Darstellung"
+
+#: docs/app/i18n/messages.ts
+msgid "ardo"
+msgstr "ardo"
+
+#: docs/app/i18n/messages.ts
+msgid "Ardo callouts: note, tip, important and warning"
+msgstr "Ardo-Hinweise: Notiz, Tipp, wichtig und Warnung"
+
+#: docs/app/i18n/messages.ts
+msgid "Ardo cards with icons, above the MDX that renders them"
+msgstr "Ardo-Karten mit Icons über dem zugehörigen MDX"
+
+#: docs/app/home/Page.tsx#meta
+msgid ""
+"Ardo is a static site generator for React projects: guides, API reference and "
+"search, baked at build time by Rust engines and served as plain HTML."
+msgstr ""
+"Ardo ist ein statischer Seitengenerator für React-Projekte: Anleitungen, "
+"API-Referenz und Suche, beim Build mit Rust erzeugt und als einfaches HTML "
+"ausgeliefert."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Ardo is a static site generator for React projects. Guides in Markdown and "
+"MDX, an API reference read from your TypeScript, and search, all prerendered "
+"at build time by Rust engines."
+msgstr ""
+"Ardo ist ein statischer Seitengenerator für React-Projekte. Anleitungen in "
+"Markdown und MDX, eine API-Referenz aus deinem TypeScript und eine Suche – "
+"alles beim Build mit Rust vorgerendert."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Ardo is open source by Sebastian Software, together with Ferromark, Ferriki "
+"and the rest of the family."
+msgstr ""
+"Ardo ist Open Source von Sebastian Software, zusammen mit Ferromark, Ferriki "
+"und dem Rest der Familie."
+
+#: docs/app/i18n/messages.ts
+msgid "ardo on npm"
+msgstr "ardo auf npm"
+
+#: docs/app/home/Hero.tsx#NpmLabel
+msgid ""
+"Ardo on npm: version {version}, {downloads} downloads last month, MIT license"
+msgstr ""
+"Ardo auf npm: Version {version}, {downloads} Downloads im letzten Monat, "
+"MIT-Lizenz"
+
+#: docs/app/home/Engines.tsx#Engines
+msgid ""
+"Ardo stands on remarkable tools. Two of them come straight out of our own "
+"workshop, written in <0>Rust</0>."
+msgstr ""
+"Ardo baut auf starken Werkzeugen auf. Zwei davon stammen direkt aus unserer "
+"eigenen Werkstatt, geschrieben in <0>Rust</0>."
+
+#: docs/app/home/Page.tsx#meta
+msgid "Ardo: React docs, baked into plain HTML"
+msgstr "Ardo: React-Dokumentation als einfaches HTML"
+
+#: docs/app/home/Page.tsx#meta
+msgid "Ardo: React docs, baked into plain HTML, with Ardo's owl mascot."
+msgstr ""
+"Ardo: React-Dokumentation als einfaches HTML, mit Ardos Eulenmaskottchen."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Ardo's current API documentation guide, showing a typed configuration with its"
+" required tsconfig"
+msgstr ""
+"Ardos aktuelle Anleitung zur API-Dokumentation mit typisierter Konfiguration "
+"und erforderlicher tsconfig"
+
+#: docs/app/i18n/messages.ts
+msgid "Ardo’s default"
+msgstr "Ardos Standard"
+
+#: docs/app/i18n/messages.ts
+msgid "Bake it"
+msgstr "Bauen"
+
+#: docs/app/i18n/messages.ts
+msgid "blue · teal · slate"
+msgstr "Blau · Petrol · Schiefer"
+
+#: docs/app/i18n/messages.ts
+msgid "both are part of Ferramenta, our little family of Rust tools ↑"
+msgstr "beide gehören zu Ferramenta, unserer kleinen Rust-Werkzeugfamilie ↑"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Breadcrumb"
+msgstr "Brotkrümelnavigation"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Bring local React components or an installed design-system package into MDX. "
+"Build landing pages and layouts in plain React, with Ardo's cards, tabs, "
+"steps, accordions and callouts around them."
+msgstr ""
+"Binde lokale React-Komponenten oder ein installiertes Designsystem in MDX ein."
+" Baue Startseiten und Layouts in React und ergänze Ardos Karten, Tabs, "
+"Schritte, Akkordeons und Hinweise."
+
+#: docs/app/i18n/messages.ts
+msgid "Browse Ardo’s own API reference →"
+msgstr "Ardos eigene API-Referenz ansehen →"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Built on"
+msgstr "Erstellt am"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Built with Ardo"
+msgstr "Erstellt mit Ardo"
+
+#: docs/app/i18n/messages.ts
+msgid "Changelog"
+msgstr "Änderungsprotokoll"
+
+#: docs/app/i18n/messages.ts
+msgid "Claims you can check."
+msgstr "Überprüfbare Aussagen."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Clear search"
+msgstr "Suche leeren"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Close menu"
+msgstr "Menü schließen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Close search"
+msgstr "Suche schließen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Code to copy manually"
+msgstr "Code zum manuellen Kopieren"
+
+#: docs/app/root.tsx
+msgid ""
+"Code under the MIT License. Icons by <0>Streamline</0>. Logos belong to their "
+"projects."
+msgstr ""
+"Code unter der MIT-Lizenz. Icons von <0>Streamline</0>. Logos gehören den "
+"jeweiligen Projekten."
+
+#: docs/app/examples/welcome.mdx
+msgid "Code, links, and React components keep working in every language."
+msgstr "Code, Links und React-Komponenten funktionieren in jeder Sprache."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Collapse"
+msgstr "Einklappen"
+
+#: docs/app/i18n/messages.ts
+msgid "components and layouts"
+msgstr "Komponenten und Layouts"
+
+#: docs/app/i18n/messages.ts
+msgid "Content, config and theme go through code review."
+msgstr "Inhalte, Konfiguration und Theme gehen durch ein Code-Review."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+#: docs/app/i18n/messages.ts
+msgid "Copied!"
+msgstr "Kopiert!"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Copy"
+msgstr "Kopieren"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Copy code"
+msgstr "Code kopieren"
+
+#: docs/app/i18n/messages.ts
+msgid "Copy prompt"
+msgstr "Prompt kopieren"
+
+#: docs/app/i18n/messages.ts
+msgid "Copy the setup prompt"
+msgstr "Setup-Prompt kopieren"
+
+#: docs/app/i18n/messages.ts
+msgid "Copying failed. Copy the prompt below manually."
+msgstr "Kopieren fehlgeschlagen. Kopiere den Prompt unten bitte manuell."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Copying failed. Copy the selected code below manually."
+msgstr ""
+"Kopieren fehlgeschlagen. Kopiere den ausgewählten Code unten bitte manuell."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "DANGER"
+msgstr "GEFAHR"
+
+#: docs/app/i18n/messages.ts
+msgid "dark mode included, for fellow night owls"
+msgstr "Dunkelmodus inklusive, für andere Nachteulen"
+
+#: docs/app/i18n/messages.ts
+msgid "docs should live in your repo and go through review"
+msgstr "deine Dokumentation im Repository liegen und durch Reviews gehen soll"
+
+#: docs/app/root.tsx#meta
+msgid "Documentation for React teams"
+msgstr "Dokumentation für React-Teams"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Documentation sections"
+msgstr "Dokumentationsbereiche"
+
+#: docs/app/i18n/messages.ts
+msgid "Dress it up in a few lines."
+msgstr "Mit wenigen Zeilen ganz dein Stil."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Edit this page"
+msgstr "Diese Seite bearbeiten"
+
+#: docs/app/root.tsx
+msgid "Edit this page on GitHub"
+msgstr "Diese Seite auf GitHub bearbeiten"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Every page is complete HTML. Search engines see everything, readers get the "
+"content on the first request, and any static host will do."
+msgstr ""
+"Jede Seite ist vollständiges HTML. Suchmaschinen sehen alles, Leser bekommen "
+"den Inhalt mit der ersten Anfrage und jeder statische Hoster reicht aus."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Expand"
+msgstr "Ausklappen"
+
+#: docs/app/i18n/messages.ts
+msgid "Fast all the way down."
+msgstr "Schnell bis ins Fundament."
+
+#: docs/app/i18n/messages.ts
+msgid "fit check"
+msgstr "passt das?"
+
+#: docs/app/i18n/messages.ts
+msgid "From repo to website, no server to babysit."
+msgstr "Vom Repository zur Website, ohne Serverpflege."
+
+#: docs/app/i18n/messages.ts
+msgid "generated, not typed by hand"
+msgstr "generiert statt von Hand geschrieben"
+
+#: docs/app/i18n/messages.ts
+msgid "Get started"
+msgstr "Loslegen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Go to the latest version ({version})"
+msgstr "Zur neuesten Version ({version})"
+
+#: docs/app/i18n/messages.ts
+msgid "green · orange · warm gray"
+msgstr "Grün · Orange · warmes Grau"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+#: docs/app/root.tsx
+msgid "Guide"
+msgstr "Anleitung"
+
+#: docs/app/home/Page.tsx#meta
+msgid "Guides, TypeScript API reference, and your components. In one place."
+msgstr ""
+"Anleitungen, TypeScript-API-Referenz und deine Komponenten. An einem Ort."
+
+#: docs/app/i18n/messages.ts
+msgid "highlighted at build time"
+msgstr "beim Build hervorgehoben"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Home"
+msgstr "Startseite"
+
+#: docs/app/i18n/messages.ts
+msgid "how it works"
+msgstr "so funktioniert’s"
+
+#: docs/app/root.tsx
+msgid "Imprint"
+msgstr "Impressum"
+
+#: docs/app/i18n/messages.ts
+msgid "in good company:"
+msgstr "in guter Gesellschaft:"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "INFO"
+msgstr "INFO"
+
+#: docs/app/i18n/messages.ts
+msgid "Is Ardo your kind of bird?"
+msgstr "Ist Ardo dein Vogel?"
+
+#: docs/app/i18n/messages.ts
+msgid "Know one of these? Then you almost know Ardo."
+msgstr "Kennst du eines davon? Dann kennst du Ardo schon fast."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Language"
+msgstr "Sprache"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Last updated"
+msgstr "Zuletzt aktualisiert"
+
+#: docs/app/i18n/messages.ts
+msgid "Latest release"
+msgstr "Neueste Version"
+
+#: docs/app/i18n/messages.ts
+msgid "Let your agent do the setup."
+msgstr "Lass deinen Agenten das Setup übernehmen."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Links"
+msgstr "Links"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Main navigation"
+msgstr "Hauptnavigation"
+
+#: docs/app/i18n/messages.ts
+msgid "Markdown and MDX guides"
+msgstr "Anleitungen in Markdown und MDX"
+
+#: docs/app/i18n/messages.ts
+msgid "Mature and Markdown-first, in Python. Ardo stays in the React toolchain."
+msgstr ""
+"Ausgereift und Markdown-orientiert, mit Python. Ardo bleibt bei der "
+"React-Toolchain."
+
+#: docs/app/i18n/messages.ts
+msgid "Maybe not if"
+msgstr "Eher nicht, wenn"
+
+#: docs/app/i18n/messages.ts
+msgid "More open source →"
+msgstr "Mehr Open Source →"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Navigation menu"
+msgstr "Navigationsmenü"
+
+#: docs/app/i18n/messages.ts
+msgid "need a hand?"
+msgstr "brauchst du Hilfe?"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Next"
+msgstr "Weiter"
+
+#: docs/app/i18n/messages.ts
+msgid "No account, no service to keep alive."
+msgstr "Kein Konto, kein Dienst, den du betreiben musst."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "No results found for \"{query}\""
+msgstr "Keine Ergebnisse für „{query}“"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"No starter template, no copy-paste marathon. Hand this sentence to your coding"
+" agent, in a fresh repo or one you already have. The link points it to "
+"Ardo’s official instructions. It adapts the tested example and tells you how"
+" typecheck, tests and build went. You review it like any other pull request."
+msgstr ""
+"Kein Starter-Template, kein Kopiermarathon. Gib diesen Satz deinem "
+"Coding-Agenten, in einem neuen oder bestehenden Repository. Der Link führt "
+"ihn zu Ardos offizieller Anleitung. Er passt das getestete Beispiel an und "
+"berichtet über Typprüfung, Tests und Build. Du prüfst das Ergebnis wie "
+"jeden anderen Pull Request."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "NOTE"
+msgstr "HINWEIS"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "On this page"
+msgstr "Auf dieser Seite"
+
+#: docs/app/i18n/messages.ts
+msgid "One component model."
+msgstr "Ein Komponentenmodell."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"One sentence for your agent, the official instructions, a tested example. You "
+"review the result like any other pull request."
+msgstr ""
+"Ein Satz für deinen Agenten, die offizielle Anleitung, ein getestetes "
+"Beispiel. Du prüfst das Ergebnis wie jeden anderen Pull Request."
+
+#: docs/app/i18n/messages.ts
+msgid "Open source · for React projects"
+msgstr "Open Source · für React-Projekte"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Our Markdown and MDX compiler. Pages go in, React components come out, with "
+"headings, table of contents and search data picked up on the way."
+msgstr ""
+"Unser Markdown- und MDX-Compiler. Aus Seiten werden React-Komponenten; "
+"Überschriften, Inhaltsverzeichnis und Suchdaten entstehen dabei gleich mit."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Our syntax highlighter. Every code block gets its colors during the build, "
+"light and dark, so the browser has nothing left to do."
+msgstr ""
+"Unser Syntax-Highlighter. Jeder Codeblock bekommt seine Farben beim Build, "
+"hell und dunkel. Im Browser bleibt nichts mehr zu tun."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Page"
+msgstr "Seite"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Page navigation"
+msgstr "Seitennavigation"
+
+#: docs/app/i18n/messages.ts
+msgid "Pages and examples are React. No second UI framework."
+msgstr "Seiten und Beispiele sind React. Kein zweites UI-Framework."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Pick a brand, an accent and a neutral hue, and how saturated they should be. "
+"Ardo works out light and dark mode from there. Want more? Override any token "
+"or swap a component."
+msgstr ""
+"Wähle Farben für Marke, Akzente und neutrale Flächen sowie ihre Sättigung."
+" Ardo berechnet daraus Hell- und Dunkelmodus. Du willst mehr? Überschreibe "
+"einzelne Tokens oder tausche eine Komponente aus."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Point Ardo at your TypeScript entry points to generate reference pages with "
+"signatures, parameters and comments. They show up in search, too, and update "
+"on the next build."
+msgstr ""
+"Lass Ardo deine TypeScript-Einstiegspunkte lesen: Daraus entstehen "
+"Referenzseiten mit Signaturen, Parametern und Kommentaren. Sie sind auch "
+"durchsuchbar und werden beim nächsten Build aktualisiert."
+
+#: docs/app/i18n/messages.ts
+msgid "powered by"
+msgstr "entwickelt von"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Previous"
+msgstr "Zurück"
+
+#: docs/app/root.tsx
+msgid "Privacy"
+msgstr "Datenschutz"
+
+#: docs/app/i18n/messages.ts
+msgid "Psst… a joy to write, a treat to read."
+msgstr "Psst … macht Spaß beim Schreiben und beim Lesen."
+
+#: docs/app/i18n/messages.ts
+msgid "Public feature status and published benchmarks."
+msgstr "Öffentlicher Funktionsstatus und veröffentlichte Benchmarks."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"React and MDX too, on a newer foundation: Vite and Rust engines, with plain "
+"HTML pages."
+msgstr ""
+"Auch React und MDX, auf neuerem Fundament: Vite und Rust, mit einfachen "
+"HTML-Seiten."
+
+#: docs/app/i18n/messages.ts
+msgid "React and MDX too, without Next.js. Plain static files come out."
+msgstr "Auch React und MDX, ohne Next.js. Das Ergebnis sind statische Dateien."
+
+#: docs/app/i18n/messages.ts
+msgid "React and Vite too. Ardo adds generated API reference and Rust engines."
+msgstr ""
+"Auch React und Vite. Ardo ergänzt eine generierte API-Referenz und "
+"Rust-Werkzeuge."
+
+#: docs/app/home/Hero.tsx#Hero
+msgid "React docs, baked into <0>plain HTML</0>."
+msgstr "React-Dokumentation. Frisch gebacken als <0>HTML</0>."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"React too, as a toolkit. Ardo is one complete setup with its own engines."
+msgstr ""
+"Auch React, als Werkzeugkasten. Ardo bietet ein vollständiges Setup mit "
+"eigenen Werkzeugen."
+
+#: docs/app/i18n/messages.ts
+msgid "Read the docs"
+msgstr "Dokumentation lesen"
+
+#: docs/app/i18n/messages.ts
+msgid "Read the full comparison →"
+msgstr "Den ganzen Vergleich lesen →"
+
+#: docs/app/i18n/messages.ts
+msgid "Ready to hatch your docs?"
+msgstr "Bereit, deine Dokumentation schlüpfen zu lassen?"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryIcons
+msgid "Registered content icons"
+msgstr "Registrierte Inhaltsicons"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Releases"
+msgstr "Releases"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Reload search"
+msgstr "Suche neu laden"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Rust engines compile your Markdown and color every code block, TypeScript 7 "
+"reads your types, and Vite bundles the rest. Search index, sitemap and "
+"llms.txt come out of the same oven."
+msgstr ""
+"Rust-Werkzeuge kompilieren dein Markdown und färben jeden Codeblock ein, "
+"TypeScript 7 liest deine Typen und Vite bündelt den Rest. Suchindex, Sitemap "
+"und llms.txt kommen aus demselben Ofen."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Rust tooling that tidies up the compiled pages and maps your declarations."
+msgstr ""
+"Rust-Werkzeuge, die kompilierte Seiten aufbereiten und deine Deklarationen "
+"zuordnen."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Search"
+msgstr "Suche"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Search could not load. Reload the page to try again."
+msgstr ""
+"Die Suche konnte nicht geladen werden. Lade die Seite neu, um es erneut zu "
+"versuchen."
+
+#: docs/app/root.tsx
+msgid "Search documentation..."
+msgstr "Dokumentation durchsuchen..."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Search..."
+msgstr "Suchen..."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Searching…"
+msgstr "Suche läuft …"
+
+#: docs/app/i18n/messages.ts
+msgid "Sebastian Werner · creator and maintainer"
+msgstr "Sebastian Werner · Entwickler und Maintainer"
+
+#: docs/app/i18n/messages.ts
+msgid "See every component →"
+msgstr "Alle Komponenten ansehen →"
+
+#: docs/app/i18n/messages.ts
+msgid "See the benchmark →"
+msgstr "Zum Benchmark →"
+
+#: docs/app/i18n/messages.ts
+msgid "Serve it"
+msgstr "Ausliefern"
+
+#: docs/app/i18n/messages.ts
+msgid "Set up Ardo in this repository following https://ardo-docs.dev/llms.txt."
+msgstr ""
+"Richte Ardo in diesem Repository nach https://ardo-docs.dev/llms.txt ein."
+
+#: docs/app/i18n/messages.ts
+msgid "Setup prompt"
+msgstr "Setup-Prompt"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Sponsored by"
+msgstr "Unterstützt von"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"Static and content-first too, with React as the page model, not an island."
+msgstr ""
+"Auch statisch und inhaltsorientiert, mit React als Seitenmodell statt als "
+"Insel."
+
+#: docs/app/i18n/messages.ts
+msgid "Static files, no platform."
+msgstr "Statische Dateien, keine Plattform."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Switch to dark theme"
+msgstr "Zum dunklen Theme wechseln"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Switch to light theme"
+msgstr "Zum hellen Theme wechseln"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Switch to system theme"
+msgstr "Zum System-Theme wechseln"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Table of contents"
+msgstr "Inhaltsverzeichnis"
+
+#: docs/app/i18n/messages.ts
+msgid "The dev server you already love. Save a file, watch the page update."
+msgstr ""
+"Der Dev-Server, den du schon kennst. Speichere eine Datei und die Seite "
+"aktualisiert sich."
+
+#: docs/app/i18n/messages.ts
+msgid "the easy way in"
+msgstr "der einfache Einstieg"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"The native compiler reads your types. It built Ardo’s own API docs 4.3× "
+"faster than TypeDoc."
+msgstr ""
+"Der native Compiler liest deine Typen. Er hat Ardos eigene API-Dokumentation "
+"4,3× schneller gebaut als TypeDoc."
+
+#: docs/app/i18n/messages.ts
+msgid "the owl says hi"
+msgstr "die Eule lässt grüßen"
+
+#: docs/app/i18n/messages.ts
+msgid "The same idea for Nuxt and Vue. Ardo is the React counterpart."
+msgstr "Die gleiche Idee für Nuxt und Vue. Ardo ist das React-Gegenstück."
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"The top of an Ardo guide page: section rail, sidebar, title and table of "
+"contents"
+msgstr ""
+"Der Anfang einer Ardo-Anleitungsseite mit Abschnittsleiste, Seitenleiste, "
+"Titel und Inhaltsverzeichnis"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Theme fixed to dark"
+msgstr "Dunkles Theme vorgegeben"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Theme fixed to light"
+msgstr "Helles Theme vorgegeben"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Theme fixed to system"
+msgstr "System-Theme vorgegeben"
+
+#: docs/app/i18n/messages.ts
+msgid "theming"
+msgstr "Theming"
+
+#: docs/app/i18n/Content.tsx#LocalizedContent
+msgid ""
+"This API reference is generated from the English TypeScript source comments. "
+"Names, signatures, and examples match the published package."
+msgstr ""
+"Diese API-Referenz wird aus den englischen TypeScript-Quellkommentaren "
+"erzeugt. Namen, Signaturen und Beispiele entsprechen dem veröffentlichten "
+"Paket."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "TIP"
+msgstr "TIPP"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "to close"
+msgstr "zum Schließen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "to navigate"
+msgstr "zum Navigieren"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "to select"
+msgstr "zum Auswählen"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Toggle menu"
+msgstr "Menü umschalten"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Toggle theme"
+msgstr "Theme wechseln"
+
+#: docs/app/i18n/messages.ts
+msgid "Typed content collections"
+msgstr "Typisierte Inhaltssammlungen"
+
+#: docs/app/i18n/messages.ts
+msgid ""
+"TypeScript, React and Rust consulting: integration, support and long-term "
+"maintenance from the people who build Ardo."
+msgstr ""
+"Beratung zu TypeScript, React und Rust: Integration, Support und langfristige "
+"Wartung von den Menschen, die Ardo entwickeln."
+
+#: docs/app/i18n/messages.ts
+msgid "under the hood"
+msgstr "unter der Haube"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Version"
+msgstr "Version"
+
+#: docs/app/i18n/messages.ts
+msgid "View on GitHub"
+msgstr "Auf GitHub ansehen"
+
+#: docs/app/i18n/messages.ts
+msgid "Vite and Markdown too, with React instead of Vue."
+msgstr "Auch Vite und Markdown, mit React statt Vue."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "WARNING"
+msgstr "WARNUNG"
+
+#: docs/app/examples/welcome.mdx
+msgid ""
+"Welcome to <0>Ardo</0>. This paragraph is translated from one MDX source with "
+"Palamedes."
+msgstr ""
+"Willkommen bei <0>Ardo</0>. Dieser Absatz wird mit Palamedes aus einer "
+"einzigen MDX-Quelle übersetzt."
+
+#: docs/app/i18n/messages.ts
+msgid "where Ardo fits"
+msgstr "wo Ardo passt"
+
+#: docs/app/i18n/messages.ts
+msgid "whoo made this?"
+msgstr "wer steckt dahinter?"
+
+#: docs/app/i18n/messages.ts
+msgid "Work with us →"
+msgstr "Mit uns arbeiten →"
+
+#: docs/app/i18n/messages.ts
+msgid "Write it"
+msgstr "Schreiben"
+
+#: docs/app/i18n/messages.ts
+msgid "yep, that’s the whole prompt. grab a coffee meanwhile."
+msgstr "ja, das ist der ganze Prompt. Zeit für einen Kaffee."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "You are reading the documentation for {version}."
+msgstr "Du liest die Dokumentation für {version}."
+
+#: docs/app/i18n/messages.ts
+msgid "you need hosted editing and analytics (a hosted platform does that)"
+msgstr ""
+"du gehostete Bearbeitung und Analysen brauchst (dafür gibt es gehostete "
+"Plattformen)"
+
+#: docs/app/i18n/messages.ts
+msgid "you want prerendered pages and little work in the browser"
+msgstr "du vorgerenderte Seiten und wenig Arbeit im Browser willst"
+
+#: docs/app/i18n/messages.ts
+msgid "you want prose only, no React at all (try Starlight or VitePress)"
+msgstr ""
+"du nur Text und gar kein React willst (sieh dir Starlight oder VitePress an)"
+
+#: docs/app/i18n/messages.ts
+msgid "Your components are invited."
+msgstr "Deine Komponenten sind willkommen."
+
+#: docs/app/i18n/messages.ts
+msgid "your design system fits right in"
+msgstr "dein Designsystem passt hier rein"
+
+#: docs/app/i18n/messages.ts
+msgid "your folders become this rail"
+msgstr "deine Ordner werden zu dieser Leiste"
+
+#: docs/app/i18n/messages.ts
+msgid "Your own components and layouts"
+msgstr "Deine eigenen Komponenten und Layouts"
+
+#: docs/app/i18n/messages.ts
+msgid "your product or library is built with React and TypeScript"
+msgstr "dein Produkt oder deine Bibliothek mit React und TypeScript gebaut ist"
+
+#: docs/app/i18n/messages.ts
+msgid "Your repo is the source."
+msgstr "Dein Repository ist die Quelle."
+
+#: docs/app/i18n/messages.ts
+msgid "Your types, now with a website."
+msgstr "Deine Typen haben jetzt eine Website."

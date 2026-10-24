@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test"
 
 test.use({ hasTouch: true })
 
-const gettingStarted = "/v6/guide/getting-started/"
+const gettingStarted = "/v6/en/guide/getting-started/"
 
 test("the search shortcut replaces mobile navigation and restores the search trigger", async ({
   page,

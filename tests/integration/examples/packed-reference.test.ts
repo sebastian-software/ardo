@@ -102,7 +102,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
 
   it("builds the literal manual setup and feature recipes as a packed-package consumer", () => {
     const guide = fs.readFileSync(
-      path.join(repositoryRoot, "docs/app/routes/guide/getting-started.mdx"),
+      path.join(repositoryRoot, "docs/app/routes/en/guide/getting-started.mdx"),
       "utf8"
     )
     const consumer = path.join(temporaryRoot, "manual-installation")
@@ -167,7 +167,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
     )
     for (const recipe of ["theming", "api-documentation"]) {
       const source = fs.readFileSync(
-        path.join(repositoryRoot, `docs/app/routes/guide/${recipe}.mdx`),
+        path.join(repositoryRoot, `docs/app/routes/en/guide/${recipe}.mdx`),
         "utf8"
       )
       fs.writeFileSync(

@@ -1,0 +1,79 @@
+---
+title: "Internacionalización"
+description: "Cuatro árboles de idiomas estáticos, búsqueda e interfaz localizadas y un ejemplo MDX compartido traducido con Palamedes."
+order: 12
+---
+
+import Welcome from "../../../examples/welcome.mdx?palamedes"
+
+Este sitio está disponible en inglés, alemán, francés y español. Elige el idioma en la cabecera o el menú móvil. Ardo conserva la página, los parámetros de consulta y el fragmento al cambiar de idioma.
+
+## Rutas estáticas por idioma {#static-language-routes}
+
+Configura los idiomas en `ardo.config.ts` o en el plugin Vite `ardo()`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  i18n: {
+    defaultLocale: "en",
+    locales: [
+      { id: "en", label: "English" },
+      { id: "de", label: "Deutsch" },
+      { id: "fr", label: "Français" },
+      { id: "es", label: "Español" },
+    ],
+  },
+})
+```
+
+Coloca las rutas correspondientes bajo `app/routes/en/`, `app/routes/de/`, `app/routes/fr/` y `app/routes/es/`. Mantén los mismos slugs en todos los idiomas. Ardo exige un árbol completo y avisa de las páginas ausentes durante la compilación. No sustituye contenido por otro idioma sin indicarlo.
+
+El despliegue V6 usa `/v6/en/`, `/v6/de/`, `/v6/fr/` y `/v6/es/`. Las versiones anteriores de la documentación conservan su idioma y sus URL originales.
+
+## Interfaz, búsqueda y metadatos {#ui-search-and-metadata}
+
+Usa `useArdoLocale()` de `ardo/runtime` para obtener el idioma activo, también durante el renderizado del servidor. Pasa textos localizados a `<ArdoRoot labels={...}>` para la navegación, búsqueda, avisos, controles de copia y acciones de página. Ardo formatea las fechas de actualización con el idioma de la ruta.
+
+La búsqueda solo carga el índice del idioma activo cuando el lector enfoca el campo o escribe una consulta. El HTML generado contiene el `lang` correcto, la URL canónica y enlaces a los demás idiomas. Los identificadores del código y las rutas de importación no cambian. La referencia de la API se genera a partir de comentarios en inglés y lo indica en cada interfaz traducida.
+
+## Una fuente MDX con Palamedes {#one-mdx-source-with-palamedes}
+
+Palamedes compila este ejemplo a partir de un único archivo MDX en inglés. Los párrafos y marcadores de texto enriquecido proceden de los catálogos de idioma; el componente React se conserva:
+
+<Welcome />
+
+Palamedes y Ardo tienen cada uno un compilador MDX completo. Este sitio deja que Ardo compile las rutas de documentación para que el resaltado, las anclas, el índice y la búsqueda compartan la misma fuente. Importa este pequeño ejemplo con `?palamedes` mediante un adaptador Vite específico, de modo que Palamedes gestiona ese módulo. Los componentes se importan de forma explícita, como requiere el compilador MDX de Palamedes.
+
+Las rutas de documentación se escriben como Markdown y MDX localizados. Los textos compartidos de la interfaz usan macros de Palamedes y catálogos PO en `docs/app/i18n/`. Así cada documento carga su idioma sin enviar los cuatro catálogos a todos los lectores.
+
+## Contexto de renderizado del servidor {#server-render-context}
+
+Un sitio puede exportar `withRenderContext` de `app/server.ts` para definir un contexto alrededor del renderizado completo de una página. Este módulo solo entra en el bundle del servidor. La resolución de metadatos y los componentes React suspendidos se ejecutan en el mismo contexto:
+
+```ts
+import type { ArdoServerRenderContext } from "ardo/runtime"
+import { createServerI18nScope } from "@palamedes/runtime/server"
+
+const scope = createServerI18nScope()
+
+export async function withRenderContext({ path, render }: ArdoServerRenderContext) {
+  const i18n = await loadI18n(path.split("/")[1] ?? "en")
+  return scope.run(i18n, render)
+}
+```
+
+Aquí `loadI18n` es el cargador de catálogos del sitio. Usa una instancia inmutable por idioma o una instancia nueva por petición. No actives un idioma mutable para todo el proceso: los renderizados paralelos mezclarían idiomas. En el navegador, carga el catálogo del documento y llama a `setClientI18n` antes de la hidratación.
+
+## Mantener las traducciones {#maintain-translations}
+
+Desde la raíz del repositorio:
+
+```bash
+pnpm --filter ardo-docs i18n:extract
+pnpm --filter ardo-docs i18n:check
+```
+
+La extracción actualiza los mensajes originales y conserva las traducciones existentes. La auditoría comprueba la integridad, la sintaxis ICU, los argumentos de plural y los marcadores de texto enriquecido. Actualiza todas las rutas localizadas cuando cambie su fuente; después compila el sitio y ejecuta las pruebas del navegador para cambiar de idioma.

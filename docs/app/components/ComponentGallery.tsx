@@ -1,3 +1,4 @@
+import { t } from "@palamedes/core/macro"
 import type { ReactNode } from "ardo/react"
 import { ArdoIcon, getRegisteredIconNames } from "ardo/ui"
 
@@ -21,7 +22,7 @@ export function GalleryPreview({
 
 export function GalleryIcons() {
   return (
-    <ul className={styles.iconGrid} aria-label="Registered content icons">
+    <ul className={styles.iconGrid} aria-label={t`Registered content icons`}>
       {getRegisteredIconNames().map((name) => (
         <li key={name} className={styles.iconItem}>
           <span className={styles.iconSamples} aria-hidden="true">

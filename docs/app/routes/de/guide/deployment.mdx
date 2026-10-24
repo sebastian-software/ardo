@@ -1,0 +1,202 @@
+---
+title: "Deployment"
+description: "Veröffentliche deine Ardo-Dokumentation auf GitHub Pages, Netlify, Vercel und anderen Hostern."
+order: 11
+---
+
+# Deployment
+
+Ardo erzeugt von Haus aus eine vollständig statische Website. Deine Dokumentation bleibt im Repository, wird in CI gebaut und kann überall veröffentlicht werden, wo Dateien ausgeliefert werden. `pnpm build` rendert jede Seite als statisches HTML vor. Zur Laufzeit ist kein Server erforderlich.
+
+## Build-Ausgabe {#build-output}
+
+Die Ausgabe liegt standardmäßig unter `build/client/` und lässt sich bei jedem statischen Hoster veröffentlichen. Mit [`outDir`](/de/guide/configuration#outdir) änderst du das übergeordnete Verzeichnis der Builds `client/` und `server/`. Stelle deinen Hoster auf den dortigen Ordner `client/` ein. Die Struktur entspricht den veröffentlichten URLs:
+
+```text
+build/client/
+├── index.html                  # Home page
+├── 404.html                    # Not-found page
+├── guide/
+│   └── getting-started/
+│       └── index.html          # /guide/getting-started/
+├── assets/                     # Hashed JavaScript and CSS
+├── sitemap.xml
+├── robots.txt
+└── llms.txt
+```
+
+- Jede Seite liegt als `index.html` in einem Verzeichnis. Interne Seitenlinks enden auf `/`, etwa `/guide/getting-started/`; der Hoster benötigt keine Weiterleitung.
+- `404.html` ist die Fehlerseite für unbekannte Pfade. GitHub Pages, Netlify, Cloudflare Pages und die meisten statischen Hoster erkennen sie automatisch.
+- Der Build prüft alle internen Links und Sprungmarken im HTML. Mit [`linkCheck`](/de/guide/configuration#linkcheck) lassen defekte Links den Build scheitern.
+- Es gibt keinen clientseitigen Router. Jeder Link lädt das nächste vorgerenderte Dokument, das anschließend hydriert wird. Der Hoster liefert nur Dateien aus.
+
+`pnpm preview` liefert `build/client/` wie ein statischer Hoster aus: `/guide` öffnet `guide/index.html`; unbekannte Pfade erhalten die nächste `404.html`.
+
+## GitHub Pages {#github-pages}
+
+### Schritt 1: Basispfad konfigurieren {#step-1-configure-the-base-path}
+
+Eine GitHub-Pages-Projektwebsite liegt unter dem Repository-Namen, zum Beispiel `https://username.github.io/my-docs/`. Setze diesen Pfad als `base` in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  base: "/my-docs/",
+})
+```
+
+Der Basispfad wird einmal konfiguriert. Ardo wendet ihn in Entwicklung und Build auf Dateien und Seitenlinks an und schreibt `build/client/` so, dass dessen Inhalt die Website-Wurzel auf GitHub Pages bildet. Ein Nachbearbeitungsskript ist nicht nötig.
+
+Lasse `base` weg, wenn du an der Wurzel `https://username.github.io/` oder unter einer eigenen Domain veröffentlichst. Die Website wird von der Domainwurzel ausgeliefert:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+})
+```
+
+### Schritt 2: GitHub-Actions-Workflow ergänzen {#step-2-add-a-github-actions-workflow}
+
+Erstelle `.github/workflows/deploy.yml` im Repository:
+
+Das Beispiel legt pnpm ausdrücklich fest. Verwende die Version, mit der deine Lockdatei erstellt wurde. Ist pnpm bereits über `packageManager` in `package.json` festgelegt, lasse den Action-Parameter `version` weg; die Action verwendet dann diese Festlegung.
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: "12.14.0"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/client
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+```
+
+### Schritt 3: GitHub Pages aktivieren {#step-3-enable-github-pages}
+
+Öffne **Pages** in den Repository-Einstellungen und wähle **GitHub Actions** als Quelle.
+
+Nach einem Push auf `main` baut und veröffentlicht der Workflow die Website automatisch.
+
+Trage eine eigene Domain zuerst in denselben Pages-Einstellungen ein und ändere dann DNS. Bei einem eigenen Actions-Workflow speichert GitHub die Domain in den Repository-Einstellungen. Eine `CNAME`-Datei in der Build-Ausgabe ist nicht erforderlich.
+
+<Tip>
+  Bitte deinen Agenten, diesen GitHub-Pages-Workflow anhand der [Anleitung für
+  Agenten](/de/guide/agent-instructions) anzupassen. Erhalte einen bestehenden Deployment-Workflow,
+  sofern keine Änderung erforderlich ist.
+</Tip>
+
+### GitHub-Pages-Dokumentation mit Hauptversionen {#major-versioned-github-pages-docs}
+
+Baue die aktuelle Dokumentation für stabile Hauptversions-URLs in einen Versionsordner und erhalte ältere Versionen als statische Ordner:
+
+```text
+/          -> static HTML redirect to /v3/
+/v3/       -> current major docs
+/v2/       -> previous major docs
+/versions.json
+```
+
+Konfiguriere Ardos Versionierung in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
+})
+```
+
+`versioning` setzt den Basispfad des aktuellen Builds auf dessen Versionsordner. Seiten und Dateien landen unter `build/client/v3/`; websiteweite Dateien wie `versions.json`, `robots.txt` und die Wurzelweiterleitung liegen direkt in `build/client/`. Der Versionsschalter am Ende der Seitenleiste lädt die andere Version als neue Seite.
+
+Die Sitemap listet nur die aktuelle Hauptversion auf. Ältere Versionen bleiben unter ihren Ordnern erreichbar, ohne als doppelte aktuelle Inhalte beworben zu werden. Auf GitHub Pages ist die Wurzelweiterleitung eine statische `index.html`. Unterstützt dein CDN oder Hoster HTTP-Weiterleitungen, konfiguriere diese außerhalb von Ardo.
+
+Lade nicht nur den frischen Ordner `build/client` hoch, wenn `versions.json` ältere Versionen nennt. GitHub Pages ersetzt bei jedem Deployment das gesamte Artefakt. Kombiniere den aktuellen Build und die erhaltenen älteren Versionsordner deshalb vor `actions/upload-pages-artifact` in einem Staging-Verzeichnis.
+
+## Netlify {#netlify}
+
+Netlify benötigt keine Workflow-Datei. Verbinde dein Git-Repository im Dashboard und konfiguriere:
+
+- **Build command:** `pnpm build`
+- **Publish directory:** `build/client`
+
+Netlify erkennt die Node.js-Version automatisch aus `engines` in `package.json` oder einer `.nvmrc`.
+
+An der Domainwurzel ist kein Basispfad nötig. Setze `base` in `ardo.config.ts` nur bei Auslieferung unter einem Unterpfad.
+
+## Vercel {#vercel}
+
+Verbinde dein Git-Repository im Vercel-Dashboard und konfiguriere:
+
+- **Build command:** `pnpm build`
+- **Output directory:** `build/client`
+- **Framework preset:** Other
+
+Vercel übernimmt Routing und CDN-Konfiguration automatisch.
+
+## Weitere Hoster {#other-providers}
+
+Ardo schreibt gewöhnliche statische Dateien nach `build/client/` und funktioniert deshalb mit jedem statischen Hoster, etwa Cloudflare Pages, AWS S3 mit CloudFront oder Firebase Hosting. Verwende `pnpm build` als Build-Befehl und `build/client` als Ausgabeverzeichnis.

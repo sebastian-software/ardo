@@ -1,7 +1,8 @@
 import { type ChangeEvent, use } from "react"
 import { useArdoHrefResolver, useArdoPath } from "../runtime/page-context"
 
-import { useArdoLabels } from "../runtime/hooks"
+import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { useArdoLocale } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import * as headerStyles from "./Header.css"
@@ -33,6 +34,9 @@ export function ArdoVersionSwitcher({ className }: ArdoVersionSwitcherProps) {
   const choice = useVersionChoice()
   const pathname = useArdoPath()
   const labels = useArdoLabels()
+  const activeLocale = useArdoLocale()
+  const i18n = useArdoConfig().i18n
+  const locale = i18n === false || i18n == null ? undefined : activeLocale
   if (choice == null) return null
   const { current, versions } = choice
 
@@ -40,7 +44,7 @@ export function ArdoVersionSwitcher({ className }: ArdoVersionSwitcherProps) {
     const target = versions.find((version) => version.id === event.target.value)
     if (target == null || target.id === current.id) return
     globalThis.location.assign(
-      `${getVersionHref(pathname, target.path)}${globalThis.location.search}${globalThis.location.hash}`
+      `${getVersionHref(pathname, target.path, { locale, locales: target.locales })}${globalThis.location.search}${globalThis.location.hash}`
     )
   }
 
@@ -92,7 +96,7 @@ export function ArdoLocaleSwitcher() {
         value={current}
       >
         {locales.map((locale) => (
-          <option key={locale.id} value={locale.id}>
+          <option key={locale.id} value={locale.id} lang={locale.id}>
             {locale.label ?? locale.id}
           </option>
         ))}
@@ -133,6 +137,9 @@ export function ArdoVersionControl({ className, divided = false }: ArdoVersionCo
  * `versioning.versions`.
  */
 export function ArdoVersionBanner() {
+  const activeLocale = useArdoLocale()
+  const i18n = useArdoConfig().i18n
+  const locale = i18n === false || i18n == null ? undefined : activeLocale
   const choice = useVersionChoice()
   const pathname = useArdoPath()
   const labels = useArdoLabels()
@@ -140,7 +147,13 @@ export function ArdoVersionBanner() {
   return (
     <div className={joinClassNames("ardo-version-banner", styles.versionBanner)} role="note">
       <span>{labels.siteControls.olderVersion(versionLabel(choice.current))}</span>{" "}
-      <a className={styles.versionBannerLink} href={getVersionHref(pathname, choice.latest.path)}>
+      <a
+        className={styles.versionBannerLink}
+        href={getVersionHref(pathname, choice.latest.path, {
+          locale,
+          locales: choice.latest.locales,
+        })}
+      >
         {labels.siteControls.latestVersion(versionLabel(choice.latest))}
       </a>
     </div>

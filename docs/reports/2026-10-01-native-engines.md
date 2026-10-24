@@ -24,7 +24,7 @@ HTML-transform APIs are removed. The docs configuration now builds under
 `/v5/` and retains older versions in the version selector.
 
 See [ADR 0017](../adr/0017-native-markdown-and-highlighting.md),
-[the upgrade guide](../app/routes/guide/upgrade-to-v5.mdx), and
+[the upgrade guide](../app/routes/en/guide/releases/upgrade-to-v5.mdx), and
 [local package verification instructions](../../CONTRIBUTING.md#coordinated-native-engine-development).
 
 ## Results

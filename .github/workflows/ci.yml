@@ -65,6 +65,10 @@ jobs:
           fi
           pnpm test:integration
 
+      - name: Check documentation translations
+        if: matrix.node-version == '22'
+        run: pnpm --filter ardo-docs i18n:check
+
       - name: Build docs site and check performance budgets
         if: matrix.node-version == '22'
         run: pnpm docs:budgets

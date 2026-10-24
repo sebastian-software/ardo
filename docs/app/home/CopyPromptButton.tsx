@@ -1,3 +1,4 @@
+import { text } from "../i18n/messages"
 import { Fragment, useEffect, useId, useRef, useState } from "react"
 
 import * as styles from "./home.css"
@@ -28,7 +29,7 @@ export function PromptText({ text }: { text: string }) {
 }
 
 /** Copies the setup prompt and says so for a moment. */
-export function CopyPromptButton({ label = "Copy prompt" }: { label?: string }) {
+export function CopyPromptButton({ label = text("Copy prompt") }: { label?: string }) {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle")
   const promptId = useId()
   const promptRef = useRef<HTMLTextAreaElement>(null)
@@ -45,7 +46,7 @@ export function CopyPromptButton({ label = "Copy prompt" }: { label?: string }) 
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(SETUP_PROMPT)
+      await navigator.clipboard.writeText(text(SETUP_PROMPT))
       setStatus("copied")
     } catch {
       setStatus("failed")
@@ -59,15 +60,15 @@ export function CopyPromptButton({ label = "Copy prompt" }: { label?: string }) 
         className={`${styles.button} ${styles.buttonPrimary}`}
         onClick={() => void copy()}
       >
-        <span aria-live="polite">{status === "copied" ? "Copied!" : label}</span>
+        <span aria-live="polite">{status === "copied" ? text("Copied!") : label}</span>
       </button>
       {status === "failed" && (
         <div className={styles.promptCopyFallback}>
           <p id={`${promptId}-error`} role="status" className={styles.promptCopyError}>
-            Copying failed. Copy the prompt below manually.
+            {text("Copying failed. Copy the prompt below manually.")}{" "}
           </p>
           <label htmlFor={promptId} className={styles.promptCopyError}>
-            Setup prompt
+            {text("Setup prompt")}{" "}
           </label>
           <textarea
             ref={promptRef}
@@ -75,7 +76,7 @@ export function CopyPromptButton({ label = "Copy prompt" }: { label?: string }) 
             aria-describedby={`${promptId}-error`}
             className={styles.promptCopyField}
             readOnly
-            value={SETUP_PROMPT}
+            value={text(SETUP_PROMPT)}
             onFocus={(event) => event.currentTarget.select()}
           />
         </div>

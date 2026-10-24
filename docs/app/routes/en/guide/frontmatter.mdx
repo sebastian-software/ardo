@@ -1,0 +1,258 @@
+---
+title: Frontmatter
+description: Control page metadata, navigation, layout, and build output from the file itself.
+order: 6
+---
+
+# Frontmatter
+
+Frontmatter keeps page-specific decisions close to the page. Use it for titles, descriptions, sidebar order, layout, the page outline, edit links, and build output.
+
+Ardo normalizes documented frontmatter once for route metadata, sidebars, search, redirects, sitemap,
+and LLM output. Invalid values are reported with the source file during production builds. Unknown
+fields remain compatible by default, but can be made visible or blocking in [Configuration](/en/guide/configuration#validation).
+
+## Basic Usage
+
+```yaml
+---
+title: My Page Title
+description: A description for SEO
+---
+# Page Content
+
+Your content here...
+```
+
+## Available Options
+
+### title
+
+- Type: `string`
+
+The title of the page. Used in the browser tab and as the `<h1>` if not provided in content.
+
+```yaml
+---
+title: Getting Started
+---
+```
+
+### description
+
+- Type: `string`
+
+The description of the page. Used for SEO meta tags.
+
+```yaml
+---
+description: Learn how to get started with Ardo
+---
+```
+
+Ardo also renders `description` as the visible lede under the page title. If the first body
+paragraph has the same normalized text, Ardo skips the lede to avoid showing the sentence twice.
+
+### lede
+
+- Type: `boolean`
+- Default: `true`
+
+Set `lede: false` when `description` should be metadata-only.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+lede: false
+---
+```
+
+### Social metadata
+
+Markdown routes without their own `meta` export get generated browser, canonical, Open Graph, and Twitter metadata from frontmatter and site config.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+canonical: https://example.com/guide/getting-started
+ogTitle: Start building with Ardo
+ogDescription: A focused guide to Ardo projects
+ogImage: /social/getting-started.png
+ogType: article
+twitterCard: summary_large_image
+twitterDescription: A focused guide to Ardo projects
+twitterImage: /social/getting-started-twitter.png
+twitterTitle: Start building with Ardo
+---
+```
+
+- `canonical` overrides the generated canonical URL and `og:url`.
+- `ogTitle`, `ogDescription`, `ogImage`, and `ogType` control Open Graph tags.
+- `twitterTitle`, `twitterDescription`, `twitterImage`, and `twitterCard` control Twitter Card tags.
+- Relative canonical and image values are made absolute with `siteUrl`; without `siteUrl`, relative URL tags are omitted.
+
+### layout
+
+- Type: `"bare" | "default"`
+- Default: `"default"`
+
+`bare` drops the sidebar and the page rail, as on a landing page, and the header shows search as an
+icon. `default` is the documentation layout with sidebar and outline. The home page at `/` always
+uses the bare layout.
+
+```yaml
+---
+layout: bare
+---
+```
+
+### sidebar
+
+- Type: `boolean | "leaf"`
+- Default: `true`
+
+`sidebar: false` removes the page from the generated sidebar. The page still builds and stays
+reachable by link.
+
+```yaml
+---
+sidebar: false
+---
+```
+
+Use `sidebar: leaf` on an `index.md` or `index.mdx` to show the containing directory as one link
+without auto-listing its children.
+
+### order
+
+- Type: `number`
+
+Controls the generated sidebar order for pages within the same directory. Items with `order` appear
+before unordered items; unordered items fall back to alphabetical sorting. The previous and next
+links at the end of a page follow the same order.
+
+```yaml
+---
+title: Getting Started
+order: 1
+---
+```
+
+### Directory index metadata
+
+When a route directory contains `index.md` or `index.mdx`, its frontmatter configures the generated
+directory group rendered by `ArdoGeneratedSidebar`.
+
+```yaml
+---
+title: Guide
+order: 10
+collapsed: false
+---
+```
+
+- `title` sets the group label.
+- `order` sorts the group among its sibling pages and groups. Top-level folders become sidebar
+  sections instead; order those with [`sidebar.sectionOrder`](/en/guide/configuration#sidebar-sectionorder).
+- `collapsed` sets the initial collapsed state for the group. A collapsed group still opens on the
+  pages inside it.
+
+### outline
+
+- Type: `boolean`
+- Default: `true`
+
+Set `outline: false` to hide the outline of this page. Which heading levels the outline lists is a
+site-wide setting, [`markdown.toc.level`](/en/guide/configuration#markdown-toc) in `ardo.config.ts`.
+
+```yaml
+---
+outline: false
+---
+```
+
+### editLink
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to show the "Edit this page" link.
+
+```yaml
+---
+editLink: false
+---
+```
+
+### lastUpdated
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to show the last updated time.
+
+```yaml
+---
+lastUpdated: false
+---
+```
+
+## Build Output Options
+
+### sitemap
+
+- Type: `boolean`
+- Default: `true`
+
+Exclude a Markdown route from the generated sitemap without hiding it from navigation.
+
+```yaml
+---
+title: Internal Migration Notes
+sitemap: false
+---
+```
+
+### llms
+
+- Type: `boolean`
+- Default: `true`
+
+Exclude a Markdown route from `/llms.txt` and `/llms-full.txt`. This is useful for pages that are
+valid docs for humans but noisy in a single-file model context, such as generated changelogs or
+large fixture references.
+
+```yaml
+---
+title: Fixture Catalog
+llms: false
+---
+```
+
+### redirectFrom
+
+- Type: `string | string[]`
+
+Generate static redirects from old paths to this page. Use a string for one legacy path or an array
+for several old locations.
+
+```yaml
+---
+title: Configuration
+redirectFrom:
+  - /config
+  - /guide/options
+---
+```
+
+Ardo combines page-level redirects with the [`redirects`](/en/guide/configuration#redirects) option in
+`ardo.config.ts` and emits host-friendly redirect assets during production builds.
+
+## Home Page
+
+Build the home page as a TSX route, `app/routes/home.tsx`, with `ArdoHero` and `ArdoFeatures`. A
+Markdown page can't render the hero, so frontmatter has no hero or feature fields.
+[Components](/en/guide/components#hero-and-features) shows both with their props, and
+[Getting Started](/en/guide/getting-started#6-create-your-first-pages) has a complete home route.

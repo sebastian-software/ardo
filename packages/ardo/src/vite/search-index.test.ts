@@ -16,6 +16,31 @@ afterEach(async () => {
 })
 
 describe("generateSearchIndex", () => {
+  it("keeps locale-prefixed navigation paths while grouping results by content section", async () => {
+    await writeRoute(
+      "de/guide/start.mdx",
+      "---\ntitle: Einstieg\n---\n\n## Installation\n\nArdo installieren."
+    )
+    await writeRoute(
+      "en/guide/start.mdx",
+      "---\ntitle: Getting started\n---\n\n## Installation\n\nInstall Ardo."
+    )
+    const docs = await generateSearchIndex(routesDir, {
+      basePath: "/project/v6/",
+      localeIds: ["en", "de"],
+      localeId: "en",
+    })
+    expect(docs.find((doc) => doc.localeId === "de")).toMatchObject({
+      path: "/de/guide/start#installation",
+      publicPath: "/project/v6/de/guide/start#installation",
+      section: "Guide",
+    })
+    expect(docs.find((doc) => doc.localeId === "en")).toMatchObject({
+      path: "/en/guide/start#installation",
+      section: "Guide",
+    })
+  })
+
   it("indexes authored MDX text without exports, JSX tags, or props", async () => {
     await writeRoute(
       "rendering.mdx",

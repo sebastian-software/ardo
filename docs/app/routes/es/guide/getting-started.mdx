@@ -1,0 +1,231 @@
+---
+title: "Primeros pasos"
+description: "Entrega el prompt de instalación a tu agente de programación o instala Ardo 6 a mano con unos pocos archivos."
+order: 2
+---
+
+import { SetupPrompt } from "../../../components/SetupPrompt"
+
+# Primeros pasos
+
+Dale esta frase a tu agente de programación, en un repositorio nuevo o existente. El enlace lleva a las [instrucciones versionadas para agentes](/es/guide/agent-instructions). El agente adapta el [ejemplo Basic probado](/es/guide/agent-instructions#the-basic-example) e informa del resultado de la comprobación de tipos, las pruebas y la compilación. Revisas el resultado como cualquier otra pull request.
+
+<SetupPrompt>
+  Configura Ardo en este repositorio siguiendo https://ardo-docs.dev/llms.txt.
+</SetupPrompt>
+
+Sin agente, sigue la [instalación manual](#manual-installation) de abajo.
+
+## Requisitos {#prerequisites}
+
+Necesitas:
+
+- [Node.js](https://nodejs.org/) 22.22.0 o posterior
+- Linux o Windows en x64/arm64, o macOS en Apple Silicon, con las dependencias nativas opcionales activadas
+- [pnpm](https://pnpm.io/) (recomendado), npm o yarn
+
+## Estructura del proyecto {#project-structure}
+
+Así es un proyecto Ardo. Los archivos de `app/routes/` se convierten en páginas, `app/root.tsx` contiene la interfaz del sitio y el resto es configuración:
+
+```text
+my-docs/
+├── app/
+│   ├── routes/                  # Pages: .md, .mdx, and .tsx files
+│   │   ├── guide/
+│   │   │   └── getting-started.mdx
+│   │   └── home.tsx             # Home page
+│   └── root.tsx                 # Root component (header, sidebar, footer)
+├── ardo.config.ts               # Optional site configuration
+├── vite.config.ts               # Optional extra Vite plugins or settings
+├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
+├── tsconfig.json
+└── package.json
+```
+
+## Instalación manual {#manual-installation}
+
+Estos pasos crean un proyecto de documentación nuevo. En un repositorio existente, colócalo en su propio paquete o directorio: Ardo genera un sitio estático independiente sin compartir router ni archivos de entrada con tu aplicación.
+
+### 1. Crear un proyecto {#1-create-a-new-project}
+
+```bash
+mkdir my-docs
+cd my-docs
+pnpm init
+```
+
+### 2. Instalar las dependencias {#2-install-dependencies}
+
+```bash
+pnpm add ardo@6
+pnpm add -D typescript@6
+```
+
+TypeScript 6 o posterior comprueba los tipos de un sitio Ardo. La [documentación de la API](/es/guide/api-documentation#installation) opcional necesita una nightly de TypeScript 7.1 fijada; cámbiala cuando añadas `api`.
+
+### 3. Añadir los scripts {#3-add-package-scripts}
+
+Ardo gestiona React, React DOM y Vite como dependencias propias. Su CLI arranca el servidor de desarrollo, compila el sitio estático y permite previsualizar la salida del cliente:
+
+```json
+{
+  "scripts": {
+    "dev": "ardo dev",
+    "build": "ardo build",
+    "preview": "ardo preview"
+  }
+}
+```
+
+Con pnpm, añade una lista de scripts de compilación permitidos para que esbuild pueda preparar la dependencia nativa de Vite:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "."
+
+allowBuilds:
+  esbuild: true
+```
+
+### 4. Añadir configuración opcional de Ardo {#4-add-optional-ardo-configuration}
+
+Ardo funciona sin archivo de configuración. Añade `ardo.config.ts` para metadatos, tema, despliegue o contenido. La navegación, barra lateral y pie de página se configuran mediante props JSX en `root.tsx`:
+
+**`ardo.config.ts`**:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "My awesome documentation site",
+})
+```
+
+El sitio se sirve desde la raíz del dominio. Para una subruta, como un sitio de proyecto de GitHub Pages, define `base`. La guía de [despliegue](/es/guide/deployment) cubre los proveedores.
+
+Añade `vite.config.ts` solo si necesitas plugins adicionales o ajustes específicos de Vite. La CLI de Ardo añade automáticamente la integración de compilación, así que tu configuración no necesita llamar a `ardo()`.
+
+### 5. Crear los archivos de la aplicación {#5-create-app-files}
+
+Además del contenido, un proyecto Ardo solo necesita `app/root.tsx`. Su exportación predeterminada es el componente raíz. `<ArdoRoot />` basta para un sitio completo: cabecera con búsqueda y selector de tema, una sección lateral por carpeta de `app/routes/` y pie de página. Ardo genera la estructura HTML y la tabla de rutas y proporciona las entradas del cliente y servidor, la configuración y los estilos.
+
+**`app/root.tsx`**:
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Pasa `ArdoHeader`, `ArdoSidebar` o `ArdoFooter` como hijos para modificar la interfaz, por ejemplo para añadir un enlace de navegación:
+
+```tsx
+import { ArdoHeader, ArdoNav, ArdoNavLink, ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return (
+    <ArdoRoot>
+      <ArdoHeader>
+        <ArdoNav>
+          <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        </ArdoNav>
+      </ArdoHeader>
+    </ArdoRoot>
+  )
+}
+```
+
+[Diseño y navegación](/es/guide/layout-and-navigation) describe las secciones de la barra lateral, el pie de página y las exportaciones opcionales `Layout` y `ErrorBoundary` de `root.tsx`.
+
+**`tsconfig.json`**:
+
+```json
+{
+  "extends": "ardo/tsconfig",
+  "include": ["app/**/*", "*.ts"]
+}
+```
+
+El preset configura `jsx`, `jsxImportSource: "ardo"` y las declaraciones de Ardo, de modo que los imports de React, MDX y `virtual:` se comprueban sin más ajustes.
+
+Importa componentes de `ardo/ui`, API de ejecución como `ArdoLink` y `useArdoPath` de `ardo/runtime` y hooks de React de `ardo/react`. Ardo incluye React, así que tu paquete de documentación no necesita una dependencia React propia.
+
+### 6. Crear las primeras páginas {#6-create-your-first-pages}
+
+Crea una página de inicio para que la URL raíz y el logo de la cabecera tengan un destino:
+
+**`app/routes/home.tsx`**:
+
+```tsx
+import { ArdoHero } from "ardo/ui"
+
+export default function HomePage() {
+  return (
+    <ArdoHero
+      name="My Documentation"
+      tagline="Guides and examples for your project."
+      actions={[{ text: "Get started", link: "/guide/getting-started", theme: "brand" }]}
+    />
+  )
+}
+```
+
+Añade la guía enlazada desde la portada, la cabecera y la barra lateral:
+
+**`app/routes/guide/getting-started.mdx`**:
+
+```markdown
+---
+title: Getting Started
+---
+
+# Getting Started
+
+Welcome to your documentation site!
+```
+
+Ejecuta `pnpm dev` y abre `http://localhost:5173`. Deberías ver la portada; elige **Get started** para abrir la guía.
+
+<Tip>
+  El [ejemplo Basic](/es/guide/agent-instructions#the-basic-example) contiene esta instalación, una
+  guía Markdown y un pequeño componente React, probados en cada cambio.
+</Tip>
+
+## Desarrollo {#development}
+
+Arranca el servidor de desarrollo:
+
+```bash
+pnpm dev
+```
+
+El sitio estará disponible en `http://localhost:5173`. Vite gestiona los cambios de las rutas MDX y TSX.
+
+## Compilación de producción {#production-build}
+
+Cuando quieras publicar:
+
+```bash
+pnpm build
+```
+
+La salida está en `build/client/`: un `index.html` prerenderizado por página, una `404.html` y los recursos con hash de contenido, listos para cualquier alojamiento estático. La compilación debe informar de dos páginas prerenderizadas y ningún enlace interno roto. Comprueba cada enlace y ancla del HTML generado. Previsualízalo localmente antes de desplegar:
+
+```bash
+pnpm preview
+```
+
+## Siguientes pasos {#next-steps}
+
+Tu sitio ya funciona. Ahora personalízalo:
+
+- Añade páginas, secciones laterales, un logo y enlaces de cabecera con [Diseño y navegación](/es/guide/layout-and-navigation#common-tasks)
+- Escribe contenido más rico con [Markdown y MDX](/es/guide/markdown) y los [componentes](/es/guide/components) incluidos
+- Cambia colores y estilos con la [personalización visual](/es/guide/theming), incluido [Tailwind CSS](/es/guide/theming#tailwind-css) opcional
+- [Despliega tu sitio](/es/guide/deployment) en GitHub Pages, Netlify, Vercel o cualquier alojamiento estático
+- Genera páginas de referencia con la [documentación de la API](/es/guide/api-documentation)

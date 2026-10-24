@@ -1,0 +1,238 @@
+---
+title: "Frontmatter"
+description: "Steuere Metadaten, Navigation, Layout und Build-Ausgabe direkt in der jeweiligen Datei."
+order: 6
+---
+
+# Frontmatter
+
+Frontmatter hält seitenspezifische Entscheidungen direkt bei der Seite. Nutze es für Titel, Beschreibung, Seitenleistenreihenfolge, Layout, Inhaltsverzeichnis, Bearbeitungslinks und Build-Ausgabe.
+
+Ardo normalisiert dokumentierte Frontmatter-Felder einmal für Routenmetadaten, Seitenleisten, Suche, Weiterleitungen, Sitemap und LLM-Ausgabe. Ungültige Werte werden beim Produktionsbuild mit der Quelldatei gemeldet. Unbekannte Felder bleiben standardmäßig kompatibel, können aber über die [Konfiguration](/de/guide/configuration#validation) sichtbar oder blockierend werden.
+
+## Grundlegende Verwendung {#basic-usage}
+
+```yaml
+---
+title: My Page Title
+description: A description for SEO
+---
+# Page Content
+
+Your content here...
+```
+
+## Verfügbare Optionen {#available-options}
+
+### title {#title}
+
+- Typ: `string`
+
+Der Seitentitel. Er erscheint im Browser-Tab und als `<h1>`, falls der Inhalt keine entsprechende Überschrift enthält.
+
+```yaml
+---
+title: Getting Started
+---
+```
+
+### description {#description}
+
+- Typ: `string`
+
+Die Seitenbeschreibung für SEO-Meta-Tags.
+
+```yaml
+---
+description: Learn how to get started with Ardo
+---
+```
+
+Ardo zeigt `description` auch als Einleitung unter dem Seitentitel an. Enthält der erste Absatz denselben normalisierten Text, entfällt die Einleitung, damit der Satz nicht doppelt erscheint.
+
+### lede {#lede}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Setze `lede: false`, wenn `description` nur in den Metadaten stehen soll.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+lede: false
+---
+```
+
+### Metadaten für soziale Netzwerke {#social-metadata}
+
+Markdown-Routen ohne eigenen `meta`-Export erhalten aus Frontmatter und Website-Konfiguration generierte Browser-, Canonical-, Open-Graph- und Twitter-Metadaten.
+
+```yaml
+---
+title: Getting Started
+description: Learn how to get started with Ardo
+canonical: https://example.com/guide/getting-started
+ogTitle: Start building with Ardo
+ogDescription: A focused guide to Ardo projects
+ogImage: /social/getting-started.png
+ogType: article
+twitterCard: summary_large_image
+twitterDescription: A focused guide to Ardo projects
+twitterImage: /social/getting-started-twitter.png
+twitterTitle: Start building with Ardo
+---
+```
+
+- `canonical` überschreibt die generierte kanonische URL und `og:url`.
+- `ogTitle`, `ogDescription`, `ogImage` und `ogType` steuern Open Graph.
+- `twitterTitle`, `twitterDescription`, `twitterImage` und `twitterCard` steuern Twitter Cards.
+- Relative Canonical- und Bildwerte werden mit `siteUrl` absolut. Ohne `siteUrl` entfallen relative URL-Tags.
+
+### layout {#layout}
+
+- Typ: `"bare" | "default"`
+- Standard: `"default"`
+
+`bare` entfernt Seitenleiste und rechte Seitenspalte wie auf einer Landingpage; die Kopfzeile zeigt die Suche als Icon. `default` ist das Dokumentationslayout mit Seitenleiste und Inhaltsverzeichnis. Die Startseite unter `/` nutzt immer das Bare-Layout.
+
+```yaml
+---
+layout: bare
+---
+```
+
+### sidebar {#sidebar}
+
+- Typ: `boolean | "leaf"`
+- Standard: `true`
+
+`sidebar: false` entfernt die Seite aus der generierten Seitenleiste. Sie wird weiterhin gebaut und bleibt per Link erreichbar.
+
+```yaml
+---
+sidebar: false
+---
+```
+
+Nutze `sidebar: leaf` in `index.md` oder `index.mdx`, um das Verzeichnis als einzelnen Link ohne automatisch aufgelistete Unterseiten anzuzeigen.
+
+### order {#order}
+
+- Typ: `number`
+
+Steuert die Reihenfolge innerhalb desselben Verzeichnisses. Einträge mit `order` stehen vor unsortierten Einträgen; diese werden alphabetisch sortiert. Die Links zur vorherigen und nächsten Seite folgen derselben Reihenfolge.
+
+```yaml
+---
+title: Getting Started
+order: 1
+---
+```
+
+### Metadaten eines Verzeichnisindex {#directory-index-metadata}
+
+Enthält ein Routenverzeichnis `index.md` oder `index.mdx`, konfiguriert dessen Frontmatter die von `ArdoGeneratedSidebar` erzeugte Verzeichnisgruppe.
+
+```yaml
+---
+title: Guide
+order: 10
+collapsed: false
+---
+```
+
+- `title` setzt die Gruppenbezeichnung.
+- `order` sortiert die Gruppe unter benachbarten Seiten und Gruppen. Ordner auf oberster Ebene werden stattdessen zu Abschnitten; ordne sie mit [`sidebar.sectionOrder`](/de/guide/configuration#sidebar-sectionorder).
+- `collapsed` legt den anfänglichen Einklappzustand fest. Auf enthaltenen Seiten öffnet sich auch eine eingeklappte Gruppe.
+
+### outline {#outline}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Setze `outline: false`, um das Inhaltsverzeichnis der Seite auszublenden. Die aufgeführten Überschriftenebenen gelten websiteweit und werden mit [`markdown.toc.level`](/de/guide/configuration#markdown-toc) in `ardo.config.ts` festgelegt.
+
+```yaml
+---
+outline: false
+---
+```
+
+### editLink {#editlink}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Legt fest, ob der Link zum Bearbeiten der Seite erscheint.
+
+```yaml
+---
+editLink: false
+---
+```
+
+### lastUpdated {#lastupdated}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Legt fest, ob der Zeitpunkt der letzten Aktualisierung erscheint.
+
+```yaml
+---
+lastUpdated: false
+---
+```
+
+## Optionen für die Build-Ausgabe {#build-output-options}
+
+### sitemap {#sitemap}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Entfernt eine Markdown-Route aus der generierten Sitemap, ohne sie aus der Navigation auszublenden.
+
+```yaml
+---
+title: Internal Migration Notes
+sitemap: false
+---
+```
+
+### llms {#llms}
+
+- Typ: `boolean`
+- Standard: `true`
+
+Entfernt eine Markdown-Route aus `/llms.txt` und `/llms-full.txt`. Das eignet sich für Seiten, die Menschen helfen, aber einen einzelnen Modellkontext überladen, etwa generierte Änderungsprotokolle oder umfangreiche Testreferenzen.
+
+```yaml
+---
+title: Fixture Catalog
+llms: false
+---
+```
+
+### redirectFrom {#redirectfrom}
+
+- Typ: `string | string[]`
+
+Erzeugt statische Weiterleitungen von alten Pfaden zu dieser Seite. Nutze eine Zeichenfolge für einen alten Pfad oder ein Array für mehrere frühere Adressen.
+
+```yaml
+---
+title: Configuration
+redirectFrom:
+  - /config
+  - /guide/options
+---
+```
+
+Ardo kombiniert Seitenweiterleitungen mit der Option [`redirects`](/de/guide/configuration#redirects) in `ardo.config.ts` und erzeugt beim Produktionsbuild passende Dateien für die Hoster.
+
+## Startseite {#home-page}
+
+Baue die Startseite als TSX-Route `app/routes/home.tsx` mit `ArdoHero` und `ArdoFeatures`. Eine Markdown-Seite kann den Hero nicht rendern; Frontmatter hat deshalb keine Hero- oder Feature-Felder. [Komponenten](/de/guide/components#hero-and-features) zeigt beide mit ihren Props; [Erste Schritte](/de/guide/getting-started#6-create-your-first-pages) enthält eine vollständige Startseitenroute.

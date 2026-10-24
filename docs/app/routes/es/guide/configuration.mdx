@@ -1,0 +1,698 @@
+---
+title: "Configuración"
+description: "Configura la CLI, las rutas generadas, el procesamiento Markdown, la referencia API y la interfaz React de Ardo."
+order: 12
+---
+
+# Configuración
+
+La CLI lee la configuración opcional de `ardo.config.ts`. La mayoría de sitios no necesita una configuración de Vite: `ardo dev`, `ardo build` y `ardo preview` proporcionan la integración. Configura la interfaz en React mediante `ArdoRoot`, las props de cabecera, barra lateral y pie, los componentes y los hooks de ejecución.
+
+Esta página describe las opciones del sitio y del build, y los componentes y hooks de React. Los proyectos Vite existentes pueden conservar `ardo()` durante la migración. Consulta [Versiones](/es/guide/releases) para ver también las funciones previstas.
+
+## Configuración básica {#basic-setup}
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Documentation",
+  description: "My awesome docs",
+})
+```
+
+`defineArdoConfig()` acepta las mismas opciones que el plugin de Vite. Añade `vite.config.ts` solo para otros plugins o ajustes de Vite; la CLI integra automáticamente los plugins de Ardo.
+
+Por ejemplo, configura el servidor de desarrollo sin añadir una llamada a `ardo()`:
+
+```ts
+import { defineConfig } from "ardo/vite"
+
+export default defineConfig({
+  server: { port: 4000 },
+})
+```
+
+Ardo reexporta `defineConfig`, por lo que no necesitas una dependencia directa de Vite.
+
+Ambos archivos pueden exportar un objeto, una promesa o una función que recibe el entorno de configuración de Vite. Los cambios en archivos existentes reinician el servidor automáticamente. Tras añadir o eliminar un archivo, reinicia `ardo dev`.
+
+Durante la migración, mueve las opciones de `ardo({...})` a `ardo.config.ts` antes de quitar el plugin. Ardo informa de un error si ambas formas siguen activas.
+
+---
+
+## Configuración del sitio {#site-configuration}
+
+Estas opciones definen la identidad y el comportamiento básico del sitio.
+
+### title {#title}
+
+- **Tipo:** `string`
+- **Predeterminado:** `"Ardo"`
+
+Título del sitio usado en el `<title>` predeterminado y la cabecera. Defínelo en `ardo.config.ts`.
+
+```ts
+defineArdoConfig({
+  title: "My Documentation",
+})
+```
+
+### description {#description}
+
+- **Tipo:** `string`
+- **Predeterminado:** `""`
+
+Descripción del sitio para los metadatos predeterminados.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  description: "A comprehensive guide to my library",
+})
+```
+
+### titleSeparator {#titleseparator}
+
+- **Tipo:** `string`
+- **Predeterminado:** `" | "`
+
+Separador entre el título de la página y el del sitio en `<title>`. Por ejemplo, «Getting Started» produce `Getting Started | My Docs`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  titleSeparator: " - ",
+})
+```
+
+### base {#base}
+
+- **Tipo:** `string`
+- **Predeterminado:** `"/"`
+
+Ruta base del sitio. Defínela si publicas la documentación bajo una subruta.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  base: "/docs/",
+})
+```
+
+<Tip>
+  Un sitio de proyecto de GitHub Pages se sirve bajo el nombre del repositorio: configura `base:
+  "/repo-name/"`. Consulta [Despliegue](/es/guide/deployment#github-pages) para cada alojamiento.
+</Tip>
+
+### siteUrl {#siteurl}
+
+- **Tipo:** `string`
+- **Predeterminado:** `""`
+
+URL pública absoluta del sitio. Ardo la usa para generar URL canónicas, `og:url` y URL absolutas de imágenes sociales en las rutas Markdown.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+})
+```
+
+Configura `base` por separado para las subrutas. Ardo combina `siteUrl`, `base` y la ruta para generar las URL canónicas.
+
+### metadata {#metadata}
+
+- **Tipo:** `{ image?: string; ogType?: string; twitterCard?: "summary_large_image" | "summary"; twitterSite?: string }`
+- **Predeterminado:** `{}`
+
+Valores predeterminados de los metadatos Markdown. El frontmatter puede sobrescribirlos por página.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  metadata: {
+    image: "/social.png",
+    ogType: "website",
+    twitterCard: "summary_large_image",
+    twitterSite: "@example",
+  },
+})
+```
+
+### brand {#brand}
+
+- **Tipo:** `{ color?: number | Preset; accent?: number | Preset; neutral?: number | Preset; chroma?: number | { color?: number; accent?: number; neutral?: number }; logo?: string | { light: string; dark: string } }`
+- **Predeterminado:** `{}`
+
+Colores y logotipo de marca para el tema y la cabecera predeterminados. `color`, `accent` y `neutral` aceptan tonos OKLCH numéricos o `berry`, `red`, `orange`, `amber`, `green`, `teal`, `blue`, `indigo`, `purple`, `pink`, `slate` y `gray`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  brand: {
+    color: "blue",
+    accent: "teal",
+    neutral: "slate",
+    logo: "./app/assets/logo.svg",
+  },
+})
+```
+
+`chroma` ajusta la saturación: `1` mantiene el valor predeterminado, `0.4` suaviza la paleta y `0` produce grises. Un número se aplica a `color` y `accent`; un objeto ajusta cada tono. [Temas](/es/guide/theming#brand-shortcut) muestra el resultado.
+
+Si falta `accent`, Ardo lo deriva de `color`. Si falta `neutral`, las superficies neutras siguen `color`. Los logotipos SVG locales se incluyen en la cabecera y sirven de fuente para los favicons. Define `logo` en `ArdoHeader` o `icons.source` si deben usar archivos distintos.
+
+### seo.llms {#seo-llms}
+
+- **Tipo:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
+- **Predeterminado:** `true`
+
+Genera archivos de texto para LLM junto a las demás salidas del build:
+
+- `/llms.txt` es un índice Markdown conciso de las rutas Markdown y MDX. Sigue la barra lateral: secciones en el orden de las pestañas y páginas según `order`, para que los agentes lean la guía antes de la referencia. Cada referencia API u OpenAPI generada aparece como un enlace a su índice.
+- `/llms-full.txt` reúne todas las páginas en el mismo orden. Cada página empieza con un título `##` y sus encabezados bajan un nivel.
+
+Con el versionado, ambos archivos también se generan bajo la versión actual, como `/v6/llms.txt` y `/v6/llms-full.txt`. El índice versionado enlaza su archivo completo. Consérvalos con los antiguos snapshots HTML; los archivos raíz siguen siendo alias de la versión actual.
+
+Ardo usa los títulos y descripciones del frontmatter, omite las rutas TSX y elimina imports, exports y etiquetas JSX del texto completo. `llms: false` en el frontmatter excluye una página Markdown de ambos archivos.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    llms: {
+      title: "My Docs",
+      description: "Developer documentation for my package.",
+      includeFull: true,
+    },
+  },
+})
+```
+
+Define `seo.llms: false` para gestionar estos archivos desde `public/`.
+
+### seo.sitemap {#seo-sitemap}
+
+- **Tipo:** `boolean | { changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never"; priority?: number; exclude?: string[] }`
+- **Predeterminado:** `true`
+
+Genera `/sitemap.xml` desde las rutas Markdown, MDX y TSX. Ardo combina `siteUrl`, `base` y la ruta para producir URL absolutas también bajo subrutas.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  base: "/docs/",
+  seo: {
+    sitemap: {
+      changefreq: "weekly",
+      priority: 0.7,
+      exclude: ["/kit"],
+    },
+  },
+})
+```
+
+`seo.sitemap: false` desactiva la generación. `sitemap: false` en el frontmatter excluye una ruta Markdown. `seo.sitemap.exclude` acepta prefijos, también para TSX: `/kit` excluye `/kit` y `/kit/buttons`, pero no `/kitchen`. La barra final es opcional. Los prefijos se aplican antes de los del despliegue, versión e idioma. Esto solo controla el sitemap; configura por separado los metadatos robots para `noindex`.
+
+### seo.robots {#seo-robots}
+
+- **Tipo:** `boolean | { allow?: string[]; disallow?: string[] }`
+- **Predeterminado:** `true`
+
+Genera `/robots.txt`. Ardo permite todos los rastreadores por defecto y enlaza el sitemap si se configura `siteUrl`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    robots: {
+      allow: ["/"],
+      disallow: ["/drafts/"],
+    },
+  },
+})
+```
+
+Define `seo.robots: false` para servir tu propio `robots.txt` desde `public/`.
+
+### linkCheck {#linkcheck}
+
+- **Tipo:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
+- **Predeterminado:** `{ enabled: true, checkAnchors: true, level: "warn" }`
+
+Comprueba los enlaces internos del build con [ferrolink](https://github.com/sebastian-software/ferrolink). Tras escribir las páginas, Ardo comprueba enlaces, imágenes, scripts, hojas de estilo, `srcset` y redirecciones meta de todo el HTML, procedente de Markdown, componentes o páginas generadas. También revisa destinos en `_redirects` y `vercel.json` y rutas en `versions.json`. Por defecto, cada `#fragment` debe coincidir con un identificador. Los orígenes de redirección son válidos porque Ardo genera sus páginas.
+
+Los enlaces externos se excluyen porque dependen de servidores ajenos. Las otras versiones configuradas se consideran presentes y se despliegan por separado. Se informa de los enlaces fuera de `base`, como `/guide/` en un sitio bajo `/docs/`. Los patrones `exclude` designan destinos con o sin ruta base; un `*` coincide con cualquier secuencia. Cada aviso indica archivo y línea.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  linkCheck: {
+    level: "error",
+    exclude: ["/generated/*"],
+  },
+})
+```
+
+Usa `checkAnchors: false` si otra herramienta reescribe los identificadores tras leer el manifiesto. Usa `enabled: false` solo si otro comprobador controla el build.
+
+### validation {#validation}
+
+- **Tipo:** `{ frontmatter?: { invalid?: "warn" | "error" | "ignore"; unknown?: "warn" | "error" | "ignore" } }`
+- **Predeterminado:** aviso para campos inválidos; campos desconocidos ignorados por compatibilidad.
+
+Ardo valida los campos documentados del frontmatter al recorrer las rutas. Los diagnósticos citan el archivo; los valores inválidos no llegan a la navegación, búsqueda, sitemap, redirecciones o salidas LLM. Activa el modo estricto para que los errores hagan fallar la CI:
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  validation: {
+    frontmatter: {
+      invalid: "error",
+      unknown: "error",
+    },
+  },
+})
+```
+
+Usa `unknown: "warn"` al adoptar el modo estricto. Mantén el valor predeterminado solo si otra herramienta gestiona campos personalizados.
+
+### redirects {#redirects}
+
+- **Tipo:** `Array<{ from: string; to: string }>`
+- **Predeterminado:** `[]`
+
+Genera archivos de redirección estática para las rutas antiguas configuradas:
+
+- `_redirects` para alojamientos compatibles con Netlify
+- Entradas en `vercel.json`
+- Páginas HTML para alojamientos de archivos estáticos
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  redirects: [
+    { from: "/old-guide", to: "/guide/getting-started" },
+    { from: "/v1/config", to: "/guide/configuration" },
+  ],
+})
+```
+
+Usa `redirectFrom` en el frontmatter si la redirección pertenece a una página concreta.
+
+### versioning {#versioning}
+
+- **Tipo:** `false | { current: string; versions: Array<{ id: string; label?: string; path: string; locales?: string[] }>; rootRedirect?: boolean }`
+- **Predeterminado:** `false`
+
+Activa la documentación por versiones mayores. Ardo construye bajo la ruta actual, expone las versiones al selector, escribe `/versions.json` y genera por defecto una redirección `/index.html` a la versión actual.
+
+Cada versión puede definir `locales`: omítelo para conservar el idioma, usa `[]` para un archivo sin prefijo o enumera los idiomas admitidos. Si el idioma actual no está disponible, se elige el primero. El selector aparece al final de la barra lateral, en el pie de páginas libres y en el menú móvil. Ordena las versiones de más reciente a más antigua; las antiguas muestran un aviso hacia la misma página de la última versión.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
+})
+```
+
+Ardo añade la ruta de versión a `base`: `base: "/my-project/"` y `path: "/v3/"` producen `/my-project/v3/`. El sitemap solo incluye el build actual. Las versiones antiguas pueden permanecer en carpetas estáticas sin anunciarse como contenido actual duplicado.
+
+`rootRedirect: false` permite una página raíz o una redirección del alojamiento. En GitHub Pages y otros alojamientos estáticos, Ardo usa HTML con meta refresh y JavaScript. Configura las redirecciones HTTP del CDN o del alojamiento fuera de Ardo.
+
+### i18n {#i18n}
+
+- **Tipo:** `false | { defaultLocale: string; locales: Array<{ id: string; label?: string }>; redirectUnlocalized?: boolean }`
+- **Predeterminado:** `false`
+
+Ardo construye cada idioma como un árbol estático y muestra un selector si hay varios configurados. Coloca las traducciones en `app/routes/<locale>/`, por ejemplo `app/routes/es/guide/getting-started.mdx` y `app/routes/de/guide/getting-started.mdx`.
+
+Cada ruta visible debe existir en todos los idiomas configurados. Una traducción ausente o una página fuera de las carpetas de idioma hace fallar el build. No hay sustitución silenciosa en ejecución. La búsqueda solo carga el idioma activo. Con `siteUrl`, Ardo genera enlaces canónicos y alternativos. Traduce la interfaz mediante `ArdoRoot` y consulta el idioma con `useArdoLocale()`. [Internacionalización](/es/guide/internationalization) muestra el ejemplo completo con Palamedes.
+
+Ardo siempre incluye el idioma en las URL canónicas públicas. Con versionado, el segmento de versión va primero:
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  versioning: {
+    current: "v3",
+    versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+  },
+  i18n: {
+    defaultLocale: "en",
+    locales: [
+      { id: "en", label: "English" },
+      { id: "de", label: "Deutsch" },
+    ],
+  },
+})
+```
+
+Esto produce URL como `/v3/es/guide/getting-started`. La raíz redirige a la versión actual y el idioma predeterminado; la raíz de versión a ese idioma. Su prefijo siempre es visible. El shell es `app/root.tsx`, no un documento localizado. `redirectUnlocalized: true` redirige las rutas antiguas sin prefijo al idioma predeterminado tanto en desarrollo como en el build estático.
+
+### outDir {#outdir}
+
+- **Tipo:** `string`
+- **Predeterminado:** `"build"`
+
+Directorio de salida relativo al proyecto o absoluto. El sitio estático se escribe en `<outDir>/client/` y el bundle servidor del build en `<outDir>/server/`. `ardo preview` usa el mismo directorio cliente.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  outDir: "release/docs",
+})
+```
+
+Así, el sitio queda en `release/docs/client/`. Despliega ese directorio en lugar de `build/client/`. El bundle servidor solo se necesita durante el build.
+
+Ardo vacía ambos directorios por defecto. `ardo build --no-emptyOutDir` conserva los archivos. `build.emptyOutDir` en `vite.config.ts` aplica la misma regla; los ajustes de `environments.client` o `environments.ssr` tienen prioridad.
+
+### lang {#lang}
+
+- **Tipo:** `string`
+- **Predeterminado:** `"en"`
+
+Idioma del sitio para el atributo `lang` de `<html>`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  lang: "de",
+})
+```
+
+### sidebar.sectionOrder {#sidebar-sectionorder}
+
+- **Tipo:** `string[]`
+- **Predeterminado:** `[]`
+
+Orden de las secciones principales de `ArdoGeneratedSidebar`. Usa nombres de carpetas sin barra inicial. Las secciones enumeradas aparecen primero; las restantes siguen el orden generado habitual.
+
+```ts
+defineArdoConfig({
+  title: "Product Docs",
+  sidebar: {
+    sectionOrder: ["guide", "reference", "api", "quality", "architecture", "archive"],
+  },
+})
+```
+
+Las subpáginas mantienen el orden de `order` en el frontmatter y el orden alfabético como alternativa.
+
+### head {#head}
+
+- **Tipo:** `HeadConfig[]`
+- **Estado:** Ignorado
+
+Ardo 6 ya no renderiza estas etiquetas. Exporta `meta` desde `root.tsx` o una ruta con el tipo `ArdoMetaFunction` de `ardo/runtime`.
+
+### vite {#vite}
+
+- **Tipo:** `Record<string, unknown>`
+
+Reservado para datos de integración relacionados con Vite. Coloca los ajustes en un `vite.config.ts` opcional que la CLI combina con su integración.
+
+### project {#project}
+
+- **Tipo:** `{ name?: string; homepage?: string; repository?: string; version?: string; author?: string; license?: string }`
+
+Metadatos del proyecto expuestos por `virtual:ardo/config`, detectados desde `package.json` cuando es posible.
+
+---
+
+## Opciones de integración {#integration-options}
+
+Estas opciones controlan las rutas e integraciones del build mediante `defineArdoConfig()` en `ardo.config.ts`. Los proyectos Vite pueden seguir pasándolas a `ardo()` durante la migración.
+
+### routes {#routes}
+
+- **Tipo:** `ArdoRoutesPluginOptions | false`
+- **Predeterminado:** automático
+
+Configuración de la generación automática de rutas. `false` la desactiva por completo.
+
+### icons {#icons}
+
+- **Tipo:** `false | { source?: string }`
+- **Predeterminado:** iconos automáticos de Ardo
+
+Ardo genera favicons durante el build y los sirve en desarrollo: `/favicon.ico`, `/icon.svg` y `/apple-touch-icon.png`. Este conjunto mínimo moderno no añade manifiesto web ni antiguos archivos `apple-touch-icon-precomposed.png`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  icons: {
+    source: "./app/assets/logo.svg",
+  },
+})
+```
+
+Define `icons: false` para gestionar los iconos raíz desde `public/`.
+
+### content {#content}
+
+- **Tipo:** `Array<{ from: string; to: string; frontmatter?: (file) => Record<string, string | number | boolean | string[] | undefined> }>`
+- **Predeterminado:** `[]`
+
+Convierte Markdown y MDX externos al directorio de rutas en rutas generadas. Así publicas ADR, `CHANGELOG.md` o README de paquetes sin mover su fuente canónica.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  content: [
+    {
+      from: "./adr",
+      to: "decisions",
+      frontmatter: (file) => ({
+        description: `Copied from ${file.relativePath}`,
+      }),
+    },
+    {
+      from: "./CHANGELOG.md",
+      to: "changelog",
+    },
+  ],
+})
+```
+
+Ardo escribe bajo `routesDir/<to>/` y añade `.ardo-generated`. No reemplaza un directorio no vacío sin ese marcador. Sin frontmatter, deriva `title` del primer título `#` o del archivo y `order` de un prefijo numérico como `0001-`.
+
+Para un archivo único, Ardo escribe `routesDir/<to>/index.md` o `index.mdx`. `to: "changelog"` se convierte en la ruta `/changelog`.
+
+Las fuentes de contenido no reescriben enlaces relativos ni validan frontmatter. Usa [`collections`](#collections) para disponer de esquema y registros tipados.
+
+### collections {#collections}
+
+- **Tipo:** `Record<string, { from: string; to: string; schema?: (data) => T }>`
+- **Predeterminado:** `{}`
+
+Como `content`, convierte los archivos locales en rutas y proporciona registros tipados para páginas React propias. `schema` valida el frontmatter durante el build. Lee los datos con `getCollection` de `virtual:ardo/collections`.
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+import { defineCollection } from "ardo/vite"
+
+const recipes = defineCollection<{ title: string }>({
+  from: "./recipes",
+  to: "recipes",
+  schema: (data) => ({ title: String(data.title) }),
+})
+
+export default defineArdoConfig({ title: "My Docs", collections: { recipes } })
+```
+
+[Fuentes de contenido](/es/guide/content-sources#schema-backed-collections) describe el proceso completo.
+
+### openapi {#openapi}
+
+- **Tipo:** `{ spec: string; out?: string }`
+- **Predeterminado:** ninguno
+
+Genera una referencia estática desde un archivo local OpenAPI 3.0 o 3.1, JSON o YAML. `out` vale `api` por defecto. Consulta [Documentación API](/es/guide/api-documentation#openapi-specs).
+
+```ts
+defineArdoConfig({
+  title: "Pet API",
+  openapi: { spec: "./openapi.yaml" },
+})
+```
+
+### routesDir {#routesdir}
+
+- **Tipo:** `string`
+- **Predeterminado:** `"./app/routes"`
+
+Directorio de los archivos de ruta.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  routesDir: "./src/routes",
+})
+```
+
+---
+
+## Markdown {#markdown}
+
+Las opciones Markdown se configuran bajo `markdown`.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  markdown: {
+    theme: { light: "github-light-default", dark: "github-dark-default" },
+    lineNumbers: true,
+  },
+})
+```
+
+### markdown.theme {#markdown-theme}
+
+- **Tipo:** `ThemeInput | { light: ThemeInput; dark: ThemeInput }` de `@ferriki/core`
+- **Predeterminado:** `{ light: "github-light-default", dark: "github-dark-default" }`
+
+Tema del resaltado de sintaxis. Ferriki acepta un nombre, un tema TextMate propio o un par claro/oscuro. Los temas estándar se descargan y almacenan en caché al primer uso.
+
+```ts
+markdown: {
+  theme: "one-dark-pro",
+}
+```
+
+### markdown.lineNumbers {#markdown-linenumbers}
+
+- **Tipo:** `boolean`
+- **Predeterminado:** `false`
+
+Muestra números de línea en los bloques de código.
+
+### markdown.anchor {#markdown-anchor}
+
+- **Tipo:** `boolean`
+- **Predeterminado:** `true`
+
+Activa los enlaces de anclaje en los encabezados.
+
+### markdown.toc {#markdown-toc}
+
+- **Tipo:** `{ level?: [number, number] }`
+- **Predeterminado:** `{ level: [2, 3] }`
+
+Configuración del índice. `level` fija los niveles mínimo y máximo de los encabezados incluidos.
+
+```ts
+markdown: {
+  toc: {
+    level: [2, 4], // Include h2, h3, and h4
+  },
+}
+```
+
+### markdown.passes {#markdown-passes}
+
+- **Tipo:** `NativePassOptions[]` de `ferromark`
+- **Predeterminado:** `[]`
+
+Ejecuta las transformaciones nativas de Ferromark en el orden del array. Los títulos transformados alimentan la página, el índice, la búsqueda y la validación de enlaces.
+
+```ts
+markdown: {
+  passes: [
+    { kind: "typography", language: "en" },
+    { kind: "emojiShortcodes" },
+    { kind: "githubReferences", repository: "owner/repository" },
+  ],
+}
+```
+
+`markdown.typography` abrevia una pasada tipográfica. Configura `typography` o `passes`: Ferromark rechaza la combinación.
+
+### Sintaxis Markdown nativa {#native-markdown-syntax}
+
+Las opciones de Ferromark van directamente bajo `markdown`. Se activan tablas GFM, tachado, tareas, enlaces automáticos, notas y avisos. Las extensiones opcionales incluyen `headingAttributes`, `imageAttributes`, `extendedAttributes`, `definitionLists`, `insertions`, `superscript`, `subscript`, `math` y `lineComments`.
+
+`headingOffset` desplaza juntos los niveles de títulos e índice. `headingIdPrefix` añade un prefijo a todos los identificadores nativos. Consulta la [API Node de Ferromark](https://github.com/sebastian-software/ferromark/blob/main/node/ferromark/README.md) para los detalles.
+
+Ardo gestiona el formato, el frontmatter YAML, los componentes React y la eliminación del primer título si coincide con el de página. Se eliminaron las opciones remark, rehype y recma; consulta [Actualizar a Ardo 5](/es/guide/releases/upgrade-to-v5).
+
+---
+
+## Documentación API {#api-documentation}
+
+`api` genera documentación con TypeScript nativo y OXC durante el build y desarrollo. `true` usa `src/index.ts` y `tsconfig.json`; un objeto configura un proyecto y un array varios. Cada objeto requiere `entryPoints` y `tsconfig`; los valores predeterminados son `out: "api-reference"` y `title: "API Reference"`. Las salidas deben tener rutas distintas y no anidadas.
+
+[Documentación API](/es/guide/api-documentation) describe instalación, configuración, uso programático y límites. Se eliminaron `typedoc` y sus exports; consulta [Migrar desde TypeDoc](/es/guide/releases/migrate-from-typedoc).
+
+---
+
+## Configuración de la interfaz {#ui-configuration}
+
+Configura navegación, secciones, pie, `editLink`, `lastUpdated` y búsqueda con JSX y `<ArdoRoot>` en `root.tsx`. [Diseño y navegación](/es/guide/layout-and-navigation) documenta las props.
+
+## Exports del paquete {#package-exports}
+
+Ardo separa los imports para navegador de los imports del build de Node.js:
+
+| Import               | Uso                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `ardo`               | Tipos, ejecución e interfaz juntos. Incluye código Node; el navegador usa `ardo/runtime` o `ardo/ui`. |
+| `ardo/api`           | Proyectos API nativos, generación, extracción de declaraciones y tipos de documentación.              |
+| `ardo/config`        | `defineArdoConfig` y tipos de configuración.                                                          |
+| `ardo/vite`          | Plugin Vite `ardo()`, `defineConfig`, `defineCollection`, `highlightCode` y utilidades de build.      |
+| `ardo/runtime`       | Providers React, hooks, enlaces, metadatos, scripts y navegación anterior/siguiente.                  |
+| `ardo/ui`            | Interfaz predeterminada, diseños, componentes MDX y registro de iconos.                               |
+| `ardo/icons`         | Los 50 iconos de contenido y los de marca como componentes React.                                     |
+| `ardo/theme`         | Tokens de Vanilla Extract y utilidades de temas de marca.                                             |
+| `ardo/mdx-provider`  | Provider MDX para el registro automático de componentes Ardo.                                         |
+| `ardo/virtual`       | Declaraciones de tipos de los módulos virtuales.                                                      |
+| `ardo/react`         | API y tipos de la instalación de React gestionada por Ardo.                                           |
+| `ardo/react-dom`     | API React DOM con las subrutas `/client`, `/server` y `/static`.                                      |
+| `ardo/ui/styles.css` | Hoja de estilo predeterminada de cada sitio. Impórtala solo para controlar la cascada.                |
+| `ardo/tsconfig`      | Preajuste TypeScript: `"extends": "ardo/tsconfig"`.                                                   |
+
+---
+
+## Frontmatter {#frontmatter}
+
+La configuración por página usa el frontmatter de MDX. Consulta [Frontmatter](/es/guide/frontmatter) para ver todas las opciones.
+
+---
+
+## Ejemplo de compatibilidad del plugin Vite {#vite-plugin-compatibility-example}
+
+Esta forma sigue siendo compatible con proyectos que gestionan Vite directamente. Los sitios nuevos deberían usar `ardo.config.ts` y añadir Vite solo para integraciones propias. Usa esta forma en lugar de `ardo.config.ts` e importa `defineConfig` desde Ardo para evitar una dependencia directa de Vite. Añade la generación API según [Documentación API](/es/guide/api-documentation).
+
+```ts
+import { defineConfig } from "ardo/vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Library",
+      description: "Comprehensive documentation for My Library",
+      lang: "en",
+
+      markdown: {
+        theme: { light: "github-light-default", dark: "github-dark-default" },
+        lineNumbers: false,
+        toc: { level: [2, 3] },
+      },
+    }),
+  ],
+})
+```

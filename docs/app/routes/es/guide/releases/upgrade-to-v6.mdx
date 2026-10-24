@@ -1,0 +1,231 @@
+---
+title: "Actualizar a Ardo 6"
+description: "Pasa de React Router al build estático, elimina sus archivos y adopta las API de enlaces y páginas de Ardo."
+order: 1
+---
+
+# Actualizar a Ardo 6
+
+Ardo 6 construye sitios estáticos solo con Vite. Desaparecen `react-router` y `@react-router/dev`, sin router cliente. Cada página se renderiza a HTML durante el build. Los enlaces cargan el siguiente documento prerrenderizado, que después se hidrata.
+
+La migración elimina sobre todo archivos. Las rutas `app/routes/`, el componente raíz y la configuración se conservan. Consulta [ADR 0020](https://github.com/sebastian-software/ardo/blob/main/docs/adr/0020-static-site-without-react-router.md). Si usabas `typedoc`, sigue también [Migrar desde TypeDoc](/es/guide/releases/migrate-from-typedoc).
+
+## Cómo funciona el build {#how-the-build-works-now}
+
+- `ardo build` llama al builder de Vite en el mismo proceso, construye cliente y servidor y prerrenderiza rutas en `build/client/<route>/index.html`, o bajo `build/client/v6/` con versionado. Escribe `404.html` y comprueba enlaces y anclas.
+- `ardo dev` usa Vite con el middleware de render de Ardo y sirve el mismo documento que el build.
+- `ardo preview` funciona como alojamiento estático: `/guide` sirve `guide/index.html`; las rutas desconocidas reciben el `404.html` más cercano.
+
+Mantén estos tres comandos. Desaparecen `react-router build` y `react-router dev`.
+
+## Eliminar los archivos retirados {#delete-the-removed-files}
+
+Elimina estos archivos; Ardo asume sus funciones:
+
+| Archivo                  | Sustitución                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `react-router.config.ts` | Prerrenderizado siempre activo; base en la configuración Ardo. |
+| `app/entry.server.tsx`   | Render servidor integrado; desaparece `ardo/entry.server`.     |
+| `app/entry.client.tsx`   | Entrada cliente integrada para hidratar las páginas.           |
+| `app/routes.ts`          | Tabla virtual de rutas generada desde `app/routes/`.           |
+| `.react-router/`         | Elimínalo también de `.gitignore` y `tsconfig.json`.           |
+
+Quita las dependencias directas `react-router`, `@react-router/dev`, `@react-router/node` e `isbot`. Ardo gestiona React, React DOM y Vite. Quita `.react-router/types` de `include` o `rootDirs` en `tsconfig.json`.
+
+Mueve los providers a la raíz y el documento a `Layout` (más abajo). Para contexto servidor por solicitud, exporta `withRenderContext` desde `app/server.ts`. [Internacionalización](/es/guide/internationalization) muestra el aislamiento de renders concurrentes con Palamedes.
+
+## Actualizar los iconos {#update-content-icons}
+
+`ardo/icons` exporta una selección Streamline Core Line en lugar de una biblioteca entera. El [catálogo](/es/guide/components#icons) enumera los 50 exports Core. Las marcas como `Github` permanecen.
+
+Los 50 iconos se registran automáticamente. Quita sus imports y `registerIcons()` de `app/root.tsx`, salvo registros propios. Reemplaza `Code2` por `Code`, también en `<Icon name="Code" />` y `<Card icon="Code">`.
+
+Los componentes aceptan `size`, `className` y atributos SVG. Quita la dependencia antigua si no se usa. Instala y registra explícitamente otras bibliotecas. El [catálogo](/es/guide/components#icons) detalla motivos y condiciones.
+
+## Actualizar `app/root.tsx` {#update-app-root-tsx}
+
+El export predeterminado sigue siendo la raíz. `<ArdoRoot>` lee la configuración y genera la navegación. Quita la prop `config`, `virtual:ardo/config` y `ardo/ui/styles.css`. Quedan tres exports opcionales:
+
+- `meta`: `ArdoMetaFunction` de `ardo/runtime`, sin argumentos, con los mismos descriptores como `{ title: "My Docs" }`. No hace falta solo para el título del sitio, que aporta la configuración.
+- `Layout`: shell HTML, solo servidor. Sin export se usa `ArdoRootLayout` de `ardo/ui`; normalmente puedes quitarlo.
+- `ErrorBoundary`: dentro de la raíz para páginas ausentes, en su lugar para errores de render. Predeterminado: `ArdoErrorBoundary`.
+
+Antes:
+
+```tsx
+import type { ReactNode } from "ardo/react"
+import type { MetaFunction } from "ardo/router"
+import { ArdoFooter, ArdoHeader, ArdoRoot, ArdoRootLayout, ArdoSidebar } from "ardo/ui"
+import config from "virtual:ardo/config"
+import "ardo/ui/styles.css"
+
+export const meta: MetaFunction = () => [{ title: "My Docs" }]
+
+export function Layout({ children }: { children: ReactNode }) {
+  return <ArdoRootLayout>{children}</ArdoRootLayout>
+}
+
+export default function Root() {
+  return (
+    <ArdoRoot config={config}>
+      <ArdoHeader />
+      <ArdoSidebar />
+      <ArdoFooter />
+    </ArdoRoot>
+  )
+}
+```
+
+Después:
+
+```tsx
+import { ArdoRoot } from "ardo/ui"
+
+export default function Root() {
+  return <ArdoRoot />
+}
+```
+
+Mantén `ArdoHeader`, `ArdoSidebar` o `ArdoFooter` como hijos si tienen props propias. Sin hijos, `ArdoRoot` renderiza los mismos elementos predeterminados.
+
+Mantén `Layout` para `theme`, `favicon` o `className`. Un shell propio reemplaza `<Meta />`, `<Links />`, `<Scripts />` por `<ArdoHead />` en `<head>` y `<ArdoScripts />` al final del body, desde `ardo/runtime`. Consulta [Layout](/es/guide/layout-and-navigation#layout-the-html-shell).
+
+Las rutas conservan `meta` y `handle`, por ejemplo `export const handle = { layout: "bare" }`.
+
+## Simplificar `tsconfig.json` {#trim-tsconfig-json}
+
+Reemplaza las opciones por el preajuste Ardo: JSX, `jsxImportSource: "ardo"`, `moduleResolution: "bundler"`, modo estricto y declaraciones:
+
+```json
+{
+  "extends": "ardo/tsconfig",
+  "include": ["app/**/*", "*.ts"]
+}
+```
+
+## Reemplazar imports del router {#replace-router-imports}
+
+Importa los valores del navegador desde `ardo/runtime` o `ardo/ui`, no `ardo`, que contiene código Node. React permanece en `ardo/react` y se conservan las subrutas React DOM.
+
+| Ardo 5 (React Router)                           | Ardo 6                                                    |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| `Link` from `ardo/router`                       | `ArdoLink` con `to` y atributos de enlace                 |
+| `NavLink` from `ardo/router`                    | `ArdoActiveLink`, añade `active` y `aria-current``        |
+| `useLocation().pathname`                        | `useArdoPath()`, ruta de página sin base                  |
+| `useNavigate()`                                 | `navigateTo(href)`, navegación completa                   |
+| `useHref(to)`                                   | `useArdoHref(to)` or `resolveArdoHref(to, page)`          |
+| `useMatches()` para datos `handle`              | `useArdoPage().handle`                                    |
+| `useRouteError()` en un límite de error         | `useArdoPage().error`                                     |
+| `MetaFunction` from `ardo/router`               | `ArdoMetaFunction` and `ArdoMetaDescriptor`               |
+| `MemoryRouter` en pruebas y vistas previas      | `ArdoPageProvider` con `path` y `base` opcional           |
+| `<Meta />`, `<Links />`, `<Scripts />`          | `<ArdoHead />` and `<ArdoScripts />`                      |
+| `ardo/router/dom`, `ardo/router/routes`         | Eliminado; Ardo proporciona entrada cliente y rutas.      |
+| `ardo/entry.server`                             | Eliminado. Quita `app/entry.server.tsx`.                  |
+| `ReactRouterConfig` from `ardo/config`          | Eliminado. Quita `react-router.config.ts`.                |
+| `withArdoGitHubPages()`, `withArdoVersioning()` | `base` or `versioning` en la configuración Ardo           |
+| `githubPages` option, `detectGitHubBasename()`  | Eliminado. Para proyectos GitHub Pages: `base: "/repo/"`. |
+| `ardoRoutesPlugin`                              | Eliminado. `ardo()` genera las rutas.                     |
+| `defineConfig`, `loadConfig` from `ardo`        | Eliminado. Usa `defineArdoConfig` de `ardo/config`.       |
+| `ardo/press.css`                                | Eliminado. Ardo carga sus estilos.                        |
+
+Salvo `ArdoMetaFunction` y `ArdoMetaDescriptor`, son valores de `ardo/runtime`. `ArdoLink` y `ArdoActiveLink` también están en `ardo/ui`. Las props que usaban `To` ahora aceptan `string`.
+
+`ArdoLink` añade la base y renderiza un `<a>`:
+
+```tsx
+import { ArdoLink, useArdoPath } from "ardo/runtime"
+
+export function BackToGuide() {
+  const path = useArdoPath()
+  if (path.startsWith("/guide")) return null
+  return <ArdoLink to="/guide/getting-started">Read the guide</ArdoLink>
+}
+```
+
+En pruebas y vistas previas, envuelve los componentes que leen la página con `ArdoPageProvider`:
+
+```tsx
+import { ArdoPageProvider } from "ardo/runtime"
+
+render(
+  <ArdoPageProvider path="/guide/intro">
+    <ComponentUnderTest />
+  </ArdoPageProvider>
+)
+```
+
+## Configurar la base una sola vez {#configure-the-base-path-once}
+
+Desaparecen `basename` y el aplanado. Define `base` en Ardo para recursos, enlaces y directorios:
+
+- Proyectos GitHub Pages: `base: "/repo/"`.
+- Raíz y dominios propios: sin ajuste.
+- Documentación versionada: `versioning`, páginas bajo `build/client/v6/` y archivos globales como `versions.json` bajo `build/client/`.
+
+Ejemplos completos en [Despliegue](/es/guide/deployment).
+
+## Reemplazar loaders {#replace-route-loaders}
+
+No se admiten `loader` ni `action`. Las páginas prerrenderizadas necesitan sus datos durante el build. Proporciónalos con un pequeño plugin Vite y un módulo virtual:
+
+```ts
+// vite.config.ts
+import { defineConfig, type Plugin } from "ardo/vite"
+
+function releaseFacts(): Plugin {
+  const id = "virtual:docs/release-facts"
+  return {
+    name: "docs:release-facts",
+    resolveId(source) {
+      return source === id ? `\0${id}` : undefined
+    },
+    async load(source) {
+      if (source !== `\0${id}`) return undefined
+      const response = await fetch("https://registry.npmjs.org/ardo/latest")
+      const { version } = await response.json()
+      return `export default ${JSON.stringify({ version })}`
+    },
+  }
+}
+
+export default defineConfig({
+  plugins: [releaseFacts()],
+})
+```
+
+```tsx
+// app/routes/releases.tsx
+import facts from "virtual:docs/release-facts"
+
+export default function Releases() {
+  return <p>Latest release: {facts.version}</p>
+}
+```
+
+Declara el módulo en un `.d.ts`. Las estadísticas npm del inicio siguen este patrón. Servidor y cliente de hidratación importan así los mismos datos.
+
+## Cambios de comportamiento {#behavior-changes}
+
+- **Layout del frontmatter: `bare` o `default`.** `doc`, `home` y `page` no tenían efecto y ahora avisan.
+- **Título en cada página.** Sin `title` propio, se aplica el del sitio.
+- **Sin detección del remoto Git.** Desaparecen `githubPages` y `detectGitHubBasename`. Define `base` para subrutas, tanto en desarrollo como en build.
+- **Navegación completa.** Cada `<a>` carga un documento nuevo. Se pierde el estado cliente, como una búsqueda abierta.
+- **Barras finales.** Los enlaces de páginas terminan en `/`, como `/guide/intro/`, para servir directamente `index.html`. Los enlaces a archivos no cambian.
+- **Comprobación del HTML.** El build comprueba destinos internos, componentes, páginas generadas, anclas, redirecciones y versiones. Ajuste: [`linkCheck`](/es/guide/configuration#linkcheck).
+- **Búsqueda diferida.** El índice se carga al primer foco de búsqueda, por separado para cada idioma.
+
+## Rendimiento {#performance}
+
+Referencia histórica del sitio inglés antes del ejemplo en cuatro idiomas, M1 Ultra, build en caliente:
+
+| Version                                    | `ardo build`  |
+| ------------------------------------------ | ------------- |
+| Ardo 5 con React Router 8 antes de PR #382 | 18–20 s       |
+| Ardo 5 con correcciones de PR #382         | aprox. 10.5 s |
+| Ardo 6                                     | aprox. 5.6 s  |
+
+El JavaScript inicial del conjunto de páginas de entonces pasó de unos 425 a 379 KB gzip. No incluye el índice diferido.
+
+## Verificar la actualización {#verify-the-upgrade}
+
+Ejecuta comprobación de tipos, pruebas y `ardo build`. No debe haber enlaces internos rotos. Con `ardo preview`, abre varias páginas, sigue enlaces y comprueba la consola.

@@ -54,7 +54,13 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
         return `import ${JSON.stringify(resolveArdoEntry("client"))}\n`
       }
       if (id === RESOLVED[VIRTUAL_ENTRY_SERVER_ID]) {
-        return `export * from ${JSON.stringify(resolveArdoEntry("server"))}\n`
+        const serverContext = path.join(path.dirname(routesDir), "server.ts")
+        const entry = JSON.stringify(resolveArdoEntry("server"))
+        if (!existsSync(serverContext)) return `export * from ${entry}\n`
+        return `import { renderPage as render } from ${entry};
+import { withRenderContext } from ${JSON.stringify(normalizePath(serverContext))};
+export { getStaticPaths, routes } from ${entry};
+export const renderPage = (path, options) => withRenderContext({ path, render: () => render(path, options) });\n`
       }
       return null
     },

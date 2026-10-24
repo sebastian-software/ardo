@@ -1,3 +1,5 @@
+import { palamedes } from "@palamedes/vite-plugin"
+
 import { createRequire } from "node:module"
 import path from "node:path"
 
@@ -5,6 +7,8 @@ import type { Plugin } from "vite"
 
 import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
+
+import { palamedesMdxExamples } from "./palamedes-mdx.ts"
 
 import { fetchNpmFacts } from "./app/home/npm-facts.ts"
 
@@ -42,23 +46,41 @@ export default defineConfig({
   server: { fs: { allow: fontPackages } },
   plugins: [
     npmFacts("ardo"),
+    palamedesMdxExamples(),
+    palamedes({
+      mdx: false,
+      failOnMissing: true,
+      failOnCompileError: true,
+      keepSourceFallbacks: false,
+    }),
     ardo({
       title: "Ardo",
       description:
         "React docs, baked into plain HTML. Ardo is a static site generator for React projects: guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time.",
       siteUrl: "https://ardo-docs.dev",
+      i18n: {
+        defaultLocale: "en",
+        redirectUnlocalized: true,
+        locales: [
+          { id: "en", label: "English" },
+          { id: "de", label: "Deutsch" },
+          { id: "fr", label: "Français" },
+          { id: "es", label: "Español" },
+        ],
+      },
       versioning: {
         current: "v6",
         versions: [
-          { id: "v6", label: "6.x", path: "/v6/" },
-          { id: "v5", label: "5.x", path: "/v5/" },
-          { id: "v4", label: "4.x", path: "/v4/" },
-          { id: "v3", label: "3.x", path: "/v3/" },
+          { id: "v6", label: "6.x", path: "/v6/", locales: ["en", "de", "fr", "es"] },
+          { id: "v5", label: "5.x", path: "/v5/", locales: [] },
+          { id: "v4", label: "4.x", path: "/v4/", locales: [] },
+          { id: "v3", label: "3.x", path: "/v3/", locales: [] },
         ],
       },
 
       // Native TypeScript API documentation
-      api: {
+      api: ["en", "de", "fr", "es"].map((locale) => ({
+        out: `${locale}/api-reference`,
         // Import paths make every page show its import line.
         entryPoints: {
           "ardo/ui": "../packages/ardo/src/ui/index.ts",
@@ -66,9 +88,10 @@ export default defineConfig({
           "ardo/config": "../packages/ardo/src/config/index.ts",
         },
         tsconfig: "../packages/ardo/tsconfig.api.json",
-      },
+      })),
 
       markdown: {
+        headingAttributes: true,
         theme: {
           light: "github-light",
           dark: "github-dark",

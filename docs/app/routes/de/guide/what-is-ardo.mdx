@@ -1,0 +1,180 @@
+---
+title: "Was ist Ardo?"
+description: "Ein statisches Dokumentationsframework für React-Teams im Vergleich mit Docusaurus, Starlight, VitePress, Nextra, Fumadocs und Mintlify."
+order: 1
+---
+
+# Was ist Ardo?
+
+Du kennst React. Komponenten, Provider, Styling-Konventionen, Beispiele und TypeScript-Typen erklären bereits dein Produkt. Dann beginnt die Dokumentation – und oft verlangt deren Werkzeugkasten erst ein anderes Komponentenmodell, bevor du eine hilfreiche Anleitung veröffentlichen kannst.
+
+**Ardo gibt es, damit du nicht von vorn anfangen musst.**
+
+Das statische Dokumentationsframework baut auf [React](https://react.dev/) und [Vite](https://vite.dev/). React-Teams bekommen einen einfachen Ablauf ohne geschlossene Plattform, zweites UI-Framework oder eigenes Komponentenmodell nur für Dokumentation.
+
+## Das Problem mit Dokumentationsframeworks {#the-problem-with-documentation-frameworks}
+
+Viele Dokumentationswerkzeuge bringen eigene Komponentensysteme, Konventionen und Lernkurven mit. Bei einem Neuanfang ist das in Ordnung. Wer bereits mit React arbeitet, muss dadurch aber:
+
+- vorhandene Komponenten neu schreiben;
+- Muster lernen, die anderswo nicht helfen;
+- zwei Denkmodelle für dieselbe Art von Oberfläche pflegen.
+
+Ardo baut stattdessen auf den vorhandenen Möglichkeiten des React-Ökosystems auf.
+
+## Was Ardo anders macht {#what-makes-ardo-different}
+
+### React-Wissen direkt nutzen {#your-react-knowledge-applied-directly}
+
+Jede Ardo-Komponente ist React. Layout, eigene Hinweise und interaktive Beispiele verwenden normales React. Halte eigene Komponenten im Dokumentationsprojekt oder installiere dort eine Komponentenbibliothek und importiere ihre öffentlichen Exporte. Nutze bekannte Hooks und TypeScript.
+
+Die Website wird als eigenes Paket mit Ardos verwalteter React-Laufzeit gebaut. Binde ein Designsystem als installiertes Paket ein, statt benachbarten Anwendungsquellcode zu importieren. Die [Anleitung für Agenten](/de/guide/agent-instructions#inspect-the-repository) erklärt diese Grenze.
+
+### Einfache HTML-Seiten {#plain-html-pages}
+
+Jede Datei unter `app/routes` wird zur Seite und als eigene HTML-Datei vorgerendert. Normale Links laden Seiten schnell von jedem statischen Hoster. Interaktive Teile werden im Browser hydriert. Es gibt keinen zu konfigurierenden Client-Router; der Build prüft, ob alle internen Links auf vorhandene Seiten zeigen.
+
+### Auf Vite gebaut {#powered-by-vite}
+
+Vite sorgt für schnelle lokale Änderungen, optimierte Produktionsbuilds und ein offenes Plugin-Ökosystem. Ardo ergänzt dokumentationsspezifische Verarbeitung, ohne Vite hinter einer eigenen Plattform zu verstecken.
+
+## Was du bekommst {#what-you-get}
+
+### Markdown und React-Komponenten {#markdown-react-components}
+
+Schreibe Dokumentation in Markdown und ergänze React-Komponenten nach Bedarf:
+
+```markdown
+# My Documentation
+
+Regular markdown content...
+
+<CustomComponent prop="value" />
+
+More markdown content...
+```
+
+Keine besondere Syntax oder Wrapper. Einfach MDX, wie es gedacht ist.
+
+### Ein durchdachtes Standardtheme {#a-polished-default-theme}
+
+Ardo liefert ein vollständiges Theme, damit du dich auf Inhalte konzentrieren kannst:
+
+- responsives Layout für alle Geräte;
+- Hell- und Dunkelmodus mit automatischer Erkennung;
+- Volltextsuche über die Seiten;
+- automatisches Inhaltsverzeichnis;
+- Syntaxhervorhebung mit Zeilennummern und Markierungen.
+
+### Typsicheres Styling mit Vanilla Extract {#type-safe-styling-with-vanilla-extract}
+
+Ardos Oberfläche nutzt [Vanilla Extract](https://vanilla-extract.style/), CSS in TypeScript ohne zusätzliche Styling-Laufzeit. Alle Design-Tokens für Farben, Abstände, Radien und Übergänge sind typsicher importierbar:
+
+```ts
+import { style } from "@vanilla-extract/css"
+import { vars } from "ardo/theme"
+
+// Full autocomplete for all design tokens
+const myStyle = style({
+  color: vars.color.brand,
+  borderRadius: vars.radius.base,
+})
+```
+
+Die CLI enthält das Vanilla-Extract-Plugin. Installiere `@vanilla-extract/css` im Dokumentationspaket, um `.css.ts`-Dateien zu schreiben. Weitere Vite-Plugin-Konfiguration ist nicht nötig.
+
+### Vollständig anpassbar {#fully-customizable}
+
+Themefarben, Layout-Komponenten, Markdown-Verarbeitung und Build-Pipeline bestehen aus üblichen React- und Vite-Bausteinen. Du kannst sie mit den Arbeitsweisen deines Teams anpassen.
+
+## Ardo im Vergleich {#how-ardo-compares}
+
+Ardo richtet sich an React-Teams mit Wunsch nach moderner statischer Dokumentation im eigenen Repository. Docusaurus, Starlight, VitePress, Nextra, Fumadocs und Mintlify sind starke Werkzeuge. Die passendere Frage lautet: **Wo soll deine Dokumentation leben und wie viel React-Code soll sie wiederverwenden?**
+
+|                              | **Ardo**                             | **Docusaurus**               | **Starlight**                     | **VitePress**     | **Nextra**            | **Fumadocs**                      | **Mintlify**                |
+| ---------------------------- | ------------------------------------ | ---------------------------- | --------------------------------- | ----------------- | --------------------- | --------------------------------- | --------------------------- |
+| Passend für                  | React-Teams, statische Dokumentation | Etablierte OSS-Dokumentation | Inhaltsreiche Astro-Dokumentation | Vue-Dokumentation | Next.js-Dokumentation | Kombinierbare React-Dokumentation | Gehostete API-Dokumentation |
+| UI-Modell                    | React 19                             | React                        | Astro                             | Vue               | Next.js               | React                             | Gehostete Plattform         |
+| Build-Modell                 | Vite 8, HTML pro Seite               | Webpack                      | Astro/Vite                        | Vite              | Next.js               | Vom React-Framework abhängig      | SaaS/Git-Workflow           |
+| React-Wiederverwendung       | Nativ                                | Nativ                        | Über Islands                      | Nein              | Nativ                 | Nativ                             | Plattformabhängig           |
+| TypeScript-API-Dokumentation | Natives TypeScript und OXC           | Plugin                       | Plugin                            | Extern            | TSDoc                 | Typentabellen/OpenAPI             | API-Werkzeuge               |
+| Kontrolle                    | Open Source, eigene Dateien          | Open Source                  | Open Source                       | Open Source       | Open Source           | Open Source                       | Gehostetes SaaS             |
+
+React-Wiederverwendung bedeutet Komponenten im Dokumentationsprojekt oder installierte Paketabhängigkeiten. Deklariere Designsystem-Pakete dort und importiere öffentliche Exporte. Benachbarter Quellcode, Aliasse und Symlinks über die Paketgrenze sind nicht erlaubt.
+
+### Docusaurus {#docusaurus}
+
+[Docusaurus](https://docusaurus.io/) ist das etablierte React-Dokumentationsframework, von Meta unterstützt und weit verbreitet. Es bietet Versionierung, Übersetzung, Blogs, Suchintegrationen und ein großes Plugin-Ökosystem.
+
+Ardo nutzt Vite sowie Rust-basierte Markdown- und Hervorhebungswerkzeuge statt einer Webpack-Architektur. Es rendert jede Seite ohne Client-Router zu HTML vor und bietet eine kleinere Konfigurationsfläche für Teams mit modernen React-Werkzeugen.
+
+Wähle Docusaurus, wenn Reife, Plugins und versionierte Dokumentation wichtiger sind als die Nähe zu Vite und React-Anwendungen.
+
+### Starlight {#starlight}
+
+[Starlight](https://starlight.astro.build/) ist ein schnelles, zugängliches und durchdachtes Astro-Dokumentationsframework, besonders stark bei umfangreichen Inhalten mit wenig Anwendungsinteraktivität.
+
+In Ardo ist React das native Komponentenmodell: Provider, Hooks und interaktive MDX-Beispiele funktionieren auch mit installierten Designsystem-Paketen. Starlight verwendet dafür Astro-Islands – leistungsfähig, aber mit einer anderen Grenze.
+
+Wähle Starlight, wenn Seitengröße und Astros Inhaltsmodell Vorrang haben.
+
+### VitePress {#vitepress}
+
+[VitePress](https://vitepress.dev/) ist der naheliegendste Vergleich: ein statisches Framework mit Vite, starkem Standardtheme und inhaltsorientiertem Ablauf – für Vue-Teams.
+
+Ardo bringt diese Einfachheit zu React. Sind Anwendung, Beispiele und Designsystem bereits React, kannst du sie wiederverwenden, statt sie in Vue neu zu schreiben.
+
+Wähle VitePress, wenn dein Team Vue nutzt oder keine React-Komponenten wiederverwenden muss.
+
+### Nextra {#nextra}
+
+[Nextra](https://nextra.site/) verbindet MDX mit Next.js-Routing, optimierten Links und Bildern, Suche, i18n und den Rendering-Optionen des Next-Ökosystems.
+
+Ardo ist nicht an Next.js gebunden. Der Vite-React-Stack schreibt eine statische HTML-Seite pro Route ohne Client-Router. Das passt, wenn deine Anwendung kein Next-Projekt ist oder die Dokumentation ein kleiner, eigenständiger statischer Build sein soll.
+
+Wähle Nextra, wenn deine Dokumentation eine vollständige Next.js-Anwendung sein soll.
+
+### Fumadocs {#fumadocs}
+
+[Fumadocs](https://www.fumadocs.dev/) ist ein flexibel kombinierbarer React-Werkzeugkasten für Dokumentation. Er unterstützt mehrere React-Frameworks und umfangreiche Bausteine für eigene Dokumentationssysteme.
+
+Ardo ist bewusst enger gefasst: ein vollständiges statisches Produkt mit React, Vite, MDX und nativer API-Dokumentation, das weniger Architekturentscheidungen verlangt.
+
+Wähle Fumadocs für einen Werkzeugkasten, Ardo für eine veröffentlichungsfertige statische React-Dokumentation.
+
+### Mintlify {#mintlify}
+
+[Mintlify](https://www.mintlify.com/docs/what-is-mintlify) ist eine gehostete Entwicklerdokumentationsplattform mit Stärken bei kommerziellen API-Referenzen, Bearbeitungsabläufen, Playgrounds, Analysen und KI-Funktionen.
+
+Ardo ist Open Source und lebt im Repository: Inhalte werden in deiner CI gebaut, als statische Dateien veröffentlicht und mit deinen React-Komponenten gerendert.
+
+Wähle Mintlify für ein gehostetes Produkt, Ardo für Quellcodekontrolle, eigenes Hosting und die Kontrolle über React.
+
+## Passt Ardo zu dir? {#is-ardo-a-good-fit}
+
+Ardo passt besonders gut zu Dokumentation neben einer React-Codebasis:
+
+- Komponentenbibliotheken mit Live-Beispielen und API-Referenz;
+- Produktteams mit vorhandenem React-Designsystem;
+- Open-Source-Projekte mit statischer Dokumentation ohne Hosting-Plattform;
+- Teams, die VitePress-Einfachheit ohne Vue- oder Astro-Laufzeit suchen.
+
+Es ist möglicherweise nicht das passende Werkzeug, wenn:
+
+- du ausgereifte i18n oder Versionierung brauchst; beides ist noch experimentell;
+- du möglichst wenig JavaScript ohne React-Komponenten willst;
+- du gehostete Bearbeitung mit Analyse- und Playground-Verwaltung suchst;
+- dein Stack Vue, Astro oder Next.js nutzt und die Dokumentation dort bleiben soll;
+- du eine interaktive API-Konsole brauchst; Ardos OpenAPI-Integration erzeugt statische Referenzen.
+
+[Versionen](/de/guide/releases) zeigt veröffentlichte, experimentelle und geplante Funktionen.
+
+## Versionierung und Browserunterstützung {#versioning-and-browser-support}
+
+Framework, Oberfläche und Laufzeit erscheinen als ein Paket. Das Setup folgt [versionierten Agentenanweisungen](/de/guide/agent-instructions) und dem getesteten Basic-Beispiel. Das [Änderungsprotokoll](https://github.com/sebastian-software/ardo/blob/main/packages/ardo/CHANGELOG.md) enthält den Release-Verlauf.
+
+Ardo richtet sich an moderne, laufend aktualisierte Browser mit Unterstützung für React 19 und Vite 8. Das Standardtheme nutzt modernes CSS wie OKLCH und Custom Properties. Prüfe den fertigen Build gegen eure eigene Browsermatrix, wenn ältere Browser unterstützt werden müssen.
+
+## Erste Schritte {#getting-started}
+
+Bereit zum Ausprobieren? [Erste Schritte](/de/guide/getting-started) enthält den Ein-Satz-Prompt für deinen Coding-Agenten und das manuelle Setup mit wenigen Dateien.

@@ -1,0 +1,79 @@
+---
+title: "Internationalisierung"
+description: "Vier statische Sprachbäume, übersetzte Suche und Oberfläche und ein gemeinsames MDX-Beispiel mit Palamedes."
+order: 12
+---
+
+import Welcome from "../../../examples/welcome.mdx?palamedes"
+
+Diese Website gibt es auf Englisch, Deutsch, Französisch und Spanisch. Wähle eine Sprache in der Kopfzeile oder im mobilen Menü. Beim Sprachwechsel behält Ardo Seite, Query-String und Sprungmarke bei.
+
+## Statische Sprachrouten {#static-language-routes}
+
+Konfiguriere die Sprachen in `ardo.config.ts` oder im Vite-Plugin `ardo()`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  i18n: {
+    defaultLocale: "en",
+    locales: [
+      { id: "en", label: "English" },
+      { id: "de", label: "Deutsch" },
+      { id: "fr", label: "Français" },
+      { id: "es", label: "Español" },
+    ],
+  },
+})
+```
+
+Lege entsprechende Routen unter `app/routes/en/`, `app/routes/de/`, `app/routes/fr/` und `app/routes/es/` an. Halte die Routen-Slugs in allen Sprachen gleich. Ardo verlangt einen vollständigen Routenbaum und meldet fehlende Seiten beim Build. Es ersetzt Inhalte nicht stillschweigend durch eine andere Sprache.
+
+Die V6-Veröffentlichung nutzt `/v6/en/`, `/v6/de/`, `/v6/fr/` und `/v6/es/`. Ältere Dokumentationsversionen behalten ihre ursprüngliche Sprache und ihre URLs.
+
+## Oberfläche, Suche und Metadaten {#ui-search-and-metadata}
+
+Nutze `useArdoLocale()` aus `ardo/runtime` für die aktive Sprache, auch beim serverseitigen Rendern. Übergib übersetzte Texte über `<ArdoRoot labels={...}>` für Navigation, Suche, Hinweise, Kopierfunktionen und Seitenaktionen. Ardo formatiert das Aktualisierungsdatum in der Sprache der Route.
+
+Die Suche lädt nur den Index der aktiven Sprache, sobald Leser das Suchfeld fokussieren oder eine Anfrage eingeben. Das generierte HTML enthält das richtige `lang`, die kanonische URL und Links zu den anderen Sprachfassungen. Codebezeichner und Importpfade bleiben unverändert. Die API-Referenz entsteht aus englischen Quellkommentaren; darauf weist die übersetzte Oberfläche ausdrücklich hin.
+
+## Eine MDX-Quelle mit Palamedes {#one-mdx-source-with-palamedes}
+
+Palamedes kompiliert dieses Beispiel aus einer einzigen englischen MDX-Datei. Absätze und Rich-Text-Platzhalter stammen aus den Sprachkatalogen; die React-Komponente bleibt erhalten:
+
+<Welcome />
+
+Palamedes und Ardo besitzen jeweils einen vollständigen MDX-Compiler. Auf dieser Website kompiliert Ardo die Dokumentationsrouten, damit Syntaxhervorhebung, Überschriftenanker, Inhaltsverzeichnis und Suche dieselbe Quelle verwenden. Dieses kleine Beispiel wird über einen eigenen Vite-Adapter mit `?palamedes` importiert; sein Modul gehört damit Palamedes. Komponenten werden explizit importiert, wie es der MDX-Compiler von Palamedes verlangt.
+
+Die Dokumentationsrouten werden als übersetztes Markdown und MDX verfasst. Gemeinsame Oberflächentexte nutzen Palamedes-Makros und PO-Kataloge in `docs/app/i18n/`. So werden nicht alle vier Kataloge an jeden Leser ausgeliefert: Jedes Dokument lädt seine eigene Sprache.
+
+## Kontext für serverseitiges Rendern {#server-render-context}
+
+Eine Website kann `withRenderContext` aus `app/server.ts` exportieren, um einen Kontext für das vollständige Rendern einer Seite bereitzustellen. Dieses Modul landet nur im Server-Bundle. Metadatenauflösung und wartende React-Komponenten laufen im selben Kontext:
+
+```ts
+import type { ArdoServerRenderContext } from "ardo/runtime"
+import { createServerI18nScope } from "@palamedes/runtime/server"
+
+const scope = createServerI18nScope()
+
+export async function withRenderContext({ path, render }: ArdoServerRenderContext) {
+  const i18n = await loadI18n(path.split("/")[1] ?? "en")
+  return scope.run(i18n, render)
+}
+```
+
+Hier ist `loadI18n` der Kataloglader der Website. Verwende eine unveränderliche Instanz pro Sprache oder eine neue Instanz pro Anfrage. Aktiviere keine veränderliche Sprache für den gesamten Prozess: Parallele Render-Vorgänge würden Sprachen vermischen. Lade im Browser den Katalog des Dokuments und rufe vor der Hydrierung `setClientI18n` auf.
+
+## Übersetzungen pflegen {#maintain-translations}
+
+Im Wurzelverzeichnis des Repositorys:
+
+```bash
+pnpm --filter ardo-docs i18n:extract
+pnpm --filter ardo-docs i18n:check
+```
+
+Die Extraktion aktualisiert Quelltexte und erhält vorhandene Übersetzungen. Das Katalog-Audit prüft Vollständigkeit, ICU-Syntax, Pluralargumente und Rich-Text-Platzhalter. Aktualisiere bei Quelländerungen alle Sprachrouten, baue anschließend die Website und führe die Browsertests zum Sprachwechsel aus.

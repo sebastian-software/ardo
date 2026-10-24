@@ -5,6 +5,14 @@ import { describe, expect, it } from "vitest"
 import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
 
 describe("LLM Markdown projection", () => {
+  it("uses the site's enabled heading syntax during MDX projection", () => {
+    const output = stripMdxSyntaxOutsideCodeFences("## Überschrift {#stable}\n\nText.", undefined, {
+      markdown: { headingAttributes: true },
+    })
+    expect(output).toContain("Überschrift")
+    expect(output).toContain("Text.")
+  })
+
   it("removes authored ESM and MDX wrappers while keeping static text and hyperlinks", () => {
     const input =
       'import { Demo } from "./demo"\n\nexport const value = 1\n\n# Guide\n\n<Demo>\nKeep [this guide](/guide/start).\n</Demo>\n\n`<Demo />`\n'
@@ -53,7 +61,7 @@ describe("LLM Markdown projection", () => {
     "preserves every highlighted code example in the actual %s guide",
     async (name) => {
       const source = await fs.readFile(
-        new URL(`../../../../docs/app/routes/guide/${name}.mdx`, import.meta.url),
+        new URL(`../../../../docs/app/routes/en/guide/${name}.mdx`, import.meta.url),
         "utf8"
       )
       const original = prepareDocument(source, { format: "mdx" })

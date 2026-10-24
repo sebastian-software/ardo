@@ -1,0 +1,82 @@
+---
+title: "Instrucciones para agentes"
+description: "Instala, integra o actualiza Ardo 6 con un agente de programación, instrucciones de la misma versión y el ejemplo Basic probado."
+order: 3
+---
+
+# Instrucciones para agentes
+
+Estas instrucciones cubren tres tareas con Ardo 6: crear un sitio de documentación, añadir documentación a un repositorio existente y actualizar desde una versión principal anterior. El usuario entrega al agente el prompt de [Primeros pasos](/es/guide/getting-started) y el agente sigue esta página.
+
+Los agentes compatibles pueden instalar el [skill de Ardo](https://github.com/sebastian-software/ardo/tree/main/skills/ardo). Sigue estas instrucciones y no mantiene su propia plantilla de instalación. La documentación también está disponible como Markdown para agentes: `https://ardo-docs.dev/v6/llms.txt` es un índice breve y `https://ardo-docs.dev/v6/llms-full.txt` contiene todas las páginas. La URL sin versión `/llms.txt` sigue la versión principal actual.
+
+Ardo 6 no tiene un generador `create-ardo`. Los sitios creados con generadores anteriores son proyectos Ardo normales y se actualizan con estas instrucciones.
+
+## Comprueba primero la versión {#match-the-version-first}
+
+Lee el manifiesto y el archivo de bloqueo del repositorio para identificar la versión de Ardo instalada. Para un sitio nuevo, usa la última versión publicada salvo que se pida otra versión concreta; elige después la documentación y el ejemplo Basic correspondientes. Estas instrucciones se aplican cuando la versión principal elegida es Ardo 6. En un sitio existente, conserva la versión principal instalada salvo que la tarea incluya actualizarla.
+
+Lee `examples/basic` en la etiqueta Git `ardo-v<exact-version>` correspondiente del [repositorio de Ardo](https://github.com/sebastian-software/ardo/tags). Por ejemplo, Ardo `6.0.0` usa `ardo-v6.0.0`. No combines un paquete publicado con ejemplos de `main`. Durante el desarrollo, usa instrucciones, ejemplos y paquete compilado de la misma revisión.
+
+Al cambiar de versión principal, lee la documentación de la versión anterior y la guía de migración de destino antes de cambiar la configuración. Desde Ardo 5, sigue [Actualizar a Ardo 6](/es/guide/releases/upgrade-to-v6). Si falta una etiqueta o instrucción correspondiente, comunica la carencia en lugar de deducirla a partir de otra versión.
+
+## El ejemplo Basic {#the-basic-example}
+
+`examples/basic` es la única referencia pública de instalación: un pequeño sitio estático con páginas Markdown y MDX, búsqueda y un componente React interactivo. Su README enumera los archivos que se editan, los generados y los comandos para ejecutarlo dentro del repositorio de Ardo o de forma independiente.
+
+Para copiarlo a un proyecto independiente:
+
+1. Copia el directorio de la etiqueta de la misma versión.
+2. Sustituye `ardo: workspace:*` en `package.json` por esa versión publicada y usa el archivo de bloqueo del proyecto.
+3. Con pnpm, añade la política del script de esbuild de la [instalación manual](/es/guide/getting-started#manual-installation). No copies toda la política del workspace de Ardo.
+
+La misma instalación sirve para documentación de producto, referencias de bibliotecas y documentación de varios paquetes. Añade solo las funciones opcionales que necesite el proyecto.
+
+## Examina el repositorio {#inspect-the-repository}
+
+Comprueba el gestor de paquetes, la estructura del workspace, Node.js, las versiones de las dependencias, `ardo.config.*`, la configuración de Vite, la raíz de la aplicación, cualquier framework o router, rutas, estilos y flujo de despliegue. Ardo necesita Node.js 22.22.0 o posterior y una plataforma nativa compatible con las dependencias opcionales activadas.
+
+Elige las funciones opcionales según las necesidades del proyecto:
+
+| Necesidad                                               | Guía                                                                  |
+| ------------------------------------------------------- | --------------------------------------------------------------------- |
+| Referencia de la API de un proyecto TypeScript          | [Documentación de la API](/es/guide/api-documentation)                |
+| Referencia de la API de varios paquetes                 | [Varios paquetes](/es/guide/api-documentation#multiple-packages)      |
+| Referencia de la API desde una especificación OpenAPI   | [Especificaciones OpenAPI](/es/guide/api-documentation#openapi-specs) |
+| Markdown fuera del árbol de rutas o colecciones tipadas | [Fuentes de contenido](/es/guide/content-sources)                     |
+| Alojamiento y ruta base                                 | [Despliegue](/es/guide/deployment)                                    |
+
+Un monorepositorio cambia las entradas de la API, no los límites de ejecución de la aplicación de documentación. Declara e instala las dependencias dentro del paquete de documentación. Importa componentes del workspace mediante un paquete instalado, no desde fuentes vecinas ni alias. La generación de la API puede leer proyectos TypeScript configurados por separado.
+
+## Haz el menor cambio compatible {#make-the-smallest-compatible-change}
+
+Antes de editar, indica la revisión del ejemplo, los archivos que añadirás o cambiarás, los comandos de validación y las decisiones pendientes. Sigue las instrucciones del repositorio y el alcance solicitado.
+
+Nunca sustituyas en silencio un `app/root.tsx` personalizado, proveedores, componentes del sistema de diseño, configuración de despliegue, modelo de rutas, política del workspace, credenciales o decisiones de alojamiento. Si Basic y el proyecto difieren, conserva la decisión del proyecto y explica la adaptación. Pide indicaciones si el cambio afecta al comportamiento en ejecución o a la responsabilidad del despliegue.
+
+Para un **sitio nuevo**, adapta el ejemplo Basic al directorio solicitado como se explica arriba. Define el título en `ardo.config.ts`, añade las páginas y elige los ajustes del proveedor de alojamiento solicitado.
+
+Para un **proyecto existente**, introduce Ardo alrededor de las rutas de documentación. Ardo genera un sitio estático independiente, con su propia compilación Vite y sin router del cliente, así que no comparte router ni archivos de entrada con la aplicación. Mantén la documentación en su propio paquete o directorio con `app/routes/`, `app/root.tsx` y, opcionalmente, `ardo.config.ts`. Enlaza aplicación y documentación con URL normales. Lleva las opciones de Ardo a `ardo.config.ts` con `defineArdoConfig` de `ardo/config`. Mantén los plugins y ajustes de Vite en `vite.config.ts`; la CLI añade la integración sin llamar a `ardo()`. Retira las dependencias directas React, React DOM y Vite cuando el paquete deje de importarlas directamente: ahora las gestiona Ardo.
+
+Para una **actualización**, actualiza la dependencia y los cambios de integración documentados. Compara la instalación con el ejemplo Basic correspondiente. Conserva el contenido y el comportamiento propios de la aplicación; no sustituyas por completo la raíz ni la estructura HTML personalizada. Elimina solo los archivos que la [guía de actualización](/es/guide/releases/upgrade-to-v6) indique como retirados.
+
+### Reglas de los proyectos Ardo 6 {#ardo-6-project-rules}
+
+- Un proyecto consta de rutas Markdown, MDX y TSX bajo `app/routes/**`, `app/root.tsx` y configuración opcional. `<ArdoRoot />` en `root.tsx` muestra un sitio completo. También puedes exportar `meta`, `ErrorBoundary` y `Layout`; omite `Layout` si no hace falta una estructura HTML propia.
+- Usa los scripts `ardo dev`, `ardo build` y `ardo preview`.
+- Importa React de `ardo/react`, las API de ejecución como `ArdoLink`, `useArdoPath` y `ArdoMetaFunction` de `ardo/runtime`, componentes de `ardo/ui` y herramientas de Vite de `ardo/vite`. Nunca importes valores de ejecución de la raíz `ardo` en el navegador: también contiene código Node de compilación.
+- Extiende `ardo/tsconfig` en `tsconfig.json`; configura `jsxImportSource` y las declaraciones de Ardo. TypeScript es una herramienta de desarrollo: Basic solo necesita Ardo en ejecución. TypeScript 6 o posterior comprueba un sitio; conserva la versión del proyecto. La documentación nativa de la API necesita la nightly de TypeScript 7.1 fijada en la [documentación de la API](/es/guide/api-documentation#installation), que Basic ya usa.
+- Configura una sola vez la ruta base en `ardo.config.ts`, con `base` o `versioning`.
+- No añadas `react-router.config.ts`, `app/entry.server.tsx`, `app/entry.client.tsx` ni un `app/routes.ts` generado. No importes las API retiradas `ardo/router`, `ardo/router/dom`, `ardo/router/routes`, `ardo/entry.server`, `ReactRouterConfig`, `withArdoGitHubPages` ni `withArdoVersioning`.
+- No se admiten loaders ni acciones de ruta. Proporciona datos de compilación con un módulo virtual de un plugin Vite.
+- Las rutas de API generadas, las rutas de colecciones y la tabla de rutas son resultados de compilación. No las edites a mano.
+- La documentación nativa de la API es opcional. Añade el compilador fijado, `oxc-parser` y la opción `api` solo cuando haga falta, con las versiones de la [documentación de la API](/es/guide/api-documentation#installation).
+- Tailwind es opcional. Conserva la elección de estilos del repositorio.
+
+## Valida e informa {#validate-and-report}
+
+Instala las dependencias con el gestor del repositorio. Ejecuta la comprobación de tipos y las pruebas pertinentes y después compila el sitio. Para una aplicación existente, ejecuta también los controles que protegen sus rutas actuales. Si no puedes realizar un control, indica qué comportamiento queda sin verificar. Usa `CI=true` en entornos pnpm no interactivos.
+
+Inspecciona el HTML generado de la portada y de una ruta de documentación escrita a mano. Comprueba las páginas de API o colecciones si están activadas. Confirma que `ardo build` no informa de enlaces internos rotos. Arranca el servidor de desarrollo y comprueba que los enlaces cargan las páginas esperadas y que el navegador no muestra errores de ejecución. Una compilación correcta no demuestra por sí sola una integración correcta en una aplicación existente.
+
+Informa de los archivos cambiados, la versión de la dependencia, la etiqueta de referencia o revisión, los resultados de validación y las carencias pendientes. No despliegues ni cambies la responsabilidad del alojamiento salvo que se haya solicitado.

@@ -2,7 +2,8 @@ import { Children, Fragment, isValidElement, type ReactNode } from "react"
 import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
-import { useArdoConfig, useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoLabels, useArdoPageData, useArdoSidebar, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoLocale } from "../runtime/locale"
 import { getPrevNextLinks } from "../runtime/sidebar-utils"
 import { useBareContent } from "./BareContent"
 import { ArdoBreadcrumb } from "./Breadcrumb"
@@ -35,6 +36,7 @@ type ContentMetaInput = {
   lastUpdated: ArdoContentProps["lastUpdated"]
   siteConfig: ReturnType<typeof useArdoSiteConfig>
   locale: string
+  labels: ReturnType<typeof useArdoLabels>
 }
 
 function resolveEditLink(input: ContentMetaInput) {
@@ -53,7 +55,7 @@ function resolveEditLink(input: ContentMetaInput) {
             .join("/")
         )
       : undefined,
-    text: resolved?.text ?? "Edit this page",
+    text: resolved?.text ?? input.labels.page.edit,
     show,
   }
 }
@@ -75,7 +77,7 @@ function resolveLastUpdated(input: ContentMetaInput) {
     }),
   }
   return {
-    label: resolved?.text ?? "Last updated",
+    label: resolved?.text ?? input.labels.page.lastUpdated,
     text: show ? new Date(value).toLocaleDateString(input.locale, formatOptions) : undefined,
     show,
   }
@@ -97,7 +99,8 @@ export function ArdoContent({
   const isBare = useBareContent()
   const pageData = useArdoPageData()
   const siteConfig = useArdoSiteConfig()
-  const locale = useArdoConfig().lang ?? "en"
+  const locale = useArdoLocale()
+  const labels = useArdoLabels()
   const sidebar = useArdoSidebar()
   const pathname = useArdoPath()
 
@@ -107,7 +110,7 @@ export function ArdoContent({
     )
   }
 
-  const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig, locale }
+  const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig, locale, labels }
   const edit = resolveEditLink(input)
   const updated = resolveLastUpdated(input)
   const { prev, next } = getPrevNextLinks(sidebar, pathname)
@@ -258,6 +261,7 @@ function ContentPrevNext({
   prev: ReturnType<typeof getPrevNextLinks>["prev"]
   next: ReturnType<typeof getPrevNextLinks>["next"]
 }) {
+  const labels = useArdoLabels()
   const prevLink = prev?.link ?? ""
   const nextLink = next?.link ?? ""
   const hasPrev = prevLink !== ""
@@ -265,12 +269,12 @@ function ContentPrevNext({
   if (!hasPrev && !hasNext) return null
 
   return (
-    <nav className={footerStyles.prevNext} aria-label="Page navigation">
+    <nav className={footerStyles.prevNext} aria-label={labels.page.navigation}>
       {hasPrev ? (
         <ArdoLink to={prevLink} className={footerStyles.prevLink}>
           <span className={footerStyles.prevNextLabel}>
             <ChromeIcon name="previous-next" className={footerStyles.previousArrow} />
-            Previous
+            {labels.page.previous}
           </span>
           <span className={footerStyles.prevNextTitle}>{prev?.text}</span>
         </ArdoLink>
@@ -280,7 +284,7 @@ function ContentPrevNext({
       {hasNext ? (
         <ArdoLink to={nextLink} className={footerStyles.nextLink}>
           <span className={`${footerStyles.prevNextLabel} ${footerStyles.nextLabel}`}>
-            Next
+            {labels.page.next}
             <ChromeIcon name="previous-next" />
           </span>
           <span className={footerStyles.prevNextTitle}>{next?.text}</span>

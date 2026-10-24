@@ -1,0 +1,71 @@
+---
+title: "Actualizar a Ardo 4.0"
+description: "Prepara un proyecto Ardo para la versión 4.0 y las URL estables por versión principal."
+order: 3
+---
+
+# Actualizar a Ardo 4.0
+
+Ardo 4.0 aprovecha el cambio de versión principal para estabilizar las URL de documentación. El cambio público principal es su estructura: la documentación publicada debe vivir en una carpeta estable como `/v3/` o `/v4/`, mientras `/` redirige a la versión principal actual.
+
+## Cambios {#what-changes}
+
+- Las URL con versión principal pasan a ser la forma pública recomendada.
+- El `index.html` raíz, `versions.json`, `sitemap.xml`, `robots.txt`, `llms.txt`, los recursos de búsqueda y las redirecciones son salidas estáticas de compilación.
+- `sitemap.xml` solo anuncia la versión principal canónica actual. Las carpetas anteriores siguen accesibles sin indexarse como contenido actual duplicado.
+- Los despliegues de GitHub Pages deben conservar las carpetas anteriores cuando una nueva versión pasa a ser la actual.
+
+## Actualizar la documentación versionada {#update-versioned-docs}
+
+Configura la versión principal actual en `vite.config.ts`:
+
+```ts
+import { defineConfig } from "vite"
+import { ardo } from "ardo/vite"
+
+export default defineConfig({
+  plugins: [
+    ardo({
+      title: "My Docs",
+      siteUrl: "https://docs.example.com",
+      versioning: {
+        current: "v4",
+        versions: [
+          { id: "v4", label: "4.x", path: "/v4/" },
+          { id: "v3", label: "3.x", path: "/v3/" },
+        ],
+      },
+    }),
+  ],
+})
+```
+
+Define la misma ruta base en `react-router.config.ts`:
+
+```ts
+import type { Config } from "@react-router/dev/config"
+import { withArdoVersioning } from "ardo/vite"
+
+const config = {
+  ssr: false,
+  prerender: true,
+} satisfies Config
+
+export default withArdoVersioning(config, { basename: "/v4/" })
+```
+
+## Conservar versiones anteriores en GitHub Pages {#preserve-older-github-pages-versions}
+
+GitHub Pages sustituye todo el artefacto subido en cada despliegue. Antes de cambiar a una carpeta principal nueva, conserva la última carpeta generada de la versión anterior y cópiala al artefacto Pages durante el despliegue.
+
+Conservar cada carpeta anterior, por ejemplo en un archivo del repositorio, protege URL estables como `/v3/...` frente a su eliminación en el primer despliegue de `/v4/`.
+
+## Comprobar los enlaces existentes {#check-existing-links}
+
+Actualiza los enlaces externos para que apunten a la URL canónica versionada:
+
+```text
+https://docs.example.com/v4/guide/getting-started
+```
+
+Evita usar `latest` como URL canónica. Si se añade un alias `latest`, debe redirigir a la carpeta de la versión principal actual.

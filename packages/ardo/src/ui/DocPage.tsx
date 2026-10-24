@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
-import { useArdoConfig, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoLabels, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoLocale } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { ArdoContent, type ArdoContentProps } from "./Content"
 import * as styles from "./DocPage.css"
@@ -125,10 +126,11 @@ function ArdoPageRail({
   tocSource?: "metadata" | "dom"
 }) {
   const siteConfig = useArdoSiteConfig()
-  const locale = useArdoConfig().lang ?? "en"
+  const locale = useArdoLocale()
+  const labels = useArdoLabels()
   const pageData = useArdoPageData()
-  const edit = resolveRailEditLink({ pageData, editLink, siteConfig })
-  const updated = resolveRailLastUpdated({ pageData, lastUpdated, siteConfig, locale })
+  const edit = resolveRailEditLink({ pageData, editLink, siteConfig, labels })
+  const updated = resolveRailLastUpdated({ pageData, lastUpdated, siteConfig, locale, labels })
   const hasMeta = edit.show || updated.show
 
   if (!hasMeta && hideToc) return null
@@ -137,7 +139,7 @@ function ArdoPageRail({
     <aside className={`ardo-page-rail ${styles.pageRail}`}>
       {hasMeta && (
         <section className={`ardo-page-rail-section ${styles.pageRailSection}`}>
-          <h2 className={styles.pageRailTitle}>Page</h2>
+          <h2 className={styles.pageRailTitle}>{labels.page.label}</h2>
           {edit.show && (
             <a
               href={edit.href}
@@ -171,12 +173,14 @@ type RailMetaInput = {
   pageData: ReturnType<typeof useArdoPageData>
   siteConfig: ReturnType<typeof useArdoSiteConfig>
   locale?: string
+  labels: ReturnType<typeof useArdoLabels>
 }
 
 function resolveRailEditLink({
   pageData,
   editLink,
   siteConfig,
+  labels,
 }: { editLink?: { pattern: string; text?: string } } & RailMetaInput) {
   const resolved = editLink ?? siteConfig.editLink
   const pattern = resolved?.pattern ?? ""
@@ -192,7 +196,7 @@ function resolveRailEditLink({
             .join("/")
         )
       : undefined,
-    text: resolved?.text ?? "Edit this page",
+    text: resolved?.text ?? labels.page.edit,
     show,
   }
 }
@@ -202,6 +206,7 @@ function resolveRailLastUpdated({
   lastUpdated,
   siteConfig,
   locale = "en",
+  labels,
 }: {
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
 } & RailMetaInput) {
@@ -221,7 +226,7 @@ function resolveRailLastUpdated({
     }),
   }
   return {
-    label: resolved?.text ?? "Last updated",
+    label: resolved?.text ?? labels.page.lastUpdated,
     text: show ? new Date(value).toLocaleDateString(locale, formatOptions) : undefined,
     show,
   }

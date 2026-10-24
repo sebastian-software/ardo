@@ -4,18 +4,27 @@
   "type": "module",
   "scripts": {
     "dev": "ardo dev",
+    "typecheck": "tsc --noEmit",
     "build": "ardo build",
-    "preview": "ardo preview"
+    "preview": "ardo preview",
+    "i18n:extract": "pmds extract",
+    "i18n:check": "pmds extract --check && pmds audit"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/caveat": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
+    "@palamedes/core": "1.25.0",
+    "@palamedes/react": "1.25.0",
+    "@palamedes/runtime": "1.25.0",
     "ardo": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@palamedes/cli": "1.25.0",
+    "@palamedes/core-node": "1.25.0",
+    "@palamedes/vite-plugin": "1.25.0",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vanilla-extract/css": "catalog:",
