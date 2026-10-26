@@ -46,13 +46,13 @@ export default defineConfig({
   server: { fs: { allow: fontPackages } },
   plugins: [
     npmFacts("ardo"),
-    palamedesMdxExamples(),
-    palamedes({
-      mdx: false,
-      failOnMissing: true,
-      failOnCompileError: true,
-      keepSourceFallbacks: false,
-    }),
+    ...palamedesMdxExamples(
+      palamedes({
+        exclude: [/node_modules/u, /\/app\/routes\/.*\.mdx$/u],
+        failOnMissing: true,
+        keepSourceFallbacks: false,
+      })
+    ),
     ardo({
       title: "Ardo",
       description:

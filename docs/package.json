@@ -8,23 +8,23 @@
     "build": "ardo build",
     "preview": "ardo preview",
     "i18n:extract": "pmds extract",
-    "i18n:check": "pmds extract --check && pmds audit"
+    "i18n:check": "node scripts/check-palamedes-mdx.mjs && pmds extract --check && pmds audit"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/caveat": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
-    "@palamedes/core": "1.25.0",
-    "@palamedes/react": "1.25.0",
-    "@palamedes/runtime": "1.25.0",
+    "@palamedes/core": "link:vendor/palamedes/packages/core",
+    "@palamedes/react": "link:vendor/palamedes/packages/react",
+    "@palamedes/runtime": "link:vendor/palamedes/packages/runtime",
     "ardo": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@palamedes/cli": "1.25.0",
-    "@palamedes/core-node": "1.25.0",
-    "@palamedes/vite-plugin": "1.25.0",
+    "@palamedes/cli": "link:vendor/palamedes/packages/cli",
+    "@palamedes/core-node": "link:vendor/palamedes/packages/core-node",
+    "@palamedes/vite-plugin": "link:vendor/palamedes/packages/vite-plugin",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vanilla-extract/css": "catalog:",

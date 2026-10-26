@@ -60,7 +60,7 @@ const budgets = {
   catalogGzip: {
     label: "largest locale catalog gzip",
     budget: 10_000,
-    baseline: "≈6.5 KB (2026-10, 192 shared UI and MDX messages)",
+    baseline: "≈8 KB per locale (2026-10, compiled UI and MDX catalog fragments)",
   },
   buildDurationMs: {
     label: "docs build duration",
@@ -147,6 +147,21 @@ async function measureLocaleChunks(jsFiles, locales, prefix) {
   return Math.max(...chunks)
 }
 
+/** Bound the complete active-locale catalog, including fragments from lazy routes. */
+async function measureLocaleCatalogs(jsFiles, locales) {
+  const totals = await Promise.all(
+    locales.map(async (locale) => {
+      const files = jsFiles.filter((file) => {
+        const name = path.basename(file)
+        return name.startsWith("palamedes-m-") && name.includes(`.${locale}-`)
+      })
+      if (files.length === 0) throw new Error(`Missing Palamedes ${locale} catalog fragments`)
+      return (await Promise.all(files.map(gzipSize))).reduce((sum, size) => sum + size, 0)
+    })
+  )
+  return Math.max(...totals)
+}
+
 function runDocsBuild() {
   const start = performance.now()
   execSync("pnpm docs:build", { cwd: repoRoot, stdio: "inherit" })
@@ -187,7 +202,7 @@ async function main() {
     item.total > largest.total ? item : largest
   )
   const searchIndex = await measureLocaleChunks(jsFiles, current.locales, "search-index_locale_")
-  const catalog = await measureLocaleChunks(jsFiles, current.locales, "")
+  const catalog = await measureLocaleCatalogs(jsFiles, current.locales)
 
   const results = [
     { key: "entryClientGzip", value: await measureEntryClient(jsFiles), format: formatBytes },

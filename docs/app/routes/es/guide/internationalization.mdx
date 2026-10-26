@@ -45,7 +45,7 @@ Palamedes compila este ejemplo a partir de un único archivo MDX en inglés. Los
 
 <Welcome />
 
-Palamedes y Ardo tienen cada uno un compilador MDX completo. Este sitio deja que Ardo compile las rutas de documentación para que el resaltado, las anclas, el índice y la búsqueda compartan la misma fuente. Importa este pequeño ejemplo con `?palamedes` mediante un adaptador Vite específico, de modo que Palamedes gestiona ese módulo. Los componentes se importan de forma explícita, como requiere el compilador MDX de Palamedes.
+El ejemplo importado pasa por el compilador MDX nativo de Palamedes y sus dependencias de catálogo generadas mediante el adaptador de Vite. Ardo compila los módulos de las rutas de documentación, incluidos el resaltado, las anclas, el índice y los metadatos de búsqueda.
 
 Las rutas de documentación se escriben como Markdown y MDX localizados. Los textos compartidos de la interfaz usan macros de Palamedes y catálogos PO en `docs/app/i18n/`. Así cada documento carga su idioma sin enviar los cuatro catálogos a todos los lectores.
 
@@ -65,7 +65,7 @@ export async function withRenderContext({ path, render }: ArdoServerRenderContex
 }
 ```
 
-Aquí `loadI18n` es el cargador de catálogos del sitio. Usa una instancia inmutable por idioma o una instancia nueva por petición. No actives un idioma mutable para todo el proceso: los renderizados paralelos mezclarían idiomas. En el navegador, carga el catálogo del documento y llama a `setClientI18n` antes de la hidratación.
+Aquí `loadI18n` es el cargador de catálogos del sitio. Usa una instancia inmutable por idioma o una instancia nueva por petición. No actives un idioma mutable para todo el proceso: los renderizados paralelos mezclarían idiomas. En el navegador, Palamedes v2 inicializa su runtime mediante las dependencias de catálogo generadas. El hook del servidor del sitio usa `createViteCatalogDelivery()` de `@palamedes/vite-plugin/delivery` para insertar el import map del idioma activo y gestionar fallos de carga de catálogos antes de la hidratación.
 
 ## Mantener las traducciones {#maintain-translations}
 

@@ -45,7 +45,7 @@ Cet exemple est compilé par Palamedes à partir d’un seul fichier MDX anglais
 
 <Welcome />
 
-Palamedes et Ardo possèdent chacun un compilateur MDX complet. Ce site laisse Ardo compiler les routes de documentation afin que la coloration, les ancres de titres, le sommaire et la recherche partagent la même source. Il importe ce petit exemple avec `?palamedes` via un adaptateur Vite dédié, laissant Palamedes gérer ce module. Les composants sont importés explicitement, comme le demande le compilateur MDX de Palamedes.
+L’exemple importé passe par le compilateur MDX natif de Palamedes et ses dépendances de catalogue générées via l’adaptateur Vite. Ardo compile les modules des routes de documentation, avec la coloration, les ancres de titres, le sommaire et les métadonnées de recherche.
 
 Les routes de documentation sont rédigées en Markdown et MDX localisés. Les textes partagés de l’interface utilisent les macros Palamedes et les catalogues PO de `docs/app/i18n/`. Chaque document charge sa propre langue, sans envoyer les quatre catalogues à chaque lecteur.
 
@@ -65,7 +65,7 @@ export async function withRenderContext({ path, render }: ArdoServerRenderContex
 }
 ```
 
-Ici, `loadI18n` est le chargeur de catalogues du site. Utilisez une instance immuable par langue ou une nouvelle instance par requête. N’activez pas de langue mutable pour tout le processus : les rendus parallèles mélangeraient les langues. Dans le navigateur, chargez le catalogue du document et appelez `setClientI18n` avant l’hydratation.
+Ici, `loadI18n` est le chargeur de catalogues du site. Utilisez une instance immuable par langue ou une nouvelle instance par requête. N’activez pas de langue mutable pour tout le processus : les rendus parallèles mélangeraient les langues. Dans le navigateur, Palamedes v2 initialise son runtime à partir des dépendances de catalogue générées. Le hook serveur du site utilise `createViteCatalogDelivery()` de `@palamedes/vite-plugin/delivery` pour insérer l’import map de la langue active et gérer les échecs de chargement des catalogues avant l’hydratation.
 
 ## Maintenir les traductions {#maintain-translations}
 

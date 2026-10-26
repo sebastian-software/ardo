@@ -1,0 +1,4 @@
+[submodule "vendor/palamedes"]
+	path = docs/vendor/palamedes
+	url = https://github.com/sebastian-software/palamedes.git
+	branch = main

@@ -45,7 +45,7 @@ Palamedes kompiliert dieses Beispiel aus einer einzigen englischen MDX-Datei. Ab
 
 <Welcome />
 
-Palamedes und Ardo besitzen jeweils einen vollständigen MDX-Compiler. Auf dieser Website kompiliert Ardo die Dokumentationsrouten, damit Syntaxhervorhebung, Überschriftenanker, Inhaltsverzeichnis und Suche dieselbe Quelle verwenden. Dieses kleine Beispiel wird über einen eigenen Vite-Adapter mit `?palamedes` importiert; sein Modul gehört damit Palamedes. Komponenten werden explizit importiert, wie es der MDX-Compiler von Palamedes verlangt.
+Das importierte Beispiel durchläuft über den Vite-Adapter den nativen MDX-Compiler von Palamedes und dessen generierte Katalogabhängigkeiten. Ardo kompiliert die Dokumentationsrouten einschließlich Syntaxhervorhebung, Überschriftenankern, Inhaltsverzeichnis und Suchmetadaten.
 
 Die Dokumentationsrouten werden als übersetztes Markdown und MDX verfasst. Gemeinsame Oberflächentexte nutzen Palamedes-Makros und PO-Kataloge in `docs/app/i18n/`. So werden nicht alle vier Kataloge an jeden Leser ausgeliefert: Jedes Dokument lädt seine eigene Sprache.
 
@@ -65,7 +65,7 @@ export async function withRenderContext({ path, render }: ArdoServerRenderContex
 }
 ```
 
-Hier ist `loadI18n` der Kataloglader der Website. Verwende eine unveränderliche Instanz pro Sprache oder eine neue Instanz pro Anfrage. Aktiviere keine veränderliche Sprache für den gesamten Prozess: Parallele Render-Vorgänge würden Sprachen vermischen. Lade im Browser den Katalog des Dokuments und rufe vor der Hydrierung `setClientI18n` auf.
+Hier ist `loadI18n` der Kataloglader der Website. Verwende eine unveränderliche Instanz pro Sprache oder eine neue Instanz pro Anfrage. Aktiviere keine veränderliche Sprache für den gesamten Prozess: Parallele Render-Vorgänge würden Sprachen vermischen. Im Browser initialisiert Palamedes v2 seine Laufzeit über generierte Katalogabhängigkeiten. Der Server-Hook der Website nutzt `createViteCatalogDelivery()` aus `@palamedes/vite-plugin/delivery`, um die Import Map der aktiven Sprache einzufügen und Fehler beim Laden der Kataloge vor der Hydrierung abzufangen.
 
 ## Übersetzungen pflegen {#maintain-translations}
 

@@ -278,14 +278,14 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@palamedes/core':
-        specifier: 1.25.0
-        version: 1.25.0
+        specifier: link:vendor/palamedes/packages/core
+        version: link:vendor/palamedes/packages/core
       '@palamedes/react':
-        specifier: 1.25.0
-        version: 1.25.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: link:vendor/palamedes/packages/react
+        version: link:vendor/palamedes/packages/react
       '@palamedes/runtime':
-        specifier: 1.25.0
-        version: 1.25.0
+        specifier: link:vendor/palamedes/packages/runtime
+        version: link:vendor/palamedes/packages/runtime
       ardo:
         specifier: workspace:*
         version: link:../packages/ardo
@@ -297,14 +297,14 @@ importers:
         version: 19.3.1(react@19.3.1)
     devDependencies:
       '@palamedes/cli':
-        specifier: 1.25.0
-        version: 1.25.0
+        specifier: link:vendor/palamedes/packages/cli
+        version: link:vendor/palamedes/packages/cli
       '@palamedes/core-node':
-        specifier: 1.25.0
-        version: 1.25.0
+        specifier: link:vendor/palamedes/packages/core-node
+        version: link:vendor/palamedes/packages/core-node
       '@palamedes/vite-plugin':
-        specifier: 1.25.0
-        version: 1.25.0(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: link:vendor/palamedes/packages/vite-plugin
+        version: link:vendor/palamedes/packages/vite-plugin
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -1872,124 +1872,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
-
-  '@palamedes/cli-darwin-arm64@1.25.0':
-    resolution: {integrity: sha512-mu7zc1XSGqI1OAN6d8MYW1LO2uPmAbmhQm3ZdI5XOqrR+DHYRH1NtOMlU5AS1UvDES8v4yLrKmpWaFrwIHpEWg==}
-    cpu: [arm64]
-    os: [darwin]
-    hasBin: true
-
-  '@palamedes/cli-linux-arm64-gnu@1.25.0':
-    resolution: {integrity: sha512-vzWnAf9FEi7Ji1aDUx855ZmAiiRIgBHXtgJU4BOCwBwRjxAO8kgdyDnFd05gQV1lbBCUXWGZq/MZTM5VwEfP8A==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-    hasBin: true
-
-  '@palamedes/cli-linux-arm64-musl@1.25.0':
-    resolution: {integrity: sha512-gbKEkBsvPllg5Cu8zuELOYAT5SVRm7euiQx8YTsXBq9IpFDYLekhSIej3u9HzsLMD7XO4Q1ksWH0GPUhf5UwHA==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-    hasBin: true
-
-  '@palamedes/cli-linux-x64-gnu@1.25.0':
-    resolution: {integrity: sha512-uIy3AtANTiTtvMsKyhyfrQMZecY6DBww2Al7rRQoqFWXe2liMOprFsShRUzailToa+63gyFZjqt65FM/HmD/UQ==}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-    hasBin: true
-
-  '@palamedes/cli-linux-x64-musl@1.25.0':
-    resolution: {integrity: sha512-C8uTG4xSX6zvywBZr8JL86TXYT6xiGTg0KL6keenTWncVjTgm9lHFn3vAwrHDVjj6wPySy9XCM7S2w2aZ/Z+0Q==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-    hasBin: true
-
-  '@palamedes/cli-win32-x64-msvc@1.25.0':
-    resolution: {integrity: sha512-Dgt9OdkOr1q3z2mOqzy3+GKn+Cphpsi7W87r4ciXtqRKw2rSPks2EOOva6Umg/m/oqWIn/bZvEuiKC2qieBlkA==}
-    cpu: [x64]
-    os: [win32]
-    hasBin: true
-
-  '@palamedes/cli@1.25.0':
-    resolution: {integrity: sha512-bqq2ce6IsCxndVGN5IpWW6zkLBHmwumkWpIkdzJyi/2E5I31WPFfA8fuyF6L46JYDvqIY7l7iEK9GLrEtmx4Fg==}
-    engines: {node: '>=22.0.0'}
-    hasBin: true
-
-  '@palamedes/config@1.25.0':
-    resolution: {integrity: sha512-4QLa1wSvn6ECeGEEn80aHCS4LDUCgoA0H3gemqIsSyoYADcOaRTvp8bPb90qGploPIks2NW6DmOoO3B6AckKCg==}
-    engines: {node: '>=22.0.0'}
-
-  '@palamedes/core-node-darwin-arm64@1.25.0':
-    resolution: {integrity: sha512-VeKeByWLz4eOqFqsXnrvBznxM0ctnReu+QVwzwXk40O8ZZhOjPQnet7mEDEsydKYQCQhmfcXyLL8Z7o1iy+UWg==}
-    engines: {node: '>=22.0.0'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@palamedes/core-node-linux-arm64-gnu@1.25.0':
-    resolution: {integrity: sha512-turM1QS1RpEWuXZpfe5ZNQdx71fSChe310fXmUDFeZd9Cynmce6Y7DdRcGzp9KufhzGk0ugHCW3u9QGXwpQ1bA==}
-    engines: {node: '>=22.0.0'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
-  '@palamedes/core-node-linux-arm64-musl@1.25.0':
-    resolution: {integrity: sha512-CGG0MpMlGPm8uwGZJJFiBUsPnlES6u9fXRrjBOMKLfQMiv2Ba7h8m9pRJl9Bj35oVI5+0+FHHu7bi4xJHR5oJw==}
-    engines: {node: '>=22.0.0'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
-  '@palamedes/core-node-linux-x64-gnu@1.25.0':
-    resolution: {integrity: sha512-En1vgAiQS8taQg26vyqsonqAYkLpIWGXA89hNk8DUn9CNBulk38qWBEI1MYeJGKiPWr8C8/8isvqpqhZa0po0w==}
-    engines: {node: '>=22.0.0'}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
-  '@palamedes/core-node-linux-x64-musl@1.25.0':
-    resolution: {integrity: sha512-vM9yeYIffKFODfsrUxxu7EhbroGP/SlHotxqCyKFbShR1Q5nbJToOSMxfaxJKK8dzKALFsp29nhPFVmPSqf5Zw==}
-    engines: {node: '>=22.0.0'}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
-  '@palamedes/core-node-win32-x64-msvc@1.25.0':
-    resolution: {integrity: sha512-/JB9KIwnHyKlFftLTx79WIdk3TN/N2ZPWUdvqGanRwURcX7xOCvFeg1M3BICIqPIUVHe/yTlqSu+Gf03f4p4Pg==}
-    engines: {node: '>=22.0.0'}
-    cpu: [x64]
-    os: [win32]
-
-  '@palamedes/core-node@1.25.0':
-    resolution: {integrity: sha512-VdXhH0Ax12wTJu35QlvZgwT5YFtCYSlNhQncgBOdZTQT5PD3Zy6qyHbsHZZ24lLtPpucvVdX+TIIHfx0C0Xnuw==}
-    engines: {node: '>=22.0.0'}
-
-  '@palamedes/core@1.25.0':
-    resolution: {integrity: sha512-Xh33S4SxXWez6FbPBFFu5/t7sK40PAabg5rCX909xaHE0ARpzIKGFJ0XXeOzqbvNxyTTU/pkfz17yOQJZWoo5g==}
-    engines: {node: '>=22.0.0'}
-
-  '@palamedes/react@1.25.0':
-    resolution: {integrity: sha512-Rxt/fEDIs30ofeZTZ0CqRmWa9egZzNbAY8iVbxuV2a4qXo8GT8tMmwhCSAdvGeFAH3bTXFy+bJsF5AunPFH4Bw==}
-    engines: {node: '>=22.0.0'}
-    peerDependencies:
-      react: ^19.0.0
-      react-dom: ^19.0.0
-
-  '@palamedes/runtime@1.25.0':
-    resolution: {integrity: sha512-IqD0bmZMdK5PezlpQS3JfOokkcSTbMInUcWhTDAnZJuN4rQDGH3AR6W24Zi2xRXx1OavND3BcE1BMTydJrRJtA==}
-    engines: {node: '>=22.0.0'}
-
-  '@palamedes/transform@1.25.0':
-    resolution: {integrity: sha512-fObQffvIvPDGK1E+Dk8tGK4RqvJldKzKZXdcD8PD9IwbCFj393PqeI8Gu3qu2/QchZ3TktJTqVLf68wzwZ1QlA==}
-    engines: {node: '>=22.0.0'}
-
-  '@palamedes/vite-plugin@1.25.0':
-    resolution: {integrity: sha512-qKgZkmGneeDht1qzgozn1scLghb6sBCf/IRQeQlF0ClOcH0Q9O5yJgmQdtT+wgNbeOUV0v/Vk439F+Sbb1oD4w==}
-    engines: {node: '>=22.0.0'}
-    peerDependencies:
-      vite: 8.3.5
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -6812,91 +6694,6 @@ snapshots:
 
   '@oxlint/binding-win32-x64-msvc@1.89.0':
     optional: true
-
-  '@palamedes/cli-darwin-arm64@1.25.0':
-    optional: true
-
-  '@palamedes/cli-linux-arm64-gnu@1.25.0':
-    optional: true
-
-  '@palamedes/cli-linux-arm64-musl@1.25.0':
-    optional: true
-
-  '@palamedes/cli-linux-x64-gnu@1.25.0':
-    optional: true
-
-  '@palamedes/cli-linux-x64-musl@1.25.0':
-    optional: true
-
-  '@palamedes/cli-win32-x64-msvc@1.25.0':
-    optional: true
-
-  '@palamedes/cli@1.25.0':
-    optionalDependencies:
-      '@palamedes/cli-darwin-arm64': 1.25.0
-      '@palamedes/cli-linux-arm64-gnu': 1.25.0
-      '@palamedes/cli-linux-arm64-musl': 1.25.0
-      '@palamedes/cli-linux-x64-gnu': 1.25.0
-      '@palamedes/cli-linux-x64-musl': 1.25.0
-      '@palamedes/cli-win32-x64-msvc': 1.25.0
-
-  '@palamedes/config@1.25.0':
-    dependencies:
-      jiti: 2.7.0
-      picomatch: 4.0.7
-      smol-toml: 1.9.1
-      yaml: 2.9.1
-
-  '@palamedes/core-node-darwin-arm64@1.25.0':
-    optional: true
-
-  '@palamedes/core-node-linux-arm64-gnu@1.25.0':
-    optional: true
-
-  '@palamedes/core-node-linux-arm64-musl@1.25.0':
-    optional: true
-
-  '@palamedes/core-node-linux-x64-gnu@1.25.0':
-    optional: true
-
-  '@palamedes/core-node-linux-x64-musl@1.25.0':
-    optional: true
-
-  '@palamedes/core-node-win32-x64-msvc@1.25.0':
-    optional: true
-
-  '@palamedes/core-node@1.25.0':
-    optionalDependencies:
-      '@palamedes/core-node-darwin-arm64': 1.25.0
-      '@palamedes/core-node-linux-arm64-gnu': 1.25.0
-      '@palamedes/core-node-linux-arm64-musl': 1.25.0
-      '@palamedes/core-node-linux-x64-gnu': 1.25.0
-      '@palamedes/core-node-linux-x64-musl': 1.25.0
-      '@palamedes/core-node-win32-x64-msvc': 1.25.0
-
-  '@palamedes/core@1.25.0': {}
-
-  '@palamedes/react@1.25.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
-    dependencies:
-      '@palamedes/core': 1.25.0
-      '@palamedes/runtime': 1.25.0
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-
-  '@palamedes/runtime@1.25.0': {}
-
-  '@palamedes/transform@1.25.0':
-    dependencies:
-      '@palamedes/core-node': 1.25.0
-      '@palamedes/runtime': 1.25.0
-
-  '@palamedes/vite-plugin@1.25.0(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))':
-    dependencies:
-      '@palamedes/config': 1.25.0
-      '@palamedes/core-node': 1.25.0
-      '@palamedes/runtime': 1.25.0
-      '@palamedes/transform': 1.25.0
-      vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
   '@pkgjs/parseargs@0.11.0':
     optional: true

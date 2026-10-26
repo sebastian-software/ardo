@@ -45,7 +45,7 @@ This example is compiled by Palamedes from one English MDX file. Its paragraphs 
 
 <Welcome />
 
-Palamedes and Ardo each own a complete MDX compiler. This site lets Ardo compile documentation routes so syntax highlighting, heading anchors, the outline, and search use the same source. It imports this small example with `?palamedes` through a dedicated Vite adapter, letting Palamedes own that module. Imported components are explicit, as required by Palamedes' MDX compiler.
+The imported example goes through Palamedes’ native MDX compiler and generated catalog dependencies via the Vite adapter. Ardo compiles the documentation route modules, including code highlighting, heading anchors, the outline, and search metadata.
 
 The documentation routes are authored as localized Markdown and MDX. Shared interface copy uses Palamedes macros and PO catalogs in `docs/app/i18n/`. This avoids sending all four catalogs to every reader: each document loads its own locale.
 
@@ -65,7 +65,7 @@ export async function withRenderContext({ path, render }: ArdoServerRenderContex
 }
 ```
 
-Here `loadI18n` is the site's catalog loader. Use one immutable instance per locale or a fresh instance per request. Do not activate a process-wide mutable locale: parallel renders would otherwise mix languages. In the browser, load the document's catalog and call `setClientI18n` before hydration.
+Here `loadI18n` is the site's catalog loader. Use one immutable instance per locale or a fresh instance per request. Do not activate a process-wide mutable locale: parallel renders would otherwise mix languages. In the browser, Palamedes v2 initializes its runtime from generated catalog dependencies. The site’s server hook uses `createViteCatalogDelivery()` from `@palamedes/vite-plugin/delivery` to insert the active locale’s import map and handle catalog-loading failures before hydration.
 
 ## Maintain Translations
 

@@ -12,13 +12,14 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 - Node.js >= 22.22.0
 - pnpm >= 9.0.0
+- Rust 1.96 or newer for the temporary Palamedes source dependency.
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/sebastian-software/ardo.git
+git clone --recurse-submodules https://github.com/sebastian-software/ardo.git
 cd ardo
 
 # Install dependencies
@@ -94,6 +95,26 @@ retains its Ferriki `ThemeInput` type. Ferromark bundles its own native
 highlighter: updating the direct Core dependency does not update that bundled
 copy. The HTML helper and native JSX renderer can produce different markup;
 both preserve their respective public output contracts.
+
+### Palamedes before v2 publication
+
+The docs use the pinned Git submodule at `docs/vendor/palamedes` instead of the
+published 1.x packages. It contains the current MDX adapter and its matching
+native compiler and CLI. The docs' `link:` dependencies point into that checkout;
+Palamedes keeps its own workspace, lockfile, and Rust toolchain.
+
+For an existing checkout, run `git submodule update --init docs/vendor/palamedes`.
+`pnpm build` first runs `pnpm palamedes:build`, which installs Palamedes' locked
+build dependencies and builds the needed JavaScript and native platform packages.
+This source build requires Rust and network access for the initial dependencies.
+Subsequent builds reuse Cargo and pnpm caches.
+
+To advance the source dependency, update the submodule to a reviewed commit from
+Palamedes `main`, rebuild, and commit the Git pointer. Run `pnpm --filter
+ardo-docs i18n:check` to verify the fenced-import regression, native compilation
+of every English guide, catalog extraction, and audit. Also run the docs build
+and browser suite. Replace the source dependency with coordinated published v2
+packages once that release is available and verified.
 
 ### Coordinated native-engine development
 

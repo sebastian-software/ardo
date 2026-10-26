@@ -81,6 +81,10 @@ for (const language of languages) {
       await staticContext.close()
     }
 
+    const catalogRequests: string[] = []
+    page.on("request", (request) => {
+      if (request.url().includes("/palamedes-m-")) catalogRequests.push(request.url())
+    })
     const errors: string[] = []
     page.on("pageerror", (error) => errors.push(error.message))
     page.on("console", (message) => {
@@ -91,6 +95,8 @@ for (const language of languages) {
     await page.getByRole("button", { name: language.one, exact: true }).click()
     await expect(page.getByRole("button", { name: language.two, exact: true })).toBeVisible()
     expect(errors).toEqual([])
+    expect(catalogRequests.length).toBeGreaterThan(0)
+    expect(catalogRequests.every((url) => url.includes(`.${language.id}-`))).toBe(true)
   })
 
   test(`${language.id} downloads only its own search index and keeps result links localized`, async ({
@@ -188,3 +194,20 @@ for (const language of languages) {
     }
   })
 }
+
+test("a failed catalog offers document reload and recovers the translated page", async ({
+  page,
+}) => {
+  const catalog = "**/palamedes-m-*.de-*.js"
+  await page.route(catalog, (route) => route.abort())
+  await page.goto("/v6/de/guide/internationalization/")
+  await expect(page.getByRole("alert")).toBeVisible()
+  const reload = page.getByRole("link", { name: "Reload page", exact: true })
+  await expect(reload).toHaveAttribute("target", "_self")
+
+  await page.unroute(catalog)
+  await reload.click()
+  await expect(page.getByRole("heading", { level: 1, name: "Internationalisierung" })).toBeVisible()
+  await page.getByRole("button", { name: "0 Klicks", exact: true }).click()
+  await expect(page.getByRole("button", { name: "1 Klick", exact: true })).toBeVisible()
+})

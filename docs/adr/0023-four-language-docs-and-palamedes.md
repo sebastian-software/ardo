@@ -1,65 +1,52 @@
-# ADR 0023: Publish four static language trees with Palamedes interface catalogs
+# ADR 0023: Localize the V6 docs through Palamedes PO catalogs
 
 ## Status
 
-Accepted, 2026-10-24.
+Proposed; implementation in progress. The V2 source integration is verified.
+Consolidating the authored guide translations into one MDX source remains open.
 
-## Context
+## Context and direction
 
-Ardo has static locale routing but its own documentation did not exercise it.
-V6 should demonstrate a complete localized site, including navigation, search,
-metadata, interactive examples, and compatibility with older documentation.
-Palamedes now supports MDX and supplies compiled catalogs and server scopes.
+Publish English, German, French, and Spanish under `/v6/<locale>/`, with localized
+navigation, search, metadata, and interactive examples. Keep one English MDX
+source for each authored guide and maintain translations in Palamedes PO catalogs.
+Four separately maintained guide trees are an interim implementation, not the
+accepted authoring model.
 
-Ardo and Palamedes both compile entire MDX modules. Passing a route through both
-compilers would leave heading IDs, highlighting, component bindings, and search
-metadata without a single owner. A global mutable language is also unsafe when
-the static renderer processes several pages concurrently.
+Ardo and Palamedes both use Ferromark. The published Palamedes 1.x compiler used
+an older parser that rejected imports inside code fences in our guides. Current
+Palamedes `main` uses Ferromark 3.6.0 and successfully analyzes all authored guides.
+Separate complete compilers do not justify duplicating the authored content.
+The remaining integration must preserve Ardo's headings, highlighting, metadata,
+search, and LLM exports while applying the catalog translations.
 
-## Decision
+## V2 source integration
 
-Publish English, German, French, and Spanish under `/v6/<locale>/`. Author matching
-Markdown and MDX route trees with identical slugs and stable heading IDs. Ardo
-owns compilation of these routes. Keep the build-time completeness check; a
-missing translation must not silently serve another language.
+Until coordinated V2 packages are published, use the pinned Git submodule at
+`docs/vendor/palamedes`. Build the JavaScript packages, native compiler, and CLI
+from that revision with Palamedes' own lockfile and Rust toolchain. Keep the
+source inside the docs package to respect Ardo's existing import boundary.
 
-Use Palamedes macros and PO catalogs for the shared home page, interface labels,
-and metadata. Load one compiled catalog before client hydration. On the server,
-`app/server.ts` wraps the complete render in a Palamedes AsyncLocalStorage scope,
-including metadata resolution and suspended components. Cache immutable locale
-instances rather than changing the active locale of a process-wide instance.
+Shared UI and the imported MDX example use the full Palamedes compiler pipeline,
+including its generated catalog fragments. The server render hook scopes the
+complete render to one locale and uses the official `createViteCatalogDelivery`
+transport to insert that locale's import map before module execution. Generated
+browser dependencies initialize the runtime; application code does not load
+browser catalogs manually. Catalog failures get the adapter's independent
+Reload/Home view. Browser tests cover hydration, active-locale delivery, failure,
+and recovery.
 
-Demonstrate native Palamedes MDX with one explicitly imported `?palamedes` module.
-A small docs-owned Vite adapter gives that module to Palamedes, while Ardo retains
-ownership of route MDX. The example includes rich text, an imported callout, and
-an interactive plural counter verified before and after hydration.
+## Retained behavior
 
-Generate and lazily load search data per locale. Translate UI labels through
-Ardo's public label contract, format dates with the route locale, and emit
-canonical and alternate-language links. Keep the active article, query, and
-fragment when switching languages.
+- Preserve the active page, query, and fragment when switching languages.
+- Emit localized search, dates, canonical URLs, and alternate-language links.
+- Keep English TypeScript API comments inside explicitly marked localized shells.
+- Redirect former V6 URLs to English and retain the unlocalized V3–V5 snapshots.
+- Keep Palamedes as a docs dependency; Ardo sites choose their own translation tool.
 
-Generate API routes for every locale so navigation remains complete. Retain the
-English TypeScript source comments, identifiers, signatures, and code examples,
-and disclose their language in the localized shell. Mark the reference body as
-English for assistive technology.
-
-Redirect former V6 URLs to English. Preserve query strings and fragments on
-same-origin static redirects. Older V3–V5 snapshots remain unlocalized; version
-metadata explicitly declares that capability so the switcher removes the locale.
-
-## Consequences
-
-- The docs exercise the public i18n APIs through the same static deployment path
-  as other Ardo sites. No translation service or runtime content server is needed.
-- Authored guides require coordinated updates in four trees. Catalog extraction
-  checks shared copy; it does not translate or synchronize authored documents.
-- Four sets of static content increase total deployment size. Budgets distinguish
-  the largest language's eager JavaScript and search chunk from aggregate output.
-- Palamedes is a docs dependency, not an Ardo runtime dependency. Other sites can
-  choose their translation system through labels and the server render hook.
-- API prose and historical snapshots remain English by design. Translating source
-  API comments would require a separate, maintained content-generation workflow.
+The PR remains a draft until guide consolidation and its metadata/search/LLM
+verification are complete. The source integration removes the parser blocker;
+it does not establish that the pending guide pipeline is implemented.
 
 ## References
 

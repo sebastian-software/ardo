@@ -1,5 +1,4 @@
-import { createI18n } from "@palamedes/core/compiled"
-import { setClientI18n } from "@palamedes/runtime"
+import { createI18n } from "@palamedes/core"
 
 export const locales = ["en", "de", "fr", "es"] as const
 export type Locale = (typeof locales)[number]
@@ -29,8 +28,4 @@ export function loadI18n(locale: Locale): Promise<ReturnType<typeof createI18n>>
     })
   instances.set(locale, resource)
   return resource
-}
-// Block hydration until the active catalog is ready. Other languages stay in separate chunks.
-if (!import.meta.env.SSR) {
-  setClientI18n(await loadI18n(resolveLocale(document.documentElement.lang)))
 }

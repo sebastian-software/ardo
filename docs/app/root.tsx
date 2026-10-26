@@ -3,7 +3,6 @@ import { Trans } from "@palamedes/react/macro"
 import { getI18n } from "@palamedes/runtime"
 import { LocalizedContent } from "./i18n/Content"
 import { translatedLabels } from "./i18n/labels"
-import "./i18n/runtime"
 
 import type { ArdoMetaFunction } from "ardo/runtime"
 import {
