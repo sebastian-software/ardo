@@ -2,54 +2,65 @@
 
 ## Status
 
-Proposed; implementation in progress. The V2 source integration is verified.
-Consolidating the authored guide translations into one MDX source remains open.
+Accepted.
 
-## Context and direction
+## Decision
 
-Publish English, German, French, and Spanish under `/v6/<locale>/`, with localized
-navigation, search, metadata, and interactive examples. Keep one English MDX
-source for each authored guide and maintain translations in Palamedes PO catalogs.
-Four separately maintained guide trees are an interim implementation, not the
-accepted authoring model.
+Publish English, German, French, and Spanish under `/v6/<locale>/`. Maintain
+one English MDX source per guide in `app/content/guide/` and translations in
+`app/i18n/guides/{locale}.po`. Shared UI and interactive examples use the
+separate `app/i18n/{locale}.po` catalogs.
 
-Ardo and Palamedes both use Ferromark. The published Palamedes 1.x compiler used
-an older parser that rejected imports inside code fences in our guides. Current
-Palamedes `main` uses Ferromark 3.6.0 and successfully analyzes all authored guides.
-Separate complete compilers do not justify duplicating the authored content.
-The remaining integration must preserve Ardo's headings, highlighting, metadata,
-search, and LLM exports while applying the catalog translations.
+Palamedes' native compiler owns message extraction, rich placeholders, and
+message identity. Its native catalog compiler validates and compiles the PO
+translations. A docs-only build adapter consumes the generated JSX with OXC
+and applies those compiled messages through Palamedes' runtime. It produces
+ignored MDX language routes before Ardo collects page data. Authored JavaScript
+is preserved without being evaluated by the generator. This keeps metadata,
+the outline, search, and Markdown/LLM exports in the same localized document
+as the rendered page.
 
-## V2 source integration
+Ferromark supplies structural metadata: source heading IDs, code blocks and
+fence metadata, task states, and alert variants. Imports and JSX components
+remain intact. Static MDX attributes are translated; object-valued interactive
+component props use macros in imported TSX components. Development watches the
+English source and PO files. Invalid or incomplete catalogs fail before any
+changed route is written.
 
-Until coordinated V2 packages are published, use the pinned Git submodule at
-`docs/vendor/palamedes`. Build the JavaScript packages, native compiler, and CLI
-from that revision with Palamedes' own lockfile and Rust toolchain. Keep the
-source inside the docs package to respect Ardo's existing import boundary.
+## Palamedes before v2 publication
 
-Shared UI and the imported MDX example use the full Palamedes compiler pipeline,
-including its generated catalog fragments. The server render hook scopes the
-complete render to one locale and uses the official `createViteCatalogDelivery`
-transport to insert that locale's import map before module execution. Generated
-browser dependencies initialize the runtime; application code does not load
-browser catalogs manually. Catalog failures get the adapter's independent
-Reload/Home view. Browser tests cover hydration, active-locale delivery, failure,
-and recovery.
+Install the pinned source revision through a pnpm Git URL. The root lockfile
+owns the source archive and build tools. Build the required JavaScript and
+native packages in the ignored `docs/.cache/palamedes` directory, respecting
+Ardo's docs-package boundary. There is no Git submodule or nested package
+installation. Rust 1.96 or newer remains a temporary build prerequisite.
+
+The published 1.x parser rejected fenced imports; the pinned main revision
+uses Ferromark 3.6.0. Full guide conversion exposed whitespace loss around inline-code placeholders,
+misclassified indented link labels, and dropped empty table cells. A pnpm patch
+fixes those native behaviors, changes the extraction cache stamp, and includes
+regression tests.
+Remove the patch when an upstream revision contains the fix. Move to coordinated
+published v2 packages after verifying the same checks.
+
+The imported MDX example continues to use Palamedes' full Vite compiler and
+browser catalog-delivery pipeline. The server scopes each complete render to
+one locale and inserts its import map through `createViteCatalogDelivery`.
+Guide translations are resolved at build time, so guide catalogs do not ship
+to the browser.
 
 ## Retained behavior
 
-- Preserve the active page, query, and fragment when switching languages.
-- Emit localized search, dates, canonical URLs, and alternate-language links.
-- Keep English TypeScript API comments inside explicitly marked localized shells.
-- Redirect former V6 URLs to English and retain the unlocalized V3–V5 snapshots.
-- Keep Palamedes as a docs dependency; Ardo sites choose their own translation tool.
-
-The PR remains a draft until guide consolidation and its metadata/search/LLM
-verification are complete. The source integration removes the parser blocker;
-it does not establish that the pending guide pipeline is implemented.
+- Language switches preserve the page, query, and source heading ID.
+- Search, metadata, alternate links, and Markdown/LLM exports use the route language.
+- TypeScript API comments remain English inside explicitly marked localized shells.
+- Former V6 URLs redirect to English; V3–V5 retain their original URLs and language.
+- Palamedes remains a docs dependency; other Ardo sites choose their translation tool.
+- Edit links point to the maintained English guide source; dates reflect source/catalog Git history.
 
 ## References
 
-- [Internationalization guide](../app/routes/en/guide/internationalization.mdx)
+- [Internationalization guide](../app/content/guide/internationalization.mdx)
 - [Catalog configuration](../palamedes.yaml)
+- [Build adapter](../scripts/localize-guides.mjs)
 - [Browser coverage](../../tests/e2e/i18n.spec.ts)

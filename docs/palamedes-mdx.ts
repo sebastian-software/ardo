@@ -8,9 +8,7 @@ const sourceFilename = (id: string) =>
 
 /** Give explicit MDX imports to Palamedes' full compiler and catalog-delivery pipeline. */
 export function palamedesMdxExamples(plugins: ReturnType<typeof palamedes>): Plugin[] {
-  // The source workspace has its own Vite dev dependency. Bridge its nominal
-  // context types to the host's compatible Vite 8 plugin contract.
-  const hostPlugins = plugins as unknown as Plugin[]
+  const hostPlugins: Plugin[] = plugins
   const source: Plugin = {
     name: "docs:palamedes-mdx-examples",
     enforce: "pre",

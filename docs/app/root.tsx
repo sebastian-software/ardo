@@ -4,7 +4,7 @@ import { getI18n } from "@palamedes/runtime"
 import { LocalizedContent } from "./i18n/Content"
 import { translatedLabels } from "./i18n/labels"
 
-import type { ArdoMetaFunction } from "ardo/runtime"
+import { useArdoPath, type ArdoMetaFunction } from "ardo/runtime"
 import {
   ArdoErrorBoundary,
   ArdoRoot,
@@ -46,6 +46,13 @@ const theme: ArdoThemeProps = {
 export default function Root() {
   const locale = getI18n().locale
   const labels = translatedLabels()
+  const article = useArdoPath()
+    .replace(new RegExp(`^/${locale}/guide/?`), "")
+    .replace(/\/$/, "")
+  const guide = useArdoPath().startsWith(`/${locale}/guide`)
+  const editPattern = guide
+    ? `https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/${article === "releases" ? "releases/index" : article}.mdx`
+    : "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path"
   return (
     <ArdoRoot
       labels={labels}
@@ -53,7 +60,7 @@ export default function Root() {
       theme={theme}
       logo={logo}
       editLink={{
-        pattern: "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path",
+        pattern: editPattern,
         text: t`Edit this page on GitHub`,
       }}
       lastUpdated={{

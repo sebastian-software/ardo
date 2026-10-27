@@ -211,3 +211,62 @@ test("a failed catalog offers document reload and recovers the translated page",
   await page.getByRole("button", { name: "0 Klicks", exact: true }).click()
   await expect(page.getByRole("button", { name: "1 Klick", exact: true })).toBeVisible()
 })
+
+test("PO-backed German guides retain interactive components and source edit links", async ({
+  page,
+}) => {
+  const errors: string[] = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.goto("/v6/de/guide/components/")
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Komponenten", exact: true })
+  ).toBeVisible()
+  await expect(
+    page.locator("#gallery-hero").getByRole("link", { name: "Guide lesen", exact: true })
+  ).toHaveAttribute("href", "/v6/de/guide/getting-started/")
+  await expect(
+    page.locator("#gallery-hero").getByRole("link", { name: "Quellcode ansehen", exact: true })
+  ).toBeVisible()
+  await page.locator("#gallery-tabs").getByRole("tab", { name: "npm", exact: true }).click()
+  await expect(
+    page.locator("#gallery-tabs").getByRole("tabpanel", { name: "npm", exact: true })
+  ).toContainText("npm install ardo")
+  await page
+    .locator("#gallery-accordion")
+    .getByRole("button", { name: "Kann ich React-Komponenten verwenden?", exact: true })
+    .click()
+  await expect(
+    page
+      .locator("#gallery-accordion")
+      .getByRole("region", { name: "Kann ich React-Komponenten verwenden?", exact: true })
+  ).toBeVisible()
+  const editLinks = page.locator(
+    'a[href="https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/components.mdx"]'
+  )
+  await expect(editLinks.first()).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test("PO-backed guides keep localized metadata, outlines, search, and LLM text", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/v6/de/guide/internationalization/")
+  await expect(page).toHaveTitle("Internationalisierung | Ardo")
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    /Eine englische MDX-Quelle/
+  )
+  await expect(page.locator('a[href="#static-language-routes"]').first()).toHaveText(
+    "Statische Sprachrouten"
+  )
+  await expect(page.locator("#static-language-routes")).toHaveText("Statische Sprachrouten")
+  await page.getByRole("combobox", { name: "Suche", exact: true }).fill("PO-Kataloge")
+  await expect(page.getByRole("listbox").getByRole("option").first()).toBeVisible()
+  const exports = await request.get("/v6/llms-full.txt")
+  expect(exports.ok()).toBe(true)
+  const text = await exports.text()
+  expect(text).toContain("Gepflegt werden nur die englische MDX-Quelle")
+  expect(text).toContain("https://ardo-docs.dev/v6/de/guide/internationalization/")
+  expect(text).toContain("app/content/guide/")
+})

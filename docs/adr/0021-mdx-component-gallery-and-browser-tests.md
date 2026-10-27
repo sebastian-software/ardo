@@ -52,6 +52,6 @@ provide without complicating the documentation experience.
 
 ## References
 
-- [Component Gallery](../app/routes/en/guide/components.mdx)
+- [Component Gallery](../app/content/guide/components.mdx)
 - [Contributor workflow](../../CONTRIBUTING.md)
 - [Browser tests](../../tests/e2e/)

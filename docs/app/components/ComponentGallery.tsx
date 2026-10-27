@@ -1,6 +1,9 @@
 import { t } from "@palamedes/core/macro"
 import type { ReactNode } from "ardo/react"
-import { ArdoIcon, getRegisteredIconNames } from "ardo/ui"
+import { useArdoLocale } from "ardo/runtime"
+import heroLight from "../assets/hero-light.svg"
+import heroDark from "../assets/hero-dark.svg"
+import { ArdoHero, ArdoIcon, getRegisteredIconNames } from "ardo/ui"
 
 import * as styles from "./component-gallery.css"
 
@@ -33,5 +36,25 @@ export function GalleryIcons() {
         </li>
       ))}
     </ul>
+  )
+}
+
+/** Keep translated object-valued props in macros; MDX attributes remain in guide catalogs. */
+export function GalleryHero({ text, tagline }: { text: string; tagline: string }) {
+  const locale = useArdoLocale()
+  return (
+    <ArdoHero
+      text={text}
+      tagline={tagline}
+      image={{ light: heroLight, dark: heroDark, alt: t`Documentation preview` }}
+      actions={[
+        { text: t`Read the guide`, link: `/${locale}/guide/getting-started`, theme: "brand" },
+        {
+          text: t`View the source`,
+          link: "https://github.com/sebastian-software/ardo",
+          theme: "alt",
+        },
+      ]}
+    />
   )
 }

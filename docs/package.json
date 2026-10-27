@@ -7,28 +7,41 @@
     "typecheck": "tsc --noEmit",
     "build": "ardo build",
     "preview": "ardo preview",
-    "i18n:extract": "pmds extract",
-    "i18n:check": "node scripts/check-palamedes-mdx.mjs && pmds extract --check && pmds audit"
+    "i18n:extract": "node node_modules/@palamedes/cli/bin/pmds extract",
+    "i18n:check": "node scripts/check-palamedes-mdx.mjs && node node_modules/@palamedes/cli/bin/pmds extract --check && node node_modules/@palamedes/cli/bin/pmds audit && pnpm i18n:test",
+    "i18n:generate": "node scripts/localize-guides.mjs",
+    "i18n:test": "node --test scripts/localize-guides.test.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/caveat": "^5.3.0",
     "@fontsource-variable/figtree": "^5.3.0",
-    "@palamedes/core": "link:vendor/palamedes/packages/core",
-    "@palamedes/react": "link:vendor/palamedes/packages/react",
-    "@palamedes/runtime": "link:vendor/palamedes/packages/runtime",
+    "@palamedes/core": "link:.cache/palamedes/packages/core",
+    "@palamedes/react": "link:.cache/palamedes/packages/react",
+    "@palamedes/runtime": "link:.cache/palamedes/packages/runtime",
     "ardo": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@palamedes/cli": "link:vendor/palamedes/packages/cli",
-    "@palamedes/core-node": "link:vendor/palamedes/packages/core-node",
-    "@palamedes/vite-plugin": "link:vendor/palamedes/packages/vite-plugin",
+    "@palamedes/cli": "link:.cache/palamedes/packages/cli",
+    "@palamedes/config": "link:.cache/palamedes/packages/config",
+    "@palamedes/core-node": "link:.cache/palamedes/packages/core-node",
+    "@palamedes/source": "github:sebastian-software/palamedes#89a6a5f308f40826863978c6353bddd3e9d1b988",
+    "@palamedes/transform": "link:.cache/palamedes/packages/transform",
+    "@palamedes/vite-plugin": "link:.cache/palamedes/packages/vite-plugin",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@typescript/typescript6": "^6.0.2",
     "@vanilla-extract/css": "catalog:",
+    "ferromark": "3.5.1",
+    "jiti": "^2.7.0",
+    "oxc-parser": "catalog:",
+    "picomatch": "^4.0.7",
+    "smol-toml": "^1.9.0",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "unbuild": "^3.6.1",
+    "vite": "catalog:",
+    "yaml": "^2.9.0"
   }
 }

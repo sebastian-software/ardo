@@ -303,6 +303,10 @@ msgstr "deine Dokumentation im Repository liegen und durch Reviews gehen soll"
 msgid "Documentation for React teams"
 msgstr "Dokumentation für React-Teams"
 
+#: docs/app/components/ComponentGallery.tsx#GalleryHero
+msgid "Documentation preview"
+msgstr "Dokumentationsvorschau"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Documentation sections"
 msgstr "Dokumentationsbereiche"
@@ -605,6 +609,10 @@ msgstr "Dokumentation lesen"
 msgid "Read the full comparison →"
 msgstr "Den ganzen Vergleich lesen →"
 
+#: docs/app/components/ComponentGallery.tsx#GalleryHero
+msgid "Read the guide"
+msgstr "Guide lesen"
+
 #: docs/app/i18n/messages.ts
 msgid "Ready to hatch your docs?"
 msgstr "Bereit, deine Dokumentation schlüpfen zu lassen?"
@@ -830,6 +838,10 @@ msgstr "Version"
 #: docs/app/i18n/messages.ts
 msgid "View on GitHub"
 msgstr "Auf GitHub ansehen"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryHero
+msgid "View the source"
+msgstr "Quellcode ansehen"
 
 #: docs/app/i18n/messages.ts
 msgid "Vite and Markdown too, with React instead of Vue."

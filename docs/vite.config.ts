@@ -8,6 +8,8 @@ import type { Plugin } from "vite"
 import { defineConfig } from "ardo/vite"
 import { ardo } from "ardo/vite"
 
+import { localizedGuides } from "./localized-guides.ts"
+
 import { palamedesMdxExamples } from "./palamedes-mdx.ts"
 
 import { fetchNpmFacts } from "./app/home/npm-facts.ts"
@@ -45,6 +47,7 @@ function npmFacts(name: string): Plugin {
 export default defineConfig({
   server: { fs: { allow: fontPackages } },
   plugins: [
+    localizedGuides(),
     npmFacts("ardo"),
     ...palamedesMdxExamples(
       palamedes({

@@ -19,7 +19,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ```bash
 # Clone the repository
-git clone --recurse-submodules https://github.com/sebastian-software/ardo.git
+git clone https://github.com/sebastian-software/ardo.git
 cd ardo
 
 # Install dependencies
@@ -98,23 +98,27 @@ both preserve their respective public output contracts.
 
 ### Palamedes before v2 publication
 
-The docs use the pinned Git submodule at `docs/vendor/palamedes` instead of the
-published 1.x packages. It contains the current MDX adapter and its matching
-native compiler and CLI. The docs' `link:` dependencies point into that checkout;
-Palamedes keeps its own workspace, lockfile, and Rust toolchain.
+The docs install a pinned Palamedes main revision through a pnpm Git URL in
+`docs/package.json`. No submodule initialization is needed. `pnpm install
+--frozen-lockfile` fetches the source and its build tools from the root lockfile.
+`pnpm build` first runs `pnpm palamedes:build` to compile the required JavaScript
+packages, native compiler, and CLI together. This temporary source build requires
+Rust 1.96 or newer and initial Cargo network access.
 
-For an existing checkout, run `git submodule update --init docs/vendor/palamedes`.
-`pnpm build` first runs `pnpm palamedes:build`, which installs Palamedes' locked
-build dependencies and builds the needed JavaScript and native platform packages.
-This source build requires Rust and network access for the initial dependencies.
-Subsequent builds reuse Cargo and pnpm caches.
+The build copies the installed source into the ignored `docs/.cache/palamedes`
+directory because upstream build tools exclude files below `node_modules`.
+The docs' `link:` dependencies point at those build outputs. No second pnpm
+workspace installation runs. The pnpm patch in `patches/` preserves Markdown
+whitespace, indented link labels, and empty table cells; it includes native regression tests and must
+remain applied until the pinned revision contains the fixes. The patch also assigns
+`0.0.0` to the private source-root manifest so pnpm can identify the patch target;
+it does not change the SDK package versions.
 
-To advance the source dependency, update the submodule to a reviewed commit from
-Palamedes `main`, rebuild, and commit the Git pointer. Run `pnpm --filter
-ardo-docs i18n:check` to verify the fenced-import regression, native compilation
-of every English guide, catalog extraction, and audit. Also run the docs build
-and browser suite. Replace the source dependency with coordinated published v2
-packages once that release is available and verified.
+To update Palamedes, change the Git commit in `docs/package.json`, install with
+pnpm, and rebuild. Verify or remove the patch against that revision. Run
+`pnpm --filter ardo-docs i18n:check`, the docs build, and browser tests. Replace
+the Git source and temporary build tools with coordinated published v2 packages
+once that release is available and verified.
 
 ### Coordinated native-engine development
 
@@ -333,7 +337,7 @@ Include:
 
 When a feature lands, an issue is closed as not planned, or a roadmap item is
 split, update the status tables on the
-[Releases page](docs/app/routes/en/guide/releases/index.mdx).
+[Releases page](docs/app/content/guide/releases/index.mdx).
 
 ## Reporting Issues
 
@@ -367,17 +371,24 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ### Documentation translations
 
-The V6 site includes English, German, French, and Spanish route trees under
-`docs/app/routes/<locale>/`. Keep the same slugs and explicit heading IDs when
-updating translations so language switches retain the current section. The API
-reference retains the English source comments in each localized shell.
-
-Shared interface copy and the imported MDX example use Palamedes catalogs:
+The V6 site maintains one English MDX source per guide in
+`docs/app/content/guide/`. Translate its native Palamedes messages, titles,
+descriptions, and static component labels in `docs/app/i18n/guides/{locale}.po`.
+Shared interface copy and imported interactive examples use
+`docs/app/i18n/{locale}.po`.
 
 ```bash
 pnpm --filter ardo-docs i18n:extract
 pnpm --filter ardo-docs i18n:check
+pnpm docs:build
+pnpm test:e2e
 ```
 
-Update all four route trees and catalogs together. Build the docs and run the
-i18n browser tests before submitting changes to navigation or translated UI.
+The docs Vite plugin generates all four language route trees before Ardo scans
+routes. Development watches the source and PO catalogs. Generated guides under
+`docs/app/routes/<locale>/guide/` are ignored by Git; do not edit or commit them.
+Missing translations or incompatible rich placeholders fail the build. Imports,
+code fences and their metadata, live React components, and English heading IDs
+remain structural. Ardo derives localized metadata, the outline, search, and
+Markdown/LLM exports from the generated documents. The API reference retains
+English source comments in each localized shell.

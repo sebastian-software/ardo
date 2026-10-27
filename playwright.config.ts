@@ -38,7 +38,7 @@ const docsServerCommand = usePrebuiltDocs
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  testIgnore: "**/examples/**",
+  testIgnore: ["**/examples/**", "**/docs-development/**"],
   fullyParallel: true,
   forbidOnly: isCi,
   retries: isCi ? 2 : 0,

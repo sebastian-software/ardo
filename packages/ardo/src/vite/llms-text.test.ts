@@ -325,7 +325,7 @@ describe("llms-text", () => {
 
   it("keeps real setup-guide links navigable in latest and versioned full-text exports", async () => {
     const source = await fs.readFile(
-      new URL("../../../../docs/app/routes/en/guide/getting-started.mdx", import.meta.url),
+      new URL("../../../../docs/app/content/guide/getting-started.mdx", import.meta.url),
       "utf8"
     )
     const versionedConfig = resolveConfig(

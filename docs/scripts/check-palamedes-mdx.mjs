@@ -4,11 +4,7 @@ import { fileURLToPath } from "node:url"
 import { analyzeMdxNative } from "@palamedes/core-node"
 import { transformWithOxc } from "vite"
 
-const options = {
-  framework: "react",
-  frontMatterFields: ["title", "description"],
-  translatableAttributes: ["alt", "title", "aria-label"],
-}
+import { mdxOptions as options } from "./localize-guides.mjs"
 
 async function check(source, filename) {
   const result = analyzeMdxNative(source, filename, options)
@@ -32,7 +28,7 @@ assert.deepEqual(
   ["Fence regression", "Native MDX extraction", "Read the <0>guide</0>"]
 )
 
-const root = new URL("../app/routes/en/guide/", import.meta.url)
+const root = new URL("../app/content/guide/", import.meta.url)
 const files = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".mdx"))
 assert.ok(files.length > 0, "Expected authored English MDX guides")
 let messages = 0

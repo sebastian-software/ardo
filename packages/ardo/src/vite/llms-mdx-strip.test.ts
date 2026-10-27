@@ -61,7 +61,7 @@ describe("LLM Markdown projection", () => {
     "preserves every highlighted code example in the actual %s guide",
     async (name) => {
       const source = await fs.readFile(
-        new URL(`../../../../docs/app/routes/en/guide/${name}.mdx`, import.meta.url),
+        new URL(`../../../../docs/app/content/guide/${name}.mdx`, import.meta.url),
         "utf8"
       )
       const original = prepareDocument(source, { format: "mdx" })

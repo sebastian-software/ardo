@@ -31,10 +31,18 @@ export function detectGitHash(cwd: string): string | undefined {
   return runGitCommand(cwd, "git rev-parse --short HEAD")
 }
 
-/** Read each source file's latest commit time in one Git invocation. */
+/** Read commit dates only for currently tracked files; generated routes use file times. */
 export function getGitFileTimestamps(directory: string): Map<string, number> {
   const timestamps = new Map<string, number>()
   try {
+    const tracked = new Set(
+      execFileSync("git", ["ls-files", "-z", "--", "."], {
+        cwd: directory,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+        maxBuffer: 16 * 1024 * 1024,
+      }).split("\0")
+    )
     const history = execFileSync(
       "git",
       ["-c", "core.quotepath=false", "log", "--format=%ct", "--name-only", "--relative", "--", "."],
@@ -48,7 +56,7 @@ export function getGitFileTimestamps(directory: string): Map<string, number> {
     let timestamp: number | undefined
     for (const line of history.split("\n")) {
       if (/^\d+$/u.test(line)) timestamp = Number(line) * 1000
-      else if (line !== "" && timestamp != null && !timestamps.has(line))
+      else if (tracked.has(line) && timestamp != null && !timestamps.has(line))
         timestamps.set(line, timestamp)
     }
   } catch {

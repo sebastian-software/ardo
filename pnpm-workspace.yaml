@@ -68,3 +68,6 @@ minimumReleaseAgeExclude:
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
+
+patchedDependencies:
+  palamedes@0.0.0: patches/palamedes@0.0.0.patch

@@ -28,7 +28,8 @@
     "docs:prepare-pages": "node scripts/prepare-pages-artifact.mjs",
     "docs:budgets": "node scripts/check-budgets.mjs",
     "prepare": "husky",
-    "palamedes:build": "node scripts/build-palamedes.mjs"
+    "palamedes:build": "node scripts/build-palamedes.mjs",
+    "test:e2e:docs-dev": "playwright test --config tests/e2e/docs-development/playwright.config.ts"
   },
   "keywords": [
     "documentation",

@@ -17,8 +17,12 @@ pnpm-lock.yaml
 # mdtheme checks the generated README byte for byte.
 /README.md
 
-# Git source dependency keeps its own formatter and generated outputs.
-/docs/vendor/palamedes/
-
 # Native Palamedes extraction cache.
 /docs/.palamedes/
+
+# Guide routes are generated from the English MDX source and PO catalogs.
+/docs/app/routes/*/guide/
+/docs/app/i18n/guides/*.po
+
+# Palamedes source-build cache keeps upstream formatting.
+/docs/.cache/
