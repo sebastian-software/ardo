@@ -1368,8 +1368,8 @@ msgid ""
 "Add pages and sidebar sections, change the logo, header, and footer, and "
 "compose the site chrome in root.tsx."
 msgstr ""
-"\"Ergänze Seiten und Abschnitte, ändere Logo, Kopf- und Fußzeile und "
-"komponiere das Layout in root.tsx.\""
+"Ergänze Seiten und Abschnitte, ändere Logo, Kopf- und Fußzeile und "
+"komponiere das Layout in root.tsx."
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -3002,8 +3002,8 @@ msgid ""
 "Configure Ardo's CLI, generated routes, Markdown pipeline, API output, and "
 "React UI."
 msgstr ""
-"\"Konfiguriere Ardos CLI, generierte Routen, Markdown-Verarbeitung, "
-"API-Ausgabe und React-Oberfläche.\""
+"Konfiguriere Ardos CLI, generierte Routen, Markdown-Verarbeitung, API-Ausgabe "
+"und React-Oberfläche."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Configure Ardo's versioning in <0/>:"
@@ -4821,7 +4821,7 @@ msgstr "layout"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Layout & Navigation"
-msgstr "\"Layout und Navigation\""
+msgstr "Layout und Navigation"
 
 #: docs/app/content/guide/components.mdx
 msgid "Layout and Navigation"
@@ -5143,8 +5143,8 @@ msgid ""
 "Move from React Router to Ardo's static site build, remove the router files, "
 "and switch to Ardo's link and page APIs."
 msgstr ""
-"\"Wechsle von React Router zum statischen Build, entferne Routerdateien und "
-"nutze Ardos Link- und Seiten-APIs.\""
+"Wechsle von React Router zum statischen Build, entferne Routerdateien und "
+"nutze Ardos Link- und Seiten-APIs."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -7392,7 +7392,7 @@ msgstr "Theme-Tokens"
 
 #: docs/app/content/guide/theming.mdx
 msgid "Theming"
-msgstr "\"Theming\""
+msgstr "Theming"
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -7865,7 +7865,7 @@ msgstr "Upgrade auf Ardo 5"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Upgrade to Ardo 6"
-msgstr "\"Upgrade auf Ardo 6\""
+msgstr "Upgrade auf Ardo 6"
 
 #: docs/app/content/guide/components.mdx
 msgid ""

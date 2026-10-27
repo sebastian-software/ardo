@@ -1336,8 +1336,8 @@ msgid ""
 "Add pages and sidebar sections, change the logo, header, and footer, and "
 "compose the site chrome in root.tsx."
 msgstr ""
-"\"Añade páginas y secciones, personaliza logotipo, cabecera y pie, y compón"
-" la interfaz en root.tsx.\""
+"Añade páginas y secciones, personaliza logotipo, cabecera y pie, y compón "
+"la interfaz en root.tsx."
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -2929,8 +2929,8 @@ msgid ""
 "Configure Ardo's CLI, generated routes, Markdown pipeline, API output, and "
 "React UI."
 msgstr ""
-"\"Configura la CLI, las rutas generadas, el procesamiento Markdown, la "
-"referencia API y la interfaz React de Ardo.\""
+"Configura la CLI, las rutas generadas, el procesamiento Markdown, la "
+"referencia API y la interfaz React de Ardo."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Configure Ardo's versioning in <0/>:"
@@ -4727,7 +4727,7 @@ msgstr "layout"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Layout & Navigation"
-msgstr "\"Diseño y navegación\""
+msgstr "Diseño y navegación"
 
 #: docs/app/content/guide/components.mdx
 msgid "Layout and Navigation"
@@ -5045,8 +5045,8 @@ msgid ""
 "Move from React Router to Ardo's static site build, remove the router files, "
 "and switch to Ardo's link and page APIs."
 msgstr ""
-"\"Pasa de React Router al build estático, elimina sus archivos y adopta las "
-"API de enlaces y páginas de Ardo.\""
+"Pasa de React Router al build estático, elimina sus archivos y adopta las API"
+" de enlaces y páginas de Ardo."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -7262,7 +7262,7 @@ msgstr "Tokens de tema"
 
 #: docs/app/content/guide/theming.mdx
 msgid "Theming"
-msgstr "\"Personalización visual\""
+msgstr "Personalización visual"
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -7721,7 +7721,7 @@ msgstr "Actualizar a Ardo 5"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Upgrade to Ardo 6"
-msgstr "\"Actualizar a Ardo 6\""
+msgstr "Actualizar a Ardo 6"
 
 #: docs/app/content/guide/components.mdx
 msgid ""

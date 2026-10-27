@@ -253,6 +253,8 @@ test("PO-backed guides keep localized metadata, outlines, search, and LLM text",
 }) => {
   await page.goto("/v6/de/guide/internationalization/")
   await expect(page).toHaveTitle("Internationalisierung | Ardo")
+  await expect(page.getByRole("link", { name: "Layout und Navigation", exact: true })).toBeVisible()
+  await expect(page.getByRole("link", { name: "Theming", exact: true })).toBeVisible()
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     "content",
     /Eine englische MDX-Quelle/

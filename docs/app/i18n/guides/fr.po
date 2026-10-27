@@ -1351,8 +1351,8 @@ msgid ""
 "Add pages and sidebar sections, change the logo, header, and footer, and "
 "compose the site chrome in root.tsx."
 msgstr ""
-"\"Ajoutez pages et sections, personnalisez logo, en-tête et pied de page, et "
-"composez l’interface dans root.tsx.\""
+"Ajoutez pages et sections, personnalisez logo, en-tête et pied de page, et "
+"composez l’interface dans root.tsx."
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -2962,8 +2962,8 @@ msgid ""
 "Configure Ardo's CLI, generated routes, Markdown pipeline, API output, and "
 "React UI."
 msgstr ""
-"\"Configurez la CLI, les routes générées, le traitement Markdown, la "
-"référence API et l’interface React d’Ardo.\""
+"Configurez la CLI, les routes générées, le traitement Markdown, la "
+"référence API et l’interface React d’Ardo."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Configure Ardo's versioning in <0/>:"
@@ -4785,7 +4785,7 @@ msgstr "layout"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Layout & Navigation"
-msgstr "\"Mise en page et navigation\""
+msgstr "Mise en page et navigation"
 
 #: docs/app/content/guide/components.mdx
 msgid "Layout and Navigation"
@@ -5103,8 +5103,8 @@ msgid ""
 "Move from React Router to Ardo's static site build, remove the router files, "
 "and switch to Ardo's link and page APIs."
 msgstr ""
-"\"Passez de React Router au build statique, retirez les fichiers du routeur et"
-" adoptez les API de liens et pages Ardo.\""
+"Passez de React Router au build statique, retirez les fichiers du routeur et "
+"adoptez les API de liens et pages Ardo."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -7338,7 +7338,7 @@ msgstr "Tokens de thème"
 
 #: docs/app/content/guide/theming.mdx
 msgid "Theming"
-msgstr "\"Thèmes\""
+msgstr "Thèmes"
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -7802,7 +7802,7 @@ msgstr "Migrer vers Ardo 5"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Upgrade to Ardo 6"
-msgstr "\"Passer à Ardo 6\""
+msgstr "Passer à Ardo 6"
 
 #: docs/app/content/guide/components.mdx
 msgid ""
