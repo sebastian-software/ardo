@@ -32,11 +32,24 @@ const ENGINES: Engine[] = [
   },
 ]
 
-const FRIENDS: { mark: MarkName; name: string; text: string }[] = [
+type Friend = {
+  mark: MarkName
+  name: string
+  text: string
+  /** A measured claim; the card then spans two columns and links its evidence. */
+  proof?: { claim: string; rest: string; link: string }
+}
+
+const FRIENDS: Friend[] = [
   {
     mark: "typescript",
     name: "TypeScript 7",
-    text: "The native compiler reads your types. It built Ardo’s own API docs 4.3× faster than TypeDoc.",
+    text: "Its native compiler reads your types, and Ardo turns your exports into pages: components with their props, hooks and types. TypeDoc, rethought for React.",
+    proof: {
+      claim: "4.3× faster than TypeDoc",
+      rest: " on Ardo’s own API.",
+      link: "https://github.com/sebastian-software/ardo/blob/main/docs/reports/2026-10-11-native-api-integration.md",
+    },
   },
   {
     mark: "vite",
@@ -90,12 +103,26 @@ export function Engines() {
       </p>
       <div className={styles.friendGrid}>
         {FRIENDS.map((friend) => (
-          <div key={friend.name} className={styles.plainCard}>
+          <div
+            key={friend.name}
+            className={`${styles.plainCard} ${friend.proof == null ? "" : styles.friendWide}`}
+          >
             <span className={`${styles.tool} ${styles.friendName}`}>
               <ToolMark name={friend.mark} size={26} />
               {friend.name}
             </span>
             <p className={styles.friendText}>{text(friend.text)}</p>
+            {friend.proof != null && (
+              <>
+                <p className={styles.engineProof}>
+                  <mark>{text(friend.proof.claim)}</mark>
+                  {text(friend.proof.rest)}
+                </p>
+                <p className={styles.engineLink}>
+                  <a href={friend.proof.link}>{text("See the benchmark →")}</a>
+                </p>
+              </>
+            )}
           </div>
         ))}
       </div>

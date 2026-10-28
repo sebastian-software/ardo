@@ -777,6 +777,13 @@ export const friendGrid = style({
   },
 })
 
+// The TypeScript 7 card carries a measured claim, so it takes two columns:
+// with Vite and Oxc that fills a row of four, or a row of two on its own.
+export const friendWide = style({
+  gridColumn: "span 2",
+  "@media": { "(max-width: 599px)": { gridColumn: "auto" } },
+})
+
 export const friendName = style({ fontSize: "20px" })
 export const friendText = style({ margin: "10px 0 0", color: inkSoft, fontSize: "16px" })
 

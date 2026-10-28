@@ -5,9 +5,11 @@ import "./runtime"
 // Literal source messages let Palamedes extract and compile the shared UI copy.
 const messages: Record<string, () => string> = {
   " on 50 real documents.": () => t` on 50 real documents.`,
+  " on Ardo’s own API.": () => t` on Ardo’s own API.`,
   ", same HTML.": () => t`, same HTML.`,
   "2.6× faster than pulldown-cmark": () => t`2.6× faster than pulldown-cmark`,
   "4.7× faster than Shiki on WebAssembly": () => t`4.7× faster than Shiki on WebAssembly`,
+  "4.3× faster than TypeDoc": () => t`4.3× faster than TypeDoc`,
   "A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.": () =>
     t`A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.`,
   "A generated API page for defineConfig": () => t`A generated API page for defineConfig`,
@@ -20,9 +22,9 @@ const messages: Record<string, () => string> = {
     t`Ardo callouts: note, tip, important and warning`,
   "Ardo cards with icons, above the MDX that renders them": () =>
     t`Ardo cards with icons, above the MDX that renders them`,
-  "Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines.":
+  "Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by native engines.":
     () =>
-      t`Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines.`,
+      t`Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by native engines.`,
   "Ardo is open source by Sebastian Software, together with Ferromark, Ferriki and the rest of the family.":
     () =>
       t`Ardo is open source by Sebastian Software, together with Ferromark, Ferriki and the rest of the family.`,
@@ -88,12 +90,12 @@ const messages: Record<string, () => string> = {
   "Psst… a joy to write, a treat to read.": () => t`Psst… a joy to write, a treat to read.`,
   "Public feature status and published benchmarks.": () =>
     t`Public feature status and published benchmarks.`,
-  "React and MDX too, on a newer foundation: Vite and Rust engines, with plain HTML pages.": () =>
-    t`React and MDX too, on a newer foundation: Vite and Rust engines, with plain HTML pages.`,
+  "React and MDX too, on a newer foundation: Vite and native engines, with plain HTML pages.": () =>
+    t`React and MDX too, on a newer foundation: Vite and native engines, with plain HTML pages.`,
   "React and MDX too, without Next.js. Plain static files come out.": () =>
     t`React and MDX too, without Next.js. Plain static files come out.`,
-  "React and Vite too. Ardo adds generated API reference and Rust engines.": () =>
-    t`React and Vite too. Ardo adds generated API reference and Rust engines.`,
+  "React and Vite too. Ardo adds an API reference from your TypeScript and native engines.": () =>
+    t`React and Vite too. Ardo adds an API reference from your TypeScript and native engines.`,
   "React too, as a toolkit. Ardo is one complete setup with its own engines.": () =>
     t`React too, as a toolkit. Ardo is one complete setup with its own engines.`,
   "Read the docs": () => t`Read the docs`,
@@ -116,9 +118,9 @@ const messages: Record<string, () => string> = {
   "Static files, no platform.": () => t`Static files, no platform.`,
   "The dev server you already love. Save a file, watch the page update.": () =>
     t`The dev server you already love. Save a file, watch the page update.`,
-  "The native compiler reads your types. It built Ardo’s own API docs 4.3× faster than TypeDoc.":
+  "Its native compiler reads your types, and Ardo turns your exports into pages: components with their props, hooks and types. TypeDoc, rethought for React.":
     () =>
-      t`The native compiler reads your types. It built Ardo’s own API docs 4.3× faster than TypeDoc.`,
+      t`Its native compiler reads your types, and Ardo turns your exports into pages: components with their props, hooks and types. TypeDoc, rethought for React.`,
   "The same idea for Nuxt and Vue. Ardo is the React counterpart.": () =>
     t`The same idea for Nuxt and Vue. Ardo is the React counterpart.`,
   "The top of an Ardo guide page: section rail, sidebar, title and table of contents": () =>

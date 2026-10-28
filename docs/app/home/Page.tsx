@@ -24,7 +24,7 @@ export const meta: ArdoMetaFunction = (): ArdoMetaDescriptor[] => {
     { title: t`Ardo: React docs, baked into plain HTML` },
     {
       name: "description",
-      content: t`Ardo is a static site generator for React projects: guides, API reference and search, baked at build time by Rust engines and served as plain HTML.`,
+      content: t`Ardo is a static site generator for React projects: guides, API reference and search, baked at build time by native engines and served as plain HTML.`,
     },
     { tagName: "link", rel: "canonical", href: url },
     { property: "og:type", content: "website" },

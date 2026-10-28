@@ -25,7 +25,7 @@
 ---
 
 Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference
-read from your TypeScript, and search, all prerendered at build time by Rust engines. Every page
+read from your TypeScript, and search, all prerendered at build time by native engines. Every page
 ships as plain HTML that any static host can serve.
 
 ## The easy way in
@@ -86,6 +86,11 @@ Ardo stands on [Vite](https://vite.dev/), [TypeScript 7](https://www.typescriptl
 [Oxc](https://oxc.rs/). Two engines come from our own workshop, written in Rust:
 [Ferromark](https://ferromark.dev/) compiles Markdown and MDX, and [Ferriki](https://ferriki.dev/)
 highlights every code block at build time.
+
+The API reference is TypeDoc, rethought for React: TypeScript 7's native compiler reads your types,
+and Ardo turns your exports into pages, with components and their props, hooks, and types. On Ardo's
+own API it runs
+[4.3× faster than TypeDoc](./docs/reports/2026-10-11-native-api-integration.md).
 
 ## Package
 

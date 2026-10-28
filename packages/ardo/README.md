@@ -2,7 +2,7 @@
 
 React docs, baked into plain HTML.
 
-Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
+Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by native engines. It is for teams that want VitePress-style simplicity without leaving React or moving their docs into a hosted platform.
 
 ## Why use it?
 

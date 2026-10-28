@@ -11,6 +11,10 @@ msgid " on 50 real documents."
 msgstr " auf 50 echten Dokumenten."
 
 #: docs/app/i18n/messages.ts
+msgid " on Ardo’s own API."
+msgstr " auf Ardos eigener API."
+
+#: docs/app/i18n/messages.ts
 msgid ", same HTML."
 msgstr ", identisches HTML."
 
@@ -49,6 +53,10 @@ msgstr "← bei jedem Build frisch von npm"
 #: docs/app/i18n/messages.ts
 msgid "2.6× faster than pulldown-cmark"
 msgstr "2,6× schneller als pulldown-cmark"
+
+#: docs/app/i18n/messages.ts
+msgid "4.3× faster than TypeDoc"
+msgstr "4,3× schneller als TypeDoc"
 
 #: docs/app/i18n/messages.ts
 msgid "4.7× faster than Shiki on WebAssembly"
@@ -107,21 +115,21 @@ msgstr "Ardo-Karten mit Icons über dem zugehörigen MDX"
 #: docs/app/home/Page.tsx#meta
 msgid ""
 "Ardo is a static site generator for React projects: guides, API reference and "
-"search, baked at build time by Rust engines and served as plain HTML."
+"search, baked at build time by native engines and served as plain HTML."
 msgstr ""
 "Ardo ist ein statischer Seitengenerator für React-Projekte: Anleitungen, "
-"API-Referenz und Suche, beim Build mit Rust erzeugt und als einfaches HTML "
-"ausgeliefert."
+"API-Referenz und Suche, beim Build mit nativen Engines erzeugt und als "
+"einfaches HTML ausgeliefert."
 
 #: docs/app/i18n/messages.ts
 msgid ""
 "Ardo is a static site generator for React projects. Guides in Markdown and "
 "MDX, an API reference read from your TypeScript, and search, all prerendered "
-"at build time by Rust engines."
+"at build time by native engines."
 msgstr ""
 "Ardo ist ein statischer Seitengenerator für React-Projekte. Anleitungen in "
 "Markdown und MDX, eine API-Referenz aus deinem TypeScript und eine Suche – "
-"alles beim Build mit Rust vorgerendert."
+"alles beim Build mit nativen Engines vorgerendert."
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -402,6 +410,15 @@ msgid "Is Ardo your kind of bird?"
 msgstr "Ist Ardo dein Vogel?"
 
 #: docs/app/i18n/messages.ts
+msgid ""
+"Its native compiler reads your types, and Ardo turns your exports into pages: "
+"components with their props, hooks and types. TypeDoc, rethought for React."
+msgstr ""
+"Sein nativer Compiler liest deine Typen, und Ardo macht aus deinen Exporten "
+"Seiten: Komponenten mit ihren Props, Hooks und Typen. TypeDoc, neu gedacht "
+"für React."
+
+#: docs/app/i18n/messages.ts
 msgid "Know one of these? Then you almost know Ardo."
 msgstr "Kennst du eines davon? Dann kennst du Ardo schon fast."
 
@@ -574,21 +591,23 @@ msgstr "Öffentlicher Funktionsstatus und veröffentlichte Benchmarks."
 
 #: docs/app/i18n/messages.ts
 msgid ""
-"React and MDX too, on a newer foundation: Vite and Rust engines, with plain "
+"React and MDX too, on a newer foundation: Vite and native engines, with plain "
 "HTML pages."
 msgstr ""
-"Auch React und MDX, auf neuerem Fundament: Vite und Rust, mit einfachen "
-"HTML-Seiten."
+"Auch React und MDX, auf neuerem Fundament: Vite und native Engines, mit "
+"einfachen HTML-Seiten."
 
 #: docs/app/i18n/messages.ts
 msgid "React and MDX too, without Next.js. Plain static files come out."
 msgstr "Auch React und MDX, ohne Next.js. Das Ergebnis sind statische Dateien."
 
 #: docs/app/i18n/messages.ts
-msgid "React and Vite too. Ardo adds generated API reference and Rust engines."
+msgid ""
+"React and Vite too. Ardo adds an API reference from your TypeScript and native"
+" engines."
 msgstr ""
-"Auch React und Vite. Ardo ergänzt eine generierte API-Referenz und "
-"Rust-Werkzeuge."
+"Auch React und Vite. Ardo ergänzt eine API-Referenz aus deinem TypeScript und"
+" native Engines."
 
 #: docs/app/home/Hero.tsx#Hero
 msgid "React docs, baked into <0>plain HTML</0>."
@@ -741,14 +760,6 @@ msgstr ""
 #: docs/app/i18n/messages.ts
 msgid "the easy way in"
 msgstr "der einfache Einstieg"
-
-#: docs/app/i18n/messages.ts
-msgid ""
-"The native compiler reads your types. It built Ardo’s own API docs 4.3× "
-"faster than TypeDoc."
-msgstr ""
-"Der native Compiler liest deine Typen. Er hat Ardos eigene API-Dokumentation "
-"4,3× schneller gebaut als TypeDoc."
 
 #: docs/app/i18n/messages.ts
 msgid "the owl says hi"

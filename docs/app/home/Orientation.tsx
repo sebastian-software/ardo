@@ -7,7 +7,7 @@ import { NoteLabel } from "./NoteLabel"
 const NEIGHBORS = [
   [
     "Docusaurus",
-    "React and MDX too, on a newer foundation: Vite and Rust engines, with plain HTML pages.",
+    "React and MDX too, on a newer foundation: Vite and native engines, with plain HTML pages.",
   ],
   ["VitePress", "Vite and Markdown too, with React instead of Vue."],
   ["Starlight", "Static and content-first too, with React as the page model, not an island."],
@@ -17,7 +17,10 @@ const NEIGHBORS = [
     "Rspress",
     "A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.",
   ],
-  ["Vocs", "React and Vite too. Ardo adds generated API reference and Rust engines."],
+  [
+    "Vocs",
+    "React and Vite too. Ardo adds an API reference from your TypeScript and native engines.",
+  ],
   ["Docus", "The same idea for Nuxt and Vue. Ardo is the React counterpart."],
   [
     "Material for MkDocs",
