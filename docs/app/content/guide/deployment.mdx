@@ -1,0 +1,220 @@
+---
+title: Deployment
+description: Deploy your Ardo documentation site to GitHub Pages, Netlify, Vercel, and more.
+order: 11
+---
+
+# Deployment
+
+Ardo produces a fully static site out of the box. Your docs can stay in your repository, build in your CI pipeline, and deploy to any provider that serves files. When you run `pnpm build`, Ardo prerenders every page to static HTML, so no server is needed at runtime.
+
+## Build Output
+
+The build output defaults to `build/client/` and can be deployed to any static hosting provider. Set [`outDir`](/en/guide/configuration#outdir) to change the parent directory of the `client/` and `server/` builds, and update your hosting configuration to use that directory's `client/` folder. Its layout mirrors the deployed URLs:
+
+```text
+build/client/
+├── index.html                  # Home page
+├── 404.html                    # Not-found page
+├── guide/
+│   └── getting-started/
+│       └── index.html          # /guide/getting-started/
+├── assets/                     # Hashed JavaScript and CSS
+├── sitemap.xml
+├── robots.txt
+└── llms.txt
+```
+
+- Each page is a directory with an `index.html`. Ardo emits internal page links with a trailing slash, such as `/guide/getting-started/`, so static hosts serve them without a redirect.
+- `404.html` is the not-found page. GitHub Pages, Netlify, Cloudflare Pages, and most other static hosts pick it up automatically.
+- The build checks every internal link and anchor in the generated HTML before it finishes. See [`linkCheck`](/en/guide/configuration#linkcheck) to make broken links fail the build.
+- There is no client-side router. Every link loads the next prerendered document, which then hydrates, so the host only needs to serve files.
+
+Run `pnpm preview` to serve `build/client/` the way a static host does: `/guide` serves `guide/index.html`, and unknown paths get the nearest `404.html`.
+
+## GitHub Pages
+
+### Step 1: Configure the Base Path
+
+A GitHub Pages project site lives under the repository name, for example
+`https://username.github.io/my-docs/`. Set that path as `base` in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  base: "/my-docs/",
+})
+```
+
+The base path is configured once. Ardo applies it to assets and page links in development and
+in the build, and writes `build/client/` so that its contents are the site root on GitHub Pages.
+No post-build script is needed.
+
+If you deploy to the root (`https://username.github.io/`) or serve a GitHub Pages site behind a
+custom domain, leave `base` unset. The site is served from the domain root:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+})
+```
+
+### Step 2: Add a GitHub Actions Workflow
+
+Create `.github/workflows/deploy.yml` in your repository:
+
+The example pins pnpm explicitly. Match the version used to create your lockfile. If your `package.json` already pins pnpm with `packageManager`, omit the action's `version` input so the action uses that pin.
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: "12.14.0"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/client
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+```
+
+### Step 3: Enable GitHub Pages
+
+In your repository settings, go to **Pages** and set the source to **GitHub Actions**.
+
+Push to `main` and the workflow will build and deploy your site automatically.
+
+If you use a custom domain, add it in the same Pages settings screen before updating DNS. For a
+custom GitHub Actions workflow, GitHub stores the custom domain in the repository settings; a
+`CNAME` file in the build output is not required.
+
+<Tip>
+  Ask your agent to adapt this workflow for GitHub Pages when following [Agent
+  Instructions](/en/guide/agent-instructions). Preserve an existing deployment workflow unless a
+  change is required.
+</Tip>
+
+### Major-Versioned GitHub Pages Docs
+
+For stable major-version URLs, build the current docs into a version folder and keep older major
+versions deployed as static folders:
+
+```text
+/          -> static HTML redirect to /v3/
+/v3/       -> current major docs
+/v2/       -> previous major docs
+/versions.json
+```
+
+Configure Ardo's versioning in `ardo.config.ts`:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://docs.example.com",
+  versioning: {
+    current: "v3",
+    versions: [
+      { id: "v3", label: "3.x", path: "/v3/" },
+      { id: "v2", label: "2.x", path: "/v2/" },
+    ],
+  },
+})
+```
+
+The `versioning` option sets the base path of the current build to its version folder. Ardo writes
+the pages and assets under `build/client/v3/` and the site-wide files, such as `versions.json`,
+`robots.txt`, and the root redirect, at the top of `build/client/`. Switching versions with the
+switcher at the end of the sidebar loads the other version as a new page.
+
+The generated sitemap lists the current major version only. Older versions can stay available under
+their folders for stable inbound links, while the active build avoids advertising duplicate current
+content. On GitHub Pages, the root redirect is a static `index.html` file. If your custom domain sits
+behind a CDN or host that supports HTTP redirects, configure that provider-level redirect outside
+Ardo.
+
+When `versions.json` lists older major versions, do not upload only the fresh `build/client` folder
+to GitHub Pages. GitHub Pages replaces the full artifact on every deploy, so use a staging directory
+that combines the current build with retained static folders for older majors before calling
+`actions/upload-pages-artifact`.
+
+## Netlify
+
+Netlify requires no workflow file. Connect your Git repository in the Netlify dashboard and configure:
+
+- **Build command:** `pnpm build`
+- **Publish directory:** `build/client`
+
+Netlify automatically detects the Node.js version from your `package.json` engines field or an `.nvmrc` file.
+
+A root deployment needs no base-path setting. Set `base` in `ardo.config.ts` only
+when your site is served from a subpath.
+
+## Vercel
+
+Connect your Git repository in the Vercel dashboard and configure:
+
+- **Build command:** `pnpm build`
+- **Output directory:** `build/client`
+- **Framework preset:** Other
+
+Vercel handles routing and CDN configuration automatically.
+
+## Other Providers
+
+Since Ardo outputs plain static files to `build/client/`, it works with any static hosting provider (Cloudflare Pages, AWS S3 + CloudFront, Firebase Hosting, etc.). Use `pnpm build` as the build command and `build/client` as the output directory.

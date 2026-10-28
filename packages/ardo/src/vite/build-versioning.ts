@@ -24,6 +24,7 @@ export function generateVersionsJson(config: ResolvedConfig) {
         id: version.id,
         label: version.label ?? version.id,
         path: version.path,
+        ...(version.locales == null ? {} : { locales: version.locales }),
       })),
     },
     null,
@@ -65,24 +66,15 @@ export function getVersionRootLocaleRedirect(
   config: ResolvedConfig
 ): { from: string; to: string } | null {
   if (
-    config.versioning === false ||
-    config.versioning.rootRedirect === false ||
-    config.i18n === false
-  ) {
+    config.i18n === false ||
+    (config.versioning !== false && config.versioning.rootRedirect === false)
+  )
     return null
-  }
-
-  const currentVersion = getCurrentVersion(config.versioning)
-  if (currentVersion == null) {
-    return null
-  }
-
+  const currentVersion =
+    config.versioning === false ? undefined : getCurrentVersion(config.versioning)
+  const basePath = currentVersion?.path ?? config.base
   return {
-    from: currentVersion.path,
-    to: buildPublicPath({
-      basePath: currentVersion.path,
-      localeId: config.i18n.defaultLocale,
-      routePath: "/",
-    }),
+    from: basePath,
+    to: buildPublicPath({ basePath, localeId: config.i18n.defaultLocale, routePath: "/" }),
   }
 }

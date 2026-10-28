@@ -1,3 +1,4 @@
+import { text, text as textCopy, localizedPath } from "../i18n/messages"
 import { ArdoLink } from "ardo/ui"
 
 import * as styles from "./home.css"
@@ -28,18 +29,20 @@ const NEIGHBORS = [
 export function WhereArdoFits() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel>where Ardo fits</NoteLabel>
-      <h2 className={styles.h2}>Know one of these? Then you almost know Ardo.</h2>
+      <NoteLabel>{text("where Ardo fits")}</NoteLabel>
+      <h2 className={styles.h2}>{text("Know one of these? Then you almost know Ardo.")}</h2>
       <ul className={styles.compareGrid}>
         {NEIGHBORS.map(([name, text]) => (
           <li key={name} className={styles.compareRow}>
             <span className={styles.compareName}>{name}</span>
-            <span className={styles.muted}>{text}</span>
+            <span className={styles.muted}>{textCopy(text)}</span>
           </li>
         ))}
       </ul>
       <p className={styles.moreLink}>
-        <ArdoLink to="/guide/what-is-ardo#how-ardo-compares">Read the full comparison →</ArdoLink>
+        <ArdoLink to={localizedPath("/guide/what-is-ardo#how-ardo-compares")}>
+          {text("Read the full comparison →")}
+        </ArdoLink>
       </p>
     </section>
   )
@@ -48,33 +51,35 @@ export function WhereArdoFits() {
 export function FitCheck() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel>fit check</NoteLabel>
-      <h2 className={styles.h2}>Is Ardo your kind of bird?</h2>
+      <NoteLabel>{text("fit check")}</NoteLabel>
+      <h2 className={styles.h2}>{text("Is Ardo your kind of bird?")}</h2>
       <div className={styles.fitGrid}>
         <div
           className={`${styles.sticky} ${styles.stickyGreen} ${styles.fitNote} ${styles.tiltLeftSoft}`}
         >
-          <h3 className={styles.fitTitle}>A great fit if</h3>
+          <h3 className={styles.fitTitle}>{text("A great fit if")}</h3>
           <ul className={styles.list}>
             <li className={styles.check}>
-              your product or library is built with React and TypeScript
+              {text("your product or library is built with React and TypeScript")}{" "}
             </li>
-            <li className={styles.check}>docs should live in your repo and go through review</li>
             <li className={styles.check}>
-              you want prerendered pages and little work in the browser
+              {text("docs should live in your repo and go through review")}
+            </li>
+            <li className={styles.check}>
+              {text("you want prerendered pages and little work in the browser")}{" "}
             </li>
           </ul>
         </div>
         <div
           className={`${styles.sticky} ${styles.stickyPlain} ${styles.fitNote} ${styles.tiltRightSoft}`}
         >
-          <h3 className={styles.fitTitle}>Maybe not if</h3>
+          <h3 className={styles.fitTitle}>{text("Maybe not if")}</h3>
           <ul className={styles.list}>
             <li className={styles.bullet}>
-              you want prose only, no React at all (try Starlight or VitePress)
+              {text("you want prose only, no React at all (try Starlight or VitePress)")}{" "}
             </li>
             <li className={styles.bullet}>
-              you need hosted editing and analytics (a hosted platform does that)
+              {text("you need hosted editing and analytics (a hosted platform does that)")}{" "}
             </li>
           </ul>
         </div>
@@ -94,20 +99,21 @@ export function WhyArdo() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
       <div className={styles.whyColumn}>
-        <NoteLabel>whoo made this?</NoteLabel>
+        <NoteLabel>{text("whoo made this?")}</NoteLabel>
         <blockquote className={styles.quote}>
-          “I went looking for a modern, lightweight docs framework that was simply React. It didn’t
-          exist. So I built it.”
+          {text(
+            "“I went looking for a modern, lightweight docs framework that was simply React. It didn’t exist. So I built it.”"
+          )}{" "}
         </blockquote>
         <p className={styles.quoteBy}>
           <span className={styles.signature}>Sebastian</span>
-          <span className={styles.muted}>Sebastian Werner · creator and maintainer</span>
+          <span className={styles.muted}>{text("Sebastian Werner · creator and maintainer")}</span>
         </p>
         <ol className={styles.principles}>
           {PRINCIPLES.map(([title, text], index) => (
             <li key={title}>
-              <span className={styles.principleNumber}>{index + 1}.</span> <strong>{title}</strong>{" "}
-              {text}
+              <span className={styles.principleNumber}>{index + 1}.</span>{" "}
+              <strong>{textCopy(title)}</strong> {textCopy(text)}
             </li>
           ))}
         </ol>

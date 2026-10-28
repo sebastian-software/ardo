@@ -72,6 +72,18 @@ describe("LLM content hyperlinks", () => {
     expect(links(input)).toBe(input)
   })
 
+  it("resolves explicit locale links once while keeping relative links in the current locale", () => {
+    expect(
+      resolveLlmsContentLinks(
+        "[current](/de/guide/next) [other](/fr/guide/next) [relative](next)",
+        { ...page, publicPath: "/docs/v6/de/guide/setup" },
+        { ...config, i18n: { defaultLocale: "de", locales: [{ id: "de" }, { id: "fr" }] } }
+      )
+    ).toBe(
+      "[current](<https://example.com/docs/v6/de/guide/next/>) [other](<https://example.com/docs/v6/fr/guide/next/>) [relative](<https://example.com/docs/v6/de/guide/next/>)"
+    )
+  })
+
   it("keeps locale context and supports sites without an absolute public URL", () => {
     expect(
       resolveLlmsContentLinks(

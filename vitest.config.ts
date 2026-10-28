@@ -10,6 +10,9 @@ export default defineConfig({
       "virtual:ardo/generated-sidebars": fileURLToPath(
         new URL("./tests/mocks/generated-sidebars.ts", import.meta.url)
       ),
+      "virtual:ardo/search-loaders": fileURLToPath(
+        new URL("./tests/mocks/search-loaders.ts", import.meta.url)
+      ),
       "virtual:ardo/search-index": fileURLToPath(
         new URL("./tests/mocks/search-index.ts", import.meta.url)
       ),

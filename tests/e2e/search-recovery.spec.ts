@@ -6,8 +6,8 @@ test("failed search recovers by reloading once and keeps short-viewport results 
   const errors: string[] = []
   page.on("pageerror", (error) => errors.push(error.message))
   await page.setViewportSize({ width: 844, height: 390 })
-  await page.route("**/assets/search-index-*.js", (route) => route.abort("failed"))
-  await page.goto("/v6/guide/getting-started/")
+  await page.route("**/assets/search-index_locale_en-*.js", (route) => route.abort("failed"))
+  await page.goto("/v6/en/guide/getting-started/")
   await page.getByRole("button", { name: "Search", exact: true }).click()
   const dialog = page.getByRole("dialog", { name: "Search", exact: true })
   const input = dialog.getByRole("combobox", { name: "Search", exact: true })
@@ -16,7 +16,7 @@ test("failed search recovers by reloading once and keeps short-viewport results 
   const reload = dialog.getByRole("button", { name: "Reload search", exact: true })
   await expect(reload).toBeVisible()
   await expect(input).toHaveValue("markdown")
-  await page.unroute("**/assets/search-index-*.js")
+  await page.unroute("**/assets/search-index_locale_en-*.js")
   await Promise.all([page.waitForEvent("load"), reload.click()])
 
   await expect(dialog).toBeVisible()

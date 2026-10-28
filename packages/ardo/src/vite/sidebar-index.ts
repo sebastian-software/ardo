@@ -3,7 +3,7 @@ import type { Dirent } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { SidebarConfig, SidebarItem } from "../config/types"
+import type { MarkdownConfig, SidebarConfig, SidebarItem } from "../config/types"
 import type { PageFrontmatterMetadata } from "./page-metadata"
 import type { RouteManifestOptions } from "./route-manifest"
 
@@ -150,7 +150,7 @@ async function createDirectoryNode(
   context: SidebarScanContext
 ): Promise<null | SidebarNode> {
   const relativePath = path.relative(context.rootDir, fullPath)
-  const metadata = await readDirectoryIndexMetadata(fullPath)
+  const metadata = await readDirectoryIndexMetadata(fullPath, context.options.markdown)
 
   if (metadata?.sidebar === false) {
     return null
@@ -199,7 +199,7 @@ async function createMarkdownNode(
 
   const extension = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
   const fileContent = await fs.readFile(fullPath, "utf8")
-  const frontmatter = readFrontmatterSafely(fullPath, fileContent)
+  const frontmatter = readFrontmatterSafely(fullPath, fileContent, context.options.markdown)
   if (frontmatter == null) {
     return null
   }
@@ -247,10 +247,11 @@ export function toSidebarRouteFields(
 }
 
 export async function readDirectoryIndexMetadata(
-  fullPath: string
+  fullPath: string,
+  markdown: MarkdownConfig = {}
 ): Promise<null | SidebarFrontmatter> {
   for (const indexFileName of ["index.mdx", "index.md"]) {
-    const metadata = await readFrontmatterFile(path.join(fullPath, indexFileName))
+    const metadata = await readFrontmatterFile(path.join(fullPath, indexFileName), markdown)
     if (metadata != null) {
       return metadata
     }
@@ -259,12 +260,15 @@ export async function readDirectoryIndexMetadata(
   return null
 }
 
-async function readFrontmatterFile(filePath: string): Promise<null | SidebarFrontmatter> {
+async function readFrontmatterFile(
+  filePath: string,
+  markdown: MarkdownConfig
+): Promise<null | SidebarFrontmatter> {
   try {
     const fileContent = await fs.readFile(filePath, "utf8")
     // An existing index still identifies the directory route when its metadata
     // is malformed; only the metadata falls back, and child pages remain visible.
-    return readFrontmatterSafely(filePath, fileContent) ?? {}
+    return readFrontmatterSafely(filePath, fileContent, markdown) ?? {}
   } catch (error) {
     if (!isFileNotFoundError(error)) {
       warnFrontmatterReadFailure(filePath, error)
@@ -273,18 +277,25 @@ async function readFrontmatterFile(filePath: string): Promise<null | SidebarFron
   }
 }
 
-function readFrontmatterSafely(filePath: string, fileContent: string): null | SidebarFrontmatter {
+function readFrontmatterSafely(
+  filePath: string,
+  fileContent: string,
+  markdown: MarkdownConfig = {}
+): null | SidebarFrontmatter {
   try {
-    return readFrontmatter(fileContent, filePath)
+    return parsePageFrontmatterMetadata(
+      toFrontmatterRecord(
+        readNativeMarkdownFrontmatter(
+          fileContent,
+          filePath.endsWith(".mdx") ? "mdx" : "md",
+          markdown
+        )
+      )
+    )
   } catch (error) {
     warnFrontmatterReadFailure(filePath, error)
     return null
   }
-}
-
-function readFrontmatter(fileContent: string, filePath: string): SidebarFrontmatter {
-  const data = readNativeMarkdownFrontmatter(fileContent, filePath.endsWith(".mdx") ? "mdx" : "md")
-  return parsePageFrontmatterMetadata(toFrontmatterRecord(data))
 }
 
 function warnFrontmatterReadFailure(filePath: string, error: unknown): void {

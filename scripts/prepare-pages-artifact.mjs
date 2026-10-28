@@ -39,7 +39,7 @@ try {
 
   // Preserve the former playground URL without shipping the retired application.
   const playgroundDir = path.join(stagingDir, "storybook")
-  const galleryPath = `${current.path}guide/components/`
+  const galleryPath = `${current.path}${current.locales?.[0] == null ? "" : `${current.locales[0]}/`}guide/components/`
   await fs.rm(playgroundDir, { force: true, recursive: true })
   await fs.mkdir(playgroundDir)
   await fs.writeFile(

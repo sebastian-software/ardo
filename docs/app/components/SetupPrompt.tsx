@@ -1,3 +1,4 @@
+import { text } from "../i18n/messages"
 import type { ReactNode } from "ardo/react"
 
 import { ArdoCopyButton } from "ardo/ui"
@@ -11,7 +12,7 @@ import * as styles from "./setup-prompt.css"
  * constant is the fallback.
  */
 export function SetupPrompt({ children }: { children?: ReactNode }) {
-  const prompt = typeof children === "string" ? children : SETUP_PROMPT
+  const prompt = typeof children === "string" ? children : text(SETUP_PROMPT)
   return (
     <div className={styles.frame}>
       <p className={styles.prompt}>

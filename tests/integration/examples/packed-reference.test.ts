@@ -120,7 +120,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
 
   it("builds the literal manual setup and feature recipes as a packed-package consumer", () => {
     const guide = fs.readFileSync(
-      path.join(repositoryRoot, "docs/app/routes/guide/getting-started.mdx"),
+      path.join(repositoryRoot, "docs/app/content/guide/getting-started.mdx"),
       "utf8"
     )
     const consumer = path.join(temporaryRoot, "manual-installation")
@@ -184,7 +184,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
       "openapi: 3.1.0\ninfo:\n  title: Pet API\n  version: 1.0.0\npaths: {}\n"
     )
     const guidePage = (name: string) =>
-      fs.readFileSync(path.join(repositoryRoot, `docs/app/routes/guide/${name}.mdx`), "utf8")
+      fs.readFileSync(path.join(repositoryRoot, `docs/app/content/guide/${name}.mdx`), "utf8")
     // The theming recipe lives in root.tsx: theme, logo, and favicon from imported files.
     fs.writeFileSync(
       path.join(consumer, "app/root.tsx"),

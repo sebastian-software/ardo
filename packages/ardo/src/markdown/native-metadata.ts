@@ -215,10 +215,10 @@ export function createNativeMarkdownMetadata(
 /** Parse YAML metadata discovered by Ferromark's native frontmatter parser. */
 export function readNativeMarkdownFrontmatter(
   source: string,
-  format: NativeMarkdownFormat
+  format: NativeMarkdownFormat,
+  markdownConfig: MarkdownConfig = {}
 ): Record<string, unknown> {
-  const { metadata: result } = getJsxCompiler().prepare(source, { format, frontMatter: true })
-  return parseNativeFrontmatter(result.frontMatter, result.frontMatterKind)
+  return prepareNativeMarkdown(source, format, markdownConfig).frontmatter
 }
 
 export function parseNativeFrontmatter(

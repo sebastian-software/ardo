@@ -39,6 +39,25 @@ function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"
 }
 
 describe("UI shell landmarks", () => {
+  it("keeps header and mobile panel home links in the active locale", () => {
+    const localizedConfig = {
+      ...config,
+      i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
+    }
+    const view = renderToStaticMarkup(
+      <ArdoPageProvider path="/de/guide/start" base="/v6/">
+        <ArdoProvider config={localizedConfig} sidebar={[]}>
+          <ArdoHeader />
+          <MobileSlidePanel title="Docs" triggerRef={triggerRef} onClose={closeMobilePanel}>
+            <span>Panel</span>
+          </MobileSlidePanel>
+        </ArdoProvider>
+      </ArdoPageProvider>
+    )
+    expect(view.match(/href="\/v6\/de\/"/gu)).toHaveLength(2)
+    expect(view).not.toContain('href="/v6/"')
+  })
+
   it("keeps stable hook classes on default landmarks", () => {
     const view = renderShell(
       <>

@@ -58,6 +58,7 @@ title: ${title}
 import { defineArdoConfig } from "ardo/config"
 export default defineArdoConfig(${JSON.stringify({
       title: "Navigation fixture",
+      siteUrl: "https://docs.example.test",
       base: "/project/",
       lang: localized ? "fr" : "de",
       linkCheck: { level: "error" },
@@ -67,7 +68,11 @@ export default defineArdoConfig(${JSON.stringify({
               current: "v6",
               versions: [{ id: "v6", path: "/v6/" }],
             },
-            i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
+            i18n: {
+              defaultLocale: "en",
+              redirectUnlocalized: true,
+              locales: [{ id: "en" }, { id: "de" }],
+            },
           }
         : {}),
     })})
@@ -79,8 +84,33 @@ export default defineArdoConfig(${JSON.stringify({
     `
 import type { ReactNode } from "ardo/react"
 import { ArdoRootLayout } from "ardo/ui"
+import { getRenderPath } from "./render-state"
 export function Layout({ children }: { children: ReactNode }) {
-  return <ArdoRootLayout>{children}</ArdoRootLayout>
+  return <ArdoRootLayout><meta name="render-scope" content={getRenderPath()} />{children}</ArdoRootLayout>
+}
+`
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/render-state.ts"),
+    `
+let reader = () => "client"
+export function setRenderPathReader(value: () => string) { reader = value }
+export function getRenderPath() { return reader() }
+`
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/server.ts"),
+    `
+import { AsyncLocalStorage } from "node:async_hooks"
+import type { ArdoServerRenderContext } from "ardo/runtime"
+import { setRenderPathReader } from "./render-state"
+const scope = new AsyncLocalStorage<string>()
+setRenderPathReader(() => scope.getStore() ?? "unscoped")
+export function withRenderContext({path, render}: ArdoServerRenderContext) {
+  return scope.run(path.replace(/\\/+$/u, ""), async () => {
+    await new Promise((resolve) => setTimeout(resolve, path.includes("de") ? 8 : 1))
+    return render()
+  })
 }
 `
   )

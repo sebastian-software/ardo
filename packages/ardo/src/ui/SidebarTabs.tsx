@@ -1,3 +1,4 @@
+import { useArdoLabels } from "../runtime/hooks"
 import type { ReactNode } from "react"
 
 import { ArdoLink } from "../runtime/page"
@@ -22,8 +23,9 @@ export type SidebarTabItem = {
  * The tabs are links, not an ARIA tablist: switching a section navigates.
  */
 export function SidebarTabs({ items }: { items: SidebarTabItem[] }) {
+  const labels = useArdoLabels()
   return (
-    <nav aria-label="Documentation sections" className={`ardo-sidebar-tabs ${styles.sectionTabs}`}>
+    <nav aria-label={labels.sidebar.sections} className={`ardo-sidebar-tabs ${styles.sectionTabs}`}>
       <ul className={styles.sectionTabList}>
         {items.map((item) => (
           <li key={item.key}>

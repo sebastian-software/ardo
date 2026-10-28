@@ -44,7 +44,8 @@ async function sectionIndexesIn(
   const indexes: Record<string, string> = {}
   for (const entry of await readDirectoryEntries(dir)) {
     if (!entry.isDirectory()) continue
-    if ((await readDirectoryIndexMetadata(path.join(dir, entry.name))) == null) continue
+    if ((await readDirectoryIndexMetadata(path.join(dir, entry.name), options.markdown)) == null)
+      continue
     const identity = createSidebarRouteIdentity(entry.name, options)
     const { link } = toSidebarRouteFields(identity, localeId)
     if (link != null) indexes[entry.name] = link

@@ -3,7 +3,7 @@
 ## Status
 
 Superseded by the native TypeScript + OXC backend in the next major release.
-See the [migration guide](../app/routes/guide/typedoc.mdx).
+See the [migration guide](../app/routes/en/guide/typedoc.mdx).
 
 ## Context
 

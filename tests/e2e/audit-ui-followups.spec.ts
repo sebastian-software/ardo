@@ -8,7 +8,7 @@ test("a denied homepage copy offers a selected manual prompt", async ({ page }) 
     })
   })
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/")
+  await page.goto("/v6/en/")
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click()
   await expect(page.getByRole("status")).toHaveText(
     "Copying failed. Copy the prompt below manually."
@@ -27,7 +27,7 @@ test("a denied homepage copy offers a selected manual prompt", async ({ page }) 
 
 test("an overflowing API code block can be reached and scrolled by keyboard", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/api-reference/types/sitemapchangefreq/")
+  await page.goto("/v6/en/api-reference/types/sitemapchangefreq/")
   const code = page.locator(".ardo-code-block pre").first()
   await expect(code).toHaveAttribute("tabindex", "0")
   expect(await code.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true)
@@ -42,7 +42,7 @@ test("an overflowing API code block can be reached and scrolled by keyboard", as
 test("compact outline leaves keyboard focus at its destination", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.emulateMedia({ reducedMotion: "reduce" })
-  await page.goto("/v6/guide/getting-started/")
+  await page.goto("/v6/en/guide/getting-started/")
   const outline = page.locator(".ardo-page-outline")
   await outline.locator("summary").press("Enter")
   await outline.getByRole("link", { name: "Production Build", exact: true }).press("Enter")
@@ -59,7 +59,7 @@ test("compact outline leaves keyboard focus at its destination", async ({ page }
 
 test("the page outline tracks a nested subsection while reading", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
-  await page.goto("/v6/guide/getting-started/")
+  await page.goto("/v6/en/guide/getting-started/")
   await page.locator('[id="2-install-dependencies"]').evaluate((heading) => {
     const main = document.querySelector("#main-content")
     if (main != null) {
@@ -83,7 +83,7 @@ test("a denied shared code copy offers selected exact source for manual copying"
     })
   })
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/guide/components/")
+  await page.goto("/v6/en/guide/components/")
   const code = page.locator("#gallery-code")
   await code.getByRole("button", { name: "Copy code", exact: true }).click()
   await expect(code.getByRole("status")).toHaveText(

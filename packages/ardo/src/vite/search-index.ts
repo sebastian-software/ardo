@@ -44,7 +44,11 @@ export function createSearchRecords(entries: RouteManifestEntry[]): SearchDoc[] 
 function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
   const pageTitle =
     entry.metadata.title ?? formatTitle(getSearchTitleSource(entry.metadata.sourcePath))
-  const routeGroup = createSectionFromSourcePath(entry.metadata.sourcePath)
+  const sourcePath =
+    entry.sourceLocaleId == null
+      ? entry.metadata.sourcePath
+      : entry.metadata.sourcePath.slice(entry.sourceLocaleId.length + 1)
+  const routeGroup = createSectionFromSourcePath(sourcePath)
   const text =
     entry.searchText ??
     readNativeMarkdownMetadata(
@@ -61,7 +65,11 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
     const title = section.title ?? pageTitle
     const headingHierarchy =
       section.headingHierarchy.length === 0 ? [pageTitle] : section.headingHierarchy
-    const pathWithAnchor = appendAnchor(entry.routePath, section.anchor)
+    const internalPath =
+      entry.sourceLocaleId == null
+        ? entry.routePath
+        : `/${entry.sourceLocaleId}${entry.routePath === "/" ? "" : entry.routePath}`
+    const pathWithAnchor = appendAnchor(internalPath, section.anchor)
     const publicPathWithAnchor = appendAnchor(entry.publicPath, section.anchor)
 
     return [

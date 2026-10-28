@@ -6,7 +6,7 @@ import { repositoryRoot } from "./project"
 
 function example(guide: string, marker: string): string {
   const source = fs.readFileSync(
-    path.join(repositoryRoot, `docs/app/routes/guide/${guide}.mdx`),
+    path.join(repositoryRoot, `docs/app/content/guide/${guide}.mdx`),
     "utf8"
   )
   const blocks = source.matchAll(/^```tsx?[^\n]*\n([\s\S]*?)^```[ \t]*$/gmu)

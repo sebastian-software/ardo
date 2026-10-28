@@ -49,5 +49,15 @@ describe("route source metadata", () => {
     expect(code).toContain('"relativePath":"guide/setup.mdx","lastUpdated":1577934245000')
     expect(code).toContain('"relativePath":"home.md","lastUpdated":')
     expect(code).not.toContain(`"relativePath":"${directory}`)
+
+    // A generated route can reuse a name that used to be committed.
+    git(["rm", "--cached", "app/routes/guide/setup.mdx"])
+    fs.writeFileSync(path.join(directory, ".gitignore"), "app/routes/guide/setup.mdx\n")
+    const generatedAt = new Date("2026-10-27T12:00:00Z")
+    fs.utimesSync(source, generatedAt, generatedAt)
+    const regenerated = createRoutesModule({ root: directory, routesDir })
+    expect(regenerated).toContain(
+      `"relativePath":"guide/setup.mdx","lastUpdated":${generatedAt.getTime()}`
+    )
   })
 })

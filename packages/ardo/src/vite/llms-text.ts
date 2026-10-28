@@ -50,7 +50,14 @@ export function generateLlmsTxt(
 export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: ResolvedConfig): string {
   const llmsConfig = resolveLlmsConfig(config)
   const lines = createHeaderLines(llmsConfig, config)
-  const routePaths = new Set(entries.map((entry) => entry.routePath))
+  const routePaths = new Set(
+    entries.flatMap((entry) => [
+      entry.routePath,
+      ...(entry.sourceLocaleId == null
+        ? []
+        : [`/${entry.sourceLocaleId}${entry.routePath === "/" ? "" : entry.routePath}`]),
+    ])
+  )
 
   for (const { entry } of getLlmsEntries(entries, config)) {
     const title = getEntryTitle(entry)
@@ -59,7 +66,7 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     const format = entry.filePath.endsWith(".mdx") ? "mdx" : "md"
     // Rewrite projected Markdown as Markdown: angle-wrapped local URLs are not MDX JSX.
     const content = resolveLlmsContentLinks(
-      stripMdxSyntaxOutsideCodeFences(entry.content, title, format),
+      stripMdxSyntaxOutsideCodeFences(entry.content, title, { format, markdown: config.markdown }),
       { ...entry, routePaths, format: "md" },
       config
     )

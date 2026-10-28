@@ -39,7 +39,7 @@ feat(scaffold): ...  # Don't do this
 
 - `packages/ardo/src/vite/plugin.ts` - Main Vite plugin
 - `packages/ardo/src/vite/routes-plugin.ts` - Route generation
-- `docs/app/routes/guide/agent-instructions.mdx` - Versioned setup, adoption, and upgrade instructions
+- `docs/app/content/guide/agent-instructions.mdx` - Versioned setup, adoption, and upgrade instructions
 - `examples/` - The public Basic setup reference
 - `tests/fixtures/` - Internal API, content, deployment, and runtime regression inputs
 - `docs/` - Ardo documentation site

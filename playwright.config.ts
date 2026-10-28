@@ -9,16 +9,16 @@ const docsClientDir = usePagesArtifact ? "docs/build/pages" : "docs/build/client
 if (usePrebuiltDocs) {
   const missingRoutes: string[] = []
 
-  if (!existsSync(`${docsClientDir}/v6/guide/getting-started/index.html`)) {
-    missingRoutes.push("v6/guide/getting-started/index.html")
+  if (!existsSync(`${docsClientDir}/v6/en/guide/getting-started/index.html`)) {
+    missingRoutes.push("v6/en/guide/getting-started/index.html")
   }
 
-  if (!existsSync(`${docsClientDir}/v6/guide/markdown/index.html`)) {
-    missingRoutes.push("v6/guide/markdown/index.html")
+  if (!existsSync(`${docsClientDir}/v6/en/guide/markdown/index.html`)) {
+    missingRoutes.push("v6/en/guide/markdown/index.html")
   }
 
-  if (!existsSync(`${docsClientDir}/v6/guide/components/index.html`)) {
-    missingRoutes.push("v6/guide/components/index.html")
+  if (!existsSync(`${docsClientDir}/v6/en/guide/components/index.html`)) {
+    missingRoutes.push("v6/en/guide/components/index.html")
   }
 
   if (missingRoutes.length > 0) {
@@ -38,7 +38,7 @@ const docsServerCommand = usePrebuiltDocs
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  testIgnore: "**/examples/**",
+  testIgnore: ["**/examples/**", "**/docs-development/**"],
   fullyParallel: true,
   forbidOnly: isCi,
   retries: isCi ? 2 : 0,

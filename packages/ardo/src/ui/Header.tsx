@@ -13,6 +13,7 @@ import { ArdoLink } from "../runtime/page"
 import { useArdoPath } from "../runtime/page-context"
 
 import { useArdoConfig, useArdoLabels, useArdoSiteConfig } from "../runtime/hooks"
+import { useArdoHomePath } from "../runtime/locale"
 import { ChromeIcon } from "./chrome-icons"
 import { joinClassNames } from "./classnames"
 import { ArdoHeaderSearch } from "./components/HeaderSearch"
@@ -154,6 +155,7 @@ export function ArdoHeader({
   const config = useArdoConfig()
   const siteLogo = useArdoSiteConfig().logo
   const labels = useArdoLabels()
+  const homePath = useArdoHomePath()
   const [mobileMenuOpen, setMobileMenuOpen] = useMobileMenu()
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const { actions, nav } = splitHeaderChildren(children)
@@ -162,8 +164,6 @@ export function ArdoHeader({
 
   const resolvedLogo = logo ?? siteLogo
   const resolvedTitle = title ?? config.title
-  const hasLogo = resolvedLogo !== undefined
-  const hasTitle = resolvedTitle !== ""
   const hasMobileMenu = useHasMobileMenu([mobileMenuContent, nav, actions], themeToggle)
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
@@ -194,9 +194,9 @@ export function ArdoHeader({
                 <ChromeIcon name="menu" />
               </button>
             )}
-            <ArdoLink to="/" className={styles.logoLink}>
-              {hasLogo && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
-              {hasTitle && <span className={styles.siteTitle}>{resolvedTitle}</span>}
+            <ArdoLink to={homePath} className={styles.logoLink}>
+              {resolvedLogo !== undefined && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
+              {resolvedTitle !== "" && <span className={styles.siteTitle}>{resolvedTitle}</span>}
             </ArdoLink>
           </div>
 

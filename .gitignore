@@ -50,3 +50,6 @@ pnpm-debug.log*
 
 # Streamline icon exports, input for `pnpm --filter ardo icons:generate`
 packages/ardo/.icon-sources/
+
+# Single-source guides are materialized before Ardo discovers its routes.
+/docs/app/routes/*/guide/

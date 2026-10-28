@@ -4,6 +4,7 @@ import { navigateTo, useArdoHrefResolver } from "../../runtime/page-context"
 import type { ArdoLabels } from "../labels"
 
 import { useArdoLabels } from "../../runtime/hooks"
+import { useArdoLocale } from "../../runtime/locale"
 import { ChromeIcon } from "../chrome-icons"
 import {
   getActiveSearchOptionId,
@@ -30,7 +31,10 @@ export type ArdoSearchProps = {
   shortcut?: boolean
 }
 
-function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMatch[] {
+function normalizeResults(
+  rawResults: Array<Record<string, unknown>>,
+  sectionLabel: (section: string) => string
+): SearchMatch[] {
   return rawResults.flatMap((result): SearchMatch[] => {
     const resultPath = typeof result.path === "string" ? result.path : undefined
     const title = typeof result.title === "string" ? result.title : undefined
@@ -42,13 +46,14 @@ function normalizeResults(rawResults: Array<Record<string, unknown>>): SearchMat
         path: resultPath,
         pageTitle: typeof result.pageTitle === "string" ? result.pageTitle : undefined,
         excerpt: typeof result.excerpt === "string" ? result.excerpt : undefined,
-        section: typeof result.section === "string" ? result.section : undefined,
+        section: typeof result.section === "string" ? sectionLabel(result.section) : undefined,
       },
     ]
   })
 }
 
-function useSearch() {
+function useSearch(locale: string) {
+  const sectionLabel = useArdoLabels().search.sectionLabel
   const latestRequest = useRef(0)
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
@@ -56,28 +61,31 @@ function useSearch() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [status, setStatus] = useState<"loading" | "ready" | "error">("ready")
 
-  const search = useCallback((searchQuery: string) => {
-    setQuery(searchQuery)
-    const request = ++latestRequest.current
-    setResults([])
-    setSelectedIndex(0)
-    if (!searchQuery.trim()) {
-      setIsOpen(false)
-      setStatus("ready")
-      return
-    }
-    setStatus("loading")
-    setIsOpen(true)
-    void loadSearchIndex()
-      .then((index) => {
-        if (latestRequest.current !== request) return
-        setResults(normalizeResults(index.search(searchQuery).slice(0, 10)))
+  const search = useCallback(
+    (searchQuery: string) => {
+      setQuery(searchQuery)
+      const request = ++latestRequest.current
+      setResults([])
+      setSelectedIndex(0)
+      if (!searchQuery.trim()) {
+        setIsOpen(false)
         setStatus("ready")
-      })
-      .catch(() => {
-        if (latestRequest.current === request) setStatus("error")
-      })
-  }, [])
+        return
+      }
+      setStatus("loading")
+      setIsOpen(true)
+      void loadSearchIndex(locale)
+        .then((index) => {
+          if (latestRequest.current !== request) return
+          setResults(normalizeResults(index.search(searchQuery).slice(0, 10), sectionLabel))
+          setStatus("ready")
+        })
+        .catch(() => {
+          if (latestRequest.current === request) setStatus("error")
+        })
+    },
+    [locale, sectionLabel]
+  )
 
   return { isOpen, setIsOpen, query, results, selectedIndex, setSelectedIndex, search, status }
 }
@@ -211,7 +219,8 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
   const labels = useArdoLabels()
   const containerRef = useRef<HTMLDivElement>(null)
   const { inputRef, setInputRef } = useSearchInputRef(autoFocus)
-  const state = useSearch()
+  const locale = useArdoLocale()
+  const state = useSearch(locale)
   useSearchRecovery(inputRef, state.search)
   const hasQuery = state.query.trim().length > 0
   const expanded = state.isOpen && hasQuery
@@ -274,7 +283,7 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
         onKeyDown={handleKeyDown}
         onFocus={() => {
           // Start loading the index while the reader types the first letters.
-          void loadSearchIndex().catch(() => {
+          void loadSearchIndex(locale).catch(() => {
             // A query shows the error and a retry action; prefetch stays quiet.
           })
           if (hasQuery) state.setIsOpen(true)

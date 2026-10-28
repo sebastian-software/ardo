@@ -87,6 +87,8 @@ export type DocumentationVersion = {
   id: string
   /** Human-readable label shown in the version switcher. Defaults to id. */
   label?: string
+  /** Supported URL locale prefixes. Empty means unlocalized; omitted preserves the current path. */
+  locales?: string[]
   /** Public path for this major documentation version, such as "/v3/". */
   path: string
 }
@@ -114,6 +116,8 @@ export type DocumentationLocale = {
 export type I18nConfig = {
   /** Default locale. When i18n is active, public URLs include this locale. */
   defaultLocale: string
+  /** Redirect old unlocalized URLs to the default locale during a localization migration. */
+  redirectUnlocalized?: boolean
   /** Locales that have their own complete static route tree. */
   locales: DocumentationLocale[]
 }

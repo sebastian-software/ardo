@@ -628,12 +628,12 @@ export function resolveArdoSidebarItems(
 
   const sections = getSidebarSectionElements(sidebar.props.children)
   if (sections.length === 0) {
-    return sidebarItemsFromChildren(sidebar.props.children)
+    return sidebarItemsFromChildren(sidebar.props.children, currentPath)
   }
 
   const [firstSection] = sections
   const activeSection = findMatchingSidebarSection(sections, currentPath) ?? firstSection
-  return sidebarItemsFromChildren(activeSection.props.children)
+  return sidebarItemsFromChildren(activeSection.props.children, currentPath)
 }
 
 function getSidebarSectionElements(
@@ -685,21 +685,21 @@ function routePathToString(to: RoutePath | undefined): string | undefined {
   return typeof to === "string" ? to : undefined
 }
 
-function sidebarItemsFromChildren(children: ReactNode): SidebarItemType[] {
+function sidebarItemsFromChildren(children: ReactNode, currentPath: string): SidebarItemType[] {
   const items: SidebarItemType[] = []
 
   for (const child of flattenSidebarChildren(children)) {
-    items.push(...sidebarItemsFromChild(child))
+    items.push(...sidebarItemsFromChild(child, currentPath))
   }
 
   return items
 }
 
-function sidebarItemsFromChild(child: ReactNode): SidebarItemType[] {
+function sidebarItemsFromChild(child: ReactNode, currentPath: string): SidebarItemType[] {
   if (!isValidElement(child)) return []
   if (isSidebarLinkElement(child)) return [sidebarItemFromLink(child)]
-  if (isSidebarGroupElement(child)) return [sidebarItemFromGroup(child)]
-  if (isGeneratedSidebarElement(child)) return generatedSidebarItemsFromElement(child)
+  if (isSidebarGroupElement(child)) return [sidebarItemFromGroup(child, currentPath)]
+  if (isGeneratedSidebarElement(child)) return generatedSidebarItemsFromElement(child, currentPath)
   return []
 }
 
@@ -710,8 +710,11 @@ function sidebarItemFromLink(child: ReactElement<ArdoSidebarLinkProps>): Sidebar
   }
 }
 
-function sidebarItemFromGroup(child: ReactElement<ArdoSidebarGroupProps>): SidebarItemType {
-  const childItems = sidebarItemsFromChildren(child.props.children)
+function sidebarItemFromGroup(
+  child: ReactElement<ArdoSidebarGroupProps>,
+  currentPath: string
+): SidebarItemType {
+  const childItems = sidebarItemsFromChildren(child.props.children, currentPath)
   return {
     text: child.props.title,
     link: routePathToString(child.props.to),
@@ -775,9 +778,10 @@ function isGeneratedSidebarElement(
 }
 
 function generatedSidebarItemsFromElement(
-  child: ReactElement<ArdoGeneratedSidebarProps>
+  child: ReactElement<ArdoGeneratedSidebarProps>,
+  currentPath: string
 ): SidebarItemType[] {
-  return generatedSidebarItemsResolver(child)?.(child.props.section) ?? []
+  return generatedSidebarItemsResolver(child)?.(child.props.section, currentPath) ?? []
 }
 
 function generatedSidebarItemsResolver(child: ReactElement) {
@@ -787,7 +791,7 @@ function generatedSidebarItemsResolver(child: ReactElement) {
 }
 
 function hasGeneratedSidebarItemsResolver(value: unknown): value is {
-  ardoGeneratedSidebarItems: (section: string) => SidebarItemType[]
+  ardoGeneratedSidebarItems: (section: string, pathname?: string) => SidebarItemType[]
 } {
   if (typeof value !== "function") return false
   if (!("ardoGeneratedSidebarItems" in value)) return false
