@@ -58,7 +58,7 @@ export function Hero({ facts }: { facts: NpmFacts | null }) {
         </h1>
         <p className={`${styles.lead} ${styles.heroLead}`}>
           {text(
-            "Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines."
+            "Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by native engines."
           )}{" "}
         </p>
         <div className={styles.buttonRow}>

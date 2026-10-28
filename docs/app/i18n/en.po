@@ -11,6 +11,10 @@ msgid " on 50 real documents."
 msgstr " on 50 real documents."
 
 #: docs/app/i18n/messages.ts
+msgid " on Ardo’s own API."
+msgstr " on Ardo’s own API."
+
+#: docs/app/i18n/messages.ts
 msgid ", same HTML."
 msgstr ", same HTML."
 
@@ -49,6 +53,10 @@ msgstr "← fresh from npm at every build"
 #: docs/app/i18n/messages.ts
 msgid "2.6× faster than pulldown-cmark"
 msgstr "2.6× faster than pulldown-cmark"
+
+#: docs/app/i18n/messages.ts
+msgid "4.3× faster than TypeDoc"
+msgstr "4.3× faster than TypeDoc"
 
 #: docs/app/i18n/messages.ts
 msgid "4.7× faster than Shiki on WebAssembly"
@@ -106,20 +114,20 @@ msgstr "Ardo cards with icons, above the MDX that renders them"
 #: docs/app/home/Page.tsx#meta
 msgid ""
 "Ardo is a static site generator for React projects: guides, API reference and "
-"search, baked at build time by Rust engines and served as plain HTML."
+"search, baked at build time by native engines and served as plain HTML."
 msgstr ""
 "Ardo is a static site generator for React projects: guides, API reference and "
-"search, baked at build time by Rust engines and served as plain HTML."
+"search, baked at build time by native engines and served as plain HTML."
 
 #: docs/app/i18n/messages.ts
 msgid ""
 "Ardo is a static site generator for React projects. Guides in Markdown and "
 "MDX, an API reference read from your TypeScript, and search, all prerendered "
-"at build time by Rust engines."
+"at build time by native engines."
 msgstr ""
 "Ardo is a static site generator for React projects. Guides in Markdown and "
 "MDX, an API reference read from your TypeScript, and search, all prerendered "
-"at build time by Rust engines."
+"at build time by native engines."
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -396,6 +404,14 @@ msgid "Is Ardo your kind of bird?"
 msgstr "Is Ardo your kind of bird?"
 
 #: docs/app/i18n/messages.ts
+msgid ""
+"Its native compiler reads your types, and Ardo turns your exports into pages: "
+"components with their props, hooks and types. TypeDoc, rethought for React."
+msgstr ""
+"Its native compiler reads your types, and Ardo turns your exports into pages: "
+"components with their props, hooks and types. TypeDoc, rethought for React."
+
+#: docs/app/i18n/messages.ts
 msgid "Know one of these? Then you almost know Ardo."
 msgstr "Know one of these? Then you almost know Ardo."
 
@@ -566,10 +582,10 @@ msgstr "Public feature status and published benchmarks."
 
 #: docs/app/i18n/messages.ts
 msgid ""
-"React and MDX too, on a newer foundation: Vite and Rust engines, with plain "
+"React and MDX too, on a newer foundation: Vite and native engines, with plain "
 "HTML pages."
 msgstr ""
-"React and MDX too, on a newer foundation: Vite and Rust engines, with plain "
+"React and MDX too, on a newer foundation: Vite and native engines, with plain "
 "HTML pages."
 
 #: docs/app/i18n/messages.ts
@@ -577,8 +593,12 @@ msgid "React and MDX too, without Next.js. Plain static files come out."
 msgstr "React and MDX too, without Next.js. Plain static files come out."
 
 #: docs/app/i18n/messages.ts
-msgid "React and Vite too. Ardo adds generated API reference and Rust engines."
-msgstr "React and Vite too. Ardo adds generated API reference and Rust engines."
+msgid ""
+"React and Vite too. Ardo adds an API reference from your TypeScript and native"
+" engines."
+msgstr ""
+"React and Vite too. Ardo adds an API reference from your TypeScript and native"
+" engines."
 
 #: docs/app/home/Hero.tsx#Hero
 msgid "React docs, baked into <0>plain HTML</0>."
@@ -724,14 +744,6 @@ msgstr "The dev server you already love. Save a file, watch the page update."
 #: docs/app/i18n/messages.ts
 msgid "the easy way in"
 msgstr "the easy way in"
-
-#: docs/app/i18n/messages.ts
-msgid ""
-"The native compiler reads your types. It built Ardo’s own API docs 4.3× "
-"faster than TypeDoc."
-msgstr ""
-"The native compiler reads your types. It built Ardo’s own API docs 4.3× "
-"faster than TypeDoc."
 
 #: docs/app/i18n/messages.ts
 msgid "the owl says hi"
