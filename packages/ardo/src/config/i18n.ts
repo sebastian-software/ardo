@@ -7,6 +7,7 @@ export function resolveI18nConfig(i18n: false | I18nConfig | undefined): false |
 
   return {
     defaultLocale: i18n.defaultLocale,
+    ...(i18n.redirectUnlocalized === true ? { redirectUnlocalized: true } : {}),
     locales: i18n.locales.map((locale) => ({
       ...locale,
       label: locale.label ?? locale.id,

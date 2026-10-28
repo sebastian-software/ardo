@@ -18,6 +18,22 @@ afterEach(async () => {
 })
 
 describe("generateSidebar", () => {
+  it("reads localized metadata with the same heading syntax as route compilation", async () => {
+    await writeRoute("de/guide/index.mdx", "---\ntitle: Anleitung\n---\n\n## Einstieg {#start}\n")
+    await writeRoute(
+      "de/guide/start.mdx",
+      "---\ntitle: Erste Schritte\n---\n\n## Installation {#install}\n"
+    )
+    const options = { localeIds: ["de"], localeId: "de", markdown: { headingAttributes: true } }
+    const sidebars = await generateContextSidebars(routesDir, options)
+    expect(sidebars["de:guide"]).toContainEqual(
+      expect.objectContaining({ text: "Erste Schritte", link: "/de/guide/start" })
+    )
+    expect(await generateContextSectionIndexes(routesDir, options)).toStrictEqual({
+      "de:guide": "/de/guide",
+    })
+  })
+
   it("keeps the default generated order when no section order is configured", async () => {
     await writeRoute(
       "guide/second.mdx",

@@ -325,7 +325,7 @@ describe("llms-text", () => {
 
   it("keeps real setup-guide links navigable in latest and versioned full-text exports", async () => {
     const source = await fs.readFile(
-      new URL("../../../../docs/app/routes/guide/getting-started.mdx", import.meta.url),
+      new URL("../../../../docs/app/content/guide/getting-started.mdx", import.meta.url),
       "utf8"
     )
     const versionedConfig = resolveConfig(
@@ -333,13 +333,14 @@ describe("llms-text", () => {
         title: "Docs",
         base: "/docs/",
         siteUrl: "https://example.com",
+        i18n: { defaultLocale: "en", locales: [{ id: "en" }] },
         versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
       },
       "/tmp"
     )
     const page = entry({
       content: source,
-      publicPath: "/docs/v6/guide/getting-started",
+      publicPath: "/docs/v6/en/guide/getting-started",
       routePath: "/guide/getting-started",
       frontmatter: { title: "Getting Started" },
     })
@@ -349,10 +350,10 @@ describe("llms-text", () => {
     expect(full).toHaveLength(2)
     for (const asset of full) {
       expect(asset.source).toContain(
-        "[tested Basic example](<https://example.com/docs/v6/guide/agent-instructions/#the-basic-example>)"
+        "[tested Basic example](<https://example.com/docs/v6/en/guide/agent-instructions/#the-basic-example>)"
       )
       expect(asset.source).toContain(
-        "[manual installation](<https://example.com/docs/v6/guide/getting-started#manual-installation>)"
+        "[manual installation](<https://example.com/docs/v6/en/guide/getting-started#manual-installation>)"
       )
       expect(asset.source).toContain('import { defineArdoConfig } from "ardo/config"')
     }

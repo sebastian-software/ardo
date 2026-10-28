@@ -61,20 +61,9 @@ export async function renderPage(
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
 
-  const locale =
-    config.i18n === false
-      ? undefined
-      : config.i18n.locales.find((entry) => entry.id === pagePath.split("/")[1])?.id
-  // The page renders first, so the icons ArdoRoot receives can go into the shell's head.
-  let icons: ArdoDocumentIcons = {}
-  const body = await renderToHtml(
-    <ArdoDocumentIconsContext
-      value={(value) => {
-        icons = value
-      }}
-    >
-      <ArdoApp config={config} page={page} root={root} routes={routes} />
-    </ArdoDocumentIconsContext>
+  const locale = applyLocaleMetadata(page, config, { path: pagePath, base: options.base })
+  const { body, icons } = await renderWithIcons(
+    <ArdoApp config={config} page={page} root={root} routes={routes} />
   )
   const shell = await renderToHtml(
     <ArdoDocumentProvider
@@ -120,4 +109,57 @@ function insertAppHtml(shell: string, body: string): string {
   }
   const openTagEnd = end + 1
   return `${shell.slice(0, openTagEnd)}${body}${shell.slice(openTagEnd)}`
+}
+
+function applyLocaleMetadata(
+  page: Awaited<ReturnType<typeof resolvePage>>,
+  config: ResolvedConfig,
+  { path, base }: { path: string; base: string }
+): string | undefined {
+  const locale =
+    config.i18n === false
+      ? undefined
+      : config.i18n.locales.find((entry) => entry.id === path.split("/")[1])?.id
+  if (
+    locale != null &&
+    page.error == null &&
+    config.i18n !== false &&
+    config.siteUrl != null &&
+    config.siteUrl !== ""
+  ) {
+    const routePath = path.slice(locale.length + 1) || "/"
+    const href = (id: string) => new URL(`${base}${id}${routePath}`, config.siteUrl).href
+    if (!page.meta.some((meta) => "rel" in meta && meta.rel === "canonical")) {
+      page.meta.push({ tagName: "link", rel: "canonical", href: href(locale) })
+    }
+    page.meta.push(
+      ...config.i18n.locales.map(({ id }) => ({
+        tagName: "link" as const,
+        rel: "alternate",
+        hrefLang: id,
+        href: href(id),
+      })),
+      {
+        tagName: "link",
+        rel: "alternate",
+        hrefLang: "x-default",
+        href: href(config.i18n.defaultLocale),
+      }
+    )
+  }
+  return locale
+}
+
+async function renderWithIcons(element: ReactNode) {
+  let icons: ArdoDocumentIcons = {}
+  const body = await renderToHtml(
+    <ArdoDocumentIconsContext
+      value={(value) => {
+        icons = value
+      }}
+    >
+      {element}
+    </ArdoDocumentIconsContext>
+  )
+  return { body, icons }
 }

@@ -7,6 +7,15 @@ export type ArdoContainerLabels = {
 }
 
 export type ArdoLabels = {
+  page: {
+    edit: string
+    lastUpdated: string
+    next: string
+    previous: string
+    navigation: string
+    label: string
+  }
+
   breadcrumb: {
     label: string
   }
@@ -36,6 +45,7 @@ export type ArdoLabels = {
     titledNavigationMenu: (title: string) => string
   }
   search: {
+    sectionLabel: (section: string) => string
     clear: string
     closeOverlay: string
     close: string
@@ -53,6 +63,7 @@ export type ArdoLabels = {
   sidebar: {
     collapse: string
     expand: string
+    sections: string
     mainNavigation: string
   }
   siteControls: {
@@ -65,6 +76,13 @@ export type ArdoLabels = {
     /** Banner link to the latest version. */
     latestVersion: (version: string) => string
   }
+  theme: {
+    toggle: string
+    light: string
+    dark: string
+    system: string
+    fixed: (mode: "light" | "dark" | "system") => string
+  }
   toc: {
     label: string
     navLabel: string
@@ -72,6 +90,7 @@ export type ArdoLabels = {
 }
 
 export type ArdoLabelsInput = {
+  page?: Partial<ArdoLabels["page"]>
   breadcrumb?: Partial<ArdoLabels["breadcrumb"]>
   container?: Partial<ArdoContainerLabels>
   copyButton?: Partial<ArdoLabels["copyButton"]>
@@ -82,10 +101,19 @@ export type ArdoLabelsInput = {
   search?: Partial<ArdoLabels["search"]>
   sidebar?: Partial<ArdoLabels["sidebar"]>
   siteControls?: Partial<ArdoLabels["siteControls"]>
+  theme?: Partial<ArdoLabels["theme"]>
   toc?: Partial<ArdoLabels["toc"]>
 }
 
 export const defaultArdoLabels: ArdoLabels = {
+  page: {
+    edit: "Edit this page",
+    lastUpdated: "Last updated",
+    next: "Next",
+    previous: "Previous",
+    navigation: "Page navigation",
+    label: "Page",
+  },
   breadcrumb: {
     label: "Breadcrumb",
   },
@@ -121,6 +149,7 @@ export const defaultArdoLabels: ArdoLabels = {
     titledNavigationMenu: (title) => `${title} navigation menu`,
   },
   search: {
+    sectionLabel: (section) => section,
     clear: "Clear search",
     closeOverlay: "Close search",
     close: "to close",
@@ -138,6 +167,7 @@ export const defaultArdoLabels: ArdoLabels = {
   sidebar: {
     collapse: "Collapse",
     expand: "Expand",
+    sections: "Documentation sections",
     mainNavigation: "Main navigation",
   },
   siteControls: {
@@ -148,6 +178,13 @@ export const defaultArdoLabels: ArdoLabels = {
     olderVersion: (version) => `You are reading the documentation for ${version}.`,
     latestVersion: (version) => `Go to the latest version (${version})`,
   },
+  theme: {
+    toggle: "Toggle theme",
+    light: "Switch to light theme",
+    dark: "Switch to dark theme",
+    system: "Switch to system theme",
+    fixed: (mode) => `Theme fixed to ${mode}`,
+  },
   toc: {
     label: "On this page",
     navLabel: "Table of contents",
@@ -157,6 +194,7 @@ export const defaultArdoLabels: ArdoLabels = {
 export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabels {
   if (input == null) return defaultArdoLabels
   return {
+    page: { ...defaultArdoLabels.page, ...input.page },
     breadcrumb: { ...defaultArdoLabels.breadcrumb, ...input.breadcrumb },
     container: { ...defaultArdoLabels.container, ...input.container },
     copyButton: { ...defaultArdoLabels.copyButton, ...input.copyButton },
@@ -167,6 +205,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
     search: { ...defaultArdoLabels.search, ...input.search },
     sidebar: { ...defaultArdoLabels.sidebar, ...input.sidebar },
     siteControls: { ...defaultArdoLabels.siteControls, ...input.siteControls },
+    theme: { ...defaultArdoLabels.theme, ...input.theme },
     toc: { ...defaultArdoLabels.toc, ...input.toc },
   }
 }

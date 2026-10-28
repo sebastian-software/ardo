@@ -1,3 +1,5 @@
+import { text } from "../i18n/messages"
+import { Trans } from "@palamedes/react/macro"
 import * as styles from "./home.css"
 import { type MarkName, ToolMark } from "./logos"
 import { NoteLabel } from "./NoteLabel"
@@ -51,11 +53,13 @@ const FRIENDS: { mark: MarkName; name: string; text: string }[] = [
 export function Engines() {
   return (
     <section id="engines" className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel>under the hood</NoteLabel>
-      <h2 className={styles.h2}>Fast all the way down.</h2>
+      <NoteLabel>{text("under the hood")}</NoteLabel>
+      <h2 className={styles.h2}>{text("Fast all the way down.")}</h2>
       <p className={styles.lead}>
-        Ardo stands on remarkable tools. Two of them come straight out of our own workshop, written
-        in <span className={styles.circled}>Rust</span>.
+        <Trans>
+          Ardo stands on remarkable tools. Two of them come straight out of our own workshop,
+          written in <span className={styles.circled}>Rust</span>.
+        </Trans>
       </p>
       <div className={styles.engineGrid}>
         {ENGINES.map((engine, index) => (
@@ -70,19 +74,19 @@ export function Engines() {
               <ToolMark name={engine.mark} size={46} />
               <h3 className={`${styles.h3} ${styles.engineName}`}>{engine.name}</h3>
             </div>
-            <p className={styles.cardText}>{engine.text}</p>
+            <p className={styles.cardText}>{text(engine.text)}</p>
             <p className={styles.engineProof}>
-              <mark>{engine.proof}</mark>
-              {engine.rest}
+              <mark>{text(engine.proof)}</mark>
+              {text(engine.rest)}
             </p>
             <p className={styles.engineLink}>
-              <a href={engine.link}>See the benchmark →</a>
+              <a href={engine.link}>{text("See the benchmark →")}</a>
             </p>
           </div>
         ))}
       </div>
       <p className={`${styles.handGray} ${styles.hideSmall} ${styles.familyNote}`}>
-        both are part of Ferramenta, our little family of Rust tools ↑
+        {text("both are part of Ferramenta, our little family of Rust tools ↑")}{" "}
       </p>
       <div className={styles.friendGrid}>
         {FRIENDS.map((friend) => (
@@ -91,7 +95,7 @@ export function Engines() {
               <ToolMark name={friend.mark} size={26} />
               {friend.name}
             </span>
-            <p className={styles.friendText}>{friend.text}</p>
+            <p className={styles.friendText}>{text(friend.text)}</p>
           </div>
         ))}
       </div>

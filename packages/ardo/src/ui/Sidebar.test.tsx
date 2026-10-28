@@ -9,12 +9,20 @@ import { describe, expect, it, vi } from "vitest"
 import { ArdoProvider } from "../runtime/hooks"
 import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoGeneratedSidebar } from "./GeneratedSidebar"
-import { ArdoSidebar, ArdoSidebarGroup, ArdoSidebarLink, ArdoSidebarSection } from "./Sidebar"
+import {
+  ArdoSidebar,
+  ArdoSidebarGroup,
+  ArdoSidebarLink,
+  ArdoSidebarSection,
+  resolveArdoSidebarItems,
+} from "./Sidebar"
 import { getSidebarScrollTop } from "./sidebar-scroll"
 
 vi.mock("virtual:ardo/generated-sidebars", () => ({
   sectionIndexes: { api: "/api-reference" },
   default: {
+    "de:guide": [{ text: "Einstieg", link: "/de/guide/start" }],
+    "en:guide": [{ text: "Start", link: "/en/guide/start" }],
     adr: [
       {
         text: "Architecture Decision Records",
@@ -268,4 +276,25 @@ describe("getSidebarScrollTop", () => {
   it("scrolls back up to a link above the visible area without going negative", () => {
     expect(getSidebarScrollTop(nav, { top: 40, bottom: 70, height: 30 }, 50)).toBe(0)
   })
+})
+
+it("uses the same localized generated items for the visible sidebar and page navigation", () => {
+  const children = (
+    <ArdoSidebarGroup title="Guide">
+      <ArdoGeneratedSidebar section="guide" />
+    </ArdoSidebarGroup>
+  )
+  const currentPath = "/de/guide/en/example"
+  const items = resolveArdoSidebarItems(<ArdoSidebar>{children}</ArdoSidebar>, currentPath)
+  expect(items).toStrictEqual([
+    {
+      text: "Guide",
+      items: [{ text: "Einstieg", link: "/de/guide/start" }],
+      link: undefined,
+      collapsed: undefined,
+    },
+  ])
+  const html = renderSidebar(children, currentPath)
+  expect(html).toContain("Einstieg")
+  expect(html).not.toContain('href="/en/guide/start/"')
 })

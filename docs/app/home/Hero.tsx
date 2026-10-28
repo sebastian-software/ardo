@@ -1,3 +1,7 @@
+import { text } from "../i18n/messages"
+import { t } from "@palamedes/core/macro"
+import { getI18n } from "@palamedes/runtime"
+import { Trans } from "@palamedes/react/macro"
 import codeBlock from "../assets/home/code-block.png"
 import guidePage from "../assets/home/guide-page.png"
 import mascot from "../assets/mascot.webp"
@@ -13,25 +17,26 @@ function NpmLabel({ facts }: { facts: NpmFacts | null }) {
     return (
       <a className={styles.facts} href={NPM_PACKAGE_URL}>
         <ToolMark name="npm" size={22} />
-        <span className={styles.mono}>ardo on npm</span>
+        <span className={styles.mono}>{text("ardo on npm")}</span>
         <span className={styles.factSeparator} />
         <span>MIT</span>
       </a>
     )
   }
 
-  const downloads = formatCount(facts.lastMonth)
+  const downloads = formatCount(facts.lastMonth, getI18n().locale)
+  const version = facts.version
   return (
     <a
       className={styles.facts}
       href={NPM_PACKAGE_URL}
-      aria-label={`Ardo on npm: version ${facts.version}, ${downloads} downloads last month, MIT license`}
+      aria-label={t`Ardo on npm: version ${version}, ${downloads} downloads last month, MIT license`}
     >
       <ToolMark name="npm" size={22} />
       <span className={styles.mono}>ardo {facts.version}</span>
       <span className={`${styles.factSeparator} ${styles.hideSmall}`} />
       <span className={styles.factGroup}>
-        <span>{downloads} downloads last month</span>
+        <span>{t`${downloads} downloads last month`}</span>
         <span className={styles.factSeparator} />
         <span>MIT</span>
       </span>
@@ -44,34 +49,36 @@ export function Hero({ facts }: { facts: NpmFacts | null }) {
     <section className={`${styles.wrap} ${styles.hero}`}>
       <div className={styles.heroText}>
         <span className={`${styles.sticky} ${styles.eyebrow}`}>
-          Open source · for React projects
+          {text("Open source · for React projects")}{" "}
         </span>
         <h1 className={styles.h1}>
-          React docs, baked into <mark>plain HTML</mark>.
+          <Trans>
+            React docs, baked into <mark>plain HTML</mark>.
+          </Trans>
         </h1>
         <p className={`${styles.lead} ${styles.heroLead}`}>
-          Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API
-          reference read from your TypeScript, and search, all prerendered at build time by Rust
-          engines.
+          {text(
+            "Ardo is a static site generator for React projects. Guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time by Rust engines."
+          )}{" "}
         </p>
         <div className={styles.buttonRow}>
           <a className={`${styles.button} ${styles.buttonPrimary}`} href="#setup">
-            Get started
+            {text("Get started")}{" "}
           </a>
           <a className={styles.button} href={GITHUB_URL}>
-            View on GitHub
+            {text("View on GitHub")}{" "}
           </a>
         </div>
         <div className={styles.factsRow}>
           <NpmLabel facts={facts} />
           <p className={`${styles.handGray} ${styles.hideSmall}`}>
-            ← fresh from npm at every build
+            {text("← fresh from npm at every build")}{" "}
           </p>
         </div>
       </div>
       <div className={styles.heroArt}>
         <div className={`${styles.bubble} ${styles.heroBubble}`}>
-          Psst… a joy to write, a treat to read.
+          {text("Psst… a joy to write, a treat to read.")}{" "}
         </div>
         <img
           className={`${styles.heroOwl} ${styles.bobbing}`}
@@ -98,7 +105,7 @@ export function ToolStrip() {
   return (
     <div className={styles.wrap}>
       <div className={styles.toolStrip}>
-        <span className={styles.handNote}>in good company:</span>
+        <span className={styles.handNote}>{text("in good company:")}</span>
         {TOOLS.map((item) => (
           <span key={item.mark} className={styles.tool}>
             <ToolMark name={item.mark} />
@@ -120,7 +127,9 @@ export function Teaser() {
           <img
             className={styles.shotCover}
             src={guidePage}
-            alt="The top of an Ardo guide page: section rail, sidebar, title and table of contents"
+            alt={text(
+              "The top of an Ardo guide page: section rail, sidebar, title and table of contents"
+            )}
             width={1600}
             height={689}
           />
@@ -132,18 +141,20 @@ export function Teaser() {
           <img
             className={styles.shotCover}
             src={codeBlock}
-            alt="Ardo's current API documentation guide, showing a typed configuration with its required tsconfig"
+            alt={text(
+              "Ardo's current API documentation guide, showing a typed configuration with its required tsconfig"
+            )}
             width={940}
             height={528}
           />
         </div>
       </div>
       <div className={styles.teaserNoteTop}>
-        <p className={styles.handNote}>your folders become this rail</p>
+        <p className={styles.handNote}>{text("your folders become this rail")}</p>
         <ArrowDownRight className={styles.railArrow} />
       </div>
       <div className={styles.teaserNoteRight}>
-        <p className={styles.handNote}>highlighted at build time</p>
+        <p className={styles.handNote}>{text("highlighted at build time")}</p>
         <ArrowRight />
       </div>
     </section>

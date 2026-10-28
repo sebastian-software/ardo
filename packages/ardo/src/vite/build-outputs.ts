@@ -3,6 +3,7 @@ import type { RouteManifestEntry } from "./route-manifest"
 
 import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
 import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
+import { buildPublicPath } from "./route-identity"
 import { generateSitemap } from "./sitemap"
 
 export { generateSitemap } from "./sitemap"
@@ -35,6 +36,18 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
   redirects.push(...getVersioningRedirects(config))
 
   for (const entry of entries) {
+    if (
+      config.i18n !== false &&
+      config.i18n.redirectUnlocalized === true &&
+      entry.sourceLocaleId === config.i18n.defaultLocale &&
+      entry.routePath !== "/" &&
+      !config.i18n.locales.some(({ id }) => id === entry.routePath.split("/")[1])
+    ) {
+      redirects.push({
+        from: buildPublicPath({ basePath: config.base, routePath: entry.routePath }),
+        to: entry.publicPath,
+      })
+    }
     for (const from of entry.metadata.redirectFrom ?? []) {
       // Keep `from` as the authored static source path; `to` uses the canonical
       // public route because generated HTML and provider redirects share this contract.
@@ -54,7 +67,7 @@ export function generateRedirectHtml(to: string) {
     '  <meta charset="utf-8">',
     `  <meta http-equiv="refresh" content="0; url=${escapedTo}">`,
     `  <link rel="canonical" href="${escapedTo}">`,
-    `  <script>location.replace(${JSON.stringify(to)})</script>`,
+    `  <script>const target=new URL(${JSON.stringify(to)},location.href);if(target.origin===location.origin){if(!target.search)target.search=location.search;if(!target.hash)target.hash=location.hash}location.replace(target.href)</script>`,
     "</head>",
     `<body><a href="${escapedTo}">Continue</a></body>`,
     "</html>",

@@ -6,3 +6,9 @@ app/routes/api-declarations/
 
 # Build output
 build/
+
+# Generated references share the English TypeScript source comments.
+app/routes/*/api-reference/
+
+# Palamedes extraction cache
+.palamedes/

@@ -65,6 +65,10 @@ jobs:
           fi
           pnpm test:integration
 
+      - name: Check documentation translations
+        if: matrix.node-version == '22'
+        run: pnpm --filter ardo-docs i18n:check
+
       - name: Build docs site and check performance budgets
         if: matrix.node-version == '22'
         run: pnpm docs:budgets
@@ -83,6 +87,10 @@ jobs:
           ARDO_E2E_PREBUILT_DOCS: "true"
           ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
+
+      - name: Verify live MDX and PO updates without hydration errors
+        if: matrix.node-version == '22'
+        run: pnpm test:e2e:docs-dev
 
       - name: Verify Basic and runtime fixture development and preview hydration
         if: matrix.node-version == '22'

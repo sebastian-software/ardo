@@ -128,6 +128,39 @@ describe("build outputs", () => {
     expect(generateRobots(baseConfig)).toContain("Sitemap: https://example.com/docs/sitemap.xml")
   })
 
+  it("can migrate unlocalized URLs to the default locale without redirecting other translations", () => {
+    const localized = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        i18n: {
+          defaultLocale: "en",
+          redirectUnlocalized: true,
+          locales: [{ id: "en" }, { id: "de" }],
+        },
+      },
+      "/site"
+    )
+    const localizedEntries = createEntries(localized).map((item) => ({
+      ...item,
+      sourceLocaleId: "en",
+    }))
+    const redirects = collectRedirects(
+      [
+        ...localizedEntries,
+        ...localizedEntries.map((item) => ({
+          ...item,
+          routePath: "/de",
+          publicPath: "/docs/en/de",
+        })),
+      ],
+      localized
+    )
+    expect(redirects).toContainEqual({ from: "/docs/guide", to: "/docs/en/guide" })
+    expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/docs/de/guide" }))
+    expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/docs/de" }))
+  })
+
   it("uses the current version path for sitemap URLs", () => {
     const versionedConfig = resolveConfig(
       {
@@ -340,4 +373,12 @@ describe("build outputs", () => {
       "# AI Context"
     )
   })
+})
+
+it("redirects an unversioned localized site root to its default language", () => {
+  const config = resolveConfig(
+    { title: "Docs", base: "/project/", i18n: { defaultLocale: "de", locales: [{ id: "de" }] } },
+    "/site"
+  )
+  expect(collectRedirects([], config)).toContainEqual({ from: "/project/", to: "/project/de/" })
 })

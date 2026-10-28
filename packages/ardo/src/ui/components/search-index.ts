@@ -10,12 +10,17 @@ type SearchDoc = {
   section?: string
 }
 
-let searchIndex: Promise<MiniSearch<SearchDoc>> | undefined
+const searchIndexes = new Map<string, Promise<MiniSearch<SearchDoc>>>()
 
 /** Load search on demand, allowing another attempt after a failed request. */
-export function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
-  searchIndex ??= Promise.all([import("minisearch"), import("virtual:ardo/search-index")])
-    .then(([{ default: SearchEngine }, { default: docs }]) => {
+export function loadSearchIndex(locale = ""): Promise<MiniSearch<SearchDoc>> {
+  const cached = searchIndexes.get(locale)
+  if (cached != null) return cached
+  const searchIndex = Promise.all([import("minisearch"), import("virtual:ardo/search-loaders")])
+    .then(async ([{ default: SearchEngine }, { default: loaders }]) => {
+      const loader = loaders[locale] ?? loaders[""]
+      if (loader == null) throw new Error(`No search index for locale: ${locale}`)
+      const { default: docs } = await loader()
       const index = new SearchEngine<SearchDoc>({
         fields: ["title", "content", "section"],
         storeFields: ["title", "pageTitle", "excerpt", "path", "section"],
@@ -25,8 +30,9 @@ export function loadSearchIndex(): Promise<MiniSearch<SearchDoc>> {
       return index
     })
     .catch((error: unknown) => {
-      searchIndex = undefined
+      searchIndexes.delete(locale)
       throw error
     })
+  searchIndexes.set(locale, searchIndex)
   return searchIndex
 }

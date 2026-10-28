@@ -1,3 +1,4 @@
+import { text, localizedPath } from "../i18n/messages"
 import { ArdoLink } from "ardo/ui"
 
 import mascot from "../assets/mascot.webp"
@@ -23,15 +24,16 @@ export function FinalCallToAction() {
           <img className={styles.peekOwl} src={mascot} alt="" width={720} height={747} />
         </div>
         <span className={`${styles.tape} ${styles.tapeFinal}`} />
-        <h2 className={`${styles.h2} ${styles.finalTitle}`}>Ready to hatch your docs?</h2>
+        <h2 className={`${styles.h2} ${styles.finalTitle}`}>{text("Ready to hatch your docs?")}</h2>
         <p className={styles.lead}>
-          One sentence for your agent, the official instructions, a tested example. You review the
-          result like any other pull request.
+          {text(
+            "One sentence for your agent, the official instructions, a tested example. You review the result like any other pull request."
+          )}{" "}
         </p>
         <div className={styles.buttonRow}>
-          <CopyPromptButton label="Copy the setup prompt" />
-          <ArdoLink className={styles.button} to="/guide/getting-started">
-            Read the docs
+          <CopyPromptButton label={text("Copy the setup prompt")} />
+          <ArdoLink className={styles.button} to={localizedPath("/guide/getting-started")}>
+            {text("Read the docs")}{" "}
           </ArdoLink>
         </div>
       </div>
@@ -45,7 +47,7 @@ export function CompanyCards({ facts }: { facts: NpmFacts | null }) {
       <div className={styles.cardPair}>
         <div className={`${styles.businessCard} ${styles.tiltLeft}`}>
           <span className={`${styles.tape} ${styles.tapeLeftSmall}`} />
-          <p className={styles.cardKicker}>powered by</p>
+          <p className={styles.cardKicker}>{text("powered by")}</p>
           <img
             className={styles.companyLogo}
             src={sebastianSoftware}
@@ -54,16 +56,17 @@ export function CompanyCards({ facts }: { facts: NpmFacts | null }) {
             height={53}
           />
           <p className={styles.cardCopy}>
-            Ardo is open source by Sebastian Software, together with Ferromark, Ferriki and the rest
-            of the family.
+            {text(
+              "Ardo is open source by Sebastian Software, together with Ferromark, Ferriki and the rest of the family."
+            )}{" "}
           </p>
           <p className={styles.cardLink}>
-            <a href="https://oss.sebastian-software.com">More open source →</a>
+            <a href="https://oss.sebastian-software.com">{text("More open source →")}</a>
           </p>
         </div>
         <div className={`${styles.businessCard} ${styles.tiltRightSoft}`}>
           <span className={`${styles.tape} ${styles.tapeGreen} ${styles.tapeRightSmall}`} />
-          <p className={styles.cardKicker}>need a hand?</p>
+          <p className={styles.cardKicker}>{text("need a hand?")}</p>
           <img
             className={styles.companyLogo}
             src={sebastianConsulting}
@@ -72,29 +75,30 @@ export function CompanyCards({ facts }: { facts: NpmFacts | null }) {
             height={53}
           />
           <p className={styles.cardCopy}>
-            TypeScript, React and Rust consulting: integration, support and long-term maintenance
-            from the people who build Ardo.
+            {text(
+              "TypeScript, React and Rust consulting: integration, support and long-term maintenance from the people who build Ardo."
+            )}{" "}
           </p>
           <p className={styles.cardLink}>
-            <a href="https://sebastian-consulting.com">Work with us →</a>
+            <a href="https://sebastian-consulting.com">{text("Work with us →")}</a>
           </p>
         </div>
       </div>
       <div className={`${styles.smallPrint} ${styles.releaseRow}`}>
         {facts === null ? null : (
           <span>
-            Latest release{" "}
+            {text("Latest release")}{" "}
             <a className={styles.mono} href={`${NPM_PACKAGE_URL}?activeTab=versions`}>
               {facts.version}
             </a>
           </span>
         )}
-        <a href={CHANGELOG_URL}>Changelog</a>
+        <a href={CHANGELOG_URL}>{text("Changelog")}</a>
         <a href={NPM_PACKAGE_URL}>npm</a>
         <a href={GITHUB_URL}>GitHub</a>
         <span className={styles.owlSaysHi}>
           <Footprints steps={2} />
-          <span className={styles.handNote}>the owl says hi</span>
+          <span className={styles.handNote}>{text("the owl says hi")}</span>
         </span>
       </div>
     </section>

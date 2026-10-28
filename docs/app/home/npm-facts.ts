@@ -65,6 +65,6 @@ export function useLiveNpmFacts(name: string, initial: NpmFacts | null): NpmFact
   return facts
 }
 
-export function formatCount(value: number): string {
-  return new Intl.NumberFormat("en-US").format(value)
+export function formatCount(value: number, locale = "en-US"): string {
+  return new Intl.NumberFormat(locale).format(value)
 }

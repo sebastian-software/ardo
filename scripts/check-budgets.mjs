@@ -14,7 +14,6 @@
  */
 
 import { execSync } from "node:child_process"
-import { existsSync } from "node:fs"
 import { readdir, readFile, stat } from "node:fs/promises"
 import path from "node:path"
 import process from "node:process"
@@ -23,7 +22,6 @@ import { gzipSync } from "node:zlib"
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const clientDir = path.join(repoRoot, "docs", "build", "client")
-const routesDir = path.join(repoRoot, "docs", "app", "routes")
 
 /**
  * All sizes are gzip bytes (what actually goes over the wire).
@@ -40,30 +38,34 @@ const budgets = {
     baseline: "≈25 KB (2026-10, React in its own chunk)",
   },
   eagerJsGzip: {
-    // Union of JS referenced from all prerendered pages (script src +
-    // modulepreload). This grows with route content, rather than measuring
-    // one page's initial download. Lazily loaded chunks are excluded.
-    label: "eager client JS gzip",
-    budget: 530_000,
-    baseline: "≈392 KB (2026-10, MiniSearch and the search index load on first use)",
+    // Largest union of HTML-referenced JS for one locale. Catalogs are
+    // checked separately because the active catalog loads before hydration.
+    label: "largest locale eager JS gzip",
+    budget: 650_000,
+    baseline: "≈548 KB per locale (2026-10, four-locale docs and expanded public API)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
-    budget: 1_500_000,
-    baseline: "≈479 KB (2026-10, MiniSearch and the search index are the lazy chunks)",
+    budget: 2_700_000,
+    baseline: "≈2.0 MB (2026-10, four route trees, catalogs, and search indexes)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
-    label: "search index gzip",
+    label: "largest locale search index gzip",
     budget: 100_000,
-    baseline: "≈75 KB (2026-10, 99 native API pages)",
+    baseline: "≈81 KB per locale (2026-10, emitted client search data)",
+  },
+  catalogGzip: {
+    label: "largest locale catalog gzip",
+    budget: 10_000,
+    baseline: "≈8 KB per locale (2026-10, compiled UI and MDX catalog fragments)",
   },
   buildDurationMs: {
     label: "docs build duration",
     budget: 300_000,
-    baseline: "≈6 s local (2026-10, static site without React Router)",
+    baseline: "≈15 s local (2026-10, four-locale static site)",
   },
 }
 
@@ -110,12 +112,12 @@ async function measureTotalJs(jsFiles) {
 
 /**
  * Sums the gzip size of every JS file referenced from prerendered HTML
- * via <script src> or <link rel="modulepreload"> across all pages. Each
+ * via <script src> or <link rel="modulepreload"> for one locale. Each
  * chunk counts once, so this is an aggregate route-content metric, not
  * one visitor's initial download. Lazily imported chunks are excluded.
  */
-async function measureEagerJs(jsFiles) {
-  const htmlFiles = await collectFiles(clientDir, ".html")
+async function measureEagerJs(jsFiles, directory) {
+  const htmlFiles = await collectFiles(directory, ".html")
   const referenced = new Set()
   const referencePattern = /(?:src|href)="([^"]+\.js)"/g
 
@@ -134,15 +136,30 @@ async function measureEagerJs(jsFiles) {
   return { count: eagerFiles.length, total: sizes.reduce((sum, size) => sum + size, 0) }
 }
 
-async function measureSearchIndex() {
-  const vitePkg = path.join(repoRoot, "packages", "ardo", "dist", "vite", "index.js")
-  if (!existsSync(vitePkg)) {
-    throw new Error("packages/ardo/dist is missing — run `pnpm build` first")
-  }
-  const { generateSearchIndex } = await import(vitePkg)
-  const docs = await generateSearchIndex(routesDir)
-  const serialized = JSON.stringify(docs)
-  return { docCount: docs.length, gzip: gzipSync(Buffer.from(serialized)).length }
+async function measureLocaleChunks(jsFiles, locales, prefix) {
+  const chunks = await Promise.all(
+    locales.map(async (locale) => {
+      const files = jsFiles.filter((file) => path.basename(file).startsWith(`${prefix}${locale}-`))
+      if (files.length === 0) throw new Error(`Missing ${prefix}${locale} chunk`)
+      return Math.max(...(await Promise.all(files.map(gzipSize))))
+    })
+  )
+  return Math.max(...chunks)
+}
+
+/** Bound the complete active-locale catalog, including fragments from lazy routes. */
+async function measureLocaleCatalogs(jsFiles, locales) {
+  const totals = await Promise.all(
+    locales.map(async (locale) => {
+      const files = jsFiles.filter((file) => {
+        const name = path.basename(file)
+        return name.startsWith("palamedes-m-") && name.includes(`.${locale}-`)
+      })
+      if (files.length === 0) throw new Error(`Missing Palamedes ${locale} catalog fragments`)
+      return (await Promise.all(files.map(gzipSize))).reduce((sum, size) => sum + size, 0)
+    })
+  )
+  return Math.max(...totals)
 }
 
 function runDocsBuild() {
@@ -168,20 +185,39 @@ async function main() {
   }
 
   const jsFiles = await collectFiles(clientDir, ".js")
-  const searchIndex = await measureSearchIndex()
-  const eager = await measureEagerJs(jsFiles)
+  const manifest = JSON.parse(await readFile(path.join(clientDir, "versions.json"), "utf8"))
+  const current = manifest.versions.find((version) => version.id === manifest.current)
+  if (current?.locales?.length !== 4)
+    throw new Error("The docs budget expects four declared locales")
+  const eagerByLocale = await Promise.all(
+    current.locales.map(async (locale) => ({
+      locale,
+      ...(await measureEagerJs(
+        jsFiles,
+        path.join(clientDir, current.path.replace(/^\//u, ""), locale)
+      )),
+    }))
+  )
+  const eager = eagerByLocale.reduce((largest, item) =>
+    item.total > largest.total ? item : largest
+  )
+  const searchIndex = await measureLocaleChunks(jsFiles, current.locales, "search-index_locale_")
+  const catalog = await measureLocaleCatalogs(jsFiles, current.locales)
 
   const results = [
     { key: "entryClientGzip", value: await measureEntryClient(jsFiles), format: formatBytes },
     { key: "eagerJsGzip", value: eager.total, format: formatBytes },
     { key: "totalJsGzip", value: await measureTotalJs(jsFiles), format: formatBytes },
-    { key: "searchIndexGzip", value: searchIndex.gzip, format: formatBytes },
+    { key: "searchIndexGzip", value: searchIndex, format: formatBytes },
+    { key: "catalogGzip", value: catalog, format: formatBytes },
   ]
   if (buildDurationMs != null) {
     results.push({ key: "buildDurationMs", value: buildDurationMs, format: formatMs })
   }
 
-  console.log(`[budgets] search index: ${searchIndex.docCount} documents`)
+  console.log(
+    `[budgets] locale eager JS: ${eagerByLocale.map((item) => `${item.locale} ${formatBytes(item.total)}`).join(", ")}`
+  )
   console.log(`[budgets] client JS files: ${jsFiles.length} (${eager.count} eager)\n`)
 
   let failed = false

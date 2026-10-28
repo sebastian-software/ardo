@@ -12,6 +12,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 - Node.js >= 22.22.0
 - pnpm >= 9.0.0
+- Rust 1.96 or newer for the temporary Palamedes source dependency.
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
 ### Development Setup
@@ -94,6 +95,30 @@ retains its Ferriki `ThemeInput` type. Ferromark bundles its own native
 highlighter: updating the direct Core dependency does not update that bundled
 copy. The HTML helper and native JSX renderer can produce different markup;
 both preserve their respective public output contracts.
+
+### Palamedes before v2 publication
+
+The docs install a pinned Palamedes main revision through a pnpm Git URL in
+`docs/package.json`. No submodule initialization is needed. `pnpm install
+--frozen-lockfile` fetches the source and its build tools from the root lockfile.
+`pnpm build` first runs `pnpm palamedes:build` to compile the required JavaScript
+packages, native compiler, and CLI together. This temporary source build requires
+Rust 1.96 or newer and initial Cargo network access.
+
+The build copies the installed source into the ignored `docs/.cache/palamedes`
+directory because upstream build tools exclude files below `node_modules`.
+The docs' `link:` dependencies point at those build outputs. No second pnpm
+workspace installation runs. The pnpm patch in `patches/` preserves Markdown
+whitespace, indented link labels, and empty table cells; it includes native regression tests and must
+remain applied until the pinned revision contains the fixes. The patch also assigns
+`0.0.0` to the private source-root manifest so pnpm can identify the patch target;
+it does not change the SDK package versions.
+
+To update Palamedes, change the Git commit in `docs/package.json`, install with
+pnpm, and rebuild. Verify or remove the patch against that revision. Run
+`pnpm --filter ardo-docs i18n:check`, the docs build, and browser tests. Replace
+the Git source and temporary build tools with coordinated published v2 packages
+once that release is available and verified.
 
 ### Coordinated native-engine development
 
@@ -210,7 +235,7 @@ example.
 
 ### Review UI Components
 
-Use the [Components page](https://ardo-docs.dev/v6/guide/components/)
+Use the [Components page](https://ardo-docs.dev/v6/en/guide/components/)
 to inspect component variants in the actual Ardo documentation app. Run
 `pnpm docs:dev` and open Components from the guide navigation. The page uses
 the default site header, search, sidebar, theme control, and mobile navigation;
@@ -312,7 +337,7 @@ Include:
 
 When a feature lands, an issue is closed as not planned, or a roadmap item is
 split, update the status tables on the
-[Releases page](docs/app/routes/guide/releases/index.mdx).
+[Releases page](docs/app/content/guide/releases/index.mdx).
 
 ## Reporting Issues
 
@@ -343,3 +368,27 @@ When requesting features, please include:
 ## License
 
 By contributing, you agree that your contributions will be licensed under the [MIT License](./LICENSE).
+
+### Documentation translations
+
+The V6 site maintains one English MDX source per guide in
+`docs/app/content/guide/`. Translate its native Palamedes messages, titles,
+descriptions, and static component labels in `docs/app/i18n/guides/{locale}.po`.
+Shared interface copy and imported interactive examples use
+`docs/app/i18n/{locale}.po`.
+
+```bash
+pnpm --filter ardo-docs i18n:extract
+pnpm --filter ardo-docs i18n:check
+pnpm docs:build
+pnpm test:e2e
+```
+
+The docs Vite plugin generates all four language route trees before Ardo scans
+routes. Development watches the source and PO catalogs. Generated guides under
+`docs/app/routes/<locale>/guide/` are ignored by Git; do not edit or commit them.
+Missing translations or incompatible rich placeholders fail the build. Imports,
+code fences and their metadata, live React components, and English heading IDs
+remain structural. Ardo derives localized metadata, the outline, search, and
+Markdown/LLM exports from the generated documents. The API reference retains
+English source comments in each localized shell.

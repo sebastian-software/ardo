@@ -39,6 +39,7 @@ describe("public CLI document identity and dotted navigation", () => {
             pathname: home,
             contains: [
               ...identity,
+              `name="render-scope" content="${home.slice(base.length - 1).replace(/\/+$/u, "")}"`,
               `href="${home}guide/release-6.0/"`,
               `href="${home}guide/caf%C3%A9-6.0/"`,
             ],
@@ -52,7 +53,11 @@ describe("public CLI document identity and dotted navigation", () => {
           for (const slash of ["", "/"])
             result.push({
               pathname: `${home}guide/${name}${slash}`,
-              contains: [...identity, title],
+              contains: [
+                ...identity,
+                title,
+                `name="render-scope" content="/${prefix}guide/${decodeURIComponent(name)}"`,
+              ],
             })
         }
         return result
@@ -63,7 +68,22 @@ describe("public CLI document identity and dotted navigation", () => {
         { pathname: "/project/apple-touch-icon.png", contains: [] }
       )
       const expected = { pathname: pages[0].pathname, pages }
-      await assertDevSSR(directory, expected)
+      await assertDevSSR(directory, {
+        ...expected,
+        pages: localized
+          ? [
+              ...pages,
+              {
+                pathname: base,
+                contains: ['<html lang="en">', 'name="render-scope" content="/en"'],
+              },
+              {
+                pathname: `${base}guide/release-6.0?q=1`,
+                contains: ['name="render-scope" content="/en/guide/release-6.0"'],
+              },
+            ]
+          : pages,
+      })
       await assertPreviewSSR(directory, {
         ...expected,
         pages: localized

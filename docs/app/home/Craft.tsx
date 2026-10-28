@@ -1,3 +1,4 @@
+import { text, localizedPath } from "../i18n/messages"
 import { ArdoLink } from "ardo/ui"
 
 import apiPage from "../assets/home/api-page.webp"
@@ -19,7 +20,7 @@ export function Components() {
             <img
               className={styles.shotCover}
               src={components}
-              alt="Ardo cards with icons, above the MDX that renders them"
+              alt={text("Ardo cards with icons, above the MDX that renders them")}
               width={1100}
               height={550}
             />
@@ -31,26 +32,28 @@ export function Components() {
             <img
               className={styles.shotCover}
               src={callouts}
-              alt="Ardo callouts: note, tip, important and warning"
+              alt={text("Ardo callouts: note, tip, important and warning")}
               width={1100}
               height={1031}
             />
           </div>
         </div>
         <p className={`${styles.handNote} ${styles.hideSmall} ${styles.mediaNoteLeft}`}>
-          your design system fits right in
+          {text("your design system fits right in")}{" "}
         </p>
       </div>
       <div className={styles.splitText}>
-        <NoteLabel>components and layouts</NoteLabel>
-        <h2 className={styles.h2}>Your components are invited.</h2>
+        <NoteLabel>{text("components and layouts")}</NoteLabel>
+        <h2 className={styles.h2}>{text("Your components are invited.")}</h2>
         <p className={styles.lead}>
-          Bring local React components or an installed design-system package into MDX. Build landing
-          pages and layouts in plain React, with Ardo's cards, tabs, steps, accordions and callouts
-          around them.
+          {text(
+            "Bring local React components or an installed design-system package into MDX. Build landing pages and layouts in plain React, with Ardo's cards, tabs, steps, accordions and callouts around them."
+          )}{" "}
         </p>
         <p className={styles.moreLink}>
-          <ArdoLink to="/guide/components">See every component →</ArdoLink>
+          <ArdoLink to={localizedPath("/guide/components")}>
+            {text("See every component →")}
+          </ArdoLink>
         </p>
       </div>
     </section>
@@ -61,14 +64,17 @@ export function ApiReference() {
   return (
     <section className={`${styles.wrap} ${styles.section} ${styles.splitRow}`}>
       <div className={styles.splitText}>
-        <NoteLabel>API reference for TypeScript</NoteLabel>
-        <h2 className={styles.h2}>Your types, now with a website.</h2>
+        <NoteLabel>{text("API reference for TypeScript")}</NoteLabel>
+        <h2 className={styles.h2}>{text("Your types, now with a website.")}</h2>
         <p className={styles.lead}>
-          Point Ardo at your TypeScript entry points to generate reference pages with signatures,
-          parameters and comments. They show up in search, too, and update on the next build.
+          {text(
+            "Point Ardo at your TypeScript entry points to generate reference pages with signatures, parameters and comments. They show up in search, too, and update on the next build."
+          )}{" "}
         </p>
         <p className={styles.moreLink}>
-          <ArdoLink to="/api-reference">Browse Ardo’s own API reference →</ArdoLink>
+          <ArdoLink to={localizedPath("/api-reference")}>
+            {text("Browse Ardo’s own API reference →")}
+          </ArdoLink>
         </p>
       </div>
       <div className={styles.splitMedia}>
@@ -78,14 +84,14 @@ export function ApiReference() {
             <img
               className={styles.shotCover}
               src={apiPage}
-              alt="A generated API page for defineConfig"
+              alt={text("A generated API page for defineConfig")}
               width={1100}
               height={688}
             />
           </div>
         </div>
         <p className={`${styles.handNote} ${styles.hideSmall} ${styles.mediaNoteLeft}`}>
-          generated, not typed by hand
+          {text("generated, not typed by hand")}{" "}
         </p>
       </div>
     </section>
@@ -105,11 +111,12 @@ const PALETTES = [
 export function Theming() {
   return (
     <section className={`${styles.wrap} ${styles.section}`}>
-      <NoteLabel>theming</NoteLabel>
-      <h2 className={styles.h2}>Dress it up in a few lines.</h2>
+      <NoteLabel>{text("theming")}</NoteLabel>
+      <h2 className={styles.h2}>{text("Dress it up in a few lines.")}</h2>
       <p className={styles.lead}>
-        Pick a brand, an accent and a neutral hue, and how saturated they should be. Ardo works out
-        light and dark mode from there. Want more? Override any token or swap a component.
+        {text(
+          "Pick a brand, an accent and a neutral hue, and how saturated they should be. Ardo works out light and dark mode from there. Want more? Override any token or swap a component."
+        )}{" "}
       </p>
       <div className={styles.swatchGrid}>
         {PALETTES.map((palette, index) => (
@@ -123,14 +130,14 @@ export function Theming() {
             <div className={styles.swatchLabel}>
               <strong>{palette.name}</strong>
               <br />
-              <span className={styles.swatchNote}>{palette.note}</span>
+              <span className={styles.swatchNote}>{text(palette.note)}</span>
             </div>
           </div>
         ))}
       </div>
       <div className={styles.nightNote}>
         <MoonAndStars />
-        <p className={styles.handNote}>dark mode included, for fellow night owls</p>
+        <p className={styles.handNote}>{text("dark mode included, for fellow night owls")}</p>
       </div>
     </section>
   )

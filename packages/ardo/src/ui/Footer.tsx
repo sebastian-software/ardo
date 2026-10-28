@@ -3,6 +3,7 @@ import React, { type ReactNode } from "react"
 import type { ProjectMeta, SponsorConfig } from "../config/types"
 
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
+import { useArdoLocale } from "../runtime/locale"
 import { joinClassNames } from "./classnames"
 import * as styles from "./Footer.css"
 import { useArdoLayoutVariant } from "./layout-context"
@@ -220,6 +221,7 @@ export function ArdoFooter({
 }: ArdoFooterProps) {
   const config = useArdoConfig()
   const labels = useArdoLabels()
+  const locale = useArdoLocale()
   const resolvedBuildTime = buildTime ?? config.buildTime
   const resolvedBuildHash = buildHash ?? config.buildHash
   // Docs pages show the version at the end of the sidebar; bare pages have none.
@@ -252,7 +254,7 @@ export function ArdoFooter({
         </FooterTextLine>
         {(resolvedBuildTime ?? "") !== "" && (
           <p className={styles.footerBuildTime}>
-            {labels.footer.builtOn} {formatBuildTime(resolvedBuildTime ?? "", config.lang ?? "en")}
+            {labels.footer.builtOn} {formatBuildTime(resolvedBuildTime ?? "", locale)}
             {(resolvedBuildHash ?? "") !== "" && <> ({resolvedBuildHash})</>}
           </p>
         )}

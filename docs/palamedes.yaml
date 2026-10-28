@@ -1,0 +1,19 @@
+locales: [en, de, fr, es]
+source-locale: en
+mdx:
+  framework: react
+  translatable-attributes: [alt, title, aria-label, label, text, tagline, linkText]
+  front-matter-fields: [title, description]
+catalogs:
+  - path: app/i18n/{locale}
+    include:
+      - app/i18n/messages.ts
+      - app/i18n/labels.ts
+      - app/i18n/Content.tsx
+      - app/components/ComponentGallery.tsx
+      - app/root.tsx
+      - app/home
+      - app/examples
+  - path: app/i18n/guides/{locale}
+    include:
+      - app/content/guide

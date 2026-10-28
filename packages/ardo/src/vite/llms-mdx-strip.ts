@@ -1,12 +1,17 @@
-import { prepareDocument } from "ferromark"
+import type { MarkdownConfig } from "../config/types"
+import { prepareNativeMarkdown } from "../markdown/native-metadata"
 
 /** Preserve authored Markdown and code while projecting static MDX content. */
 export function stripMdxSyntaxOutsideCodeFences(
   content: string,
   title?: string,
-  format: "md" | "mdx" = "mdx"
+  options: { format?: "md" | "mdx"; markdown?: MarkdownConfig } = {}
 ): string {
-  return prepareDocument(content, { format }).projectMarkdown({
+  return prepareNativeMarkdown(
+    content,
+    options.format ?? "mdx",
+    options.markdown ?? {}
+  ).prepared.projectMarkdown({
     omitTitleHeading: title,
   }).markdown
 }
