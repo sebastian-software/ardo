@@ -68,7 +68,8 @@ export const renderPage = (path, options) => withRenderContext({ path, render: (
     configureServer(server) {
       server.watcher.add(routesDir)
       const handleChange = (changedPath: string) => {
-        if (isRouteFile(changedPath, routesDir)) invalidateRoutes(server)
+        if (isRouteFile(changedPath, routesDir) || isRootFile(changedPath, routesDir))
+          invalidateRoutes(server)
       }
       server.watcher.on("add", handleChange)
       server.watcher.on("unlink", handleChange)
@@ -80,10 +81,12 @@ export const renderPage = (path, options) => withRenderContext({ path, render: (
 export function createRoutesModule({ root, routesDir }: { root: string; routesDir: string }) {
   const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
   const timestamps = getGitFileTimestamps(routesDir)
-  const rootFile = path.join(path.dirname(routesDir), "root.tsx")
+  const rootFile = rootFilePath(routesDir)
+  // Without app/root.tsx the site is `<ArdoRoot />`, which is a complete site.
+  // Only such sites import it here, so a custom root never bundles it.
   const rootImport = existsSync(rootFile)
     ? `import * as rootModule from ${JSON.stringify(normalizePath(rootFile))}`
-    : "const rootModule = {}"
+    : 'import { ArdoRoot } from "ardo/ui"\nconst rootModule = { default: ArdoRoot }'
   const entries = sortRoutes(routes).map((route) => {
     const relativePath = normalizePath(path.relative(routesDir, route.filePath))
     const source = {
@@ -130,6 +133,15 @@ function isRouteFile(changedPath: string, routesDir: string): boolean {
       normalizedPath.endsWith(".mdx") ||
       normalizedPath.endsWith(".tsx"))
   )
+}
+
+function rootFilePath(routesDir: string): string {
+  return path.join(path.dirname(routesDir), "root.tsx")
+}
+
+/** Adding or deleting app/root.tsx switches between it and the `<ArdoRoot />` fallback. */
+function isRootFile(changedPath: string, routesDir: string): boolean {
+  return normalizePath(changedPath) === normalizePath(rootFilePath(routesDir))
 }
 
 function invalidateRoutes(server: ViteDevServer): void {

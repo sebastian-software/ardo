@@ -261,7 +261,8 @@ function resolveArdoConfig({
   const deploymentBase =
     deploymentBaseOverride ?? siteConfig.base ?? normalizeViteBaseForArdo(viteBase)
   const configWithDefaults: ArdoConfig = {
-    title: siteConfig.title ?? "Ardo",
+    // A site without a title is named after its package before Ardo itself.
+    title: siteConfig.title ?? (project.name || "Ardo"),
     description: siteConfig.description ?? "Documentation powered by Ardo",
   }
 

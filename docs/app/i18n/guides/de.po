@@ -794,6 +794,10 @@ msgid "<0>Default:</0> none"
 msgstr "<0>Standard:</0> keiner"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> the <1/> in <2/>, then <3/>"
+msgstr "<0>Standard:</0> das Feld <1/> aus <2/>, sonst <3/>"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> the generated owl icons"
 msgstr "<0>Standard:</0> generierte Eulenicons"
 
@@ -1243,15 +1247,16 @@ msgstr "Ein durchdachtes Standardtheme"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
-"A project consists of <0/> with Markdown, MDX, and TSX routes, <1/>, and "
-"optional configuration. <2/> in <3/> renders a complete site. <4/> may also "
-"export <5/>, <6/>, and <7/>; leave out <8/> unless the project needs a custom "
-"HTML shell."
+"A project consists of <0/> with Markdown, MDX, and TSX routes, an optional "
+"<1/>, and optional configuration. <2/> renders a complete site, and Ardo uses "
+"it when <3/> is missing. <4/> may also export <5/>, <6/>, and <7/>; leave out "
+"<8/> unless the project needs a custom HTML shell."
 msgstr ""
-"Ein Projekt besteht aus <0/> mit Markdown-, MDX- und TSX-Routen, <1/> und "
-"optionaler Konfiguration. <2/> in <3/> rendert eine vollständige Website. "
-"<4/> kann auch <5/>, <6/> und <7/> exportieren; lasse <8/> weg, solange keine "
-"eigene HTML-Hülle nötig ist."
+"Ein Projekt besteht aus <0/> mit Markdown-, MDX- und TSX-Routen, einem "
+"optionalen <1/> und optionaler Konfiguration. <2/> rendert eine vollständige "
+"Website, und Ardo verwendet es, wenn <3/> fehlt. <4/> kann auch <5/>, <6/> und"
+" <7/> exportieren; lasse <8/> weg, solange keine eigene HTML-Hülle nötig "
+"ist."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -1506,22 +1511,6 @@ msgstr ""
 "leitet Ardo den Titel aus der ersten Überschrift oder dem Dateinamen ab und "
 "nutzt einen numerischen Dateinamenpräfix für die Reihenfolge in der "
 "Seitenleiste."
-
-#: docs/app/content/guide/getting-started.mdx
-msgid ""
-"An Ardo project needs one app file besides its content: <0/>. Its default "
-"export is the root component, and <1/> on its own is a complete site: a header"
-" with search and the theme toggle, a sidebar with one section per folder in "
-"<2/>, and a footer. Ardo renders the HTML shell around it, generates the route"
-" table, and supplies the client and server entries, the site config, and its "
-"stylesheet."
-msgstr ""
-"Neben den Inhalten benötigt ein Ardo-Projekt nur <0/>. Sein Standardexport "
-"ist die Root-Komponente. Schon <1/> bildet eine vollständige Website: "
-"Kopfzeile mit Suche und Theme-Schalter, eine Seitenleistensektion pro Ordner "
-"unter <2/> und eine Fußzeile. Ardo rendert die HTML-Shell, erzeugt die "
-"Routentabelle und liefert Client- und Server-Einstieg, Konfiguration und "
-"Stylesheet."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "An edit link built from the site settings and the current page:"
@@ -3046,6 +3035,22 @@ msgstr "Verbinde dein Git-Repository im Vercel-Dashboard und konfiguriere:"
 #: docs/app/content/guide/configuration.mdx
 msgid "content"
 msgstr "content"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Content alone is a working site: without <0/>, Ardo renders <1/>: a header "
+"with search and the theme toggle, a sidebar with one section per folder in "
+"<2/>, and a footer. Ardo also renders the HTML shell around it, generates the "
+"route table, and supplies the client and server entries, the site config, and "
+"its stylesheet. Add <3/> once you want your own theme, logo, or chrome; its "
+"default export is the root component."
+msgstr ""
+"Schon die Inhalte allein ergeben eine Website: Ohne <0/> rendert Ardo <1/>, "
+"also eine Kopfzeile mit Suche und Theme-Schalter, eine Seitenleistensektion "
+"pro Ordner unter <2/> und eine Fußzeile. Ardo rendert auch die HTML-Shell, "
+"erzeugt die Routentabelle und liefert Client- und Server-Einstieg, "
+"Konfiguration und Stylesheet. Lege <3/> an, sobald du ein eigenes Theme, Logo "
+"oder Layout willst; sein Standardexport ist die Root-Komponente."
 
 #: docs/app/content/guide/components.mdx
 msgid "Content and navigation"
@@ -7348,9 +7353,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "The site title, used in the default <0/> meta tag and displayed in the header."
-" Set it in <1/> when you want a custom title."
+" Set it in <1/> when the package name isn't the title readers should see."
 msgstr ""
-"Titel der Website für das Standard-<0/> und die Kopfzeile. Setze ihn in <1/>."
+"Titel der Website für das Standard-<0/> und die Kopfzeile. Setze ihn in <1/>,"
+" wenn der Paketname nicht der Titel ist, den Leser sehen sollen."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""

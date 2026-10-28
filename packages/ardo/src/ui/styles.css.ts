@@ -30,4 +30,3 @@ import "./components/CopyButton.css"
 import "./components/Hero.css"
 import "./components/Features.css"
 // API documentation
-import "./components/ApiItem.css"

@@ -125,14 +125,20 @@ function PageTitle() {
 
 ## Exports
 
-| Export               | Description                                       |
-| -------------------- | ------------------------------------------------- |
-| `ardo/api`           | Native API projects and declaration documentation |
-| `ardo/vite`          | Vite plugin                                       |
-| `ardo/runtime`       | React hooks and providers                         |
-| `ardo/ui`            | Default UI components                             |
-| `ardo/theme`         | Vanilla Extract tokens and theming                |
-| `ardo/ui/styles.css` | Default theme styles                              |
+| Export               | Use it for                                                       |
+| -------------------- | ---------------------------------------------------------------- |
+| `ardo/config`        | `defineArdoConfig` in `ardo.config.ts`, and the config types     |
+| `ardo/ui`            | `ArdoRoot`, `ArdoTheme`, layout, and MDX components              |
+| `ardo/runtime`       | Hooks, providers, `ArdoLink`, and `ArdoMetaFunction`             |
+| `ardo/react`         | React APIs from Ardo's managed React, such as `useState`         |
+| `ardo/icons`         | The built-in content and brand icons as React components         |
+| `ardo/theme`         | `vars`, the theme tokens for your own Vanilla Extract styles     |
+| `ardo/vite`          | The `ardo()` Vite plugin and build helpers                       |
+| `ardo/api`           | Native API projects and declaration documentation                |
+| `ardo/tsconfig`      | TypeScript preset: `"extends": "ardo/tsconfig"`                  |
+| `ardo/ui/styles.css` | The default stylesheet; Ardo loads it, import it to order layers |
+
+The [configuration guide](https://ardo-docs.dev/v6/guide/configuration#package-exports) lists every export.
 
 ## Documentation
 
