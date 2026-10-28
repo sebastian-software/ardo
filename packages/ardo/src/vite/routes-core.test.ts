@@ -110,10 +110,15 @@ describe("createRoutesModule", () => {
     )
   })
 
-  it("works without a root module", () => {
-    expect(
-      createRoutesModule({ root: routesDir, routesDir: path.join(routesDir, "routes") })
-    ).toContain("const rootModule = {}")
+  it("falls back to ArdoRoot without a root module", () => {
+    const source = createRoutesModule({
+      root: routesDir,
+      routesDir: path.join(routesDir, "routes"),
+    })
+    expect(source).toContain(
+      'import { ArdoRoot } from "ardo/ui"\nconst rootModule = { default: ArdoRoot }'
+    )
+    expect(source).not.toContain("import * as rootModule")
   })
 })
 

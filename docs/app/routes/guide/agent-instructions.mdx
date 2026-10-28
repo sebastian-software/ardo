@@ -66,7 +66,7 @@ For an **upgrade**, update the dependency and the documented integration changes
 
 ### Ardo 6 Project Rules
 
-- A project consists of `app/routes/**` with Markdown, MDX, and TSX routes, `app/root.tsx`, and optional configuration. `<ArdoRoot />` in `root.tsx` renders a complete site. `root.tsx` may also export `meta`, `ErrorBoundary`, and `Layout`; leave out `Layout` unless the project needs a custom HTML shell.
+- A project consists of `app/routes/**` with Markdown, MDX, and TSX routes, an optional `app/root.tsx`, and optional configuration. `<ArdoRoot />` renders a complete site, and Ardo uses it when `root.tsx` is missing. `root.tsx` may also export `meta`, `ErrorBoundary`, and `Layout`; leave out `Layout` unless the project needs a custom HTML shell.
 - Use `ardo dev`, `ardo build`, and `ardo preview` as package scripts.
 - Import React APIs from `ardo/react`, runtime APIs such as `ArdoLink`, `useArdoPath`, and `ArdoMetaFunction` from `ardo/runtime`, components from `ardo/ui`, and Vite helpers from `ardo/vite`. Never import runtime values from the package root `ardo` in browser code; that entry also contains Node-only build code.
 - Extend `ardo/tsconfig` in `tsconfig.json`; it sets `jsxImportSource` and Ardo's type declarations. TypeScript is a development tool: the Basic example only depends on Ardo at runtime. Any TypeScript 6 or newer typechecks a site; keep the project's version. Native API documentation needs the pinned TypeScript 7.1 nightly from [API Documentation](/guide/api-documentation#installation), which the Basic example already uses.

@@ -33,7 +33,7 @@ my-docs/
 │   │   ├── guide/
 │   │   │   └── getting-started.mdx
 │   │   └── home.tsx             # Home page
-│   └── root.tsx                 # Root component (header, sidebar, footer)
+│   └── root.tsx                 # Optional: theme, logo, header, sidebar, footer
 ├── ardo.config.ts               # Optional site configuration
 ├── vite.config.ts               # Optional extra Vite plugins or settings
 ├── pnpm-workspace.yaml          # pnpm build-script allowlist, when using pnpm
@@ -110,7 +110,7 @@ adds its build integration automatically, so a custom Vite config does not need 
 
 ### 5. Create app files
 
-An Ardo project needs one app file besides its content: `app/root.tsx`. Its default export is the root component, and `<ArdoRoot />` on its own is a complete site: a header with search and the theme toggle, a sidebar with one section per folder in `app/routes/`, and a footer. Ardo renders the HTML shell around it, generates the route table, and supplies the client and server entries, the site config, and its stylesheet.
+Content alone is a working site: without `app/root.tsx`, Ardo renders `<ArdoRoot />`: a header with search and the theme toggle, a sidebar with one section per folder in `app/routes/`, and a footer. Ardo also renders the HTML shell around it, generates the route table, and supplies the client and server entries, the site config, and its stylesheet. Add `app/root.tsx` once you want your own theme, logo, or chrome; its default export is the root component.
 
 **`app/root.tsx`**:
 

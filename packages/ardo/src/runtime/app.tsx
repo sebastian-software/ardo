@@ -59,5 +59,7 @@ type ArdoAppProps = {
 }
 
 function DefaultRoot(): ReactNode {
-  throw new Error("[ardo] app/root.tsx must export a default root component.")
+  throw new Error(
+    "[ardo] app/root.tsx must export a default root component. Delete the file to use <ArdoRoot />."
+  )
 }

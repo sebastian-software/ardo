@@ -70,6 +70,24 @@ function manualFile(source: string, file: string, language: string): string {
   return contents
 }
 
+/** Without app/root.tsx, the generated route module falls back to `<ArdoRoot />`. */
+function assertPackedBasicBuildWithoutRoot(consumer: string): void {
+  const rootPath = path.join(consumer, "app/root.tsx")
+  const backupPath = `${rootPath}.test-backup`
+  fs.renameSync(rootPath, backupPath)
+  try {
+    run(consumer, ["build"])
+    const page = fs.readFileSync(
+      path.join(consumer, "build/client/guide/getting-started/index.html"),
+      "utf8"
+    )
+    expect(page).toContain("ardo-header")
+    expect(page).toContain("ardo-sidebar")
+  } finally {
+    fs.renameSync(backupPath, rootPath)
+  }
+}
+
 async function assertPackedBasicDevSSRWithoutArdoConfig(consumer: string): Promise<void> {
   const configPath = path.join(consumer, "ardo.config.ts")
   const backupPath = `${configPath}.test-backup`
@@ -274,6 +292,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
         // Exercise the CLI's generated default wrapper as well as the configured
         // production build above. A Basic project must work without ardo.config.ts.
         await assertPackedBasicDevSSRWithoutArdoConfig(consumer)
+        assertPackedBasicBuildWithoutRoot(consumer)
 
         fs.writeFileSync(
           path.join(consumer, "ardo.config.ts"),
