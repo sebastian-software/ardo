@@ -59,10 +59,10 @@ These options control the identity and basic behavior of your documentation site
 ### title
 
 - **Type:** `string`
-- **Default:** `"Ardo"`
+- **Default:** the `name` in `package.json`, then `"Ardo"`
 
 The site title, used in the default `<title>` meta tag and displayed in the header. Set it in
-`ardo.config.ts` when you want a custom title.
+`ardo.config.ts` when the package name isn't the title readers should see.
 
 ```ts
 defineArdoConfig({

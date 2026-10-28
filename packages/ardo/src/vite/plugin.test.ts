@@ -1,5 +1,9 @@
 import type { Plugin, UserConfig } from "vite"
 
+import fs from "node:fs"
+import os from "node:os"
+import path from "node:path"
+
 import { describe, expect, it } from "vitest"
 
 import { ardoPlugin } from "./plugin"
@@ -279,6 +283,19 @@ describe("ardoPlugin", () => {
     const code = await plugin.load("\0virtual:ardo/config")
 
     expect(String(code)).toContain('"base":"/assets/docs/"')
+  })
+
+  it("names an untitled site after its package", async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "ardo-title-"))
+    try {
+      fs.writeFileSync(path.join(root, "package.json"), '{ "name": "acme-docs" }')
+      const plugin = getMainPlugin({})
+      plugin.configResolved({ base: "/", build: { ssr: false }, root })
+
+      expect(String(await plugin.load("\0virtual:ardo/config"))).toContain('"title":"acme-docs"')
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true })
+    }
   })
 
   it("normalizes relative Vite bases before exposing the virtual Ardo config", async () => {
