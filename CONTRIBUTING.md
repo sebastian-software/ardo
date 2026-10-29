@@ -95,6 +95,13 @@ highlighter: updating the direct Core dependency does not update that bundled
 copy. The HTML helper and native JSX renderer can produce different markup;
 both preserve their respective public output contracts.
 
+### Dependency version ranges
+
+Use caret ranges for stable direct dependencies, including shared catalog entries.
+Commit the pnpm lockfile so installations resolve the versions verified by CI.
+Keep workspace links, peer compatibility ranges, and deliberate prerelease
+pins such as the TypeScript nightly in their existing forms.
+
 ### Palamedes documentation integration
 
 The docs use the published Palamedes 2.0 packages and matching native sidecars

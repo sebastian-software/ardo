@@ -189,10 +189,10 @@ catalogs:
       specifier: ^0.155.0
       version: 0.155.0
     react:
-      specifier: 19.3.1
+      specifier: ^19.3.1
       version: 19.3.1
     react-dom:
-      specifier: 19.3.1
+      specifier: ^19.3.1
       version: 19.3.1
     typescript:
       specifier: 7.1.0-dev.20261011.1
@@ -202,7 +202,7 @@ catalogs:
       version: 5.0.5
 
 overrides:
-  vite: 8.3.5
+  vite: ^8.3.5
 
 importers:
 
@@ -315,7 +315,7 @@ importers:
         specifier: 'catalog:'
         version: 1.21.3
       ferromark:
-        specifier: 3.5.1
+        specifier: ^3.5.1
         version: 3.5.1
       oxc-parser:
         specifier: 'catalog:'
@@ -324,7 +324,7 @@ importers:
         specifier: 'catalog:'
         version: 7.1.0-dev.20261011.1
       vite:
-        specifier: 8.3.5
+        specifier: ^8.3.5
         version: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       yaml:
         specifier: ^2.9.0
@@ -394,7 +394,7 @@ importers:
         specifier: ^12.0.0
         version: 12.0.0
       vite:
-        specifier: 8.3.5
+        specifier: ^8.3.5
         version: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       yaml:
         specifier: ^2.9.1
@@ -404,7 +404,7 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       '@svgr/cli':
-        specifier: 8.1.0
+        specifier: ^8.1.0
         version: 8.1.0(supports-color@9.4.0)(typescript@7.1.0-dev.20261011.1)
       '@testing-library/react':
         specifier: 'catalog:'
@@ -1998,7 +1998,7 @@ packages:
     resolution: {integrity: sha512-bU3WvYczGqiKqWmUtjJPEr0JvhlmZl4eWJ1K2DiDoLoIYlPIMN4OXuEoXeKowaED+tb5uiNJ/MoNmpAV2ZANEg==}
     engines: {node: '>=24.3.0'}
     peerDependencies:
-      vite: 8.3.5
+      vite: ^8.3.5
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -2778,7 +2778,7 @@ packages:
   '@vanilla-extract/vite-plugin@5.2.6':
     resolution: {integrity: sha512-mGk0YEan+NyeoxEO51LfxOdtw2JBI+Yb840FGg+zvG6tVU3YfDgKGPiGuk5oT8jqzfsm7H89DyjOVCpl6Bnn0w==}
     peerDependencies:
-      vite: 8.3.5
+      vite: ^8.3.5
 
   '@vitejs/plugin-react@6.1.2':
     resolution: {integrity: sha512-fhJNGUdscQa4HkI0xFxwonWyhnVReCPDbXI7FH7jmzpnVCrFQI7PRrhWecO263610vOrs9tr2Y4xcf8uAdFxbw==}
@@ -2787,7 +2787,7 @@ packages:
       '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
       babel-plugin-react-compiler: ^1.0.0
       oxc-transform-react: ^0.152.0
-      vite: 8.3.5
+      vite: ^8.3.5
     peerDependenciesMeta:
       '@rolldown/plugin-babel':
         optional: true
@@ -2833,7 +2833,7 @@ packages:
     resolution: {integrity: sha512-xLL3lkDegJZw+MGoGaCCsFayDZthGgpAtr3Vziyfc4p7xH89K7KRPcRBBh/kEYm0Aqkt5DtTmkYpBtRV/FrHZg==}
     peerDependencies:
       msw: ^2.4.9 || ^3.0.0
-      vite: 8.3.5
+      vite: ^8.3.5
     peerDependenciesMeta:
       msw:
         optional: true
@@ -3810,7 +3810,7 @@ packages:
     resolution: {integrity: sha512-sJqZxSv/61bqnWqU2dG4emm3k40Kb0JXLT+WKuoQXGhsnknqqV5FeW12BioOLvNKosTBnmdY24ImqTAqsRP+KQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: 8.3.5
+      vite: ^8.3.5
     peerDependenciesMeta:
       vite:
         optional: true
@@ -5607,7 +5607,7 @@ packages:
       '@vitest/ui': 5.0.5
       happy-dom: '*'
       jsdom: '*'
-      vite: 8.3.5
+      vite: ^8.3.5
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
