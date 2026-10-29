@@ -105,6 +105,10 @@ msgid "ardo"
 msgstr "ardo"
 
 #: docs/app/i18n/messages.ts
+msgid "Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →"
+msgstr "Ardo-6.0-Benchmark · 29. Okt. 2026 · M1 Ultra →"
+
+#: docs/app/i18n/messages.ts
 msgid "Ardo callouts: note, tip, important and warning"
 msgstr "Ardo-Hinweise: Notiz, Tipp, wichtig und Warnung"
 
@@ -572,10 +576,6 @@ msgstr ""
 #: docs/app/i18n/messages.ts
 msgid "powered by"
 msgstr "entwickelt von"
-
-#: docs/app/i18n/messages.ts
-msgid "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →"
-msgstr "Vorab-Benchmark · 29. Okt. 2026 · M1 Ultra →"
 
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Previous"

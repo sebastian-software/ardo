@@ -1,11 +1,12 @@
-# Ardo 6 release-candidate workload benchmark
+# Ardo 6.0 final release benchmark
 
-Measured October 29, 2026. These results describe the Ardo 6 release candidate at
+Measured October 29, 2026 for the Ardo 6.0 final release, at
 [`09f4813`](https://github.com/sebastian-software/ardo/commit/09f4813263d8445646a4b7abb87672780ec19750),
 with a clean working tree. That commit adds only the measurement harness to
-`9931ea3`, the current main revision. The package manifest still says `5.0.0`;
-Ardo 6 has not been published. This is pre-release evidence, not a measurement of
-the eventual published package.
+`9931ea3`, the measured implementation revision. The raw report records the
+manifest version as `5.0.0`; release automation applies the `6.0.0` version bump
+separately. The source commit and lockfile identify the measured implementation
+and dependencies.
 
 [Raw samples, corpus manifests, source hashes, and machine details](./2026-10-29-release-benchmark.json)
 are stored beside this report. The
@@ -149,7 +150,7 @@ changing source, dependencies, compiler options, machine, or cache lifecycle
 creates a different experiment. Timings are observations on this machine, not
 portable performance guarantees or CI thresholds.
 
-## Claim changes and release follow-up
+## Claim changes
 
 The current homepage and README no longer repeat the earlier 2.6×
 pulldown-cmark, 4.7× Shiki/WASM, or 4.3× TypeDoc factors. Those came from different
@@ -162,9 +163,7 @@ boundary, cache lifecycle, machine and measurement date. No new comparative
 factor is claimed: equivalent current comparator workloads and output parity
 have not been established in this campaign.
 
-After Ardo 6 is published, rerun this harness against the published release's
-source, lockfile and built package, confirm that its corpus and output hashes
-match, and refresh or supersede this report if they differ. Record the published
-package version and source revision. Until then, retain the release-candidate
-qualification. This is the remaining post-release verification from issue
-[#395](https://github.com/sebastian-software/ardo/issues/395).
+This report is the benchmark baseline for Ardo 6.0 final and addresses issue
+[#395](https://github.com/sebastian-software/ardo/issues/395). Refresh the evidence
+when the measured implementation, dependencies, corpus, or measurement method
+changes.

@@ -109,8 +109,8 @@ const messages: Record<string, () => string> = {
     t`Rust tooling that tidies up the compiled pages and maps your declarations.`,
   "Sebastian Werner · creator and maintainer": () => t`Sebastian Werner · creator and maintainer`,
   "See every component →": () => t`See every component →`,
-  "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →": () =>
-    t`Pre-release benchmark · Oct 29, 2026 · M1 Ultra →`,
+  "Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →": () =>
+    t`Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →`,
   "Serve it": () => t`Serve it`,
   "Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.": () =>
     t`Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.`,

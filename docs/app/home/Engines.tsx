@@ -93,7 +93,7 @@ export function Engines() {
               {text(engine.rest)}
             </p>
             <p className={styles.engineLink}>
-              <a href={engine.link}>{text("Pre-release benchmark · Oct 29, 2026 · M1 Ultra →")}</a>
+              <a href={engine.link}>{text("Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →")}</a>
             </p>
           </div>
         ))}
@@ -120,7 +120,7 @@ export function Engines() {
                 </p>
                 <p className={styles.engineLink}>
                   <a href={friend.proof.link}>
-                    {text("Pre-release benchmark · Oct 29, 2026 · M1 Ultra →")}
+                    {text("Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →")}
                   </a>
                 </p>
               </>
