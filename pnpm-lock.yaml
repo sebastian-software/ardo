@@ -347,7 +347,7 @@ importers:
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@ferriki/core':
         specifier: ^1.1.2
-        version: 1.1.2
+        version: 1.2.0
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -1185,53 +1185,53 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@ferriki/core@1.1.2':
-    resolution: {integrity: sha512-mjJEk1kkWsIZMA6Yqa1PTxPe9uhWzZ+4B+v7M65lHlJPUMaQpOHKoIUEWq/+tFHu/ujqIn4MB5PIpxAgTWwlmw==}
+  '@ferriki/core@1.2.0':
+    resolution: {integrity: sha512-GksvoIe8xuPjWLh0h0U78bKfxDkEr6x5qdtK6y7Dq5h9ILV23AaIPMkbfptHFq/7WXKV/rjpmZ3eE9k3X8+86Q==}
     engines: {node: '>=22.13.0'}
     hasBin: true
 
-  '@ferriki/darwin-arm64@1.1.2':
-    resolution: {integrity: sha512-2CNKui5M88laAJzcgBuLOha5uy2ho3FtGnH59Mj0h6kq8V5cW8ovcGPf56NuIz9CGy66R5kyuAhcD9eDB+q+Rg==}
+  '@ferriki/darwin-arm64@1.2.0':
+    resolution: {integrity: sha512-KLZHEr99M+TJaUAtv+F97M0a8X1wBFfAUbXWzq5+lr0LZq/wiJWqCyf0ff6RkBKBjRUbO7xeLStYAjNEu6C82w==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferriki/linux-arm64-gnu@1.1.2':
-    resolution: {integrity: sha512-sH2P0oHkEd22hCyWGaTPrvPCFQZc2r9SfL5XVHi6Vgn8xy7PUxcbNa2dQwWSSqjcTGPxpW0E6CBfqo89YkcjDA==}
+  '@ferriki/linux-arm64-gnu@1.2.0':
+    resolution: {integrity: sha512-P8YISTEB8SNwHjzm2DZEG2Vqw/ijY0mCZnEwLHf53qyldt5IIio/zjDsQw4V1xnSdJYO/mTW2qWtsx7KAx1/Tw==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-arm64-musl@1.1.2':
-    resolution: {integrity: sha512-UMQdocH0e0Thc1Bb9kp6XKyocv36tPMiQnEts/cAFObKWdTwkwjrvQkixv2egeU0RwGnSs4Hcjy2W9HoLv4zkA==}
+  '@ferriki/linux-arm64-musl@1.2.0':
+    resolution: {integrity: sha512-1e5htyVuo+DRfQsH0xRTRk0a9JBYT4J8dfa3sBketsYPcC7hA7T5LDaEZ9a0cuwjeyqmKDbpY9j1vSV8YEU5CA==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/linux-x64-gnu@1.1.2':
-    resolution: {integrity: sha512-OdpYRuwiubP+NATRSVFBYHhtZfV0xsdcdXfuhUbtzSlVhIva81ef/F/SR55VB+/MGq4ETeEVIFP21LnqCLFcxQ==}
+  '@ferriki/linux-x64-gnu@1.2.0':
+    resolution: {integrity: sha512-9ww6lk7STC5MKZBMvMD5y2T+3vSjER2fdlIF5k/C6uwislwsojlJV8j7oacRNn/mP+hHNyxsJQPKwB/2hBz4dw==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-x64-musl@1.1.2':
-    resolution: {integrity: sha512-n7TPjtIzfhUuqSEeUPQtxMZxS8kCMjeDMXBvyBwHMQX7wA4IbWVEJXSf+r12L7lqZScN6iyMZPO1oBWOeLZFpQ==}
+  '@ferriki/linux-x64-musl@1.2.0':
+    resolution: {integrity: sha512-i9gMRySZznxwW5jFM9pVJCIC5GxanaM7vtiMGduEvuvdsFA0pn5RBtEvtU38TNg9zJ5awFjnm+0mWVdwBzGsMA==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/win32-arm64-msvc@1.1.2':
-    resolution: {integrity: sha512-cZ8yMREMYVEk/KmWqAqER9/R8Y58Zp57EJyY9MW36dqulpjV5FfvHbaNOqu/OhO7LpgEv/n3ugLQu9IUcXEnSw==}
+  '@ferriki/win32-arm64-msvc@1.2.0':
+    resolution: {integrity: sha512-0JreLCLl3K2u3OTQ1YGQxdsFSLuazVN1HVhq6JWFnzfa42M9zeQ+kHruwHEvPadoxlX1dNnJEaSb4amXYKUT3g==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@ferriki/win32-x64-msvc@1.1.2':
-    resolution: {integrity: sha512-EjJ+0dPQbnW7laCFjGOivgnR00ySexjL+EBSQhB8T1FADVjg+yJREDstuMssVVvy02QOBD0HFtt7UANFpVrv8w==}
+  '@ferriki/win32-x64-msvc@1.2.0':
+    resolution: {integrity: sha512-ZvgJwJ9XG+SOq9mrO089xebMabXunFpSAgRyqR3xnaeh9CpkgUnxSHbseq5L7pM8cQ2n3tyYVeHVx1ISw2qkxQ==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [win32]
@@ -6518,35 +6518,35 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@ferriki/core@1.1.2':
+  '@ferriki/core@1.2.0':
     optionalDependencies:
-      '@ferriki/darwin-arm64': 1.1.2
-      '@ferriki/linux-arm64-gnu': 1.1.2
-      '@ferriki/linux-arm64-musl': 1.1.2
-      '@ferriki/linux-x64-gnu': 1.1.2
-      '@ferriki/linux-x64-musl': 1.1.2
-      '@ferriki/win32-arm64-msvc': 1.1.2
-      '@ferriki/win32-x64-msvc': 1.1.2
+      '@ferriki/darwin-arm64': 1.2.0
+      '@ferriki/linux-arm64-gnu': 1.2.0
+      '@ferriki/linux-arm64-musl': 1.2.0
+      '@ferriki/linux-x64-gnu': 1.2.0
+      '@ferriki/linux-x64-musl': 1.2.0
+      '@ferriki/win32-arm64-msvc': 1.2.0
+      '@ferriki/win32-x64-msvc': 1.2.0
 
-  '@ferriki/darwin-arm64@1.1.2':
+  '@ferriki/darwin-arm64@1.2.0':
     optional: true
 
-  '@ferriki/linux-arm64-gnu@1.1.2':
+  '@ferriki/linux-arm64-gnu@1.2.0':
     optional: true
 
-  '@ferriki/linux-arm64-musl@1.1.2':
+  '@ferriki/linux-arm64-musl@1.2.0':
     optional: true
 
-  '@ferriki/linux-x64-gnu@1.1.2':
+  '@ferriki/linux-x64-gnu@1.2.0':
     optional: true
 
-  '@ferriki/linux-x64-musl@1.1.2':
+  '@ferriki/linux-x64-musl@1.2.0':
     optional: true
 
-  '@ferriki/win32-arm64-msvc@1.1.2':
+  '@ferriki/win32-arm64-msvc@1.2.0':
     optional: true
 
-  '@ferriki/win32-x64-msvc@1.1.2':
+  '@ferriki/win32-x64-msvc@1.2.0':
     optional: true
 
   '@ferrolink/darwin-arm64@0.2.1':
