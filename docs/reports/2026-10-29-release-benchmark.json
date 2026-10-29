@@ -1,0 +1,3319 @@
+{
+  "date": "2026-10-29T19:38:47.363Z",
+  "source": {
+    "commit": "09f4813263d8445646a4b7abb87672780ec19750",
+    "status": "",
+    "harnessSha256": "2a27f12545717e38b4d1c93754c83facbd0e16f49e440c7fdc6324e14d19858a"
+  },
+  "machine": {
+    "platform": "darwin",
+    "osVersion": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "cpu": "Apple M1 Ultra",
+    "logicalCpus": 20,
+    "memoryBytes": 68719476736,
+    "node": "v24.22.1"
+  },
+  "versions": {
+    "ardo": "5.0.0",
+    "ferromark": "3.5.1",
+    "typescript": "7.1.0-dev.20261011.1"
+  },
+  "method": {
+    "rounds": 7,
+    "warmupWindows": 1,
+    "windowMs": 500,
+    "apiWarmupProcesses": 1,
+    "themes": {
+      "light": "github-light",
+      "dark": "github-dark"
+    },
+    "engineState": "Warm shared JsxCompiler; verified assets cached; remote downloads disabled; sequential execution",
+    "apiState": "Fresh Node process and native compiler session; module import through Markdown writes and session disposal; setup and output verification excluded",
+    "compileOptions": {
+      "headingAttributes": true,
+      "format": "mdx",
+      "frontMatter": true,
+      "headingIds": true,
+      "footnotes": true,
+      "autolinkLiterals": true,
+      "calloutComponents": {
+        "caution": "Danger",
+        "important": "Info",
+        "note": "Note",
+        "tip": "Tip",
+        "warning": "Warning"
+      }
+    }
+  },
+  "corpus": {
+    "guides": [
+      {
+        "path": "docs/app/content/guide/agent-instructions.mdx",
+        "bytes": 9694,
+        "sha256": "d939fd4fff4234aea9ed19cd5611d0cbccc95ea2504ff166b104f378b6aced80"
+      },
+      {
+        "path": "docs/app/content/guide/api-documentation.mdx",
+        "bytes": 8898,
+        "sha256": "fa0bcbb3d73869942e0a449bab57b73c9fd1ecfd100b8ebfd525b8f803309021"
+      },
+      {
+        "path": "docs/app/content/guide/components.mdx",
+        "bytes": 22049,
+        "sha256": "d413d1e3fac581ec7b1d56319824228539ad034891cdebb70d92f28580139e28"
+      },
+      {
+        "path": "docs/app/content/guide/configuration.mdx",
+        "bytes": 27911,
+        "sha256": "d8af6c3368dfd60989c2bfe70987bafe3b793b649924f5384bf54795f5b3ebbf"
+      },
+      {
+        "path": "docs/app/content/guide/content-sources.mdx",
+        "bytes": 2926,
+        "sha256": "306baf2939222ce7656616d71ddc3b07b3488107678cae685767ade8cfe3caa7"
+      },
+      {
+        "path": "docs/app/content/guide/deployment.mdx",
+        "bytes": 7654,
+        "sha256": "0270a39eb7b029fea9c12c9dcaa73c4d97bf85892724d8d604d4792461c826cd"
+      },
+      {
+        "path": "docs/app/content/guide/frontmatter.mdx",
+        "bytes": 6046,
+        "sha256": "92ebbccf4a53d208ea0246813ef38a91702c44ccef901ad4e2dac27449054aae"
+      },
+      {
+        "path": "docs/app/content/guide/getting-started.mdx",
+        "bytes": 7596,
+        "sha256": "b02430721990e5d085999ee1416e3cecb0eb4518e8accc7927ff2ce9fb23ec9f"
+      },
+      {
+        "path": "docs/app/content/guide/internationalization.mdx",
+        "bytes": 4322,
+        "sha256": "2d679c6fae20322f1cd0c144d5a5aac33fed6b052933e4f6dff33f4fc6b6b5ef"
+      },
+      {
+        "path": "docs/app/content/guide/layout-and-navigation.mdx",
+        "bytes": 31443,
+        "sha256": "d463d96c1fa10ae641510e9708d2fd1e81850dc18a861074bdfb7d48495497a5"
+      },
+      {
+        "path": "docs/app/content/guide/markdown.mdx",
+        "bytes": 8694,
+        "sha256": "1f0fea35cca03e38b181bcfada82c447967c6c9fb871c5726239e2ce88a34de1"
+      },
+      {
+        "path": "docs/app/content/guide/releases/index.mdx",
+        "bytes": 8651,
+        "sha256": "b5e6c3ba4bd7cdf4310622d606346cfad08756bbfe1264e80a4f9bfdb7afa06c"
+      },
+      {
+        "path": "docs/app/content/guide/releases/migrate-from-typedoc.mdx",
+        "bytes": 6233,
+        "sha256": "d32a8a14f0b0cfddaef7a93ba868039c6f96a2e2f6d546b17d2789952e38208e"
+      },
+      {
+        "path": "docs/app/content/guide/releases/upgrade-to-v4.mdx",
+        "bytes": 2547,
+        "sha256": "377c1585e27872ecbdcc0b61d04d98e894b6006abfd1abc9bc0c2a2b111fc448"
+      },
+      {
+        "path": "docs/app/content/guide/releases/upgrade-to-v5.mdx",
+        "bytes": 2979,
+        "sha256": "96eba119b498ab6d476fba5d9dac96e11962dd60c557c140046bc3e159093b84"
+      },
+      {
+        "path": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "bytes": 16195,
+        "sha256": "c5584cbfcdb1977818b9a4f25fd9207543448586c411099ec239084f94fd45fc"
+      },
+      {
+        "path": "docs/app/content/guide/theming.mdx",
+        "bytes": 17046,
+        "sha256": "9add124da30c2a5bba830635e71542d6263021986b87200c75db5cdd6e31e9d0"
+      },
+      {
+        "path": "docs/app/content/guide/troubleshooting.mdx",
+        "bytes": 8063,
+        "sha256": "ce9ccf816beba28083dc981a2f98cfe9567dd14d5365250107412a70d9cdfe79"
+      },
+      {
+        "path": "docs/app/content/guide/what-is-ardo.mdx",
+        "bytes": 11556,
+        "sha256": "1f90dc826232d14e3191632e42b38557b981ebf0e8ff5a2f28aa2705ca2f9018"
+      }
+    ],
+    "blocks": [
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 0,
+        "language": "bash",
+        "bytes": 64,
+        "sha256": "4fd0a1fdb7c769e1b3275d68e2d727c97b750b9a8dd0a9dee2b19fc03536bfec"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 227,
+        "sha256": "be3cbd6f4641e4c3248f6ae62c3563b33dc368199da17063b8bebc28ad9255f1"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 2,
+        "language": "json",
+        "bytes": 81,
+        "sha256": "0651bf53d7f21255bd624d05a2434c1c592ea70d1374f34886013a422a68f569"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 3,
+        "language": "ts",
+        "bytes": 248,
+        "sha256": "02c5b47551cad94d5ae1842a38ad9d3338692e5411b05355a216f024ba8308e6"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 4,
+        "language": "ts",
+        "bytes": 398,
+        "sha256": "13339102c277bc601c708ea85e0107df97cc65134646b3a4b83494af3a6d24a2"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 5,
+        "language": "ts",
+        "bytes": 179,
+        "sha256": "293c2f40a27c51f8b42e2c8762d1f37c23b55eb3b98a0de215e0ddae7c4537f5"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 6,
+        "language": "ts",
+        "bytes": 167,
+        "sha256": "a7df336ecd6ae8f8ef2665ef8ce782301dbd83f7ce4cff4afe3aae1bff070460"
+      },
+      {
+        "guide": "docs/app/content/guide/api-documentation.mdx",
+        "index": 7,
+        "language": "bash",
+        "bytes": 11,
+        "sha256": "3b3a54210df47d70926f37d9b2d4f9bdddb18ae0798257c944cd22f9ddd41e59"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 0,
+        "language": "mdx",
+        "bytes": 89,
+        "sha256": "21a4fafdaa2973a49ad628eb2638b7c9957add515d73087f89f7b3f4ce824dfd"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 1,
+        "language": "mdx",
+        "bytes": 76,
+        "sha256": "ef62ff3eecaa1158f600c555b4b179a79b19dd0f0662414f44d35abf01778e18"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 2,
+        "language": "mdx",
+        "bytes": 254,
+        "sha256": "f1c144f161deba9c0a8bc0fdc329b742ef54659cf1933be41f6958ec1ddc1219"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 3,
+        "language": "mdx",
+        "bytes": 259,
+        "sha256": "c3956b81a73ebe16a2708a6da0d67e63b1562154cbc11372915a025312ad0243"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 4,
+        "language": "mdx",
+        "bytes": 306,
+        "sha256": "b021243b926aa86d2aa46045510df36148edf3f96a7a4a10a12b1b968dc2caec"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 5,
+        "language": "mdx",
+        "bytes": 123,
+        "sha256": "c922d42b1600797e02877f9a590eb790c8bb4b7f68c5ab7a0df1163965f2bb13"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 6,
+        "language": "mdx",
+        "bytes": 68,
+        "sha256": "3849a48aa102f76edb20747ed003d0541436c5588bd7bcf1e728b1ff25a80e95"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 7,
+        "language": "tsx",
+        "bytes": 228,
+        "sha256": "a44c546829b5498e111ecf70ee6d17d19a897e203ff4e19bb8b7d2601fe4dbd4"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 8,
+        "language": "tsx",
+        "bytes": 60,
+        "sha256": "f0246fbd0d775066101d8b82edf5839c2632d89c18495a161fc1607d5f530feb"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 9,
+        "language": "mdx",
+        "bytes": 139,
+        "sha256": "904d7599440b086e84fe9c45eab305318801103a20e2455fe22fbb88323dfb45"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 10,
+        "language": "tsx",
+        "bytes": 190,
+        "sha256": "ef60c6620231efef45ac3bfd3f48ccc417e5ff74a608169a79c936ad7c5782c6"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 11,
+        "language": "tsx",
+        "bytes": 210,
+        "sha256": "d77eceeef4e96d600ff794005987beefc76ec1897c160c0cf1caceb46e88cfa6"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 12,
+        "language": "tsx",
+        "bytes": 103,
+        "sha256": "14d3025ccec2245f4e950bad57920088bab9c9e42b97184280e7545bb5d3507d"
+      },
+      {
+        "guide": "docs/app/content/guide/components.mdx",
+        "index": 13,
+        "language": "mdx",
+        "bytes": 183,
+        "sha256": "7845467692f0f5a01b61c5458a7a3a883972e2c4f54a420b47d19e8f789b8a82"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 0,
+        "language": "ts",
+        "bytes": 148,
+        "sha256": "6b99c1d7b7ee9c3fdae8adf575fd4f5ef552ba52a51a3852a15fc4fefd5fcb23"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 101,
+        "sha256": "22b8367726aa026a6c9ca8e938e068268e99cc8cfe0bf792a3a92da6a846a1a2"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 2,
+        "language": "ts",
+        "bytes": 51,
+        "sha256": "b27f75a8214df5cb13501c7d6b5d9316b3c8df7af6a3906cc0c3e15ed0e5518e"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 3,
+        "language": "ts",
+        "bytes": 96,
+        "sha256": "c53b1bac9caef284b5e827002a313eb764e9c9e7773e363f7baed2eb47e7cb3e"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 4,
+        "language": "ts",
+        "bytes": 67,
+        "sha256": "cd5a0553db97882281e1492d6197217a0f807d0170962044ce26c9423a25dc70"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 5,
+        "language": "ts",
+        "bytes": 60,
+        "sha256": "cf0156c5625d422a97250cb3268ab2eadd1b8713ebc6d2eda37030df020125da"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 6,
+        "language": "ts",
+        "bytes": 76,
+        "sha256": "fdfdfa0ac9aa37fbaa30361793764b6292c2298341aab38243e3f96478fc0028"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 7,
+        "language": "ts",
+        "bytes": 213,
+        "sha256": "b2370f7f89124848cfc002ccc1b8914443871d2ee76c7b03f111b41cfa6e7a80"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 8,
+        "language": "ts",
+        "bytes": 220,
+        "sha256": "53dd78fda8b31cbdcee70027ad0ad05955f846004575804f201ef72927fe99f6"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 9,
+        "language": "ts",
+        "bytes": 204,
+        "sha256": "609c495ea2415ffdeb785735a1af2e676ff991366201fe83464234f5a883892d"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 10,
+        "language": "ts",
+        "bytes": 161,
+        "sha256": "1816b4f2a7121ad398e20e579f85a3eda164f3dfaa409b61c7ccc1e718240c6e"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 11,
+        "language": "ts",
+        "bytes": 114,
+        "sha256": "9537490b71a81719540ca5215630586c8b3826224ea9c8eb06aa09dd1bede5a1"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 12,
+        "language": "ts",
+        "bytes": 137,
+        "sha256": "197b114b4fd936748d16b3e74c5e655a081c23962e5f6cddbb34d8f7240a7f6e"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 13,
+        "language": "ts",
+        "bytes": 176,
+        "sha256": "b1b83fc0447e5f455626b38835f7234d9cc29ff83f1b58ca1e6eb439a8d62b76"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 14,
+        "language": "ts",
+        "bytes": 240,
+        "sha256": "dd3cad4b192b6e166a4978aab699a2ef09a81e1071ddfc44d9530c8b6378afef"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 15,
+        "language": "ts",
+        "bytes": 278,
+        "sha256": "16c1deb2d376e9976e40f3c7019c822fc09a5eb6683c620b75088aa38160c7a7"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 16,
+        "language": "ts",
+        "bytes": 68,
+        "sha256": "28f5bab59c6252c59ee035df785988deff7ff80fa3946237c69e8bcb40d14847"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 17,
+        "language": "ts",
+        "bytes": 56,
+        "sha256": "4ff650d79e3f1219d844e4be2cdd8129ad3c5397c6b84cb5ce2f7dad139db365"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 18,
+        "language": "ts",
+        "bytes": 152,
+        "sha256": "8d350e4e2c7e06c8eacda04cfdb0b79b94313a02de34b5d4d4ae5bdde57c9f7d"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 19,
+        "language": "ts",
+        "bytes": 282,
+        "sha256": "b0787211c7aa86ddd28a29991763aa37abf65e1db7291167ee3547136b0d24a5"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 20,
+        "language": "ts",
+        "bytes": 322,
+        "sha256": "6446215303dbf89dc2f76bd92c06617fa5d87365e6acaa34de22298ee40cce21"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 21,
+        "language": "ts",
+        "bytes": 81,
+        "sha256": "76629fee052e037ae3168720f43c1bbe4187fb9326603998b617761110fbf1ca"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 22,
+        "language": "ts",
+        "bytes": 71,
+        "sha256": "2fc5ca7876eca2c7e34491c6ba420cfcb360d23e25d7165be3e11b6c3eb185ab"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 23,
+        "language": "ts",
+        "bytes": 159,
+        "sha256": "3f4b96bb7923045830f0d88972cfd31c8a4910a97aed755ce555cebd3a3de363"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 24,
+        "language": "ts",
+        "bytes": 39,
+        "sha256": "4e14eaea18bfc279b8335bc38520b568021790aa6aafac057dd0d54250fc9ba9"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 25,
+        "language": "ts",
+        "bytes": 73,
+        "sha256": "738913a4d4922f2afe1e2d9325bc4d7ea2ea0fa858fb2b533c718b49876c14db"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 26,
+        "language": "ts",
+        "bytes": 174,
+        "sha256": "9d2863694b641d4377f6c71d2b252d04b47cdb0ae17a7b915a18df63bde8be73"
+      },
+      {
+        "guide": "docs/app/content/guide/configuration.mdx",
+        "index": 27,
+        "language": "ts",
+        "bytes": 422,
+        "sha256": "ef82fbd4e9d9e094c881e10f9e1882e791d1117cc763fd2741e29d677003c773"
+      },
+      {
+        "guide": "docs/app/content/guide/content-sources.mdx",
+        "index": 0,
+        "language": "ts",
+        "bytes": 165,
+        "sha256": "bc8d0cb36cd1db6e44c63c5e27eca186ac52e6019874fb1662cbec9bd0ed6174"
+      },
+      {
+        "guide": "docs/app/content/guide/content-sources.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 323,
+        "sha256": "d399b3a095409b4ee6a91fca96433c9602433eafcf2ced53a44635aadea46011"
+      },
+      {
+        "guide": "docs/app/content/guide/content-sources.mdx",
+        "index": 2,
+        "language": "tsx",
+        "bytes": 118,
+        "sha256": "1af548f77a39fca59cc913c97fa42ff4195a9ba7b349cdea40de20fd2faf3f6a"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 0,
+        "language": "text",
+        "bytes": 363,
+        "sha256": "d3fd332aecf2a847aee0ee7cd191657d9c12611e76c78dfa72703d3c2254b3c9"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 126,
+        "sha256": "aa63486e4402736fecaa9c34e4be08dba663d7894f7c742b7454a3b6fd6e4e43"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 2,
+        "language": "ts",
+        "bytes": 144,
+        "sha256": "3dca5d9a9a4e8ae5d057491f4dfb45a1d73bb6c8b9aaea10868ab31380772b1a"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 3,
+        "language": "yaml",
+        "bytes": 1126,
+        "sha256": "aff739d579da8b0645ee10f1a145fa54419fe6dd8d8b2c5714cf435975046b00"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 4,
+        "language": "text",
+        "bytes": 125,
+        "sha256": "3e41367ff4fa1551a01ab60886be2da26d555dca59934a98ef9d702ecc477fb7"
+      },
+      {
+        "guide": "docs/app/content/guide/deployment.mdx",
+        "index": 5,
+        "language": "ts",
+        "bytes": 303,
+        "sha256": "6b2fe9721fed02701f03debeaab661616a9795d089a4baf7509af86f7c000a04"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 0,
+        "language": "yaml",
+        "bytes": 101,
+        "sha256": "c6382ff921eed53501c055df49458674532998fd28a9a162e34666a1210e4a66"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 1,
+        "language": "yaml",
+        "bytes": 31,
+        "sha256": "8609df32ce6f60a2a10dc4743029f6a587a85414ae11be44e941c401c5ec643f"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 2,
+        "language": "yaml",
+        "bytes": 56,
+        "sha256": "6774ef0ed869d777c27380490b97d7ee49e137ff3135065c59826dfc45e7fc1a"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 3,
+        "language": "yaml",
+        "bytes": 91,
+        "sha256": "fca8063137d87b84ab42ab6777f48032f00485ee46ee0710e1c7d4fec7afb3fc"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 4,
+        "language": "yaml",
+        "bytes": 442,
+        "sha256": "8a7243262c0510dd799f6e2cd43ab33721dcf8b8662fc93f5f6941b3400cf38b"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 5,
+        "language": "yaml",
+        "bytes": 21,
+        "sha256": "04c6c8ea970b7001883a2ada855563acb8be4de4a1cfdba8ffe5b352ba781f2c"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 6,
+        "language": "yaml",
+        "bytes": 23,
+        "sha256": "28f049df1d85562ba550bdbf0e2da329a20ced1aad97c8b909558d8eaaef4f16"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 7,
+        "language": "yaml",
+        "bytes": 40,
+        "sha256": "e687d4a798bf147247f402621121fe18e8e11e40325aadc4879d38bda139c7fa"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 8,
+        "language": "yaml",
+        "bytes": 48,
+        "sha256": "72938b42b528ac65232c4700e782ce9b7ab33c94a52d67618ec02d56b7aa34a3"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 9,
+        "language": "yaml",
+        "bytes": 23,
+        "sha256": "501c7463660e007f1410872a94f2e07a52c3dc23ec409c2f1e22da9a2daa13e4"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 10,
+        "language": "yaml",
+        "bytes": 24,
+        "sha256": "05b1bf452f64ccdd509c81277995ec7f7b778ad0531c0e28c1a37d9468846334"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 11,
+        "language": "yaml",
+        "bytes": 27,
+        "sha256": "fb733bcea83cf0b53b2354bac5196af89b0dd152261703906ab5a46c876a288c"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 12,
+        "language": "yaml",
+        "bytes": 55,
+        "sha256": "31ccd4e44ad43d9dfaea8de617be971426fb2ea4212a70d1fad8121cfe4d825d"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 13,
+        "language": "yaml",
+        "bytes": 43,
+        "sha256": "6b8a15aae2a52e174597dd244adb8bc43cb7307abe6b1d8768b91a54dbb5d15c"
+      },
+      {
+        "guide": "docs/app/content/guide/frontmatter.mdx",
+        "index": 14,
+        "language": "yaml",
+        "bytes": 74,
+        "sha256": "b63876f2af4b76757d86a795497019102712d2a4fde936ebab2e89924df6d40e"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 0,
+        "language": "text",
+        "bytes": 605,
+        "sha256": "2d23702fb28ac6ebc81f741b52121c1221e7475e536db579bdb18880b5b3c7b3"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 1,
+        "language": "bash",
+        "bytes": 35,
+        "sha256": "b7f678e0d35f1ddf786182df8c4377f56f6d28db0f00de3c9c2e4e0ae6bff022"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 2,
+        "language": "bash",
+        "bytes": 41,
+        "sha256": "384e4d0f440d7d055d28ed723cdd6f26a7dabffaf61cad9e231629c17aee3e3b"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 3,
+        "language": "json",
+        "bytes": 103,
+        "sha256": "414475079766e2c165b1c5a98600ffe644821aa932a3914ae6f64424923bb7ba"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 4,
+        "language": "yaml",
+        "bytes": 70,
+        "sha256": "66a686f5ebc22bc16cc3e353db7c5b0c30a84cffe67d71a1b78b6851da03c821"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 5,
+        "language": "ts",
+        "bytes": 162,
+        "sha256": "53bcc2c2227690fc551499ac48d1295756722cd9538e924940ed1bf2423abf73"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 6,
+        "language": "tsx",
+        "bytes": 93,
+        "sha256": "644f0fa8b1de0ac39742924f05d410f22d03c6d010bbee5209504765a628005d"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 7,
+        "language": "tsx",
+        "bytes": 298,
+        "sha256": "fef4575277a9ccdd655bc5b91ed74faecf4ce1911d26b87451870033dd0f136f"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 8,
+        "language": "json",
+        "bytes": 68,
+        "sha256": "34a30f6b753b5f62ba32fe5c64c10a96431adaf219a20a1a573b77ae922a0950"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 9,
+        "language": "tsx",
+        "bytes": 285,
+        "sha256": "f50c66f2c788007aa67b196d0537c5b8889394b8c62dc8cf6ed43c4ddac980e0"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 10,
+        "language": "markdown",
+        "bytes": 87,
+        "sha256": "d4f2c849ba086c2080842ba90b19f8b0dece3415153b897b7ee506765660e2b1"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 11,
+        "language": "bash",
+        "bytes": 9,
+        "sha256": "6c071e869f5c61a2c0f4a0afcff9a6084d44243fc1a42a13dfc0ee8ea6c83f38"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 12,
+        "language": "bash",
+        "bytes": 11,
+        "sha256": "3b3a54210df47d70926f37d9b2d4f9bdddb18ae0798257c944cd22f9ddd41e59"
+      },
+      {
+        "guide": "docs/app/content/guide/getting-started.mdx",
+        "index": 13,
+        "language": "bash",
+        "bytes": 13,
+        "sha256": "5986454ad43de4130c2e06e7c648f844f6573e7200456b99ba1bf167e59661cd"
+      },
+      {
+        "guide": "docs/app/content/guide/internationalization.mdx",
+        "index": 0,
+        "language": "ts",
+        "bytes": 322,
+        "sha256": "765336b1cd85502de3bcba9c9b993f4677d61a65f2884f5f2425846e36cf0307"
+      },
+      {
+        "guide": "docs/app/content/guide/internationalization.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 344,
+        "sha256": "74ff853db08b95aad09401a3c81a448c2ac42065a39f541a821b084caaf4a993"
+      },
+      {
+        "guide": "docs/app/content/guide/internationalization.mdx",
+        "index": 2,
+        "language": "bash",
+        "bytes": 72,
+        "sha256": "0469f10fdd8750ff03336b81d5bcf5b2ec8abea85f2a75abf007ef4154750015"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 0,
+        "language": "mdx",
+        "meta": "title=\"app/routes/guide/install.mdx\"",
+        "bytes": 125,
+        "sha256": "d8a6855a3a0ac6b8656db9fe2a9392df9f7262a30c19c219cb2007b2058e22ae"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 1,
+        "language": "yaml",
+        "bytes": 32,
+        "sha256": "385644436a5f151b594a8034f838b186829f402d342dd8fdbab6ea921efe45bb"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 2,
+        "language": "mdx",
+        "meta": "title=\"app/routes/guide/releases/index.mdx\"",
+        "bytes": 62,
+        "sha256": "29a68f2cb8171c30908855bbc9d91ec9973d54342d7be466354a7699672cac9f"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 3,
+        "language": "ts",
+        "meta": "title=\"ardo.config.ts\"",
+        "bytes": 165,
+        "sha256": "e255df29ac92ecbf05a394f3cff32f48e41d6472a9ff84612660c4401f8c796f"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 4,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 585,
+        "sha256": "0dcd160eb6ada4728c30107150af1c61d64bf385f8050f00fc6a5fcce01929d3"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 5,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 192,
+        "sha256": "b169e8c7f74ae5c68f97f40786042e2056fdec79e7261c80710b9442796e840b"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 6,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 223,
+        "sha256": "6b1d7a4459feb4afba1b4ed105811567ed64bc59d09517ffb2ff62afce3bb96f"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 7,
+        "language": "tsx",
+        "bytes": 93,
+        "sha256": "644f0fa8b1de0ac39742924f05d410f22d03c6d010bbee5209504765a628005d"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 8,
+        "language": "tsx",
+        "bytes": 573,
+        "sha256": "5fbd736a40c1721480825ce3c33ed4243c2d54ea54e1778a6324c023ab751923"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 9,
+        "language": "tsx",
+        "bytes": 500,
+        "sha256": "6d3422b44c6909ddb70b7f4967e77849650a10087470b65f340f1eb42a0f9338"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 10,
+        "language": "tsx",
+        "bytes": 526,
+        "sha256": "f4abf560822c8844a88e8eade4c22edff439db8f3f6b512170750a9b452980c7"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 11,
+        "language": "tsx",
+        "bytes": 315,
+        "sha256": "c3a84ac9b30010be67319c5eb89207167d3cd1574a12462be54e4bf82f87c43e"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 12,
+        "language": "tsx",
+        "bytes": 163,
+        "sha256": "6063d74072491eb7520e529c81975d09c0b774c80664e0285c3fed51cef93a90"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 13,
+        "language": "tsx",
+        "bytes": 344,
+        "sha256": "f429f4780c9b2f3cf9536085f3ac3c4ba9760bba151fd62c9b0bab31030296e0"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 14,
+        "language": "tsx",
+        "meta": "title=\"app/routes/landing.tsx\"",
+        "bytes": 56,
+        "sha256": "c93cd6bd570188ffb3fa0942a861515c3725cbc08aeb68af7491ffb26dbbcdb1"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 15,
+        "language": "tsx",
+        "meta": "title=\"app/components/MyHeader.tsx\"",
+        "bytes": 253,
+        "sha256": "4cb737f0e7b08833f3cc78cfa286444bfbeece14656039bbf6ee27e340f21c71"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 16,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 165,
+        "sha256": "ed07fd487b646309f6d3e64b6db6993dc49fdd53f5dd87db73c43b6c11b0c806"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 17,
+        "language": "tsx",
+        "bytes": 850,
+        "sha256": "4fdbcae07fa946d008e9b8cae3c0d3796d5a9ac46cc07e5f870a1cfd78c60877"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 18,
+        "language": "tsx",
+        "bytes": 577,
+        "sha256": "bdd424219fc0db0b5f37d55fc2ee100615ffc9aee9d3f6de110f3c599dac55e7"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 19,
+        "language": "tsx",
+        "bytes": 488,
+        "sha256": "1fb95c4ddbe84c6779dc06e0f8ee3e93d087762a076d63d3a9f5c7eb27a7242c"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 20,
+        "language": "tsx",
+        "bytes": 628,
+        "sha256": "987bdb23287e2c67c03a142712994002c4acb7747923717f94516fc525d0bed5"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 21,
+        "language": "tsx",
+        "bytes": 225,
+        "sha256": "78318d15ec644ba866fab0edbda0c256f01b3bf6f29cd1778fe4d1882324a22b"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 22,
+        "language": "tsx",
+        "bytes": 442,
+        "sha256": "4ad52ea3170d01a30d7f0b9b37a8e1135a4cf3bdeb39508c401ad443f1edb1a8"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 23,
+        "language": "tsx",
+        "bytes": 92,
+        "sha256": "ddc08c528489b96c1314eb6096267f96422e92568e8f8eecf9a426f9f558ea25"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 24,
+        "language": "tsx",
+        "bytes": 139,
+        "sha256": "4e85675fd9fa5697802a88d3adf8dd1857cc1d601f2f3e24e4154c3a9778d385"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 25,
+        "language": "tsx",
+        "bytes": 178,
+        "sha256": "afae0c8f2f88d87f936cb37d2ab837e3cc963e0fd1215207f4d2210556b475d4"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 26,
+        "language": "tsx",
+        "bytes": 141,
+        "sha256": "77c96cc418410945fa9bcf0f86b9831e988371ab7cd5855035c1477260a4f227"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 27,
+        "language": "css",
+        "bytes": 230,
+        "sha256": "cf4e746ee344a066d6667e7896aae5dedc10736fd297f250fd38dee2d9cca947"
+      },
+      {
+        "guide": "docs/app/content/guide/layout-and-navigation.mdx",
+        "index": 28,
+        "language": "mdx",
+        "bytes": 40,
+        "sha256": "a3a88f2da1b5488d401d72026560c3b5fdfae0e8c2c6e91bc3902899f3d4763d"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 0,
+        "language": "markdown",
+        "bytes": 57,
+        "sha256": "ed05f039b4b6667a67c6777ac910e665a7763a2cd7e569168415f3667bd4fa4a"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 1,
+        "language": "markdown",
+        "bytes": 82,
+        "sha256": "f9f8ccbb49eab47c68a9a1c8db87c07c08884a97ecfd2531f74d8f534d2f10cc"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 2,
+        "language": "markdown",
+        "bytes": 91,
+        "sha256": "80c9a6becfb5dcf6401c0920fcd83cc1db97a6d4176a7f94781e5b3ccf873ca8"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 3,
+        "language": "markdown",
+        "bytes": 65,
+        "sha256": "389b7e37e076df6d2e0a60f26e09d0208189ecf5dfaa1f051808404653316fb3"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 4,
+        "language": "typescript",
+        "bytes": 139,
+        "sha256": "59247d5d025f6d3a8ff37a721cb0246821a98918a830558ec2408d2daf2e03c7"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 5,
+        "language": "typescript",
+        "meta": "{2,4-5}",
+        "bytes": 162,
+        "sha256": "64e81b608529cd95bd737656ebe32863b14a29f6a38bc38e486e22a85ff92b05"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 6,
+        "language": "typescript",
+        "meta": "showLineNumbers",
+        "bytes": 49,
+        "sha256": "b40e63e9977510724a2edb5025119883388362e781095e94dc4426654d036247"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 7,
+        "language": "typescript",
+        "meta": "title=\"ardo.config.ts\" {4-7}",
+        "bytes": 197,
+        "sha256": "c6e3bd424cc5ec4adc6e7b90fdb5657f110d4a4f1ac297e9000e4f65dd7679fa"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 8,
+        "language": "md",
+        "bytes": 96,
+        "sha256": "2225595083b53bbf54ccd5b6717f0ed88f520ec25b1fd4e6d26a6d738476f09b"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 9,
+        "language": "js",
+        "bytes": 52,
+        "sha256": "3143274b4f30c95794f7711e8dc7b7b5f545460ea0cfaa187ffab95746d44e1b"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 10,
+        "language": "ts",
+        "bytes": 68,
+        "sha256": "9396687683978478ad237d9b72579540495a0c955bd071c443a48d2834e6d5c5"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 11,
+        "language": "python",
+        "bytes": 46,
+        "sha256": "a55c14346b5c0e11da873793db175efd28d4840a330a5edba18d03d7d7310626"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 12,
+        "language": "md",
+        "bytes": 283,
+        "sha256": "6253ce9b047456d98650c3c71ccf3d99b3f8d2de2cc89a5c66d858b7cb55fc20"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 13,
+        "language": "mdx",
+        "meta": "title=\"app/routes/guide/my-page.mdx\"",
+        "bytes": 100,
+        "sha256": "31fd26753d1f60018a048b7787813149dc96c365c3858676c13e2f1e2efdccb7"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 14,
+        "language": "mdx",
+        "bytes": 151,
+        "sha256": "48c2ec7bfc25d126fe9ca3abd985e7e74698328b142c3923d455f2a07afb6d82"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 15,
+        "language": "mdx",
+        "bytes": 229,
+        "sha256": "2ffe36122e3890086a7b7caaa0ee0a70fa416e13000582e5dda3c2009a0d0b39"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 16,
+        "language": "tsx",
+        "bytes": 198,
+        "sha256": "13de8fc0698b9172d40c0b3a18819107461260043e8fad5697e46f79acfb58b5"
+      },
+      {
+        "guide": "docs/app/content/guide/markdown.mdx",
+        "index": 17,
+        "language": "yaml",
+        "bytes": 73,
+        "sha256": "e3fdde2921e58bffdf2ddb0abd5d440bbaf8b6808c2ea2cdfe66e0f20a5bccf9"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/migrate-from-typedoc.mdx",
+        "index": 0,
+        "language": "bash",
+        "bytes": 64,
+        "sha256": "4fd0a1fdb7c769e1b3275d68e2d727c97b750b9a8dd0a9dee2b19fc03536bfec"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/migrate-from-typedoc.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 227,
+        "sha256": "be3cbd6f4641e4c3248f6ae62c3563b33dc368199da17063b8bebc28ad9255f1"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/migrate-from-typedoc.mdx",
+        "index": 2,
+        "language": "json",
+        "bytes": 81,
+        "sha256": "0651bf53d7f21255bd624d05a2434c1c592ea70d1374f34886013a422a68f569"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/migrate-from-typedoc.mdx",
+        "index": 3,
+        "language": "ts",
+        "bytes": 164,
+        "sha256": "665c9311590c4777aece05254e3186bb3a8a9c4c611582f8357e303cc4d501ea"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v4.mdx",
+        "index": 0,
+        "language": "ts",
+        "bytes": 394,
+        "sha256": "83ed51cdcba84bd013833e81de08c7e73c5b21198407a7bcd79637784653c956"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v4.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 237,
+        "sha256": "d82a1c9e1b440c0b3da0805a2e4e45464ad9280cd2342404358eb01dbafd9473"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v4.mdx",
+        "index": 2,
+        "language": "text",
+        "bytes": 50,
+        "sha256": "7d4537d508bbcc11655a756abf1e24ba7d96fa85cc3b8a04584280f227d45a46"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v5.mdx",
+        "index": 0,
+        "language": "sh",
+        "bytes": 75,
+        "sha256": "eabbcecf9a8ab88070e33366bd3495086aecc2c61ce695303f2f4de689620ce6"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v5.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 229,
+        "sha256": "5cc76eaef78e9f2bf111e603b33755b51df6718a8f9ba9bece676ce39a2fa6ee"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 0,
+        "language": "tsx",
+        "bytes": 595,
+        "sha256": "6ebf13419f839cd9f0b090f581a43f5dc8ffb9cae9d6458da7d24e9e89be827d"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 1,
+        "language": "tsx",
+        "bytes": 93,
+        "sha256": "644f0fa8b1de0ac39742924f05d410f22d03c6d010bbee5209504765a628005d"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 2,
+        "language": "ts",
+        "bytes": 336,
+        "sha256": "d017c7dcf5e94968ee9912e42be637cd3a8f4439d01e4af11c5418e27e272e6c"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 3,
+        "language": "tsx",
+        "bytes": 407,
+        "sha256": "6bf50a257ffd72045ea3d5f8da6fd7f5b2347a78ed921c5cc0cb2788b3a74716"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 4,
+        "language": "json",
+        "bytes": 68,
+        "sha256": "34a30f6b753b5f62ba32fe5c64c10a96431adaf219a20a1a573b77ae922a0950"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 5,
+        "language": "tsx",
+        "bytes": 235,
+        "sha256": "31af213e42813f66e76ddae8f6fe623378b7fc5b998df4b6d88e99639e2284fa"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 6,
+        "language": "tsx",
+        "bytes": 149,
+        "sha256": "8db518b29c704bb2444b31b6d3ad02908ff52bba3f6e0413c27e1e2f10b98d14"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 7,
+        "language": "ts",
+        "bytes": 610,
+        "sha256": "b4f842429561219cd0a31e7349eee5c96e7964d59e98f8e8d0135299391db808"
+      },
+      {
+        "guide": "docs/app/content/guide/releases/upgrade-to-v6.mdx",
+        "index": 8,
+        "language": "tsx",
+        "bytes": 162,
+        "sha256": "27d2ada0189b53a6e4b1fc6d2cafa5be20d6c0545a0c98cbc1de2cf70f2f02a9"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 0,
+        "language": "tsx",
+        "bytes": 225,
+        "sha256": "f3004b41ef5425e32a46db50bcd6b81753abfaeeb6fb82360c802a8090ca6b11"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 1,
+        "language": "tsx",
+        "bytes": 63,
+        "sha256": "d966630bbfe90753496eb8049af52322cdf109239a7bb536bb9d6831ccde901e"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 2,
+        "language": "tsx",
+        "bytes": 141,
+        "sha256": "dd3cfb2a98d34e24221541c4715f87e7979dddb60055e1cc7c74034226588760"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 3,
+        "language": "tsx",
+        "bytes": 61,
+        "sha256": "5a99650245ad41080b0e481100859b70513c0967488d59c8b7dfed9eb9a15ac4"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 4,
+        "language": "bash",
+        "bytes": 36,
+        "sha256": "ec9452e9fa953233062a5d9c4482b7247aa9ba48b71c1afc7f76c4ec67c5b807"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 5,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 200,
+        "sha256": "c28fc0a405ed3fc0d52151b57f6cacd25ac0bd0368e00ab4947939f96aebaadb"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 6,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 523,
+        "sha256": "74976d0c8581c9b7690407bc09afc451fb0e586eac177e2392728ed8a735a98c"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 7,
+        "language": "tsx",
+        "bytes": 338,
+        "sha256": "c22a11e2300c36beb4b00153573c9306c6880b7e78ed18ea0404f55e5dfcfc48"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 8,
+        "language": "tsx",
+        "meta": "title=\"app/root.tsx\"",
+        "bytes": 442,
+        "sha256": "5d78c34ccc7608bf15f68c67225756341c6d49b18eb2d77c8eeb565684c4d215"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 9,
+        "language": "css",
+        "bytes": 114,
+        "sha256": "c8b47562b1b25484c973f34b0acbaf1e10313464143afeb673edc2e8eab45bdc"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 10,
+        "language": "css",
+        "bytes": 1035,
+        "sha256": "213abbef2da64429a0e7644a4cc63cb4b892dd1efd5ae533af7cfa360338227e"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 11,
+        "language": "bash",
+        "bytes": 30,
+        "sha256": "942e2c394ad33a23ec547a4faa378c889c9bd6c95fdb56fb694ae3d5d99c80fb"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 12,
+        "language": "ts",
+        "bytes": 420,
+        "sha256": "8300ae9ff958a95248ac5f120a68a6aec7466f2f68c2d6b744773c2f7993f167"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 13,
+        "language": "css",
+        "meta": "title=\"app/app.css\"",
+        "bytes": 270,
+        "sha256": "81a97f8d10645a542bfc8c7fb39d2ed53c1a2cd18cdab4f7b08c8e9f62585b64"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 14,
+        "language": "html",
+        "bytes": 434,
+        "sha256": "632673c97e485471da7de61ca0ceed4b45c1af11abe9e8f402f41f84f3269b01"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 15,
+        "language": "tsx",
+        "meta": "title=\"app/routes/home.tsx\"",
+        "bytes": 1030,
+        "sha256": "ebf7a23cb348bc7685a02c1fe87c888a6c2c647b1217c79f8a2e0d7e223a428f"
+      },
+      {
+        "guide": "docs/app/content/guide/theming.mdx",
+        "index": 16,
+        "language": "css",
+        "meta": "title=\"app/app.css\"",
+        "bytes": 198,
+        "sha256": "f65c70ff65f0184fd424a72ae9db37bf35569333d182911d7a83a4da82b6b8c6"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 0,
+        "language": "bash",
+        "bytes": 16,
+        "sha256": "b58d1bb70b8bafcf0b98ceca3e8ee836a64bb20d5a5615bf968b872a44b6431c"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 1,
+        "language": "bash",
+        "bytes": 15,
+        "sha256": "df60f858ea64ef948bff7d5f52b9662b0a32401168b4db55480aa9ead692ce2b"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 2,
+        "language": "typescript",
+        "bytes": 114,
+        "sha256": "8cf2a6116934817bde570b96741047031e2cf27dc4dd95b29fe46d2b2e1f09a7"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 3,
+        "language": "bash",
+        "bytes": 50,
+        "sha256": "ef333b7395ca932f673a9ab6a6f87a93341be681cc99e5bfd5079fd50a46680e"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 4,
+        "language": "markdown",
+        "bytes": 36,
+        "sha256": "c3dcf88322c90bb8da4ff13d5bccbfafbe51bffe48e074f228fefcb397056f32"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 5,
+        "language": "tsx",
+        "bytes": 108,
+        "sha256": "e0c34c96afcee129d47d8b54e5eae40d51079e009cbaa8c90e7888078d9bd57f"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 6,
+        "language": "typescript",
+        "bytes": 102,
+        "sha256": "3cd3a0d228c451684007a364a974c5a1e06648fae78e5f5c5968659e7a0fe913"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 7,
+        "language": "markdown",
+        "bytes": 37,
+        "sha256": "816088958b931d75d46c144f92e945d1a23b70e2fd42229fb7cf9c9e4a9ba0da"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 8,
+        "language": "markdown",
+        "bytes": 36,
+        "sha256": "0ea66ab7116f6aced0a43ceb4976cf6a5d65686e2474a3d5796a1fa085cb30ee"
+      },
+      {
+        "guide": "docs/app/content/guide/troubleshooting.mdx",
+        "index": 9,
+        "language": "typescript",
+        "bytes": 106,
+        "sha256": "57327c89a5f1e8c98f6b3f69b79f201de5217c38c02c4e30f179feacf1c7fbd3"
+      },
+      {
+        "guide": "docs/app/content/guide/what-is-ardo.mdx",
+        "index": 0,
+        "language": "markdown",
+        "bytes": 108,
+        "sha256": "be728ef6e636e1e4719beae1ba3811ee219603b060d68be188d81e6725c88a4d"
+      },
+      {
+        "guide": "docs/app/content/guide/what-is-ardo.mdx",
+        "index": 1,
+        "language": "ts",
+        "bytes": 211,
+        "sha256": "17a9ac03ef2a47b7bf1f6a9c454af71577d510f0a40af5e081064e7e5f9f134c"
+      }
+    ],
+    "apiConfig": {
+      "entryPoints": {
+        "ardo/ui": "packages/ardo/src/ui/index.ts",
+        "ardo/runtime": "packages/ardo/src/runtime/index.ts",
+        "ardo/config": "packages/ardo/src/config/index.ts"
+      },
+      "tsconfig": "packages/ardo/tsconfig.api.json"
+    },
+    "apiFiles": [
+      {
+        "path": "packages/ardo/src/api/callable-aliases.test.ts",
+        "sha256": "59fd18f19d9c5028e33879dfad74589287ad238e4bf2929b3734e3f346eee291"
+      },
+      {
+        "path": "packages/ardo/src/api/callables.ts",
+        "sha256": "9aee3e479725d8b49a0b424c195a0f0f41ac38a764f8b08af0837282fcceae32"
+      },
+      {
+        "path": "packages/ardo/src/api/comments.ts",
+        "sha256": "19eeabe5282705e3b8c12c712ebf79a85a27776261bd9c6df4ae6a3b59413af5"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-emit.test.ts",
+        "sha256": "96c288fa2ceab3ef2ff6deb48e26a05e04103b1518a2c32f725793a4234e61bc"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-index.ts",
+        "sha256": "acfde5d9c88146d85c8135be2445043f9a921fad5c74c40b0558c7b6e37ef8ef"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-libraries.test.ts",
+        "sha256": "ede45eff387c7c01045dab44dfb3c936b92044f04e716d70859b6f68a9817917"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-libraries.ts",
+        "sha256": "8574ca7eb2d3092c546db6d4f2ee7240fb215f6febeac4226983a03371358023"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-namespaces.test.ts",
+        "sha256": "3f88c0874c9a472140c81ed6f74c4db04b3c09e424f90fa0bfc15ac7efe2c265"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-namespaces.ts",
+        "sha256": "778b4139a7e7f6b634b3f536054fea67e086c845553b3859c1328659c7c1e184"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-project.ts",
+        "sha256": "e125c5893aa3227b842faf6f4ffe9417085d50d96613b88461ca6cf7e480cb1f"
+      },
+      {
+        "path": "packages/ardo/src/api/declaration-scopes.ts",
+        "sha256": "23b4ff383b8b2f98d2babd592dfc8e4c034fbc99ed356bda29f709f2ca069afa"
+      },
+      {
+        "path": "packages/ardo/src/api/entry-points.ts",
+        "sha256": "f772a68112c385aeb188da50e2b243df7c498b6e103c9bcabbadde17cb6cb2ba"
+      },
+      {
+        "path": "packages/ardo/src/api/expanded-members.test.ts",
+        "sha256": "4ba447ce50bffe59596e219613e83e061f573eb18d3a38aa725140352d230ddc"
+      },
+      {
+        "path": "packages/ardo/src/api/extractor.ts",
+        "sha256": "24f9ca3c39e6d30c96a3297a8b20b6c30c2ed3485430ca406789d68be9127b55"
+      },
+      {
+        "path": "packages/ardo/src/api/generator.test.ts",
+        "sha256": "036c0395a99ecbd7fe34b9f8ec2b8bc6f25062f6a3aab57ea84179402faac202"
+      },
+      {
+        "path": "packages/ardo/src/api/generator.ts",
+        "sha256": "42013229e2eda14edc56ed3836a0a9ac2c5489779bfe41b04c07d62082dea59c"
+      },
+      {
+        "path": "packages/ardo/src/api/index.ts",
+        "sha256": "2e288c963dbf7ab7e98fe424b9505c1fe0ea340f8c056d2e64af48fade3a9aca"
+      },
+      {
+        "path": "packages/ardo/src/api/members.ts",
+        "sha256": "72e8d8524b7135ab25e1d07c372ca74e4586a6d18a6f9498885447539579f1c3"
+      },
+      {
+        "path": "packages/ardo/src/api/native-compiler.ts",
+        "sha256": "ed655d428df5e51d47755c6101c09ccff44f87e41c4de84167ebfada01632ac3"
+      },
+      {
+        "path": "packages/ardo/src/api/native-project.test.ts",
+        "sha256": "19f670df2ca43ff467dac3181951639f583179f0609a1ab0bfb19f930bd61ab0"
+      },
+      {
+        "path": "packages/ardo/src/api/native-project.ts",
+        "sha256": "f679dd996110167f992378a8ba616c65bc675ac68a3ef7355f2c7a7b47f3f9fa"
+      },
+      {
+        "path": "packages/ardo/src/api/native-react-types.test.ts",
+        "sha256": "d56b84d7eea56ef013473081e4e8b8b5031e8d47621bec18fef7cd5dd26190be"
+      },
+      {
+        "path": "packages/ardo/src/api/native-snapshot.ts",
+        "sha256": "3c663bec6919b1eac038242701583557d988268bbc96dd4239b11e0ac3a5aef5"
+      },
+      {
+        "path": "packages/ardo/src/api/package-bases.test.ts",
+        "sha256": "c7896377ebfd77dca977859bed3bfa90b1fb486834b44d37845bc7ce1a14830e"
+      },
+      {
+        "path": "packages/ardo/src/api/package-declarations.ts",
+        "sha256": "bd1645372d9334efc73feb78cf5fb8a0ca77526a8169b1a1dbc714202588ff1a"
+      },
+      {
+        "path": "packages/ardo/src/api/properties.ts",
+        "sha256": "5533278b44ff0b2bd247d9dbdc22c7e45e269a0d04aa3ac3d7b8dd47a171a32a"
+      },
+      {
+        "path": "packages/ardo/src/api/renderer-index.ts",
+        "sha256": "c0d7aaa31ac4f356778236a34742fe82184580b1c2fcf8e2a173d671e5e962a7"
+      },
+      {
+        "path": "packages/ardo/src/api/renderer-markdown.ts",
+        "sha256": "b43140276932f53a062c92b1413355a6047422af1c060d982bb3d3936d0df0d0"
+      },
+      {
+        "path": "packages/ardo/src/api/renderer.test.ts",
+        "sha256": "de100aba8b11c03337c65ad6204c91730b2ad01ad2397d01baedaeaf9fe0d0a7"
+      },
+      {
+        "path": "packages/ardo/src/api/renderer.ts",
+        "sha256": "3ea0d84f59b0e453fa2afa8bc05680c227c19caeda4fa7fedaa2f8d3dc67641d"
+      },
+      {
+        "path": "packages/ardo/src/api/signatures.ts",
+        "sha256": "4822a2580cb9675aa0a0ce04cf25133396b99182e9538e1a96c1ae106b7e3ffb"
+      },
+      {
+        "path": "packages/ardo/src/api/source.ts",
+        "sha256": "70591cc36ba77e0ac6d18410b3b514d35733f2aa8d26733b24f51aa3bb302ae4"
+      },
+      {
+        "path": "packages/ardo/src/api/type-bindings.ts",
+        "sha256": "4ebb745513395c3efe058d7215635c819d5094490ffdabd10c978327d26b30c5"
+      },
+      {
+        "path": "packages/ardo/src/api/type-comparison.test.ts",
+        "sha256": "bfdc82939c0bbc1cda9376923768f649bcd2753563f7712a85f45682938ccd92"
+      },
+      {
+        "path": "packages/ardo/src/api/types.ts",
+        "sha256": "b8804549eb038106bfb5ceb7dc43c4a98bd09a4dc2b50d5c3bf6341723713334"
+      },
+      {
+        "path": "packages/ardo/src/cli/cli.test.ts",
+        "sha256": "8c5e7f89ce96ab72cf113e87dbe801deaffad1aaed7ce36795dc56887aa52c1f"
+      },
+      {
+        "path": "packages/ardo/src/cli/index.ts",
+        "sha256": "5241917e536bbaf451c7c7e07439f567f9a5fe6491393ef343492551f3fd873e"
+      },
+      {
+        "path": "packages/ardo/src/cli/preview.test.ts",
+        "sha256": "8cff25db240271c3025d6f522be868082afeb8c23f4e44c6e878c92585d6b96f"
+      },
+      {
+        "path": "packages/ardo/src/cli/preview.ts",
+        "sha256": "cbd8913bd5979dbecb8b0b3f4fc5b8e8ddf6fcf1e4e187b869cfa340daf1989b"
+      },
+      {
+        "path": "packages/ardo/src/cli/project-config.test.ts",
+        "sha256": "27d9c27b412989fc913357f1d0b50bf817531478b0faaec6ed51b25cf1432900"
+      },
+      {
+        "path": "packages/ardo/src/cli/project-config.ts",
+        "sha256": "4858d0bbc1898ebc9448c8fede3e8cadcdbbcb2f009f793ab31f5840d12f7696"
+      },
+      {
+        "path": "packages/ardo/src/cli/run.ts",
+        "sha256": "8408bed129dad01c5442e07b5ae1d1318a4b5190655c47f482a62dcba3511540"
+      },
+      {
+        "path": "packages/ardo/src/cli/vite-command.ts",
+        "sha256": "ebc3e45660d1807a2e91010c8943d78d56a94b4a84e43bc17919eed2425707c6"
+      },
+      {
+        "path": "packages/ardo/src/config/i18n.ts",
+        "sha256": "a9fa1bf7ca1400a9f1e2e3a7729e2e7a467d9d1875c031f71e55352c6a8aec61"
+      },
+      {
+        "path": "packages/ardo/src/config/index.test.ts",
+        "sha256": "d49104dafbd5b24908432e11465004e24fc44f6212b76c3640463ae04ffc6aa9"
+      },
+      {
+        "path": "packages/ardo/src/config/index.ts",
+        "sha256": "37a9bf2d30ca752dd04ea0515ff4c0fd98524a885925103455c5c9087b7c8e00"
+      },
+      {
+        "path": "packages/ardo/src/config/markdown.ts",
+        "sha256": "dd4b9a13adcb17da3c59bfdc62e19e9aff7c268c9130b3c7edaabfa125a1b803"
+      },
+      {
+        "path": "packages/ardo/src/config/openapi.ts",
+        "sha256": "ee8d45bbd8bf51f1984ea979aad5eacadcd7d894d25c830fe6b9acf92b028c35"
+      },
+      {
+        "path": "packages/ardo/src/config/plugin-options.ts",
+        "sha256": "9314202df42aa4ba057da2db46a6b263f56a3c5b2f1503575c998fa1387b4622"
+      },
+      {
+        "path": "packages/ardo/src/config/project.test.ts",
+        "sha256": "adc5343e1d8f9794e69425a34cabe9c2f5d7bec5973b77980cf704bea4a6a4fb"
+      },
+      {
+        "path": "packages/ardo/src/config/project.ts",
+        "sha256": "5e30638248e0977c7deeafa4aec58fa7dbe7e71afb07ac993cf1291d386db113"
+      },
+      {
+        "path": "packages/ardo/src/config/seo.ts",
+        "sha256": "ee56b0e3832b215ab3efe13fe8fa94d25fd185a8eb39bb32ce54a0ccffc730ac"
+      },
+      {
+        "path": "packages/ardo/src/config/types.ts",
+        "sha256": "b31e003612da6e8c281dc301cb4df9f1d7854b9f215e8613cfafc672cb2c4184"
+      },
+      {
+        "path": "packages/ardo/src/config/versioning.ts",
+        "sha256": "465bfa9b0b86cc258e06e2f176f4cdf3c462c4f083c614559a5e1f28fb7a781a"
+      },
+      {
+        "path": "packages/ardo/src/entries/client.tsx",
+        "sha256": "e7da21efc770e78fffc10750e4dd6b502f76fae5af5f54e2c56c71ee0495ccaa"
+      },
+      {
+        "path": "packages/ardo/src/entries/server.tsx",
+        "sha256": "fd358c8afee5a771b45558deeece4215bcbdf7ef7aff12f3beec573887bc18c2"
+      },
+      {
+        "path": "packages/ardo/src/generated-docs.test.ts",
+        "sha256": "0162d4c0171bb494b405de2ba623abfdae0767693f7e81d3b9033b070e94d7a0"
+      },
+      {
+        "path": "packages/ardo/src/generated-docs.ts",
+        "sha256": "2a6fa301bd70528ea763feaf9e35d97112817d6506f4c2ff761dffa58a613208"
+      },
+      {
+        "path": "packages/ardo/src/icons/index.test.tsx",
+        "sha256": "7a23551540842b23944a772197e17c898706d5626302d9fa9c836565442cfd6b"
+      },
+      {
+        "path": "packages/ardo/src/icons/index.ts",
+        "sha256": "322825cb7657f39b74c3d73955179ed170b81470af7354f0f63ca2a049cc9c58"
+      },
+      {
+        "path": "packages/ardo/src/index.ts",
+        "sha256": "b7cc8c45609c27659dc160d6fcba4e71f46345ee9cfb66a53231b857c2c1c819"
+      },
+      {
+        "path": "packages/ardo/src/markdown/code-meta.ts",
+        "sha256": "4f742e188da4092141dbfffcc6c6e7555ce6116777de51e592fc6cd101be8644"
+      },
+      {
+        "path": "packages/ardo/src/markdown/ferriki-cache.test.ts",
+        "sha256": "84c29ffb7f53809164a9df5270eb3faf92a0a9fa42d3317a1137cd4e0b21b7e9"
+      },
+      {
+        "path": "packages/ardo/src/markdown/ferriki.test.ts",
+        "sha256": "a0b032973714525883b45275ff1ef957e7b2d9d15f61a3b2053b4c7ef1042e07"
+      },
+      {
+        "path": "packages/ardo/src/markdown/ferriki.ts",
+        "sha256": "b5f2f70352e650ffcff642c5bb7781379421070724e81b70f35f0bca5d66d062"
+      },
+      {
+        "path": "packages/ardo/src/markdown/index.ts",
+        "sha256": "99adf36120dbb781243cc13bacb332bfdf2c78afc2268ce3dbeea19036bfd10d"
+      },
+      {
+        "path": "packages/ardo/src/markdown/jsx-compiler.ts",
+        "sha256": "466988245ee833e67456d8be673000748e7dc33bf4d288d6f4ee8a65d3f14d78"
+      },
+      {
+        "path": "packages/ardo/src/markdown/native-metadata.test.ts",
+        "sha256": "3dd91f25b080c1b536bae46ebd3c7eb52a3d86af7314a67417ecb399aef0265a"
+      },
+      {
+        "path": "packages/ardo/src/markdown/native-metadata.ts",
+        "sha256": "256232fd6c943517a3cdb7daeb64d7b43b3fbafcb7b332d7b13c12ccb510a335"
+      },
+      {
+        "path": "packages/ardo/src/markdown/toc.test.ts",
+        "sha256": "d063d3f1a63df25fe620e0041e2b927580fac4a2e076f3ce7f7c07e2e73d3964"
+      },
+      {
+        "path": "packages/ardo/src/markdown/toc.ts",
+        "sha256": "2b4c6c3232544a91f6f30e9f5116b7372c23744c80ba73082087f36a78ae891f"
+      },
+      {
+        "path": "packages/ardo/src/mdx/components-context.ts",
+        "sha256": "676ee9fbdb42ef0e357a7c389fbeab03667cc818c4b03b5a624c0c3a769b8e5a"
+      },
+      {
+        "path": "packages/ardo/src/mdx/provider.tsx",
+        "sha256": "35ba47166344e3972f96f0e7d7ccc8566c5a3f2c7a0a298099610ced90832b53"
+      },
+      {
+        "path": "packages/ardo/src/react-dom/client.ts",
+        "sha256": "00ee12991a75d3172e51b0b4c0fe8929f77c0e5a30ac56f59c633af88163a044"
+      },
+      {
+        "path": "packages/ardo/src/react-dom/index.ts",
+        "sha256": "71771ddadc387986f4193ce3f6f541f87e52c4f407032e007687fafc4358e62b"
+      },
+      {
+        "path": "packages/ardo/src/react-dom/server.ts",
+        "sha256": "68f81f6edae8e95a27d3acd227c39e9b6d7693b247f11d64c682babe2e577192"
+      },
+      {
+        "path": "packages/ardo/src/react-dom/static.ts",
+        "sha256": "26d6b45b9254815f9fd2bd4de32ec2f20ae661c41d7e444ba2e38359d3750af8"
+      },
+      {
+        "path": "packages/ardo/src/react/index.ts",
+        "sha256": "d5bce15806867301c497e530ede67a5239236c1135bb181f281c464156e4d8da"
+      },
+      {
+        "path": "packages/ardo/src/react/jsx-dev-runtime.ts",
+        "sha256": "efec313b0117f56b2049bf933e7a6605ec2a815054f027a190bb234d373d1022"
+      },
+      {
+        "path": "packages/ardo/src/react/jsx-runtime.ts",
+        "sha256": "40c11d75ca18af400a1d519dca2d9edad559ae3722208660fdf36f159fa2026f"
+      },
+      {
+        "path": "packages/ardo/src/runtime/app.test.tsx",
+        "sha256": "afc0c0f99a783377ac6c9c84beb5f8d186b8e05db72e2bea2d1faf927a6ba55a"
+      },
+      {
+        "path": "packages/ardo/src/runtime/app.tsx",
+        "sha256": "7bff4804bba3ec4f58ca231bdb13a1fb45c9a0024114e611d8ca82592627a4ff"
+      },
+      {
+        "path": "packages/ardo/src/runtime/document-context.ts",
+        "sha256": "240e4dfb198c79df04794888d26874de4fc30d9a90d427e910c30dc6004632fe"
+      },
+      {
+        "path": "packages/ardo/src/runtime/document.tsx",
+        "sha256": "ee8c462b2567359a5679cb7324b9b6735fb6dcbe1988e362d2a8114fef7eb0af"
+      },
+      {
+        "path": "packages/ardo/src/runtime/hooks.tsx",
+        "sha256": "8de2692e480395ef23913efd677199f12ca516a6f5640b9baea0d24013d0fb32"
+      },
+      {
+        "path": "packages/ardo/src/runtime/index.ts",
+        "sha256": "f2cba57329d55676bef98e4c485cb53409b8a768c4ba082fcbaa2fae891a5d63"
+      },
+      {
+        "path": "packages/ardo/src/runtime/locale.ts",
+        "sha256": "aadd8ed32822430bc450e604e195c7f763c7cd1fb4717b824c37bdb4f3d0c44a"
+      },
+      {
+        "path": "packages/ardo/src/runtime/page-context.ts",
+        "sha256": "b0720b0c9f31005d62b7bb5ad341b51f2bb15c97ccb79e97267fb6cff2c34183"
+      },
+      {
+        "path": "packages/ardo/src/runtime/page.test.tsx",
+        "sha256": "ee43d31a12560a61936fc5f2451453b1969f753ee71a931ac1a267a114d25cf0"
+      },
+      {
+        "path": "packages/ardo/src/runtime/page.tsx",
+        "sha256": "8074ad8ddad51eb3c8adbdbea7fd29ebbaca86c1d17e5bac602332dffa1ebed9"
+      },
+      {
+        "path": "packages/ardo/src/runtime/route-paths.ts",
+        "sha256": "cc7e4dc726948988d048b5c82723887dfcd06fd6b0cb29c8623043162206c81a"
+      },
+      {
+        "path": "packages/ardo/src/runtime/routing.test.ts",
+        "sha256": "7f8dbd4e2dd4775f6ef02a085ac1c6441f015d777820e4350a3ea028fd2c97c4"
+      },
+      {
+        "path": "packages/ardo/src/runtime/routing.ts",
+        "sha256": "8b147f8e8d6f0b4f099e1d1c15daa5677a61e4b4b3b65ffe9a5362c2658eea0a"
+      },
+      {
+        "path": "packages/ardo/src/runtime/sidebar-utils.test.ts",
+        "sha256": "ef42f4d956c380b23b86dc5d9b88aaad49fd72bb40b87a29a377f29f57bdeb84"
+      },
+      {
+        "path": "packages/ardo/src/runtime/sidebar-utils.ts",
+        "sha256": "6db2346ce84af9c07c8573ddf0a0eb40817d8ee938002592cbccb1358dd1f624"
+      },
+      {
+        "path": "packages/ardo/src/runtime/sidebar.test.ts",
+        "sha256": "d99f464a5f1c3c4f12868ef0cbc3bb5ec734f1a0b649b25f86c56553166f1dbd"
+      },
+      {
+        "path": "packages/ardo/src/runtime/sidebar.ts",
+        "sha256": "cba337c456dfdb823db461a4f5c1fd2d82be5ab45d19ae01654d5c1fac0e0424"
+      },
+      {
+        "path": "packages/ardo/src/ui/ArdoRoot.chrome.test.tsx",
+        "sha256": "a9f30af5f0d66a9a8f441b16568c9652b4dc51885e0435f0c92d2d5f690a6409"
+      },
+      {
+        "path": "packages/ardo/src/ui/ArdoRoot.tsx",
+        "sha256": "e3e8716f50a73e4740f06482fe003621732171dfab364b5e48f76bfc35b54c3e"
+      },
+      {
+        "path": "packages/ardo/src/ui/BareContent.tsx",
+        "sha256": "f26fc4c2634a470f043299b55771bb6d90f1ab7dcedf8577663d2820008553ed"
+      },
+      {
+        "path": "packages/ardo/src/ui/Breadcrumb.css.ts",
+        "sha256": "49a79e70e933489972f85d06ecd0a641b82fd781216d9df9e823b60cfefc0813"
+      },
+      {
+        "path": "packages/ardo/src/ui/Breadcrumb.test.tsx",
+        "sha256": "9ef10fa744aa13c75c6607c06b3c7923c3e5865ce4df5258c5db6b4763e34660"
+      },
+      {
+        "path": "packages/ardo/src/ui/Breadcrumb.tsx",
+        "sha256": "ed7f585f139719e28c731a76fc2b59d9fa3f1a9eccf24da8fab33d554541d766"
+      },
+      {
+        "path": "packages/ardo/src/ui/Content.test.tsx",
+        "sha256": "6d99c889a3486ecaf384019371dea344bbc9f6ed83c41c4fc52b243311bd3bbf"
+      },
+      {
+        "path": "packages/ardo/src/ui/Content.tsx",
+        "sha256": "d985798a1ab16a901f9cefc8bab30d02c8e27161f23b1d3ba3cca05019d0bce3"
+      },
+      {
+        "path": "packages/ardo/src/ui/DocPage.css.ts",
+        "sha256": "40a467a4ebc5d39e390c6b824b10ec555c956d23e9aff72a31183d079269093d"
+      },
+      {
+        "path": "packages/ardo/src/ui/DocPage.test.tsx",
+        "sha256": "8353e6519b051e08172a1f76f4700f34e9034c79a0fbeaef4a54da0eb12a7ba2"
+      },
+      {
+        "path": "packages/ardo/src/ui/DocPage.tsx",
+        "sha256": "25aaca927dd2b61721e667ea5ad672bb9ea799441209c2ee774e3525d95ab697"
+      },
+      {
+        "path": "packages/ardo/src/ui/ErrorBoundary.css.ts",
+        "sha256": "94ecba79ff1a5847796f6651d74903c143e01902967faad9fcd16ebc7ddabaad"
+      },
+      {
+        "path": "packages/ardo/src/ui/ErrorBoundary.tsx",
+        "sha256": "92152001b4eb28010414b0bade2419874217ef20cbb02c3ce3e31eb17b6fc02c"
+      },
+      {
+        "path": "packages/ardo/src/ui/Footer.css.ts",
+        "sha256": "ada2daa473795c6aa8ae7790c5f5e76d9a2ad450f582ff84460630a3a1e518e0"
+      },
+      {
+        "path": "packages/ardo/src/ui/Footer.test.tsx",
+        "sha256": "35f56dcfff844337d7fa574c31cc782c069b05fba23c8ad3728fdf3531e0ae5e"
+      },
+      {
+        "path": "packages/ardo/src/ui/Footer.tsx",
+        "sha256": "cd074ef68d875f6cb25c901843a18fdaba2a882416feaeae28b48ae503cad20d"
+      },
+      {
+        "path": "packages/ardo/src/ui/GeneratedSidebar.tsx",
+        "sha256": "d00130ef5189fbfe73e2e01fb782667486ec83ecb6cf49dab1232cab62cd849e"
+      },
+      {
+        "path": "packages/ardo/src/ui/Header.css.ts",
+        "sha256": "c9dc263a433723d7f08770ced384c8a9b40800917f7f399dbea143f3cef4a024"
+      },
+      {
+        "path": "packages/ardo/src/ui/Header.test.tsx",
+        "sha256": "897d2f10581c7418f5f714587db4fa1610f7dffcb2bcab94bf180aa24272236a"
+      },
+      {
+        "path": "packages/ardo/src/ui/Header.tsx",
+        "sha256": "76851abeeb6e1b74ff609a7a0e94e140d1a3aa7b63f6e8fb7ab906412d29c8b6"
+      },
+      {
+        "path": "packages/ardo/src/ui/HeaderLogo.test.tsx",
+        "sha256": "4accb9c1504a11b1165a3ce220d945bcf53590085470b64406a81c907b349552"
+      },
+      {
+        "path": "packages/ardo/src/ui/HeaderLogo.tsx",
+        "sha256": "09b22f42e5cb6871dbeb3fff3b40037be2abd29d0f06d58d0f20b87ee75ef2bd"
+      },
+      {
+        "path": "packages/ardo/src/ui/HomePage.test.tsx",
+        "sha256": "9328c98708e4a45a37ec392d2897496efdde3444f56ee9f40de3de18d7381b02"
+      },
+      {
+        "path": "packages/ardo/src/ui/HomePage.tsx",
+        "sha256": "f80bcdd5d0b12f4118e4a6d2df09d1280c6da3aeec3415208052dacd33ab08bc"
+      },
+      {
+        "path": "packages/ardo/src/ui/Layout.css.ts",
+        "sha256": "698e601a6a980719fa207b67142e303ea2fcec7f49de1108fb877fe4b874dce5"
+      },
+      {
+        "path": "packages/ardo/src/ui/Layout.tsx",
+        "sha256": "b278c5bbb07f4f653ea5c8c21ee4405cede32984ea532c23082496b9585dbef7"
+      },
+      {
+        "path": "packages/ardo/src/ui/MobileNavigation.tsx",
+        "sha256": "e538f8b74f24d44e8c6c253a0677ac7d562f52ce44f02e86d725aa1b5d693820"
+      },
+      {
+        "path": "packages/ardo/src/ui/MobileSlidePanel.tsx",
+        "sha256": "46f98db25aeded7d51ee28ccf3b8a5a8a543e07154a1026fead10cfde5c578ec"
+      },
+      {
+        "path": "packages/ardo/src/ui/Nav.css.ts",
+        "sha256": "c4179d51830db94688fea6fe439c86deb88dfde2abe7034c27bc9fab5e1d6c7f"
+      },
+      {
+        "path": "packages/ardo/src/ui/Nav.tsx",
+        "sha256": "7ab1fb198c1ff527d86ef08dadad9b6f650e67611b9df648a36d59e1e6500d19"
+      },
+      {
+        "path": "packages/ardo/src/ui/OwlMark.test.tsx",
+        "sha256": "46ad8686a952711d532f48dda78d19ed03c9578c28e65e611589d84af4df3853"
+      },
+      {
+        "path": "packages/ardo/src/ui/OwlMark.tsx",
+        "sha256": "3cb1260f89ee663f57d02d3860997a35190a48ff7bd52ffc98503bcecb9345cf"
+      },
+      {
+        "path": "packages/ardo/src/ui/Sidebar.css.ts",
+        "sha256": "e71865cb551bbbd160a99d4491d85012a8f5bafb3a8ff0b93fe7337b8dd2e1b7"
+      },
+      {
+        "path": "packages/ardo/src/ui/Sidebar.test.tsx",
+        "sha256": "d94ceff33f55299407ed04399b91a6112fb8ce639846e10b75458673703ec25c"
+      },
+      {
+        "path": "packages/ardo/src/ui/Sidebar.tsx",
+        "sha256": "6fa5f5af2d92d2864b200166791d596926ac0e13f3fc9df37f7c2d3736bdac66"
+      },
+      {
+        "path": "packages/ardo/src/ui/SidebarTabs.css.ts",
+        "sha256": "f760d5f2f20b4bc7efc70273ce851fbcc70d204be8417138812b550b35f3d739"
+      },
+      {
+        "path": "packages/ardo/src/ui/SidebarTabs.tsx",
+        "sha256": "d937046b03be6d5491a312596692c734650aeb66d7b1a66c4b943368ddc2833b"
+      },
+      {
+        "path": "packages/ardo/src/ui/Theme.tsx",
+        "sha256": "789e600bf9ff26cbb46d482ffec5a2c36050a312e4200871c35368a7f5c954fd"
+      },
+      {
+        "path": "packages/ardo/src/ui/Toc.css.ts",
+        "sha256": "48f371244d08c0a507dbb942b1a8beeed1c0d7ebe9684ed8eb83c4633f479b3b"
+      },
+      {
+        "path": "packages/ardo/src/ui/Toc.navigation.test.tsx",
+        "sha256": "73496b097ce23f50e11113b03b9e44e9daddc5437fed57df7da998aad201249f"
+      },
+      {
+        "path": "packages/ardo/src/ui/Toc.observer.test.tsx",
+        "sha256": "e1a4e4d22826566adbff646a5f2beba80858765b1744251c58a02e9cf9c56ed9"
+      },
+      {
+        "path": "packages/ardo/src/ui/Toc.test.ts",
+        "sha256": "0977c03f99ea1d60ee5be541596871a48b7706f04c75a44ca2a56866588d0519"
+      },
+      {
+        "path": "packages/ardo/src/ui/Toc.tsx",
+        "sha256": "53c9f9043ca5303af32fde103599d08fffd9799db04544a998d40c754bcca958"
+      },
+      {
+        "path": "packages/ardo/src/ui/brand-icons.tsx",
+        "sha256": "534d3eddfda4b39b0e98960942c133068febcec531a139aa135d18c558f4bacd"
+      },
+      {
+        "path": "packages/ardo/src/ui/chrome-icons.tsx",
+        "sha256": "43cc26ba7aacbf939f504726e07a16debd0a811d9509899e4162b09bb3eea955"
+      },
+      {
+        "path": "packages/ardo/src/ui/classnames.ts",
+        "sha256": "6af7a0aedb434a5e3a6d55a7ff81190fc8ae69b2340b092d93ca132bc60eeba5"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Accordion.css.ts",
+        "sha256": "8751c33ea48a9a8fd415355c306ae40988d95781484a5322a598af8a1bc68096"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Accordion.interaction.test.tsx",
+        "sha256": "c628785f622706e7643019b4e0a3e825b746d148629f14c6b611fe15225282ab"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Accordion.test.tsx",
+        "sha256": "b12185134f3b759a95c8a037829055765070521a774e43a348c214cbbf9363c7"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Accordion.tsx",
+        "sha256": "314f5ef29c27b858a11359e5974786093dc2087d776b50b4184adc57c0fe44aa"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Badge.css.ts",
+        "sha256": "e6ad7178f2baed49c0f6234e1d0b8015a1131cf5be17b2aaf9b0abe76ac6f544"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Badge.tsx",
+        "sha256": "a233eed72b3297a8f874b13784c4d99212cc22b94c791a9b64189d2133b91495"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Card.css.ts",
+        "sha256": "205c22e7a493ba1fb2eeb6b95befaaaee7e13442349625778c5cd9b9167654fb"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Card.test.tsx",
+        "sha256": "79ace1bbe4bb0a038561e469916426e1630830d4e6c9f8414422972de41c3943"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Card.tsx",
+        "sha256": "729793cc4315c6449c1f18e1b23171880f908f0465e9375e9c631b57733034ac"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CodeBlock.copy.test.tsx",
+        "sha256": "2c9d5bf378fe65b0bc829362911c15e6bc268618891d4a77cab2498aa84264f8"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CodeBlock.css.ts",
+        "sha256": "86d3bd2056bf7b9dd5f658bb0525620e34a0e19e8204cd10410150634ee96de2"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CodeBlock.test.tsx",
+        "sha256": "0da3802bec851e17a5aa1a5550eaf082501b346ceab1ae8667c425a23ac6df7d"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CodeBlock.tsx",
+        "sha256": "de2cca845a992e09ecd54bb4d6e874101f479379fa5059766e905accd2bc6783"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Container.css.ts",
+        "sha256": "b467bc45893c3b4e7f6725cdbbb48bc9976d8dac5b0f6ffca53bb0d30e8c055a"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Container.tsx",
+        "sha256": "7bd37611eb4513123b17659f8ecd8ed89efa5d3a416aacd5c40662be9230a9f9"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/ContentTable.tsx",
+        "sha256": "7f433b4edd52f1e221f6344050c7ba2cddf04ec4cc8590a7acd22e6f6ddc511b"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CopyButton.css.ts",
+        "sha256": "12408d43d7b2907316d5d5b140f1f18a78f335fd9d32dd3d7d0aab8684585a25"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/CopyButton.tsx",
+        "sha256": "c45baa72c485324cb60325e8d640fb20d8f9c2b6a5db8581e427ae362eb0c6f3"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Features.css.ts",
+        "sha256": "52b4c6aee219287598f56e442400f826a598ca59d8289c58eabb709441bcc4a5"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Features.tsx",
+        "sha256": "c829b75d6fa2141caa53acc8ead0cf30bab17e90ca1c486ad942b45e668bae50"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/HeaderSearch.css.ts",
+        "sha256": "1a5ebfb3b30f254af6cc3560130027dd18fd9a7facbbcb9fd0c710867e6825d7"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/HeaderSearch.tsx",
+        "sha256": "7adf71c9e6e5aee16e06f00ebc040437405e4f9dd11d827d22d6962ec617f95b"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Hero.css.ts",
+        "sha256": "4d50f4069c035197cf1213aa1f33a6c1dcda3c2e3fc353afc54e9ecb8a1a0462"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Hero.test.tsx",
+        "sha256": "6e1779d39c425cbebcb674cf399bfeb20c6774a27364fb3129605cd1dba01677"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Hero.tsx",
+        "sha256": "3406864ebf431b75368ee700731d9a4ea9d0b82779aa805a5d907d454a16ce70"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Icon.tsx",
+        "sha256": "2c577c1c3f31cc86f605a40d78833e0dbcc8d6fc253bc2f067373f8f3e6e76b1"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Search.css.ts",
+        "sha256": "2e2c5ea027fc36fb07d0fb5d500a10cb8b3a2d704d9600aadec42e62168fd18c"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Search.interaction.test.tsx",
+        "sha256": "af41b33519ca1e71ad7695bd4e98349086a2b40db4e796be9bdf680b42e81218"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Search.server.test.tsx",
+        "sha256": "62c5c0f5b275feeac418c383655512ca7ab4ab01d2c3a4c27f2008dec5c2f473"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Search.tsx",
+        "sha256": "c2856acef11a1f17803bfeb7c97bbb37cd645a9762bf75ad025db98880b90d25"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/SearchPopover.test.tsx",
+        "sha256": "eba442848969c17030e4a8c274b46131a2b77ec4ac9444af91b108cabc8326d7"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/SearchPopover.tsx",
+        "sha256": "dfd8515127ee7a9d489f48647346f9ea50005d1b827e037575a90ff7018ca426"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/SearchResults.test.tsx",
+        "sha256": "d62d19f5c4136891c90ee259d79b5a5210de0f93dfd710eaaa5e5eec06a90580"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/SearchResults.tsx",
+        "sha256": "7cc630b13ae3b7808b8eb70ec45ce85f15083154a6641596a409779108043288"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Steps.css.ts",
+        "sha256": "54f416a883a21d126e78502acc78815b996728844542ca91538a3eb09489ea30"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Steps.tsx",
+        "sha256": "b65e6b0837ac01f2140573780e4c055c765f683f47bcb09d9e31553cb9972934"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Tabs.css.ts",
+        "sha256": "e2fa4c2a19812f183fff803fab0e67c47b8f0b3c610a44c999495957c076c188"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Tabs.interaction.test.tsx",
+        "sha256": "46cbea36813babaa8733fe94d7ce7505934484c85e039e0a5aa5324020f507e8"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Tabs.test.tsx",
+        "sha256": "c207f6ff32e830202bb1d419dd73574dde80c4a1784fce204ef0bac344b4db1d"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/Tabs.tsx",
+        "sha256": "f543b1d468cfcca47f477b7fd79f3c1b742ec2a6ae2f988b846e4f45fdcc055e"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/ThemeToggle.css.ts",
+        "sha256": "248a26257b6fb9157eba9ea058381b5394e8771c123c0fa41478b9346bfbd9bf"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/ThemeToggle.interaction.test.tsx",
+        "sha256": "f9ffad350a326f714ab3754c8878f400d9d4cc2ab964224afe23bdb9033bc667"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/ThemeToggle.tsx",
+        "sha256": "003e48b9a5f8b17e707e230c4827aa79a3cae4534abf01b84889599a57f317bd"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/code-block-classes.ts",
+        "sha256": "3689906f7156684e049bd5604e88c78da21ad7a112ff9e1cfe03a635f5953bb0"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/index.ts",
+        "sha256": "c0645c2b1d24da76927c6a112f6c97229aba7a17b5be6fd9f18bc21329b46155"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-a11y.test.ts",
+        "sha256": "5f8a2450e19d3c43f9669a22b6954526d48c8df9ff1b917f930214a0bbd59279"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-a11y.ts",
+        "sha256": "819369dec65dabae657537325018ba3bf90014061f2edebdd70fb62ab53e90b5"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-hooks.ts",
+        "sha256": "93974273aecace9afb528e30bdc7fb5dc2d81320ecb957216ef302b67da03925"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-index.test.ts",
+        "sha256": "9632bb417e546b0ed6002592025d43f2c5a88feb9ac9859c1fa15e1b65b91e28"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-index.ts",
+        "sha256": "c40d67a86b19134a7c69321a2ca692cbd030b08c503845fd457bd011aa058103"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-popover-position.ts",
+        "sha256": "53d692ea928e3ed9dd138d68642e67c189fcd72625c606ab1197a35ca68244ec"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-recovery.test.ts",
+        "sha256": "88127b06b046af521c77f0e5b22384f028292840e95e93d66a375b2777c7e823"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-recovery.ts",
+        "sha256": "bf5efa696b68ca9d88871659860137456578258bfe4f8416559f1ea4ba894c28"
+      },
+      {
+        "path": "packages/ardo/src/ui/components/search-result-text.ts",
+        "sha256": "d245a92c60be9793c29e8922b1643d5a780501700aedef0f594b565cd060e6fb"
+      },
+      {
+        "path": "packages/ardo/src/ui/composition.test.tsx",
+        "sha256": "760dd5281d950f1e38db6446fa57073fe36e209ae06e4e1de2e20683a45fa711"
+      },
+      {
+        "path": "packages/ardo/src/ui/content-icons.tsx",
+        "sha256": "d6640d3c2f70a319d91648a39ada7c1ed267fc13fabf9b11a6f145f26da93809"
+      },
+      {
+        "path": "packages/ardo/src/ui/content.css.ts",
+        "sha256": "f2b49b229e5846c8a3847aca7e5b69d5135f9629381f1f24463323db8893b78a"
+      },
+      {
+        "path": "packages/ardo/src/ui/dom-toc.ts",
+        "sha256": "88493d3352494cecc80cecdd534c71d587122cbd283a04955799e34eeef8436b"
+      },
+      {
+        "path": "packages/ardo/src/ui/favicon.ts",
+        "sha256": "bbd5076b386220bc9ff790ef05308e00b08379594ac9aaf8e57f39bad256d614"
+      },
+      {
+        "path": "packages/ardo/src/ui/generated-sections.tsx",
+        "sha256": "69c7cae01d7cc1d2d5f77f9909106e0fd233f171c2d250c021c6d0b63ed7e518"
+      },
+      {
+        "path": "packages/ardo/src/ui/header-search-mode.ts",
+        "sha256": "0f8764e7b985b7aaf3dd99f9fab6be15eecb0343c387964ed34b4e0a0f2100cb"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/README.md",
+        "sha256": "1798950a41f75c28d603b81bfc843dce148191108920719b23637bd84c081085"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Chevron.tsx",
+        "sha256": "59f61f89e9bf1152f4928805a1559479f497472764b79a1a13fa5dd4b679dc41"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Close.tsx",
+        "sha256": "5090608a6fd0c7b619a4692626aa1e51d434ce0cee304b0b9a0d3d9667c7a1ad"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Copied.tsx",
+        "sha256": "077e70f6c27f885457ab4dff7980f4d3add15343b77a451f309821da699d8460"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Copy.tsx",
+        "sha256": "858e17d89341c2cef6d12ecbd5ee95814b0f19cc84cf5ed1e2b10bd3c8692c4b"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Danger.tsx",
+        "sha256": "05ef7466a5c3425c4b377bc8ed982409a2f99b2af1144a7afd03d0138079963c"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/DarkTheme.tsx",
+        "sha256": "de5a2d182d212d433a8da7b2b1125f026b38d70099d376e3a2d8511c8149bc0b"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Edit.tsx",
+        "sha256": "b675c9299da8e971af2bd1099e63cab4be20cf0448c0403924b34f4c8dd48c87"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/ExternalLink.tsx",
+        "sha256": "ab4434415daf918c78795ba99dd195d1c2ff57147fdabe05ff47b60f7370888d"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/HeadingLink.tsx",
+        "sha256": "daddc728aae3d560911de463b3e3f2a8fe166ad40baed5ab1f50e0aa13f0b88c"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Info.tsx",
+        "sha256": "1e352c6d45bb1d17ba5b6471a1145b70cd4a491e6c66b6861367bbca09a595a8"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Language.tsx",
+        "sha256": "46feadfcef4569a3f1478dbad31a2e67c5a0da04460880e1cdf132ce0af7ba8f"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/LastUpdated.tsx",
+        "sha256": "456971643e84b39f804c850801c9d06da645928dea8770348cb8e19793d4be73"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/LightTheme.tsx",
+        "sha256": "22e3c0fc9ed21c491e29a21d0c539326efb2ee5c7e8357ab3f2f5d8793eba7f9"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Menu.tsx",
+        "sha256": "57f2ce01e8914e400b3df071e26a17e9da03e4ee58834090b41fd4e6de4fdab2"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Note.tsx",
+        "sha256": "d9aea871fc935e73e9e90512c912f7f915abfd447f54ab54d19e19db4bd9d0c7"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/PreviousNext.tsx",
+        "sha256": "3e259d74012167c127a634a014a759fbcce6ec2543b6eded7efbed01cf228d16"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Search.tsx",
+        "sha256": "e3b28496926ec8ea00b7eb0428aea4dcd755c766370f8d31f15e5632c3ca12b3"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/SidebarToggle.tsx",
+        "sha256": "4764fe1a01aa27d1580c69cbbae077995366bdac578d7ef732705b6d5ae28af8"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/SystemTheme.tsx",
+        "sha256": "ac45ea734eb6e92d2e9b1aef5afa800395bd45b883274bfbb10b36e5f5efeb31"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Tip.tsx",
+        "sha256": "aef1ed4b064a91498186f53da2b179428c3cea80afaf93404dc9f527018c059f"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/Warning.tsx",
+        "sha256": "5a19ae6fe34fa7baf196262c51d27c74d4aa22cd50ea0e3b84b9ca13c0550ab4"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/chrome/index.ts",
+        "sha256": "c83961c05c4314bb5930ce0e7dc5e03dd1fb1c497e13ee9e4e0b413a632adb37"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Branch.tsx",
+        "sha256": "1c116e780895569b2e8050439809b6f46976fa07ae30595b6d5246fd34232bae"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Bug.tsx",
+        "sha256": "a2ddd531a0a1f1baad799b171737e23ad57dad95798e9e405a1958418761a284"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Cloud.tsx",
+        "sha256": "fb4a355d21acd7df7f09de04c54585a1d8878f8c486e2264f72578f5c9f1b8bb"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Database.tsx",
+        "sha256": "1dbcabd0a21beb0ca45d778d79ee1f6a715c7501fab027b35eaf0a78aaa4d3b1"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Download.tsx",
+        "sha256": "dec2d0035d2421bea51bbf5536f0c80f305f7e00c6b650820fb64f5490d109e4"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/FileCode.tsx",
+        "sha256": "df76b7fad20aeeb7b73805e79691dd0b9680c7931fb1d77b1628c5ef3b43556a"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/FileText.tsx",
+        "sha256": "15ff5f3d477d9804891dc72deb7b9855ccab912953ae75f0ef6cdcdc88f875a6"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Folder.tsx",
+        "sha256": "be908a770eb43bc27669be93466e53a32400a82bcf16866eb4543861961ec28a"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Globe.tsx",
+        "sha256": "8958b2d4b0559cb55909977fc076a56f6440d19a9df54a5d3844df6e510a158a"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Help.tsx",
+        "sha256": "0c0bb24bbcd60f0f11af4da8181e992573e9038683e2361cad3e026cd52feece"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Image.tsx",
+        "sha256": "de1b7116ca5df64764c34fed1b11dc6660b89345f83f688a3c147d441b597562"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/List.tsx",
+        "sha256": "c2d3fa5602e24d24742769fdec455070546ae1cec61093293201dc17cb45943d"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/MessageCircle.tsx",
+        "sha256": "3a5c6b96ee9fa8199bb8135e0c82a1dcb75e14ed3c6e43628a647a1bc5d835a0"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Package.tsx",
+        "sha256": "576df55cd51b786539e6dcb7a441b13c3467bc461790bf50510a68273a55e920"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Rocket.tsx",
+        "sha256": "f834cd903bb02af223941161a4d2cc84156baf3d45784dfab1fd917b92ae9a85"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Server.tsx",
+        "sha256": "4c721a661ce9569704d4d3872b69667696bea5cde8afcf6fea42042e7c587986"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Settings.tsx",
+        "sha256": "0c03c40c90134e2721118024425126e06964acc36f8c5c766793c20d044d2765"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Table.tsx",
+        "sha256": "5ca0cf46d6f70c9f886cc8cbdf2ac14bfe7fb0e657757a54cfecd51af81b8313"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/TestTube.tsx",
+        "sha256": "fc512f49814a4879e47c12cc19a8fd98924fcb6f2239ba8f4d2ac2b482eec4b1"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Upload.tsx",
+        "sha256": "584ca5eb2d5336ceafd9115a089fb1f62bc1a7c392ae1404f9b2aac46995d4a7"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/User.tsx",
+        "sha256": "a48f6b7132087b1826cce7d1ff72b6a84f82c25fa9ed4ed1edd62d8a76969a33"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Users.tsx",
+        "sha256": "116fb5f649d934a48d9a145500a3d5fe232040e3e99dbee57363bdce4106392f"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Workflow.tsx",
+        "sha256": "60d16c2236c343f52b79b730edb4f95715c0b1aa5fe02cd65b247672a4a1e858"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/Zap.tsx",
+        "sha256": "461fd983979d4942855a97eeb9cc8768959bc5cf7975f6d693f1b56f6031aaa7"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/content/index.ts",
+        "sha256": "0076d2dc10e9db607200e3dfdc793164ef36e6e4c0bd5e069ef5274859883cd6"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Api.tsx",
+        "sha256": "f103e55615636f7eba671472dfd3d2512e581fdaabb63ae984f919d6e286c3bf"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Architecture.tsx",
+        "sha256": "1599146b621cc76711c0dc6df582f16124740272251badd9d2f618209b0fbdd4"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Archive.tsx",
+        "sha256": "33b4013643f82e351f84889b6319cef7735ae10616c21d208eafe6cfa86207d3"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Changelog.tsx",
+        "sha256": "985db4bf0838bf0def768b84acec835700cac6fe825b6e40e6a74532bd002bb0"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Cli.tsx",
+        "sha256": "debe6b1a42fdf6c147cd706caa391cffea4a1668e6647149cbf6df9755ff1b76"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Components.tsx",
+        "sha256": "ad42ee9416bd12637e3ef2aae64e08789f17d6c372685273791f1f27d40d5cfe"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Concepts.tsx",
+        "sha256": "cf1a39b45be43c55bf6674c75393cbce2ee0d426ecee9e92c2c924e38e7d5180"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Decisions.tsx",
+        "sha256": "55ca5ba9c0a39072d00eef8c7f6cb550102a190d99a572e5743a7d3c4a019d33"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Examples.tsx",
+        "sha256": "029ee8de012894cef6e6bba5cfb2417593bee208d120ec28b1b2196fb57079a8"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/GettingStarted.tsx",
+        "sha256": "9067b89c5247387575d5890ea2b7c88e87d6bf6ed8ff432cdbed594480941729"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Guide.tsx",
+        "sha256": "e41b54e20d743e17684b7246623ab5a90ce9fdfb918e038ab6d89e5cfe4109b5"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/HowTo.tsx",
+        "sha256": "dfdadf13ece8da409b731dd0a337e2870e289699a74fce25a3be5f3d5e832adb"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Integrations.tsx",
+        "sha256": "427473789b1681b1dde1e914246de98c1ef16438d95b629bccc8695c5bf5b13b"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Migration.tsx",
+        "sha256": "9124170ddc2d7a3432ed29455cd87d59d4e72e4a7129185a0af6e29716bf0f05"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Operations.tsx",
+        "sha256": "ee60df739ea0dd5e6fc162c0027368013cabf546112d64247bb7a93314cb3335"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Performance.tsx",
+        "sha256": "4547cfccf9e6acf12ac5239e019d2f856f83ef4bb04ae2daf336db8aa46cd513"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Proposals.tsx",
+        "sha256": "9f8b69e93ca0e298c43135a08242805aeb16ad78eaa4164c1171b2037b5d9aa2"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Quality.tsx",
+        "sha256": "ca014873779b26f4de1ce50a0f6816b112cfb2891e218bd5f430c129249664a7"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Reference.tsx",
+        "sha256": "cc657707750f089f44addead6f86a360ddd493a0246e2c2a5da533f598d8b881"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/Security.tsx",
+        "sha256": "e431dd342a72e1d814d926ef941d8806f88c514d9a56eeec8b1ae86231c2dbf7"
+      },
+      {
+        "path": "packages/ardo/src/ui/icons/sections/index.ts",
+        "sha256": "a9eb46b7b49ec51ee1ff64f42d2d6dcf6eedb36a11af7318c7be601686a587c2"
+      },
+      {
+        "path": "packages/ardo/src/ui/index.ts",
+        "sha256": "8fd309b194b3feef893f0523b94b626f3ef823cab6fe019a1617b0774d0e8196"
+      },
+      {
+        "path": "packages/ardo/src/ui/labels.test.ts",
+        "sha256": "3234abe1f578000016ed73b81a372228812159ed44e7ef17c3c421fa520f937a"
+      },
+      {
+        "path": "packages/ardo/src/ui/labels.ts",
+        "sha256": "1cb4382195d2f9be87bfd69b122f721a43b12608f4b84dabc2f29f9fe88a22e4"
+      },
+      {
+        "path": "packages/ardo/src/ui/layout-context.ts",
+        "sha256": "28453a9b4be4e964a973b290ae46dea5c131101577efbb58e889b9c6313abb95"
+      },
+      {
+        "path": "packages/ardo/src/ui/layout-icons.test.tsx",
+        "sha256": "9592879b0a7babf69c251b36ab5f2c0d5fccb88113308e44903740bae5d6fab5"
+      },
+      {
+        "path": "packages/ardo/src/ui/locale-switcher.test.tsx",
+        "sha256": "17f724cbef30f9e5ec027042d83177748a74a070e6348bc0f6a077e87829f844"
+      },
+      {
+        "path": "packages/ardo/src/ui/mobile-drawer-a11y.test.ts",
+        "sha256": "87549438431f6206cac3e1799cca687e8134201ab61cb8f245019f1e3d6ec4cc"
+      },
+      {
+        "path": "packages/ardo/src/ui/mobile-drawer-a11y.ts",
+        "sha256": "fc074695d7ff9bc44207f35788a3b387f2c83b1886b913dc0c950763d7c55dca"
+      },
+      {
+        "path": "packages/ardo/src/ui/section-catalog.test.ts",
+        "sha256": "9f336b4f565e9002203cd476917282f40ef93433b173a4426429120d7f450b4e"
+      },
+      {
+        "path": "packages/ardo/src/ui/section-catalog.tsx",
+        "sha256": "7dda091b2cb2d0190cf447df7f0c26601bd7abf98c83e07f5e1ea2e2ad3af2dc"
+      },
+      {
+        "path": "packages/ardo/src/ui/section-icons.tsx",
+        "sha256": "772b6bc3defb60894884e80b3e04b66bc8fde9f263a80959a3ab79abb4b717f7"
+      },
+      {
+        "path": "packages/ardo/src/ui/section-kinds.ts",
+        "sha256": "937ff8f9e914d4af8e9d0080269f07564c8f4ecd438d02264c52e42c5eba0228"
+      },
+      {
+        "path": "packages/ardo/src/ui/shell.test.tsx",
+        "sha256": "c3ff0153e12294b78f94373c5bc40f5c79d61a3a33bc2995988c63dc765ceeda"
+      },
+      {
+        "path": "packages/ardo/src/ui/sidebar-scroll.ts",
+        "sha256": "afe638e497dd3afad7ae8fa4cf64e1bfa40d967bd73313269aafe2e8e686f414"
+      },
+      {
+        "path": "packages/ardo/src/ui/site-controls-state.ts",
+        "sha256": "710594a1a065ff3b587e3d9a53aafc526706967a914beba3b176710eaeb0f149"
+      },
+      {
+        "path": "packages/ardo/src/ui/site-controls.css.ts",
+        "sha256": "57e0da659a4eedde3708394d64ed1b62818eb906e2653c71d5b816dd23528781"
+      },
+      {
+        "path": "packages/ardo/src/ui/site-controls.test.tsx",
+        "sha256": "b624a2649b9dc40fcd6e76a857a35e33061474fa5388c398b245f8fc89623294"
+      },
+      {
+        "path": "packages/ardo/src/ui/site-controls.tsx",
+        "sha256": "2484bfbf7baaddf5807c46e33ebacab21ab0fc6aa9cb074b21f97fe89342e8ba"
+      },
+      {
+        "path": "packages/ardo/src/ui/styles.css.ts",
+        "sha256": "9289d6940ee7a3703e6062e17e2d9b8aeb6abc24ff96287b187ff7e649264bc5"
+      },
+      {
+        "path": "packages/ardo/src/ui/text-content.ts",
+        "sha256": "6d382dc94cf9cd27982137efe8a57cf5e5ac2e646164ed8feabee71e8bf73c23"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme-mode.test.ts",
+        "sha256": "e005050e4ddf51197cc9a3cfa986590bee5c3982b9bffe243fee11cc4591023d"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme-mode.ts",
+        "sha256": "5b20ecc8dd876e04b03d4b8794240e8ca8049e409a5a83a3ce14094b06f6a85b"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/animations.css.ts",
+        "sha256": "701ce7619a38dd10f3e52e2a3fcf805734b9599bc0fb1f80a945c51b079d8bf9"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/contract.css.ts",
+        "sha256": "8a73cdfdf9f3249abfafce8bf6676f4bd2e64fc98e6295a95d6f473e8ff15537"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/contrast.test.ts",
+        "sha256": "38adf773e9a088e63e95dcc91f7a2fd97e3f4e0d05f79a16730fa936f5912510"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/dark.css.ts",
+        "sha256": "65c37e390fb83cb92d01439553beda100b7b14615d3bc0fbf539283d09c58e4d"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/index.ts",
+        "sha256": "3853cd58add807571f802ee5c9a843d662ef78e66b2f0b1ea3c8db07d2b82221"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/light.css.ts",
+        "sha256": "5de273ebd51d824edfdee8764bd6c574b2755eef17e108dfa48a83e23ec50f73"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/reset.css.ts",
+        "sha256": "8274f8df1e8db49e51f81bdb325dbd102f3b287b7c472128ab7e8ea4e9980f85"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/theme-css.test.ts",
+        "sha256": "4d6b2043e50c77600c39b6006acd997b485303d569b22b1481680723a521d58e"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/theme-css.ts",
+        "sha256": "edaf3f8462caee9fa16b2f8c7928855acd7af2c10c43d09a9bfb29b50a971e3a"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/tokens.test.ts",
+        "sha256": "5aec3983783d31a65c7ca556e321db01f62d058873d4030233a502b6d113df1a"
+      },
+      {
+        "path": "packages/ardo/src/ui/theme/tokens.ts",
+        "sha256": "fd8f031ab7b142f6ad7948cb25406ce4fcbb6b2d5065aceb06d023970bab88e2"
+      },
+      {
+        "path": "packages/ardo/src/ui/toc-navigation.ts",
+        "sha256": "49942a0ed1fdc0d36afdbf7d6e7a5dce4d698afbc9f775c108482885e3893f4d"
+      },
+      {
+        "path": "packages/ardo/src/ui/version-path.test.ts",
+        "sha256": "1fe562e0f1add1a5967254bfc93f5f00c32cd44964db1948e8d1a9d4f4ea6643"
+      },
+      {
+        "path": "packages/ardo/src/ui/version-path.ts",
+        "sha256": "afb290daf910c1f1d667d88156155369634a192c661d3aba3aaa71fa3725716f"
+      },
+      {
+        "path": "packages/ardo/src/vite-env.d.ts",
+        "sha256": "e44934820aba321e82f318b444bd7ddea6fcc055f7ea6f5575fb736ab5948eaf"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-outputs.ts",
+        "sha256": "dd29580cc24120288aabd07c0a58f6bb90ce53da04e7fb342b1df41fb2f4a594"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-plugin.test.ts",
+        "sha256": "1b51db4045c98727ccd3fac5bfe6b92f00c87534d5e9be14442849e70a2711fa"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-plugin.ts",
+        "sha256": "1e4b986e501c5f9151f619062a7a3839618abee77b5931a4384445e5fe9fc8c2"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-session.ts",
+        "sha256": "e011c7e1ce799603396691dbc3af87ac0df0bc16495752cc30c599655d178022"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-shared-extraction.ts",
+        "sha256": "a4ec5824f36eb6c395317c370b86d401e56a9c5c789cc0ae89ce4af1f203173a"
+      },
+      {
+        "path": "packages/ardo/src/vite/api-watch.test.ts",
+        "sha256": "e38f78f2f1c78cbdec1e97e8e8396c634bef457ea0c7a0cefa5579797cad42d7"
+      },
+      {
+        "path": "packages/ardo/src/vite/base.ts",
+        "sha256": "716a7cb20fb775cf80cefe29b1a4216a6c72168ae833e5efc731c210b33c9956"
+      },
+      {
+        "path": "packages/ardo/src/vite/build-outputs.test.ts",
+        "sha256": "ebbc69f8b54f90041477e477ea7615c08616a30cd6ee45818fd9d62766c11858"
+      },
+      {
+        "path": "packages/ardo/src/vite/build-outputs.ts",
+        "sha256": "a4ff3783af4ba0aa38287a3af3480d07978f1d3709138ad0a071bbfd61927db4"
+      },
+      {
+        "path": "packages/ardo/src/vite/build-versioning.ts",
+        "sha256": "6147b3459d4afc2725e40690eaae23414ed09174d3d62b1a05a8d88ca3aaf2d8"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-copy.test.tsx",
+        "sha256": "e5161c98387ab3b0c8bd5dacfd4a4029343f44f0295b1c1864bfaff224c1a5d0"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-plugin.ts",
+        "sha256": "adf75c46bcf202b714e352f793f9f8553e9ffb5b0b5a6fb49c3d14cf8fdd240c"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-scan.test.ts",
+        "sha256": "acdd21c48d3a423e0af31a3bc22d36faa0e50adfacf08af114b472a770f1ca55"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-scan.ts",
+        "sha256": "bad5beff80beb4e980dc2ea34a12b2d53a2bee4d2e80363580db576430144d96"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-transform.test.ts",
+        "sha256": "ac578b55385dcdb130bedf0d4f337414d1d3b28bba524d697cf3464c918acf40"
+      },
+      {
+        "path": "packages/ardo/src/vite/codeblock-transform.ts",
+        "sha256": "5f2afdbf3810847d8823009b124828c4d13e44d51378641c34e9eec6858e9687"
+      },
+      {
+        "path": "packages/ardo/src/vite/collections.test.ts",
+        "sha256": "6cf7ea11fd8e9a54e6d9f88eebe41d104c6bf902cac70eba0bedbb5927473035"
+      },
+      {
+        "path": "packages/ardo/src/vite/collections.ts",
+        "sha256": "278879e8c5906ed40ad0ea5ec4c3615205f520e78a0178f42a5955da4ff733ef"
+      },
+      {
+        "path": "packages/ardo/src/vite/content-sources-plugin.test.ts",
+        "sha256": "21805710533342fd53ed9c72ab9559aa0bccab7116be491e43ed2e6ed8b7d3cd"
+      },
+      {
+        "path": "packages/ardo/src/vite/content-sources-plugin.ts",
+        "sha256": "0e321efd31c43f0cc8d16c49696ff3b6025830f607df8647e8e9078692e9126b"
+      },
+      {
+        "path": "packages/ardo/src/vite/content-sources.test.ts",
+        "sha256": "0129fdc8792361326977cb596af038528d0a04f2f6fb97cbc0a6ce01f9c79ab0"
+      },
+      {
+        "path": "packages/ardo/src/vite/content-sources.ts",
+        "sha256": "13722954427e82d49c71d078f2a538d5217519e7061318e127fc98924291c881"
+      },
+      {
+        "path": "packages/ardo/src/vite/dev-render-paths.test.ts",
+        "sha256": "e277bf6419f8032d6e99d053cb8b72378c19b18995d2eb2b3499b2505ec1c38e"
+      },
+      {
+        "path": "packages/ardo/src/vite/dev-render.ts",
+        "sha256": "30d69335a8ab8e068cfa1a61bab2ca054636645e96bc4446cc8e8f2f5944c62c"
+      },
+      {
+        "path": "packages/ardo/src/vite/frontmatter-diagnostics.ts",
+        "sha256": "7b8b95255ee1fa003cd249658e45fb8dd4cdb5232c0c9eea5c14208f0e4fd6c6"
+      },
+      {
+        "path": "packages/ardo/src/vite/git-utils.ts",
+        "sha256": "cca1e9f2d0d1377470bff62864c507c6fad9892823e13c46a8a07db9dc563b88"
+      },
+      {
+        "path": "packages/ardo/src/vite/i18n-routes.test.ts",
+        "sha256": "aa77803e8662ec7fe607e7b247d38e8c49264473c7f94fd2cec8fa41bd01797a"
+      },
+      {
+        "path": "packages/ardo/src/vite/i18n-routes.ts",
+        "sha256": "080673daab356155966a738ab6076e04449d95cad6aa905dc212d5b79cadd628"
+      },
+      {
+        "path": "packages/ardo/src/vite/icons.test.ts",
+        "sha256": "11af3149920330e312012d6a93c29bc50f139e464400db1e2eb44aec93472042"
+      },
+      {
+        "path": "packages/ardo/src/vite/icons.ts",
+        "sha256": "f65b2545092a33cfb316ae50240ec5dd42c4677b5bd374645ba2955ff1ba1dcf"
+      },
+      {
+        "path": "packages/ardo/src/vite/index.ts",
+        "sha256": "4bbff48dae3066e1fc826e6fbab95435c4c8628a36e5b3bc63a42f061ce662d5"
+      },
+      {
+        "path": "packages/ardo/src/vite/lifecycle.test.ts",
+        "sha256": "b28608c965f20ad636bc8b5bb135df69fc2ef790e61b7f6379e674310f7e1aa4"
+      },
+      {
+        "path": "packages/ardo/src/vite/lifecycle.ts",
+        "sha256": "3043e577a37fafdd377af1ffbcdc66a6af6414a469591ad01f388a08c211bd2f"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-headings.test.ts",
+        "sha256": "3953608e4baa6b4e44096e79b96acfa33c2fadbdae71c520908a59440d8fe1e6"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-headings.ts",
+        "sha256": "656328c224e1aefef2bcf307ce68e7942046b22a6ef7d32c117ac117affdd647"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-links.test.ts",
+        "sha256": "6c1bde41ff49c9fd66f27eaf05eec733d546aceae88710dabf6cb5140bf2c41b"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-links.ts",
+        "sha256": "124f7a3bde18896b383b973b166a549e7250c7d9d5547a4b8e104d869f83be5f"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-mdx-strip.test.ts",
+        "sha256": "584111546b8b8fbfc33a0c4755f94104cbcda6053c1e3415816d0e239e8c161b"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-mdx-strip.ts",
+        "sha256": "8b48f23f202a80f4546ddcaad9ba3867d2cacf61b98e916eb0854814d7612ec6"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-text.test.ts",
+        "sha256": "62751d991bab409db37aaf11ba10d67d045e83ffe92328dcedae5083d2f20c55"
+      },
+      {
+        "path": "packages/ardo/src/vite/llms-text.ts",
+        "sha256": "0b42cf31360395cf1d7e18453abe51475bf61d2e3708de0705536af3d44676ab"
+      },
+      {
+        "path": "packages/ardo/src/vite/managed-runtime-plugin.test.ts",
+        "sha256": "57ed8a42ed2259d5df64d32de21de2692154b4a6cfd09284d76cdd2460bcb366"
+      },
+      {
+        "path": "packages/ardo/src/vite/managed-runtime-plugin.ts",
+        "sha256": "8670df638a4cadfb0fb96a473303278f9b449c3ab37b35db2751e285c1a45890"
+      },
+      {
+        "path": "packages/ardo/src/vite/managed-runtime.test.ts",
+        "sha256": "9ec9834ccd3e4b690ee78f45d826e2799c81b843354a371435ee6c0fb528f113"
+      },
+      {
+        "path": "packages/ardo/src/vite/managed-runtime.ts",
+        "sha256": "a5305863ee84b57c6486a63e59ff187ed541c54a269d5b0c7f657dafc0372953"
+      },
+      {
+        "path": "packages/ardo/src/vite/markdown-fence.ts",
+        "sha256": "fc82bbb31fd188da58ef54690f53bd0c933a03dcefad55426240fb65a94acad9"
+      },
+      {
+        "path": "packages/ardo/src/vite/markdown-meta.test.ts",
+        "sha256": "aa7f512ceb47d64bcbf15f7b58430b3e218821e2dca2304d14c4ae6ae7d71123"
+      },
+      {
+        "path": "packages/ardo/src/vite/markdown-meta.ts",
+        "sha256": "417b599b2a234cc88e72c02f267c6c2513da2b743bf0a7da7657bceb3dd5b3ca"
+      },
+      {
+        "path": "packages/ardo/src/vite/mdx-compile.test.ts",
+        "sha256": "c41893d3be8119ee8ff63bca292b4056878bb6d41b1bb815fafc6db3c2a0ea1a"
+      },
+      {
+        "path": "packages/ardo/src/vite/mdx-compile.ts",
+        "sha256": "56bc59af19c43c59355c0f279cb24badfe9418b9ad8267f0771538902efab131"
+      },
+      {
+        "path": "packages/ardo/src/vite/mdx-plugin.test.ts",
+        "sha256": "91554aa52cd5bebedc7e8d847f5d1a9af75c07c42ca815bf5f00a6bf9504116a"
+      },
+      {
+        "path": "packages/ardo/src/vite/mdx-plugin.ts",
+        "sha256": "762bafa795691f1bbad14c3b3bf29c2d9fb9f2ea843576b0d21a432be67423ff"
+      },
+      {
+        "path": "packages/ardo/src/vite/openapi-plugin.test.ts",
+        "sha256": "97041cfd1d1f6e68bf11446b22f9d9b4280e6e699a28821dda5bae4fcfa7c73c"
+      },
+      {
+        "path": "packages/ardo/src/vite/openapi-plugin.ts",
+        "sha256": "87577d69106744b93fdde394f87c59c446e0d7fc71963bed2131a7afebcec533"
+      },
+      {
+        "path": "packages/ardo/src/vite/openapi.test.ts",
+        "sha256": "2813c0105d81a3a421462dd1e098dc6ea6a726267c90b31b07c64525578f119c"
+      },
+      {
+        "path": "packages/ardo/src/vite/openapi.ts",
+        "sha256": "f27eca0fd8f665a8efb1d717bf194c9edad69bd6c1dde819b0757e2f2c054974"
+      },
+      {
+        "path": "packages/ardo/src/vite/page-metadata.test.ts",
+        "sha256": "087d61aca9a21484b8bf0399acd7230b1f623fb684deabce3deba8aaf655428b"
+      },
+      {
+        "path": "packages/ardo/src/vite/page-metadata.ts",
+        "sha256": "b9fb549a656f67cb39974bbef71a980e6b7da85ad0f8a4ea02f0d0e5ae4a522f"
+      },
+      {
+        "path": "packages/ardo/src/vite/path-utils.test.ts",
+        "sha256": "6ec9bb6ae4168ae15bb8e1203add104c25b60c5e24adc2e2049bd9670192fe8b"
+      },
+      {
+        "path": "packages/ardo/src/vite/path-utils.ts",
+        "sha256": "dd9bb0e84d014577a78bc98ec9f7ce09dc49b71dca01ba3f531b9e9fadab427c"
+      },
+      {
+        "path": "packages/ardo/src/vite/plugin-options.ts",
+        "sha256": "71ffd03cc5664b3f5287aceaff6bbd64fdb6761270de27222e56d0d882f96bd8"
+      },
+      {
+        "path": "packages/ardo/src/vite/plugin.test.ts",
+        "sha256": "012810b54a9df413705fb3c9fb20ffe146fb56b737b651fc4f107c21cf7ce8cc"
+      },
+      {
+        "path": "packages/ardo/src/vite/plugin.ts",
+        "sha256": "7bedb50bddc3ccc0a7a95e35aa4d848ec2ee97cbd0effdb94bb5f72054805447"
+      },
+      {
+        "path": "packages/ardo/src/vite/preview-static.test.ts",
+        "sha256": "0045e89708c951e08574fbc8b3a2cbc1bb3c7f9f807d2b658880b7a2a33e3d8a"
+      },
+      {
+        "path": "packages/ardo/src/vite/preview-static.ts",
+        "sha256": "710ce205ff1a7cb8389091e74634ccfbd6b4dbe97c3a44c541621a0629fcd6eb"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-boundary-plugin.ts",
+        "sha256": "2d6e8ed7a88ee50bc5e0cb1c07681b0386ca1680b55d7ed9de6cf67fa1685d2f"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-config.test.ts",
+        "sha256": "a912d1f14db785e0ff734ba983f1be6c79abc6a1fcfdb4b4e6b1d4c0758afbba"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-config.ts",
+        "sha256": "e09970e02f8b59fde75f5a620688434bb5db7583c0604bc447eeac768292bc8b"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-meta.ts",
+        "sha256": "bfb17f51ef23d7d9cae06a69c1f84c87e61617f85fcd721e43f5858c339dd550"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-packages.test.ts",
+        "sha256": "5bd0f6ec0f05a606b15f2bcaf5c11a13febaa6a5f77c0f29e46bcbdcdf26158f"
+      },
+      {
+        "path": "packages/ardo/src/vite/project-packages.ts",
+        "sha256": "c33747c5c709611ee3e4e53f9f56bf466599252c65f08501791d226f2a748421"
+      },
+      {
+        "path": "packages/ardo/src/vite/reading-order.test.ts",
+        "sha256": "d247fbc32c4f87a3c94fc8ee338d2817872f1e3c4a3e28654889ec38907311da"
+      },
+      {
+        "path": "packages/ardo/src/vite/reading-order.ts",
+        "sha256": "158b4c4088ddd03a4e78bafa2c87d359170c8997f07a75d6b45f8d77757d8ea1"
+      },
+      {
+        "path": "packages/ardo/src/vite/route-identity.test.ts",
+        "sha256": "f5d4a41a14c736cb15469348bb94ffa699a8e5a185351d1a6772a477d9b7eca2"
+      },
+      {
+        "path": "packages/ardo/src/vite/route-identity.ts",
+        "sha256": "d1768d9b062c943114b74de71101d8c6cd1e38d1144f749dde7059dc833dc392"
+      },
+      {
+        "path": "packages/ardo/src/vite/route-manifest.test.ts",
+        "sha256": "0b6bb480f5da38441b8cbc35e59967c6bdbebcb301a2305de29831c426056f50"
+      },
+      {
+        "path": "packages/ardo/src/vite/route-manifest.ts",
+        "sha256": "62dca88b581b7eb7c41cf742e7652877f052cefe4c52c9c86d0cbe9696f32566"
+      },
+      {
+        "path": "packages/ardo/src/vite/route-source.test.ts",
+        "sha256": "ba0026e4d3ecaa3a41252504a28afc131e5200533c4964faeb6b664b5126276e"
+      },
+      {
+        "path": "packages/ardo/src/vite/routes-core.test.ts",
+        "sha256": "7f7242ad2d69122a426601a328097ee360a127973fbf3709ce2281b0bdbe5a45"
+      },
+      {
+        "path": "packages/ardo/src/vite/routes-core.ts",
+        "sha256": "39a45b809b1672c0876558f67ab92eea9f15d3e2a4c1be4a00fdafdac79af00f"
+      },
+      {
+        "path": "packages/ardo/src/vite/routes-plugin.ts",
+        "sha256": "9a9a6d12d69e53d90af3f33309839aec39da73fe6e745144af7ed2bd04cc5a7b"
+      },
+      {
+        "path": "packages/ardo/src/vite/search-index.test.ts",
+        "sha256": "ad9dada71ba6de69bf06bfc24568516379219c5b3a189c2b12b3c1b5b60e0dd4"
+      },
+      {
+        "path": "packages/ardo/src/vite/search-index.ts",
+        "sha256": "94c99ccacdee430a3d70714c619f952c11c160553ed894e6b4abead98ec8e74f"
+      },
+      {
+        "path": "packages/ardo/src/vite/sidebar-index.test.ts",
+        "sha256": "12aed00e55a73460916492767d8f5cd0d93bd5cf6a9ba7803019ee14d131e0cf"
+      },
+      {
+        "path": "packages/ardo/src/vite/sidebar-index.ts",
+        "sha256": "b3f1d2e85dfb9892af9a873f7f29996a60b2c17ad97378a523e8a2cd688136d9"
+      },
+      {
+        "path": "packages/ardo/src/vite/sidebar-order.ts",
+        "sha256": "54c23d451c4a249453c4957acaa930a072426a6cf3386ae0401d88b98fa23f0d"
+      },
+      {
+        "path": "packages/ardo/src/vite/sidebar-section-indexes.ts",
+        "sha256": "f7f02e6a354764b29c0cc5d8a38b0477c23d33f8c6ff810c50a7d0b117939f2a"
+      },
+      {
+        "path": "packages/ardo/src/vite/sitemap.ts",
+        "sha256": "3c1e7125ebf2167efecc173d7e7c132695a06246bea99e7e2cfbace7d3ab0571"
+      },
+      {
+        "path": "packages/ardo/src/vite/static-site-config.test.ts",
+        "sha256": "c7cdf72f7a40820d898c560923b6ebe3a87464cabaefad1bf387def4c5ec0ab3"
+      },
+      {
+        "path": "packages/ardo/src/vite/static-site-plugin.ts",
+        "sha256": "974e65f328b05ec07102cb3e8320fbca89ddf3f4adf5a18db41e6b48d5e04fbe"
+      },
+      {
+        "path": "packages/ardo/src/vite/static-site.test.ts",
+        "sha256": "1a535045f2471503e70c1195441588518271126a894c5c1316b657804808cf41"
+      },
+      {
+        "path": "packages/ardo/src/vite/static-site.ts",
+        "sha256": "22f1404bdf5ce57e2c890e5d09791bbc1e70ea1d291342bbed7ae6693b8326d8"
+      },
+      {
+        "path": "packages/ardo/src/vite/versioning.ts",
+        "sha256": "acfd2d7a78e095ff65fb3a238ca0e9727a1b2653d2dafdf81388f125946773ff"
+      },
+      {
+        "path": "packages/ardo/src/vite/virtual-module-invalidation.ts",
+        "sha256": "ff1327b8146ba79114725be5eb8f3ec960c1cf963fe5710658817c700fa2bcf8"
+      },
+      {
+        "path": "packages/ardo/src/vite/virtual-modules.i18n.test.ts",
+        "sha256": "5ce1028866bcf04a33233417162b4bf35caa0480c8ad0e897b7c060e214f94ba"
+      },
+      {
+        "path": "packages/ardo/src/vite/virtual-modules.ts",
+        "sha256": "684f777e03649fa06371722f29acaacce1157f4a7db06cbfc21062ef30e8710e"
+      },
+      {
+        "path": "packages/ardo/tsconfig.api.json",
+        "sha256": "25bfe6cc7f9b3553c068ba18104c066efed2dc57e284c2cdbe1a117928d30616"
+      },
+      {
+        "path": "packages/ardo/tsconfig.json",
+        "sha256": "389f1e47ff34d0dbab3fc63d57ee6180c6b610e86a49d8ccb8c6fc6bbe8d560b"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "b474d0bbba9d2ba4f432dccf40cd18f824acace215116d4e189668cc11622589"
+      }
+    ]
+  },
+  "results": {
+    "guides-to-jsx": {
+      "samples": [
+        {
+          "iterations": 6,
+          "elapsedMs": 504.1183329999999,
+          "msPerCorpus": 84.01972216666665
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 577.0086670000001,
+          "msPerCorpus": 82.42980957142858
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 582.7264169999999,
+          "msPerCorpus": 83.24663099999998
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 576.8331669999998,
+          "msPerCorpus": 82.40473814285711
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 579.6592500000006,
+          "msPerCorpus": 82.80846428571438
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 584.1119579999995,
+          "msPerCorpus": 83.44456542857135
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 576.1677919999984,
+          "msPerCorpus": 82.30968457142833
+        }
+      ],
+      "medianMs": 82.80846428571438,
+      "outputSha256": "796c6c4735827393c84d9331611fcb00d771595ae3a4e873ffd3d1b74cb30578"
+    },
+    "fences-to-jsx": {
+      "samples": [
+        {
+          "iterations": 7,
+          "elapsedMs": 533.7638340000003,
+          "msPerCorpus": 76.25197628571433
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 529.8059579999999,
+          "msPerCorpus": 75.68656542857141
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 535.3124589999998,
+          "msPerCorpus": 76.4732084285714
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 541.5533329999998,
+          "msPerCorpus": 77.36476185714284
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 534.7430829999994,
+          "msPerCorpus": 76.39186899999991
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 534.978916,
+          "msPerCorpus": 76.42555942857143
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 531.4503330000007,
+          "msPerCorpus": 75.92147614285724
+        }
+      ],
+      "medianMs": 76.39186899999991,
+      "outputSha256": "f373b1c0a72544727d25297e602896fbfdfa9f0a15e17db74abb2169cd2cae81"
+    },
+    "api-to-markdown": {
+      "samples": [
+        {
+          "elapsedMs": 648.1709999999999,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 645.9055000000001,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 642.914417,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 656.179792,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 642.534083,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 644.435209,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        },
+        {
+          "elapsedMs": 649.414792,
+          "exports": 192,
+          "pages": 142,
+          "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
+          "diagnostics": [
+            {
+              "file": "packages/ardo/dist/ui/theme/tokens.d.ts",
+              "message": "Property expansion is not supported for {\n    [Group in Exclude<keyof typeof lightTokens, \"chroma\" | \"hue\">]?: Partial<Record<keyof (typeof lightTokens)[Group], string>>;\n}; its type expression is preserved."
+            },
+            {
+              "file": "node_modules/.pnpm/@types+react@19.3.0/node_modules/@types/react/index.d.ts",
+              "message": "Property expansion is not supported for \"svg\" extends\n        JSXElementConstructor<infer Props> ? Props\n        : \"svg\" extends keyof JSX.IntrinsicElements ? JSX.IntrinsicElements[\"svg\"]\n        : {}; its type expression is preserved."
+            }
+          ],
+          "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
+        }
+      ],
+      "medianMs": 645.9055000000001
+    }
+  }
+}

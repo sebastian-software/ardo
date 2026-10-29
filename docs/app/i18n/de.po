@@ -7,16 +7,16 @@ msgstr ""
 "X-Generator: palamedes\n"
 
 #: docs/app/i18n/messages.ts
-msgid " on 50 real documents."
-msgstr " auf 50 echten Dokumenten."
+msgid ". Median source-to-Markdown run, fresh compiler session."
+msgstr ". Median von Quellcode zu Markdown, neue Compiler-Sitzung."
 
 #: docs/app/i18n/messages.ts
-msgid " on Ardo’s own API."
-msgstr " auf Ardos eigener API."
+msgid ". Median warm run, including highlighting."
+msgstr ". Median bei warmem Cache, inklusive Highlighting."
 
 #: docs/app/i18n/messages.ts
-msgid ", same HTML."
-msgstr ", identisches HTML."
+msgid ". Median warm run, light and dark."
+msgstr ". Median bei warmem Cache, helles und dunkles Theme."
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -51,16 +51,16 @@ msgid "← fresh from npm at every build"
 msgstr "← bei jedem Build frisch von npm"
 
 #: docs/app/i18n/messages.ts
-msgid "2.6× faster than pulldown-cmark"
-msgstr "2,6× schneller als pulldown-cmark"
+msgid "142 API pages: 646 ms"
+msgstr "142 API-Seiten: 646 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.3× faster than TypeDoc"
-msgstr "4,3× schneller als TypeDoc"
+msgid "185 code blocks to JSX: 76 ms"
+msgstr "185 Codeblöcke zu JSX: 76 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.7× faster than Shiki on WebAssembly"
-msgstr "4,7× schneller als Shiki auf WebAssembly"
+msgid "19 guides to JSX: 83 ms"
+msgstr "19 Guides zu JSX: 83 ms"
 
 #: docs/app/i18n/messages.ts
 msgid "A generated API page for defineConfig"
@@ -573,6 +573,10 @@ msgstr ""
 msgid "powered by"
 msgstr "entwickelt von"
 
+#: docs/app/i18n/messages.ts
+msgid "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →"
+msgstr "Vorab-Benchmark · 29. Okt. 2026 · M1 Ultra →"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Previous"
 msgstr "Zurück"
@@ -698,10 +702,6 @@ msgstr "Sebastian Werner · Entwickler und Maintainer"
 #: docs/app/i18n/messages.ts
 msgid "See every component →"
 msgstr "Alle Komponenten ansehen →"
-
-#: docs/app/i18n/messages.ts
-msgid "See the benchmark →"
-msgstr "Zum Benchmark →"
 
 #: docs/app/i18n/messages.ts
 msgid "Serve it"

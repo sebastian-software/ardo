@@ -89,9 +89,10 @@ Ardo stands on [Vite](https://vite.dev/), [TypeScript 7](https://www.typescriptl
 highlights every code block at build time.
 
 The API reference is TypeDoc, rethought for React: TypeScript 7's native compiler reads your types,
-and Ardo turns your exports into pages, with components and their props, hooks, and types. On Ardo's
-own API it runs
-[4.3× faster than TypeDoc](./docs/reports/2026-10-11-native-api-integration.md).
+and Ardo turns your exports into pages, with components and their props, hooks, and types. In the
+[October 29 release-candidate benchmark](./docs/reports/2026-10-29-release-benchmark.md#api-generation),
+it generated 142 Markdown pages from 192 exports in 646 ms (median, Apple M1 Ultra). This measures
+source-to-Markdown generation with a fresh compiler session; it excludes the documentation-site build.
 
 ## Package
 

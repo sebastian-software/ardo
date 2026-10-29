@@ -7,16 +7,16 @@ msgstr ""
 "X-Generator: palamedes\n"
 
 #: docs/app/i18n/messages.ts
-msgid " on 50 real documents."
-msgstr " on 50 real documents."
+msgid ". Median source-to-Markdown run, fresh compiler session."
+msgstr ". Median source-to-Markdown run, fresh compiler session."
 
 #: docs/app/i18n/messages.ts
-msgid " on Ardo’s own API."
-msgstr " on Ardo’s own API."
+msgid ". Median warm run, including highlighting."
+msgstr ". Median warm run, including highlighting."
 
 #: docs/app/i18n/messages.ts
-msgid ", same HTML."
-msgstr ", same HTML."
+msgid ". Median warm run, light and dark."
+msgstr ". Median warm run, light and dark."
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -51,16 +51,16 @@ msgid "← fresh from npm at every build"
 msgstr "← fresh from npm at every build"
 
 #: docs/app/i18n/messages.ts
-msgid "2.6× faster than pulldown-cmark"
-msgstr "2.6× faster than pulldown-cmark"
+msgid "142 API pages: 646 ms"
+msgstr "142 API pages: 646 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.3× faster than TypeDoc"
-msgstr "4.3× faster than TypeDoc"
+msgid "185 code blocks to JSX: 76 ms"
+msgstr "185 code blocks to JSX: 76 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.7× faster than Shiki on WebAssembly"
-msgstr "4.7× faster than Shiki on WebAssembly"
+msgid "19 guides to JSX: 83 ms"
+msgstr "19 guides to JSX: 83 ms"
 
 #: docs/app/i18n/messages.ts
 msgid "A generated API page for defineConfig"
@@ -564,6 +564,10 @@ msgstr ""
 msgid "powered by"
 msgstr "powered by"
 
+#: docs/app/i18n/messages.ts
+msgid "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →"
+msgstr "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Previous"
 msgstr "Previous"
@@ -685,10 +689,6 @@ msgstr "Sebastian Werner · creator and maintainer"
 #: docs/app/i18n/messages.ts
 msgid "See every component →"
 msgstr "See every component →"
-
-#: docs/app/i18n/messages.ts
-msgid "See the benchmark →"
-msgstr "See the benchmark →"
 
 #: docs/app/i18n/messages.ts
 msgid "Serve it"

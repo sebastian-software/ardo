@@ -7,16 +7,16 @@ msgstr ""
 "X-Generator: palamedes\n"
 
 #: docs/app/i18n/messages.ts
-msgid " on 50 real documents."
-msgstr " en 50 documentos reales."
+msgid ". Median source-to-Markdown run, fresh compiler session."
+msgstr ". Mediana de código fuente a Markdown, nueva sesión del compilador."
 
 #: docs/app/i18n/messages.ts
-msgid " on Ardo’s own API."
-msgstr " en la propia API de Ardo."
+msgid ". Median warm run, including highlighting."
+msgstr ". Mediana en caliente, con resaltado incluido."
 
 #: docs/app/i18n/messages.ts
-msgid ", same HTML."
-msgstr ", con el mismo HTML."
+msgid ". Median warm run, light and dark."
+msgstr ". Mediana en caliente, temas claro y oscuro."
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -51,16 +51,16 @@ msgid "← fresh from npm at every build"
 msgstr "← actualizado desde npm en cada compilación"
 
 #: docs/app/i18n/messages.ts
-msgid "2.6× faster than pulldown-cmark"
-msgstr "2,6× más rápido que pulldown-cmark"
+msgid "142 API pages: 646 ms"
+msgstr "142 páginas de API: 646 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.3× faster than TypeDoc"
-msgstr "4,3× más rápido que TypeDoc"
+msgid "185 code blocks to JSX: 76 ms"
+msgstr "185 bloques de código a JSX: 76 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "4.7× faster than Shiki on WebAssembly"
-msgstr "4,7× más rápido que Shiki en WebAssembly"
+msgid "19 guides to JSX: 83 ms"
+msgstr "19 guías a JSX: 83 ms"
 
 #: docs/app/i18n/messages.ts
 msgid "A generated API page for defineConfig"
@@ -579,6 +579,10 @@ msgstr ""
 msgid "powered by"
 msgstr "creado por"
 
+#: docs/app/i18n/messages.ts
+msgid "Pre-release benchmark · Oct 29, 2026 · M1 Ultra →"
+msgstr "Benchmark previo al lanzamiento · 29 oct. 2026 · M1 Ultra →"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Previous"
 msgstr "Anterior"
@@ -705,10 +709,6 @@ msgstr "Sebastian Werner · creador y responsable del mantenimiento"
 #: docs/app/i18n/messages.ts
 msgid "See every component →"
 msgstr "Ver todos los componentes →"
-
-#: docs/app/i18n/messages.ts
-msgid "See the benchmark →"
-msgstr "Ver el benchmark →"
 
 #: docs/app/i18n/messages.ts
 msgid "Serve it"
