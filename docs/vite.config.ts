@@ -46,6 +46,20 @@ function npmFacts(name: string): Plugin {
 
 export default defineConfig({
   server: { fs: { allow: fontPackages } },
+  // The server hook is loaded after route discovery. Prebundle its Palamedes
+  // imports up front so the first render keeps one React module graph.
+  ssr: {
+    optimizeDeps: {
+      include: [
+        "@palamedes/core",
+        "@palamedes/core/compiled",
+        "@palamedes/react/compiled",
+        "@palamedes/runtime",
+        "@palamedes/runtime/server",
+        "@palamedes/vite-plugin/delivery",
+      ],
+    },
+  },
   plugins: [
     localizedGuides(),
     npmFacts("ardo"),
@@ -53,7 +67,7 @@ export default defineConfig({
       palamedes({
         exclude: [/node_modules/u, /\/app\/routes\/.*\.mdx$/u],
         failOnMissing: true,
-        keepSourceFallbacks: false,
+        includeSourceMetadata: false,
       })
     ),
     ardo({

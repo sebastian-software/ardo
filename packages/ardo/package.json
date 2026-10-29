@@ -141,7 +141,7 @@
   },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.6.0",
-    "@svgr/cli": "8.1.0",
+    "@svgr/cli": "^8.1.0",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",

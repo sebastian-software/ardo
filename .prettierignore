@@ -23,6 +23,3 @@ pnpm-lock.yaml
 # Guide routes are generated from the English MDX source and PO catalogs.
 /docs/app/routes/*/guide/
 /docs/app/i18n/guides/*.po
-
-# Palamedes source-build cache keeps upstream formatting.
-/docs/.cache/

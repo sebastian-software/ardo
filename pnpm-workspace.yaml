@@ -13,10 +13,10 @@ catalog:
   "@vanilla-extract/css": "^1.21.3"
   "@vanilla-extract/vite-plugin": "^5.2.6"
   "oxc-parser": "^0.155.0"
-  "react": "19.3.1"
-  "react-dom": "19.3.1"
+  "react": "^19.3.1"
+  "react-dom": "^19.3.1"
   "typescript": "7.1.0-dev.20261011.1"
-  "vite": "8.3.5"
+  "vite": "^8.3.5"
   "vitest": "^5.0.5"
 
 overrides:
@@ -64,10 +64,27 @@ minimumReleaseAgeExclude:
   - "@ferrolink/win32-arm64-msvc@0.2.1"
   - "@ferrolink/win32-x64-msvc@0.2.1"
   - ferrolink@0.2.1
+  - "@palamedes/cli-darwin-arm64@2.0.0"
+  - "@palamedes/cli-linux-arm64-gnu@2.0.0"
+  - "@palamedes/cli-linux-arm64-musl@2.0.0"
+  - "@palamedes/cli-linux-x64-gnu@2.0.0"
+  - "@palamedes/cli-linux-x64-musl@2.0.0"
+  - "@palamedes/cli-win32-x64-msvc@2.0.0"
+  - "@palamedes/cli@2.0.0"
+  - "@palamedes/config@2.0.0"
+  - "@palamedes/core-node-darwin-arm64@2.0.0"
+  - "@palamedes/core-node-linux-arm64-gnu@2.0.0"
+  - "@palamedes/core-node-linux-arm64-musl@2.0.0"
+  - "@palamedes/core-node-linux-x64-gnu@2.0.0"
+  - "@palamedes/core-node-linux-x64-musl@2.0.0"
+  - "@palamedes/core-node-win32-x64-msvc@2.0.0"
+  - "@palamedes/core-node@2.0.0"
+  - "@palamedes/core@2.0.0"
+  - "@palamedes/react@2.0.0"
+  - "@palamedes/runtime@2.0.0"
+  - "@palamedes/transform@2.0.0"
+  - "@palamedes/vite-plugin@2.0.0"
 
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
-
-patchedDependencies:
-  palamedes@0.0.0: patches/palamedes@0.0.0.patch
