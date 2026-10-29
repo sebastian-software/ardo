@@ -316,7 +316,7 @@ importers:
         version: 1.21.3
       ferromark:
         specifier: ^3.5.1
-        version: 3.5.1
+        version: 3.6.0
       oxc-parser:
         specifier: 'catalog:'
         version: 0.156.0
@@ -377,7 +377,7 @@ importers:
         version: 0.2.1(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferromark:
         specifier: ^3.5.1
-        version: 3.5.1
+        version: 3.6.0
       minisearch:
         specifier: ^7.2.0
         version: 7.2.0
@@ -3940,54 +3940,54 @@ packages:
       vite:
         optional: true
 
-  ferromark-darwin-arm64@3.5.1:
-    resolution: {integrity: sha512-gRYOFjInDs81PYJEnUnfEfNTz9w2FUQxjN4DWk5GjglLVtxF5qeY65iPLNsEAfflq9z5YZ2cPZHqj0DZwULSfQ==}
+  ferromark-darwin-arm64@3.6.0:
+    resolution: {integrity: sha512-BpZzP66jD5z09mL60l0RgH8kJjISTbpBUTPbjQGYAwhW8coyxl4qeewzeXfduAmDpiYftKsT0wdw4jL6EN/DEQ==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [darwin]
 
-  ferromark-linux-arm64-gnu@3.5.1:
-    resolution: {integrity: sha512-ewedDaNw7RTKfIphMSwNL2Sqck5u+/FFpWOBOotKYbz7Xfxeg2l07hwnC105DlRAFAPEk+oMh0mTVvDRBdZBOg==}
+  ferromark-linux-arm64-gnu@3.6.0:
+    resolution: {integrity: sha512-LG9HsjATmwamH59j9BiOlaCiqJU+CSQiGqpmKJGaffZL10KuGgRdB9GKr9Qlu1sU79T/WlDjjb0Lo5s2nQpVgA==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-arm64-musl@3.5.1:
-    resolution: {integrity: sha512-ugym9Ig8JCR0Znn8W5E4P4a/XBuOpptH4Ztss71058wkf1ffa+Qo4Y+P2qPMj5L1OTkSTtH9eVWoamCXiwchDg==}
+  ferromark-linux-arm64-musl@3.6.0:
+    resolution: {integrity: sha512-5xtvc1KBGZOipNmmAIAudPP2UDZwz+cUeEsEpxOLtMthz/mGh9cK204ejln3JZd63AExnv8WMqFOBpdS85udgA==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  ferromark-linux-x64-gnu@3.5.1:
-    resolution: {integrity: sha512-jMRBvSPKB1hr1YNyauttYo6kXALACFz+kGG+dqyB51T/Cu7WogwsqkI+p5pC21nLD8QjSxOdH0vdoqoPpj+WGA==}
+  ferromark-linux-x64-gnu@3.6.0:
+    resolution: {integrity: sha512-9ZnzoLMkYSsbR1U2iyFDfmGmnt7ZcwtXzIz+bYp+hYOiCLTmIVm/Bdj61AdRKxy9yC2577vMCl9Los74Iy/Ssg==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-x64-musl@3.5.1:
-    resolution: {integrity: sha512-ow1bbb+VH/Im6DMVu6XTJj8yyIPW8hwTqgn1Z54AZGNRsoYOaa1o6zQZQutzF2L2VYXZsP1PgLV6lyfgl+Ih8Q==}
+  ferromark-linux-x64-musl@3.6.0:
+    resolution: {integrity: sha512-KM4qA1TBdMBE+clcbeZbRRAlhsExGroCO7kJ7N6FDoKjoQawRF9jSE/3EWSuR71hngUG/HF0XJVWUGrdzB2cJg==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  ferromark-win32-arm64-msvc@3.5.1:
-    resolution: {integrity: sha512-dO2O/A68qEbxD+l3sS5g6B/tmrHegrpMcfhGY2/abXvhpLaKSdfvdAwPTul8Fl0s3qLP8hmXaAcDPfDx4Qrd3Q==}
+  ferromark-win32-arm64-msvc@3.6.0:
+    resolution: {integrity: sha512-6RApVuhVjR+lB8X1JRo44sEvjbKnsPReJZkJNRq14+Khmsjtkd8QtJXYLgSsulkmoGwNL4zEyDqhSJ81OfXSkg==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [win32]
 
-  ferromark-win32-x64-msvc@3.5.1:
-    resolution: {integrity: sha512-y95s/ak8nCuJuZh9e6qi13szGDV+uQcFFNiLXpx23/0el67DOQcc7V2XJ3Wf7pk/ez9+vd84kv9Ro9RGMtHv/w==}
+  ferromark-win32-x64-msvc@3.6.0:
+    resolution: {integrity: sha512-9+sscpIU9GEbPjUKPY57kRUdwMuRWAH2KisbxtNkw2Hc6KFx9xS/KF4AQ3EgYD3PtWBTvSpRiYNMNKJ93Rq2RA==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [win32]
 
-  ferromark@3.5.1:
-    resolution: {integrity: sha512-+nY7V1nNNHc7AxyS/RBpwpSuKAu6Vc+BBaHSDy3PFe8dcplSfZ/emGTU0Zewz6br/NzQrxkA3p1ilLsrYBzHWA==}
+  ferromark@3.6.0:
+    resolution: {integrity: sha512-qXs6iXFVsi8e4aZreew+HfgOBVmMGKsKfZX+QF5sboj96UBEizbgAl2qEQM+ogVG3n7iFaRirhWn6QDz2azaKg==}
     engines: {node: '>=22.12.0'}
 
   find-up-simple@1.0.1:
@@ -8926,36 +8926,36 @@ snapshots:
       '@ferrolink/win32-x64-msvc': 0.2.1
       vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
-  ferromark-darwin-arm64@3.5.1:
+  ferromark-darwin-arm64@3.6.0:
     optional: true
 
-  ferromark-linux-arm64-gnu@3.5.1:
+  ferromark-linux-arm64-gnu@3.6.0:
     optional: true
 
-  ferromark-linux-arm64-musl@3.5.1:
+  ferromark-linux-arm64-musl@3.6.0:
     optional: true
 
-  ferromark-linux-x64-gnu@3.5.1:
+  ferromark-linux-x64-gnu@3.6.0:
     optional: true
 
-  ferromark-linux-x64-musl@3.5.1:
+  ferromark-linux-x64-musl@3.6.0:
     optional: true
 
-  ferromark-win32-arm64-msvc@3.5.1:
+  ferromark-win32-arm64-msvc@3.6.0:
     optional: true
 
-  ferromark-win32-x64-msvc@3.5.1:
+  ferromark-win32-x64-msvc@3.6.0:
     optional: true
 
-  ferromark@3.5.1:
+  ferromark@3.6.0:
     optionalDependencies:
-      ferromark-darwin-arm64: 3.5.1
-      ferromark-linux-arm64-gnu: 3.5.1
-      ferromark-linux-arm64-musl: 3.5.1
-      ferromark-linux-x64-gnu: 3.5.1
-      ferromark-linux-x64-musl: 3.5.1
-      ferromark-win32-arm64-msvc: 3.5.1
-      ferromark-win32-x64-msvc: 3.5.1
+      ferromark-darwin-arm64: 3.6.0
+      ferromark-linux-arm64-gnu: 3.6.0
+      ferromark-linux-arm64-musl: 3.6.0
+      ferromark-linux-x64-gnu: 3.6.0
+      ferromark-linux-x64-musl: 3.6.0
+      ferromark-win32-arm64-msvc: 3.6.0
+      ferromark-win32-x64-msvc: 3.6.0
 
   find-up-simple@1.0.1: {}
 
