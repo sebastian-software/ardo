@@ -128,7 +128,7 @@
     "yaml": "^2.9.1"
   },
   "peerDependencies": {
-    "oxc-parser": "^0.155.0",
+    "oxc-parser": "^0.155.0 || ^0.156.0",
     "typescript": ">=6.0.0 || ^7.1.0-dev.20261011.1"
   },
   "peerDependenciesMeta": {
