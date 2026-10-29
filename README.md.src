@@ -91,7 +91,7 @@ highlights every code block at build time.
 The API reference is TypeDoc, rethought for React: TypeScript 7's native compiler reads your types,
 and Ardo turns your exports into pages, with components and their props, hooks, and types. In the
 [Ardo 6.0 benchmark (October 29)](./docs/reports/2026-10-29-release-benchmark.md#api-generation),
-it generated 142 Markdown pages from 192 exports in 646 ms (median, Apple M1 Ultra). This measures
+it generated 142 Markdown pages from 192 exports in 655 ms (median, Apple M1 Ultra). This measures
 source-to-Markdown generation with a fresh compiler session; it excludes the documentation-site build.
 
 ## Package

@@ -51,16 +51,16 @@ msgid "← fresh from npm at every build"
 msgstr "← actualisé depuis npm à chaque build"
 
 #: docs/app/i18n/messages.ts
-msgid "142 API pages: 646 ms"
-msgstr "142 pages d’API : 646 ms"
+msgid "142 API pages: 655 ms"
+msgstr "142 pages d’API : 655 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "185 code blocks to JSX: 76 ms"
-msgstr "185 blocs de code vers JSX : 76 ms"
+msgid "185 code blocks to JSX: 77 ms"
+msgstr "185 blocs de code vers JSX : 77 ms"
 
 #: docs/app/i18n/messages.ts
-msgid "19 guides to JSX: 83 ms"
-msgstr "19 guides vers JSX : 83 ms"
+msgid "19 guides to JSX: 82 ms"
+msgstr "19 guides vers JSX : 82 ms"
 
 #: docs/app/i18n/messages.ts
 msgid "A generated API page for defineConfig"
