@@ -62,7 +62,8 @@ export default function Root() {
 ```
 
 That renders a header with search, a sidebar built from your folders, dark mode, and a footer.
-[Theming](https://ardo-docs.dev/v6/guide/theming) starts with three hues in `ardo.config.ts`.
+[Theming](https://ardo-docs.dev/v6/guide/theming) starts with three hues in the `theme` prop of
+`<ArdoRoot>` in `app/root.tsx`.
 
 ## Is Ardo your kind of bird?
 

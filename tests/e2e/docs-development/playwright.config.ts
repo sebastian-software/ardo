@@ -15,14 +15,14 @@ export default defineConfig({
   reporter: "list",
   use: {
     ...devices["Desktop Chrome"],
-    baseURL: "http://127.0.0.1:43102",
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "pnpm --filter ardo-docs dev --host 127.0.0.1 --port 43102 --strictPort",
+    command: "pnpm --filter ardo-docs dev --host 127.0.0.1 --port 0 --strictPort",
     cwd: repositoryRoot,
-    url: "http://127.0.0.1:43102/v6/de/guide/internationalization/",
-    reuseExistingServer: !isCi,
+    // Port 0 lets the OS reserve a free port without a probe-then-bind race.
+    // Playwright passes the captured URL to the browser worker's environment.
+    wait: { stdout: /Local:\s+(?<ardo_docs_dev_url>http:\/\/127\.0\.0\.1:\d+)\//u },
     timeout: 120_000,
   },
 })

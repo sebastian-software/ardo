@@ -2,6 +2,9 @@ import { expect, test } from "@playwright/test"
 import { readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 
+// Set by Playwright after the development server binds its dynamically assigned port.
+test.use({ baseURL: process.env.ARDO_DOCS_DEV_URL })
+
 test("MDX and PO edits regenerate coherent server and browser content without hydration errors", async ({
   page,
 }) => {
