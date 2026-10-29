@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile, readdir, rm } from "node:fs/promis
 import os from "node:os"
 import path from "node:path"
 import { analyzeMdxNative, compileCatalogModule } from "@palamedes/core-node"
-import { createI18n } from "@palamedes/core/compiled"
+import { createI18n } from "@palamedes/core"
 import { prepareDocument } from "ferromark"
 import { generateGuides, localizeGuide, mdxOptions } from "./localize-guides.mjs"
 

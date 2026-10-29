@@ -53,7 +53,7 @@ export default defineConfig({
       palamedes({
         exclude: [/node_modules/u, /\/app\/routes\/.*\.mdx$/u],
         failOnMissing: true,
-        keepSourceFallbacks: false,
+        includeSourceMetadata: false,
       })
     ),
     ardo({

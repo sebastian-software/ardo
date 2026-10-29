@@ -10,9 +10,8 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- Node.js >= 22.22.0
+- Node.js >= 24.3.0 for the workspace and documentation site (Ardo supports >= 22.22.0).
 - pnpm >= 9.0.0
-- Rust 1.96 or newer for the temporary Palamedes source dependency.
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
 ### Development Setup
@@ -96,29 +95,20 @@ highlighter: updating the direct Core dependency does not update that bundled
 copy. The HTML helper and native JSX renderer can produce different markup;
 both preserve their respective public output contracts.
 
-### Palamedes before v2 publication
+### Palamedes documentation integration
 
-The docs install a pinned Palamedes main revision through a pnpm Git URL in
-`docs/package.json`. No submodule initialization is needed. `pnpm install
---frozen-lockfile` fetches the source and its build tools from the root lockfile.
-`pnpm build` first runs `pnpm palamedes:build` to compile the required JavaScript
-packages, native compiler, and CLI together. This temporary source build requires
-Rust 1.96 or newer and initial Cargo network access.
+The docs use the published Palamedes 2.0 packages and matching native sidecars
+from npm. `pnpm install --frozen-lockfile` installs the complete toolchain; no
+Rust compiler or source build is required. Palamedes requires Node.js 24.3 or
+newer, while the published Ardo package continues to support Node.js 22.22 or
+newer. CI runs the documentation and browser checks on Node.js 24.
 
-The build copies the installed source into the ignored `docs/.cache/palamedes`
-directory because upstream build tools exclude files below `node_modules`.
-The docs' `link:` dependencies point at those build outputs. No second pnpm
-workspace installation runs. The pnpm patch in `patches/` preserves Markdown
-whitespace, indented link labels, and empty table cells; it includes native regression tests and must
-remain applied until the pinned revision contains the fixes. The patch also assigns
-`0.0.0` to the private source-root manifest so pnpm can identify the patch target;
-it does not change the SDK package versions.
-
-To update Palamedes, change the Git commit in `docs/package.json`, install with
-pnpm, and rebuild. Verify or remove the patch against that revision. Run
-`pnpm --filter ardo-docs i18n:check`, the docs build, and browser tests. Replace
-the Git source and temporary build tools with coordinated published v2 packages
-once that release is available and verified.
+Keep the direct Palamedes dependencies in `docs/package.json` on the same exact
+version and regenerate the root lockfile with pnpm. After an update, run
+`pnpm --filter ardo-docs i18n:check`, `pnpm docs:budgets`, and the production and
+development browser tests. The guide generator uses the internal compiled-message
+renderer, so its rich-text and full-guide regression tests are required when
+updating Palamedes.
 
 ### Coordinated native-engine development
 

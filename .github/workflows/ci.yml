@@ -66,34 +66,34 @@ jobs:
           pnpm test:integration
 
       - name: Check documentation translations
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: pnpm --filter ardo-docs i18n:check
 
       - name: Build docs site and check performance budgets
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: pnpm docs:budgets
 
       - name: Validate complete GitHub Pages artifact
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: pnpm docs:prepare-pages
 
       - name: Install Playwright browsers
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run browser tests
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         env:
           ARDO_E2E_PREBUILT_DOCS: "true"
           ARDO_E2E_PAGES_ARTIFACT: "true"
         run: pnpm test:e2e
 
       - name: Verify live MDX and PO updates without hydration errors
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: pnpm test:e2e:docs-dev
 
       - name: Verify Basic and runtime fixture development and preview hydration
-        if: matrix.node-version == '22'
+        if: matrix.node-version == '24'
         run: |
           pnpm test:e2e:examples
           ARDO_EXAMPLE_BROWSER_SERVER=preview pnpm test:e2e:examples
