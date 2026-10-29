@@ -103,8 +103,8 @@ Rust compiler or source build is required. Palamedes requires Node.js 24.3 or
 newer, while the published Ardo package continues to support Node.js 22.22 or
 newer. CI runs the documentation and browser checks on Node.js 24.
 
-Keep the direct Palamedes dependencies in `docs/package.json` on the same exact
-version and regenerate the root lockfile with pnpm. After an update, run
+Keep the direct Palamedes dependencies in `docs/package.json` on the same
+compatible version range and regenerate the root lockfile with pnpm. After an update, run
 `pnpm --filter ardo-docs i18n:check`, `pnpm docs:budgets`, and the production and
 development browser tests. The guide generator uses the internal compiled-message
 renderer, so its rich-text and full-guide regression tests are required when
