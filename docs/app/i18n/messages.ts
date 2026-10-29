@@ -8,9 +8,9 @@ const messages: Record<string, () => string> = {
   ". Median source-to-Markdown run, fresh compiler session.": () =>
     t`. Median source-to-Markdown run, fresh compiler session.`,
   ". Median warm run, light and dark.": () => t`. Median warm run, light and dark.`,
-  "19 guides to JSX: 83 ms": () => t`19 guides to JSX: 83 ms`,
-  "185 code blocks to JSX: 76 ms": () => t`185 code blocks to JSX: 76 ms`,
-  "142 API pages: 646 ms": () => t`142 API pages: 646 ms`,
+  "19 guides to JSX: 82 ms": () => t`19 guides to JSX: 82 ms`,
+  "185 code blocks to JSX: 77 ms": () => t`185 code blocks to JSX: 77 ms`,
+  "142 API pages: 655 ms": () => t`142 API pages: 655 ms`,
   "A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.": () =>
     t`A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.`,
   "A generated API page for defineConfig": () => t`A generated API page for defineConfig`,

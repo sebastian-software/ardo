@@ -1,12 +1,11 @@
 # Ardo 6.0 final release benchmark
 
 Measured October 29, 2026 for the Ardo 6.0 final release, at
-[`09f4813`](https://github.com/sebastian-software/ardo/commit/09f4813263d8445646a4b7abb87672780ec19750),
-with a clean working tree. That commit adds only the measurement harness to
-`9931ea3`, the measured implementation revision. The raw report records the
-manifest version as `5.0.0`; release automation applies the `6.0.0` version bump
-separately. The source commit and lockfile identify the measured implementation
-and dependencies.
+[`7f5ea0c`](https://github.com/sebastian-software/ardo/commit/7f5ea0c88517132734ae3aaed5811326b5cf1093),
+with a clean working tree. The measured source combines Ferromark 3.6.0 with the
+updated dependency set for Ardo 6.0. The raw report records the manifest version
+as `5.0.0`; release automation applies the `6.0.0` version bump separately. The
+source commit and lockfile identify the measured implementation and dependencies.
 
 [Raw samples, corpus manifests, source hashes, and machine details](./2026-10-29-release-benchmark.json)
 are stored beside this report. The
@@ -17,27 +16,32 @@ uses the versions already resolved by the workspace lockfile.
 
 | Workload                | Input and output                                                       |    Median |     Sample range |
 | ----------------------- | ---------------------------------------------------------------------- | --------: | ---------------: |
-| Guide compilation       | 19 English MDX guides, 210,503 input bytes → JSX with highlighted code |  82.81 ms |   82.31–84.02 ms |
-| Code block highlighting | 185 fences, 35,629 code bytes → JSX with light and dark colors         |  76.39 ms |   75.69–77.36 ms |
-| API generation          | 3 entry points, 192 exported declarations → 142 Markdown pages         | 645.91 ms | 642.53–656.18 ms |
+| Guide compilation       | 19 English MDX guides, 210,503 input bytes → JSX with highlighted code |  82.02 ms |   80.89–85.12 ms |
+| Code block highlighting | 185 fences, 35,629 code bytes → JSX with light and dark colors         |  76.58 ms |   74.90–77.61 ms |
+| API generation          | 3 entry points, 192 exported declarations → 142 Markdown pages         | 655.13 ms | 644.59–674.65 ms |
 
-The homepage rounds these medians to 83 ms, 76 ms, and 646 ms. These are three
+The homepage rounds these medians to 82 ms, 77 ms, and 655 ms. These are three
 separate workloads. Guide compilation already includes highlighting; the first
 two rows overlap and must not be added together. None measures a complete
 Ardo documentation-site build or establishes a speedup over another tool.
+
+Guide JSX, fence JSX, and API Markdown output hashes match the
+[previous Ferromark 3.5.1 run](https://github.com/sebastian-software/ardo/blob/9c84cb7fe0a7926f3624944ad9b31a02034b2439/docs/reports/2026-10-29-release-benchmark.json).
+This checks the measured output across the dependency update; it does not cover
+every capability of either release.
 
 ## Environment and versions
 
 - Apple M1 Ultra, 20 logical CPUs, 64 GiB RAM, ARM64.
 - macOS 27.0.1, build 26A434; Node.js 24.22.1.
-- Ferromark npm package 3.5.1, using its released native JSX binding.
+- Ferromark npm package 3.6.0, using its released native JSX binding.
 - Ferriki Rust crate 1.1.2 embedded in that binding, as pinned by
-  [Ferromark 3.5.1's Cargo.lock](https://github.com/sebastian-software/ferromark/blob/v3.5.1/Cargo.lock).
+  [Ferromark 3.6.0's Cargo.lock](https://github.com/sebastian-software/ferromark/blob/v3.6.0/Cargo.lock).
   This measures the native path used for Ardo's Markdown fences, not the separate
   `@ferriki/core` JavaScript compatibility API.
 - TypeScript `7.1.0-dev.20261011.1`, Ardo's deliberately pinned native compiler.
   This is a nightly version, not a stable TypeScript release.
-- Oxc parser 0.155.0 validates generated JSX outside the timed windows.
+- Oxc parser 0.156.0 validates generated JSX outside the timed windows.
 
 The source-file and lockfile hashes in the raw report identify the dependency
 and API input state. The report also records the harness hash, every guide's

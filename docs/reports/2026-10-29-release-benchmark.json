@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-29T19:38:47.363Z",
+  "date": "2026-10-29T20:47:33.896Z",
   "source": {
-    "commit": "09f4813263d8445646a4b7abb87672780ec19750",
+    "commit": "7f5ea0c88517132734ae3aaed5811326b5cf1093",
     "status": "",
     "harnessSha256": "2a27f12545717e38b4d1c93754c83facbd0e16f49e440c7fdc6324e14d19858a"
   },
@@ -17,7 +17,7 @@
   },
   "versions": {
     "ardo": "5.0.0",
-    "ferromark": "3.5.1",
+    "ferromark": "3.6.0",
     "typescript": "7.1.0-dev.20261011.1"
   },
   "method": {
@@ -3104,7 +3104,7 @@
       },
       {
         "path": "pnpm-lock.yaml",
-        "sha256": "b474d0bbba9d2ba4f432dccf40cd18f824acace215116d4e189668cc11622589"
+        "sha256": "57d92aa038d1893fb1404f0819b9692670b8e738fc4dc7e5232ae160c88ef3d0"
       }
     ]
   },
@@ -3112,89 +3112,89 @@
     "guides-to-jsx": {
       "samples": [
         {
+          "iterations": 7,
+          "elapsedMs": 566.2482500000001,
+          "msPerCorpus": 80.89260714285716
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 574.1412499999997,
+          "msPerCorpus": 82.02017857142853
+        },
+        {
+          "iterations": 7,
+          "elapsedMs": 568.6513329999998,
+          "msPerCorpus": 81.23590471428568
+        },
+        {
           "iterations": 6,
-          "elapsedMs": 504.1183329999999,
-          "msPerCorpus": 84.01972216666665
+          "elapsedMs": 508.6604579999994,
+          "msPerCorpus": 84.7767429999999
+        },
+        {
+          "iterations": 6,
+          "elapsedMs": 510.7427089999992,
+          "msPerCorpus": 85.1237848333332
         },
         {
           "iterations": 7,
-          "elapsedMs": 577.0086670000001,
-          "msPerCorpus": 82.42980957142858
+          "elapsedMs": 567.3983750000007,
+          "msPerCorpus": 81.0569107142858
         },
         {
           "iterations": 7,
-          "elapsedMs": 582.7264169999999,
-          "msPerCorpus": 83.24663099999998
-        },
-        {
-          "iterations": 7,
-          "elapsedMs": 576.8331669999998,
-          "msPerCorpus": 82.40473814285711
-        },
-        {
-          "iterations": 7,
-          "elapsedMs": 579.6592500000006,
-          "msPerCorpus": 82.80846428571438
-        },
-        {
-          "iterations": 7,
-          "elapsedMs": 584.1119579999995,
-          "msPerCorpus": 83.44456542857135
-        },
-        {
-          "iterations": 7,
-          "elapsedMs": 576.1677919999984,
-          "msPerCorpus": 82.30968457142833
+          "elapsedMs": 578.6737499999999,
+          "msPerCorpus": 82.66767857142857
         }
       ],
-      "medianMs": 82.80846428571438,
+      "medianMs": 82.02017857142853,
       "outputSha256": "796c6c4735827393c84d9331611fcb00d771595ae3a4e873ffd3d1b74cb30578"
     },
     "fences-to-jsx": {
       "samples": [
         {
           "iterations": 7,
-          "elapsedMs": 533.7638340000003,
-          "msPerCorpus": 76.25197628571433
+          "elapsedMs": 527.8840830000004,
+          "msPerCorpus": 75.41201185714291
         },
         {
           "iterations": 7,
-          "elapsedMs": 529.8059579999999,
-          "msPerCorpus": 75.68656542857141
+          "elapsedMs": 536.0652920000002,
+          "msPerCorpus": 76.58075600000004
         },
         {
           "iterations": 7,
-          "elapsedMs": 535.3124589999998,
-          "msPerCorpus": 76.4732084285714
+          "elapsedMs": 524.2886250000001,
+          "msPerCorpus": 74.89837500000002
         },
         {
           "iterations": 7,
-          "elapsedMs": 541.5533329999998,
-          "msPerCorpus": 77.36476185714284
+          "elapsedMs": 531.8702910000002,
+          "msPerCorpus": 75.98147014285716
         },
         {
           "iterations": 7,
-          "elapsedMs": 534.7430829999994,
-          "msPerCorpus": 76.39186899999991
+          "elapsedMs": 536.5126250000003,
+          "msPerCorpus": 76.64466071428576
         },
         {
           "iterations": 7,
-          "elapsedMs": 534.978916,
-          "msPerCorpus": 76.42555942857143
+          "elapsedMs": 538.4410829999997,
+          "msPerCorpus": 76.92015471428567
         },
         {
           "iterations": 7,
-          "elapsedMs": 531.4503330000007,
-          "msPerCorpus": 75.92147614285724
+          "elapsedMs": 543.2400839999991,
+          "msPerCorpus": 77.60572628571416
         }
       ],
-      "medianMs": 76.39186899999991,
+      "medianMs": 76.58075600000004,
       "outputSha256": "f373b1c0a72544727d25297e602896fbfdfa9f0a15e17db74abb2169cd2cae81"
     },
     "api-to-markdown": {
       "samples": [
         {
-          "elapsedMs": 648.1709999999999,
+          "elapsedMs": 644.746292,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3211,7 +3211,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 645.9055000000001,
+          "elapsedMs": 655.1320840000001,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3228,7 +3228,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 642.914417,
+          "elapsedMs": 653.9428330000001,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3245,7 +3245,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 656.179792,
+          "elapsedMs": 655.355458,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3262,7 +3262,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 642.534083,
+          "elapsedMs": 659.051416,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3279,7 +3279,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 644.435209,
+          "elapsedMs": 674.6453750000001,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3296,7 +3296,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         },
         {
-          "elapsedMs": 649.414792,
+          "elapsedMs": 644.586458,
           "exports": 192,
           "pages": 142,
           "outputSha256": "f3f484c1ac9e67590732e3cb156e34c5f13e8cdcf88d985da5910bb3a71a5995",
@@ -3313,7 +3313,7 @@
           "unexpandedProperties": ["ArdoThemeTokens", "ArdoOwlMark", "ArdoOwlMarkProps"]
         }
       ],
-      "medianMs": 645.9055000000001
+      "medianMs": 655.1320840000001
     }
   }
 }
