@@ -1,5 +1,125 @@
 # Changelog
 
+## [6.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v5.0.0...ardo-v6.0.0) (2026-10-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* brand, icons.source, applyBrandTheme, and createTheme are removed; pass theme, logo, and icon to ArdoRoot instead. ArdoRootLayout's theme and favicon props are now colorScheme and icon. The brandLight, accentLight, accentDark, accentSubtle, bgAlt, and sidebarBorder tokens are removed.
+* a props type named after its component, such as `ButtonProps` for `Button`, no longer gets its own API page when the component page lists all of its props. Links to it lead to the component's props.
+* frontmatter `layout` accepts `bare` and `default`. `doc`, `home`, and `page` never changed the rendering and now report an invalid-value warning.
+* githubPages and detectGitHubBasename are removed; set base: "/repo/" for a GitHub Pages project site. defineConfig and loadConfig from the package root and the ardo/press.css alias are removed; use defineArdoConfig from ardo/config and ardo/ui/styles.css.
+* ArdoRoot without an ArdoSidebar child renders a generated sidebar; pass sidebar={false} for a site without one. Ardo loads its stylesheet for every site, so an explicit ardo/ui/styles.css import is optional.
+* githubPages and detectGitHubBasename are removed; set base: "/repo/" for a GitHub Pages project site. defineConfig and loadConfig from the package root and the ardo/press.css alias are removed; use defineArdoConfig from ardo/config and ardo/ui/styles.css.
+* ardo/icons no longer re-exports Lucide. Use the documented Core exports, including Code instead of Code2, or install and register another icon library directly.
+* React Router is gone. Delete `react-router.config.ts`, `app/entry.server.tsx`, `app/entry.client.tsx`, and `app/routes.ts`. The `ardo/router`, `ardo/router/dom`, `ardo/router/routes`, and `ardo/entry.server` exports, the `ReactRouterConfig` type, `withArdoGitHubPages`, `withArdoVersioning`, and `ardoRoutesPlugin` are removed. Route loaders and actions are not supported. Link props that took React Router's `To` take a string. Navigation between pages loads a new document.
+* ardo/ui no longer exports ArdoMermaid or ArdoMermaidProps, and mermaid code fences render as code blocks instead of diagrams. Ardo no longer has an optional mermaid peer dependency, so projects can uninstall mermaid.
+* Ardo owns React, React DOM, and Vite. Node.js 22.22 or newer is required. Use ardo/react, the ardo/react-dom entry points, and jsxImportSource: "ardo" without direct framework dependencies. Ardo 6 removes the router exports; follow the upgrade guide for ArdoLink and the static build.
+* Documentation app imports must come from its own declared and installed dependency tree. Keep embedded component source inside the docs package or install a published dependency.
+* replace create-ardo with versioned agent onboarding
+* Remove typedoc configuration, TypeDocConfig, ardo/typedoc, ardo/typedoc/components, and the retired scaffold flags. Configure api and install the optional native TypeScript compiler and OXC parser. For new projects, follow the versioned Agent Instructions and Basic example. See the TypeDoc migration guide.
+
+### Features
+
+* accept custom header and footer on ArdoRoot ([d052957](https://github.com/sebastian-software/ardo/commit/d0529577171531d5175a5f533936fd6417dc411f))
+* add chroma multipliers and check theme contrast ([92930e0](https://github.com/sebastian-software/ardo/commit/92930e07e0e51c770a5668e9f03a6d2007e434a7))
+* add native API documentation alongside TypeDoc ([#330](https://github.com/sebastian-software/ardo/issues/330)) ([9acec7b](https://github.com/sebastian-software/ardo/commit/9acec7bf88bc5c0160e1e77ded1bc2083db0ff59))
+* add Streamline Core Line chrome icons ([555efce](https://github.com/sebastian-software/ardo/commit/555efce095a7b485239fed135918a9f60c9dcf1b))
+* build static sites without React Router ([0dc271a](https://github.com/sebastian-software/ardo/commit/0dc271ad6cf766b921ffe910d4f3ca3756505444))
+* check build links with ferrolink ([#418](https://github.com/sebastian-software/ardo/issues/418)) ([04b7561](https://github.com/sebastian-software/ardo/commit/04b756110c4626762e73b918c699444f5da16e97))
+* check internal links in the build output ([a9b1bef](https://github.com/sebastian-software/ardo/commit/a9b1bef9260d3495116f439e238e317370973c67))
+* compile MDX modules with prepared Ferromark documents ([#326](https://github.com/sebastian-software/ardo/issues/326)) ([30f2ea1](https://github.com/sebastian-software/ardo/commit/30f2ea11431c735186c01d8fe818abc988d444e2))
+* compile MDX routes with Ferromark's module output ([6c527f5](https://github.com/sebastian-software/ardo/commit/6c527f5835e9d54803362bf0428b1a09d5f34506)), closes [#325](https://github.com/sebastian-software/ardo/issues/325)
+* compile project components with React Compiler ([ca934f2](https://github.com/sebastian-software/ardo/commit/ca934f200e482de969f5e45a8778181f0c16d147))
+* compile project components with React Compiler ([9ef0636](https://github.com/sebastian-software/ardo/commit/9ef063621120bb3bb8b3e8d5dc549e1571106e72)), closes [#386](https://github.com/sebastian-software/ardo/issues/386)
+* configure the base path with base only ([4f6c22d](https://github.com/sebastian-software/ardo/commit/4f6c22d1abd52bae14dbfa0b2d1916028cc03560))
+* fit the header to the page and adapt search to the layout ([b6396cf](https://github.com/sebastian-software/ardo/commit/b6396cf9b1ee737df4e617d19c809b7ee8b952cf))
+* hand the build link check to ferrolink ([01571b3](https://github.com/sebastian-software/ardo/commit/01571b386bfc44251fa8ae192acfa9ee9f318d7b))
+* keep the header to menu, logo and search on narrow screens ([#391](https://github.com/sebastian-software/ardo/issues/391)) ([78da041](https://github.com/sebastian-software/ardo/commit/78da0417349fb1317482491a212af9293e7f586c))
+* make ArdoRoot a complete site on its own ([5b499a9](https://github.com/sebastian-software/ardo/commit/5b499a977017e0c55524ea33eeb424fbb3ebd0ba))
+* make root.tsx optional and smooth small DX edges ([#425](https://github.com/sebastian-software/ardo/issues/425)) ([85abba0](https://github.com/sebastian-software/ardo/commit/85abba0638b6b3c51083094866b365dd203886df))
+* make the V6 docs a four-language Palamedes example ([#424](https://github.com/sebastian-software/ardo/issues/424)) ([4172c54](https://github.com/sebastian-software/ardo/commit/4172c5407b8a502d9d57057cded0c1a79e50d0a6))
+* manage React and Vite through Ardo ([cb8bb06](https://github.com/sebastian-software/ardo/commit/cb8bb06446f31ad3f412237fbb1bc5c9cdb43c6f))
+* move to TypeScript 7.1 and drop the TypeDoc oracle ([793a7be](https://github.com/sebastian-software/ardo/commit/793a7be2c327074e6de30853827af489e7f52532))
+* order the llms exports like the sidebar ([#415](https://github.com/sebastian-software/ardo/issues/415)) ([e566d50](https://github.com/sebastian-software/ardo/commit/e566d506279961cbaec41dbb5060d7e7eb8298b5))
+* remove built-in Mermaid diagram rendering ([d3c4892](https://github.com/sebastian-software/ardo/commit/d3c4892fc76b13ba21d080ab9570cf74138386b1))
+* render API pages the way React developers read them ([#414](https://github.com/sebastian-software/ardo/issues/414)) ([b91d5dd](https://github.com/sebastian-software/ardo/commit/b91d5ddc5e9b10a9c7e5bd0079456faea0da2c4f))
+* replace create-ardo with versioned agent onboarding ([4f0de6d](https://github.com/sebastian-software/ardo/commit/4f0de6d8b14027c0ea3b25012c1f4520d9c80de3))
+* replace Lucide with 50 built-in Core icons ([#385](https://github.com/sebastian-software/ardo/issues/385)) ([f725c83](https://github.com/sebastian-software/ardo/commit/f725c833323b80f6c2ff5d73d5577f62572817f3))
+* replace the line-art owl with the new Ardo owl ([3187968](https://github.com/sebastian-software/ardo/commit/31879686b89ad4ff07038cf6cab49e47b6a4ae62))
+* replace the sidebar rail with vertical section tabs ([#343](https://github.com/sebastian-software/ardo/issues/343)) ([f552231](https://github.com/sebastian-software/ardo/commit/f55223169a8ed9d716c3fe4bf62da7b118cfa14d))
+* replace TypeDoc with native API documentation ([007ba83](https://github.com/sebastian-software/ardo/commit/007ba8304cc44335ee58cb15dcee124aad736fcf))
+* show the page and an excerpt in search results ([c8c20b9](https://github.com/sebastian-software/ardo/commit/c8c20b9dddae88cf0400cf7a7ec48cf60a988e0a))
+* support composable documentation shells ([738ea44](https://github.com/sebastian-software/ardo/commit/738ea4483c21476f8b93032fcda5ead02dcdb769))
+* support document scrolling for docs ([#357](https://github.com/sebastian-software/ardo/issues/357)) ([533889b](https://github.com/sebastian-software/ardo/commit/533889b5a3db834fd7eac1abbf235e306bcd8eef))
+* theme Ardo in JSX instead of the config ([50789b7](https://github.com/sebastian-software/ardo/commit/50789b727717e4f3c240ef69414388f19e111b58))
+* wrap prompt code blocks instead of scrolling them ([8125bed](https://github.com/sebastian-software/ardo/commit/8125bed2adb4fe2aaf9b873142a212a93608c15c))
+
+
+### Bug Fixes
+
+* align the guide, frontmatter, and TypeScript peer with Ardo's behavior ([#413](https://github.com/sebastian-software/ardo/issues/413)) ([582d7ae](https://github.com/sebastian-software/ardo/commit/582d7ae9abec8976ff4ba7b5a3f59378da843f4d))
+* coordinate search focus with mobile navigation ([#406](https://github.com/sebastian-software/ardo/issues/406)) ([7e27afe](https://github.com/sebastian-software/ardo/commit/7e27afee030f4ea54c25616e9d9624dd1e9fdd0d))
+* **deps:** update dependency oxc-transform-react to ^0.154.0 ([6ec6052](https://github.com/sebastian-software/ardo/commit/6ec60521abb76bfa4df614dadc8d1d5313d71dad))
+* derive the HTML code-block title bar from the code surface too ([987fd1c](https://github.com/sebastian-software/ardo/commit/987fd1c4d38d7e9de516326e94394f3c3bf2df55))
+* emit UI styles once in the ardo cascade layer ([2b4d846](https://github.com/sebastian-software/ardo/commit/2b4d8462d341559a21cc84484f49de80d2722fc4))
+* expand inherited API members through declaration namespaces ([7b43065](https://github.com/sebastian-software/ardo/commit/7b430657ba290443111eae0d33db6bcc7cf685bd))
+* honor build output policies and versioned previews ([#403](https://github.com/sebastian-software/ardo/issues/403)) ([0ab52f1](https://github.com/sebastian-software/ardo/commit/0ab52f1c62534029c7ce97c2f41af9ebee51a47f))
+* honor deployment paths in navigation and document defaults ([#407](https://github.com/sebastian-software/ardo/issues/407)) ([c982d7e](https://github.com/sebastian-software/ardo/commit/c982d7e44bbded00b294ea4c3f52903ff10a672a))
+* include changelog and repair published package links ([#404](https://github.com/sebastian-software/ardo/issues/404)) ([c197844](https://github.com/sebastian-software/ardo/commit/c197844dd1d36224db232f728f0e469333b418ec))
+* isolate documentation imports within their package ([#334](https://github.com/sebastian-software/ardo/issues/334)) ([70da8aa](https://github.com/sebastian-software/ardo/commit/70da8aa239ea098aef4821a42ea93e455abb21ce))
+* keep API page headings in order and drop empty description columns ([33a3969](https://github.com/sebastian-software/ardo/commit/33a3969b0f719d5d4178d68ff6322816a1e0f8e6))
+* keep page meta on pages that show a meta export in a code sample ([81eef9b](https://github.com/sebastian-software/ardo/commit/81eef9b64c53f987973165475f47a3db076f58f2))
+* keep the footer inside bare layouts and style its links ([a8fb40f](https://github.com/sebastian-software/ardo/commit/a8fb40f38d0c9c408c7ea492b2597fbcc3404699))
+* leave bare routes to their own site chrome ([#335](https://github.com/sebastian-software/ardo/issues/335)) ([b0184c8](https://github.com/sebastian-software/ardo/commit/b0184c8d468c0b8982ff4b155e9d0f8b89b97a53))
+* measure content width in em instead of rem ([b69aae2](https://github.com/sebastian-software/ardo/commit/b69aae2931119e9eb43b4c95a79b282706f0784c))
+* nest page headings below the page title in llms-full.txt ([#416](https://github.com/sebastian-software/ardo/issues/416)) ([5025f31](https://github.com/sebastian-software/ardo/commit/5025f318a6a203de52dee6accbe4e4d1d641b144))
+* open collapsed sidebar groups and simplify the guide ([#410](https://github.com/sebastian-software/ardo/issues/410)) ([6bbcbb3](https://github.com/sebastian-software/ardo/commit/6bbcbb39884029ff5ae984e2cc5eb470b7ab6615))
+* polish Ardo 6 setup, docs UI, and component tooling ([4096c80](https://github.com/sebastian-software/ardo/commit/4096c8026b2a18f5c602c31579f03a6ecffe33ee))
+* preserve code and resolve links in LLM exports ([#402](https://github.com/sebastian-software/ardo/issues/402)) ([48638eb](https://github.com/sebastian-software/ardo/commit/48638eb572b9b816cb2da135950be1fc7e19ba0f))
+* preserve reading focus and recover failed copies ([#400](https://github.com/sebastian-software/ardo/issues/400)) ([d57d0b3](https://github.com/sebastian-software/ardo/commit/d57d0b3e9e42b86b24e9c6d8dee608eec7b87e64))
+* project MDX content for search and LLM exports ([7c6eef7](https://github.com/sebastian-software/ardo/commit/7c6eef781384fb2f77f1e1df94ca90a5bbfae5dc))
+* recover setup copying and make code blocks keyboard accessible ([b351677](https://github.com/sebastian-software/ardo/commit/b351677917bf653c726fc8e19e5026cd05192bb7))
+* refine chrome chevron and light theme icons ([b93c364](https://github.com/sebastian-software/ardo/commit/b93c364cb0c077b408abbcd8a9671b20c6357046))
+* reject duplicate routes and invalid prerendered pages ([#405](https://github.com/sebastian-software/ardo/issues/405)) ([0f4f54c](https://github.com/sebastian-software/ardo/commit/0f4f54cb74daa8f0ab59d7a3ce152ec1ab67d00b))
+* render tables, steps, task lists and code blocks cleanly ([710dc6a](https://github.com/sebastian-software/ardo/commit/710dc6a91744b4ac676185734091f596f30aefc6))
+* resolve final Ardo 6 release regressions ([#411](https://github.com/sebastian-software/ardo/issues/411)) ([50cda75](https://github.com/sebastian-software/ardo/commit/50cda75e9f15116024079973fa01ba4a66455f37))
+* show missing pages inside the site chrome ([716a92b](https://github.com/sebastian-software/ardo/commit/716a92bc9123de81548f1d5f3f4e86b739e950be))
+* show the dark hero image on frontmatter home pages ([95c745e](https://github.com/sebastian-software/ardo/commit/95c745e1e82cf40f3624947a2a72feadf30a21e0))
+* stop writing the unused search JSON files ([119c530](https://github.com/sebastian-software/ardo/commit/119c530a1d414982dcedf834167ce1048b241382))
+* support custom documentation shells ([#355](https://github.com/sebastian-software/ardo/issues/355)) ([493e534](https://github.com/sebastian-software/ardo/commit/493e53405e906fbc051d9e9d7a9d00a7d338a642))
+* support OXC parser 0.156.0 ([#436](https://github.com/sebastian-software/ardo/issues/436)) ([ccead99](https://github.com/sebastian-software/ardo/commit/ccead9901d1a7a0109d1da4fcce2bf24e5c6cd34))
+* support sitemap exclusions for TSX routes ([#336](https://github.com/sebastian-software/ardo/issues/336)) ([4264002](https://github.com/sebastian-software/ardo/commit/426400285e4dc2980efd635f71a93b5d3c77c5a9))
+* tab keys, sidebar scroll and two theme details ([#381](https://github.com/sebastian-software/ardo/issues/381)) ([1b8ad78](https://github.com/sebastian-software/ardo/commit/1b8ad78cc8e10563c0d2952b0444f046cdf39db7))
+* update Ferriki and Ferromark for the new asset CDN paths ([#356](https://github.com/sebastian-software/ardo/issues/356)) ([97c0dfc](https://github.com/sebastian-software/ardo/commit/97c0dfceb20539eb8fcc729632be18dd0436104a))
+* update OXC React transform to 0.155.0 ([#437](https://github.com/sebastian-software/ardo/issues/437)) ([eb3e6a8](https://github.com/sebastian-software/ardo/commit/eb3e6a8204fc9ea926ace27a775bad5e7b7d10c8))
+
+
+### Performance
+
+* cut the docs build time nearly in half ([b882862](https://github.com/sebastian-software/ardo/commit/b882862341b07bc52726324c8223370ca70abdce))
+* cut the docs build time nearly in half and check links in the build output ([6a2e645](https://github.com/sebastian-software/ardo/commit/6a2e645a0f4087f51640b5275b11f5417eee88a9))
+* keep React in its own client chunk ([b4ce110](https://github.com/sebastian-software/ardo/commit/b4ce1101d367f295768c63a13f85af7c7f4578b7))
+* load MiniSearch on first search ([781c7fb](https://github.com/sebastian-software/ardo/commit/781c7fb659e28c1f18b4ba9837de7b3653ad9d4f))
+* prepare native routes once with published Ferromark ([40a79de](https://github.com/sebastian-software/ardo/commit/40a79dee83b534ce1c37f5f2c939c0f1d74e3d14))
+
+
+### Code Refactoring
+
+* generate built-in icons with SVGR next to the UI code ([8e1bcbd](https://github.com/sebastian-software/ardo/commit/8e1bcbd15d76037b442b43c466d90f018ac27440))
+* keep one public Basic example ([73f0e4e](https://github.com/sebastian-software/ardo/commit/73f0e4eb0889c6001eb0cc58af1b26e5eb99d30f))
+* keep the follow-up helpers within the lint budget ([223d726](https://github.com/sebastian-software/ardo/commit/223d72693e208ad909cd0017c2b339bc34907f85))
+* render literal TSX code blocks with Ferromark ([#327](https://github.com/sebastian-software/ardo/issues/327)) ([91c31a2](https://github.com/sebastian-software/ardo/commit/91c31a2854e0464e608cf5da826f786bdc719b8a))
+* render literal TSX fences with Ferromark ([c97b685](https://github.com/sebastian-software/ardo/commit/c97b6852147c8644f6ef926193d9a98e88b40eaa))
+
+
+### Documentation
+
+* add the section icon license and credit Streamline ([4b636aa](https://github.com/sebastian-software/ardo/commit/4b636aa8f7f74a47cc77617e1f4cc84c4345fca6))
+* document Ardo 6 without React Router ([3e181f1](https://github.com/sebastian-software/ardo/commit/3e181f13468bdef6b078bf66afeb59a2b6958f74))
+* make deployment and component recipes executable ([#401](https://github.com/sebastian-software/ardo/issues/401)) ([e73b77a](https://github.com/sebastian-software/ardo/commit/e73b77a36be8ba896c5ac2fb4478f4d01498ba55))
+* say native engines on the landing and put TypeScript 7 up front ([#426](https://github.com/sebastian-software/ardo/issues/426)) ([848556d](https://github.com/sebastian-software/ardo/commit/848556dece316b4c542039f4423243537830eccb))
+
 ## [5.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v4.2.0...ardo-v5.0.0) (2026-10-03)
 
 
