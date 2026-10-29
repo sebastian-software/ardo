@@ -4,12 +4,13 @@ import "./runtime"
 
 // Literal source messages let Palamedes extract and compile the shared UI copy.
 const messages: Record<string, () => string> = {
-  " on 50 real documents.": () => t` on 50 real documents.`,
-  " on Ardo’s own API.": () => t` on Ardo’s own API.`,
-  ", same HTML.": () => t`, same HTML.`,
-  "2.6× faster than pulldown-cmark": () => t`2.6× faster than pulldown-cmark`,
-  "4.7× faster than Shiki on WebAssembly": () => t`4.7× faster than Shiki on WebAssembly`,
-  "4.3× faster than TypeDoc": () => t`4.3× faster than TypeDoc`,
+  ". Median warm run, including highlighting.": () => t`. Median warm run, including highlighting.`,
+  ". Median source-to-Markdown run, fresh compiler session.": () =>
+    t`. Median source-to-Markdown run, fresh compiler session.`,
+  ". Median warm run, light and dark.": () => t`. Median warm run, light and dark.`,
+  "19 guides to JSX: 83 ms": () => t`19 guides to JSX: 83 ms`,
+  "185 code blocks to JSX: 76 ms": () => t`185 code blocks to JSX: 76 ms`,
+  "142 API pages: 646 ms": () => t`142 API pages: 646 ms`,
   "A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.": () =>
     t`A Rust-powered build too, on Rspack. Ardo builds on Vite and reads your TypeScript.`,
   "A generated API page for defineConfig": () => t`A generated API page for defineConfig`,
@@ -108,7 +109,8 @@ const messages: Record<string, () => string> = {
     t`Rust tooling that tidies up the compiled pages and maps your declarations.`,
   "Sebastian Werner · creator and maintainer": () => t`Sebastian Werner · creator and maintainer`,
   "See every component →": () => t`See every component →`,
-  "See the benchmark →": () => t`See the benchmark →`,
+  "Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →": () =>
+    t`Ardo 6.0 benchmark · Oct 29, 2026 · M1 Ultra →`,
   "Serve it": () => t`Serve it`,
   "Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.": () =>
     t`Set up Ardo in this repository following https://ardo-docs.dev/llms.txt.`,
