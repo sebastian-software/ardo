@@ -5,12 +5,12 @@ import path from "node:path"
 
 import type { MarkdownConfig, SidebarConfig, SidebarItem } from "../config/types"
 import type { PageFrontmatterMetadata } from "./page-metadata"
-import type { RouteManifestOptions } from "./route-manifest"
+import { createManifestRouteIdentity, type RouteManifestOptions } from "./route-manifest"
 
 import { readNativeMarkdownFrontmatter } from "../markdown/native-metadata"
 import { parsePageFrontmatterMetadata, toFrontmatterRecord } from "./page-metadata"
 import { stripTrailingExtension } from "./path-utils"
-import { createRouteIdentity, type RouteIdentity } from "./route-identity"
+import type { RouteIdentity } from "./route-identity"
 import { sortNodesBySectionOrder } from "./sidebar-order"
 
 type SidebarNode = {
@@ -225,12 +225,7 @@ export function createSidebarRouteIdentity(
   routePath: string,
   options: RouteManifestOptions
 ): RouteIdentity {
-  return createRouteIdentity({
-    basePath: options.basePath,
-    localeId: options.localeId,
-    routePath,
-    versionId: options.versionId,
-  })
+  return createManifestRouteIdentity(routePath, options.localeId, options)
 }
 
 export function toSidebarRouteFields(

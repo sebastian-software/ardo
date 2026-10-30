@@ -16,6 +16,7 @@ import "./Toc.css"
 import "./Footer.css"
 import "./DocPage.css"
 import "./content.css"
+import "./Posts.css"
 // Components
 import "./components/Accordion.css"
 import "./components/Card.css"

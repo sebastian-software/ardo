@@ -67,7 +67,12 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     // Rewrite projected Markdown as Markdown: angle-wrapped local URLs are not MDX JSX.
     const content = resolveLlmsContentLinks(
       stripMdxSyntaxOutsideCodeFences(entry.content, title, { format, markdown: config.markdown }),
-      { ...entry, routePaths, format: "md" },
+      {
+        ...entry,
+        routePaths,
+        routeHrefs: llmsRouteHrefs(entries, entry, config),
+        format: "md",
+      },
       config
     )
 
@@ -83,6 +88,25 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
   }
 
   return `${lines.join("\n")}\n`
+}
+
+function llmsRouteHrefs(
+  entries: RouteManifestEntry[],
+  entry: RouteManifestEntry,
+  config: ResolvedConfig
+): ReadonlyMap<string, string> | undefined {
+  if (config.versioning === false || config.versioning.directories == null) return
+  const hrefs = new Map<string, string>()
+  for (const target of entries) {
+    if (target.sourceLocaleId != null)
+      hrefs.set(
+        `/${target.sourceLocaleId}${target.routePath === "/" ? "" : target.routePath}`,
+        target.publicPath
+      )
+    if (target.identity.localeId === entry.identity.localeId)
+      hrefs.set(target.routePath, target.publicPath)
+  }
+  return hrefs
 }
 
 export function getLlmsAssetNames(config: ResolvedConfig) {

@@ -11,6 +11,7 @@ type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath"> & {
   /** Markdown pages are parsed as Markdown, not MDX. Defaults to MDX. */
   format?: "md" | "mdx"
   routePaths?: ReadonlySet<string>
+  routeHrefs?: ReadonlyMap<string, string>
 }
 type LinkConfig = Pick<
   ResolvedConfig,
@@ -48,13 +49,20 @@ export function resolveLlmsContentLinks(
 
 function resolveDestination(destination: string, entry: LinkContext, config: LinkConfig) {
   if (/^[a-z][\d+.a-z-]*:/iu.test(destination) || destination.startsWith("//")) return
-  const base = entry.publicPath.endsWith(entry.routePath)
-    ? entry.publicPath.slice(0, -entry.routePath.length) || "/"
-    : config.base
+  const scoped = config.versioning !== false && config.versioning.directories != null
+  const base = scoped
+    ? config.deploymentBase
+    : entry.publicPath.endsWith(entry.routePath)
+      ? entry.publicPath.slice(0, -entry.routePath.length) || "/"
+      : config.base
   const firstSegment = destination.startsWith("/") ? destination.split(/[/?#]/u)[1] : undefined
   const explicitLocale =
     config.i18n !== false && config.i18n.locales.some((locale) => locale.id === firstSegment)
-  const page = { base: explicitLocale ? config.base : base, path: entry.routePath }
+  const page = {
+    base: explicitLocale && !scoped ? config.base : base,
+    path: entry.routePath,
+    routeHrefs: entry.routeHrefs,
+  }
   const publicPage = new URL(entry.publicPath, config.siteUrl || localOrigin)
   const mounted = isMountedPath(destination, config)
   const href = mounted ? destination : resolveArdoHref(destination, page, entry.routePaths)

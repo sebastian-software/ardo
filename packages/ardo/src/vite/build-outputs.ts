@@ -33,7 +33,7 @@ export function generateRobots(config: ResolvedConfig) {
 
 export function collectRedirects(entries: RouteManifestEntry[], config: ResolvedConfig) {
   const redirects = [...config.redirects]
-  redirects.push(...getVersioningRedirects(config))
+  redirects.push(...getVersioningRedirects(config, entries))
 
   for (const entry of entries) {
     if (

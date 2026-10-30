@@ -4,9 +4,10 @@ import type { Dirent } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { MarkdownConfig, ResolvedConfig } from "../config/types"
+import type { DocumentationVersioningConfig, MarkdownConfig, ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
+import { getCurrentVersion, isVersionedRoute } from "../config/versioning"
 import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
 import {
   createPageMetadata,
@@ -41,6 +42,8 @@ export type RouteManifestEntry = {
 }
 
 export type RouteManifestOptions = {
+  deploymentBase?: string
+  versioning?: DocumentationVersioningConfig | false
   basePath?: string
   localeIds?: string[]
   localeId?: string
@@ -55,9 +58,14 @@ type RouteManifestScanContext = {
 }
 
 export function createRouteManifestOptions(
-  config: { markdown?: MarkdownConfig } & Pick<ResolvedConfig, "base" | "i18n" | "versioning">
+  config: { markdown?: MarkdownConfig; deploymentBase?: string } & Pick<
+    ResolvedConfig,
+    "base" | "i18n" | "versioning"
+  >
 ): RouteManifestOptions {
   return {
+    deploymentBase: config.deploymentBase,
+    versioning: config.versioning,
     basePath: config.base,
     localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),
     localeId: getDefaultLocaleId(config.i18n),
@@ -116,12 +124,12 @@ async function createManifestEntry(
   const stat = await fs.stat(filePath)
   const relativePath = path.relative(routesDir, filePath)
   const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
-  const identity = createRouteIdentity({
-    basePath: options.basePath,
-    localeId: localizedRoute.localeId ?? options.localeId,
-    routePath: toRoutePath(localizedRoute.relativePath, extension),
-    versionId: options.versionId,
-  })
+  const routePath = toRoutePath(localizedRoute.relativePath, extension)
+  const identity = createManifestRouteIdentity(
+    routePath,
+    localizedRoute.localeId ?? options.localeId,
+    options
+  )
   const frontmatterResult = validatePageFrontmatter(data)
   const frontmatter = frontmatterResult.frontmatter
 
@@ -134,7 +142,11 @@ async function createManifestEntry(
     frontmatter,
     frontmatterDiagnostics: frontmatterResult.diagnostics,
     identity,
-    lastmod: stat.mtime,
+    lastmod:
+      typeof frontmatter.publishedAt === "string" &&
+      Number.isFinite(Date.parse(frontmatter.updatedAt ?? frontmatter.publishedAt))
+        ? new Date(frontmatter.updatedAt ?? frontmatter.publishedAt)
+        : stat.mtime,
     metadata: createPageMetadata({ frontmatter, identity, sourcePath: relativePath }),
     path: identity.routePath,
     publicPath: identity.publicPath,
@@ -142,6 +154,26 @@ async function createManifestEntry(
     sourceLocaleId: localizedRoute.localeId,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
+}
+
+export function createManifestRouteIdentity(
+  routePath: string,
+  localeId: string | undefined,
+  options: RouteManifestOptions
+): RouteIdentity {
+  const versioning = options.versioning
+  const scoped = versioning != null && versioning !== false && versioning.directories != null
+  const versioned = isVersionedRoute(routePath, versioning)
+  return createRouteIdentity({
+    basePath: scoped
+      ? versioned
+        ? getCurrentVersion(versioning)?.path
+        : (options.deploymentBase ?? options.basePath)
+      : options.basePath,
+    localeId,
+    routePath,
+    versionId: scoped && !versioned ? undefined : options.versionId,
+  })
 }
 
 function splitLocaleRoute(relativePath: string, localeIds: string[] | undefined) {

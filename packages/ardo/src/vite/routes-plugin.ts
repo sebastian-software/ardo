@@ -2,6 +2,8 @@ import type { Plugin, ViteDevServer } from "vite"
 
 import { existsSync, statSync } from "node:fs"
 import path from "node:path"
+import type { ResolvedConfig } from "../config/types"
+import { createCurrentRouteIdentity } from "./route-identity"
 
 import { findArdoPackageRoot } from "./managed-runtime"
 import { getGitFileTimestamps } from "./git-utils"
@@ -29,7 +31,10 @@ type VirtualId = keyof typeof RESOLVED
  * Provide the route table and Ardo's client and server entries as virtual
  * modules. Every file in the routes directory becomes a lazily loaded page.
  */
-export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin {
+export function ardoRoutesPlugin(
+  options: ArdoRoutesPluginOptions = {},
+  state?: { resolvedConfig?: ResolvedConfig }
+): Plugin {
   let root = process.cwd()
   let routesDir = resolveRoutesDir(root, options.routesDir)
 
@@ -48,7 +53,7 @@ export function ardoRoutesPlugin(options: ArdoRoutesPluginOptions = {}): Plugin 
 
     load(id) {
       if (id === RESOLVED[VIRTUAL_ROUTES_ID]) {
-        return createRoutesModule({ root, routesDir })
+        return createRoutesModule({ root, routesDir, config: state?.resolvedConfig })
       }
       if (id === RESOLVED[VIRTUAL_ENTRY_CLIENT_ID]) {
         return `import ${JSON.stringify(resolveArdoEntry("client"))}\n`
@@ -78,7 +83,15 @@ export const renderPage = (path, options) => withRenderContext({ path, render: (
 }
 
 /** Generate the route table module for the routes in `routesDir`. */
-export function createRoutesModule({ root, routesDir }: { root: string; routesDir: string }) {
+export function createRoutesModule({
+  root,
+  routesDir,
+  config,
+}: {
+  root: string
+  routesDir: string
+  config?: ResolvedConfig
+}) {
   const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
   const timestamps = getGitFileTimestamps(routesDir)
   const rootFile = rootFilePath(routesDir)
@@ -87,13 +100,33 @@ export function createRoutesModule({ root, routesDir }: { root: string; routesDi
   const rootImport = existsSync(rootFile)
     ? `import * as rootModule from ${JSON.stringify(normalizePath(rootFile))}`
     : 'import { ArdoRoot } from "ardo/ui"\nconst rootModule = { default: ArdoRoot }'
+  const publicPaths = new Map<string, string>()
   const entries = sortRoutes(routes).map((route) => {
     const relativePath = normalizePath(path.relative(routesDir, route.filePath))
     const source = {
       relativePath,
       lastUpdated: timestamps.get(relativePath) ?? statSync(route.filePath).mtimeMs,
     }
-    return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(route.path)}, load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
+    let mountedPath = route.path
+    let identityFields = ""
+    if (config?.versioning !== false && config?.versioning.directories != null) {
+      const segments = route.path.split("/").filter(Boolean)
+      const localeId =
+        config.i18n === false
+          ? undefined
+          : config.i18n.locales.find((locale) => locale.id === segments[0])?.id
+      const logicalPath = localeId == null ? route.path : `/${segments.slice(1).join("/")}`
+      const identity = createCurrentRouteIdentity(logicalPath, config, { localeId })
+      mountedPath = `/${identity.publicPath.slice(config.base.length)}`.replace(/\/$/u, "") || "/"
+      identityFields = `logicalPath: ${JSON.stringify(route.path)}, publicPath: ${JSON.stringify(identity.publicPath)}, `
+    }
+    const collision = publicPaths.get(mountedPath)
+    if (collision != null)
+      throw new Error(
+        `[ardo] Multiple routes resolve to the same public URL ${mountedPath}: ${collision} and ${route.filePath}.`
+      )
+    publicPaths.set(mountedPath, route.filePath)
+    return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(mountedPath)}, ${identityFields}load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
   })
   // The root module's CSS comes first, so a cascade-layer order it declares,
   // such as Tailwind's, also places Ardo's `ardo` layer. Unlayered site CSS

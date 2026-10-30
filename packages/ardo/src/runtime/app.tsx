@@ -6,7 +6,7 @@ import type { ArdoResolvedPage, ArdoRootModule, ArdoRouteEntry } from "./routing
 import { ArdoConfigProvider } from "./hooks"
 import { ArdoPageProvider } from "./page"
 import { isArdoNotFound } from "./page-context"
-import { ArdoRoutePathsContext } from "./route-paths"
+import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
 
 /**
  * The part of the page that hydrates: the root component around the page. A
@@ -41,12 +41,38 @@ export function ArdoApp({
   root,
   routes,
 }: ArdoAppProps & { routes: ArdoRouteEntry[] }) {
-  const paths = useMemo(() => new Set(routes.map((route) => route.path)), [routes])
+  const paths = useMemo(
+    () => new Set(routes.map((route) => route.logicalPath ?? route.path)),
+    [routes]
+  )
+  const hrefs = useMemo(() => {
+    const result = new Map(
+      routes.flatMap((route) =>
+        route.publicPath == null ? [] : [[route.logicalPath ?? route.path, route.publicPath]]
+      )
+    )
+    const i18n = config?.i18n
+    if (i18n != null && i18n !== false && result.size > 0) {
+      const locale =
+        i18n.locales.find((entry) => page.data.path.split("/")[1] === entry.id)?.id ??
+        i18n.defaultLocale
+      for (const route of routes) {
+        if (route.publicPath == null) continue
+        const logical = route.logicalPath ?? route.path
+        const publicPath = route.publicPath
+        if (logical === `/${locale}` || logical.startsWith(`/${locale}/`))
+          result.set(logical.slice(locale.length + 1) || "/", publicPath)
+      }
+    }
+    return result
+  }, [routes, config, page.data.path])
   return (
     <ArdoRoutePathsContext value={paths}>
-      <StrictMode>
-        <ArdoPageTree config={config} page={page} root={root} />
-      </StrictMode>
+      <ArdoRouteHrefsContext value={hrefs}>
+        <StrictMode>
+          <ArdoPageTree config={config} page={page} root={root} />
+        </StrictMode>
+      </ArdoRouteHrefsContext>
     </ArdoRoutePathsContext>
   )
 }

@@ -9,8 +9,9 @@ export function resolveVersioningConfig(
   }
 
   return {
+    ...(versioning.directories == null ? {} : { directories: versioning.directories }),
     current: versioning.current,
-    rootRedirect: versioning.rootRedirect ?? true,
+    rootRedirect: versioning.rootRedirect ?? versioning.directories == null,
     versions: versioning.versions.map((version) => ({
       ...version,
       label: version.label ?? version.id,
@@ -23,7 +24,7 @@ export function resolveVersionedBase(
   deploymentBase: string,
   versioning: DocumentationVersioningConfig | false
 ): string {
-  if (versioning === false) {
+  if (versioning === false || versioning.directories != null) {
     return normalizeBasePath(deploymentBase)
   }
 
@@ -32,6 +33,20 @@ export function resolveVersionedBase(
 
 export function getCurrentVersion(versioning: DocumentationVersioningConfig) {
   return versioning.versions.find((version) => version.id === versioning.current)
+}
+
+/** Directory boundaries apply to all descendants and never to sibling prefixes. */
+export function isVersionedRoute(
+  routePath: string,
+  versioning: DocumentationVersioningConfig | false | undefined
+): boolean {
+  if (versioning == null || versioning === false) return false
+  if (versioning.directories == null) return true
+  const pathname = routePath.replaceAll(/^\/+|\/+$/gu, "")
+  return versioning.directories.some((directory) => {
+    const prefix = directory.replaceAll(/^\/+|\/+$/gu, "")
+    return pathname === prefix || pathname.startsWith(`${prefix}/`)
+  })
 }
 
 export function joinUrlPath(basePath: string, routePath: string) {

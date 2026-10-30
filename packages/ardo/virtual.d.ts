@@ -21,6 +21,13 @@ declare module "virtual:ardo/config" {
   export default config
 }
 
+declare module "virtual:ardo/publication" {
+  import type { Publication } from "ardo/config"
+  export const publications: Record<string, Publication>
+  const publication: Publication
+  export default publication
+}
+
 declare module "virtual:ardo/search-index" {
   interface SearchDoc {
     id: string

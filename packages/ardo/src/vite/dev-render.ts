@@ -9,6 +9,7 @@ import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
 import { scanRoutesSync } from "./routes-core"
+import { createSourceRouteIdentity } from "./route-identity"
 
 type ServerEntry = {
   renderPage: (path: string, options: ArdoRenderOptions) => Promise<ArdoRenderResult>
@@ -62,7 +63,7 @@ async function handleRequest(
         )
   if (redirect != null) return redirectResponse(request, redirect)
   const pagePath = toPagePath(request, server.config.base, (value) =>
-    routes.some((route) => route.path === value.replace(/\/+$/u, ""))
+    isMountedPagePath(value, { routesDir, config })
   )
   if (pagePath == null) return undefined
 
@@ -89,6 +90,19 @@ async function handleRequest(
     html: await injectViteTags(server, request.originalUrl ?? "/", result.html),
     status: result.status,
   }
+}
+
+function isMountedPagePath(
+  pathname: string,
+  { routesDir, config }: { routesDir: string; config?: ResolvedConfig }
+): boolean {
+  return scanRoutesSync({ dir: routesDir, rootDir: routesDir }).some((route) => {
+    const mounted =
+      config == null || config.versioning === false || config.versioning.directories == null
+        ? route.path
+        : `/${createSourceRouteIdentity(route.path, config).publicPath.slice(config.base.length)}`
+    return mounted.replace(/\/+$/u, "") === pathname.replace(/\/+$/u, "")
+  })
 }
 
 const EMPTY_DOCUMENT = "<!DOCTYPE html><html><head></head><body></body></html>"

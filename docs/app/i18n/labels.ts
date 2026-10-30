@@ -3,6 +3,14 @@ import type { ArdoLabels } from "ardo/ui"
 
 export function translatedLabels(): ArdoLabels {
   return {
+    publication: {
+      authors: t`Authors`,
+      tags: t`Tags`,
+      subscribeVia: t`Subscribe via`,
+      or: t`or`,
+      updated: t`Updated`,
+      noPosts: t`No posts yet.`,
+    },
     page: {
       edit: t`Edit this page`,
       lastUpdated: t`Last updated`,

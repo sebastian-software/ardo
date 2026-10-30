@@ -181,6 +181,10 @@ msgstr ""
 msgid "Ardo’s default"
 msgstr "El tema predeterminado de Ardo"
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Authors"
+msgstr "Autores"
+
 #: docs/app/i18n/messages.ts
 msgid "Bake it"
 msgstr "Compila"
@@ -489,6 +493,10 @@ msgid "No account, no service to keep alive."
 msgstr "Sin cuentas ni servicios que mantener."
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "No posts yet."
+msgstr "Todavía no hay entradas."
+
+#: docs/app/i18n/labels.ts#translatedLabels
 msgid "No results found for \"{query}\""
 msgstr "No se han encontrado resultados para «{query}»"
 
@@ -528,6 +536,10 @@ msgstr ""
 #: docs/app/i18n/messages.ts
 msgid "Open source · for React projects"
 msgstr "Código abierto · para proyectos React"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "or"
+msgstr "o"
 
 #: docs/app/i18n/messages.ts
 msgid ""
@@ -743,6 +755,10 @@ msgid "Static files, no platform."
 msgstr "Archivos estáticos, sin plataforma."
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "Subscribe via"
+msgstr "Suscribirse mediante"
+
+#: docs/app/i18n/labels.ts#translatedLabels
 msgid "Switch to dark theme"
 msgstr "Cambiar al tema oscuro"
 
@@ -757,6 +773,10 @@ msgstr "Usar el tema del sistema"
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Table of contents"
 msgstr "Índice"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Tags"
+msgstr "Etiquetas"
 
 #: docs/app/i18n/messages.ts
 msgid "The dev server you already love. Save a file, watch the page update."
@@ -848,6 +868,10 @@ msgstr ""
 #: docs/app/i18n/messages.ts
 msgid "under the hood"
 msgstr "por dentro"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Updated"
+msgstr "Actualizado"
 
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Version"

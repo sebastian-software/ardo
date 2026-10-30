@@ -6,6 +6,7 @@ const optionNames = {
   routes: true,
   content: true,
   collections: true,
+  publication: true,
   icons: true,
   routesDir: true,
   title: true,

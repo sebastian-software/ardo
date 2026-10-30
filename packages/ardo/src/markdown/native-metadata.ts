@@ -141,7 +141,7 @@ export function readNativeMarkdownMetadata(
 export function prepareNativeMarkdown(
   source: string,
   format: NativeMarkdownFormat,
-  markdownConfig: MarkdownConfig = {}
+  markdownConfig: MarkdownConfig & { trackReferences?: boolean } = {}
 ) {
   const {
     calloutComponents,
@@ -156,7 +156,12 @@ export function prepareNativeMarkdown(
     output: _output,
     ...preparationOptions
   } = getNativeMarkdownCompileOptions(markdownConfig, { format })
-  const prepared = getJsxCompiler(markdownConfig).prepare(source, preparationOptions)
+  const prepared = getJsxCompiler(markdownConfig).prepare(source, {
+    ...preparationOptions,
+    ...(markdownConfig.trackReferences == null
+      ? {}
+      : { trackReferences: markdownConfig.trackReferences }),
+  })
   const frontmatter = parseNativeFrontmatter(
     prepared.metadata.frontMatter,
     prepared.metadata.frontMatterKind
