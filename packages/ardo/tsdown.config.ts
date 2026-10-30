@@ -51,6 +51,7 @@ export default defineConfig({
   }),
   deps: {
     neverBundle: [
+      "@sebastian-software/app-tracking",
       "react",
       "react-dom",
       "react/jsx-runtime",

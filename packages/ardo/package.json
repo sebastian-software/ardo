@@ -198,5 +198,8 @@
         "removeXMLNS"
       ]
     }
+  },
+  "optionalDependencies": {
+    "@sebastian-software/app-tracking": "^0.6.1"
   }
 }

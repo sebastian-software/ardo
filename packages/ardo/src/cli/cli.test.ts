@@ -2,12 +2,128 @@ import { mkdtemp, rm, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { isCliEntrypoint, runCli } from "./run"
+import type { CliServices } from "./services"
 import { createProjectConfigLogger, parseViteArguments, ViteUsageError } from "./vite-command"
 
+function serviceFixture() {
+  const stop = vi.fn()
+  const services: CliServices = {
+    start: vi.fn().mockResolvedValue(stop),
+    telemetry: vi.fn().mockResolvedValue({ decision: "declined", collectOptIn: false }),
+    checkUpdates: vi.fn().mockResolvedValue({
+      latest: "6.1.0",
+      newer: true,
+      releaseUrl: "https://github.com/sebastian-software/ardo/releases/tag/ardo-v6.1.0",
+    }),
+  }
+  const output: string[] = []
+  const stream = {
+    write(value: string | Uint8Array) {
+      output.push(String(value))
+      return true
+    },
+  }
+  return { services, stop, output, options: { services, stdout: stream, stderr: stream } }
+}
+
 describe("Ardo CLI", () => {
+  it("keeps help, version, invalid commands, and settings help free of reporting", async () => {
+    const { services, options } = serviceFixture()
+    for (const args of [
+      ["--help"],
+      ["--version"],
+      ["unknown"],
+      ["build", "--help"],
+      ["telemetry", "--help"],
+      ["update-check", "--help"],
+    ]) {
+      await runCli(args, { ...options, runVite: async () => ({ code: 0 }) })
+    }
+    expect(services.start).not.toHaveBeenCalled()
+    expect(services.telemetry).not.toHaveBeenCalled()
+    expect(services.checkUpdates).not.toHaveBeenCalled()
+  })
+
+  it("requires explicit informed consent before enabling reporting", async () => {
+    const { services, options, output } = serviceFixture()
+    expect(await runCli(["telemetry", "enable"], options)).toStrictEqual({ type: "exit", code: 2 })
+    expect(services.telemetry).not.toHaveBeenCalled()
+    expect(output.join("")).toContain("Reporting is optional")
+    expect(await runCli(["telemetry", "enable", "--yes"], options)).toStrictEqual({
+      type: "exit",
+      code: 0,
+    })
+    expect(services.telemetry).toHaveBeenCalledWith("enable")
+    expect(services.start).not.toHaveBeenCalled()
+  })
+
+  it.each(["status", "preview", "disable", "delete"])(
+    "routes telemetry %s without collecting another invocation",
+    async (action) => {
+      const { services, options, output } = serviceFixture()
+      expect(await runCli(["telemetry", action], options)).toStrictEqual({ type: "exit", code: 0 })
+      expect(services.telemetry).toHaveBeenCalledWith(action)
+      expect(JSON.parse(output.join(""))).toStrictEqual({
+        decision: "declined",
+        collectOptIn: false,
+      })
+      expect(services.start).not.toHaveBeenCalled()
+    }
+  )
+
+  it("reports settings failures without changing build exit codes", async () => {
+    const { services, options, stop } = serviceFixture()
+    vi.mocked(services.telemetry).mockRejectedValue(new Error("unavailable"))
+    expect(await runCli(["telemetry", "status"], options)).toStrictEqual({ type: "exit", code: 1 })
+    expect(
+      await runCli(["build"], { ...options, runVite: async () => ({ code: 7 }) })
+    ).toStrictEqual({
+      type: "exit",
+      code: 7,
+    })
+    expect(stop).toHaveBeenCalledOnce()
+    vi.mocked(services.start).mockRejectedValue(new Error("unavailable"))
+    expect(
+      await runCli(["build"], { ...options, runVite: async () => ({ code: 0 }) })
+    ).toStrictEqual({
+      type: "exit",
+      code: 0,
+    })
+  })
+
+  it("cancels advisory work even if the underlying command fails", async () => {
+    const { options, stop } = serviceFixture()
+    expect(
+      await runCli(["dev"], {
+        ...options,
+        async runVite() {
+          throw new Error("failed")
+        },
+      })
+    ).toStrictEqual({ type: "exit", code: 1 })
+    expect(stop).toHaveBeenCalledOnce()
+  })
+
+  it("checks updates independently of usage reporting", async () => {
+    const { services, options, output } = serviceFixture()
+    expect(await runCli(["update-check"], options)).toStrictEqual({ type: "exit", code: 0 })
+    expect(JSON.parse(output.join("")).latest).toBe("6.1.0")
+    expect(services.start).not.toHaveBeenCalled()
+    expect(services.telemetry).not.toHaveBeenCalled()
+  })
+
+  it.each([["--logLevel", "silent"], ["--logLevel=silent"], ["-l", "silent"]])(
+    "suppresses update notices in silent mode: %j",
+    async (...flags) => {
+      const { services, options } = serviceFixture()
+      await runCli(["build", ...flags], { ...options, runVite: async () => ({ code: 0 }) })
+      expect(services.start).toHaveBeenCalledWith("build", false)
+    }
+  )
+
   it("drops Vite's wrapper-path line when the project config fails to load", () => {
     const wrapper = "/project/node_modules/.ardo/vite-abc123.config.mjs"
     const errors: string[] = []
