@@ -1,4 +1,4 @@
-import { type AnchorHTMLAttributes, type ReactNode, use } from "react"
+import { type AnchorHTMLAttributes, use } from "react"
 
 import { ArdoMDXComponentsContext, type ArdoMDXComponents } from "./components-context"
 
@@ -13,7 +13,8 @@ import { ArdoContentTable } from "../ui/components/ContentTable"
 import { ArdoIcon } from "../ui/components/Icon"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
-import { ArdoDocContent } from "../ui/DocPage"
+import { ArdoImage } from "../ui/PostImage"
+import { ArdoMarkdownContent } from "../ui/PostContent"
 
 /**
  * Apply Ardo's deployment base to internal links and use regular anchors
@@ -65,11 +66,13 @@ export function useMDXComponents(): ArdoMDXComponents {
     // Wrapper for the entire MDX content - renders content + TOC via DocContent.
     // Generated route modules wrap this with ArdoPageDataProvider, which makes
     // frontmatter and the outline available throughout the page content.
-    wrapper: ({ children }: { children: ReactNode }) => <ArdoDocContent>{children}</ArdoDocContent>,
+    wrapper: ArdoMarkdownContent,
 
     // MDX element overrides — styled via tag selectors in content.css.ts
     a: SmartLink,
     table: ArdoContentTable,
+    img: ArdoImage,
+    Image: ArdoImage,
 
     // Custom Ardo components available in MDX (mapped as short names)
     Accordion: ArdoAccordion,

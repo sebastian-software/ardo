@@ -160,6 +160,20 @@ msgstr ""
 "Jede Seite beginnt mit einem <1/>-Titel; ihre eigenen Überschriften rücken "
 "eine Ebene tiefer."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0/> determines chronological order. Set <1/> for a later revision; editing a "
+"post does not move it to the top. Both timestamps require a time zone. <2/> "
+"references one or more shared profiles from the configuration. Authors can "
+"have names, portraits, professional titles, biographies, links, and optional "
+"AT DIDs."
+msgstr ""
+"<0/> bestimmt die chronologische Reihenfolge. Setze <1/> für eine spätere "
+"Überarbeitung; Änderungen verschieben einen Beitrag nicht nach oben. Beide "
+"Zeitstempel benötigen eine Zeitzone. <2/> verweist auf ein oder mehrere "
+"gemeinsame Profile aus der Konfiguration. Autoren können Namen, Porträts, "
+"Berufsbezeichnungen, Biografien, Links und optionale AT-DIDs haben."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "<0/> drops the sidebar and the page rail, as on a landing page, and the header"
@@ -266,6 +280,21 @@ msgid ""
 msgstr ""
 "Ardo exportiert <0/> weiter. Eine direkte Vite-Abhängigkeit ist deshalb "
 "unnötig."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0/> is required because feeds need absolute article and image URLs. The "
+"generated <1/> directory belongs to Ardo. Choose an unused <2/> directory; "
+"Ardo refuses to replace handwritten routes. Files and directories starting "
+"with <3/> or <4/> in the source directory are excluded from the post "
+"inventory, so helpers can live beside posts."
+msgstr ""
+"<0/> ist erforderlich, da Feeds absolute Artikel- und Bild-URLs benötigen. "
+"Das generierte Verzeichnis <1/> wird von Ardo verwaltet. Wähle ein "
+"ungenutztes <2/>-Verzeichnis; Ardo ersetzt keine handgeschriebenen Routen. "
+"Dateien und Verzeichnisse im Quellverzeichnis, die mit <3/> oder <4/> "
+"beginnen, werden nicht als Beiträge erfasst. Hilfsdateien können daher neben"
+" Beiträgen liegen."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -401,6 +430,20 @@ msgstr ""
 "rendert jede Route nach <1/> und bei gesetztem <3/> in einen Versionsordner "
 "wie <2/>, schreibt <4/> und prüft alle internen Links und Anker im fertigen "
 "HTML."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0/> selects the first matching source. Each source's <1/> contains "
+"resolutions of one composition. Media conditions evaluate the viewport and "
+"environment, rather than the containing card's width. Choose a preset that "
+"matches the placement instead of assuming one breakpoint policy fits every "
+"image."
+msgstr ""
+"<0/> wählt die erste passende Quelle aus. Das <1/> jeder Quelle enthält "
+"Auflösungen einer einzigen Bildkomposition. Medienbedingungen beziehen sich "
+"auf den Viewport und die Umgebung, nicht auf die Breite der umgebenden Karte. "
+"Wähle eine zum Einsatz passende Vorlage, statt für alle Bilder dieselben "
+"Breakpoints anzunehmen."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -662,6 +705,28 @@ msgstr "<0>#77</0>"
 msgid "<0>#81</0>"
 msgstr "<0>#81</0>"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0><1/> (A)</0> identifies a square that must remain visible. <2/> and <3/> "
+"are its center, each normalized from 0 to 1. <4/> is a fraction of the "
+"oriented source's shorter side, so the region remains physically square on "
+"landscape and portrait images."
+msgstr ""
+"<0><1/> (A)</0> definiert ein Quadrat, das sichtbar bleiben muss. <2/> und "
+"<3/> sind sein Mittelpunkt, jeweils auf 0 bis 1 normiert. <4/> ist ein Anteil "
+"der kürzeren Seite des ausgerichteten Quellbilds, sodass der Bereich sowohl "
+"bei Quer- als auch bei Hochformatbildern physisch quadratisch bleibt."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0><1/> (B)</0> expresses the preferred composition. Its normalized <2/>/<3/> "
+"identify the top-left corner, and <4/>/<5/> are fractions of the respective "
+"source dimensions."
+msgstr ""
+"<0><1/> (B)</0> beschreibt die gewünschte Bildkomposition. Die normierten "
+"Werte <2/>/<3/> geben die obere linke Ecke an; <4/>/<5/> sind Anteile der "
+"jeweiligen Quellabmessungen."
+
 #: docs/app/content/guide/theming.mdx
 msgid "<0><1/></0> — <2/>, <3/>, <4/>, <5/>, and <6/> border radii"
 msgstr "<0><1/></0> — Radien <2/>, <3/>, <4/>, <5/> und <6/>."
@@ -719,6 +784,16 @@ msgstr "<0><1/></0> — Typografieskala von <2/> bis <3/>."
 #: docs/app/content/guide/theming.mdx
 msgid "<0><1/></0> as a devDependency"
 msgstr "<0><1/></0> als Entwicklungsabhängigkeit"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"<0><1/></0> defaults to <2/> per side, relative to the resulting crop. Ardo "
+"shifts the crop and reduces that margin when the source lacks enough "
+"surrounding content."
+msgstr ""
+"<0><1/></0> beträgt standardmäßig <2/> pro Seite, bezogen auf den "
+"resultierenden Ausschnitt. Ardo verschiebt den Ausschnitt und verringert den "
+"Rand, wenn das Quellbild nicht genug Umgebung bietet."
 
 #: docs/app/content/guide/theming.mdx
 msgid "<0><1/></0> in the <2/> of <3/>"
@@ -780,6 +855,10 @@ msgstr "<0>Standard:</0><1/>"
 #: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> automatic"
 msgstr "<0>Standard:</0> automatisch"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> disabled"
+msgstr "<0>Standard:</0> deaktiviert"
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -1755,6 +1834,18 @@ msgstr ""
 "Ardo kombiniert Seitenweiterleitungen mit der Option <0><1/></0> in <2/> und "
 "erzeugt beim Produktionsbuild passende Dateien für die Hoster."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo generates <0/> and <1/>, including the full portable article, authors, "
+"tags, and absolute image URLs. The index links both feeds and includes feed "
+"discovery metadata. Stable post IDs remain the feed identity when a URL "
+"changes."
+msgstr ""
+"Ardo generiert <0/> und <1/> mit dem vollständigen portablen Artikel, "
+"Autoren, Tags und absoluten Bild-URLs. Der Index verlinkt beide Feeds und "
+"enthält Metadaten zur Feed-Erkennung. Stabile Beitrags-IDs bleiben auch bei "
+"einer URL-Änderung die Identität im Feed."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Ardo generates a lean favicon set from its owl at build time and serves it "
@@ -1971,6 +2062,18 @@ msgstr ""
 "React-Wiederverwendung hat Vorrang. Für reine Texte können Astro, VitePress "
 "oder Starlight besser passen."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo processes local cover images and Markdown images during the build. Put "
+"images beside the post and use relative paths, or reference a file in <0/> "
+"with a root-relative path. Relative MDX imports continue to resolve against "
+"the original source file."
+msgstr ""
+"Ardo verarbeitet lokale Titelbilder und Markdown-Bilder beim Build. Lege "
+"Bilder neben den Beitrag und verwende relative Pfade oder verweise mit einem "
+"wurzelrelativen Pfad auf eine Datei in <0/>. Relative MDX-Importe werden "
+"weiterhin anhand der ursprünglichen Quelldatei aufgelöst."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "Ardo produces a fully static site out of the box. Your docs can stay in your "
@@ -2077,6 +2180,19 @@ msgid ""
 msgstr ""
 "Ardo liefert ein vollständiges Theme, damit du dich auf Inhalte konzentrieren"
 " kannst:"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo supplies replaceable <0/> and <1/> presets. The default article preset "
+"chooses 16:10 at viewport widths of at least <2/> and otherwise uses 4:3; "
+"cards use 4:3. These rules apply to framed images. Unframed images retain "
+"their original composition."
+msgstr ""
+"Ardo bietet austauschbare Vorlagen für <0/> und <1/>. Die Standardvorlage "
+"für Artikel verwendet ab einer Viewport-Breite von <2/> das Format 16:10 und "
+"ansonsten 4:3; Karten verwenden 4:3. Diese Regeln gelten für Bilder mit "
+"Ausschnittangaben. Ohne Ausschnittangaben bleibt die ursprüngliche "
+"Bildkomposition erhalten."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Ardo supports GitHub Flavored Markdown (GFM) out of the box."
@@ -2344,6 +2460,14 @@ msgstr ""
 "für Agenten</0> anzupassen. Erhalte einen bestehenden Deployment-Workflow, "
 "sofern keine Änderung erforderlich ist."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Assign <0/> once and preserve it when renaming the file, title, or URL. To "
+"create a UUID, run:"
+msgstr ""
+"Vergib <0/> einmal und behalte den Wert bei Änderungen am Dateinamen, Titel "
+"oder der URL bei. Eine UUID erzeugst du mit:"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Astro"
 msgstr "Astro"
@@ -2355,6 +2479,10 @@ msgstr "Astro/Vite"
 #: docs/app/content/guide/components.mdx
 msgid "Authentication and access control"
 msgstr "Authentifizierung und Zugriff"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Author a post"
+msgstr "Einen Beitrag schreiben"
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Autolinks"
@@ -3147,6 +3275,10 @@ msgstr ""
 msgid "Create <0/> in your repository:"
 msgstr "Erstelle <0/> im Repository:"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Create <0/>:"
+msgstr "Erstelle <0/>:"
+
 #: docs/app/content/guide/theming.mdx
 msgid "Create a <0/> file anywhere in your project:"
 msgstr "Erstelle eine <0/>-Datei im Projekt:"
@@ -3202,6 +3334,10 @@ msgstr "Eigene Schriftarten"
 #: docs/app/content/guide/theming.mdx
 msgid "Custom hero section"
 msgstr "Eigener Hero-Bereich"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Custom layouts and AT metadata"
+msgstr "Eigene Layouts und AT-Metadaten"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -3362,6 +3498,10 @@ msgstr "Dokument-Scrollen mit eigenem Layout"
 msgid "Documentation package boundary"
 msgstr "Grenze des Dokumentationspakets"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Documentation versions and locales"
+msgstr "Dokumentationsversionen und Sprachen"
+
 #: docs/app/content/guide/components.mdx
 msgid "Documents and written content"
 msgstr "Dokumente und Texte"
@@ -3449,6 +3589,15 @@ msgstr "Live-Playgrounds"
 msgid "Emphasis"
 msgstr "Hervorhebungen"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Enable a publication in <0/>. Keep canonical posts in a local directory; Ardo "
+"generates a chronological index and one static page per published post."
+msgstr ""
+"Aktiviere eine Publikation in <0/>. Bewahre die maßgeblichen Beiträge in "
+"einem lokalen Verzeichnis auf; Ardo generiert einen chronologischen Index und "
+"eine statische Seite pro veröffentlichtem Beitrag."
+
 #: docs/app/content/guide/configuration.mdx
 msgid "Enable anchor links on headings."
 msgstr "Ankerlinks an Überschriften aktivieren."
@@ -3504,6 +3653,22 @@ msgstr ""
 "Beispiele verwenden normales React. Halte eigene Komponenten im "
 "Dokumentationsprojekt oder installiere dort eine Komponentenbibliothek und "
 "importiere ihre öffentlichen Exporte. Nutze bekannte Hooks und TypeScript."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Every descendant of a selected directory is versioned, regardless of file "
+"format or layout. Everything else, including the homepage, news, comparisons, "
+"and benchmark overviews, stays at the deployment root. Directory entries are "
+"route-relative names without leading slashes, globs, or page-level exceptions."
+" Move a page between directories to change its version scope."
+msgstr ""
+"Alle Unterseiten eines ausgewählten Verzeichnisses werden versioniert, "
+"unabhängig von Dateiformat oder Layout. Alles andere, einschließlich "
+"Homepage, News, Vergleichen und Benchmark-Übersichten, bleibt an der "
+"Deployment-Wurzel. Verzeichniseinträge sind routenrelative Namen ohne "
+"führende Schrägstriche, Glob-Muster oder Ausnahmen für einzelne Seiten. "
+"Verschiebe eine Seite zwischen Verzeichnissen, um ihren Versionsbereich zu "
+"ändern."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3864,6 +4029,14 @@ msgstr ""
 msgid "For fully dynamic code, use the <0/> utility from <1/> at build time:"
 msgstr "Nutze für vollständig dynamischen Code <0/> aus <1/> zur Build-Zeit:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"For inline Markdown images, put framing metadata in the post's frontmatter, "
+"keyed by the exact authored image reference:"
+msgstr ""
+"Für eingebettete Markdown-Bilder hinterlegst du Ausschnitt-Metadaten im "
+"Frontmatter des Beitrags. Verwende die exakte Bildreferenz als Schlüssel:"
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "For large documentation sites, increase Node.js memory:"
 msgstr "Erhöhe für große Dokumentationswebsites den Node.js-Speicher:"
@@ -3904,6 +4077,16 @@ msgstr ""
 "Baue die aktuelle Dokumentation für stabile Hauptversions-URLs in einen "
 "Versionsordner und erhalte ältere Versionen als statische Ordner:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Framing describes the source. A preset describes an image's placement: which "
+"composition to use, ordered viewport media conditions, and the expected "
+"display width."
+msgstr ""
+"Ausschnittangaben beschreiben das Quellbild. Eine Vorlage beschreibt den "
+"Einsatz eines Bilds: die Bildkomposition, geordnete Viewport-Medienbedingungen"
+" und die erwartete Anzeigebreite."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid "From the repository root:"
 msgstr "Im Wurzelverzeichnis des Repositorys:"
@@ -3923,6 +4106,10 @@ msgstr ""
 "Frontmatter hält seitenspezifische Entscheidungen direkt bei der Seite. Nutze"
 " es für Titel, Beschreibung, Seitenleistenreihenfolge, Layout, "
 "Inhaltsverzeichnis, Bearbeitungslinks und Build-Ausgabe."
+
+#: docs/app/content/guide/publications.mdx
+msgid "Full-content feeds and MDX"
+msgstr "Vollständige Feeds und MDX"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Full-text search across all your pages"
@@ -4032,6 +4219,18 @@ msgid ""
 msgstr ""
 "Erzeugt <0/>. Standardmäßig erlaubt Ardo alle Crawler und verweist bei "
 "gesetzter <1/> auf die Sitemap."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Generates a chronological news/blog area, shared author bylines, local "
+"responsive images, and full-content Atom and RSS feeds from "
+"repository-authored posts. See <0>news and publications</0> for setup, "
+"frontmatter, image framing, and portable MDX."
+msgstr ""
+"Generiert einen chronologischen News-/Blog-Bereich, gemeinsame Autorenangaben,"
+" lokale responsive Bilder und vollständige Atom- und RSS-Feeds aus Beiträgen"
+" im Repository. Unter <0>News und Publikationen</0> findest du Einrichtung, "
+"Frontmatter, Bildausschnitte und portables MDX."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "Generates LLM-friendly text artifacts alongside the other build outputs:"
@@ -4517,6 +4716,21 @@ msgstr ""
 "Importiere Dateien und übergib sie an <0/>. Vites Fingerprints bringen neue "
 "Logos beim nächsten Deployment zu den Lesern:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Import the publication data from <0/> to reuse it elsewhere. The default "
+"export is the default locale's publication; <1/> maps locale IDs (or <2/> "
+"without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
+"from <7/>. The source of post content remains MDX; the public data export "
+"contains metadata and prepared image descriptors."
+msgstr ""
+"Importiere die Publikationsdaten aus <0/>, um sie an anderer Stelle zu "
+"verwenden. Der Standardexport ist die Publikation der Standardsprache; <1/> "
+"ordnet Sprach-IDs (oder <2/> ohne Lokalisierung) ihren Daten zu. <3/>, <4/>, "
+"<5/> und <6/> sind über <7/> verfügbar. Der Quelltext der Beiträge bleibt "
+"MDX; der öffentliche Datenexport enthält Metadaten und vorbereitete "
+"Bildbeschreibungen."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Import this file in <0/>. Ardo loads its own stylesheet after it, so the layer"
@@ -4542,6 +4756,25 @@ msgstr ""
 msgid ""
 "In tests and stories, wrap components that read the current page in <0/>:"
 msgstr "In Tests und Vorschauen umschließt <0/> Komponenten mit Seitenzugriff:"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"In this mode, the logo points to the current site home and version controls "
+"appear only on documentation pages. <0/> redirects to the first documentation "
+"entry, preferring configured directory order, shallower entries, frontmatter "
+"order, and then route path. The site root does not redirect to a documentation"
+" version; <1/> is rejected. With localization, site pages use <2/>, "
+"documentation uses <3/>, and the site root redirects to the default site "
+"locale."
+msgstr ""
+"In diesem Modus verweist das Logo auf die aktuelle Website-Startseite, und "
+"Versionsauswahl sowie Versionshinweise erscheinen nur auf "
+"Dokumentationsseiten. <0/> leitet zum ersten Dokumentationseintrag weiter, "
+"sortiert nach konfigurierter Verzeichnisreihenfolge, geringerer "
+"Verschachtelung, Frontmatter-Reihenfolge und Routenpfad. Die Website-Wurzel "
+"leitet nicht zu einer Dokumentationsversion weiter; <1/> wird abgelehnt. Bei "
+"Lokalisierung verwenden Website-Seiten <2/> und Dokumentation <3/>; die "
+"Website-Wurzel leitet zur Standardsprache der Website weiter."
 
 #: docs/app/content/guide/components.mdx
 #: docs/app/content/guide/markdown.mdx
@@ -4896,6 +5129,10 @@ msgstr ""
 msgid "Local components"
 msgstr "Lokale Komponenten"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Local images and framing"
+msgstr "Lokale Bilder und Ausschnitte"
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Local Markdown and MDX that become routes, like <0/>, and also typed records "
@@ -5075,6 +5312,23 @@ msgstr "Mermaid-Diagramme"
 #: docs/app/content/guide/configuration.mdx
 msgid "metadata"
 msgstr "metadata"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Metadata names follow <0>Standard.site's document lexicon</0> where "
+"applicable: <1/>, <2/>, <3/>, <4/>, <5/>, <6/>, and <7/>. Local author keys, "
+"source image paths, framing metadata, <8/>, <9/>, and <10/> are Ardo authoring"
+" fields. A future AT publisher will translate them at the export boundary. "
+"Ordinary builds generate the static website and feeds; they do not publish to "
+"an AT account."
+msgstr ""
+"Metadatennamen folgen, soweit anwendbar, <0>dem Dokument-Lexikon von "
+"Standard.site</0>: <1/>, <2/>, <3/>, <4/>, <5/>, <6/> und <7/>. Lokale "
+"Autorenschlüssel, Bildquellpfade, Ausschnitt-Metadaten, <8/>, <9/> und <10/> "
+"sind Ardo-Felder für die Inhaltserstellung. Eine spätere "
+"AT-Publikationsfunktion wird sie beim Export übersetzen. Normale Builds "
+"erzeugen die statische Website und Feeds; sie veröffentlichen nichts auf "
+"einem AT-Konto."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Migrate from TypeDoc"
@@ -5291,6 +5545,11 @@ msgstr ""
 "Projekts bei und erläutere die Anpassung. Frage nach, wenn eine Änderung "
 "Laufzeitverhalten oder Deployment-Verantwortung betrifft."
 
+#: docs/app/content/guide/publications.mdx
+#: docs/app/content/guide/releases/index.mdx
+msgid "News and publications"
+msgstr "News und Publikationen"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Next Steps"
 msgstr "Nächste Schritte"
@@ -5350,6 +5609,21 @@ msgstr "Hinweise"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Nothing. Remove it from <0/> and from <1/>."
 msgstr "Entfernen, auch aus <0/> und <1/>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Omitting <0/> retains the original whole-site behavior. Adopting directory "
+"selection changes URLs for pages outside the selected areas: configure "
+"explicit redirects for former versioned site URLs and reorganize mixed "
+"directories before enabling it. Retained historical builds are not rewritten "
+"automatically. Shared assets stay under the deployment root in this mode."
+msgstr ""
+"Ohne <0/> bleibt das bisherige Verhalten für die gesamte Website erhalten. "
+"Die Verzeichnisauswahl ändert URLs für Seiten außerhalb der ausgewählten "
+"Bereiche: Richte explizite Weiterleitungen für frühere versionierte "
+"Website-URLs ein und ordne gemischte Verzeichnisse vor der Aktivierung neu. "
+"Aufbewahrte historische Builds werden nicht automatisch umgeschrieben. "
+"Gemeinsame Assets bleiben in diesem Modus an der Deployment-Wurzel."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -5452,6 +5726,18 @@ msgstr "Seiten sortieren"
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Order the tabs in <0/>:"
 msgstr "Sortiere Tabs in <0/>:"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ordinary Markdown exports directly. When MDX contains components, expressions,"
+" module statements, or HTML that the static projection would omit, supply the "
+"complete portable article as Markdown in <0/>. The build reports missing "
+"replacements."
+msgstr ""
+"Gewöhnliches Markdown wird direkt exportiert. Enthält MDX Komponenten, "
+"Ausdrücke, Modulanweisungen oder HTML, die bei der statischen Projektion "
+"entfallen würden, gib den vollständigen portablen Artikel als Markdown in "
+"<0/> an. Der Build meldet fehlende Ersatzinhalte."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Other Providers"
@@ -5792,6 +6078,20 @@ msgstr ""
 "React. DOM-Attribute erscheinen neben eigenen Props; generische Argumente, "
 "ausgelassene Mitglieder und eigene Überschreibungen bleiben erhalten."
 
+#: docs/app/content/guide/configuration.mdx
+msgid "publication"
+msgstr "publication"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Publication URLs remain independent of documentation versions. When versioning"
+" is enabled, select complete documentation directories and keep the "
+"publication outside them:"
+msgstr ""
+"Publikations-URLs bleiben unabhängig von Dokumentationsversionen. Wähle bei "
+"aktivierter Versionierung vollständige Dokumentationsverzeichnisse aus und "
+"halte die Publikation außerhalb dieser Verzeichnisse:"
+
 #: docs/app/content/guide/content-sources.mdx
 msgid ""
 "Publish Markdown and MDX outside app/routes while preserving one canonical "
@@ -6103,6 +6403,15 @@ msgstr ""
 " Veröffentliche nichts und ändere keine Hosting-Verantwortung, sofern dies "
 "nicht beauftragt ist."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Repository-authored Markdown and MDX posts with shared authors, responsive "
+"images, and full-content Atom/RSS feeds; see <0>News and publications</0>."
+msgstr ""
+"Markdown- und MDX-Beiträge aus dem Repository mit gemeinsamen Autoren, "
+"responsiven Bildern und vollständigen Atom-/RSS-Feeds; siehe <0>News und "
+"Publikationen</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Required card heading."
 msgstr "Erforderlicher Kartentitel."
@@ -6384,6 +6693,10 @@ msgstr ""
 msgid "See the <0>Frontmatter Reference</0> for all available options."
 msgstr "Alle Optionen stehen in der <0>Frontmatter-Referenz</0>."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Select a presentation preset"
+msgstr "Eine Darstellungsvorlage auswählen"
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Select optional features by the project's needs:"
 msgstr "Wähle optionale Funktionen nach dem Bedarf des Projekts:"
@@ -6448,6 +6761,19 @@ msgstr ""
 "Setze <0/> im Frontmatter. Die Seite wird weiterhin gebaut und bleibt per Link"
 " erreichbar."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Set <0/> to exclude a post from generated pages, JavaScript, feeds, search, "
+"and sitemaps. A future <1/> also excludes the post. A build at or after that "
+"instant makes it eligible; an already deployed static site does not publish "
+"itself when the clock reaches that date."
+msgstr ""
+"Setze <0/>, um einen Beitrag aus generierten Seiten, JavaScript, Feeds, Suche "
+"und Sitemaps auszuschließen. Auch ein zukünftiges <1/> schließt den Beitrag"
+" aus. Ein Build zu diesem Zeitpunkt oder später nimmt ihn auf; eine bereits "
+"bereitgestellte statische Website veröffentlicht sich nicht selbst, wenn das "
+"Datum erreicht ist."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Set <0/> to hide the outline of this page. Which heading levels the outline "
@@ -6472,6 +6798,14 @@ msgstr ""
 "optional. Präfixe gelten vor Deployment-, Versions- und Sprachpräfixen. Das "
 "betrifft nur die Sitemap; für <7/> setzt du die Robots-Metadaten der Seite "
 "separat."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Set <0/> to version complete documentation areas while keeping the rest of the"
+" site current and unversioned:"
+msgstr ""
+"Setze <0/>, um vollständige Dokumentationsbereiche zu versionieren, während "
+"der Rest der Website aktuell und unversioniert bleibt:"
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Set <0/> when <1/> should be metadata-only."
@@ -6624,6 +6958,20 @@ msgstr ""
 msgid "Social metadata"
 msgstr "Metadaten für soziale Netzwerke"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Source bounds, the target aspect ratio, and preservation of A are hard "
+"constraints. If a required crop cannot contain the complete core, the build "
+"fails with the image path and target ratio. Missing preferred margin alone "
+"does not fail the build. EXIF orientation is applied before interpreting "
+"coordinates."
+msgstr ""
+"Quellgrenzen, das Zielseitenverhältnis und der vollständige Erhalt von A "
+"sind zwingende Vorgaben. Kann ein benötigter Ausschnitt den gesamten "
+"Kernbereich nicht enthalten, schlägt der Build mit Bildpfad und Zielformat "
+"fehl. Ein zu kleiner Wunschrand allein führt nicht zu einem Build-Fehler. Die"
+" EXIF-Ausrichtung wird vor der Interpretation der Koordinaten angewendet."
+
 #: docs/app/content/guide/components.mdx
 msgid "Source files and configuration examples"
 msgstr "Quellcode und Konfiguration"
@@ -6761,6 +7109,16 @@ msgid ""
 msgstr ""
 "Statische Versionsordner, Root-Weiterleitungen, <0/>, Umschalter und "
 "Altversionsbanner."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"SVG and animated images pass through without resizing and cannot use framing "
+"metadata. Externally hosted HTTP images remain external; Ardo does not "
+"download or optimize them."
+msgstr ""
+"SVG und animierte Bilder werden ohne Skalierung durchgereicht und "
+"unterstützen keine Ausschnitt-Metadaten. Extern gehostete HTTP-Bilder bleiben"
+" extern; Ardo lädt sie weder herunter noch optimiert es sie."
 
 #: docs/app/content/guide/components.mdx
 msgid "SVG props"
@@ -7114,6 +7472,19 @@ msgstr "Seitenpfad ohne Basispfad."
 msgid "The current page's table of contents, or an empty list."
 msgstr "Inhaltsverzeichnis oder leere Liste."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The default <0/> MDX component renders prepared image metadata, for example "
+"<1/>. JSX components also need a portable representation in <2/>. Literal "
+"lowercase <3/> elements use normal JSX behavior; use Markdown images or <4/> "
+"for automatic publication image handling."
+msgstr ""
+"Die standardmäßige MDX-Komponente <0/> rendert vorbereitete Bildmetadaten, "
+"zum Beispiel <1/>. JSX-Komponenten benötigen außerdem eine portable "
+"Darstellung in <2/>. Wörtliche, kleingeschriebene <3/>-Elemente folgen dem "
+"normalen JSX-Verhalten; verwende Markdown-Bilder oder <4/> für die "
+"automatische Bildverarbeitung von Publikationen."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "The default Ardo UI stylesheet. Every site loads it; import it yourself only "
@@ -7370,6 +7741,16 @@ msgstr ""
 msgid "The UI is small; the harder part is deciding where feedback data goes."
 msgstr "Kleine Oberfläche; schwieriger ist das Ziel der Feedbackdaten."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
+"independently of the source filename. Custom paths must remain inside the "
+"publication subtree."
+msgstr ""
+"Die URL lautet <0/>. Ein verschachteltes <1/> wird zu <2/>. Setze <3/>, um "
+"eine Adresse unabhängig vom Quelldateinamen zu wählen. Eigene Pfade müssen "
+"innerhalb des Publikations-Unterbaums bleiben."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
 "The V6 deployment uses <0/>, <1/>, <2/>, and <3/>. Older documentation "
@@ -7565,6 +7946,17 @@ msgstr ""
 "ergänzen. Nutze diese Form anstelle von <1/> und importiere <2/> aus Ardo, um"
 " eine eigene Vite-Abhängigkeit zu vermeiden. API-Generierung ergänzt du wie "
 "unter <3>API-Dokumentation</3>."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"This gives the site homepage <0/>, posts <1/>, and guides <2/>. All URLs also "
+"respect a deployment <3/>. Without <4/>, existing projects retain whole-site "
+"versioning. See <5>configuration</5> for migration behavior."
+msgstr ""
+"Damit erhält die Website-Startseite <0/>, Beiträge <1/> und Guides <2/>. "
+"Alle URLs berücksichtigen auch eine Deployment-<3/>. Ohne <4/> behalten "
+"bestehende Projekte die Versionierung der gesamten Website bei. Das "
+"Migrationsverhalten beschreibt die <5>Konfiguration</5>."
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
@@ -8451,6 +8843,16 @@ msgstr ""
 "Bewahre beide mit älteren HTML-Snapshots auf; die Dateien im Stamm bleiben "
 "Aliase der aktuellen Version."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"With only A, Ardo frames tightly around it with the requested margin. With B, "
+"Ardo uses B as the framing preference while preserving A whenever it is "
+"present. B can be used alone."
+msgstr ""
+"Mit A allein schneidet Ardo eng um diesen Bereich mit dem gewünschten Rand "
+"zu. Mit B verwendet Ardo B als bevorzugte Bildkomposition und erhält A "
+"vollständig, sofern angegeben. B lässt sich auch allein verwenden."
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
 "With pnpm, add the esbuild build-script policy from <0>manual "
@@ -8458,6 +8860,19 @@ msgid ""
 msgstr ""
 "Ergänze mit pnpm die esbuild-Buildskriptregel aus der <0>manuellen "
 "Installation</0>. Kopiere nicht Ardos gesamte Workspace-Richtlinie."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"With strict localization enabled, organize posts under <0/>. Ardo generates "
+"<1/> and its feeds for every configured locale. The existing "
+"complete-route-tree validation still applies; this feature does not introduce "
+"translation fallbacks. Pass translated UI labels through <2/>'s <3/>."
+msgstr ""
+"Bei aktivierter strikter Lokalisierung liegen Beiträge unter <0/>. Ardo "
+"erzeugt <1/> und die zugehörigen Feeds für jede konfigurierte Sprache. Die "
+"vorhandene Validierung vollständiger Routenbäume gilt weiterhin; diese "
+"Funktion führt keine Übersetzungs-Fallbacks ein. Übergib übersetzte "
+"UI-Texte über <3/> von <2/>."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -8488,6 +8903,21 @@ msgstr ""
 "Ohne Indexseite gilt der Ordnername als Beschriftung. Optionen unter "
 "<0>Frontmatter</0>."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Without framing metadata, generated resolutions retain the original "
+"composition. With a core area or preferred frame, Ardo generates two crop "
+"families: <0>16:10</0> and <1>4:3</1>. Each family contains several "
+"resolutions; the browser chooses one through <2/> and <3/>. Ardo preserves "
+"source files and avoids upscaling."
+msgstr ""
+"Ohne Ausschnitt-Metadaten behalten die erzeugten Auflösungen die "
+"ursprüngliche Bildkomposition bei. Mit einem Kernbereich oder "
+"Wunschausschnitt erzeugt Ardo zwei Ausschnittfamilien: <0>16:10</0> und "
+"<1>4:3</1>. Jede Familie enthält mehrere Auflösungen; der Browser wählt "
+"über <2/> und <3/> eine aus. Ardo erhält die Quelldateien und skaliert nicht"
+" hoch."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Wrap an ordered list in <0/> to show a sequence. Each step can contain prose, "
@@ -8495,6 +8925,14 @@ msgid ""
 msgstr ""
 "Umschließe eine nummerierte Liste mit <0/>. Schritte können Text, Links und "
 "Codeblöcke enthalten."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Write chronological posts in Markdown or MDX, with shared authors, responsive "
+"images, and full-content feeds."
+msgstr ""
+"Schreibe chronologische Beiträge in Markdown oder MDX mit gemeinsamen "
+"Autoren, responsiven Bildern und vollständigen Feeds."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Write documentation"

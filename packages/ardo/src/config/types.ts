@@ -1,4 +1,5 @@
 import type { MarkdownConfig } from "./markdown"
+import type { PostFrontmatter, PublicationConfig } from "../publication/types"
 
 export type { MarkdownConfig } from "./markdown"
 
@@ -94,6 +95,8 @@ export type DocumentationVersion = {
 }
 
 export type DocumentationVersioningConfig = {
+  /** Complete route directories to version. Omit to retain legacy whole-site versioning. */
+  directories?: string[]
   /** Active documentation version id for this build. */
   current: string
   /** Major documentation versions available from the version switcher. */
@@ -133,6 +136,8 @@ export type I18nConfig = {
  * Runtime UI configuration (header, sidebar, footer) is done in JSX.
  */
 export type ArdoConfig = {
+  /** Repository-authored news/blog posts, local author profiles, feeds, and images. */
+  publication?: PublicationConfig
   /** Site title (used for default meta tags) */
   title: string
   /** Site description (used for default meta tags) */
@@ -313,7 +318,8 @@ export type PageFrontmatter = {
     link?: string
     linkText?: string
   }>
-} & Record<string, unknown>
+} & Partial<PostFrontmatter> &
+  Record<string, unknown>
 
 export type TOCItem = {
   id: string
@@ -354,5 +360,8 @@ export type ResolvedConfig = {
   validation?: ContentValidationConfig
   openapi?: OpenApiConfig
 } & Required<
-  Omit<ArdoConfig, "buildHash" | "buildTime" | "openapi" | "project" | "validation" | "vite">
+  Omit<
+    ArdoConfig,
+    "buildHash" | "buildTime" | "openapi" | "project" | "publication" | "validation" | "vite"
+  >
 >

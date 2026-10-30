@@ -61,6 +61,7 @@ function resolveDeploymentBase(input: VersionedMainBaseInput): string {
   if (input.userBase == null || versioning == null || versioning === false) {
     return normalizeBasePath(userBase)
   }
+  if (versioning.directories != null) return normalizeBasePath(userBase)
 
   const currentVersion = versioning.versions.find((version) => version.id === versioning.current)
   return currentVersion == null

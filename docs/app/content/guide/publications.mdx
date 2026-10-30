@@ -1,0 +1,231 @@
+---
+title: News and publications
+description: Write chronological posts in Markdown or MDX, with shared authors, responsive images, and full-content feeds.
+order: 45
+---
+
+Enable a publication in `ardo.config.ts`. Keep canonical posts in a local directory;
+Ardo generates a chronological index and one static page per published post.
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Example project",
+  siteUrl: "https://example.com",
+  publication: {
+    from: "posts",
+    to: "news", // Default: news
+    name: "News",
+    description: "Updates from the project.",
+    authors: {
+      alex: {
+        name: "Alex Morgan",
+        title: "Software engineer",
+        description: "Working on the project and writing about its design.",
+        avatar: "app/assets/alex.jpg", // Local paths are relative to the project root.
+        url: "https://example.com/team/alex",
+        links: [{ name: "Personal site", url: "https://alex.example.com" }],
+        did: "did:plc:example", // Optional; no AT account is needed.
+      },
+    },
+  },
+})
+```
+
+`siteUrl` is required because feeds need absolute article and image URLs. The generated
+`app/routes/news/` directory belongs to Ardo. Choose an unused `to` directory; Ardo refuses
+to replace handwritten routes. Files and directories starting with `_` or `.` in the source
+directory are excluded from the post inventory, so helpers can live beside posts.
+
+## Author a post
+
+Create `posts/a-readable-update.mdx`:
+
+```mdx
+---
+id: 9c31001a-52ee-4e54-9197-2ff227388cce
+title: A readable update
+description: What changed, and why it matters.
+publishedAt: 2026-10-20T09:00:00Z
+authors: [alex]
+tags: [Engineering]
+coverImage:
+  src: ./landscape.jpg
+  alt: A person standing beside a mountain trail.
+  caption: A quiet moment along the trail.
+---
+
+The article starts here. Use ordinary Markdown, or MDX components when the story needs them.
+
+## A useful detail
+
+![A closer view of the trail](./detail.jpg)
+```
+
+The URL is `/news/a-readable-update/`. A nested `posts/design/typography.mdx` becomes
+`/news/design/typography/`. Set `path: /news/a-permanent-address` to choose an address
+independently of the source filename. Custom paths must remain inside the publication subtree.
+
+Assign `id` once and preserve it when renaming the file, title, or URL. To create a UUID, run:
+
+```sh
+node -e "console.log(require('node:crypto').randomUUID())"
+```
+
+`publishedAt` determines chronological order. Set `updatedAt` for a later revision; editing
+a post does not move it to the top. Both timestamps require a time zone. `authors` references
+one or more shared profiles from the configuration. Authors can have names, portraits,
+professional titles, biographies, links, and optional AT DIDs.
+
+Set `draft: true` to exclude a post from generated pages, JavaScript, feeds, search, and sitemaps.
+A future `publishedAt` also excludes the post. A build at or after that instant makes it eligible;
+an already deployed static site does not publish itself when the clock reaches that date.
+
+## Local images and framing
+
+Ardo processes local cover images and Markdown images during the build. Put images beside the
+post and use relative paths, or reference a file in `public/` with a root-relative path.
+Relative MDX imports continue to resolve against the original source file.
+
+Without framing metadata, generated resolutions retain the original composition. With a core
+area or preferred frame, Ardo generates two crop families: **16:10** and **4:3**. Each family
+contains several resolutions; the browser chooses one through `srcset` and `sizes`.
+Ardo preserves source files and avoids upscaling.
+
+```yaml
+coverImage:
+  src: ./portrait.jpg
+  alt: Alex beside a window.
+  core: { x: 0.65, y: 0.45, size: 0.3 }
+  margin: 0.15
+  frame: { x: 0.3, y: 0.1, width: 0.6, height: 0.8 }
+```
+
+- **`core` (A)** identifies a square that must remain visible. `x` and `y` are its center,
+  each normalized from 0 to 1. `size` is a fraction of the oriented source's shorter side,
+  so the region remains physically square on landscape and portrait images.
+- **`frame` (B)** expresses the preferred composition. Its normalized `x`/`y` identify the
+  top-left corner, and `width`/`height` are fractions of the respective source dimensions.
+- With only A, Ardo frames tightly around it with the requested margin. With B, Ardo uses
+  B as the framing preference while preserving A whenever it is present. B can be used alone.
+- **`margin`** defaults to `0.15` per side, relative to the resulting crop. Ardo shifts the crop
+  and reduces that margin when the source lacks enough surrounding content.
+
+Source bounds, the target aspect ratio, and preservation of A are hard constraints.
+If a required crop cannot contain the complete core, the build fails with the image path
+and target ratio. Missing preferred margin alone does not fail the build. EXIF orientation
+is applied before interpreting coordinates.
+
+For inline Markdown images, put framing metadata in the post's frontmatter, keyed by the
+exact authored image reference:
+
+```yaml
+images:
+  ./detail.jpg:
+    core: { x: 0.5, y: 0.5, size: 0.25 }
+    preset: article
+```
+
+SVG and animated images pass through without resizing and cannot use framing metadata.
+Externally hosted HTTP images remain external; Ardo does not download or optimize them.
+
+## Select a presentation preset
+
+Framing describes the source. A preset describes an image's placement: which composition
+to use, ordered viewport media conditions, and the expected display width.
+
+Ardo supplies replaceable `article` and `card` presets. The default article preset chooses
+16:10 at viewport widths of at least `52rem` and otherwise uses 4:3; cards use 4:3.
+These rules apply to framed images. Unframed images retain their original composition.
+
+```ts
+publication: {
+  // from, authors, ...
+  images: {
+    widths: [384, 640, 960, 1280, 1920],
+    presets: {
+      article: {
+        fallback: "4:3",
+        sizes: "(min-width: 64rem) 48rem, 100vw",
+        sources: [{ media: "(min-width: 64rem)", composition: "16:10" }],
+      },
+      card: { fallback: "4:3", sizes: "(min-width: 48rem) 20rem, 100vw" },
+    },
+  },
+}
+```
+
+`picture` selects the first matching source. Each source's `srcset` contains resolutions
+of one composition. Media conditions evaluate the viewport and environment, rather than
+the containing card's width. Choose a preset that matches the placement instead of assuming
+one breakpoint policy fits every image.
+
+## Full-content feeds and MDX
+
+Ardo generates `/news/atom.xml` and `/news/rss.xml`, including the full portable article,
+authors, tags, and absolute image URLs. The index links both feeds and includes feed
+discovery metadata. Stable post IDs remain the feed identity when a URL changes.
+
+Ordinary Markdown exports directly. When MDX contains components, expressions, module
+statements, or HTML that the static projection would omit, supply the complete portable
+article as Markdown in `feedContent`. The build reports missing replacements.
+
+```mdx
+---
+id: c4977b7e-b283-4da3-83f0-071f978a1e25
+title: An interactive example
+publishedAt: 2026-10-20T09:00:00Z
+authors: [alex]
+feedContent: |
+  The website contains an interactive counter. It starts at zero;
+  pressing the button adds one. This text explains the complete example.
+---
+
+import { Counter } from "./_Counter"
+
+The website contains an interactive counter.
+
+<Counter />
+```
+
+The default `Image` MDX component renders prepared image metadata, for example
+`<Image src="./detail.jpg" alt="The trail" />`. JSX components also need a portable
+representation in `feedContent`. Literal lowercase `<img>` elements use normal JSX
+behavior; use Markdown images or `Image` for automatic publication image handling.
+
+## Documentation versions and locales
+
+Publication URLs remain independent of documentation versions. When versioning is enabled,
+select complete documentation directories and keep the publication outside them:
+
+```ts
+versioning: {
+  current: "v2",
+  versions: [{ id: "v2", path: "/v2/" }, { id: "v1", path: "/v1/" }],
+  directories: ["guide", "api-reference"],
+}
+```
+
+This gives the site homepage `/`, posts `/news/...`, and guides `/v2/guide/...`.
+All URLs also respect a deployment `base`. Without `directories`, existing projects retain
+whole-site versioning. See [configuration](./configuration#versioning) for migration behavior.
+
+With strict localization enabled, organize posts under `posts/<locale>/`. Ardo generates
+`/<locale>/news/` and its feeds for every configured locale. The existing complete-route-tree
+validation still applies; this feature does not introduce translation fallbacks.
+Pass translated UI labels through `ArdoRoot`'s `labels.publication`.
+
+## Custom layouts and AT metadata
+
+Import the publication data from `virtual:ardo/publication` to reuse it elsewhere. The
+default export is the default locale's publication; `publications` maps locale IDs (or `default`
+without localization) to their data. `ArdoPostList`, `ArdoPost`, `ArdoImage`, and
+`ardoImagePresets` are available from `ardo/ui`. The source of post content remains MDX;
+the public data export contains metadata and prepared image descriptors.
+
+Metadata names follow [Standard.site's document lexicon](https://standard.site/docs/lexicons/document)
+where applicable: `title`, `description`, `publishedAt`, `updatedAt`, `tags`, `coverImage`, and
+`path`. Local author keys, source image paths, framing metadata, `id`, `draft`, and `feedContent`
+are Ardo authoring fields. A future AT publisher will translate them at the export boundary.
+Ordinary builds generate the static website and feeds; they do not publish to an AT account.

@@ -61,7 +61,13 @@ export async function renderPage(
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
 
-  const locale = applyLocaleMetadata(page, config, { path: pagePath, base: options.base })
+  const locale = applyLocaleMetadata(page, config, {
+    path: page.data.path,
+    base:
+      route?.publicPath == null
+        ? options.base
+        : `${route.publicPath.replace(/\/$/u, "").slice(0, -page.data.path.length)}/`,
+  })
   const { body, icons } = await renderWithIcons(
     <ArdoApp config={config} page={page} root={root} routes={routes} />
   )

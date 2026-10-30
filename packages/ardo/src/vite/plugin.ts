@@ -24,6 +24,7 @@ import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { normalizePath, resolveRoutesDir } from "./path-utils"
+import { createPublicationPlugin } from "./publication-plugin"
 import { readProjectMeta } from "./project-meta"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
@@ -54,6 +55,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   const {
     content,
     collections,
+    publication,
     icons,
     openapi,
     routes,
@@ -76,6 +78,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   }
   const plugins: Plugin[] = [
     createMainPlugin(state, mainPluginOptions),
+    ...(publication == null ? [] : [createPublicationPlugin(publication, state)]),
     createStaticSitePlugin(state),
     ...createRuntimeBoundaryPlugins(),
   ]
@@ -86,7 +89,12 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     [...(content ?? []), ...createCollectionContentSources(collections)],
     routesDirOption
   )
-  addRoutesPlugin(plugins, routes, routesDirOption)
+  plugins.push(
+    ardoRoutesPlugin(
+      { routesDir: routesDirOption, ...(routes === false || routes == null ? {} : routes) },
+      state
+    )
+  )
   addApiPlugin(plugins, { api, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(siteConfig.markdown))
@@ -130,15 +138,6 @@ function addContentSourcePlugin(
       routesDirOption,
     })
   )
-}
-
-function addRoutesPlugin(
-  plugins: Plugin[],
-  routes: ArdoPluginOptions["routes"],
-  routesDirOption: string | undefined
-): void {
-  const routePluginOptions = routes === false || routes == null ? {} : routes
-  plugins.push(ardoRoutesPlugin({ routesDir: routesDirOption, ...routePluginOptions }))
 }
 
 function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {

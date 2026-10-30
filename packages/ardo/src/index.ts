@@ -1,6 +1,17 @@
 // Config (client-safe: pure types and small utility functions)
 export { resolveConfig } from "./config"
 export type {
+  AuthorProfile,
+  ImageComposition,
+  ImageCore,
+  ImageFrame,
+  ImagePreset,
+  Post,
+  PostFrontmatter,
+  PostImage,
+  PostImageInput,
+  Publication,
+  PublicationConfig,
   ArdoConfig,
   ContentValidationConfig,
   DiagnosticLevel,
@@ -52,6 +63,9 @@ export type {
 
 // UI Components (client-safe)
 export {
+  ArdoImage,
+  ArdoPost,
+  ArdoPostList,
   ArdoCodeBlock,
   ArdoCodeGroup,
   ArdoContainer,

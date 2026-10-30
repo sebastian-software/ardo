@@ -5,6 +5,7 @@ import type { DocumentationVersion } from "../config/types"
 
 import { useArdoConfig } from "../runtime/hooks"
 import { getLocaleFromPath } from "./version-path"
+import { isVersionedRoute } from "../config/versioning"
 
 /**
  * True inside the mobile menu. The menu collects the site controls in one
@@ -20,7 +21,16 @@ export type VersionChoice = {
 }
 
 export function useVersionChoice(): VersionChoice | undefined {
-  const versioning = useArdoConfig().versioning
+  const config = useArdoConfig()
+  const versioning = config.versioning
+  const pathname = useArdoPath()
+  const localeIds =
+    config.i18n === false || config.i18n == null
+      ? []
+      : config.i18n.locales.map((locale) => locale.id)
+  const segments = pathname.split("/").filter(Boolean)
+  const routePath = localeIds.includes(segments[0]) ? `/${segments.slice(1).join("/")}` : pathname
+  if (!isVersionedRoute(routePath, versioning)) return undefined
   if (versioning === false || versioning == null || versioning.versions.length < 2) {
     return undefined
   }

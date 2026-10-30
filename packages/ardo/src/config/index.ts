@@ -37,6 +37,19 @@ import { validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
+export type {
+  AuthorProfile,
+  ImageComposition,
+  ImageCore,
+  ImageFrame,
+  ImagePreset,
+  Post,
+  PostFrontmatter,
+  PostImage,
+  PostImageInput,
+  Publication,
+  PublicationConfig,
+} from "../publication/types"
 
 export type {
   ArdoConfig,
@@ -191,6 +204,20 @@ function validateVersioningConfig(config: ArdoConfig, errors: string[]): void {
   }
 
   validateCurrentVersionId(versioning.current, errors)
+  if (versioning.directories != null) {
+    for (const directory of versioning.directories) {
+      if (!/^[\w-]+(?:\/[\w-]+)*$/u.test(directory)) {
+        errors.push(
+          `versioning.directories must contain route directories such as "guide" or "api-reference", without globs or leading slashes: ${JSON.stringify(directory)}.`
+        )
+      }
+    }
+    if (versioning.rootRedirect === true) {
+      errors.push(
+        "versioning.rootRedirect cannot be enabled with directory-based versioning; the site root belongs to the current site."
+      )
+    }
+  }
   if (hasNoVersions(versioning.versions, errors)) {
     return
   }

@@ -98,6 +98,7 @@ async function stopDevServer(child: ChildProcess): Promise<void> {
 }
 
 type ServerExpectation = {
+  afterFirstResponse?: (context: { origin: string; html: string }) => Promise<void>
   title?: string
   responseHeader?: { name: string; value: string }
   pathname?: string
@@ -165,6 +166,7 @@ async function assertServerSSR(
     if (expected?.responseHeader != null) {
       expect(response.headers.get(expected.responseHeader.name)).toBe(expected.responseHeader.value)
     }
+    await expected?.afterFirstResponse?.({ origin: `http://${devHost}:${port}`, html })
 
     for (const page of expected?.pages ?? []) {
       const pageResponse = await fetch(`http://${devHost}:${port}${page.pathname}`, {

@@ -18,6 +18,9 @@ export type ArdoRootModule = ArdoRouteModule & {
 }
 
 export type ArdoRouteEntry = {
+  /** Authored path when the public URL includes a documentation version. */
+  logicalPath?: string
+  publicPath?: string
   /** Route file relative to the project root, for example `app/routes/guide/intro.mdx`. */
   id: string
   /** URL path without the base path, for example `/guide/intro`. Segments may be `:param`. */
@@ -76,7 +79,12 @@ export async function resolvePage(input: {
     }
     return {
       component: module.default,
-      data: { base, path, routeId: route.id, source: input.source ?? route.source },
+      data: {
+        base,
+        path: route.logicalPath ?? path,
+        routeId: route.id,
+        source: input.source ?? route.source,
+      },
       handle: module.handle,
       source: input.source ?? route.source,
       meta: withDefaultTitle((module.meta ?? root.meta)?.() ?? [], input.siteTitle),

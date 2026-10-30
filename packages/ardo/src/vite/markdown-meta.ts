@@ -1,6 +1,7 @@
 import type { MetadataConfig, ResolvedConfig } from "../config/types"
 
 import { isPathInsideDirectory, normalizePath } from "./path-utils"
+import { createSourceRouteIdentity } from "./route-identity"
 
 type MarkdownMetaState = {
   resolvedConfig?: ResolvedConfig
@@ -72,7 +73,7 @@ export function transformMarkdownMeta(
   const entries = buildMetaEntries({
     canonical: extractFrontmatterValue(code, "canonical"),
     pageTitle,
-    routePath: getRoutePathFromId(id, state.routesDir, state.resolvedConfig?.base ?? "/"),
+    routePath: getPublicRoutePath(id, state),
     siteMetadata: state.resolvedConfig?.metadata ?? {},
     siteUrl: state.resolvedConfig?.siteUrl ?? "",
     siteTitle,
@@ -88,6 +89,17 @@ export function transformMarkdownMeta(
     twitterTitle: extractFrontmatterValue(code, "twitterTitle"),
   })
   return { code: `${code}\nexport const meta = () => [${entries.join(", ")}];\n`, map: null }
+}
+
+function getPublicRoutePath(id: string, state: MarkdownMetaState): string {
+  const relative = normalizePath(id)
+    .slice(normalizePath(state.routesDir).length)
+    .replace(/^\//u, "")
+  const name = relative.replace(/\.(?:md|mdx)$/u, "").replace(/(?:^|\/)(?:index|home)$/u, "")
+  const routePath = `/${name}`
+  return state.resolvedConfig == null
+    ? routePath
+    : createSourceRouteIdentity(routePath, state.resolvedConfig).publicPath
 }
 
 function shouldInjectMeta(code: string, id: string, state: MarkdownMetaState): boolean {
@@ -291,30 +303,6 @@ function parseJsonString(value: string): string | undefined {
   } catch {
     return undefined
   }
-}
-
-function getRoutePathFromId(id: string, routesDir: string, base: string) {
-  const normalizedId = normalizePath(id)
-  const normalizedRoutesDir = normalizePath(routesDir)
-  const relativePath = normalizedId.slice(normalizedRoutesDir.length).replace(/^\//u, "")
-  const withoutExtension = relativePath.replace(/\.(?:md|mdx)$/u, "")
-  if (withoutExtension === "index" || withoutExtension === "home") return joinBasePath(base, "/")
-  if (withoutExtension.endsWith("/index") || withoutExtension.endsWith("/home")) {
-    return joinBasePath(base, `/${withoutExtension.slice(0, withoutExtension.lastIndexOf("/"))}`)
-  }
-  return joinBasePath(base, `/${withoutExtension}`)
-}
-
-function joinBasePath(base: string, routePath: string): string {
-  const trimmedBase = base.trim()
-  if (trimmedBase === "" || trimmedBase === "/") {
-    return routePath
-  }
-
-  const baseWithLeadingSlash = trimmedBase.startsWith("/") ? trimmedBase : `/${trimmedBase}`
-  const normalizedBase = trimTrailingSlashes(baseWithLeadingSlash)
-  const normalizedRoutePath = routePath.startsWith("/") ? routePath : `/${routePath}`
-  return `${normalizedBase}${normalizedRoutePath}`
 }
 
 function toAbsoluteUrl(value: string | undefined, siteUrl: string): string | undefined {

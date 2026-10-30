@@ -1,6 +1,6 @@
 import { type ComponentType, createContext, use } from "react"
 
-import { ArdoRoutePathsContext } from "./route-paths"
+import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
 
 /** One `<meta>`, `<title>`, or `<link>` description, as returned by a `meta` export. */
 export type ArdoMetaDescriptor =
@@ -60,7 +60,8 @@ export function useArdoHref(to: string): string {
 export function useArdoHrefResolver(): (to: string) => string {
   const page = use(ArdoPageContext)
   const routePaths = use(ArdoRoutePathsContext)
-  return (to) => resolveArdoHref(to, page, routePaths)
+  const hrefs = use(ArdoRouteHrefsContext)
+  return (to) => resolveArdoHref(to, { ...page, routeHrefs: hrefs }, routePaths)
 }
 
 /** Whether `to` names the current page, or with `end: false` one of its ancestors. */
@@ -86,16 +87,46 @@ export function navigateTo(href: string): void {
  */
 export function resolveArdoHref(
   to: string,
-  page: { base: string; path: string },
+  page: { base: string; path: string; routeHrefs?: ReadonlyMap<string, string> },
   routePaths?: ReadonlySet<string>
 ): string {
   if (to === "" || isExternal(to) || to.startsWith("#") || to.startsWith("?")) return to
   const target = toInternalPath(to, page)
   if (target == null) return to
+  const mapped = resolveMappedHref(to, target, page)
+  if (mapped != null) return mapped
   const base = normalizeBase(page.base)
   const pathname =
     target === "/" ? base : `${base.slice(0, -1)}${withPageSlash(target, routePaths)}`
   return pathname + to.slice(firstIndexOf(to, ["?", "#"]))
+}
+
+function resolveMappedHref(
+  to: string,
+  target: string,
+  page: { base: string; routeHrefs?: ReadonlyMap<string, string> }
+): string | undefined {
+  const routeHrefs = page.routeHrefs
+  if (routeHrefs != null && routeHrefs.size > 0) {
+    const key = target.length > 1 ? target.replace(/\/+$/u, "") : target
+    let publicPath = routeHrefs.get(key)
+    if (publicPath == null) {
+      try {
+        publicPath = routeHrefs.get(decodeURIComponent(key))
+      } catch {
+        /* Keep malformed URLs unchanged. */
+      }
+    }
+    if (publicPath == null)
+      publicPath = [...routeHrefs.values()].find((href) => href.replace(/\/+$/u, "") === key)
+    if (publicPath != null)
+      return (
+        (publicPath.endsWith("/") ? publicPath : `${publicPath}/`) +
+        to.slice(firstIndexOf(to, ["?", "#"]))
+      )
+    if (page.base !== "/" && (target.startsWith(page.base) || target === page.base.slice(0, -1)))
+      return to
+  }
 }
 
 export function normalizeBase(base: string): string {

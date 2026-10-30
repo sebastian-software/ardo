@@ -331,7 +331,7 @@ Use frontmatter `redirectFrom` when a redirect belongs to one page instead of th
 
 ### versioning
 
-- **Type:** `false | { current: string; versions: Array<{ id: string; label?: string; path: string; locales?: string[] }>; rootRedirect?: boolean }`
+- **Type:** `false | { current: string; versions: Array<{ id: string; label?: string; path: string; locales?: string[] }>; directories?: string[]; rootRedirect?: boolean }`
 - **Default:** `false`
 
 Enables a small major-version documentation model. Ardo builds the current docs under the active
@@ -365,6 +365,43 @@ Set `rootRedirect: false` if you want to provide your own root page or provider-
 static hosts such as GitHub Pages, Ardo's redirect is an HTML file with meta refresh and JavaScript.
 If you put a CDN or hosting layer with real HTTP redirects in front of the site, configure those
 redirects outside Ardo.
+
+Set `directories` to version complete documentation areas while keeping the rest of the site
+current and unversioned:
+
+```ts
+versioning: {
+  current: "v3",
+  versions: [{ id: "v3", label: "3.x", path: "/v3/" }],
+  directories: ["guide", "api-reference"],
+}
+```
+
+Every descendant of a selected directory is versioned, regardless of file format or layout.
+Everything else, including the homepage, news, comparisons, and benchmark overviews, stays at
+the deployment root. Directory entries are route-relative names without leading slashes,
+globs, or page-level exceptions. Move a page between directories to change its version scope.
+
+In this mode, the logo points to the current site home and version controls appear only on
+documentation pages. `/v3/` redirects to the first documentation entry, preferring configured
+directory order, shallower entries, frontmatter order, and then route path. The site root does
+not redirect to a documentation version; `rootRedirect: true` is rejected. With localization,
+site pages use `/en/...`, documentation uses `/v3/en/...`, and the site root redirects to the
+default site locale.
+
+Omitting `directories` retains the original whole-site behavior. Adopting directory selection
+changes URLs for pages outside the selected areas: configure explicit redirects for former
+versioned site URLs and reorganize mixed directories before enabling it. Retained historical
+builds are not rewritten automatically. Shared assets stay under the deployment root in this mode.
+
+### publication
+
+- **Type:** `PublicationConfig`
+- **Default:** disabled
+
+Generates a chronological news/blog area, shared author bylines, local responsive images, and
+full-content Atom and RSS feeds from repository-authored posts. See
+[news and publications](./publications) for setup, frontmatter, image framing, and portable MDX.
 
 ### i18n
 

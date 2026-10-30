@@ -11,6 +11,22 @@ export { ArdoMobileNavigation } from "./MobileNavigation"
 export type { ArdoMobileNavigationProps } from "./MobileNavigation"
 
 export { ArdoBareContent } from "./BareContent"
+export { ArdoImage, type ArdoImageProps } from "./PostImage"
+export { ArdoPost, ArdoPostList, type ArdoPostProps, type ArdoPostListProps } from "./Posts"
+export { ardoImagePresets } from "../publication/presets"
+export type {
+  AuthorProfile,
+  ImageComposition,
+  ImageCore,
+  ImageFrame,
+  ImagePreset,
+  Post,
+  PostFrontmatter,
+  PostImage,
+  PostImageInput,
+  Publication,
+  PublicationConfig,
+} from "../publication/types"
 // UI components
 export {
   ArdoAccordion,

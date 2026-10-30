@@ -23,6 +23,17 @@ export type PageMetadataValidationResult = {
 }
 
 const knownFrontmatterFields = new Set([
+  "id",
+  "path",
+  "publishedAt",
+  "updatedAt",
+  "tags",
+  "authors",
+  "coverImage",
+  "draft",
+  "images",
+  "feedContent",
+  "_ardoPost",
   "canonical",
   "collapsed",
   "description",
@@ -52,6 +63,11 @@ const knownFrontmatterFields = new Set([
 ])
 
 const stringFrontmatterFields = new Set([
+  "id",
+  "path",
+  "publishedAt",
+  "updatedAt",
+  "feedContent",
   "canonical",
   "description",
   "ogDescription",
@@ -65,6 +81,7 @@ const stringFrontmatterFields = new Set([
 ])
 
 const booleanFrontmatterFields = new Set([
+  "draft",
   "collapsed",
   "editLink",
   "lastUpdated",
@@ -158,6 +175,12 @@ function normalizeFrontmatterField(
   field: string,
   value: unknown
 ): PageFrontmatterMetadata | undefined {
+  if (field === "authors" || field === "tags")
+    return Array.isArray(value) && value.every((entry) => typeof entry === "string")
+      ? { [field]: value }
+      : undefined
+  if (field === "coverImage" || field === "images" || field === "_ardoPost")
+    return isRecord(value) ? { [field]: value } : undefined
   return (
     normalizePrimitiveFrontmatterField(field, value) ??
     normalizeStructuredFrontmatterField(field, value)

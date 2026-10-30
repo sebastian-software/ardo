@@ -7,10 +7,13 @@ import path from "node:path"
 import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
+import { getCurrentVersion } from "../config/versioning"
+import { getVersioningRedirects } from "./build-versioning"
 import { createDevRenderMiddleware } from "./dev-render"
 import { configureStaticPreview } from "./preview-static"
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
 import { checkSiteLinks, prerenderSite, resolvePageDirectory } from "./static-site"
+import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 
 const REACT_MODULES = /[\\/]node_modules[\\/](?:react|react-dom|scheduler)[\\/]/u
 
@@ -107,12 +110,50 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
     configureServer(server) {
       // Runs after Vite's own middleware, so modules and public files win.
       return () => {
-        server.middlewares.use(
-          createDevRenderMiddleware(server, state.routesDir, state.resolvedConfig)
-        )
+        const config = state.resolvedConfig
+        server.middlewares.use((request, response, next) => {
+          const pathname = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid")
+            .pathname
+          void getDevVersionRedirect(pathname, config, state.routesDir)
+            .then((redirect) => {
+              if (redirect == null) return next()
+              response.statusCode = 302
+              response.setHeader("Location", redirect.to)
+              response.end()
+            })
+            .catch(next)
+        })
+        server.middlewares.use(createDevRenderMiddleware(server, state.routesDir, config))
       }
     },
   }
+}
+
+async function getDevVersionRedirect(
+  pathname: string,
+  config: ResolvedConfig | undefined,
+  routesDir: string
+): Promise<{ from: string; to: string } | undefined> {
+  if (config == null) return
+  const versioning = config.versioning
+  const version = versioning === false ? undefined : getCurrentVersion(versioning)
+  const locales = config.i18n === false ? [] : config.i18n.locales.map((locale) => locale.id)
+  const roots =
+    version == null ? [] : [version.path, ...locales.map((locale) => `${version.path}${locale}/`)]
+  const entries =
+    versioning !== false &&
+    versioning.directories != null &&
+    roots.some((root) => root.replace(/\/$/u, "") === pathname.replace(/\/$/u, ""))
+      ? await scanRouteManifest(routesDir, createRouteManifestOptions(config))
+      : []
+  return getVersioningRedirects(config, entries).find(
+    (entry) =>
+      pathname.replace(/\/$/u, "") ===
+      (entry.from.startsWith(config.deploymentBase)
+        ? entry.from
+        : `${config.deploymentBase.replace(/\/$/u, "")}${entry.from}`
+      ).replace(/\/$/u, "")
+  )
 }
 
 /** Validate the configured home, which may live below a version and locale prefix. */

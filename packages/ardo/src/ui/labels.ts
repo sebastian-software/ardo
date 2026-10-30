@@ -16,6 +16,14 @@ export type ArdoLabels = {
     label: string
   }
 
+  publication: {
+    authors: string
+    tags: string
+    subscribeVia: string
+    or: string
+    updated: string
+    noPosts: string
+  }
   breadcrumb: {
     label: string
   }
@@ -91,6 +99,7 @@ export type ArdoLabels = {
 
 export type ArdoLabelsInput = {
   page?: Partial<ArdoLabels["page"]>
+  publication?: Partial<ArdoLabels["publication"]>
   breadcrumb?: Partial<ArdoLabels["breadcrumb"]>
   container?: Partial<ArdoContainerLabels>
   copyButton?: Partial<ArdoLabels["copyButton"]>
@@ -113,6 +122,14 @@ export const defaultArdoLabels: ArdoLabels = {
     previous: "Previous",
     navigation: "Page navigation",
     label: "Page",
+  },
+  publication: {
+    authors: "Authors",
+    tags: "Tags",
+    subscribeVia: "Subscribe via",
+    or: "or",
+    updated: "Updated",
+    noPosts: "No posts yet.",
   },
   breadcrumb: {
     label: "Breadcrumb",
@@ -195,6 +212,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
   if (input == null) return defaultArdoLabels
   return {
     page: { ...defaultArdoLabels.page, ...input.page },
+    publication: { ...defaultArdoLabels.publication, ...input.publication },
     breadcrumb: { ...defaultArdoLabels.breadcrumb, ...input.breadcrumb },
     container: { ...defaultArdoLabels.container, ...input.container },
     copyButton: { ...defaultArdoLabels.copyButton, ...input.copyButton },

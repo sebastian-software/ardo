@@ -1,6 +1,7 @@
 import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
+import { getCurrentVersion, isVersionedRoute } from "../config/versioning"
 
 export type RouteIdentity = {
   versionId?: string
@@ -35,15 +36,36 @@ export function createRouteIdentity(input: RouteIdentityInput): RouteIdentity {
 
 export function createCurrentRouteIdentity(
   routePath: string,
-  config: Pick<ResolvedConfig, "base" | "i18n" | "versioning">,
+  config: Pick<ResolvedConfig, "base" | "i18n" | "versioning"> & { deploymentBase?: string },
   options: { localeId?: string } = {}
 ): RouteIdentity {
+  const versioned = isVersionedRoute(routePath, config.versioning)
   return createRouteIdentity({
-    basePath: config.base,
+    basePath:
+      versioned && config.versioning !== false
+        ? (getCurrentVersion(config.versioning)?.path ?? config.base)
+        : (config.deploymentBase ?? config.base),
     localeId: options.localeId ?? getDefaultLocaleId(config.i18n),
     routePath,
-    versionId: config.versioning === false ? undefined : config.versioning.current,
+    versionId: !versioned || config.versioning === false ? undefined : config.versioning.current,
   })
+}
+
+/** Resolve the optional leading locale in an authored source route. */
+export function createSourceRouteIdentity(
+  routePath: string,
+  config: Parameters<typeof createCurrentRouteIdentity>[1]
+): RouteIdentity {
+  const segments = routePath.split("/").filter(Boolean)
+  const localeId =
+    config.i18n === false
+      ? undefined
+      : config.i18n.locales.find((locale) => locale.id === segments[0])?.id
+  return createCurrentRouteIdentity(
+    localeId == null ? routePath : `/${segments.slice(1).join("/")}`,
+    config,
+    { localeId }
+  )
 }
 
 export function buildPublicPath(input: {
