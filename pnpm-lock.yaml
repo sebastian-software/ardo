@@ -351,6 +351,9 @@ importers:
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
+      '@sebastian-software/app-tracking':
+        specifier: ^0.7.0
+        version: 0.7.0
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -2457,6 +2460,10 @@ packages:
     resolution: {integrity: sha512-j5rXD4R/4DM5+V991AA9xOnG2Rwu2g3p5TPgu1Eu7apju0NUrLl+Bn/KpWc6wYJtlXqzwz1r+LNV1JeBU4VGvw==}
     cpu: [x64]
     os: [win32]
+
+  '@sebastian-software/app-tracking@0.7.0':
+    resolution: {integrity: sha512-fYpTo5raktANsmTJ2VYkTdWSrC9FsAfkOdLzL0MESwMT5eHoZmimIYiqpZh2FWIohfx19B8C+FgNR64u1/K40g==}
+    engines: {node: ^22.0.0 || ^24.0.0 || ^26.0.0}
 
   '@sindresorhus/base62@1.0.0':
     resolution: {integrity: sha512-TeheYy0ILzBEI/CO55CP6zJCSdSWeRtGnHy8U8dWSUH4I68iqTsy7HkMktR4xakThc9jotkPQUXT4ITdbV7cHA==}
@@ -7280,6 +7287,8 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.64.12':
     optional: true
+
+  '@sebastian-software/app-tracking@0.7.0': {}
 
   '@sindresorhus/base62@1.0.0': {}
 
