@@ -34,12 +34,14 @@ ardo telemetry disable
 ardo telemetry delete
 ```
 
-`status` shows the saved decision, effective collection restrictions, and pending
-deletion as JSON. `preview` shows unsent payloads without reporting credentials.
+`status` shows ordinary reporting under `reporting`, plus the separate history,
+publication, and profile decisions as JSON. `preview` shows unsent payloads without reporting credentials.
 `disable` withdraws consent and discards unsent usage. `delete` also queues
 authenticated deletion of previously sent data and starts a background delivery
-attempt. A successful CLI exit means the request was queued; inspect
-`deletionPending` in `status` for acknowledgement. Run `delete` again after
+attempt. Its result distinguishes `deletion: "pending"` from `"noIdentity"`;
+`handedOff` describes local scheduling, not delivery. Inspect
+`reporting.deletionPending` in a later `status` call for acknowledgement of a
+previously pending deletion. Run `delete` again after
 restoring connectivity to retry a pending deletion.
 
 Settings live in the SDK's private Node profile below `~/.ardo`. The SDK owns the
@@ -61,27 +63,33 @@ terminal. `--logLevel silent` suppresses update notices. You can also check expl
 ardo update-check
 ```
 
-The command prints release information as JSON. It returns exit code 1 when
-checks are disabled or release information is unavailable. It does not install
-or execute an update. Update the `ardo` dependency with your package manager.
+The command prints an offered SDK update as JSON, with `latestVersion`,
+`releaseUrl`, and `stale`. It prints `null` when no notice is offered, including
+disabled/offline checks and cache/notice suppression. `null` does not prove the
+installed version is current. Operational failures return exit code 1. The command
+does not install or execute an update. Update the `ardo` dependency with your package manager.
 
-Checks use `/v1/versions/ardo/github/stable` on the app-tracking service, without
-a reporting identity, installed version, or project data. The Node SDK currently
-provides event reporting; Ardo uses the service's version API directly for updates.
-Successful lookups are cached locally for an hour, failures for a minute.
-Requests have a 1.5-second deadline and are canceled when the command finishes.
-The service can count aggregate functional requests independently of reporting;
-Ardo sends DNT/GPC headers when `DO_NOT_TRACK=1` is set.
+Checks use the service's [Ardo version endpoint](https://sebastian-app-tracking.b-cdn.net/v1/versions/ardo/github/stable),
+without a reporting identity, installed version, or project data. The SDK owns the
+transport, SemVer comparison, cache, locks, backoff, and notice throttling.
+Fresh successful lookups suppress requests for an hour; failures and stale
+responses back off from five minutes to an hour. Notices are offered at most
+once per release per day, while a newer release can be offered immediately.
+The SDK checks before command execution with a 200 ms network budget; local
+filesystem and scheduling overhead are additional. Ardo awaits SDK completion
+and reporting handoff before entering a long-lived dev or preview server.
+The service can count aggregate functional requests independently of reporting.
+The SDK sends DNT when `DO_NOT_TRACK=1` or `APP_TRACKING_TELEMETRY=off` is set,
+while preserving functional updates.
 
 Set `ARDO_UPDATE_CHECK=0` to disable automatic and explicit update requests.
 Set `ARDO_OFFLINE=1` to block both update requests and reporting delivery.
 
-## SDK availability
+## SDK integration
 
-The SDK is an optional Node-only dependency so its runtime constraints do not
-prevent Ardo from installing or running. Reporting settings show an availability
-error when the SDK is omitted or cannot initialize. Builds continue normally.
-Reporting requires an SDK release registering Ardo's `cli.invocation` metric with
-the `build`, `dev`, and `preview` categories. Update checks also require the
-service to register Ardo's version route. These registrations are separate from
-the Ardo integration.
+Ardo uses the published `@sebastian-software/app-tracking` 0.7 API, including
+`CliClient` and its `UpdateClient`. The package supports Node.js 22, 24, and 26.
+Ardo supplies its command categories, privacy disclosure, private profile location,
+and output eligibility. The SDK owns reporting/settings sequencing and update
+delivery. Ardo has no separate HTTP, cache, SemVer, or reporting-state implementation.
+The dependency remains external to the CLI bundle so the SDK can locate its own worker.
