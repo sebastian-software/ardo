@@ -37,6 +37,7 @@ async function prepareAvatar(
     root: context.config.root,
     base: context.config.deploymentBase,
     config: { widths: [96, 192] },
+    jpegFallback: false,
     assets: context.assets,
     dependencies: context.dependencies,
   })

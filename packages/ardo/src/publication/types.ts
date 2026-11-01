@@ -27,6 +27,7 @@ export type PostImageInput = {
 export type ImageRendition = { src: string; width: number; height: number }
 export type ImageCropFamily = {
   composition: ImageComposition
+  /** AVIF resolutions, or the unchanged SVG/animated/remote source. */
   renditions: ImageRendition[]
 }
 export type PostImage = {
@@ -34,6 +35,8 @@ export type PostImage = {
   caption?: string
   preset: ImagePreset
   families: ImageCropFamily[]
+  /** One JPEG in the default composition, at most 1280px wide, for fallback and exports. */
+  fallback?: ImageRendition
 }
 
 export type AuthorProfile = {

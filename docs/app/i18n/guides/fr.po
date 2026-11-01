@@ -1826,6 +1826,21 @@ msgstr ""
 "les deux flux et les métadonnées de découverte. Les identifiants stables "
 "des articles restent leur identité dans les flux lorsqu'une URL change."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo generates <0>AVIF</0> for every resolution of each local still post "
+"image, preserving transparency. Each image also gets one <1>JPEG</1>, at most "
+"1280 pixels wide, without upscaling. The JPEG uses the image preset's fallback"
+" composition, or the original composition for an unframed image. Transparent "
+"areas are flattened onto white in the JPEG only."
+msgstr ""
+"Ardo génère de l’<0>AVIF</0> pour chaque résolution de chaque image fixe "
+"locale d’un article, en préservant la transparence. Chaque image reçoit "
+"également un <1>JPEG</1> d’au plus 1280 pixels de large, sans "
+"agrandissement. Le JPEG utilise le cadrage de repli du préréglage de "
+"l’image, ou la composition d’origine pour une image sans recadrage. Les "
+"zones transparentes sont aplaties sur fond blanc dans le JPEG uniquement."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Ardo generates a lean favicon set from its owl at build time and serves it "
@@ -5731,6 +5746,10 @@ msgstr ""
 "pour cette tentative. Cela ne fournit pas l’orchestration du solution "
 "builder TypeScript."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Output formats"
+msgstr "Formats de sortie"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Override default UI chrome strings."
 msgstr "Remplace les textes de l’interface."
@@ -6368,10 +6387,12 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
 "Repository-authored Markdown and MDX posts with shared authors, responsive "
-"images, and full-content Atom/RSS feeds; see <0>News and publications</0>."
+"AVIF images with a single JPEG fallback, and full-content Atom/RSS feeds; see "
+"<0>News and publications</0>."
 msgstr ""
-"Articles Markdown et MDX du dépôt avec auteurs partagés, images adaptatives"
-" et flux Atom/RSS complets ; consultez <0>Actualités et publications</0>."
+"Articles Markdown et MDX rédigés dans le dépôt, avec des auteurs "
+"partagés, des images AVIF adaptatives accompagnées d’un unique JPEG de "
+"repli et des flux Atom/RSS complets ; voir <0>Actualités et publications</0>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Required card heading."
@@ -6813,6 +6834,19 @@ msgstr "Réglages et configuration"
 msgid "Setup"
 msgstr "Installation"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Sharp/libvips handles cropping, resizing, AVIF, and JPEG during build or "
+"development preparation. No additional codec package or WebAssembly runtime is"
+" needed. SVG, animated images, and external images keep their existing "
+"pass-through behavior."
+msgstr ""
+"Sharp/libvips gère le recadrage, le redimensionnement, l’AVIF et le JPEG "
+"lors du build ou de la préparation en développement. Aucun paquet de codec "
+"supplémentaire ni environnement d’exécution WebAssembly n’est "
+"nécessaire. Les SVG, les images animées et les images externes conservent "
+"leur traitement sans modification."
+
 #: docs/app/content/guide/markdown.mdx
 msgid "Shell & DevOps"
 msgstr "Shell et DevOps"
@@ -7182,6 +7216,19 @@ msgid ""
 msgstr ""
 "Utilisez <0/> directement dans les routes <1/>. Écrivez le code comme contenu"
 " enfant, sans littéral de gabarit ni échappement particulier :"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The <0/> element selects AVIF sources by media condition, with resolutions in "
+"each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
+" <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
+"directly as AVIF."
+msgstr ""
+"L’élément <0/> sélectionne les sources AVIF selon les conditions média, "
+"avec les résolutions dans chaque <1/>. Son élément <2/> utilise l’unique "
+"JPEG comme solution de repli, sans <3/> JPEG. Les flux et les métadonnées "
+"sociales réutilisent ce JPEG. Les portraits des auteurs sont servis "
+"directement en AVIF."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

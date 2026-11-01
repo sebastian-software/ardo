@@ -211,8 +211,14 @@ asset copying would expose unpublished sources.
 
 Core coordinates use a normalized center and a square size relative to the
 oriented source's shorter side. Preferred frames use normalized top-left
-coordinates and dimensions. Sharp generates content-addressed WebP renditions
-without upscaling; SVG and animated images pass through without framing.
+coordinates and dimensions. Sharp/libvips generates content-addressed AVIF
+renditions without upscaling. Each still post image also gets one JPEG at most
+1280 pixels wide in its preset's fallback composition (or the original composition
+when unframed). The JPEG flattens transparency onto white and is reused by the
+image fallback, feeds, and social metadata. Author portraits use AVIF directly.
+There is no format-selection configuration, additional codec package, or
+WebAssembly runtime. Processing runs only during build or development preparation.
+SVG and animated images pass through without framing.
 The development server regenerates pages and images when sources change.
 
 A post's `feedContent` supplies the complete static Markdown article when native

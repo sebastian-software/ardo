@@ -212,6 +212,41 @@ describe("Basic and optional API configuration as packed-package consumers", () 
     assertDocRecipes(consumer, run)
   }, 240_000)
 
+  it("encodes AVIF publication images and JPEG fallbacks in an isolated package installation", () => {
+    const consumer = path.join(temporaryRoot, "publication")
+    copyProjectSource(consumer, "publication")
+    fs.writeFileSync(
+      path.join(consumer, "package.json"),
+      JSON.stringify({
+        name: "ardo-publication-codec-test",
+        private: true,
+        type: "module",
+        scripts: { build: "ardo build" },
+        dependencies: { ardo: `file:${tarball}` },
+      })
+    )
+    fs.writeFileSync(
+      path.join(consumer, "pnpm-workspace.yaml"),
+      toWorkspaceYaml({
+        packages: ["."],
+        allowBuilds: { esbuild: true },
+        overrides: readEngineOverrides(),
+      })
+    )
+    run(consumer, ["install", "--no-lockfile", "--prefer-offline"], 180_000)
+    run(consumer, ["build"])
+    const client = path.join(consumer, "build/client")
+    const post = fs.readFileSync(path.join(client, "news/reading/index.html"), "utf8")
+    expect(post).toContain('type="image/avif"')
+    const assets = fs.readdirSync(path.join(client, "assets/posts"))
+    expect(assets.map((file) => path.extname(file))).toEqual(
+      expect.arrayContaining([".avif", ".jpg"])
+    )
+    expect(assets.some((file) => /\.(?:jxl|webp)$/u.test(file))).toBe(false)
+    for (const entry of fs.readdirSync(path.join(client, "assets")))
+      expect(entry).not.toMatch(/(?:jsquash|jxl_enc|\.wasm$)/u)
+  }, 180_000)
+
   it.each(["basic", "native-api"])(
     "installs, typechecks, and builds the %s reference outside the workspace",
     async (reference) => {

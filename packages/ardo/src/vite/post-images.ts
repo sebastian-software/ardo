@@ -24,6 +24,8 @@ type ImageInput = {
   config?: PublicationConfig["images"]
   assets: Map<string, ImageAsset>
   dependencies?: Set<string>
+  /** Author portraits are used directly as AVIF and do not need an export image. */
+  jpegFallback?: boolean
 }
 type ImageContext = ImageInput & { preset: ImagePreset }
 type Composition = { composition: ImageComposition; crop: CropRectangle }
@@ -116,11 +118,19 @@ async function rasterImage(source: Buffer, context: ImageContext): Promise<PostI
   const families: ImageCropFamily[] = []
   for (const composition of compositions)
     families.push(await renderFamily({ raster, ...composition }, context))
+  const fallbackComposition = compositions.find(
+    (entry) => entry.composition === "original" || entry.composition === context.preset.fallback
+  )
+  if (fallbackComposition == null)
+    throw new Error(`Image preset requests unavailable composition ${context.preset.fallback}.`)
   return {
     alt: context.image.alt,
     caption: context.image.caption,
     preset: context.preset,
     families,
+    ...(context.jpegFallback === false
+      ? {}
+      : { fallback: await renderJpeg({ raster, ...fallbackComposition }, context) }),
   }
 }
 
@@ -165,15 +175,36 @@ async function renderFamily(
     })
       .extract(crop)
       .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 82 })
+      .toColourspace("srgb")
+      .avif({ quality: 55, effort: 4 })
       .toBuffer({ resolveWithObject: true })
     renditions.push({
-      src: storeImage(output.data, context),
+      src: storeImage(output.data, context, "avif"),
       width: output.info.width,
       height: output.info.height,
     })
   }
   return { composition: input.composition, renditions }
+}
+
+async function renderJpeg(
+  { raster, crop }: Composition & { raster: Raster },
+  context: ImageContext
+) {
+  const output = await sharp(raster.data, {
+    raw: { width: raster.info.width, height: raster.info.height, channels: raster.info.channels },
+  })
+    .extract(crop)
+    .resize({ width: 1280, withoutEnlargement: true })
+    .toColourspace("srgb")
+    .flatten({ background: "#ffffff" })
+    .jpeg({ quality: 82 })
+    .toBuffer({ resolveWithObject: true })
+  return {
+    src: storeImage(output.data, context, "jpg"),
+    width: output.info.width,
+    height: output.info.height,
+  }
 }
 
 function renditionWidths(configured: number[] | undefined, max: number): number[] {
@@ -188,7 +219,7 @@ function renditionWidths(configured: number[] | undefined, max: number): number[
   ].sort((a, b) => a - b)
 }
 
-function storeImage(source: Buffer, context: ImageContext, extension = "webp"): string {
+function storeImage(source: Buffer, context: ImageContext, extension: string): string {
   const hash = createHash("sha256").update(source).digest("hex").slice(0, 20)
   const fileName = `assets/posts/${hash}.${extension}`
   context.assets.set(fileName, { fileName, source })

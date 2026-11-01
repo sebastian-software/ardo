@@ -57,7 +57,7 @@ function portableOptions(config: ResolvedConfig) {
 
 function renderCover(post: Post): string {
   const image = post.coverImage
-  const source = image?.families[0]?.renditions.at(-1)?.src
+  const source = (image?.fallback ?? image?.families[0]?.renditions.at(-1))?.src
   return image == null || source == null
     ? ""
     : `<figure><img src="${xml(new URL(source, post.url).href)}" alt="${xml(image.alt)}">${image.caption == null ? "" : `<figcaption>${xml(image.caption)}</figcaption>`}</figure>\n`

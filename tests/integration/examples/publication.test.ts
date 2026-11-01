@@ -35,16 +35,27 @@ it("builds a complete publication beside versioned documentation under a deploym
   expect(post).toContain("Alex Morgan")
   expect(post).toContain("Sam Rivera")
   expect(post).toContain("<picture>")
+  expect(post).toContain('type="image/avif"')
+  expect(
+    fs.readdirSync(path.join(output, "assets/posts")).map((file) => path.extname(file))
+  ).toEqual(expect.arrayContaining([".avif", ".jpg"]))
+  expect(
+    fs.readdirSync(path.join(output, "assets/posts")).some((f) => /\.(?:jxl|webp)$/u.test(f))
+  ).toBe(false)
   expect(post).toMatch(/<source[^>]+media="\(min-width: 52rem\)"[^>]+srcSet=/u)
   expect(post).toContain('href="/project/v2/guide/getting-started/"')
   expect(post).toContain('href="/project/"')
   expect(post).not.toContain('aria-label="Documentation version"')
+  expect(post).toMatch(/<img[^>]+src="\/project\/assets\/posts\/[^"]+\.jpg"/u)
+  expect(post).toMatch(/og:image[^>]+\.jpg/u)
   expect(interactive).toContain("Count: ")
   for (const name of ["atom.xml", "rss.xml"]) {
     const feed = fs.readFileSync(path.join(output, "news", name), "utf8")
     expect(feed).toContain("https://example.test/project/assets/posts/")
     expect(feed).toContain("The static version explains")
     expect(feed).toContain("urn:ardo:post:07137892-fca6-4699-a5ea-609c80dbf814")
+    expect(feed).toContain(".jpg")
+    expect(feed).not.toContain(".avif")
   }
   const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
   expect(sitemap).toContain("https://example.test/project/news/reading")
@@ -89,6 +100,17 @@ it("keeps React SSR working after a colocated image triggers publication regener
     afterFirstResponse: async ({ origin }) => {
       const before = await fetch(`${origin}/project/news/reading/`)
       expect(before.status).toBe(200)
+      const html = await before.text()
+      const avif = /srcSet="([^"\s,]+\.avif) \d+w/u.exec(html)?.[1]
+      const jpeg = /<img[^>]+src="([^"]+\.jpg)"/u.exec(html)?.[1]
+      expect(avif).toBeDefined()
+      expect(jpeg).toBeDefined()
+      const avifResponse = await fetch(`${origin}${avif}`, { method: "HEAD" })
+      const jpegResponse = await fetch(`${origin}${jpeg}`, { method: "HEAD" })
+      expect(avifResponse.status).toBe(200)
+      expect(jpegResponse.status).toBe(200)
+      expect(avifResponse.headers.get("content-type")).toBe("image/avif")
+      expect(jpegResponse.headers.get("content-type")).toBe("image/jpeg")
       const route = path.join(directory, "app/routes/news/reading/index.mdx")
       const image = path.join(directory, "posts/scene.png")
       for (let update = 0; update < 3; update++) {

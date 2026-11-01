@@ -130,6 +130,21 @@ images:
 SVG and animated images pass through without resizing and cannot use framing metadata.
 Externally hosted HTTP images remain external; Ardo does not download or optimize them.
 
+## Output formats
+
+Ardo generates **AVIF** for every resolution of each local still post image, preserving
+transparency. Each image also gets one **JPEG**, at most 1280 pixels wide, without upscaling.
+The JPEG uses the image preset's fallback composition, or the original composition for an
+unframed image. Transparent areas are flattened onto white in the JPEG only.
+
+The `picture` element selects AVIF sources by media condition, with resolutions in each
+`srcset`. Its `img` element uses the single JPEG as a fallback, without a JPEG `srcset`.
+Feeds and social metadata reuse that JPEG. Author portraits are served directly as AVIF.
+
+Sharp/libvips handles cropping, resizing, AVIF, and JPEG during build or development preparation.
+No additional codec package or WebAssembly runtime is needed. SVG, animated images, and
+external images keep their existing pass-through behavior.
+
 ## Select a presentation preset
 
 Framing describes the source. A preset describes an image's placement: which composition
