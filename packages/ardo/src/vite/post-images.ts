@@ -1,10 +1,11 @@
 import { createHash } from "node:crypto"
 import fs from "node:fs/promises"
 import path from "node:path"
-import sharp, { type Metadata, type OutputInfo } from "sharp"
+import sharp, { type Metadata } from "sharp"
 import type {
   ImageComposition,
   ImageCropFamily,
+  ImageFormatSource,
   ImagePreset,
   PostImage,
   PostImageInput,
@@ -12,6 +13,7 @@ import type {
 } from "../publication/types"
 import { ardoImagePresets } from "../publication/presets"
 import { calculateImageCrop, type CropRectangle } from "./image-framing"
+import { additionalImageFormats, encodeImage, type ImageRaster as Raster } from "./image-encoding"
 
 export { calculateImageCrop } from "./image-framing"
 
@@ -27,7 +29,6 @@ type ImageInput = {
 }
 type ImageContext = ImageInput & { preset: ImagePreset }
 type Composition = { composition: ImageComposition; crop: CropRectangle }
-type Raster = { data: Buffer; info: OutputInfo }
 
 export async function preparePostImage(input: ImageInput): Promise<PostImage> {
   const { image } = input
@@ -159,21 +160,36 @@ async function renderFamily(
 ): Promise<ImageCropFamily> {
   const { crop, raster } = input
   const renditions = []
+  const formats: ImageFormatSource[] = additionalImageFormats(context.config?.formats).map(
+    (format) => ({ format, renditions: [] })
+  )
   for (const width of renditionWidths(context.config?.widths, crop.width)) {
-    const output = await sharp(raster.data, {
+    const resized = await sharp(raster.data, {
       raw: { width: raster.info.width, height: raster.info.height, channels: raster.info.channels },
     })
       .extract(crop)
       .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 82 })
+      .toColourspace("srgb")
+      .ensureAlpha()
+      .raw()
       .toBuffer({ resolveWithObject: true })
-    renditions.push({
-      src: storeImage(output.data, context),
-      width: output.info.width,
-      height: output.info.height,
-    })
+    renditions.push(await encodeRendition(resized, "webp", context))
+    for (const source of formats)
+      source.renditions.push(await encodeRendition(resized, source.format, context))
   }
-  return { composition: input.composition, renditions }
+  return { composition: input.composition, renditions, formats }
+}
+
+async function encodeRendition(
+  raster: Raster,
+  format: ImageFormatSource["format"] | "webp",
+  context: ImageContext
+) {
+  return {
+    src: storeImage(await encodeImage(raster, format), context, format),
+    width: raster.info.width,
+    height: raster.info.height,
+  }
 }
 
 function renditionWidths(configured: number[] | undefined, max: number): number[] {

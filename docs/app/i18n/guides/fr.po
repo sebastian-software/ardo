@@ -2692,6 +2692,19 @@ msgstr ""
 "Avec <1/>, <0/> privilégie <2/> enregistré, puis <3/>. Fixez un schéma pour"
 " désactiver le choix utilisateur :"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"By default, Ardo generates <0>JPEG XL</0>, <1>AVIF</1>, and <2>WebP</2> for "
+"every resolution of each local still post image. Transparency is preserved. "
+"WebP remains the fallback in the <3/> element, feeds, author portraits, and "
+"social metadata. Ardo does not generate JPEG output."
+msgstr ""
+"Par défaut, Ardo génère <0>JPEG XL</0>, <1>AVIF</1> et <2>WebP</2> pour "
+"chaque résolution de chaque image locale fixe d'un article. La transparence "
+"est conservée. WebP reste le format de repli dans l'élément <3/>, les flux,"
+" les portraits d'auteurs et les métadonnées sociales. Ardo ne génère pas "
+"de sortie JPEG."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "By default, the outline uses build-time Markdown metadata. Set <0/> on <1/> or"
@@ -3193,6 +3206,14 @@ msgid ""
 msgstr ""
 "Contrôlez les métadonnées, la navigation, la mise en page et les sorties de"
 " build depuis chaque fichier."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Control the additional formats and their preference order in the publication "
+"configuration:"
+msgstr ""
+"Définissez les formats supplémentaires et leur ordre de préférence dans la"
+" configuration de publication :"
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -5731,6 +5752,10 @@ msgstr ""
 "pour cette tentative. Cela ne fournit pas l’orchestration du solution "
 "builder TypeScript."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Output formats"
+msgstr "Formats de sortie"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Override default UI chrome strings."
 msgstr "Remplace les textes de l’interface."
@@ -6368,10 +6393,12 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
 "Repository-authored Markdown and MDX posts with shared authors, responsive "
-"images, and full-content Atom/RSS feeds; see <0>News and publications</0>."
+"JPEG XL/AVIF/WebP images, and full-content Atom/RSS feeds; see <0>News and "
+"publications</0>."
 msgstr ""
 "Articles Markdown et MDX du dépôt avec auteurs partagés, images adaptatives"
-" et flux Atom/RSS complets ; consultez <0>Actualités et publications</0>."
+" JPEG XL/AVIF/WebP et flux Atom/RSS complets ; consultez <0>Actualités et "
+"publications</0>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Required card heading."
@@ -6812,6 +6839,21 @@ msgstr "Réglages et configuration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Installation"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Sharp/libvips handles framing, resizing, WebP, and AVIF. JPEG XL uses the "
+"bundled libjxl WebAssembly encoder during build or development preparation. No"
+" system codec installation, runtime download, or browser-side codec is needed."
+" SVG, animated images, and external images keep their existing pass-through "
+"behavior."
+msgstr ""
+"Sharp/libvips gère le cadrage, le redimensionnement, WebP et AVIF. JPEG XL "
+"utilise l'encodeur WebAssembly libjxl fourni lors du build ou de la "
+"préparation en développement. Aucune installation système du codec, aucun "
+"téléchargement à l'exécution ni codec côté navigateur n'est nécessaire."
+" Les SVG, les images animées et les images externes conservent leur "
+"transmission sans modification."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Shell & DevOps"
@@ -8297,6 +8339,17 @@ msgstr ""
 "<0/> ou <1/> impose une présentation. Sous 1024 px, le champ devient une "
 "icône. ⌘K, ou Ctrl+K sous Windows et Linux, ouvre toujours la recherche."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Use <0/> to omit JPEG XL, or <1/> for WebP only. Entries must be unique. More "
+"encodings increase build work and deployment assets; the browser downloads "
+"only the selected format and resolution."
+msgstr ""
+"Utilisez <0/> pour omettre JPEG XL, ou <1/> pour WebP uniquement. Les entrées"
+" doivent être uniques. Davantage d'encodages augmentent le travail de build "
+"et les ressources déployées ; le navigateur télécharge seulement le format"
+" et la résolution sélectionnés."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Use <0/> when another tool rewrites heading ids after Ardo has read the route "
@@ -8810,6 +8863,18 @@ msgstr ""
 "existante de l'arbre complet de routes reste applicable ; cette "
 "fonctionnalité n'ajoute aucun repli de traduction. Transmettez les libellés "
 "d'interface traduits via <3/> de <2/>."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Within each media condition, <0/> tries the configured format sources before "
+"moving to another composition. Each source declares its MIME type and contains"
+" resolutions of one format and one crop, so format fallback preserves the "
+"selected composition."
+msgstr ""
+"Pour chaque condition média, <0/> essaie les sources de format configurées "
+"avant de passer à une autre composition. Chaque source déclare son type MIME"
+" et contient les résolutions d'un seul format et d'un seul recadrage : le "
+"repli de format conserve donc la composition sélectionnée."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

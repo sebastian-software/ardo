@@ -211,8 +211,12 @@ asset copying would expose unpublished sources.
 
 Core coordinates use a normalized center and a square size relative to the
 oriented source's shorter side. Preferred frames use normalized top-left
-coordinates and dimensions. Sharp generates content-addressed WebP renditions
-without upscaling; SVG and animated images pass through without framing.
+coordinates and dimensions. Sharp generates content-addressed WebP and AVIF
+renditions without upscaling; a bundled libjxl WebAssembly encoder adds JPEG XL.
+Format preferences are evaluated within each composition's media group. WebP
+remains the image, feed, and metadata fallback. JPEG output is not generated.
+The additional formats are configurable and the codec runs only during build
+or development preparation. SVG and animated images pass through without framing.
 The development server regenerates pages and images when sources change.
 
 A post's `feedContent` supplies the complete static Markdown article when native

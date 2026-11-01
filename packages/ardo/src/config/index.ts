@@ -41,6 +41,8 @@ export type {
   AuthorProfile,
   ImageComposition,
   ImageCore,
+  ImageFormat,
+  ImageFormatSource,
   ImageFrame,
   ImagePreset,
   Post,

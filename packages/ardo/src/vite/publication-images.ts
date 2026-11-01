@@ -36,7 +36,7 @@ async function prepareAvatar(
     sourceFile: path.join(context.config.root, "_author"),
     root: context.config.root,
     base: context.config.deploymentBase,
-    config: { widths: [96, 192] },
+    config: { widths: [96, 192], formats: [] },
     assets: context.assets,
     dependencies: context.dependencies,
   })

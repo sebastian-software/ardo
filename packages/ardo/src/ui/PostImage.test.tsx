@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import { renderToStaticMarkup } from "react-dom/server"
 import { expect, it } from "vitest"
 import type { PostImage } from "../publication/types"
@@ -57,4 +59,41 @@ it("rejects a placement's unavailable crop while preserving unframed source comp
   )
   expect(html).toContain('src="/original.webp"')
   expect(html).not.toContain("/compact-")
+})
+
+it("tries every format of a matching media group before another crop, and retains a WebP fallback", () => {
+  const image: PostImage = {
+    ...framed,
+    families: framed.families.map((family) => ({
+      ...family,
+      formats: (["jxl", "avif"] as const).map((format) => ({
+        format,
+        renditions: family.renditions.map((rendition) => ({
+          ...rendition,
+          src: rendition.src.replace(/webp$/u, format),
+        })),
+      })),
+    })),
+  }
+  const html = renderToStaticMarkup(
+    <ArdoProvider config={{ title: "Example" }} sidebar={[]}>
+      <ArdoImage image={image} sizes="80vw" />
+    </ArdoProvider>
+  )
+  const container = document.createElement("div")
+  container.innerHTML = html
+  const sources = [...container.querySelectorAll<HTMLSourceElement>("picture > source")]
+  expect(sources.map((source) => [source.getAttribute("media"), source.type])).toStrictEqual([
+    ["(min-width: 60rem)", "image/jxl"],
+    ["(min-width: 60rem)", "image/avif"],
+    ["(min-width: 60rem)", ""],
+    [null, "image/jxl"],
+    [null, "image/avif"],
+  ])
+  expect(sources[0].srcset).toBe("/wide-640.jxl 640w, /wide-1280.jxl 1280w")
+  expect(sources[1].srcset).toBe("/wide-640.avif 640w, /wide-1280.avif 1280w")
+  expect(sources[2].srcset).toBe("/wide-640.webp 640w, /wide-1280.webp 1280w")
+  expect(sources[3].srcset).toBe("/compact-640.jxl 640w")
+  expect(sources[3].sizes).toBe("80vw")
+  expect(container.querySelector("picture > img")?.getAttribute("src")).toBe("/compact-640.webp")
 })

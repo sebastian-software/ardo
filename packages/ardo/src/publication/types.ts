@@ -5,6 +5,7 @@ export type ImageCore = { x: number; y: number; size: number }
 /** Desired frame, with normalized top-left coordinates and dimensions. */
 export type ImageFrame = { x: number; y: number; width: number; height: number }
 export type ImageComposition = "original" | "16:10" | "4:3"
+export type ImageFormat = "jxl" | "avif" | "webp"
 
 export type ImagePreset = {
   /** The fallback composition. Unframed images always retain their composition. */
@@ -25,9 +26,16 @@ export type PostImageInput = {
 }
 
 export type ImageRendition = { src: string; width: number; height: number }
+export type ImageFormatSource = {
+  format: Exclude<ImageFormat, "webp">
+  renditions: ImageRendition[]
+}
 export type ImageCropFamily = {
   composition: ImageComposition
+  /** WebP fallback resolutions, or the unchanged SVG/animated/remote source. */
   renditions: ImageRendition[]
+  /** Additional encodings in browser preference order. */
+  formats?: ImageFormatSource[]
 }
 export type PostImage = {
   alt: string
@@ -56,7 +64,13 @@ export type PublicationConfig = {
   name?: string
   description?: string
   authors: Record<string, AuthorProfile>
-  images?: { widths?: number[]; presets?: Record<string, ImagePreset> }
+  images?: {
+    widths?: number[]
+    presets?: Record<string, ImagePreset>
+    /** Additional encodings, in preference order. Default: ["jxl", "avif"].
+     * WebP is always generated as the fallback. An empty array selects WebP only. */
+    formats?: Array<Exclude<ImageFormat, "webp">>
+  }
 }
 
 /** Metadata authored in a post's YAML frontmatter. IDs are assigned once. */

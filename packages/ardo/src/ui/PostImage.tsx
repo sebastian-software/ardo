@@ -13,7 +13,7 @@ export type ArdoImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   preset?: ImagePreset
 }
 
-/** Render one composition per source, letting the browser select its resolution. */
+/** Keep media groups in order, with format preferences inside each composition. */
 export function ArdoImage({
   image,
   preset,
@@ -39,27 +39,22 @@ export function ArdoImage({
     return selected
   }
   const fallback = family(presentation.fallback)
-  const rendition = lastRendition(fallback)
+  const rendition = lastRendition(fallback.renditions)
   return (
     <picture>
-      {presentation.sources?.map((source) => {
-        const crop = family(source.composition)
-        const candidate = lastRendition(crop)
-        return (
-          <source
-            key={`${source.media}-${source.composition}`}
-            media={source.media}
-            srcSet={srcset(crop)}
-            sizes={source.sizes ?? presentation.sizes}
-            width={candidate.width || undefined}
-            height={candidate.height || undefined}
-          />
-        )
-      })}
+      {presentation.sources?.map((source) => (
+        <PictureSources
+          key={`${source.media}-${source.composition}`}
+          family={family(source.composition)}
+          media={source.media}
+          sizes={source.sizes ?? presentation.sizes}
+        />
+      ))}
+      <PictureSources family={fallback} sizes={props.sizes ?? presentation.sizes} />
       <img
         {...props}
         src={rendition.src}
-        srcSet={srcset(fallback) ?? props.srcSet}
+        srcSet={srcset(fallback.renditions) ?? props.srcSet}
         sizes={props.sizes ?? presentation.sizes}
         alt={alt ?? resolved.alt}
         width={rendition.width || props.width}
@@ -71,14 +66,45 @@ export function ArdoImage({
   )
 }
 
-function srcset(family: ImageCropFamily): string | undefined {
-  return family.renditions.some((entry) => entry.width === 0)
-    ? undefined
-    : family.renditions.map((entry) => `${entry.src} ${entry.width}w`).join(", ")
+function PictureSources({
+  family,
+  media,
+  sizes,
+}: {
+  family: ImageCropFamily
+  media?: string
+  sizes: string
+}) {
+  const formats = (family.formats ?? []).map((format) => ({
+    type: `image/${format.format}`,
+    renditions: format.renditions,
+  }))
+  const sources =
+    media == null ? formats : [...formats, { type: undefined, renditions: family.renditions }]
+  return sources.map((source) => {
+    const candidate = lastRendition(source.renditions)
+    return (
+      <source
+        key={source.type ?? "fallback"}
+        type={source.type}
+        media={media}
+        srcSet={srcset(source.renditions)}
+        sizes={sizes}
+        width={candidate.width || undefined}
+        height={candidate.height || undefined}
+      />
+    )
+  })
 }
 
-function lastRendition(family: ImageCropFamily): ImageRendition {
-  const result = family.renditions.at(-1)
+function srcset(renditions: ImageRendition[]): string | undefined {
+  return renditions.some((entry) => entry.width === 0)
+    ? undefined
+    : renditions.map((entry) => `${entry.src} ${entry.width}w`).join(", ")
+}
+
+function lastRendition(renditions: ImageRendition[]): ImageRendition {
+  const result = renditions.at(-1)
   if (result == null) throw new Error("[ardo] A responsive image needs at least one rendition.")
   return result
 }
