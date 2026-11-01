@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.0.0...ardo-v6.1.0) (2026-11-01)
+
+
+### Features
+
+* add MDX publications with responsive images and scoped versioning ([#442](https://github.com/sebastian-software/ardo/issues/442)) ([4b9aa62](https://github.com/sebastian-software/ardo/commit/4b9aa62fe2e097373450dcfb32693d0c23b77b4f))
+* integrate app-tracking with the Ardo CLI ([#440](https://github.com/sebastian-software/ardo/issues/440)) ([c4a7c54](https://github.com/sebastian-software/ardo/commit/c4a7c549816034f868870d74efd485300be75922))
+* serve publication images as AVIF with a JPEG fallback ([#443](https://github.com/sebastian-software/ardo/issues/443)) ([30de14b](https://github.com/sebastian-software/ardo/commit/30de14ba055841b54099c81495bc4549a7883f85))
+
 ## [6.0.0](https://github.com/sebastian-software/ardo/compare/ardo-v5.0.0...ardo-v6.0.0) (2026-10-29)
 
 
