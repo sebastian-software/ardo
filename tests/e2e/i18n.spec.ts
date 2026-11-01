@@ -114,12 +114,12 @@ for (const language of languages) {
     for (const href of await results.evaluateAll((elements) =>
       elements.map((element) => element.getAttribute("href"))
     )) {
-      expect(href).toMatch(new RegExp(`^/v6/${language.id}/`))
+      expect(href).toMatch(new RegExp(`^/(?:v6/)?${language.id}/`))
     }
     expect(indexes).toHaveLength(1)
     expect(indexes[0]).toContain(`search-index_locale_${language.id}-`)
     await results.first().click()
-    await expect(page).toHaveURL(new RegExp(`/v6/${language.id}/`))
+    await expect(page).toHaveURL(new RegExp(`/(?:v6/)?${language.id}/`))
     await expect(page.locator("html")).toHaveAttribute("lang", language.id)
   })
 }
@@ -159,7 +159,7 @@ test("mobile language controls and the logo retain the selected language without
     .last()
     .getByRole("link", { name: /^Ardo(?: Ardo)?$/, exact: true })
     .click()
-  await expect(page).toHaveURL(/\/v6\/es\/$/)
+  await expect(page).toHaveURL(/\/es\/$/)
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
   await expect(page.getByRole("link", { name: "Empieza", exact: true })).toBeVisible()
   await page.screenshot({ path: testInfo.outputPath("spanish-home-mobile.png"), fullPage: false })
@@ -182,7 +182,7 @@ for (const language of languages) {
   test(`${language.id} homepage fits narrow and wide viewports`, async ({ page }, testInfo) => {
     for (const width of [320, 1440]) {
       await page.setViewportSize({ width, height: 1000 })
-      await page.goto(`/v6/${language.id}/`)
+      await page.goto(`/${language.id}/`)
       await expect(page.locator("html")).toHaveAttribute("lang", language.id)
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
@@ -265,7 +265,7 @@ test("PO-backed guides keep localized metadata, outlines, search, and LLM text",
   await expect(page.locator("#static-language-routes")).toHaveText("Statische Sprachrouten")
   await page.getByRole("combobox", { name: "Suche", exact: true }).fill("PO-Kataloge")
   await expect(page.getByRole("listbox").getByRole("option").first()).toBeVisible()
-  const exports = await request.get("/v6/llms-full.txt")
+  const exports = await request.get("/llms-full.txt")
   expect(exports.ok()).toBe(true)
   const text = await exports.text()
   expect(text).toContain("Gepflegt werden nur die englische MDX-Quelle")

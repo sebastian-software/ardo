@@ -484,6 +484,11 @@ msgstr "Menú de navegación"
 msgid "need a hand?"
 msgstr "¿necesitas ayuda?"
 
+#: docs/app/i18n/messages.ts
+#: docs/app/root.tsx
+msgid "News"
+msgstr "Noticias"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Next"
 msgstr "Siguiente"

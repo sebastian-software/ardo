@@ -53,3 +53,6 @@ packages/ardo/.icon-sources/
 
 # Single-source guides are materialized before Ardo discovers its routes.
 /docs/app/routes/*/guide/
+
+# Publications are generated from the authored, localized posts.
+/docs/app/routes/*/news/

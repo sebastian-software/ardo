@@ -59,6 +59,7 @@ const messages: Record<string, () => string> = {
   "Know one of these? Then you almost know Ardo.": () =>
     t`Know one of these? Then you almost know Ardo.`,
   "Latest release": () => t`Latest release`,
+  News: () => t`News`,
   "Let your agent do the setup.": () => t`Let your agent do the setup.`,
   "Markdown and MDX guides": () => t`Markdown and MDX guides`,
   "Mature and Markdown-first, in Python. Ardo stays in the React toolchain.": () =>

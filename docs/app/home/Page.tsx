@@ -19,7 +19,7 @@ import { AgentSetup, HowItWorks } from "./Story"
 import socialCard from "../assets/social-card.png"
 
 export const meta: ArdoMetaFunction = (): ArdoMetaDescriptor[] => {
-  const url = `https://ardo-docs.dev/v6/${getI18n().locale}/`
+  const url = `https://ardo-docs.dev/${getI18n().locale}/`
   return [
     { title: t`Ardo: React docs, baked into plain HTML` },
     {
