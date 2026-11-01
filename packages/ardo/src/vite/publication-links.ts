@@ -29,7 +29,8 @@ export function rewritePortableReferences(markdown: string, context: LinkContext
 
 function imageReplacement(reference: DocumentReference, post: Post): Replacement[] {
   if (reference.kind !== "image" || reference.span == null) return []
-  const rendition = post.images[reference.destination]?.families[0]?.renditions.at(-1)
+  const image = post.images[reference.destination]
+  const rendition = image?.fallback ?? image?.families[0]?.renditions.at(-1)
   const destination = rendition?.src ?? reference.destination
   if (rendition == null && !/^(?:https?:)?\/\//iu.test(destination))
     throw new Error(`Feed image ${destination} in post ${post.id} has no prepared local image.`)

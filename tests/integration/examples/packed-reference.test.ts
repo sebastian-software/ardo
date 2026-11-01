@@ -212,7 +212,7 @@ describe("Basic and optional API configuration as packed-package consumers", () 
     assertDocRecipes(consumer, run)
   }, 240_000)
 
-  it("encodes publication images using the installed package's bundled JPEG XL codec", () => {
+  it("encodes AVIF publication images and JPEG fallbacks in an isolated package installation", () => {
     const consumer = path.join(temporaryRoot, "publication")
     copyProjectSource(consumer, "publication")
     fs.writeFileSync(
@@ -237,12 +237,12 @@ describe("Basic and optional API configuration as packed-package consumers", () 
     run(consumer, ["build"])
     const client = path.join(consumer, "build/client")
     const post = fs.readFileSync(path.join(client, "news/reading/index.html"), "utf8")
-    expect(post).toContain('type="image/jxl"')
     expect(post).toContain('type="image/avif"')
     const assets = fs.readdirSync(path.join(client, "assets/posts"))
     expect(assets.map((file) => path.extname(file))).toEqual(
-      expect.arrayContaining([".jxl", ".avif", ".webp"])
+      expect.arrayContaining([".avif", ".jpg"])
     )
+    expect(assets.some((file) => /\.(?:jxl|webp)$/u.test(file))).toBe(false)
     for (const entry of fs.readdirSync(path.join(client, "assets")))
       expect(entry).not.toMatch(/(?:jsquash|jxl_enc|\.wasm$)/u)
   }, 180_000)

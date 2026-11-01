@@ -1,11 +1,10 @@
 import { createHash } from "node:crypto"
 import fs from "node:fs/promises"
 import path from "node:path"
-import sharp, { type Metadata } from "sharp"
+import sharp, { type Metadata, type OutputInfo } from "sharp"
 import type {
   ImageComposition,
   ImageCropFamily,
-  ImageFormatSource,
   ImagePreset,
   PostImage,
   PostImageInput,
@@ -13,7 +12,6 @@ import type {
 } from "../publication/types"
 import { ardoImagePresets } from "../publication/presets"
 import { calculateImageCrop, type CropRectangle } from "./image-framing"
-import { additionalImageFormats, encodeImage, type ImageRaster as Raster } from "./image-encoding"
 
 export { calculateImageCrop } from "./image-framing"
 
@@ -26,9 +24,12 @@ type ImageInput = {
   config?: PublicationConfig["images"]
   assets: Map<string, ImageAsset>
   dependencies?: Set<string>
+  /** Author portraits are used directly as AVIF and do not need an export image. */
+  jpegFallback?: boolean
 }
 type ImageContext = ImageInput & { preset: ImagePreset }
 type Composition = { composition: ImageComposition; crop: CropRectangle }
+type Raster = { data: Buffer; info: OutputInfo }
 
 export async function preparePostImage(input: ImageInput): Promise<PostImage> {
   const { image } = input
@@ -117,11 +118,19 @@ async function rasterImage(source: Buffer, context: ImageContext): Promise<PostI
   const families: ImageCropFamily[] = []
   for (const composition of compositions)
     families.push(await renderFamily({ raster, ...composition }, context))
+  const fallbackComposition = compositions.find(
+    (entry) => entry.composition === "original" || entry.composition === context.preset.fallback
+  )
+  if (fallbackComposition == null)
+    throw new Error(`Image preset requests unavailable composition ${context.preset.fallback}.`)
   return {
     alt: context.image.alt,
     caption: context.image.caption,
     preset: context.preset,
     families,
+    ...(context.jpegFallback === false
+      ? {}
+      : { fallback: await renderJpeg({ raster, ...fallbackComposition }, context) }),
   }
 }
 
@@ -160,35 +169,41 @@ async function renderFamily(
 ): Promise<ImageCropFamily> {
   const { crop, raster } = input
   const renditions = []
-  const formats: ImageFormatSource[] = additionalImageFormats(context.config?.formats).map(
-    (format) => ({ format, renditions: [] })
-  )
   for (const width of renditionWidths(context.config?.widths, crop.width)) {
-    const resized = await sharp(raster.data, {
+    const output = await sharp(raster.data, {
       raw: { width: raster.info.width, height: raster.info.height, channels: raster.info.channels },
     })
       .extract(crop)
       .resize({ width, withoutEnlargement: true })
       .toColourspace("srgb")
-      .ensureAlpha()
-      .raw()
+      .avif({ quality: 55, effort: 4 })
       .toBuffer({ resolveWithObject: true })
-    renditions.push(await encodeRendition(resized, "webp", context))
-    for (const source of formats)
-      source.renditions.push(await encodeRendition(resized, source.format, context))
+    renditions.push({
+      src: storeImage(output.data, context, "avif"),
+      width: output.info.width,
+      height: output.info.height,
+    })
   }
-  return { composition: input.composition, renditions, formats }
+  return { composition: input.composition, renditions }
 }
 
-async function encodeRendition(
-  raster: Raster,
-  format: ImageFormatSource["format"] | "webp",
+async function renderJpeg(
+  { raster, crop }: Composition & { raster: Raster },
   context: ImageContext
 ) {
+  const output = await sharp(raster.data, {
+    raw: { width: raster.info.width, height: raster.info.height, channels: raster.info.channels },
+  })
+    .extract(crop)
+    .resize({ width: 1280, withoutEnlargement: true })
+    .toColourspace("srgb")
+    .flatten({ background: "#ffffff" })
+    .jpeg({ quality: 82 })
+    .toBuffer({ resolveWithObject: true })
   return {
-    src: storeImage(await encodeImage(raster, format), context, format),
-    width: raster.info.width,
-    height: raster.info.height,
+    src: storeImage(output.data, context, "jpg"),
+    width: output.info.width,
+    height: output.info.height,
   }
 }
 
@@ -204,7 +219,7 @@ function renditionWidths(configured: number[] | undefined, max: number): number[
   ].sort((a, b) => a - b)
 }
 
-function storeImage(source: Buffer, context: ImageContext, extension = "webp"): string {
+function storeImage(source: Buffer, context: ImageContext, extension: string): string {
   const hash = createHash("sha256").update(source).digest("hex").slice(0, 20)
   const fileName = `assets/posts/${hash}.${extension}`
   context.assets.set(fileName, { fileName, source })

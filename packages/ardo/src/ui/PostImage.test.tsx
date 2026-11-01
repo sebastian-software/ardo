@@ -61,17 +61,15 @@ it("rejects a placement's unavailable crop while preserving unframed source comp
   expect(html).not.toContain("/compact-")
 })
 
-it("tries every format of a matching media group before another crop, and retains a WebP fallback", () => {
+it("selects AVIF resolutions per crop and leaves the single JPEG fallback out of srcset", () => {
   const image: PostImage = {
     ...framed,
+    fallback: { src: "/fallback.jpg", width: 1280, height: 960 },
     families: framed.families.map((family) => ({
       ...family,
-      formats: (["jxl", "avif"] as const).map((format) => ({
-        format,
-        renditions: family.renditions.map((rendition) => ({
-          ...rendition,
-          src: rendition.src.replace(/webp$/u, format),
-        })),
+      renditions: family.renditions.map((rendition) => ({
+        ...rendition,
+        src: rendition.src.replace(/webp$/u, "avif"),
       })),
     })),
   }
@@ -84,16 +82,15 @@ it("tries every format of a matching media group before another crop, and retain
   container.innerHTML = html
   const sources = [...container.querySelectorAll<HTMLSourceElement>("picture > source")]
   expect(sources.map((source) => [source.getAttribute("media"), source.type])).toStrictEqual([
-    ["(min-width: 60rem)", "image/jxl"],
     ["(min-width: 60rem)", "image/avif"],
-    ["(min-width: 60rem)", ""],
-    [null, "image/jxl"],
     [null, "image/avif"],
   ])
-  expect(sources[0].srcset).toBe("/wide-640.jxl 640w, /wide-1280.jxl 1280w")
-  expect(sources[1].srcset).toBe("/wide-640.avif 640w, /wide-1280.avif 1280w")
-  expect(sources[2].srcset).toBe("/wide-640.webp 640w, /wide-1280.webp 1280w")
-  expect(sources[3].srcset).toBe("/compact-640.jxl 640w")
-  expect(sources[3].sizes).toBe("80vw")
-  expect(container.querySelector("picture > img")?.getAttribute("src")).toBe("/compact-640.webp")
+  expect(sources[0].srcset).toBe("/wide-640.avif 640w, /wide-1280.avif 1280w")
+  expect(sources[1].srcset).toBe("/compact-640.avif 640w")
+  expect(sources[1].sizes).toBe("80vw")
+  const fallback = container.querySelector("picture > img")
+  expect(fallback?.getAttribute("src")).toBe("/fallback.jpg")
+  expect(fallback?.hasAttribute("srcset")).toBe(false)
+  expect(fallback?.getAttribute("width")).toBe("1280")
+  expect(fallback?.getAttribute("height")).toBe("960")
 })

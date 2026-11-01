@@ -132,33 +132,18 @@ Externally hosted HTTP images remain external; Ardo does not download or optimiz
 
 ## Output formats
 
-By default, Ardo generates **JPEG XL**, **AVIF**, and **WebP** for every resolution of each
-local still post image. Transparency is preserved. WebP remains the fallback in the `img` element,
-feeds, author portraits, and social metadata. Ardo does not generate JPEG output.
+Ardo generates **AVIF** for every resolution of each local still post image, preserving
+transparency. Each image also gets one **JPEG**, at most 1280 pixels wide, without upscaling.
+The JPEG uses the image preset's fallback composition, or the original composition for an
+unframed image. Transparent areas are flattened onto white in the JPEG only.
 
-Within each media condition, `picture` tries the configured format sources before moving
-to another composition. Each source declares its MIME type and contains resolutions of
-one format and one crop, so format fallback preserves the selected composition.
+The `picture` element selects AVIF sources by media condition, with resolutions in each
+`srcset`. Its `img` element uses the single JPEG as a fallback, without a JPEG `srcset`.
+Feeds and social metadata reuse that JPEG. Author portraits are served directly as AVIF.
 
-Control the additional formats and their preference order in the publication configuration:
-
-```ts
-publication: {
-  // from, authors, ...
-  images: {
-    formats: ["jxl", "avif"], // Default; WebP is always included as the fallback.
-  },
-}
-```
-
-Use `formats: ["avif"]` to omit JPEG XL, or `formats: []` for WebP only. Entries must
-be unique. More encodings increase build work and deployment assets; the browser downloads
-only the selected format and resolution.
-
-Sharp/libvips handles framing, resizing, WebP, and AVIF. JPEG XL uses the bundled libjxl
-WebAssembly encoder during build or development preparation. No system codec installation,
-runtime download, or browser-side codec is needed. SVG, animated images, and external images
-keep their existing pass-through behavior.
+Sharp/libvips handles cropping, resizing, AVIF, and JPEG during build or development preparation.
+No additional codec package or WebAssembly runtime is needed. SVG, animated images, and
+external images keep their existing pass-through behavior.
 
 ## Select a presentation preset
 

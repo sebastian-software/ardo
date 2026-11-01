@@ -78,7 +78,6 @@ function contentType(name: string): string {
     ".jpeg": "image/jpeg",
     ".webp": "image/webp",
     ".avif": "image/avif",
-    ".jxl": "image/jxl",
   }
   return types[path.extname(name)] ?? "application/octet-stream"
 }

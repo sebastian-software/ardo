@@ -22,7 +22,8 @@ export function createPostRoute(input: {
     span == null
       ? source
       : Buffer.concat([bytes.subarray(0, span.start), bytes.subarray(span.end)]).toString()
-  const socialImage = post.coverImage?.families[0]?.renditions.at(-1)?.src
+  const cover = post.coverImage
+  const socialImage = (cover?.fallback ?? cover?.families[0]?.renditions.at(-1))?.src
   const { feedContent: _feedContent, ...authored } = data
   const frontmatter = {
     ...authored,

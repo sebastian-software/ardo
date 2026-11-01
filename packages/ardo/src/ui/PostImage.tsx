@@ -13,7 +13,7 @@ export type ArdoImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   preset?: ImagePreset
 }
 
-/** Keep media groups in order, with format preferences inside each composition. */
+/** Select responsive AVIF compositions, with one JPEG for browsers needing a fallback. */
 export function ArdoImage({
   image,
   preset,
@@ -39,22 +39,31 @@ export function ArdoImage({
     return selected
   }
   const fallback = family(presentation.fallback)
-  const rendition = lastRendition(fallback.renditions)
+  const rendition = resolved.fallback ?? lastRendition(fallback.renditions)
   return (
     <picture>
       {presentation.sources?.map((source) => (
-        <PictureSources
+        <PictureSource
           key={`${source.media}-${source.composition}`}
           family={family(source.composition)}
           media={source.media}
           sizes={source.sizes ?? presentation.sizes}
+          type={resolved.fallback == null ? undefined : "image/avif"}
         />
       ))}
-      <PictureSources family={fallback} sizes={props.sizes ?? presentation.sizes} />
+      {resolved.fallback != null && (
+        <PictureSource
+          family={fallback}
+          sizes={props.sizes ?? presentation.sizes}
+          type="image/avif"
+        />
+      )}
       <img
         {...props}
         src={rendition.src}
-        srcSet={srcset(fallback.renditions) ?? props.srcSet}
+        srcSet={
+          resolved.fallback == null ? (srcset(fallback.renditions) ?? props.srcSet) : props.srcSet
+        }
         sizes={props.sizes ?? presentation.sizes}
         alt={alt ?? resolved.alt}
         width={rendition.width || props.width}
@@ -66,35 +75,28 @@ export function ArdoImage({
   )
 }
 
-function PictureSources({
+function PictureSource({
   family,
   media,
   sizes,
+  type,
 }: {
   family: ImageCropFamily
   media?: string
   sizes: string
+  type?: string
 }) {
-  const formats = (family.formats ?? []).map((format) => ({
-    type: `image/${format.format}`,
-    renditions: format.renditions,
-  }))
-  const sources =
-    media == null ? formats : [...formats, { type: undefined, renditions: family.renditions }]
-  return sources.map((source) => {
-    const candidate = lastRendition(source.renditions)
-    return (
-      <source
-        key={source.type ?? "fallback"}
-        type={source.type}
-        media={media}
-        srcSet={srcset(source.renditions)}
-        sizes={sizes}
-        width={candidate.width || undefined}
-        height={candidate.height || undefined}
-      />
-    )
-  })
+  const candidate = lastRendition(family.renditions)
+  return (
+    <source
+      type={type}
+      media={media}
+      srcSet={srcset(family.renditions)}
+      sizes={sizes}
+      width={candidate.width || undefined}
+      height={candidate.height || undefined}
+    />
+  )
 }
 
 function srcset(renditions: ImageRendition[]): string | undefined {

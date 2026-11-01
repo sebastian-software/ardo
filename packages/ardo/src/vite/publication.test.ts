@@ -155,7 +155,8 @@ describe("publication lifecycle and portable output", () => {
     const rendition = result.publication.posts[0].images["./photo.png"].families[0].renditions[0]
     const bytes = result.assets.get(rendition.src.slice("/project/".length))!.source
     expect(await sharp(bytes).metadata()).toMatchObject({
-      format: "webp",
+      format: "heif",
+      compression: "av1",
       width: rendition.width,
       height: rendition.height,
     })

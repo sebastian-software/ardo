@@ -1,10 +1,8 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import decodeJxl, { init } from "@jsquash/jxl/decode.js"
 import sharp from "sharp"
 import { afterEach, expect, it } from "vitest"
-import { additionalImageFormats } from "./image-encoding"
 import { preparePostImage, type ImageAsset } from "./post-images"
 
 const roots: string[] = []
@@ -12,13 +10,13 @@ afterEach(async () => {
   for (const root of roots.splice(0)) await fs.rm(root, { recursive: true, force: true })
 })
 
-async function input() {
+async function input(width = 96, height = 72) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-image-formats-"))
   roots.push(root)
   await sharp({
     create: {
-      width: 96,
-      height: 72,
+      width,
+      height,
       channels: 4,
       background: { r: 80, g: 120, b: 180, alpha: 0.5 },
     },
@@ -34,22 +32,7 @@ async function input() {
   }
 }
 
-it("encodes both crops at matching sizes in JPEG XL, AVIF, and WebP without losing transparency", async () => {
-  const module = await WebAssembly.compile(
-    new Uint8Array(
-      await fs.readFile(new URL(import.meta.resolve("@jsquash/jxl/codec/dec/jxl_dec.wasm")))
-    )
-  )
-  await init({
-    instantiateWasm(
-      imports: WebAssembly.Imports,
-      receive: (instance: WebAssembly.Instance) => void
-    ) {
-      const instance = new WebAssembly.Instance(module, imports)
-      receive(instance)
-      return instance.exports
-    },
-  })
+it("encodes responsive AVIF crops with transparency and one opaque JPEG in the default composition", async () => {
   const context = await input()
   const image = await preparePostImage({
     ...context,
@@ -57,49 +40,66 @@ it("encodes both crops at matching sizes in JPEG XL, AVIF, and WebP without losi
     config: { widths: [16, 32] },
   })
   expect(image.families.map((family) => family.composition)).toStrictEqual(["16:10", "4:3"])
+  const getBytes = (src: string) => context.assets.get(src.slice(context.base.length))!.source
   for (const family of image.families) {
-    expect(family.formats?.map((source) => source.format)).toStrictEqual(["jxl", "avif"])
-    const fallback = family.renditions
-    const [jxlSource, avifSource] = family.formats!
-    const jxl = jxlSource.renditions
-    const avif = avifSource.renditions
-    expect(jxl).toHaveLength(fallback.length)
-    expect(avif).toHaveLength(fallback.length)
-    for (const [index, rendition] of fallback.entries()) {
-      const getBytes = (src: string) => context.assets.get(src.slice(context.base.length))!.source
-      const dimensions = { width: rendition.width, height: rendition.height }
+    expect(family.renditions).toHaveLength(2)
+    for (const rendition of family.renditions) {
+      expect(rendition.src).toMatch(/\.avif$/u)
       expect(rendition.width).toBeLessThanOrEqual(32)
       expect(await sharp(getBytes(rendition.src)).metadata()).toMatchObject({
-        ...dimensions,
-        format: "webp",
-        hasAlpha: true,
-      })
-      expect(jxl[index].src).toMatch(/\.jxl$/u)
-      const decoded = await decodeJxl(Uint8Array.from(getBytes(jxl[index].src)).buffer)
-      expect(decoded).toMatchObject(dimensions)
-      expect(decoded.data[3]).toBeGreaterThan(0)
-      expect(decoded.data[3]).toBeLessThan(255)
-      expect(await sharp(getBytes(avif[index].src)).metadata()).toMatchObject({
-        ...dimensions,
+        width: rendition.width,
+        height: rendition.height,
         format: "heif",
         compression: "av1",
         hasAlpha: true,
       })
+      const avifPixels = await sharp(getBytes(rendition.src)).ensureAlpha().raw().toBuffer()
+      expect(avifPixels[3]).toBeGreaterThan(0)
+      expect(avifPixels[3]).toBeLessThan(255)
     }
   }
+  expect([...context.assets.keys()].filter((file) => file.endsWith(".jpg"))).toHaveLength(1)
+  const jpeg = image.fallback!
+  expect(jpeg.src).toMatch(/\.jpg$/u)
+  expect(jpeg.width).toBeLessThanOrEqual(96)
+  expect(jpeg.width * 3).toBe(jpeg.height * 4)
+  expect(await sharp(getBytes(jpeg.src)).metadata()).toMatchObject({
+    width: jpeg.width,
+    height: jpeg.height,
+    format: "jpeg",
+    hasAlpha: false,
+  })
+  const pixels = await sharp(getBytes(jpeg.src)).raw().toBuffer()
+  for (const [channel, expected] of [168, 188, 218].entries())
+    expect(Math.abs(pixels[channel] - expected)).toBeLessThan(5)
 })
 
-it("honors optional encodings and can retain the WebP-only pipeline", async () => {
+it("caps the single JPEG at 1280px independently of AVIF widths and follows the authored preset", async () => {
+  const context = await input(2200, 1400)
+  const image = await preparePostImage({
+    ...context,
+    image: {
+      ...context.image,
+      frame: { x: 0, y: 0, width: 1, height: 1 },
+      preset: "wide",
+    },
+    config: {
+      widths: [64],
+      presets: { wide: { fallback: "16:10", sizes: "100vw" } },
+    },
+  })
+  expect(image.fallback).toMatchObject({ width: 1280, height: 800 })
+  expect(image.families.flatMap((family) => family.renditions).every((r) => r.width === 64)).toBe(
+    true
+  )
+  expect([...context.assets.keys()].filter((file) => file.endsWith(".jpg"))).toHaveLength(1)
+})
+
+it("does not create an unused JPEG for AVIF author portraits", async () => {
   const context = await input()
-  const avifOnly = await preparePostImage({ ...context, config: { formats: ["avif"] } })
-  expect(avifOnly.families[0].formats?.map((source) => source.format)).toStrictEqual(["avif"])
-  expect([...context.assets.keys()].some((file) => file.endsWith(".jxl"))).toBe(false)
-  const webpOnly = await preparePostImage({ ...context, config: { formats: [] } })
-  expect(webpOnly.families[0].formats).toStrictEqual([])
-  expect(webpOnly.families[0].renditions[0].src).toMatch(/\.webp$/u)
-  expect(additionalImageFormats(["avif", "jxl"])).toStrictEqual(["avif", "jxl"])
-  expect(() => additionalImageFormats(["jxl", "jxl"])).toThrow("unique")
-  expect(() => additionalImageFormats(["jpeg"])).toThrow("formats")
+  const image = await preparePostImage({ ...context, jpegFallback: false })
+  expect(image.fallback).toBeUndefined()
+  expect([...context.assets.keys()].every((file) => file.endsWith(".avif"))).toBe(true)
 })
 
 it("keeps SVG and external images as a single untouched source", async () => {
@@ -110,11 +110,11 @@ it("keeps SVG and external images as a single untouched source", async () => {
   )
   const svg = await preparePostImage({ ...context, image: { src: "./icon.svg", alt: "Icon" } })
   expect(svg.families[0].renditions[0].src).toMatch(/\.svg$/u)
-  expect(svg.families[0].formats).toBeUndefined()
+  expect(svg.fallback).toBeUndefined()
   const remote = await preparePostImage({
     ...context,
     image: { src: "https://example.test/photo.png", alt: "Remote" },
   })
   expect(remote.families[0].renditions[0].src).toBe("https://example.test/photo.png")
-  expect(remote.families[0].formats).toBeUndefined()
+  expect(remote.fallback).toBeUndefined()
 })
