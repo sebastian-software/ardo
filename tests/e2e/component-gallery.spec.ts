@@ -251,6 +251,20 @@ test("mobile navigation retains usable controls and wrapping breadcrumbs with en
   await page.keyboard.press("Enter")
   const menu = page.getByRole("dialog", { name: /navigation menu/ })
   await expect(menu).toBeVisible()
+  const nav = menu.locator(".ardo-nav")
+  const navBounds = await nav.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+    links: [...element.querySelectorAll("a")].map((link) => {
+      const rect = link.getBoundingClientRect()
+      return { left: rect.left, right: rect.right }
+    }),
+  }))
+  expect(navBounds.scrollWidth).toBeLessThanOrEqual(navBounds.clientWidth)
+  for (const link of navBounds.links) {
+    expect(link.left).toBeGreaterThanOrEqual(0)
+    expect(link.right).toBeLessThanOrEqual(320)
+  }
   const close = menu.getByRole("button", { name: "Close menu", exact: true })
   const closeBox = await close.boundingBox()
   expect(closeBox?.width).toBeGreaterThanOrEqual(44)

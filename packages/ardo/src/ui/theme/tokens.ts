@@ -126,9 +126,8 @@ function createLightColors(hues: ColorHues = varHues, chroma: ColorChroma = varC
     divider: oklch(0.89, n(0.004), neutral),
     sidebarBg: oklch(0.965, n(0.004), neutral),
     sidebarRailBg: oklch(0.94, n(0.005), neutral),
-    // Code surfaces take the accent hue but stay as quiet as the chrome, so a
-    // boosted accent does not tint every code block.
-    codeBg: oklch(0.965, n(0.012), secondary),
+    // GitHub Light comments lose AA contrast on a tinted code surface.
+    codeBg: oklch(1, 0, 0),
     codeBorder: oklch(0.88, n(0.016), secondary),
     codeShadow: `0 1px 2px ${oklch(0.2, n(0.015), neutral, 0.03)}, 0 6px 16px -8px ${oklch(0.2, n(0.015), neutral, 0.07)}`,
     shadowSm: `0 1px 2px ${oklch(0.2, n(0.015), neutral, 0.05)}, 0 2px 8px -2px ${oklch(0.2, n(0.015), neutral, 0.05)}`,
