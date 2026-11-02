@@ -117,7 +117,9 @@ test("document scrolling keeps site chrome, the outline, and the footer in the d
   expect(desktopMetrics.headerOffset).toBe("4rem")
   expect(desktopMetrics.scrollPadding).toBe("96px")
   expect(desktopMetrics.sidebarOffset).toBe("64px")
-  expect(desktopMetrics.railOffset).toBe("96px")
+  expect(parseFloat(desktopMetrics.railOffset ?? "0")).toBeGreaterThan(
+    desktopMetrics.headerHeight ?? 0
+  )
   expect(desktopMetrics.railRight).toBeLessThanOrEqual(desktopMetrics.viewportWidth)
 
   const skipLink = page.getByRole("link", { name: "Skip to content" })
@@ -148,7 +150,7 @@ test("document scrolling keeps site chrome, the outline, and the footer in the d
   expect(desktopScrollState.headingTop).toBeLessThanOrEqual(desktopScrollState.headerBottom + 64)
   expect(desktopScrollState.documentScrollTop).toBeLessThan(desktopScrollState.maxScrollTop - 100)
   expect(desktopScrollState.sidebarTop).toBe(64)
-  expect(desktopScrollState.railTop).toBe(96)
+  expect(desktopScrollState.railTop).toBeCloseTo(parseFloat(desktopMetrics.railOffset ?? "0"), 1)
 
   await page.getByRole("link", { name: "First section" }).click()
   await expect(page).toHaveURL(/#first-section$/)

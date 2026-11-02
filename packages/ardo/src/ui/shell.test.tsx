@@ -146,7 +146,7 @@ describe("UI shell landmarks", () => {
     expect(view).not.toContain("ardo-footer")
     expect(view).not.toContain('href="#main-content"')
     expect(view).not.toContain(layoutStyles.withHeader)
-    expect(view).toContain('<main id="main-content">')
+    expect(view).toContain('<main id="main-content"')
   })
 
   it("keeps the skip link and fixed-header spacing for bare routes with built-in chrome", () => {
@@ -159,7 +159,7 @@ describe("UI shell landmarks", () => {
     expect(view).toContain("ardo-header")
     expect(view).toContain(layoutStyles.withHeader)
     expect(view).toContain('href="#main-content"')
-    expect(view).toContain('<main id="main-content">')
+    expect(view).toContain('<main id="main-content"')
   })
 
   it("shows a centered search field on docs routes", () => {

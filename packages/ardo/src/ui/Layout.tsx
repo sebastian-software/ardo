@@ -201,13 +201,13 @@ export function ArdoLayout({
           {sidebar}
           <main
             id="main-content"
-            className={
-              bare
-                ? undefined
-                : [styles.main, isDocumentScroll && styles.documentScrollMain]
-                    .filter(Boolean)
-                    .join(" ")
-            }
+            className={[
+              styles.readingSize,
+              !bare && styles.main,
+              !bare && isDocumentScroll && styles.documentScrollMain,
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
             {children}
             {footer}

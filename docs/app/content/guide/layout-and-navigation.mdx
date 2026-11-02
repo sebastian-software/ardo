@@ -255,12 +255,12 @@ With `search="auto"`, the page layout decides how search looks:
   hero's call to action has the stage.
 
 Use `search="field"` or `search="icon"` to pick one presentation for every page. The field also
-collapses to the icon when the page frame is below 1024px. In every mode, ⌘K
+collapses to the icon when the page frame is below `64rem` (1024px at the default text size). In every mode, ⌘K
 (Ctrl+K on Windows and Linux) opens search.
 
 ### Narrow screens
 
-Below a frame width of 1024px the header keeps only the menu button, the logo, and search, so a long logo still
+Below a frame width of `64rem` the header keeps only the menu button, the logo, and search, so a long logo still
 fits. The menu ends with the site controls: the version switcher, the language switcher, the
 theme toggle, and everything inside `ArdoHeaderActions`, such as social links.
 
@@ -281,7 +281,8 @@ between the homepage and a guide keeps the same outer page boundaries. Prose kee
 readable measure inside that frame; code and tables can use the article's available width.
 
 Set `layout.pageMaxWidth` in the `ArdoRoot` theme to change the shared content width (default:
-`69rem`). The frame adds the same horizontal gutter used by `ArdoHero`, `ArdoFeatures`, and
+`87rem`). With the horizontal gutters, the default frame reaches `90rem` (1440px at the default
+text size). The frame adds the same horizontal gutter used by `ArdoHero`, `ArdoFeatures`, and
 `ArdoFooter`. The corresponding CSS token is `--ardo-layout-pageMaxWidth`; custom sections can
 use `vars.layout.pageMaxWidth` to align with the built-in sections.
 
@@ -291,9 +292,19 @@ use `vars.layout.pageMaxWidth` to align with the built-in sections.
 </ArdoRoot>
 ```
 
-Navigation responds to the available frame width. A bounded frame on a large monitor uses the
-compact page outline instead of squeezing in a right rail. A narrower frame also moves the
-sidebar and header controls into the menu.
+Navigation responds to the available frame width. From `80rem` (1280px at the default text size),
+documentation shows the sidebar, article, and right outline rail. Below that, the outline becomes
+a compact disclosure. Below `64rem`, the sidebar and header controls move into the menu. The
+relative thresholds leave room for larger user text and browser zoom.
+
+The reading scale follows the frame: body text grows from `1rem` to `1.125rem` between frame
+widths of `80rem` and `90rem`. Headings and larger spacing tokens grow within their own bounds;
+navigation and code keep their compact sizes. Ardo leaves the root font size to the reader.
+Custom theme tokens can replace any of these values, including with fixed sizes:
+
+```tsx
+<ArdoRoot theme={{ tokens: { fontSize: { base: "1rem" }, space: { xl: "2rem" } } }} />
+```
 
 For a site that needs viewport-wide documentation, set `<ArdoRoot fullWidth>`. `ArdoLayout`
 accepts the same prop when you compose the shell yourself. Built-in marketing sections retain
@@ -399,9 +410,9 @@ Generated API pages disable edit links and file dates. Materialized content
 disables them by default; its frontmatter mapping can opt in when a meaningful
 source pattern is configured.
 
-On viewports up to 1280 pixels wide, the outline appears as an expandable
+In frames narrower than `80rem`, the outline appears as an expandable
 "On this page" section below the title, and page actions appear at the end of the
-article. Wider screens keep the page rail.
+article. Wider frames keep the page rail.
 
 ## Route-Level Chrome
 

@@ -1,7 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
-import { frameResponsive } from "./page-frame"
+import { compactFrame, frameResponsive, narrowFrame, wideFrame } from "./page-frame"
 
 /**
  * 3-column layout: Sidebar (fixed) | Content (fluid) | TOC (fixed)
@@ -11,10 +11,9 @@ export const docPage = style({
   flex: 1,
   minWidth: 0,
   width: "100%",
-  gridTemplateColumns: `minmax(0, 72rem) ${vars.layout.tocWidth}`,
+  gridTemplateColumns: `minmax(0, 1fr) ${vars.layout.tocWidth}`,
   justifyContent: "start",
-  gap: "clamp(2rem, 4vw, 4rem)",
-  maxWidth: "100rem",
+  gap: vars.space.xl,
   margin: "0 auto",
   paddingTop: vars.space["2xl"],
   // Breathing room before the footer band on tall pages; on short pages the
@@ -24,15 +23,10 @@ export const docPage = style({
     '&[data-rail="false"]': { gridTemplateColumns: "minmax(0, 1fr)" },
   },
   ...frameResponsive({
-    "(min-width: 1536px)": {
-      gridTemplateColumns: `minmax(0, 78rem) ${vars.layout.tocWidth}`,
-    },
-    "(max-width: 1280px)": {
+    [narrowFrame]: {
       gridTemplateColumns: "minmax(0, 1fr)",
-      maxWidth: "min(100%, 72rem)",
-      justifyContent: "center",
     },
-    "(max-width: 1024px)": {
+    [compactFrame]: {
       paddingTop: vars.space.xl,
     },
   }),
@@ -50,7 +44,7 @@ export const contentHeader = style({
 })
 
 export const contentTitle = style({
-  fontSize: "clamp(2rem, 4vw, 3.15rem)",
+  fontSize: vars.fontSize["4xl"],
   fontFamily: vars.font.familyHeading,
   fontWeight: 700,
   lineHeight: 1.08,
@@ -76,8 +70,8 @@ export const contentBody = style({
 
 export const narrowPageMeta = style({
   ...frameResponsive({
-    "(max-width: 1280px)": { display: "block" },
-    "(min-width: 1281px)": { display: "none" },
+    [narrowFrame]: { display: "block" },
+    [wideFrame]: { display: "none" },
   }),
 })
 
@@ -93,7 +87,7 @@ export const pageRail = style({
   // not a card. Matches the rail-less pattern of Mintlify, Vercel, React,
   // Tailwind, VitePress, Stripe, Linear.
   ...frameResponsive({
-    "(max-width: 1280px)": {
+    [narrowFrame]: {
       display: "none",
     },
   }),

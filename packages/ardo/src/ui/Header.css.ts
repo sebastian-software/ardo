@@ -1,7 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
-import { frameMaxWidth, frameResponsive } from "./page-frame"
+import { compactFrame, frameMaxWidth, frameResponsive } from "./page-frame"
 
 export const header = style({
   position: "fixed",
@@ -23,7 +23,7 @@ export const header = style({
   },
 })
 
-const MOBILE = "(max-width: 1024px)"
+const MOBILE = compactFrame
 const SMALL = "(max-width: 768px)"
 
 /**
@@ -166,6 +166,7 @@ export const mobileMenuButton = style({
 export const desktopNav = style({
   display: "flex",
   alignItems: "center",
+  whiteSpace: "nowrap",
   ...frameResponsive({
     [MOBILE]: {
       display: "none",

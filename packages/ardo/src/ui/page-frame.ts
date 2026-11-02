@@ -5,6 +5,11 @@ import { vars } from "./theme/contract.css"
 export const frameMaxWidth = "var(--ardo-frame-max-width)"
 export const pageFrameMaxWidth = `calc(${vars.layout.pageMaxWidth} + 2 * ${vars.space.lg})`
 
+// Relative to the reader's root size, so larger text gets fewer columns sooner.
+export const compactFrame = "(width < 64rem)"
+export const narrowFrame = "(width < 80rem)"
+export const wideFrame = "(width >= 80rem)"
+
 /** Keep standalone components responsive, and adapt framed layouts to their own width. */
 export function frameResponsive(
   rules: NonNullable<StyleRule["@media"]>

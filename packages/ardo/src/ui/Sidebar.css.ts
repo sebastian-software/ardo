@@ -1,7 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
-import { frameResponsive } from "./page-frame"
+import { compactFrame, frameResponsive } from "./page-frame"
 
 export const sidebar = style({
   width: vars.layout.sidebarWidth,
@@ -12,7 +12,7 @@ export const sidebar = style({
   // separated by a surface-brightness step, not a hairline.
   background: "transparent",
   ...frameResponsive({
-    "(max-width: 1024px)": {
+    [compactFrame]: {
       display: "none",
     },
   }),

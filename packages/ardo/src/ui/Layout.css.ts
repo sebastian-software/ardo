@@ -1,7 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
-import { frameMaxWidth, frameResponsive, pageFrameMaxWidth } from "./page-frame"
+import { compactFrame, frameMaxWidth, frameResponsive, pageFrameMaxWidth } from "./page-frame"
 
 export const pageFrame = style({
   vars: { "--ardo-frame-max-width": pageFrameMaxWidth },
@@ -50,11 +50,14 @@ export const main = style({
   scrollPaddingTop: vars.space["2xl"],
   padding: `0 ${vars.space.xl} ${vars.space.xl}`,
   ...frameResponsive({
-    "(max-width: 1024px)": {
+    [compactFrame]: {
       padding: `0 ${vars.space.md} ${vars.space.xl}`,
     },
   }),
 })
+
+// Resolve container-relative type inside the frame, including on plain bare routes.
+export const readingSize = style({ fontSize: vars.font.size })
 
 /** Opt-in document scrolling for sites that own chrome outside Ardo's frame. */
 export const documentScroll = style({
