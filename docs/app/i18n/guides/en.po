@@ -1598,6 +1598,12 @@ msgstr ""
 msgid "An edit link built from the site settings and the current page:"
 msgstr "An edit link built from the site settings and the current page:"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"An individual TSX route can override the site default in either direction:"
+msgstr ""
+"An individual TSX route can override the site default in either direction:"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "An invalid document, an unsupported OpenAPI major version, or a non-object "
@@ -2607,17 +2613,30 @@ msgstr "Behavior"
 msgid "Behavior changes"
 msgstr "Behavior changes"
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Below 1024px the header keeps only the menu button, the logo, and search, so a"
+#~ " long logo still fits. The menu ends with the site controls: the version "
+#~ "switcher, the language switcher, the theme toggle, and everything inside <0/>,"
+#~ " such as social links."
+#~ msgstr ""
+#~ "Below 1024px the header keeps only the menu button, the logo, and search, so a"
+#~ " long logo still fits. The menu ends with the site controls: the version "
+#~ "switcher, the language switcher, the theme toggle, and everything inside <0/>,"
+#~ " such as social links."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Below 1024px the header keeps only the menu button, the logo, and search, so a"
-" long logo still fits. The menu ends with the site controls: the version "
-"switcher, the language switcher, the theme toggle, and everything inside <0/>,"
-" such as social links."
+"Below a frame width of 1024px the header keeps only the menu button, the logo,"
+" and search, so a long logo still fits. The menu ends with the site controls: "
+"the version switcher, the language switcher, the theme toggle, and everything "
+"inside <0/>, such as social links."
 msgstr ""
-"Below 1024px the header keeps only the menu button, the logo, and search, so a"
-" long logo still fits. The menu ends with the site controls: the version "
-"switcher, the language switcher, the theme toggle, and everything inside <0/>,"
-" such as social links."
+"Below a frame width of 1024px the header keeps only the menu button, the logo,"
+" and search, so a long logo still fits. The menu ends with the site controls: "
+"the version switcher, the language switcher, the theme toggle, and everything "
+"inside <0/>, such as social links."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Best fit"
@@ -3519,6 +3538,18 @@ msgstr "Document grid and optional right rail"
 msgid "Document Scrolling with Site-Owned Chrome"
 msgstr "Document Scrolling with Site-Owned Chrome"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Documentation and bare pages share one centered frame by default, including "
+"the header. Moving between the homepage and a guide keeps the same outer page "
+"boundaries. Prose keeps its own readable measure inside that frame; code and "
+"tables can use the article's available width."
+msgstr ""
+"Documentation and bare pages share one centered frame by default, including "
+"the header. Moving between the homepage and a guide keeps the same outer page "
+"boundaries. Prose keeps its own readable measure inside that frame; code and "
+"tables can use the article's available width."
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Documentation package boundary"
 msgstr "Documentation package boundary"
@@ -3967,6 +3998,16 @@ msgstr ""
 "Both come from <4/>. <5/> renders the page's <6/> descriptors, stylesheets, "
 "and module preloads; <7/> loads the client entry that hydrates the page. The "
 "shell must render <8/>:"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"For a site that needs viewport-wide documentation, set <0/>. <1/> accepts the "
+"same prop when you compose the shell yourself. Built-in marketing sections "
+"retain their own content measure."
+msgstr ""
+"For a site that needs viewport-wide documentation, set <0/>. <1/> accepts the "
+"same prop when you compose the shell yourself. Built-in marketing sections "
+"retain their own content measure."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -5240,6 +5281,10 @@ msgstr "Markdown + React Components"
 msgid "Markdown and MDX routes"
 msgstr "Markdown and MDX routes"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Markdown and MDX routes accept the same option in frontmatter:"
+msgstr "Markdown and MDX routes accept the same option in frontmatter:"
+
 #: docs/app/content/guide/releases/upgrade-to-v5.mdx
 msgid "Markdown configuration"
 msgstr "Markdown configuration"
@@ -5516,6 +5561,16 @@ msgstr ""
 "children to change any part, or set <3/>, <4/>, or <5/> to <6/> to leave it "
 "out:"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Navigation responds to the available frame width. A bounded frame on a large "
+"monitor uses the compact page outline instead of squeezing in a right rail. A "
+"narrower frame also moves the sidebar and header controls into the menu."
+msgstr ""
+"Navigation responds to the available frame width. A bounded frame on a large "
+"monitor uses the compact page outline instead of squeezing in a right rail. A "
+"narrower frame also moves the sidebar and header controls into the menu."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Navigation, sidebar sections, footer, editLink, lastUpdated, and search are "
@@ -5653,19 +5708,20 @@ msgstr ""
 "directories before enabling it. Retained historical builds are not rewritten "
 "automatically. Shared assets stay under the deployment root in this mode."
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"On bare pages the header content shares one page width with <0/>, <1/>, and "
-"<2/>, so the logo lines up with the page content. Docs pages keep the "
-"full-width header above the sidebar, content, and table of contents. Change "
-"the width with the <3/> token, and use <4/> to align your own bare-page "
-"sections."
-msgstr ""
-"On bare pages the header content shares one page width with <0/>, <1/>, and "
-"<2/>, so the logo lines up with the page content. Docs pages keep the "
-"full-width header above the sidebar, content, and table of contents. Change "
-"the width with the <3/> token, and use <4/> to align your own bare-page "
-"sections."
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "On bare pages the header content shares one page width with <0/>, <1/>, and "
+#~ "<2/>, so the logo lines up with the page content. Docs pages keep the "
+#~ "full-width header above the sidebar, content, and table of contents. Change "
+#~ "the width with the <3/> token, and use <4/> to align your own bare-page "
+#~ "sections."
+#~ msgstr ""
+#~ "On bare pages the header content shares one page width with <0/>, <1/>, and "
+#~ "<2/>, so the logo lines up with the page content. Docs pages keep the "
+#~ "full-width header above the sidebar, content, and table of contents. Change "
+#~ "the width with the <3/> token, and use <4/> to align your own bare-page "
+#~ "sections."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -6783,6 +6839,18 @@ msgstr ""
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
+"Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
+" The frame adds the same horizontal gutter used by <3/>, <4/>, and <5/>. The "
+"corresponding CSS token is <6/>; custom sections can use <7/> to align with "
+"the built-in sections."
+msgstr ""
+"Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
+" The frame adds the same horizontal gutter used by <3/>, <4/>, and <5/>. The "
+"corresponding CSS token is <6/>; custom sections can use <7/> to align with "
+"the built-in sections."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
 "Set <0/> in the page's frontmatter. The page still builds and stays reachable "
 "by link."
 msgstr ""
@@ -6886,6 +6954,10 @@ msgstr "Settings and configuration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Setup"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Shared Page Width"
+msgstr "Shared Page Width"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -8419,15 +8491,34 @@ msgstr ""
 "Use <0/> only when you need additional Vite plugins or Vite-specific settings;"
 " the Ardo CLI supplies its own integration."
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Use <0/> or <1/> to pick one presentation for every page. Below 1024px the "
+#~ "field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and "
+#~ "Linux) opens search."
+#~ msgstr ""
+#~ "Use <0/> or <1/> to pick one presentation for every page. Below 1024px the "
+#~ "field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and "
+#~ "Linux) opens search."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Use <0/> or <1/> to pick one presentation for every page. Below 1024px the "
-"field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and "
-"Linux) opens search."
+"Use <0/> or <1/> to pick one presentation for every page. The field also "
+"collapses to the icon when the page frame is below 1024px. In every mode, ⌘K"
+" (Ctrl+K on Windows and Linux) opens search."
 msgstr ""
-"Use <0/> or <1/> to pick one presentation for every page. Below 1024px the "
-"field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and "
-"Linux) opens search."
+"Use <0/> or <1/> to pick one presentation for every page. The field also "
+"collapses to the icon when the page frame is below 1024px. In every mode, ⌘K"
+" (Ctrl+K on Windows and Linux) opens search."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Use <0/> to return a route to the shared frame on a full-width site. An "
+"explicitly authored MDX <1/> export takes precedence over frontmatter."
+msgstr ""
+"Use <0/> to return a route to the shared frame on a full-width site. An "
+"explicitly authored MDX <1/> export takes precedence over frontmatter."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

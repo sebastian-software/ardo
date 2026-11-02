@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 export const toc = style({
   width: "100%",
@@ -10,7 +11,10 @@ export const compactToc = style({
   marginBottom: vars.space.xl,
   borderTop: `1px solid ${vars.color.borderLight}`,
   borderBottom: `1px solid ${vars.color.borderLight}`,
-  "@media": { "(min-width: 1281px)": { display: "none" } },
+  ...frameResponsive({
+    "(max-width: 1280px)": { display: "block" },
+    "(min-width: 1281px)": { display: "none" },
+  }),
 })
 
 export const compactSummary = style({

@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 // The sidebar only renders inside the mobile drawer below this width, where
 // the section tabs lie flat above the tree instead of standing on the edge.
@@ -18,7 +19,7 @@ export const sectionTabs = style({
   background: vars.color.sidebarRailBg,
   overflowY: "auto",
   scrollbarWidth: "none",
-  "@media": {
+  ...frameResponsive({
     [drawerWidth]: {
       width: "auto",
       padding: 0,
@@ -26,7 +27,7 @@ export const sectionTabs = style({
       background: "transparent",
       overflow: "visible",
     },
-  },
+  }),
 })
 
 export const sectionTabList = style({
@@ -36,13 +37,13 @@ export const sectionTabList = style({
   margin: 0,
   padding: 0,
   listStyle: "none",
-  "@media": {
+  ...frameResponsive({
     [drawerWidth]: {
       flexDirection: "row",
       flexWrap: "wrap",
       gap: vars.space.sm,
     },
-  },
+  }),
 })
 
 export const sectionTab = style({
@@ -70,7 +71,7 @@ export const sectionTab = style({
       outlineOffset: "-2px",
     },
   },
-  "@media": {
+  ...frameResponsive({
     [drawerWidth]: {
       padding: "0.375rem 0.75rem",
       border: `1px solid ${vars.color.divider}`,
@@ -84,7 +85,7 @@ export const sectionTab = style({
         },
       },
     },
-  },
+  }),
 })
 
 /**
@@ -99,12 +100,12 @@ export const sectionTabInner = style({
   whiteSpace: "nowrap",
   writingMode: "vertical-rl",
   transform: "rotate(180deg)",
-  "@media": {
+  ...frameResponsive({
     [drawerWidth]: {
       writingMode: "horizontal-tb",
       transform: "none",
     },
-  },
+  }),
 })
 
 /** Icons stay upright in vertical text, so turn them to match the label. */
@@ -119,9 +120,9 @@ export const sectionTabIcon = style({
       color: vars.color.brand,
     },
   },
-  "@media": {
+  ...frameResponsive({
     [drawerWidth]: {
       transform: "none",
     },
-  },
+  }),
 })

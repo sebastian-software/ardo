@@ -3,6 +3,19 @@ import { describe, expect, it } from "vitest"
 import { validatePageFrontmatter } from "./page-metadata"
 
 describe("validatePageFrontmatter", () => {
+  it("accepts boolean full-width exceptions and rejects other values", () => {
+    expect(validatePageFrontmatter({ fullWidth: true }).frontmatter).toStrictEqual({
+      fullWidth: true,
+    })
+    expect(validatePageFrontmatter({ fullWidth: false }).frontmatter).toStrictEqual({
+      fullWidth: false,
+    })
+    expect(validatePageFrontmatter({ fullWidth: "true" }).diagnostics).toContainEqual({
+      field: "fullWidth",
+      kind: "invalid",
+      message: 'Invalid value for frontmatter field "fullWidth".',
+    })
+  })
   it("normalizes the documented page metadata contract", () => {
     const result = validatePageFrontmatter({
       description: "A page",

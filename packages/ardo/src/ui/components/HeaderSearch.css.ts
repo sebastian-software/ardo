@@ -1,6 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
+import { frameResponsive } from "../page-frame"
 
 const MOBILE = "(max-width: 1024px)"
 const DESKTOP = "(min-width: 1025px)"
@@ -9,11 +10,11 @@ const DESKTOP = "(min-width: 1025px)"
 export const inline = style({
   width: "100%",
   maxWidth: "26rem",
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       display: "none",
     },
-  },
+  }),
 })
 
 const triggerBase = style({
@@ -44,11 +45,11 @@ export const trigger = style([
   triggerBase,
   {
     display: "none",
-    "@media": {
+    ...frameResponsive({
       [MOBILE]: {
         display: "flex",
       },
-    },
+    }),
   },
 ])
 

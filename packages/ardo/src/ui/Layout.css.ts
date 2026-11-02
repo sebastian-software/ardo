@@ -1,6 +1,21 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameMaxWidth, frameResponsive, pageFrameMaxWidth } from "./page-frame"
+
+export const pageFrame = style({
+  vars: { "--ardo-frame-max-width": pageFrameMaxWidth },
+  width: "100%",
+  maxWidth: frameMaxWidth,
+  marginInline: "auto",
+  containerType: "inline-size",
+  containerName: "ardo-page-frame",
+  selectors: {
+    '&[data-ardo-frame="viewport"]': {
+      vars: { "--ardo-frame-max-width": "none" },
+    },
+  },
+})
 
 export const layout = style({
   height: "100vh",
@@ -34,11 +49,11 @@ export const main = style({
   overflowY: "auto",
   scrollPaddingTop: vars.space["2xl"],
   padding: `0 ${vars.space.xl} ${vars.space.xl}`,
-  "@media": {
+  ...frameResponsive({
     "(max-width: 1024px)": {
       padding: `0 ${vars.space.md} ${vars.space.xl}`,
     },
-  },
+  }),
 })
 
 /** Opt-in document scrolling for sites that own chrome outside Ardo's frame. */

@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 export const breadcrumb = style({
   display: "none",
@@ -12,11 +13,11 @@ export const breadcrumb = style({
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
   marginBottom: vars.space.md,
-  "@media": {
+  ...frameResponsive({
     "(max-width: 1024px)": {
       display: "flex",
     },
-  },
+  }),
 })
 
 export const breadcrumbSeparator = style({

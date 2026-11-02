@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 export const sidebar = style({
   width: vars.layout.sidebarWidth,
@@ -10,11 +11,11 @@ export const sidebar = style({
   // No border to the content: the panel (sidebarBg) and the content (bg) are
   // separated by a surface-brightness step, not a hairline.
   background: "transparent",
-  "@media": {
+  ...frameResponsive({
     "(max-width: 1024px)": {
       display: "none",
     },
-  },
+  }),
 })
 
 export const sidebarPanel = style({

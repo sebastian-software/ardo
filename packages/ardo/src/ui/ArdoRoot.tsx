@@ -69,6 +69,8 @@ export type ArdoRootProps = {
   className?: string
   /** Choose the viewport shell (default) or let the document scroll. */
   scrollMode?: ArdoScrollMode
+  /** Opt out of the shared page-width frame. A route's handle.fullWidth takes precedence. */
+  fullWidth?: boolean
   /**
    * Site header in place of an `ArdoHeader` child: your own component, or
    * `false` for no header. Children can only name Ardo's own header.
@@ -108,25 +110,23 @@ function readChromeHandle(handle: unknown): boolean | undefined {
 }
 
 /**
- * Reads the `layout` value of the page's `handle` export. MDX routes get this
- * export generated from `frontmatter.layout`; .tsx routes set it directly with
- * `export const handle = { layout: "bare" }`.
- */
-function useRouteLayout(): string | undefined {
-  return readLayoutHandle(useArdoPage().handle)
-}
-
-/**
  * Bare layout: no sidebar, no section tabs — used for the home page and any
  * other marketing-style routes (TSX or MDX). Falls back to the legacy
  * hardcoded home detection if a route hasn't opted in via `handle.layout`.
  * A missing page keeps the header and footer but has no section to show in
  * the sidebar.
  */
-function useBareLayout(pathname: string): boolean {
-  const layout = useRouteLayout()
-  const isErrorPage = useArdoPage().error != null
-  return layout === "bare" || pathname === "/" || pathname === "" || isErrorPage
+function usePageLayout(pathname: string, fullWidth: boolean) {
+  const { handle, error } = useArdoPage()
+  const layout = readLayoutHandle(handle)
+  const routeFullWidth =
+    typeof handle === "object" && handle !== null && "fullWidth" in handle
+      ? handle.fullWidth
+      : undefined
+  return {
+    bare: layout === "bare" || pathname === "/" || pathname === "" || error != null,
+    fullWidth: typeof routeFullWidth === "boolean" ? routeFullWidth : fullWidth,
+  }
 }
 
 function useRouteChrome(): boolean | undefined {
@@ -264,6 +264,7 @@ export function ArdoRoot({
   tocLabel,
   className,
   scrollMode = "viewport",
+  fullWidth = false,
   header,
   footer,
   sidebar: sidebarProp,
@@ -276,7 +277,7 @@ export function ArdoRoot({
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
   const showChrome = routeChrome !== false
-  const isBareLayout = useBareLayout(pathname)
+  const { bare: isBareLayout, fullWidth: resolvedFullWidth } = usePageLayout(pathname, fullWidth)
   const sidebar = useMemo(
     (): ReactNode =>
       withGeneratedSections(resolveSidebarSlot(sidebarProp ?? chrome.sidebar), config, pathname),
@@ -302,6 +303,7 @@ export function ArdoRoot({
         <ArdoLayout
           className={resolveLayoutClassName(className, isBareLayout)}
           scrollMode={scrollMode}
+          fullWidth={resolvedFullWidth}
           bare={isBareLayout}
           showSkipLink={showChrome}
           header={resolvedHeader}
