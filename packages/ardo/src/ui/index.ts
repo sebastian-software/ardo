@@ -13,6 +13,7 @@ export type { ArdoMobileNavigationProps } from "./MobileNavigation"
 export { ArdoBareContent } from "./BareContent"
 export { ArdoImage, type ArdoImageProps } from "./PostImage"
 export { ArdoPost, ArdoPostList, type ArdoPostProps, type ArdoPostListProps } from "./Posts"
+export { ArdoPostNavigation, type ArdoPostNavigationProps } from "./PostNavigation"
 export { ardoImagePresets } from "../publication/presets"
 export type {
   AuthorProfile,

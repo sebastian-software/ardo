@@ -50,6 +50,7 @@ export const panelSettings = style({
 
 export const panelSettingsRow = style({
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   justifyContent: "space-between",
   gap: vars.space.md,

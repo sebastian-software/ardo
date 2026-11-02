@@ -90,7 +90,7 @@ export function ArdoLocaleSwitcher() {
       <ChromeIcon name="language" className={headerStyles.selectLeading} />
       <select
         aria-label={labels.siteControls.language}
-        className={joinClassNames(headerStyles.versionSwitcher, headerStyles.localeSwitcher)}
+        className={headerStyles.localeSwitcher}
         onChange={handleChange}
         title={labels.siteControls.language}
         value={current}

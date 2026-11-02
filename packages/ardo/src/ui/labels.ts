@@ -23,6 +23,8 @@ export type ArdoLabels = {
     or: string
     updated: string
     noPosts: string
+    recentPosts: string
+    allPosts: string
   }
   breadcrumb: {
     label: string
@@ -130,6 +132,8 @@ export const defaultArdoLabels: ArdoLabels = {
     or: "or",
     updated: "Updated",
     noPosts: "No posts yet.",
+    recentPosts: "Latest articles",
+    allPosts: "All articles",
   },
   breadcrumb: {
     label: "Breadcrumb",

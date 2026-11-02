@@ -3,6 +3,7 @@ import { Trans } from "@palamedes/react/macro"
 import { getI18n } from "@palamedes/runtime"
 import { LocalizedContent } from "./i18n/Content"
 import { translatedLabels } from "./i18n/labels"
+import { publications } from "virtual:ardo/publication"
 
 import { useArdoPath, type ArdoMetaFunction } from "ardo/runtime"
 import {
@@ -13,6 +14,7 @@ import {
   ArdoHeaderActions,
   ArdoNav,
   ArdoNavLink,
+  ArdoPostNavigation,
   ArdoSidebar,
   ArdoSidebarSection,
   ArdoGeneratedSidebar,
@@ -52,6 +54,7 @@ export default function Root() {
   const article = pathname.replace(new RegExp(`^/${locale}/guide/?`), "").replace(/\/$/, "")
   const guide = pathname.startsWith(`/${locale}/guide`)
   const reference = pathname.startsWith(`/${locale}/api-reference`)
+  const news = pathname === `/${locale}/news` || pathname.startsWith(`/${locale}/news/`)
   const editPattern = guide
     ? `https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/${article === "releases" ? "releases/index" : article}.mdx`
     : "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path"
@@ -70,7 +73,12 @@ export default function Root() {
         text: labels.page.lastUpdated,
       }}
     >
-      <ArdoHeader searchPlaceholder={t`Search documentation...`}>
+      <ArdoHeader
+        searchPlaceholder={t`Search documentation...`}
+        mobileMenuContent={
+          news ? <ArdoPostNavigation publication={publications[locale]} /> : undefined
+        }
+      >
         <ArdoNav>
           <ArdoNavLink to={`/${locale}/guide/getting-started`} activeMatch={`^/${locale}/guide/`}>
             {t`Guide`}

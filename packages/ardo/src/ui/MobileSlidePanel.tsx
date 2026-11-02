@@ -93,9 +93,14 @@ export function MobileSlidePanel({
           </div>
         )}
 
-        <div className={styles.mobilePanelSidebar} onClickCapture={handleLinkClick(onClose)}>
-          <ArdoMobilePanelContext value>{children}</ArdoMobilePanelContext>
-        </div>
+        {children != null && (
+          <div
+            className={joinClassNames("ardo-mobile-panel-content", styles.mobilePanelSidebar)}
+            onClickCapture={handleLinkClick(onClose)}
+          >
+            <ArdoMobilePanelContext value>{children}</ArdoMobilePanelContext>
+          </div>
+        )}
 
         <PanelSettings actions={actions} themeToggle={themeToggle} />
       </div>

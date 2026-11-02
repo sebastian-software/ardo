@@ -239,6 +239,13 @@ without localization) to their data. `ArdoPostList`, `ArdoPost`, `ArdoImage`, an
 `ardoImagePresets` are available from `ardo/ui`. The source of post content remains MDX;
 the public data export contains metadata and prepared image descriptors.
 
+Use `ArdoPostNavigation` from `ardo/ui` for compact article navigation. Pass the current
+locale's publication to it through `ArdoHeader`'s `mobileMenuContent` prop to populate a
+news page's mobile menu. It shows the ten newest published articles by default, highlights
+the current page, and links to the complete publication index through "All articles".
+Set `limit` to change the recent list length. Translate `labels.publication.recentPosts`
+and `labels.publication.allPosts` alongside the other publication labels.
+
 Metadata names follow [Standard.site's document lexicon](https://standard.site/docs/lexicons/document)
 where applicable: `title`, `description`, `publishedAt`, `updatedAt`, `tags`, `coverImage`, and
 `path`. Local author keys, source image paths, framing metadata, `id`, `draft`, and `feedContent`

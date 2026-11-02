@@ -189,9 +189,8 @@ export const desktopActions = style({
   },
 })
 
-export const versionSwitcher = style({
+const select = style({
   height: "2rem",
-  maxWidth: "7rem",
   padding: "0 1.5rem 0 0.5rem",
   appearance: "none",
   border: `1px solid ${vars.color.border}`,
@@ -212,23 +211,25 @@ export const versionSwitcher = style({
       outlineOffset: "2px",
     },
   },
-  "@media": {
-    "(max-width: 480px)": {
-      maxWidth: "6rem",
-      fontSize: vars.fontSize.xs,
-    },
-  },
 })
+
+export const versionSwitcher = style([
+  select,
+  { maxWidth: "7rem", "@media": { "(max-width: 480px)": { maxWidth: "6rem" } } },
+])
 
 export const selectControl = style({
   position: "relative",
   display: "inline-flex",
   alignItems: "center",
+  flexShrink: 0,
+  maxWidth: "100%",
 })
 
-export const localeSwitcher = style({
-  paddingLeft: "1.65rem",
-})
+export const localeSwitcher = style([
+  select,
+  { paddingLeft: "1.75rem", paddingRight: "1.75rem", minWidth: "8.75rem", maxWidth: "100%" },
+])
 
 export const selectLeading = style({
   position: "absolute",
@@ -309,11 +310,7 @@ export const mobilePanelClose = style({
   },
 })
 
-export const mobilePanelNav = style({
-  marginBottom: vars.space.lg,
-  paddingBottom: vars.space.md,
-  borderBottom: `1px solid ${vars.color.border}`,
-})
+export const mobilePanelNav = style({})
 
 globalStyle(`${mobilePanelNav} a`, {
   display: "block",
@@ -324,7 +321,15 @@ globalStyle(`${mobilePanelNav} a`, {
 })
 
 // Force sidebar visible inside the mobile panel (overrides sidebar's display:none at 1024px)
-export const mobilePanelSidebar = style({})
+export const mobilePanelSidebar = style({
+  selectors: { "&:empty": { display: "none" } },
+})
+
+globalStyle(`${mobilePanelNav} + ${mobilePanelSidebar}:not(:empty)`, {
+  marginTop: vars.space.lg,
+  paddingTop: vars.space.md,
+  borderTop: `1px solid ${vars.color.border}`,
+})
 
 globalStyle(`${mobilePanelSidebar} > aside`, {
   display: "block",
