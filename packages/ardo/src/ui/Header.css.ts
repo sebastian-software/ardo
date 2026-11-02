@@ -1,6 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameMaxWidth, frameResponsive } from "./page-frame"
 
 export const header = style({
   position: "fixed",
@@ -27,8 +28,8 @@ const SMALL = "(max-width: 768px)"
 
 /**
  * Three columns with equal outer tracks, so the search field sits at the
- * viewport center no matter how wide the logo or the actions are. The docs
- * content column moves with the sidebar and TOC; the viewport center does not.
+ * frame center no matter how wide the logo or the actions are. The docs
+ * content column moves with the sidebar and TOC; the frame center does not.
  */
 export const headerContainer = style({
   display: "grid",
@@ -36,8 +37,10 @@ export const headerContainer = style({
   alignItems: "center",
   columnGap: vars.space.lg,
   height: vars.layout.headerHeight,
+  maxWidth: frameMaxWidth,
+  marginInline: "auto",
   padding: `0 ${vars.space.lg}`,
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       gridTemplateColumns: "minmax(0, 1fr) auto auto",
       columnGap: vars.space.sm,
@@ -45,26 +48,17 @@ export const headerContainer = style({
     [SMALL]: {
       padding: `0 ${vars.space.md}`,
     },
-  },
+  }),
 })
 
 /** No center column: logo on the left, actions (and a search icon) on the right. */
 export const headerContainerSplit = style({
   gridTemplateColumns: "minmax(0, 1fr) auto",
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       gridTemplateColumns: "minmax(0, 1fr) auto",
     },
-  },
-})
-
-/**
- * Bare pages: the header shares the page frame with the hero, features and
- * footer, so the logo lines up with the content edge.
- */
-export const headerContainerPage = style({
-  maxWidth: `calc(${vars.layout.pageMaxWidth} + 2 * ${vars.space.lg})`,
-  margin: "0 auto",
+  }),
 })
 
 export const headerLeft = style({
@@ -73,11 +67,11 @@ export const headerLeft = style({
   alignItems: "center",
   gap: vars.space.md,
   minWidth: 0,
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       overflow: "hidden",
     },
-  },
+  }),
 })
 
 export const headerCenter = style({
@@ -93,11 +87,11 @@ export const headerRight = style({
   display: "flex",
   alignItems: "center",
   gap: "0.75rem",
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       gap: vars.space.sm,
     },
-  },
+  }),
 })
 
 export const logoLink = style({
@@ -161,22 +155,22 @@ export const mobileMenuButton = style({
       background: vars.color.bgSoft,
     },
   },
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       display: "flex",
       alignItems: "center",
     },
-  },
+  }),
 })
 
 export const desktopNav = style({
   display: "flex",
   alignItems: "center",
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       display: "none",
     },
-  },
+  }),
 })
 
 /** Language, appearance and links. Narrow screens find them in the menu. */
@@ -184,11 +178,11 @@ export const desktopActions = style({
   display: "flex",
   alignItems: "center",
   gap: "0.75rem",
-  "@media": {
+  ...frameResponsive({
     [MOBILE]: {
       display: "none",
     },
-  },
+  }),
 })
 
 const select = style({
@@ -217,7 +211,7 @@ const select = style({
 
 export const versionSwitcher = style([
   select,
-  { maxWidth: "7rem", "@media": { "(max-width: 480px)": { maxWidth: "6rem" } } },
+  { maxWidth: "7rem", ...frameResponsive({ "(max-width: 480px)": { maxWidth: "6rem" } }) },
 ])
 
 export const selectControl = style({

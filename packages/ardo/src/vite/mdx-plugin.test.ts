@@ -249,6 +249,23 @@ describe("createMdxPlugin", () => {
     expect(module.handle).toStrictEqual({ layout: "bare" })
   })
 
+  it.each([true, false])("exports the fullWidth=%s page exception", async (fullWidth) => {
+    const module = await loadRoute(`---\nlayout: bare\nfullWidth: ${fullWidth}\n---\nText`)
+    expect(module.handle).toStrictEqual({ layout: "bare", fullWidth })
+  })
+
+  it("supports a wide Markdown page without changing its layout", async () => {
+    const module = await loadRoute("---\nfullWidth: true\n---\nText", "wide.md")
+    expect(module.handle).toStrictEqual({ fullWidth: true })
+  })
+
+  it("keeps the authored handle ahead of frame frontmatter", async () => {
+    const module = await loadRoute(
+      "---\nfullWidth: true\n---\nexport const handle = { fullWidth: false }\n\nText"
+    )
+    expect(module.handle).toStrictEqual({ fullWidth: false })
+  })
+
   it("maps authored ESM through Oxc using UTF-16 columns after Unicode text", async () => {
     const sourceLine = '  const note = "😀"; throw new Error("broken 🧪");'
     const source = `# Intro "😀"\nexport function fail() {\n${sourceLine}\n}\n\n# Body`

@@ -39,6 +39,24 @@ function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"
 }
 
 describe("UI shell landmarks", () => {
+  it("lets a route override the site's full-width frame in either direction", () => {
+    const root = (
+      <ArdoRoot config={config} fullWidth>
+        <p>Content</p>
+      </ArdoRoot>
+    )
+    expect(renderRootRoute(root, undefined, "/guide")).toContain('data-ardo-frame="viewport"')
+    expect(renderRootRoute(root, { fullWidth: false }, "/guide")).toContain(
+      'data-ardo-frame="page"'
+    )
+    expect(renderRootRoute(<ArdoRoot config={config} />, { fullWidth: true }, "/guide")).toContain(
+      'data-ardo-frame="viewport"'
+    )
+    expect(renderRootRoute(root, { fullWidth: "false" }, "/guide")).toContain(
+      'data-ardo-frame="viewport"'
+    )
+  })
+
   it("keeps header and mobile panel home links in the active locale", () => {
     const localizedConfig = {
       ...config,
@@ -153,7 +171,8 @@ describe("UI shell landmarks", () => {
       "/guide"
     )
     expect(view).toContain('role="combobox"')
-    expect(view).not.toContain(headerStyles.headerContainerPage)
+    expect(view).toContain(headerStyles.headerContainer)
+    expect(view).toContain('data-ardo-frame="page"')
   })
 
   it("collapses search to an icon and uses the page frame on bare routes", () => {
@@ -167,7 +186,8 @@ describe("UI shell landmarks", () => {
     expect(view).not.toContain('role="combobox"')
     expect(view).toContain('aria-label="Search"')
     expect(view).toContain('aria-keyshortcuts="Meta+K Control+K"')
-    expect(view).toContain(headerStyles.headerContainerPage)
+    expect(view).toContain(headerStyles.headerContainer)
+    expect(view).toContain('data-ardo-frame="page"')
   })
 
   it("renders the theme and gives the header the logo", () => {

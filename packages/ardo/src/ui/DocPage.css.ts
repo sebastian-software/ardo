@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 /**
  * 3-column layout: Sidebar (fixed) | Content (fluid) | TOC (fixed)
@@ -22,7 +23,7 @@ export const docPage = style({
   selectors: {
     '&[data-rail="false"]': { gridTemplateColumns: "minmax(0, 1fr)" },
   },
-  "@media": {
+  ...frameResponsive({
     "(min-width: 1536px)": {
       gridTemplateColumns: `minmax(0, 78rem) ${vars.layout.tocWidth}`,
     },
@@ -34,7 +35,7 @@ export const docPage = style({
     "(max-width: 1024px)": {
       paddingTop: vars.space.xl,
     },
-  },
+  }),
 })
 
 export const contentContainer = style({
@@ -74,7 +75,10 @@ export const contentBody = style({
 })
 
 export const narrowPageMeta = style({
-  "@media": { "(min-width: 1281px)": { display: "none" } },
+  ...frameResponsive({
+    "(max-width: 1280px)": { display: "block" },
+    "(min-width: 1281px)": { display: "none" },
+  }),
 })
 
 export const pageRail = style({
@@ -88,11 +92,11 @@ export const pageRail = style({
   // No background, border, radius or shadow — the right column is a column,
   // not a card. Matches the rail-less pattern of Mintlify, Vercel, React,
   // Tailwind, VitePress, Stripe, Linear.
-  "@media": {
+  ...frameResponsive({
     "(max-width: 1280px)": {
       display: "none",
     },
-  },
+  }),
 })
 
 export const pageRailSection = style({

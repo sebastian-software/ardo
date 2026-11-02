@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { useArdoPath } from "../../runtime/page-context"
 
 import { useArdoLabels } from "../../runtime/hooks"
@@ -79,30 +80,32 @@ export function ArdoHeaderSearch({
         </span>
       </button>
 
-      {overlayOpen && (
-        <div
-          ref={overlayRef}
-          className={styles.overlay}
-          role="dialog"
-          aria-modal="true"
-          aria-label={labels.search.label}
-          tabIndex={-1}
-        >
-          <div className={styles.overlayBar}>
-            <div className={styles.overlaySearch}>
-              <ArdoSearch placeholder={placeholder} autoFocus shortcut={false} />
+      {overlayOpen &&
+        createPortal(
+          <div
+            ref={overlayRef}
+            className={styles.overlay}
+            role="dialog"
+            aria-modal="true"
+            aria-label={labels.search.label}
+            tabIndex={-1}
+          >
+            <div className={styles.overlayBar}>
+              <div className={styles.overlaySearch}>
+                <ArdoSearch placeholder={placeholder} autoFocus shortcut={false} />
+              </div>
+              <button
+                type="button"
+                className={styles.overlayClose}
+                aria-label={labels.search.closeOverlay}
+                onClick={closeOverlay}
+              >
+                <ChromeIcon name="close" />
+              </button>
             </div>
-            <button
-              type="button"
-              className={styles.overlayClose}
-              aria-label={labels.search.closeOverlay}
-              onClick={closeOverlay}
-            >
-              <ChromeIcon name="close" />
-            </button>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </>
   )
 }

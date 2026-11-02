@@ -254,12 +254,13 @@ With `search="auto"`, the page layout decides how search looks:
 - Bare pages (`handle = { layout: "bare" }`, including the home page) show a search icon, so the
   hero's call to action has the stage.
 
-Use `search="field"` or `search="icon"` to pick one presentation for every page. Below 1024px the
-field also collapses to the icon. In every mode, ⌘K (Ctrl+K on Windows and Linux) opens search.
+Use `search="field"` or `search="icon"` to pick one presentation for every page. The field also
+collapses to the icon when the page frame is below 1024px. In every mode, ⌘K
+(Ctrl+K on Windows and Linux) opens search.
 
 ### Narrow screens
 
-Below 1024px the header keeps only the menu button, the logo, and search, so a long logo still
+Below a frame width of 1024px the header keeps only the menu button, the logo, and search, so a long logo still
 fits. The menu ends with the site controls: the version switcher, the language switcher, the
 theme toggle, and everything inside `ArdoHeaderActions`, such as social links.
 
@@ -273,11 +274,48 @@ Custom layouts can place the same pieces themselves: `ArdoVersionSwitcher` is th
 `ArdoVersionControl` adds the visible label, and `ArdoVersionBanner` is the older-version notice.
 Each renders nothing unless the build has two or more versions.
 
-On bare pages the header content shares one page width with `ArdoHero`, `ArdoFeatures`, and
-`ArdoFooter`, so the logo lines up with the page content. Docs pages keep the full-width header
-above the sidebar, content, and table of contents. Change the width with the
-`--ardo-layout-pageMaxWidth` token, and use `vars.layout.pageMaxWidth` to align your own bare-page
-sections.
+## Shared Page Width
+
+Documentation and bare pages share one centered frame by default, including the header. Moving
+between the homepage and a guide keeps the same outer page boundaries. Prose keeps its own
+readable measure inside that frame; code and tables can use the article's available width.
+
+Set `layout.pageMaxWidth` in the `ArdoRoot` theme to change the shared content width (default:
+`69rem`). The frame adds the same horizontal gutter used by `ArdoHero`, `ArdoFeatures`, and
+`ArdoFooter`. The corresponding CSS token is `--ardo-layout-pageMaxWidth`; custom sections can
+use `vars.layout.pageMaxWidth` to align with the built-in sections.
+
+```tsx
+<ArdoRoot theme={{ tokens: { layout: { pageMaxWidth: "80rem" } } }}>
+  {/* Header, sidebar, footer */}
+</ArdoRoot>
+```
+
+Navigation responds to the available frame width. A bounded frame on a large monitor uses the
+compact page outline instead of squeezing in a right rail. A narrower frame also moves the
+sidebar and header controls into the menu.
+
+For a site that needs viewport-wide documentation, set `<ArdoRoot fullWidth>`. `ArdoLayout`
+accepts the same prop when you compose the shell yourself. Built-in marketing sections retain
+their own content measure.
+
+An individual TSX route can override the site default in either direction:
+
+```tsx
+export const handle = { fullWidth: true }
+```
+
+Markdown and MDX routes accept the same option in frontmatter:
+
+```yaml
+---
+title: Wide reference
+fullWidth: true
+---
+```
+
+Use `false` to return a route to the shared frame on a full-width site. An explicitly authored
+MDX `handle` export takes precedence over frontmatter.
 
 ## Sidebar Sections
 

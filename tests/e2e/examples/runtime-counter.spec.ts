@@ -66,6 +66,7 @@ test("document scrolling keeps site chrome, the outline, and the footer in the d
   expect(serverHtml.match(/id="main-content"/g) ?? []).toHaveLength(1)
   expect(serverHtml).toContain("document-scroll-header")
   expect(serverHtml).toContain("document-scroll-custom-layout")
+  expect(serverHtml).toContain('data-ardo-frame="viewport"')
 
   await page.goto("/guide/document-scroll/")
 
@@ -81,6 +82,7 @@ test("document scrolling keeps site chrome, the outline, and the footer in the d
   await expect(header).toBeVisible()
   await expect(layout).toHaveCSS("overflow", "visible")
   await expect(layout).toHaveCSS("display", "flex")
+  expect((await layout.boundingBox())!.width).toBe(1440)
   await expect(page.locator(".ardo-header, .ardo-footer")).toHaveCount(0)
   await expect(sidebar).toBeVisible()
   await expect(pageRail).toBeVisible()

@@ -289,6 +289,8 @@ export type PageFrontmatter = {
   collapsed?: boolean
   /** `bare` drops the sidebar and the page rail, as on a landing page. */
   layout?: "bare" | "default"
+  /** Use the viewport frame for this page instead of the shared page width. */
+  fullWidth?: boolean
   sidebar?: "leaf" | boolean
   outline?: [number, number] | boolean | number
   editLink?: boolean

@@ -176,7 +176,6 @@ export function ArdoHeader({
         <div
           className={joinClassNames(
             styles.headerContainer,
-            layout === "bare" ? styles.headerContainerPage : undefined,
             searchMode === "field" ? undefined : styles.headerContainerSplit
           )}
         >

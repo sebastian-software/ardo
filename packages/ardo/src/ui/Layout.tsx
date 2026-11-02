@@ -134,6 +134,8 @@ export type ArdoLayoutProps = {
   bare?: boolean
   /** Use the document as the scroll container instead of the viewport shell. */
   scrollMode?: ArdoScrollMode
+  /** Use the viewport instead of the shared page-width frame. Default: false. */
+  fullWidth?: boolean
   /** Render the built-in skip link. Disable when the host owns navigation chrome. */
   showSkipLink?: boolean
   /** Additional CSS classes */
@@ -162,6 +164,7 @@ export function ArdoLayout({
   className,
   bare = false,
   scrollMode = "viewport",
+  fullWidth = false,
   showSkipLink = true,
 }: ArdoLayoutProps) {
   const labels = useArdoLabels()
@@ -180,13 +183,14 @@ export function ArdoLayout({
         .join(" ")
   const layoutClass = [
     className ?? `${styles.layout}${bare ? ` ${styles.home}` : ""}`,
+    styles.pageFrame,
     isDocumentScroll && styles.documentScroll,
   ]
     .filter(Boolean)
     .join(" ")
   return (
     <ArdoLayoutVariantContext value={bare ? "bare" : "doc"}>
-      <div className={layoutClass}>
+      <div className={layoutClass} data-ardo-frame={fullWidth ? "viewport" : "page"}>
         {showSkipLink && (
           <a href="#main-content" className={styles.skipLink}>
             {labels.layout.skipToContent}

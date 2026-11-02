@@ -31,6 +31,7 @@ const knownFrontmatterFields = new Set([
   "authors",
   "coverImage",
   "draft",
+  "fullWidth",
   "images",
   "feedContent",
   "_ardoPost",
@@ -82,6 +83,7 @@ const stringFrontmatterFields = new Set([
 
 const booleanFrontmatterFields = new Set([
   "draft",
+  "fullWidth",
   "collapsed",
   "editLink",
   "lastUpdated",

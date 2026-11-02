@@ -1,6 +1,6 @@
 import type { JsxModuleMap, JsxModuleResult } from "ferromark"
 
-import type { ArdoConfig } from "../config/types"
+import type { ArdoConfig, PageFrontmatter } from "../config/types"
 
 import {
   createNativeMarkdownMetadata,
@@ -72,7 +72,7 @@ function createRouteCode(input: {
     `const _ardoToc = ${JSON.stringify(toc)};`,
     ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
     ...createDataExport("toc", "_ardoToc", scope),
-    ...createHandleExport(input.metadata.frontmatter.layout, scope),
+    ...createHandleExport(input.metadata.frontmatter, scope),
     `function _ardoRoute(props = {}) {`,
     `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
     `}`,
@@ -92,8 +92,13 @@ function createDataExport(
   return [`export { ${local} as ${name} };`]
 }
 
-function createHandleExport(layout: unknown, scope: AuthoredScope): string[] {
-  if ((layout !== "bare" && layout !== "default") || scope.exports.has("handle")) return []
+function createHandleExport(frontmatter: PageFrontmatter, scope: AuthoredScope): string[] {
+  const { layout, fullWidth } = frontmatter
+  const handle = {
+    ...(layout === "bare" || layout === "default" ? { layout } : {}),
+    ...(typeof fullWidth === "boolean" ? { fullWidth } : {}),
+  }
+  if (Object.keys(handle).length === 0 || scope.exports.has("handle")) return []
   if (scope.bindings.has("handle")) return ["export { handle };"]
-  return [`export const handle = ${JSON.stringify({ layout })};`]
+  return [`export const handle = ${JSON.stringify(handle)};`]
 }

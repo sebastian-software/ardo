@@ -3,6 +3,7 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import * as layoutStyles from "./Layout.css"
 import { versionControl } from "./site-controls.css"
 import { vars } from "./theme/contract.css"
+import { frameResponsive } from "./page-frame"
 
 export const footer = style({
   width: "100%",
@@ -11,11 +12,11 @@ export const footer = style({
   background: `color-mix(in oklch, ${vars.color.brand} 5%, ${vars.color.bgSoft})`,
   borderTop: `1px solid ${vars.color.border}`,
   margin: 0,
-  "@media": {
+  ...frameResponsive({
     "(max-width: 768px)": {
       padding: `${vars.space.xl} ${vars.space.md}`,
     },
-  },
+  }),
 })
 
 globalStyle(`main > .${footer}`, {
@@ -23,13 +24,13 @@ globalStyle(`main > .${footer}`, {
   marginRight: `calc(${vars.space.xl} * -1)`,
   marginBottom: `calc(${vars.space.xl} * -1)`,
   marginLeft: `calc(${vars.space.xl} * -1)`,
-  "@media": {
+  ...frameResponsive({
     "(max-width: 1024px)": {
       width: `calc(100% + (${vars.space.md} * 2))`,
       marginRight: `calc(${vars.space.md} * -1)`,
       marginLeft: `calc(${vars.space.md} * -1)`,
     },
-  },
+  }),
 })
 
 // Bare layouts render a plain <main> without the docs main class, so match the element.
@@ -41,12 +42,12 @@ globalStyle(`.${layoutStyles.home} main > .${footer}`, {
   marginLeft: 0,
   paddingRight: vars.space.lg,
   paddingLeft: vars.space.lg,
-  "@media": {
+  ...frameResponsive({
     "(max-width: 768px)": {
       paddingRight: vars.space.md,
       paddingLeft: vars.space.md,
     },
-  },
+  }),
 })
 
 export const footerContainer = style({

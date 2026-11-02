@@ -60,6 +60,7 @@ test("compact outline leaves keyboard focus at its destination", async ({ page }
 test("the page outline tracks a nested subsection while reading", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto("/v6/en/guide/getting-started/")
+  await page.addStyleTag({ content: ":root { --ardo-layout-pageMaxWidth: 90rem; }" })
   await page.locator('[id="2-install-dependencies"]').evaluate((heading) => {
     const main = document.querySelector("#main-content")
     if (main != null) {
