@@ -120,7 +120,9 @@ function useSearchOverlayState() {
   }, [])
 
   useEffect(() => {
-    if (getSearchRecoveryQuery() != null) openOverlay()
+    if (getSearchRecoveryQuery() == null) return
+    const frame = requestAnimationFrame(openOverlay)
+    return () => cancelAnimationFrame(frame)
   }, [openOverlay])
 
   if (pathname !== previousPathname) {

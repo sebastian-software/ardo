@@ -1,6 +1,7 @@
-import { createRequire } from "node:module"
+import fs from "node:fs"
+import module from "node:module"
 import path from "node:path"
-import { pathToFileURL } from "node:url"
+import url from "node:url"
 
 import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin"
 import { defineConfig } from "tsdown"
@@ -11,11 +12,12 @@ import { uiStylesPlugin } from "./ui-styles-plugin.ts"
 // point it at the tsgo binary of the installed TypeScript 7.1 instead of
 // letting it fall back to the JavaScript compiler API that TypeScript 7 removed.
 const typescriptRoot = path.dirname(
-  createRequire(import.meta.url).resolve("typescript/package.json")
+  module.createRequire(import.meta.url).resolve("typescript/package.json")
 )
+const nodeModules = { fs, module, path, url }
 const { default: getTsgoPath } = (await import(
-  pathToFileURL(path.join(typescriptRoot, "lib/getExePath.js")).href
-)) as { default: () => string }
+  url.pathToFileURL(path.join(typescriptRoot, "lib/getExePath.js")).href
+)) as { default: (modules: typeof nodeModules) => string }
 
 export default defineConfig({
   entry: {
@@ -41,7 +43,7 @@ export default defineConfig({
     "entries/server": "src/entries/server.tsx",
   },
   format: ["esm"],
-  dts: { generator: "tsgo", tsgo: { path: getTsgoPath() } },
+  dts: { generator: "tsgo", tsgo: { path: getTsgoPath(nodeModules) } },
   sourcemap: true,
   clean: true,
   fixedExtension: false,
