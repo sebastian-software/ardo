@@ -50,7 +50,7 @@
     "@types/react-dom": "catalog:",
     "@vanilla-extract/vite-plugin": "catalog:",
     "@vitest/coverage-v8": "^5.0.5",
-    "eslint-config-setup": "^0.5.2",
+    "eslint-config-setup": "^0.6.1",
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
