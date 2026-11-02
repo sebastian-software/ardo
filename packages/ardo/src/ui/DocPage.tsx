@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 
 import { useArdoLabels, useArdoPageData, useArdoSiteConfig } from "../runtime/hooks"
 import { useArdoLocale } from "../runtime/locale"
+import { useArdoPage } from "../runtime/page-context"
 import { ChromeIcon } from "./chrome-icons"
 import { ArdoContent, type ArdoContentProps } from "./Content"
 import * as styles from "./DocPage.css"
@@ -45,6 +46,8 @@ export type ArdoDocContentProps = Omit<ArdoContentProps, "metaPlacement"> & {
   tocSource?: "metadata" | "dom"
   /** Replace the right-hand page rail; false omits it. Undefined keeps the default. */
   rail?: ReactNode
+  /** Bound the article and rail to a reading column (default) or the wider page container. */
+  contentWidth?: "reading" | "page"
 }
 
 /**
@@ -70,14 +73,26 @@ export function ArdoDocContent({
   footer,
   outline,
   rail,
+  contentWidth,
 }: ArdoDocContentProps) {
   const pageData = useArdoPageData()
+  const { handle } = useArdoPage()
+  const routeWidth =
+    typeof handle === "object" && handle !== null && "contentWidth" in handle
+      ? handle.contentWidth
+      : undefined
+  const width =
+    contentWidth ??
+    (routeWidth === "reading" || routeWidth === "page"
+      ? routeWidth
+      : (pageData?.frontmatter.contentWidth ?? "reading"))
   const hideToc = pageData?.frontmatter.outline === false
 
   return (
     <div
       className={`ardo-doc-page ${styles.docPage}`}
       data-rail={rail === false || rail === null ? "false" : undefined}
+      data-content-width={width}
     >
       <ArdoContent
         editLink={editLink}

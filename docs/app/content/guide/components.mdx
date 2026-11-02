@@ -2,6 +2,7 @@
 title: Components
 description: Every component Ardo ships, live in the real documentation layout, with MDX examples and props.
 order: 5
+contentWidth: page
 redirectFrom:
   - /v6/guide/icons
   - /v6/guide/component-inventory
@@ -9,7 +10,11 @@ redirectFrom:
 ---
 
 import { FileText, Github, Globe } from "ardo/icons"
-import { ArdoFeatures as Features, ArdoFeatureCard as FeatureCard } from "ardo/ui"
+import {
+  ArdoContentContainer,
+  ArdoFeatures as Features,
+  ArdoFeatureCard as FeatureCard,
+} from "ardo/ui"
 import { GalleryHero, GalleryIcons, GalleryPreview } from "../../components/ComponentGallery"
 
 # Components
@@ -463,3 +468,21 @@ import { ArdoHero as Hero } from "ardo/ui"
 The page around these examples is the live layout example: header, section navigation, sidebar, breadcrumbs, article, outline, page actions, and footer. On a narrow screen, open the menu and the on-page outline. Use search and the theme toggle in the header to inspect their real behavior.
 
 See [Layout & Navigation](/en/guide/layout-and-navigation) for composition examples and [Theming](/en/guide/theming) to change the palette. The examples inherit those changes without a separate preview theme.
+
+## Content containers
+
+Use `ArdoContentContainer` inside a full-width section to align its content with the built-in marketing sections. Choose `width="reading"` for a prose column. Both options include responsive horizontal gutters and accept standard div attributes.
+
+<GalleryPreview id="gallery-content-container" label="Content container example">
+  <ArdoContentContainer width="reading">
+    <p>A bounded reading column inside a section that can fill the screen.</p>
+  </ArdoContentContainer>
+</GalleryPreview>
+
+```tsx
+import { ArdoContentContainer } from "ardo/ui"
+
+;<section className="feature-band">
+  <ArdoContentContainer width="page">Your section content</ArdoContentContainer>
+</section>
+```

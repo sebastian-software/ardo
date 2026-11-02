@@ -22,9 +22,10 @@ afterEach(async () => {
 describe("generated documentation filesystem guards", () => {
   it("does not offer source editing or generated-file dates for generated pages", async () => {
     await writeGeneratedDocs({ outputDir: tempDir, out: "api" }, [
-      { path: "index.md", frontmatter: { title: "API" }, content: "# API" },
+      { path: "index.md", frontmatter: { title: "API", contentWidth: "page" }, content: "# API" },
     ])
     const page = await fs.readFile(path.join(tempDir, "api/index.md"), "utf8")
+    expect(page).toContain("contentWidth: page")
     expect(page).toContain("editLink: false")
     expect(page).toContain("lastUpdated: false")
   })

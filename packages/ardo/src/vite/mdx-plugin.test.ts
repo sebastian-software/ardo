@@ -249,6 +249,11 @@ describe("createMdxPlugin", () => {
     expect(module.handle).toStrictEqual({ layout: "bare" })
   })
 
+  it.each(["reading", "page"])("exports the %s content width", async (contentWidth) => {
+    const module = await loadRoute(`---\ncontentWidth: ${contentWidth}\n---\nText`)
+    expect(module.handle).toStrictEqual({ contentWidth })
+  })
+
   it.each([true, false])("exports the fullWidth=%s page exception", async (fullWidth) => {
     const module = await loadRoute(`---\nlayout: bare\nfullWidth: ${fullWidth}\n---\nText`)
     expect(module.handle).toStrictEqual({ layout: "bare", fullWidth })

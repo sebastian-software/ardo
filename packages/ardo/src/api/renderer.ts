@@ -95,7 +95,11 @@ function renderPage(
     item.kind === "component"
       ? renderComponent(item, options.links)
       : renderDeclaration(item, options.links)
-  return { path: options.path, content: lines.join("\n"), frontmatter: { title: item.name } }
+  return {
+    path: options.path,
+    content: lines.join("\n"),
+    frontmatter: { title: item.name, contentWidth: "page" },
+  }
 }
 
 /**

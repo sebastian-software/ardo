@@ -53,7 +53,7 @@ const shared = {
     // size, so a larger lead or smaller note keeps the same measure. `ch`
     // measures the wide "0" glyph, so 68ch let system-ui prose run past 90.
     contentMaxWidth: "36em",
-    // Shared page width for docs and marketing; prose has its own measure.
+    // Inner width for marketing and wide reference content; the shell fills the viewport.
     pageMaxWidth: "87rem",
     headerHeight: "3.5rem",
   },

@@ -809,6 +809,13 @@ msgstr "<0><1/></0> mit Tailwinds Theme- und Utility-Layern"
 msgid "<0><1/></0>:"
 msgstr "<0><1/></0>:"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0>A bounded reading column inside a section that can fill the screen.</0>"
+msgstr ""
+"<0>Eine begrenzte Lesespalte in einem Abschnitt, der den Bildschirm ausfüllen"
+" kann.</0>"
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "<0>API Documentation</0>"
 msgstr "<0>API-Dokumentation</0>"
@@ -1383,6 +1390,18 @@ msgstr ""
 "Flusses; reserviere ihre Höhe einmal mit <0/> in der Website-Hülle. Für "
 "eine MDX-Route mit eigenem Layout exportierst du:"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"A TSX route can override the site default with <0/>. Markdown and MDX routes "
+"accept <1/> in frontmatter. Use <2/> to restore the viewport-wide shell on a "
+"bounded site. An explicitly authored MDX <3/> export takes precedence over "
+"frontmatter."
+msgstr ""
+"Eine TSX-Route kann den Website-Standard mit <0/> überschreiben. Markdown- "
+"und MDX-Routen unterstützen <1/> im Frontmatter. Mit <2/> stellst du auf "
+"einer begrenzten Website die volle Fensterbreite wieder her. Ein ausdrücklich"
+" exportiertes MDX-<3/> hat Vorrang vor dem Frontmatter."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "A virtual route table that Ardo generates from <0/>."
 msgstr "Virtuelle Routentabelle aus <0/>."
@@ -1595,12 +1614,13 @@ msgstr ""
 msgid "An edit link built from the site settings and the current page:"
 msgstr "Bearbeitungslink aus Website-Einstellungen und aktueller Seite:"
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"An individual TSX route can override the site default in either direction:"
-msgstr ""
-"Eine einzelne TSX-Route kann die Website-Vorgabe in beide Richtungen "
-"überschreiben:"
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "An individual TSX route can override the site default in either direction:"
+#~ msgstr ""
+#~ "Eine einzelne TSX-Route kann die Website-Vorgabe in beide Richtungen "
+#~ "überschreiben:"
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
@@ -2677,6 +2697,14 @@ msgstr ""
 " den Entwicklungsserver neu. Nach dem Anlegen oder Entfernen einer Datei musst"
 " du <0/> neu starten."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Both widths are theme tokens, so a site can change them without replacing the "
+"shell:"
+msgstr ""
+"Beide Breiten sind Theme-Tokens. Eine Website kann sie ändern, ohne die "
+"Seitenhülle zu ersetzen:"
+
 #: docs/app/content/guide/content-sources.mdx
 msgid "Boundaries"
 msgstr "Bewusste Grenzen"
@@ -2765,6 +2793,17 @@ msgstr "Eigenes Analyticsprodukt"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
+"Built-in marketing sections keep their content within <0/> (default: <1/>), "
+"plus horizontal gutters. Use <2/> inside your own full-width sections to share"
+" that alignment. Its <3/> option creates a prose column instead."
+msgstr ""
+"Integrierte Marketing-Abschnitte begrenzen ihre Inhalte auf <0/> (Standard: "
+"<1/>), zuzüglich horizontaler Ränder. Verwende <2/> in eigenen Abschnitten "
+"über die volle Breite, um dieselbe Ausrichtung zu erreichen. Die Option <3/> "
+"erzeugt stattdessen eine Lesespalte."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
 "By default, <0/> uses <1/>: it applies a stored <2/> preference first and "
 "falls back to <3/>. Set an explicit color scheme when a site should not be "
 "user-selectable:"
@@ -2831,6 +2870,10 @@ msgstr "Karten im responsiven Raster."
 #: docs/app/content/guide/markdown.mdx
 msgid "Category"
 msgstr "Kategorie"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Centered shell"
+msgstr "Zentrierte Seitenhülle"
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -3236,6 +3279,14 @@ msgstr "Inhalt und Navigation"
 msgid "Content collections"
 msgstr "Content-Sammlungen"
 
+#: docs/app/content/guide/components.mdx
+msgid "Content container example"
+msgstr "Beispiel für einen Inhaltscontainer"
+
+#: docs/app/content/guide/components.mdx
+msgid "Content containers"
+msgstr "Inhaltscontainer"
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Content Issues"
 msgstr "Inhaltsprobleme"
@@ -3542,18 +3593,31 @@ msgstr "Dokumentraster und optionale rechte Spalte"
 msgid "Document Scrolling with Site-Owned Chrome"
 msgstr "Dokument-Scrollen mit eigenem Layout"
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Documentation and bare pages share one centered frame by default, including "
+#~ "the header. Moving between the homepage and a guide keeps the same outer page "
+#~ "boundaries. Prose keeps its own readable measure inside that frame; code and "
+#~ "tables can use the article's available width."
+#~ msgstr ""
+#~ "Dokumentationsseiten und freie Seiten teilen sich standardmäßig einen "
+#~ "zentrierten Rahmen einschließlich der Kopfzeile. Beim Wechsel zwischen "
+#~ "Startseite und Anleitung bleiben die äußeren Seitengrenzen gleich. "
+#~ "Fließtext behält darin eine gut lesbare Zeilenlänge; Code und Tabellen "
+#~ "können die verfügbare Artikelbreite nutzen."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Documentation and bare pages share one centered frame by default, including "
-"the header. Moving between the homepage and a guide keeps the same outer page "
-"boundaries. Prose keeps its own readable measure inside that frame; code and "
-"tables can use the article's available width."
+"Documentation and bare pages use a viewport-wide shell by default. The header,"
+" sidebar background, and section backgrounds reach the screen edges. Reading "
+"columns and marketing content have their own limits inside that shell."
 msgstr ""
-"Dokumentationsseiten und freie Seiten teilen sich standardmäßig einen "
-"zentrierten Rahmen einschließlich der Kopfzeile. Beim Wechsel zwischen "
-"Startseite und Anleitung bleiben die äußeren Seitengrenzen gleich. "
-"Fließtext behält darin eine gut lesbare Zeilenlänge; Code und Tabellen "
-"können die verfügbare Artikelbreite nutzen."
+"Dokumentationsseiten und Seiten ohne Dokumentationslayout verwenden "
+"standardmäßig eine Seitenhülle über die volle Fensterbreite. Kopfzeile, "
+"Seitenleistenhintergrund und Abschnittshintergründe reichen bis zum "
+"Bildschirmrand. Lesespalten und Marketing-Inhalte haben darin eigene "
+"Breitenbegrenzungen."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Documentation package boundary"
@@ -3977,6 +4041,17 @@ msgstr ""
 " gewünschten Verzeichnis an. Setze den Titel in <1/>, ergänze die Inhalte "
 "und wähle dann die Deployment-Einstellungen für den gewünschten Hoster."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"For a bounded outer frame, set <0/>. <1/> accepts the same prop. The header "
+"and page shell then share a centered frame of <2/> plus gutters (<3/>, or "
+"1440px, by default). Inner content widths remain independent."
+msgstr ""
+"Für einen begrenzten äußeren Rahmen setze <0/>. <1/> unterstützt dieselbe "
+"Eigenschaft. Kopfzeile und Seitenhülle teilen sich dann einen zentrierten "
+"Rahmen aus <2/> zuzüglich Rändern (standardmäßig <3/>, also 1440 px). Die "
+"inneren Inhaltsbreiten bleiben unabhängig."
+
 #: docs/app/content/guide/markdown.mdx
 msgid ""
 "For a custom title, use the callout components such as <0/> described in "
@@ -4008,16 +4083,17 @@ msgstr ""
 "und Modul-Preloads; <7/> lädt den Client-Einstieg zur Hydration. Die Hülle "
 "muss <8/> rendern:"
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"For a site that needs viewport-wide documentation, set <0/>. <1/> accepts the "
-"same prop when you compose the shell yourself. Built-in marketing sections "
-"retain their own content measure."
-msgstr ""
-"Für eine Website mit Dokumentation über die volle Fensterbreite setze <0/>. "
-"<1/> unterstützt dieselbe Eigenschaft, wenn du den Seitenrahmen selbst "
-"zusammensetzt. Die integrierten Marketing-Abschnitte behalten ihre eigene "
-"Inhaltsbreite."
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "For a site that needs viewport-wide documentation, set <0/>. <1/> accepts the "
+#~ "same prop when you compose the shell yourself. Built-in marketing sections "
+#~ "retain their own content measure."
+#~ msgstr ""
+#~ "Für eine Website mit Dokumentation über die volle Fensterbreite setze <0/>. "
+#~ "<1/> unterstützt dieselbe Eigenschaft, wenn du den Seitenrahmen selbst "
+#~ "zusammensetzt. Die integrierten Marketing-Abschnitte behalten ihre eigene "
+#~ "Inhaltsbreite."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -4418,6 +4494,19 @@ msgid ""
 "Guides from Docusaurus, Starlight, VitePress, and Mintlify are still needed."
 msgstr ""
 "Anleitungen von Docusaurus, Starlight, VitePress und Mintlify fehlen noch."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Guides use <0/> (default: <1/>) for the article, with room for the right "
+"outline rail alongside it. Set <2/> in frontmatter for a wider reference page,"
+" or export <3/> from a TSX route. Generated API references use this wider "
+"measure automatically. <4/> accepts the same <5/> prop for custom composition."
+msgstr ""
+"Anleitungen verwenden für den Artikel <0/> (Standard: <1/>) und lassen "
+"daneben Platz für die rechte Inhaltsübersicht. Setze <2/> im Frontmatter "
+"für eine breitere Referenzseite oder exportiere <3/> aus einer TSX-Route. "
+"Generierte API-Referenzen verwenden diese breitere Darstellung automatisch. "
+"Für eigene Layouts unterstützt <4/> dieselbe Eigenschaft <5/>."
 
 #: docs/app/content/guide/components.mdx
 msgid ""
@@ -5300,9 +5389,10 @@ msgstr "Markdown und React-Komponenten"
 msgid "Markdown and MDX routes"
 msgstr "Markdown und MDX"
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid "Markdown and MDX routes accept the same option in frontmatter:"
-msgstr "Markdown- und MDX-Routen unterstützen dieselbe Option im Frontmatter:"
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid "Markdown and MDX routes accept the same option in frontmatter:"
+#~ msgstr "Markdown- und MDX-Routen unterstützen dieselbe Option im Frontmatter:"
 
 #: docs/app/content/guide/releases/upgrade-to-v5.mdx
 msgid "Markdown configuration"
@@ -5586,19 +5676,35 @@ msgstr ""
 #~ " eine rechte Spalte hineinzuzwängen. Ein schmalerer Rahmen verschiebt auch "
 #~ "die Seitenleiste und die Steuerelemente der Kopfzeile ins Menü."
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Navigation responds to the available frame width. From <0/> (1280px at the "
+#~ "default text size), documentation shows the sidebar, article, and right "
+#~ "outline rail. Below that, the outline becomes a compact disclosure. Below "
+#~ "<1/>, the sidebar and header controls move into the menu. The relative "
+#~ "thresholds leave room for larger user text and browser zoom."
+#~ msgstr ""
+#~ "Die Navigation richtet sich nach der verfügbaren Rahmenbreite. Ab <0/> (1280 "
+#~ "px bei Standardschriftgröße) zeigt die Dokumentation Seitenleiste, Artikel "
+#~ "und rechte Inhaltsübersicht. Darunter wird die Übersicht aufklappbar. Unter "
+#~ "<1/> wechseln Seitenleiste und Kopfzeilen-Steuerelemente ins Menü. Die "
+#~ "relativen Grenzen schaffen Platz für größere Nutzerschrift und Browserzoom."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Navigation responds to the available frame width. From <0/> (1280px at the "
+"Navigation responds to the available shell width. From <0/> (1280px at the "
 "default text size), documentation shows the sidebar, article, and right "
 "outline rail. Below that, the outline becomes a compact disclosure. Below "
 "<1/>, the sidebar and header controls move into the menu. The relative "
 "thresholds leave room for larger user text and browser zoom."
 msgstr ""
-"Die Navigation richtet sich nach der verfügbaren Rahmenbreite. Ab <0/> (1280 "
-"px bei Standardschriftgröße) zeigt die Dokumentation Seitenleiste, Artikel "
-"und rechte Inhaltsübersicht. Darunter wird die Übersicht aufklappbar. Unter "
-"<1/> wechseln Seitenleiste und Kopfzeilen-Steuerelemente ins Menü. Die "
-"relativen Grenzen schaffen Platz für größere Nutzerschrift und Browserzoom."
+"Die Navigation richtet sich nach der verfügbaren Breite der Seitenhülle. Ab "
+"<0/> (1280 px bei Standardschriftgröße) zeigt die Dokumentation "
+"Seitenleiste, Artikel und rechte Inhaltsübersicht. Darunter wird die "
+"Übersicht aufklappbar. Unter <1/> wechseln Seitenleiste und "
+"Kopfzeilen-Steuerelemente ins Menü. Die relativen Grenzen schaffen Platz für"
+" größere Nutzerschrift und Browserzoom."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -5902,6 +6008,10 @@ msgstr "Paketmanager-Tabs"
 #: docs/app/content/guide/components.mdx
 msgid "Packages and dependencies"
 msgstr "Pakete und Abhängigkeiten"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Page and Content Width"
+msgstr "Seiten- und Inhaltsbreite"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Page feedback widget"
@@ -6885,19 +6995,20 @@ msgstr ""
 #~ "<4/> und <5/>. Der zugehörige CSS-Token ist <6/>; eigene Abschnitte können "
 #~ "sich mit <7/> an den integrierten Abschnitten ausrichten."
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
-" With the horizontal gutters, the default frame reaches <3/> (1440px at the "
-"default text size). The frame adds the same horizontal gutter used by <4/>, "
-"<5/>, and <6/>. The corresponding CSS token is <7/>; custom sections can use "
-"<8/> to align with the built-in sections."
-msgstr ""
-"Setze <0/> im Theme von <1/>, um die gemeinsame Inhaltsbreite zu ändern "
-"(Standard: <2/>). Mit den horizontalen Rändern erreicht der Rahmen <3/> (1440"
-" px bei Standardschriftgröße). Der Rahmen ergänzt dieselben Ränder wie "
-"<4/>, <5/> und <6/>. Der zugehörige CSS-Token ist <7/>; eigene Abschnitte "
-"können sich mit <8/> an den integrierten Abschnitten ausrichten."
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
+#~ " With the horizontal gutters, the default frame reaches <3/> (1440px at the "
+#~ "default text size). The frame adds the same horizontal gutter used by <4/>, "
+#~ "<5/>, and <6/>. The corresponding CSS token is <7/>; custom sections can use "
+#~ "<8/> to align with the built-in sections."
+#~ msgstr ""
+#~ "Setze <0/> im Theme von <1/>, um die gemeinsame Inhaltsbreite zu ändern "
+#~ "(Standard: <2/>). Mit den horizontalen Rändern erreicht der Rahmen <3/> (1440"
+#~ " px bei Standardschriftgröße). Der Rahmen ergänzt dieselben Ränder wie "
+#~ "<4/>, <5/> und <6/>. Der zugehörige CSS-Token ist <7/>; eigene Abschnitte "
+#~ "können sich mit <8/> an den integrierten Abschnitten ausrichten."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7003,9 +7114,10 @@ msgstr "Einstellungen und Konfiguration"
 msgid "Setup"
 msgstr "Einrichtung"
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid "Shared Page Width"
-msgstr "Gemeinsame Seitenbreite"
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid "Shared Page Width"
+#~ msgstr "Gemeinsame Seitenbreite"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -7843,15 +7955,30 @@ msgstr ""
 msgid "The Problem with Documentation Frameworks"
 msgstr "Das Problem mit Dokumentationsframeworks"
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "The reading scale follows the frame: body text grows from <0/> to <1/> between"
+#~ " frame widths of <2/> and <3/>. Headings and larger spacing tokens grow within"
+#~ " their own bounds; navigation and code keep their compact sizes. Ardo leaves "
+#~ "the root font size to the reader. Custom theme tokens can replace any of these"
+#~ " values, including with fixed sizes:"
+#~ msgstr ""
+#~ "Die Leseskala folgt dem Rahmen: Zwischen Rahmenbreiten von <2/> und <3/> "
+#~ "wächst Fließtext von <0/> auf <1/>. Überschriften und größere Abstände "
+#~ "wachsen innerhalb ihrer eigenen Grenzen; Navigation und Code bleiben kompakt. "
+#~ "Ardo überlässt die Root-Schriftgröße dem Leser. Eigene Theme-Tokens "
+#~ "können alle Werte ersetzen, auch durch feste Größen:"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"The reading scale follows the frame: body text grows from <0/> to <1/> between"
-" frame widths of <2/> and <3/>. Headings and larger spacing tokens grow within"
+"The reading scale follows the shell: body text grows from <0/> to <1/> between"
+" shell widths of <2/> and <3/>. Headings and larger spacing tokens grow within"
 " their own bounds; navigation and code keep their compact sizes. Ardo leaves "
 "the root font size to the reader. Custom theme tokens can replace any of these"
 " values, including with fixed sizes:"
 msgstr ""
-"Die Leseskala folgt dem Rahmen: Zwischen Rahmenbreiten von <2/> und <3/> "
+"Die Leseskala folgt der Seitenhülle: Zwischen Breiten von <2/> und <3/> "
 "wächst Fließtext von <0/> auf <1/>. Überschriften und größere Abstände "
 "wachsen innerhalb ihrer eigenen Grenzen; Navigation und Code bleiben kompakt. "
 "Ardo überlässt die Root-Schriftgröße dem Leser. Eigene Theme-Tokens "
@@ -8527,6 +8654,17 @@ msgstr ""
 "Mit <0/> in <1/> registrierst du weitere SVG-React-Komponenten und "
 "Markenicons:"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Use <0/> inside a full-width section to align its content with the built-in "
+"marketing sections. Choose <1/> for a prose column. Both options include "
+"responsive horizontal gutters and accept standard div attributes."
+msgstr ""
+"Verwende <0/> in einem Abschnitt über die volle Breite, um dessen Inhalt an "
+"den integrierten Marketing-Abschnitten auszurichten. Wähle <1/> für eine "
+"Lesespalte. Beide Optionen enthalten responsive horizontale Ränder und "
+"unterstützen die üblichen div-Attribute."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Use <0/> on a route that owns its site header and footer. Ardo reserves no "
@@ -8588,14 +8726,15 @@ msgstr ""
 #~ "wird auch dann zum Symbol, wenn die Rahmenbreite unter 1024 px liegt. In jedem"
 #~ " Modus öffnet ⌘K (Strg+K unter Windows und Linux) die Suche."
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"Use <0/> to return a route to the shared frame on a full-width site. An "
-"explicitly authored MDX <1/> export takes precedence over frontmatter."
-msgstr ""
-"Mit <0/> kehrt eine Route auf einer Website mit voller Breite zum gemeinsamen "
-"Rahmen zurück. Ein ausdrücklich exportiertes MDX-<1/> hat Vorrang vor dem "
-"Frontmatter."
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Use <0/> to return a route to the shared frame on a full-width site. An "
+#~ "explicitly authored MDX <1/> export takes precedence over frontmatter."
+#~ msgstr ""
+#~ "Mit <0/> kehrt eine Route auf einer Website mit voller Breite zum gemeinsamen "
+#~ "Rahmen zurück. Ein ausdrücklich exportiertes MDX-<1/> hat Vorrang vor dem "
+#~ "Frontmatter."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

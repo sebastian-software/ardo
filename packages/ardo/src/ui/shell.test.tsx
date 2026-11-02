@@ -39,6 +39,14 @@ function renderRootRoute(element: ReactNode, handle?: unknown, initialPath = "/"
 }
 
 describe("UI shell landmarks", () => {
+  it("uses a viewport shell by default and keeps a centered shell as an explicit option", () => {
+    expect(renderRootRoute(<ArdoRoot config={config} />, undefined, "/guide")).toContain(
+      'data-ardo-frame="viewport"'
+    )
+    expect(
+      renderRootRoute(<ArdoRoot config={config} fullWidth={false} />, undefined, "/guide")
+    ).toContain('data-ardo-frame="page"')
+  })
   it("lets a route override the site's full-width frame in either direction", () => {
     const root = (
       <ArdoRoot config={config} fullWidth>
@@ -49,9 +57,9 @@ describe("UI shell landmarks", () => {
     expect(renderRootRoute(root, { fullWidth: false }, "/guide")).toContain(
       'data-ardo-frame="page"'
     )
-    expect(renderRootRoute(<ArdoRoot config={config} />, { fullWidth: true }, "/guide")).toContain(
-      'data-ardo-frame="viewport"'
-    )
+    expect(
+      renderRootRoute(<ArdoRoot config={config} fullWidth={false} />, { fullWidth: true }, "/guide")
+    ).toContain('data-ardo-frame="viewport"')
     expect(renderRootRoute(root, { fullWidth: "false" }, "/guide")).toContain(
       'data-ardo-frame="viewport"'
     )
@@ -172,10 +180,10 @@ describe("UI shell landmarks", () => {
     )
     expect(view).toContain('role="combobox"')
     expect(view).toContain(headerStyles.headerContainer)
-    expect(view).toContain('data-ardo-frame="page"')
+    expect(view).toContain('data-ardo-frame="viewport"')
   })
 
-  it("collapses search to an icon and uses the page frame on bare routes", () => {
+  it("collapses search to an icon and uses the viewport shell on bare routes", () => {
     const view = renderRootRoute(
       <ArdoRoot config={config}>
         <p>Landing</p>
@@ -187,7 +195,7 @@ describe("UI shell landmarks", () => {
     expect(view).toContain('aria-label="Search"')
     expect(view).toContain('aria-keyshortcuts="Meta+K Control+K"')
     expect(view).toContain(headerStyles.headerContainer)
-    expect(view).toContain('data-ardo-frame="page"')
+    expect(view).toContain('data-ardo-frame="viewport"')
   })
 
   it("renders the theme and gives the header the logo", () => {

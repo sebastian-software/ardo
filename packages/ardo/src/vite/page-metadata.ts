@@ -32,6 +32,7 @@ const knownFrontmatterFields = new Set([
   "coverImage",
   "draft",
   "fullWidth",
+  "contentWidth",
   "images",
   "feedContent",
   "_ardoPost",
@@ -96,6 +97,8 @@ const structuredFrontmatterNormalizers: Record<
   string,
   (value: unknown) => PageFrontmatterMetadata | undefined
 > = {
+  contentWidth: (value) =>
+    value === "reading" || value === "page" ? { contentWidth: value } : undefined,
   features: (value) => (isFeatures(value) ? { features: value } : undefined),
   hero: (value) => (isHero(value) ? { hero: value } : undefined),
   layout: normalizeLayout,

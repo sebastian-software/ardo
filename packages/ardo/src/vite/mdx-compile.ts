@@ -93,10 +93,11 @@ function createDataExport(
 }
 
 function createHandleExport(frontmatter: PageFrontmatter, scope: AuthoredScope): string[] {
-  const { layout, fullWidth } = frontmatter
+  const { layout, fullWidth, contentWidth } = frontmatter
   const handle = {
     ...(layout === "bare" || layout === "default" ? { layout } : {}),
     ...(typeof fullWidth === "boolean" ? { fullWidth } : {}),
+    ...(contentWidth === "reading" || contentWidth === "page" ? { contentWidth } : {}),
   }
   if (Object.keys(handle).length === 0 || scope.exports.has("handle")) return []
   if (scope.bindings.has("handle")) return ["export { handle };"]

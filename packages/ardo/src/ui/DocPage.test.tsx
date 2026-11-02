@@ -31,7 +31,23 @@ function renderPage(outline = true) {
   )
 }
 
+function renderWidth(contentWidth?: "reading" | "page") {
+  return renderToStaticMarkup(
+    <ArdoPageProvider handle={{ contentWidth: "page" }}>
+      <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
+        <ArdoDocContent contentWidth={contentWidth}>
+          <p>Reference</p>
+        </ArdoDocContent>
+      </ArdoProvider>
+    </ArdoPageProvider>
+  )
+}
+
 describe("documentation page source metadata and compact outline", () => {
+  it("lets explicit composition override a route's content width", () => {
+    expect(renderWidth()).toContain('data-content-width="page"')
+    expect(renderWidth("reading")).toContain('data-content-width="reading"')
+  })
   it("keeps the real source path and a deterministic updated date in rail and footer", () => {
     const html = renderPage()
     expect(
