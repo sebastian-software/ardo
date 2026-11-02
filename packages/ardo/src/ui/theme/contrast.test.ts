@@ -110,3 +110,30 @@ describe("callout contrast", () => {
     })
   }
 })
+
+// The shipped GitHub Light syntax theme uses #6e7781 for comments.
+function syntaxCommentContrast(background: string): number {
+  const [r, g, b] = [0x6e, 0x77, 0x81].map((channel) => {
+    const value = channel / 255
+    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+  })
+  const foreground = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  const surface = luminance(background)
+  return (Math.max(foreground, surface) + 0.05) / (Math.min(foreground, surface) + 0.05)
+}
+
+it("keeps syntax comments readable across light-mode hue and chroma choices", () => {
+  const failures = Object.entries(huePresets)
+    .flatMap(([preset, { hue }]) =>
+      Object.entries(CHROMA_LEVELS).map(([level, chroma]) => {
+        const colors = createColorTokens(
+          "light",
+          { ...defaultHues, brand: hue, accent: hue, neutral: hue },
+          chroma
+        )
+        return { preset, level, ratio: syntaxCommentContrast(colors.codeBg) }
+      })
+    )
+    .filter(({ ratio }) => ratio < 4.5)
+  expect(failures).toStrictEqual([])
+})

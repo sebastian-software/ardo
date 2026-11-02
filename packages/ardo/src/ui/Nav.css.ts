@@ -6,6 +6,12 @@ export const nav = style({
   display: "flex",
   alignItems: "center",
   gap: "8px",
+  selectors: {
+    ".ardo-mobile-panel &": {
+      flexDirection: "column",
+      alignItems: "stretch",
+    },
+  },
 })
 
 export const navLink = style({
