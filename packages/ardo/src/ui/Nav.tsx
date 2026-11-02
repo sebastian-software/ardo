@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, use, useMemo, useState } from "react"
 
-import { ArdoActiveLink } from "../runtime/page"
-import { useArdoPath } from "../runtime/page-context"
+import { ArdoLink } from "../runtime/page"
+import { useArdoPath, useIsActivePath } from "../runtime/page-context"
 
 import { joinClassNames } from "./classnames"
 import * as styles from "./Nav.css"
@@ -78,6 +78,8 @@ export type ArdoNavLinkProps = {
 export function ArdoNavLink({ to, href, children, className, activeMatch }: ArdoNavLinkProps) {
   const navContext = useNavContext()
   const pathname = useArdoPath()
+  const pathIsActive = useIsActivePath(to ?? "", false)
+  const isActive = pathIsActive || matchesActiveMatch(pathname, activeMatch)
   const baseClassName = className ?? styles.navLink
   const hasHref = (href ?? "") !== ""
   const hasTo = to !== undefined
@@ -105,17 +107,14 @@ export function ArdoNavLink({ to, href, children, className, activeMatch }: Ardo
   // Internal link
   if (hasTo) {
     return (
-      <ArdoActiveLink
+      <ArdoLink
         to={to}
-        className={({ isActive }: { isActive: boolean }) =>
-          [baseClassName, (isActive || matchesActiveMatch(pathname, activeMatch)) && "active"]
-            .filter(Boolean)
-            .join(" ")
-        }
+        className={[baseClassName, isActive && "active"].filter(Boolean).join(" ")}
+        aria-current={isActive ? "page" : undefined}
         onClick={handleClick}
       >
         {children}
-      </ArdoActiveLink>
+      </ArdoLink>
     )
   }
 

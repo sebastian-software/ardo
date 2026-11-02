@@ -185,7 +185,8 @@ describe("UI shell landmarks", () => {
     expect(view).toContain(
       ":root{--ardo-hue-brand:240;--ardo-hue-accent:170;--ardo-hue-neutral:255;"
     )
-    expect(view).toContain('<img src="/assets/logo-a1b2.svg" alt="Docs"')
+    expect(view).toContain('<img src="/assets/logo-a1b2.svg" alt=""')
+    expect(view).toContain('aria-label="Docs" href="/"')
   })
 
   it("renders no theme style without a theme", () => {

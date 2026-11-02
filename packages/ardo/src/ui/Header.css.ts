@@ -146,6 +146,8 @@ export const siteTitle = style({
 })
 
 export const mobileMenuButton = style({
+  minWidth: "44px",
+  minHeight: "44px",
   display: "none",
   flexShrink: 0,
   background: "none",
@@ -292,6 +294,8 @@ export const mobilePanelHeader = style({
 })
 
 export const mobilePanelClose = style({
+  minWidth: "44px",
+  minHeight: "44px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
