@@ -243,7 +243,7 @@ test("PO-backed German guides retain interactive components and source edit link
   const editLinks = page.locator(
     'a[href="https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/components.mdx"]'
   )
-  await expect(editLinks.first()).toBeVisible()
+  await expect(editLinks.filter({ visible: true }).first()).toBeVisible()
   expect(errors).toEqual([])
 })
 

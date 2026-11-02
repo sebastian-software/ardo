@@ -92,7 +92,7 @@ test("mobile docs navigation opens as a dialog and restores route navigation", a
   await expect(menu).toBeHidden()
 })
 
-for (const width of [1280, 390]) {
+for (const width of [1120, 390]) {
   test(`compact page outline supports keyboard expansion and section navigation at ${width}px`, async ({
     page,
   }) => {

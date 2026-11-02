@@ -3,7 +3,7 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import * as layoutStyles from "./Layout.css"
 import { versionControl } from "./site-controls.css"
 import { vars } from "./theme/contract.css"
-import { frameResponsive } from "./page-frame"
+import { compactFrame, frameResponsive } from "./page-frame"
 
 export const footer = style({
   width: "100%",
@@ -25,7 +25,7 @@ globalStyle(`main > .${footer}`, {
   marginBottom: `calc(${vars.space.xl} * -1)`,
   marginLeft: `calc(${vars.space.xl} * -1)`,
   ...frameResponsive({
-    "(max-width: 1024px)": {
+    [compactFrame]: {
       width: `calc(100% + (${vars.space.md} * 2))`,
       marginRight: `calc(${vars.space.md} * -1)`,
       marginLeft: `calc(${vars.space.md} * -1)`,

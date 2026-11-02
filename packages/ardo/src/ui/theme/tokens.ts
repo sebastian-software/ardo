@@ -47,14 +47,14 @@ const fontMono =
 
 const shared = {
   layout: {
-    sidebarWidth: "20rem",
-    tocWidth: "15rem",
+    sidebarWidth: "16rem",
+    tocWidth: "12rem",
     // About 75–80 characters per line. `em` follows each element's own font
     // size, so a larger lead or smaller note keeps the same measure. `ch`
     // measures the wide "0" glyph, so 68ch let system-ui prose run past 90.
     contentMaxWidth: "36em",
     // Shared page width for docs and marketing; prose has its own measure.
-    pageMaxWidth: "69rem",
+    pageMaxWidth: "87rem",
     headerHeight: "3.5rem",
   },
   transition: {
@@ -67,18 +67,20 @@ const shared = {
     mono: fontMono,
     // Headings follow the body font unless a theme sets their own.
     familyHeading: vars.font.family,
-    size: "1rem",
+    size: vars.fontSize.base,
     lineHeight: "1.65",
   },
   fontSize: {
     xs: "0.75rem",
     sm: "0.875rem",
-    base: "1rem",
-    lg: "1.125rem",
-    xl: "1.25rem",
-    "2xl": "1.5rem",
-    "3xl": "2rem",
-    "4xl": "2.5rem",
+    // Reading text grows from 16 to 18px as the frame grows from 1280 to 1440px.
+    // rem bounds preserve the reader's text preference; navigation and code stay compact.
+    base: "clamp(1rem, 1.25cqi, 1.125rem)",
+    lg: `calc(${vars.fontSize.base} * 1.125)`,
+    xl: `calc(${vars.fontSize.base} * 1.25)`,
+    "2xl": "clamp(1.375rem, 1.75cqi, 1.5rem)",
+    "3xl": "clamp(1.75rem, 2.5cqi, 2rem)",
+    "4xl": "clamp(2rem, 3.5cqi, 3.15rem)",
   },
   space: {
     xs: "0.25rem",
@@ -86,12 +88,12 @@ const shared = {
     smd: "0.75rem",
     md: "1rem",
     lg: "1.5rem",
-    xl: "2rem",
-    "2xl": "3rem",
-    "3xl": "4rem",
+    xl: "clamp(1.25rem, 2cqi, 2rem)",
+    "2xl": "clamp(2rem, 3cqi, 3rem)",
+    "3xl": "clamp(2.5rem, 4cqi, 4rem)",
     "4xl": "6rem",
-    section: "clamp(3rem, 6vw, 5rem)",
-    content: "clamp(1.5rem, 3vw, 2.5rem)",
+    section: "clamp(3rem, 6cqi, 5rem)",
+    content: "clamp(1.5rem, 3cqi, 2.5rem)",
   },
   radius: {
     sm: "0.25rem",

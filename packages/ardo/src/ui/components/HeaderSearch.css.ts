@@ -1,9 +1,9 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
-import { frameResponsive } from "../page-frame"
+import { compactFrame, frameResponsive } from "../page-frame"
 
-const MOBILE = "(max-width: 1024px)"
+const MOBILE = compactFrame
 const DESKTOP = "(min-width: 1025px)"
 
 /** Inline search input — desktop only, hidden once the header collapses. */

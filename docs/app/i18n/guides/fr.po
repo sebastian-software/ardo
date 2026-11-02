@@ -2592,15 +2592,28 @@ msgstr "Changements de comportement"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Below a frame width of 1024px the header keeps only the menu button, the logo,"
-" and search, so a long logo still fits. The menu ends with the site controls: "
+"Below a frame width of <0/> the header keeps only the menu button, the logo, "
+"and search, so a long logo still fits. The menu ends with the site controls: "
 "the version switcher, the language switcher, the theme toggle, and everything "
-"inside <0/>, such as social links."
+"inside <1/>, such as social links."
 msgstr ""
-"Lorsque le cadre mesure moins de 1024 px, l’en-tête conserve uniquement le "
+"Lorsque le cadre mesure moins de <0/>, l’en-tête conserve uniquement le "
 "bouton du menu, le logo et la recherche pour laisser de la place aux logos "
 "longs. Le menu se termine par les contrôles du site : version, langue, thème"
-" et tout le contenu de <0/>, comme les liens sociaux."
+" et tout le contenu de <1/>, comme les liens sociaux."
+
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Below a frame width of 1024px the header keeps only the menu button, the logo,"
+#~ " and search, so a long logo still fits. The menu ends with the site controls: "
+#~ "the version switcher, the language switcher, the theme toggle, and everything "
+#~ "inside <0/>, such as social links."
+#~ msgstr ""
+#~ "Lorsque le cadre mesure moins de 1024 px, l’en-tête conserve uniquement le "
+#~ "bouton du menu, le logo et la recherche pour laisser de la place aux logos "
+#~ "longs. Le menu se termine par les contrôles du site : version, langue, thème"
+#~ " et tout le contenu de <0/>, comme les liens sociaux."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Best fit"
@@ -4765,6 +4778,16 @@ msgstr ""
 "déclaré ici s’applique. Placez <1/> avant <2/> et <3/> pour donner "
 "priorité aux utilitaires."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"In frames narrower than <0/>, the outline appears as an expandable \"On this "
+"page\" section below the title, and page actions appear at the end of the "
+"article. Wider frames keep the page rail."
+msgstr ""
+"Dans les cadres de moins de <0/>, le sommaire apparaît sous le titre dans une"
+" section dépliable « Sur cette page », et les actions de page figurent en "
+"fin d’article. Les cadres plus larges conservent la colonne de droite."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "In MDX, use the components without imports, for example <0/>, <1/>, and <2/>. "
@@ -5517,16 +5540,32 @@ msgstr ""
 "Composez la navigation en React. Passez <0/>, <1/> et <2/> comme enfants ou "
 "définissez <3/>, <4/> ou <5/> à <6/>:"
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Navigation responds to the available frame width. A bounded frame on a large "
+#~ "monitor uses the compact page outline instead of squeezing in a right rail. A "
+#~ "narrower frame also moves the sidebar and header controls into the menu."
+#~ msgstr ""
+#~ "La navigation s’adapte à la largeur disponible du cadre. Sur un grand "
+#~ "écran, un cadre limité utilise le sommaire compact plutôt que de comprimer "
+#~ "le contenu pour ajouter une colonne à droite. Un cadre plus étroit déplace "
+#~ "aussi la barre latérale et les contrôles de l’en-tête dans le menu."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"Navigation responds to the available frame width. A bounded frame on a large "
-"monitor uses the compact page outline instead of squeezing in a right rail. A "
-"narrower frame also moves the sidebar and header controls into the menu."
+"Navigation responds to the available frame width. From <0/> (1280px at the "
+"default text size), documentation shows the sidebar, article, and right "
+"outline rail. Below that, the outline becomes a compact disclosure. Below "
+"<1/>, the sidebar and header controls move into the menu. The relative "
+"thresholds leave room for larger user text and browser zoom."
 msgstr ""
-"La navigation s’adapte à la largeur disponible du cadre. Sur un grand "
-"écran, un cadre limité utilise le sommaire compact plutôt que de comprimer "
-"le contenu pour ajouter une colonne à droite. Un cadre plus étroit déplace "
-"aussi la barre latérale et les contrôles de l’en-tête dans le menu."
+"La navigation s’adapte à la largeur disponible du cadre. À partir de <0/> "
+"(1280 px avec la taille de texte par défaut), la documentation affiche la "
+"barre latérale, l’article et le sommaire à droite. En dessous, le sommaire"
+" devient dépliable. Sous <1/>, la barre latérale et les contrôles de "
+"l’en-tête passent dans le menu. Ces seuils relatifs laissent de la place au"
+" texte agrandi et au zoom du navigateur."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -5680,14 +5719,15 @@ msgstr ""
 #~ "Les documents gardent un en-tête pleine largeur. Réglez <3/> et utilisez "
 #~ "<4/> pour aligner vos sections."
 
-#: docs/app/content/guide/layout-and-navigation.mdx
-msgid ""
-"On viewports up to 1280 pixels wide, the outline appears as an expandable \"On"
-" this page\" section below the title, and page actions appear at the end of "
-"the article. Wider screens keep the page rail."
-msgstr ""
-"Jusqu’à 1280 px, le sommaire se déplie sous le titre et les actions se "
-"trouvent en fin d’article. Les grands écrans gardent le rail droit."
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "On viewports up to 1280 pixels wide, the outline appears as an expandable \"On"
+#~ " this page\" section below the title, and page actions appear at the end of "
+#~ "the article. Wider screens keep the page rail."
+#~ msgstr ""
+#~ "Jusqu’à 1280 px, le sommaire se déplie sous le titre et les actions se "
+#~ "trouvent en fin d’article. Les grands écrans gardent le rail droit."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
@@ -6792,17 +6832,32 @@ msgstr ""
 "meta refresh et JavaScript. Configurez les redirections HTTP du CDN ou de "
 "l’hébergeur en dehors d’Ardo."
 
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
+#~ " The frame adds the same horizontal gutter used by <3/>, <4/>, and <5/>. The "
+#~ "corresponding CSS token is <6/>; custom sections can use <7/> to align with "
+#~ "the built-in sections."
+#~ msgstr ""
+#~ "Définissez <0/> dans le thème de <1/> pour modifier la largeur de contenu "
+#~ "commune (par défaut : <2/>). Le cadre ajoute les mêmes marges horizontales "
+#~ "que <3/>, <4/> et <5/>. Le jeton CSS correspondant est <6/> ; vos sections "
+#~ "peuvent utiliser <7/> pour s’aligner sur les sections intégrées."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Set <0/> in the <1/> theme to change the shared content width (default: <2/>)."
-" The frame adds the same horizontal gutter used by <3/>, <4/>, and <5/>. The "
-"corresponding CSS token is <6/>; custom sections can use <7/> to align with "
-"the built-in sections."
+" With the horizontal gutters, the default frame reaches <3/> (1440px at the "
+"default text size). The frame adds the same horizontal gutter used by <4/>, "
+"<5/>, and <6/>. The corresponding CSS token is <7/>; custom sections can use "
+"<8/> to align with the built-in sections."
 msgstr ""
 "Définissez <0/> dans le thème de <1/> pour modifier la largeur de contenu "
-"commune (par défaut : <2/>). Le cadre ajoute les mêmes marges horizontales "
-"que <3/>, <4/> et <5/>. Le jeton CSS correspondant est <6/> ; vos sections "
-"peuvent utiliser <7/> pour s’aligner sur les sections intégrées."
+"commune (par défaut : <2/>). Avec les marges horizontales, le cadre atteint "
+"<3/> (1440 px avec la taille de texte par défaut). Le cadre ajoute les mêmes"
+" marges que <4/>, <5/> et <6/>. Le jeton CSS correspondant est <7/> ; vos "
+"sections peuvent utiliser <8/> pour s’aligner sur les sections intégrées."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7743,6 +7798,21 @@ msgstr "Le problème des frameworks de documentation"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
+"The reading scale follows the frame: body text grows from <0/> to <1/> between"
+" frame widths of <2/> and <3/>. Headings and larger spacing tokens grow within"
+" their own bounds; navigation and code keep their compact sizes. Ardo leaves "
+"the root font size to the reader. Custom theme tokens can replace any of these"
+" values, including with fixed sizes:"
+msgstr ""
+"L’échelle de lecture suit le cadre : entre des largeurs de <2/> et <3/>, le"
+" texte courant passe de <0/> à <1/>. Les titres et les grands espacements "
+"évoluent dans leurs propres limites ; la navigation et le code restent "
+"compacts. Ardo laisse au lecteur le choix de la taille de police racine. Les "
+"jetons du thème peuvent remplacer toutes ces valeurs, y compris par des "
+"tailles fixes :"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
 "The route's external header and footer follow the same offset rule, while Ardo"
 " keeps the sidebar and page rail. Provide a site-owned skip link for routes "
 "that suppress Ardo's chrome."
@@ -8442,13 +8512,25 @@ msgstr ""
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Use <0/> or <1/> to pick one presentation for every page. The field also "
-"collapses to the icon when the page frame is below 1024px. In every mode, ⌘K"
-" (Ctrl+K on Windows and Linux) opens search."
+"collapses to the icon when the page frame is below <2/> (1024px at the default"
+" text size). In every mode, ⌘K (Ctrl+K on Windows and Linux) opens search."
 msgstr ""
 "Utilisez <0/> ou <1/> pour choisir une présentation commune à toutes les "
-"pages. Le champ devient aussi une icône lorsque le cadre mesure moins de 1024"
-" px. Dans tous les modes, ⌘K (Ctrl+K sous Windows et Linux) ouvre la "
-"recherche."
+"pages. Le champ devient aussi une icône lorsque le cadre mesure moins de <2/>"
+" (1024 px avec la taille de texte par défaut). Dans tous les modes, ⌘K "
+"(Ctrl+K sous Windows et Linux) ouvre la recherche."
+
+#~ #@ obsolete-since: 2026-11-02
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Use <0/> or <1/> to pick one presentation for every page. The field also "
+#~ "collapses to the icon when the page frame is below 1024px. In every mode, ⌘K"
+#~ " (Ctrl+K on Windows and Linux) opens search."
+#~ msgstr ""
+#~ "Utilisez <0/> ou <1/> pour choisir une présentation commune à toutes les "
+#~ "pages. Le champ devient aussi une icône lorsque le cadre mesure moins de 1024"
+#~ " px. Dans tous les modes, ⌘K (Ctrl+K sous Windows et Linux) ouvre la "
+#~ "recherche."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

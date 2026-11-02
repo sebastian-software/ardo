@@ -1,11 +1,11 @@
 import { style } from "@vanilla-extract/css"
 
 import { vars } from "./theme/contract.css"
-import { frameResponsive } from "./page-frame"
+import { compactFrame, frameResponsive } from "./page-frame"
 
 // The sidebar only renders inside the mobile drawer below this width, where
 // the section tabs lie flat above the tree instead of standing on the edge.
-const drawerWidth = "(max-width: 1024px)"
+const drawerWidth = compactFrame
 
 /**
  * Strip of section tabs on the sidebar's outer edge. It is the darkest of the

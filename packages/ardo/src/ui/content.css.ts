@@ -26,7 +26,7 @@ globalStyle(`${c} h1`, {
 // h2 opens a major section — generous separation above plus a hairline rule
 // so long pages get visible structure while scanning.
 globalStyle(`${c} h2`, {
-  fontSize: "1.375rem",
+  fontSize: vars.fontSize["2xl"],
   // The section rule spans the column, like code blocks and tables below it.
   maxWidth: "none",
   marginTop: vars.space["2xl"],

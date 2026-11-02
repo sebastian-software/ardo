@@ -18,7 +18,7 @@ export const navLink = style({
   position: "relative",
   color: vars.color.textLight,
   textDecoration: "none",
-  fontSize: "14px",
+  fontSize: vars.fontSize.sm,
   fontWeight: 500,
   padding: "8px 14px",
   borderRadius: vars.radius.sm,

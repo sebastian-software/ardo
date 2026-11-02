@@ -4,7 +4,7 @@ import { fadeInUp } from "../theme/animations.css"
 import { vars } from "../theme/contract.css"
 
 export const hero = style({
-  padding: `104px ${vars.space.lg} 72px`,
+  padding: `${vars.space.section} ${vars.space.lg}`,
   textAlign: "center",
   position: "relative",
   overflow: "hidden",
@@ -33,14 +33,14 @@ export const hero = style({
   },
   "@media": {
     "(max-width: 768px)": {
-      padding: `64px ${vars.space.md} 48px`,
+      padding: `${vars.space["2xl"]} ${vars.space.md}`,
     },
   },
 })
 
 // Centered copy keeps a narrower measure inside the shared page frame.
 export const heroContainer = style({
-  maxWidth: `min(800px, ${vars.layout.pageMaxWidth})`,
+  maxWidth: `min(50rem, ${vars.layout.pageMaxWidth})`,
   margin: "0 auto",
   position: "relative",
   zIndex: 1,
@@ -82,38 +82,35 @@ export const heroVersion = style({
 })
 
 export const heroName = style({
-  fontSize: "clamp(40px, 7vw, 60px)",
+  fontSize: "clamp(2.5rem, 4.5cqi, 3.75rem)",
   fontWeight: 800,
   color: vars.color.text,
   letterSpacing: "-0.03em",
   lineHeight: 1.08,
   textWrap: "balance",
+  overflowWrap: "anywhere",
 })
 
 export const heroText = style({
-  fontSize: "clamp(26px, 4.6vw, 40px)",
+  fontSize: "clamp(1.625rem, 3cqi, 2.5rem)",
   fontWeight: 650,
   color: vars.color.textLight,
   marginTop: "10px",
   letterSpacing: "-0.02em",
   lineHeight: 1.16,
   textWrap: "balance",
+  overflowWrap: "anywhere",
 })
 
 export const heroTagline = style({
-  fontSize: "18px",
+  fontSize: vars.fontSize.lg,
   color: vars.color.textLight,
   marginTop: "24px",
-  maxWidth: "560px",
+  maxWidth: "35rem",
   marginLeft: "auto",
   marginRight: "auto",
   lineHeight: 1.65,
   textWrap: "pretty",
-  "@media": {
-    "(max-width: 768px)": {
-      fontSize: "16px",
-    },
-  },
 })
 
 export const heroActions = style({
