@@ -5,9 +5,9 @@ import { compactFrame, frameMaxWidth, frameResponsive } from "./page-frame"
 
 export const header = style({
   position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
+  inset: "0 0 auto",
+  maxWidth: frameMaxWidth,
+  marginInline: "auto",
   height: `calc(${vars.layout.headerHeight} + env(safe-area-inset-top))`,
   paddingTop: "env(safe-area-inset-top)",
   background: vars.color.headerBg,

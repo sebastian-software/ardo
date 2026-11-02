@@ -95,6 +95,8 @@ export type {
 
 export { ArdoContent } from "./Content"
 export type { ArdoContentProps } from "./Content"
+export { ArdoContentContainer } from "./ContentContainer"
+export type { ArdoContentContainerProps } from "./ContentContainer"
 export { ArdoDocContent, ArdoDocLayout, ArdoDocPage } from "./DocPage"
 export type { ArdoDocContentProps, ArdoDocPageProps } from "./DocPage"
 

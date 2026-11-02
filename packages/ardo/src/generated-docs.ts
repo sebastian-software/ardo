@@ -7,6 +7,7 @@ export type GeneratedDoc = {
   content: string
   frontmatter: {
     title: string
+    contentWidth?: "reading" | "page"
     description?: string
     sidebar_position?: number
     sidebar?: "leaf" | boolean
@@ -46,6 +47,8 @@ function formatGeneratedPage(doc: GeneratedDoc): string {
     "editLink: false",
     "lastUpdated: false",
   ]
+  if (doc.frontmatter.contentWidth != null)
+    lines.push(`contentWidth: ${doc.frontmatter.contentWidth}`)
   if (doc.frontmatter.description != null)
     lines.push(`description: ${JSON.stringify(doc.frontmatter.description)}`)
   if (doc.frontmatter.sidebar_position != null)

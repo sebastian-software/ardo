@@ -11,6 +11,7 @@ export const docPage = style({
   flex: 1,
   minWidth: 0,
   width: "100%",
+  maxWidth: `calc(${vars.layout.contentMaxWidth} + ${vars.layout.tocWidth} + ${vars.space.xl})`,
   gridTemplateColumns: `minmax(0, 1fr) ${vars.layout.tocWidth}`,
   justifyContent: "start",
   gap: vars.space.xl,
@@ -20,11 +21,19 @@ export const docPage = style({
   // grid's flex: 1 grows and the footer sits at the bottom of the viewport.
   paddingBottom: vars.space["3xl"],
   selectors: {
-    '&[data-rail="false"]': { gridTemplateColumns: "minmax(0, 1fr)" },
+    '&[data-rail="false"]': {
+      gridTemplateColumns: "minmax(0, 1fr)",
+      maxWidth: vars.layout.contentMaxWidth,
+    },
+    '&[data-content-width="page"]': { maxWidth: vars.layout.pageMaxWidth },
+    '&[data-content-width="page"][data-rail="false"]': {
+      maxWidth: vars.layout.pageMaxWidth,
+    },
   },
   ...frameResponsive({
     [narrowFrame]: {
       gridTemplateColumns: "minmax(0, 1fr)",
+      maxWidth: vars.layout.contentMaxWidth,
     },
     [compactFrame]: {
       paddingTop: vars.space.xl,

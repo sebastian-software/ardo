@@ -134,7 +134,7 @@ export type ArdoLayoutProps = {
   bare?: boolean
   /** Use the document as the scroll container instead of the viewport shell. */
   scrollMode?: ArdoScrollMode
-  /** Use the viewport instead of the shared page-width frame. Default: false. */
+  /** Use a viewport-wide shell (default). Set false for a centered page-width shell. */
   fullWidth?: boolean
   /** Render the built-in skip link. Disable when the host owns navigation chrome. */
   showSkipLink?: boolean
@@ -164,7 +164,7 @@ export function ArdoLayout({
   className,
   bare = false,
   scrollMode = "viewport",
-  fullWidth = false,
+  fullWidth = true,
   showSkipLink = true,
 }: ArdoLayoutProps) {
   const labels = useArdoLabels()

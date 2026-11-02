@@ -26,7 +26,7 @@ export function renderIndex(
   return {
     path: "index.md",
     content: lines.join("\n"),
-    frontmatter: { title: options.title, sidebar_position: 0 },
+    frontmatter: { title: options.title, sidebar_position: 0, contentWidth: "page" },
   }
 }
 

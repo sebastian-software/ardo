@@ -129,6 +129,6 @@ export type DeclarationDocsResult = {
   pages: Array<{
     path: string
     content: string
-    frontmatter: { title: string; sidebar_position?: number }
+    frontmatter: { title: string; sidebar_position?: number; contentWidth?: "page" }
   }>
 } & DeclarationProject

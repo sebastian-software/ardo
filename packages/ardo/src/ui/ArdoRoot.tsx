@@ -69,7 +69,7 @@ export type ArdoRootProps = {
   className?: string
   /** Choose the viewport shell (default) or let the document scroll. */
   scrollMode?: ArdoScrollMode
-  /** Opt out of the shared page-width frame. A route's handle.fullWidth takes precedence. */
+  /** Use a viewport-wide shell (default). A route's handle.fullWidth takes precedence. */
   fullWidth?: boolean
   /**
    * Site header in place of an `ArdoHeader` child: your own component, or
@@ -264,7 +264,7 @@ export function ArdoRoot({
   tocLabel,
   className,
   scrollMode = "viewport",
-  fullWidth = false,
+  fullWidth = true,
   header,
   footer,
   sidebar: sidebarProp,

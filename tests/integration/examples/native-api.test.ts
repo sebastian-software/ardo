@@ -74,6 +74,9 @@ describe("native-api fixture build", () => {
       const route = path.relative(markdownDir, page).replace(/\.md$/u, "")
       const html = route === "index" ? "index.html" : path.join(route, "index.html")
       expect(fs.existsSync(path.join(htmlDir, html)), route).toBe(true)
+      expect(fs.readFileSync(path.join(htmlDir, html), "utf8"), route).toContain(
+        'data-content-width="page"'
+      )
     }
     const renderer = fs.readFileSync(
       path.join(htmlDir, "types", "documentrenderer", "index.html"),
