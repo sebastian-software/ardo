@@ -9,7 +9,7 @@ import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 
 import { VIRTUAL_ENTRY_CLIENT_ID, VIRTUAL_ENTRY_SERVER_ID } from "./routes-plugin"
 import { scanRoutesSync } from "./routes-core"
-import { createSourceRouteIdentity } from "./route-identity"
+import { createCurrentRouteIdentity, createSourceRouteIdentity } from "./route-identity"
 
 type ServerEntry = {
   renderPage: (path: string, options: ArdoRenderOptions) => Promise<ArdoRenderResult>
@@ -186,23 +186,16 @@ export function getDevRedirect(
     (redirect) => normalizeRedirectPath(redirect.from) === normalizeRedirectPath(pathname)
   )
   if (configured != null) return configured.to
-  if (
-    config.i18n === false ||
-    config.i18n.redirectUnlocalized !== true ||
-    !pathname.startsWith(config.base)
-  )
-    return
-  const relative = `/${pathname.slice(config.base.length)}`
-  if (
-    normalizeRedirectPath(relative) === "/" ||
-    config.i18n.locales.some(({ id }) => id === relative.split("/")[1])
-  )
-    return
-  const target = `/${config.i18n.defaultLocale}${normalizeRedirectPath(relative)}`.replace(
-    /\/$/u,
-    ""
-  )
-  if (routes.includes(target)) return `${config.base}${target.slice(1)}/`
+  if (config.i18n === false || config.i18n.redirectUnlocalized !== true) return
+  const prefix = `/${config.i18n.defaultLocale}/`
+  for (const route of routes) {
+    if (!route.startsWith(prefix)) continue
+    const relative = route.slice(prefix.length - 1)
+    if (config.i18n.locales.some(({ id }) => id === relative.split("/")[1])) continue
+    const unlocalized = createCurrentRouteIdentity(relative, { ...config, i18n: false })
+    if (normalizeRedirectPath(unlocalized.publicPath) !== normalizeRedirectPath(pathname)) continue
+    return `${createSourceRouteIdentity(route, config).publicPath.replace(/\/$/u, "")}/`
+  }
 }
 
 function redirectResponse(request: Connect.IncomingMessage, redirect: string) {

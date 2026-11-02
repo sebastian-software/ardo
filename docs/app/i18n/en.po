@@ -472,6 +472,11 @@ msgstr "Navigation menu"
 msgid "need a hand?"
 msgstr "need a hand?"
 
+#: docs/app/i18n/messages.ts
+#: docs/app/root.tsx
+msgid "News"
+msgstr "News"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Next"
 msgstr "Next"

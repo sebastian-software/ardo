@@ -54,4 +54,28 @@ describe("locale migration redirects in development", () => {
     )
     expect(getDevRedirect("/project/v6/", config, ["/en"])).toBeUndefined()
   })
+
+  it("migrates documentation and site URLs using their own version scope", () => {
+    const config = resolveConfig(
+      {
+        ...options,
+        versioning: {
+          current: "v6",
+          versions: [{ id: "v6", path: "/v6/" }],
+          directories: ["guide"],
+        },
+      },
+      "/site"
+    )
+    const localizedRoutes = ["/en/guide/start", "/de/guide/start", "/en/news/release"]
+    expect(getDevRedirect("/project/v6/guide/start/", config, localizedRoutes)).toBe(
+      "/project/v6/en/guide/start/"
+    )
+    expect(getDevRedirect("/project/news/release/", config, localizedRoutes)).toBe(
+      "/project/en/news/release/"
+    )
+    expect(getDevRedirect("/project/v6/de/guide/start/", config, localizedRoutes)).toBeUndefined()
+    expect(getDevRedirect("/project/guide/start/", config, localizedRoutes)).toBeUndefined()
+    expect(getDevRedirect("/project/v6/guide/missing/", config, localizedRoutes)).toBeUndefined()
+  })
 })

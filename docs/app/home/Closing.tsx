@@ -94,6 +94,7 @@ export function CompanyCards({ facts }: { facts: NpmFacts | null }) {
           </span>
         )}
         <a href={CHANGELOG_URL}>{text("Changelog")}</a>
+        <ArdoLink to={localizedPath("/news")}>{text("News")}</ArdoLink>
         <a href={NPM_PACKAGE_URL}>npm</a>
         <a href={GITHUB_URL}>GitHub</a>
         <span className={styles.owlSaysHi}>

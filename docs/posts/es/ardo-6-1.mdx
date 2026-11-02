@@ -1,0 +1,83 @@
+---
+id: e26831f6-8a6f-45c9-9683-c51b25f88161
+title: "Ardo 6.1: un espacio para las novedades"
+description: Artículos MDX con autores compartidos, imágenes adaptables y feeds completos, con el versionado centrado en la documentación.
+publishedAt: 2026-11-01T22:02:42Z
+authors: [swernerx]
+tags: [Releases]
+---
+
+Un proyecto necesita un lugar donde explicar qué acaba de cambiar. Una versión
+merece más contexto que una lista de commits, y una decisión técnica puede ser
+útil más allá de su pull request. Ardo 6.1 da un espacio a esas historias junto
+a la documentación.
+
+Ahora estás leyendo una de ellas. Esta sección utiliza la misma función de
+publicación disponible para cualquier proyecto Ardo: artículos escritos en el
+repositorio y compilados como páginas estáticas.
+
+## Artículos que permanecen con el proyecto
+
+Escribe un artículo en Markdown o MDX y añade su título, fecha de publicación,
+ID estable y referencias de autor en el frontmatter. Ardo crea la página y un
+índice cronológico. Los perfiles compartidos reúnen nombres, retratos y enlaces
+en un solo lugar; un artículo puede reconocer a varias personas.
+
+Una publicación comienza con un directorio fuente local y un registro de autores:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My project",
+  siteUrl: "https://example.com",
+  publication: {
+    from: "posts",
+    authors: { team: { name: "Project team" } },
+  },
+})
+```
+
+Los lectores pueden suscribirse mediante Atom o RSS y recibir el artículo
+portable completo. Cuando un componente MDX necesita una explicación fuera de
+la web, una versión Markdown explícita mantiene la utilidad del feed. Los
+borradores y artículos futuros quedan fuera del resultado publicado. Un
+artículo programado se incluye al compilar a partir de su fecha de publicación.
+
+## Imágenes preparadas desde los originales locales
+
+Las imágenes fuente pueden guardarse junto al artículo. Ardo genera varias
+resoluciones AVIF y un JPEG de respaldo de hasta 1280 píxeles de ancho. Los
+archivos generados pertenecen a la compilación; el repositorio conserva los
+originales.
+
+La composición se mantiene salvo que se indiquen datos de encuadre. Las áreas
+centrales y preferidas opcionales permiten preparar recortes 16:10 y 4:3 que
+conservan el motivo. Los ajustes de presentación eligen el recorte mediante
+condiciones de medios en `picture`, y `srcset` permite al navegador elegir la
+resolución. El procesamiento es local, con Sharp y libvips.
+
+## El versionado tiene una tarea más concreta
+
+La dirección de un artículo sobre una versión debe mantenerse cuando la
+documentación pasa a la siguiente versión mayor. Lo mismo ocurre con la página
+de inicio de un proyecto.
+
+Con `versioning.directories`, un proyecto selecciona carpetas completas de
+documentación, como `guide` y `api-reference`. Sus páginas conservan prefijos de
+versión; todo lo demás queda independiente de la versión de la documentación.
+Los sitios existentes mantienen su comportamiento hasta activar esta opción.
+Este sitio ya la utiliza para separar inicio, noticias, guías y referencia de
+API.
+
+La versión también añade comprobaciones de actualizaciones en la CLI e
+informes de uso opcionales. Los informes requieren consentimiento explícito y
+son independientes de las comprobaciones de actualizaciones. Los comandos
+`ardo telemetry` permiten consultarlos y gestionarlos.
+
+La [guía de publicaciones](/es/guide/publications) explica autores, imágenes,
+feeds, localización y configuración. Los metadatos siguen los nombres de
+Standard.site cuando corresponde; la publicación en una cuenta de AT Protocol
+queda para más adelante. Las
+[notas de v6.1](https://github.com/sebastian-software/ardo/releases/tag/ardo-v6.1.0)
+contienen la lista completa de cambios.

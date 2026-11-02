@@ -8,7 +8,7 @@ test("a denied homepage copy offers a selected manual prompt", async ({ page }) 
     })
   })
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/v6/en/")
+  await page.goto("/en/")
   await page.getByRole("button", { name: "Copy prompt", exact: true }).click()
   await expect(page.getByRole("status")).toHaveText(
     "Copying failed. Copy the prompt below manually."

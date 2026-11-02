@@ -11,6 +11,8 @@ import {
   ArdoFooter,
   ArdoHeader,
   ArdoHeaderActions,
+  ArdoNav,
+  ArdoNavLink,
   ArdoSidebar,
   ArdoSidebarSection,
   ArdoGeneratedSidebar,
@@ -46,17 +48,17 @@ const theme: ArdoThemeProps = {
 export default function Root() {
   const locale = getI18n().locale
   const labels = translatedLabels()
-  const article = useArdoPath()
-    .replace(new RegExp(`^/${locale}/guide/?`), "")
-    .replace(/\/$/, "")
-  const guide = useArdoPath().startsWith(`/${locale}/guide`)
+  const pathname = useArdoPath()
+  const article = pathname.replace(new RegExp(`^/${locale}/guide/?`), "").replace(/\/$/, "")
+  const guide = pathname.startsWith(`/${locale}/guide`)
+  const reference = pathname.startsWith(`/${locale}/api-reference`)
   const editPattern = guide
     ? `https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/${article === "releases" ? "releases/index" : article}.mdx`
     : "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path"
   return (
     <ArdoRoot
       labels={labels}
-      components={{ wrapper: LocalizedContent }}
+      components={reference ? { wrapper: LocalizedContent } : undefined}
       theme={theme}
       logo={logo}
       editLink={{
@@ -69,6 +71,13 @@ export default function Root() {
       }}
     >
       <ArdoHeader searchPlaceholder={t`Search documentation...`}>
+        <ArdoNav>
+          <ArdoNavLink to={`/${locale}/guide/getting-started`} activeMatch={`^/${locale}/guide/`}>
+            {t`Guide`}
+          </ArdoNavLink>
+          <ArdoNavLink to={`/${locale}/api-reference`}>{t`API reference`}</ArdoNavLink>
+          <ArdoNavLink to={`/${locale}/news`}>{t`News`}</ArdoNavLink>
+        </ArdoNav>
         <ArdoHeaderActions>
           <ArdoSocialLink href="https://github.com/sebastian-software/ardo" icon="github" />
         </ArdoHeaderActions>

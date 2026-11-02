@@ -75,6 +75,16 @@ export default defineConfig({
       description:
         "React docs, baked into plain HTML. Ardo is a static site generator for React projects: guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time.",
       siteUrl: "https://ardo-docs.dev",
+      publication: {
+        from: "posts",
+        name: "Ardo News",
+        authors: {
+          swernerx: {
+            name: "Sebastian Werner",
+            url: "https://github.com/swernerx",
+          },
+        },
+      },
       i18n: {
         defaultLocale: "en",
         redirectUnlocalized: true,
@@ -87,6 +97,7 @@ export default defineConfig({
       },
       versioning: {
         current: "v6",
+        directories: ["guide", "api-reference"],
         versions: [
           { id: "v6", label: "6.x", path: "/v6/", locales: ["en", "de", "fr", "es"] },
           { id: "v5", label: "5.x", path: "/v5/", locales: [] },

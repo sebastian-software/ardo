@@ -480,6 +480,11 @@ msgstr "Navigationsmenü"
 msgid "need a hand?"
 msgstr "brauchst du Hilfe?"
 
+#: docs/app/i18n/messages.ts
+#: docs/app/root.tsx
+msgid "News"
+msgstr "Neuigkeiten"
+
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Next"
 msgstr "Weiter"

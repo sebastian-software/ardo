@@ -1,0 +1,81 @@
+---
+id: e26831f6-8a6f-45c9-9683-c51b25f88161
+title: "Ardo 6.1: Platz für Neuigkeiten"
+description: MDX-Artikel mit gemeinsamen Autorenprofilen, responsiven Bildern und vollständigen Feeds veröffentlichen und die Versionierung auf die Dokumentation konzentrieren.
+publishedAt: 2026-11-01T22:02:42Z
+authors: [swernerx]
+tags: [Releases]
+---
+
+Ein Projekt braucht einen Ort, an dem es neue Entwicklungen erklären kann. Ein
+Release verdient mehr Kontext als eine Commit-Liste, und eine technische
+Entscheidung kann weit über ihren Pull Request hinaus interessant sein.
+Ardo 6.1 gibt solchen Geschichten einen Platz neben der Dokumentation.
+
+Du liest gerade eine davon. Dieser News-Bereich verwendet dieselbe
+Publikationsfunktion, die jedem Ardo-Projekt zur Verfügung steht: Artikel
+liegen im Repository und werden als statische Seiten gebaut.
+
+## Beiträge bleiben beim Projekt
+
+Ein Artikel entsteht in Markdown oder MDX. Titel, Veröffentlichungsdatum,
+stabile ID und Autorenverweise stehen im Frontmatter. Ardo erzeugt daraus eine
+Seite und einen chronologischen Index. Gemeinsame Autorenprofile halten Namen,
+Porträts und Links an einer Stelle; ein Artikel kann mehrere Autoren nennen.
+
+Eine Publikation beginnt mit einem lokalen Quellverzeichnis und einem
+Autorenverzeichnis:
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My project",
+  siteUrl: "https://example.com",
+  publication: {
+    from: "posts",
+    authors: { team: { name: "Project team" } },
+  },
+})
+```
+
+Über Atom oder RSS erhalten Leser den vollständigen portablen Artikel. Braucht
+eine MDX-Komponente außerhalb der Website eine Erklärung, sorgt eine explizite
+Markdown-Fassung für einen brauchbaren Feed. Entwürfe und zukünftige Beiträge
+werden nicht veröffentlicht. Ein geplanter Beitrag wird bei einem Build ab
+seinem Veröffentlichungszeitpunkt berücksichtigt.
+
+## Bilder aus lokalen Originalen aufbereiten
+
+Quellbilder können neben dem Beitrag liegen. Ardo erzeugt responsive
+AVIF-Auflösungen und ein JPEG als Fallback mit höchstens 1280 Pixeln Breite. Die
+generierten Dateien gehören zum Build; im Repository bleiben die Originale.
+
+Ohne Angaben zum Bildausschnitt bleibt die Komposition erhalten. Optionale
+Kern- und Wunschbereiche ermöglichen Zuschnitte in 16:10 und 4:3, die das Motiv
+erhalten. Darstellungsvorlagen wählen den Ausschnitt über Media-Bedingungen am
+`picture`-Element; per `srcset` wählt der Browser die Auflösung. Die Verarbeitung
+läuft lokal mit Sharp und libvips.
+
+## Versionierung bekommt eine engere Aufgabe
+
+Die Adresse eines Release-Beitrags sollte sich nicht ändern, wenn die
+Dokumentation zur nächsten Hauptversion wechselt. Dasselbe gilt für die
+Startseite eines Projekts.
+
+Mit `versioning.directories` lassen sich ganze Dokumentationsordner auswählen,
+etwa `guide` und `api-reference`. Ihre Seiten behalten Versionspräfixe; alles
+außerhalb bleibt von der Dokumentationsversion unabhängig. Bestehende Websites
+behalten ihr bisheriges Verhalten, bis sie diese Option aktivieren. Diese
+Website nutzt die Trennung jetzt für Startseite, News, Guides und API-Referenz.
+
+Das Release ergänzt außerdem Update-Prüfungen in der CLI und eine optionale
+Nutzungsberichterstattung. Die Berichterstattung setzt eine ausdrückliche
+Zustimmung voraus und ist von Update-Prüfungen getrennt. Mit `ardo telemetry`
+lässt sie sich einsehen und verwalten.
+
+Der [Publikations-Guide](/de/guide/publications) erklärt Autoren, Bilder, Feeds,
+Lokalisierung und Einrichtung. Metadaten folgen, wo passend, den Namen von
+Standard.site. Das Veröffentlichen in ein AT-Protocol-Konto bleibt ein späterer
+Schritt. Die [Release Notes zu v6.1](https://github.com/sebastian-software/ardo/releases/tag/ardo-v6.1.0)
+enthalten die vollständige Änderungsliste.

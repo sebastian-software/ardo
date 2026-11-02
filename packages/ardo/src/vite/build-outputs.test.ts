@@ -161,6 +161,48 @@ describe("build outputs", () => {
     expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/docs/de" }))
   })
 
+  it("keeps locale migration redirects inside each route's version scope", () => {
+    const config = resolveConfig(
+      {
+        title: "Docs",
+        base: "/project/",
+        i18n: {
+          defaultLocale: "en",
+          redirectUnlocalized: true,
+          locales: [{ id: "en" }, { id: "de" }],
+        },
+        versioning: {
+          current: "v6",
+          versions: [{ id: "v6", path: "/v6/" }],
+          directories: ["guide"],
+        },
+      },
+      "/site"
+    )
+    const localizedEntries = ["/guide/start", "/news/release"].map((routePath) =>
+      entry(config, {
+        anchors: [],
+        content: "# Page",
+        filePath: `/site/app/routes/en${routePath}.md`,
+        frontmatter: { title: "Page" },
+        lastmod: new Date("2026-11-01"),
+        routePath,
+        source: "markdown",
+        sourceLocaleId: "en",
+      })
+    )
+    const redirects = collectRedirects(localizedEntries, config)
+    expect(redirects).toContainEqual({
+      from: "/project/v6/guide/start",
+      to: "/project/v6/en/guide/start",
+    })
+    expect(redirects).toContainEqual({
+      from: "/project/news/release",
+      to: "/project/en/news/release",
+    })
+    expect(redirects).not.toContainEqual(expect.objectContaining({ from: "/project/guide/start" }))
+  })
+
   it("uses the current version path for sitemap URLs", () => {
     const versionedConfig = resolveConfig(
       {

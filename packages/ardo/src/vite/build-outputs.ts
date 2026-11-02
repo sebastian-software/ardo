@@ -3,7 +3,7 @@ import type { RouteManifestEntry } from "./route-manifest"
 
 import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
 import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
-import { buildPublicPath } from "./route-identity"
+import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
 
 export { generateSitemap } from "./sitemap"
@@ -44,7 +44,7 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
       !config.i18n.locales.some(({ id }) => id === entry.routePath.split("/")[1])
     ) {
       redirects.push({
-        from: buildPublicPath({ basePath: config.base, routePath: entry.routePath }),
+        from: createCurrentRouteIdentity(entry.routePath, { ...config, i18n: false }).publicPath,
         to: entry.publicPath,
       })
     }
