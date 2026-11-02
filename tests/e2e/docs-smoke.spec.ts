@@ -218,6 +218,34 @@ test("native Markdown fences render visible line numbers and highlighted lines",
   expect.soft(highlightedStyles.borderLeftStyle).toBe("solid")
 })
 
+test("code lines keep a single horizontal gutter", async ({ page }) => {
+  for (const [path, selector] of [
+    [`${docsBasePath}/guide/markdown`, ".ardo-shiki pre"],
+    [`${docsBasePath}/guide/components`, "#gallery-code pre"],
+  ]) {
+    await page.goto(path)
+    const pre = page.locator(selector).first()
+    const line = pre.locator("code > span").first()
+    await expect(line).toBeVisible()
+    const gutter = await line.evaluate((element) => {
+      const pre = element.closest("pre")!
+      const preStyle = getComputedStyle(pre)
+      const lineStyle = getComputedStyle(element)
+      const text = element.querySelector("span")!
+      const range = document.createRange()
+      range.selectNodeContents(text)
+      return {
+        lineOffset: element.getBoundingClientRect().left - pre.getBoundingClientRect().left,
+        textOffset: range.getBoundingClientRect().left - pre.getBoundingClientRect().left,
+        padding: Number.parseFloat(preStyle.paddingLeft),
+        border: Number.parseFloat(lineStyle.borderLeftWidth),
+      }
+    })
+    expect.soft(gutter.lineOffset, path).toBeCloseTo(0)
+    expect.soft(gutter.textOffset, path).toBeCloseTo(gutter.padding + gutter.border)
+  }
+})
+
 test("consumer CSS overrides Ardo even before its stylesheet, on every page", async ({ page }) => {
   // Every document gets the override ahead of Ardo's stylesheet, as a site's own
   // CSS would arrive. Ardo's styles sit in a cascade layer, so order cannot matter.

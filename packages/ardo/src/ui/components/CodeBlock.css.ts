@@ -70,7 +70,7 @@ globalStyle(`${codeWrapper} pre code .line`, {
 
 export const codeLine = style({
   display: "block",
-  margin: `0 -${vars.space.md}`,
+  margin: `0 calc(-1 * ${vars.space.md})`,
   padding: `0 ${vars.space.md}`,
   borderLeft: "3px solid transparent",
   selectors: {
@@ -139,7 +139,7 @@ globalStyle(`${s} pre code`, {
 globalStyle(`${s} .line`, {
   display: "block",
   minHeight: "1lh",
-  margin: `0 -${vars.space.md}`,
+  margin: `0 calc(-1 * ${vars.space.md})`,
   padding: `0 ${vars.space.md}`,
   borderLeft: "3px solid transparent",
 })
