@@ -1,5 +1,27 @@
 import { expect, test } from "@playwright/test"
 
+test("failed inline search restores its query without opening an overlay", async ({ page }) => {
+  const errors: string[] = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.route("**/assets/search-index_locale_en-*.js", (route) => route.abort("failed"))
+  await page.goto("/v6/en/guide/getting-started/")
+  const input = page.getByRole("combobox", { name: "Search", exact: true })
+  await input.fill("markdown")
+  const reload = page.getByRole("button", { name: "Reload search", exact: true })
+  await expect(reload).toBeVisible()
+  await page.unroute("**/assets/search-index_locale_en-*.js")
+  await Promise.all([page.waitForEvent("load"), reload.click()])
+
+  await expect(page.getByRole("dialog", { name: "Search", exact: true })).toBeHidden()
+  await expect(input).toHaveValue("markdown")
+  await expect(input).toBeFocused()
+  await expect(
+    page.getByRole("listbox", { name: "Search results" }).getByRole("option").first()
+  ).toBeVisible()
+  expect(errors).toEqual([])
+})
+
 test("failed search recovers by reloading once and keeps short-viewport results visible", async ({
   page,
 }) => {

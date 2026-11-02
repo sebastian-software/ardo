@@ -273,3 +273,33 @@ test("mobile navigation retains usable controls and wrapping breadcrumbs with en
   await expect(menu).toBeHidden()
   await expect(toggle).toBeFocused()
 })
+
+test("cards wrap long titles and descriptions within narrow columns", async ({ page }) => {
+  const card = page
+    .getByRole("link")
+    .filter({ has: page.locator("h3") })
+    .first()
+  await card.evaluate((element) => {
+    const heading = element.querySelector("h3")
+    const paragraph = element.querySelector("p")
+    if (!heading || !paragraph) throw new Error("Expected the gallery's linked card")
+    heading.textContent = "@example/documentation-runtime-with-an-unbroken-package-identifier"
+    paragraph.textContent = "https://example.test/documentation/" + "long-path-segment".repeat(12)
+  })
+  for (const width of [320, 390, 720, 1440]) {
+    await page.setViewportSize({ width, height: 844 })
+    const bounds = await card.evaluate((element) => ({
+      left: element.getBoundingClientRect().left,
+      right: element.getBoundingClientRect().right,
+      widths: [element, ...element.querySelectorAll("h3, p")].map((node) => ({
+        client: node.clientWidth,
+        scroll: node.scrollWidth,
+      })),
+    }))
+    expect(bounds.left).toBeGreaterThanOrEqual(0)
+    expect(bounds.right).toBeLessThanOrEqual(width)
+    for (const measured of bounds.widths) {
+      expect(measured.scroll).toBeLessThanOrEqual(measured.client + 1)
+    }
+  }
+})
