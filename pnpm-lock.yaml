@@ -4173,8 +4173,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  follow-redirects@1.16.1:
-    resolution: {integrity: sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==}
+  follow-redirects@1.16.2:
+    resolution: {integrity: sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -9261,7 +9261,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  follow-redirects@1.16.1(debug@4.4.3(supports-color@9.4.0)):
+  follow-redirects@1.16.2(debug@4.4.3(supports-color@9.4.0)):
     optionalDependencies:
       debug: 4.4.3(supports-color@9.4.0)
 
@@ -9432,7 +9432,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@9.4.0)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.1(debug@4.4.3(supports-color@9.4.0))
+      follow-redirects: 1.16.2(debug@4.4.3(supports-color@9.4.0))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
