@@ -37,7 +37,7 @@ export const cardGroup = style({
       gridTemplateColumns: "repeat(min(var(--ardo-card-cols, 2), 2), minmax(0, 1fr))",
     },
     "(max-width: 640px)": {
-      gridTemplateColumns: "1fr",
+      gridTemplateColumns: "minmax(0, 1fr)",
     },
   },
 })
@@ -46,6 +46,8 @@ export const card = style({
   display: "flex",
   flexDirection: "column",
   minHeight: "100%",
+  minWidth: 0,
+  overflowWrap: "anywhere",
   padding: "18px",
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.lg,
@@ -117,6 +119,8 @@ export const cardIcon = style({
 
 export const cardTitle = style({
   margin: 0,
+  minWidth: 0,
+  overflowWrap: "anywhere",
   fontSize: "16px",
   fontWeight: 600,
   letterSpacing: "-0.01em",
