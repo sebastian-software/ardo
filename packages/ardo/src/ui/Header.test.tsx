@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -47,7 +47,9 @@ describe("ArdoHeader page state", () => {
     render(<HeaderPage path="/start" />)
 
     const dialog = await screen.findByRole("dialog", { name: "Search" })
-    expect(document.activeElement).toBe(within(dialog).getByLabelText("Search input"))
+    await waitFor(() => {
+      expect(document.activeElement).toBe(within(dialog).getByLabelText("Search input"))
+    })
   })
 
   it("shows and initially focuses the site title when the mobile drawer has no logo", async () => {
