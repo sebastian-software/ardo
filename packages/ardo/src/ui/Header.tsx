@@ -164,6 +164,7 @@ export function ArdoHeader({
 
   const resolvedLogo = logo ?? siteLogo
   const resolvedTitle = title ?? config.title
+  const homeLabel = resolvedTitle || labels.mobilePanel.home
   const hasMobileMenu = useHasMobileMenu([mobileMenuContent, nav, actions], themeToggle)
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
@@ -194,8 +195,8 @@ export function ArdoHeader({
                 <ChromeIcon name="menu" />
               </button>
             )}
-            <ArdoLink to={homePath} className={styles.logoLink}>
-              {resolvedLogo !== undefined && <HeaderLogo logo={resolvedLogo} alt={resolvedTitle} />}
+            <ArdoLink to={homePath} className={styles.logoLink} aria-label={homeLabel}>
+              {resolvedLogo !== undefined && <HeaderLogo logo={resolvedLogo} alt="" />}
               {resolvedTitle !== "" && <span className={styles.siteTitle}>{resolvedTitle}</span>}
             </ArdoLink>
           </div>

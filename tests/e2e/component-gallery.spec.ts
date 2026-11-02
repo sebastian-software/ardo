@@ -223,3 +223,39 @@ for (const theme of ["light", "dark"] as const) {
     ).toHaveCSS("font-size", "16px")
   })
 }
+
+test("mobile navigation retains usable controls and wrapping breadcrumbs with enlarged text", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.evaluate(() => {
+    document.documentElement.style.fontSize = "200%"
+  })
+  const breadcrumb = page.getByRole("navigation", { name: "Breadcrumb", exact: true })
+  await expect(breadcrumb).toBeVisible()
+  const bounds = await breadcrumb.evaluate((element) =>
+    [...element.querySelectorAll("span")].map((span) => {
+      const rect = span.getBoundingClientRect()
+      return { left: rect.left, right: rect.right }
+    })
+  )
+  for (const rect of bounds) {
+    expect(rect.left).toBeGreaterThanOrEqual(0)
+    expect(rect.right).toBeLessThanOrEqual(320)
+  }
+  const toggle = page.getByRole("button", { name: "Toggle menu", exact: true })
+  const toggleBox = await toggle.boundingBox()
+  expect(toggleBox?.width).toBeGreaterThanOrEqual(44)
+  expect(toggleBox?.height).toBeGreaterThanOrEqual(44)
+  await toggle.focus()
+  await page.keyboard.press("Enter")
+  const menu = page.getByRole("dialog", { name: /navigation menu/ })
+  await expect(menu).toBeVisible()
+  const close = menu.getByRole("button", { name: "Close menu", exact: true })
+  const closeBox = await close.boundingBox()
+  expect(closeBox?.width).toBeGreaterThanOrEqual(44)
+  expect(closeBox?.height).toBeGreaterThanOrEqual(44)
+  await page.keyboard.press("Escape")
+  await expect(menu).toBeHidden()
+  await expect(toggle).toBeFocused()
+})

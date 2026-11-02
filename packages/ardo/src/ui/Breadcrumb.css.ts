@@ -5,6 +5,9 @@ import { vars } from "./theme/contract.css"
 export const breadcrumb = style({
   display: "none",
   alignItems: "center",
+  flexWrap: "wrap",
+  minWidth: 0,
+  overflowWrap: "anywhere",
   gap: vars.space.sm,
   fontSize: vars.fontSize.sm,
   color: vars.color.textLighter,
@@ -17,6 +20,7 @@ export const breadcrumb = style({
 })
 
 export const breadcrumbSeparator = style({
+  flexShrink: 0,
   display: "inline-flex",
   color: vars.color.textLighter,
   transform: "rotate(-90deg)",

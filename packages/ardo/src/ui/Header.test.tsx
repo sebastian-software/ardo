@@ -30,6 +30,18 @@ function HeaderPage({ path }: { path: string }) {
 }
 
 describe("ArdoHeader page state", () => {
+  it("names the home link once when both a logo and a site title are visible", () => {
+    render(
+      <ArdoPageProvider>
+        <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
+          <ArdoHeader logo="/logo.svg" search={false} themeToggle={false} />
+        </ArdoProvider>
+      </ArdoPageProvider>
+    )
+    const home = within(screen.getByRole("banner")).getByRole("link", { name: "Docs" })
+    expect(home.querySelector("img")?.getAttribute("alt")).toBe("")
+  })
+
   it("reopens and focuses the search dialog for a pending reload query", async () => {
     vi.mocked(getSearchRecoveryQuery).mockReturnValueOnce("install")
     render(<HeaderPage path="/start" />)
