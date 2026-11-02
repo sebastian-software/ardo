@@ -83,6 +83,10 @@ msgstr ""
 "También compila con Rust, sobre Rspack. Ardo usa Vite y lee tu TypeScript."
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "All articles"
+msgstr "Todos los artículos"
+
+#: docs/app/i18n/labels.ts#translatedLabels
 #: docs/app/root.tsx
 msgid "API reference"
 msgstr "Referencia de la API"
@@ -441,6 +445,10 @@ msgstr "Idioma"
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Last updated"
 msgstr "Última actualización"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Latest articles"
+msgstr "Últimos artículos"
 
 #: docs/app/i18n/messages.ts
 msgid "Latest release"

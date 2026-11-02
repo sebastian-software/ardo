@@ -10,6 +10,8 @@ export function translatedLabels(): ArdoLabels {
       or: t`or`,
       updated: t`Updated`,
       noPosts: t`No posts yet.`,
+      recentPosts: t`Latest articles`,
+      allPosts: t`All articles`,
     },
     page: {
       edit: t`Edit this page`,

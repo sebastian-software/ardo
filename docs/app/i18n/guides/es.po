@@ -8201,6 +8201,23 @@ msgid ""
 msgstr ""
 "Usa <0/> para el índice y los componentes laterales normales para navegar."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Use <0/> from <1/> for compact article navigation. Pass the current locale's "
+"publication to it through <2/>'s <3/> prop to populate a news page's mobile "
+"menu. It shows the ten newest published articles by default, highlights the "
+"current page, and links to the complete publication index through \"All "
+"articles\". Set <4/> to change the recent list length. Translate <5/> and <6/>"
+" alongside the other publication labels."
+msgstr ""
+"Utiliza <0/> de <1/> para una navegación compacta entre artículos. Pasa la "
+"publicación del idioma actual mediante la prop <3/> de <2/> para completar el"
+" menú móvil de una página de noticias. El componente muestra los diez "
+"artículos publicados más recientes por defecto, destaca la página actual y "
+"enlaza al índice completo de la publicación mediante «Todos los "
+"artículos». Define <4/> para cambiar la longitud de la lista. Traduce <5/> y"
+" <6/> junto con las demás etiquetas de publicación."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
 "Use <0/> from <1/> for the active locale, including during server rendering. "

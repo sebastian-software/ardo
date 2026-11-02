@@ -84,6 +84,10 @@ msgstr ""
 "TypeScript."
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "All articles"
+msgstr "Tous les articles"
+
+#: docs/app/i18n/labels.ts#translatedLabels
 #: docs/app/root.tsx
 msgid "API reference"
 msgstr "Référence API"
@@ -441,6 +445,10 @@ msgstr "Langue"
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Last updated"
 msgstr "Dernière mise à jour"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Latest articles"
+msgstr "Articles récents"
 
 #: docs/app/i18n/messages.ts
 msgid "Latest release"

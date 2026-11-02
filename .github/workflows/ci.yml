@@ -79,7 +79,7 @@ jobs:
 
       - name: Install Playwright browsers
         if: matrix.node-version == '24'
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Run browser tests
         if: matrix.node-version == '24'
