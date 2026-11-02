@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.1.2](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.1...ardo-v6.1.2) (2026-11-02)
+
+
+### Tests
+
+* include recovered search focus fix ([f71526e](https://github.com/sebastian-software/ardo/commit/f71526ed4462f1b2bee3850bea3f9ff8b86dcd95))
+* include recovered search focus fix ([1052fc6](https://github.com/sebastian-software/ardo/commit/1052fc68812926e1f977237b1dee66d4f6c17456))
+* wait for recovered search focus ([8f8085f](https://github.com/sebastian-software/ardo/commit/8f8085f0f8cde7cd10f8f35eef552d17178b5251))
+
 ## [6.1.1](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.0...ardo-v6.1.1) (2026-11-02)
 
 
