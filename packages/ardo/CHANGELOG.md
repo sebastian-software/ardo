@@ -1,5 +1,20 @@
 # Changelog
 
+## [6.1.1](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.0...ardo-v6.1.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* improve mobile news navigation and language controls ([4669743](https://github.com/sebastian-software/ardo/commit/4669743c16c9a4818b31d909d9740002a575a727))
+* improve navigation semantics and mobile reflow ([cb4ad2e](https://github.com/sebastian-software/ardo/commit/cb4ad2ecc15735e0f770deb5455687e095aff4a3))
+* keep long card text within responsive columns ([878a8a0](https://github.com/sebastian-software/ardo/commit/878a8a0019112e523e5bc5ed2cf2e8c6c2f00dd4))
+* keep mobile navigation and syntax comments readable ([8c70526](https://github.com/sebastian-software/ardo/commit/8c705261b9493c38b926b031329ddca7c36f5937))
+
+
+### Documentation
+
+* launch the news area with v6 and v6.1 release posts ([#444](https://github.com/sebastian-software/ardo/issues/444)) ([e71a9fe](https://github.com/sebastian-software/ardo/commit/e71a9fef063fdef4c6beac7566a29b47cd91439b))
+
 ## [6.1.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.0.0...ardo-v6.1.0) (2026-11-01)
 
 
