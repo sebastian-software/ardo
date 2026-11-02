@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.2...ardo-v6.2.0) (2026-11-02)
+
+
+### Features
+
+* adapt the shared page frame for desktop docs ([7b68c09](https://github.com/sebastian-software/ardo/commit/7b68c0963a5da559b9060f7f4347dd293df4d2d1))
+* share a page frame across layouts ([82710f4](https://github.com/sebastian-software/ardo/commit/82710f4b384a025b52f63210195f120842aa8edd))
+
+
+### Bug Fixes
+
+* remove doubled code block indentation ([51df4f4](https://github.com/sebastian-software/ardo/commit/51df4f4ee4e5f72b8703795724bd428c9b4208ad))
+
 ## [6.1.2](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.1...ardo-v6.1.2) (2026-11-02)
 
 
