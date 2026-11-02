@@ -315,8 +315,8 @@ importers:
         specifier: 'catalog:'
         version: 1.21.3
       ferromark:
-        specifier: ^3.5.1
-        version: 3.6.0
+        specifier: ^3.7.0
+        version: 3.7.0
       oxc-parser:
         specifier: 'catalog:'
         version: 0.156.0
@@ -346,8 +346,8 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@ferriki/core':
-        specifier: ^1.1.2
-        version: 1.2.0
+        specifier: ^1.3.0
+        version: 1.3.0
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -379,8 +379,8 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferromark:
-        specifier: ^3.5.1
-        version: 3.6.0
+        specifier: ^3.7.0
+        version: 3.7.0
       minisearch:
         specifier: ^7.2.0
         version: 7.2.0
@@ -1194,53 +1194,53 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@ferriki/core@1.2.0':
-    resolution: {integrity: sha512-GksvoIe8xuPjWLh0h0U78bKfxDkEr6x5qdtK6y7Dq5h9ILV23AaIPMkbfptHFq/7WXKV/rjpmZ3eE9k3X8+86Q==}
+  '@ferriki/core@1.3.0':
+    resolution: {integrity: sha512-XX/sK9lyOaW5ZaJf6H/EMCZGECg13mC0n/crIq2glXOG1H64QorAr0cjhD0yFHFQhSDUG09RwakU/B0bZHGBkg==}
     engines: {node: '>=22.13.0'}
     hasBin: true
 
-  '@ferriki/darwin-arm64@1.2.0':
-    resolution: {integrity: sha512-KLZHEr99M+TJaUAtv+F97M0a8X1wBFfAUbXWzq5+lr0LZq/wiJWqCyf0ff6RkBKBjRUbO7xeLStYAjNEu6C82w==}
+  '@ferriki/darwin-arm64@1.3.0':
+    resolution: {integrity: sha512-naOJK/I/dqrg+jFRRh0Lp1RM8eW7q+8znLuzyRN1t7hxDIAQP5fLjt4MwVM7MbUnxSL3jeA0Kr4mt9vViztbug==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferriki/linux-arm64-gnu@1.2.0':
-    resolution: {integrity: sha512-P8YISTEB8SNwHjzm2DZEG2Vqw/ijY0mCZnEwLHf53qyldt5IIio/zjDsQw4V1xnSdJYO/mTW2qWtsx7KAx1/Tw==}
+  '@ferriki/linux-arm64-gnu@1.3.0':
+    resolution: {integrity: sha512-4IleQS3YnEOT0pG6PmdWmlKYCD3ybV01sqeblzLmpRJ6ghTIAgYJ5t1rbHqAbDF5qTOtwP8456EUCd4oN6vWeQ==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-arm64-musl@1.2.0':
-    resolution: {integrity: sha512-1e5htyVuo+DRfQsH0xRTRk0a9JBYT4J8dfa3sBketsYPcC7hA7T5LDaEZ9a0cuwjeyqmKDbpY9j1vSV8YEU5CA==}
+  '@ferriki/linux-arm64-musl@1.3.0':
+    resolution: {integrity: sha512-XsRqKCp0WsVaJR+32Cc6MDzRR9lgr3iaTdkSJffRKfSZX2HjXwR4FgTTuqiznkAdZMqOt48Hz6vMATRP8cCzag==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/linux-x64-gnu@1.2.0':
-    resolution: {integrity: sha512-9ww6lk7STC5MKZBMvMD5y2T+3vSjER2fdlIF5k/C6uwislwsojlJV8j7oacRNn/mP+hHNyxsJQPKwB/2hBz4dw==}
+  '@ferriki/linux-x64-gnu@1.3.0':
+    resolution: {integrity: sha512-alDlNZSHg6qemjZ1WQin+YYejcojh1yshDY/dqU26Vs4WkB8iEjiAxWhpVVAzWZcj1vhnTZcZIGgNsSpTKx5lw==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferriki/linux-x64-musl@1.2.0':
-    resolution: {integrity: sha512-i9gMRySZznxwW5jFM9pVJCIC5GxanaM7vtiMGduEvuvdsFA0pn5RBtEvtU38TNg9zJ5awFjnm+0mWVdwBzGsMA==}
+  '@ferriki/linux-x64-musl@1.3.0':
+    resolution: {integrity: sha512-/itTD/N6OnUhMGwHD0FKf8EjIHmwQOnoUGNSmwUX744uAlk7jvxbC3MwL70wxkI3efHfUu2xKVN6s0cWSRWNQA==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferriki/win32-arm64-msvc@1.2.0':
-    resolution: {integrity: sha512-0JreLCLl3K2u3OTQ1YGQxdsFSLuazVN1HVhq6JWFnzfa42M9zeQ+kHruwHEvPadoxlX1dNnJEaSb4amXYKUT3g==}
+  '@ferriki/win32-arm64-msvc@1.3.0':
+    resolution: {integrity: sha512-K9wGVrNnOGZNbODqXYLef6y0kVgmhlIVvCJcJwnKJRtIT4CCfiForDZVEPgtoRVi53JzZUQISykHtEcDt/1zKQ==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@ferriki/win32-x64-msvc@1.2.0':
-    resolution: {integrity: sha512-ZvgJwJ9XG+SOq9mrO089xebMabXunFpSAgRyqR3xnaeh9CpkgUnxSHbseq5L7pM8cQ2n3tyYVeHVx1ISw2qkxQ==}
+  '@ferriki/win32-x64-msvc@1.3.0':
+    resolution: {integrity: sha512-52FefKGrMgG84Xjg4K5AYLWaHLgCtRDa5xg8GwCdHLLDVhMza0nF6XVItxzCuJT515XymCe52p0Alw+GSEx/Sg==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [win32]
@@ -3993,54 +3993,54 @@ packages:
       vite:
         optional: true
 
-  ferromark-darwin-arm64@3.6.0:
-    resolution: {integrity: sha512-BpZzP66jD5z09mL60l0RgH8kJjISTbpBUTPbjQGYAwhW8coyxl4qeewzeXfduAmDpiYftKsT0wdw4jL6EN/DEQ==}
+  ferromark-darwin-arm64@3.7.0:
+    resolution: {integrity: sha512-qN6WG8SIz4njau5/HTresVihVIL4eHQyYZNwFhoB/XTD9lQrlmgmaBrpS4WmwG9+B/irdk9Cjy+mdL9VrKJR9g==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [darwin]
 
-  ferromark-linux-arm64-gnu@3.6.0:
-    resolution: {integrity: sha512-LG9HsjATmwamH59j9BiOlaCiqJU+CSQiGqpmKJGaffZL10KuGgRdB9GKr9Qlu1sU79T/WlDjjb0Lo5s2nQpVgA==}
+  ferromark-linux-arm64-gnu@3.7.0:
+    resolution: {integrity: sha512-SljkYBoa9VWPiDWUVI/GOcG1iVBuOo1CCTTZGwdoa2F7bAgyQOEfNfVWsyZo2xn9trq7nnI2NmntKb/ZloTFvA==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-arm64-musl@3.6.0:
-    resolution: {integrity: sha512-5xtvc1KBGZOipNmmAIAudPP2UDZwz+cUeEsEpxOLtMthz/mGh9cK204ejln3JZd63AExnv8WMqFOBpdS85udgA==}
+  ferromark-linux-arm64-musl@3.7.0:
+    resolution: {integrity: sha512-3qlmX8OgfQsGNOzwd4A94keg3Dv/TG5HJ9jjU5Cxnv8UVa/FtQlOk84QZdC94CyRhiQqLwkUTRfDbWFf4V7xXw==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  ferromark-linux-x64-gnu@3.6.0:
-    resolution: {integrity: sha512-9ZnzoLMkYSsbR1U2iyFDfmGmnt7ZcwtXzIz+bYp+hYOiCLTmIVm/Bdj61AdRKxy9yC2577vMCl9Los74Iy/Ssg==}
+  ferromark-linux-x64-gnu@3.7.0:
+    resolution: {integrity: sha512-fAhwTzV0LefYTy9W5Ang9EIhXaXesH8vWPKpPntyzNHSORROivSBb0KEGYA5ckezJCs3vDSU+K9DBwtwC6X+CQ==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  ferromark-linux-x64-musl@3.6.0:
-    resolution: {integrity: sha512-KM4qA1TBdMBE+clcbeZbRRAlhsExGroCO7kJ7N6FDoKjoQawRF9jSE/3EWSuR71hngUG/HF0XJVWUGrdzB2cJg==}
+  ferromark-linux-x64-musl@3.7.0:
+    resolution: {integrity: sha512-gN9PlX66+W05r5H3h5cNV6UrvSNupx/LxynpNUc2KkFS6XC+4F3u6OxW3+HxmsB5WZnvSZka6/gC00qrNm/+qQ==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  ferromark-win32-arm64-msvc@3.6.0:
-    resolution: {integrity: sha512-6RApVuhVjR+lB8X1JRo44sEvjbKnsPReJZkJNRq14+Khmsjtkd8QtJXYLgSsulkmoGwNL4zEyDqhSJ81OfXSkg==}
+  ferromark-win32-arm64-msvc@3.7.0:
+    resolution: {integrity: sha512-Cw6M1bQtsvaxrknPUSZPuzgOQT7aJU6U2Wd/Zq8Lf5tIUNqJ2ESNy9PXoIHprrMqrZaf7YQjo+ii/vWr7speaw==}
     engines: {node: '>=22.12.0'}
     cpu: [arm64]
     os: [win32]
 
-  ferromark-win32-x64-msvc@3.6.0:
-    resolution: {integrity: sha512-9+sscpIU9GEbPjUKPY57kRUdwMuRWAH2KisbxtNkw2Hc6KFx9xS/KF4AQ3EgYD3PtWBTvSpRiYNMNKJ93Rq2RA==}
+  ferromark-win32-x64-msvc@3.7.0:
+    resolution: {integrity: sha512-JwUmTmSqehJeYibbudvtxgqc5Fxk2vBlx0nT9eGNtAZsEVfA5PrhCZqMq9IISyaBHWHl+ZRUWgranLoUrOmmnQ==}
     engines: {node: '>=22.12.0'}
     cpu: [x64]
     os: [win32]
 
-  ferromark@3.6.0:
-    resolution: {integrity: sha512-qXs6iXFVsi8e4aZreew+HfgOBVmMGKsKfZX+QF5sboj96UBEizbgAl2qEQM+ogVG3n7iFaRirhWn6QDz2azaKg==}
+  ferromark@3.7.0:
+    resolution: {integrity: sha512-cHXt+rc97cdvIxqaSm8knF4qrzxioGP1RjHCBjkzUdOKje7tckYyEE6zpuYyhGxmwyHjS10rynJ8d8/Qcij+rQ==}
     engines: {node: '>=22.12.0'}
 
   find-up-simple@1.0.1:
@@ -4051,8 +4051,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  follow-redirects@1.16.1:
-    resolution: {integrity: sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==}
+  follow-redirects@1.16.2:
+    resolution: {integrity: sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -6578,35 +6578,35 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@ferriki/core@1.2.0':
+  '@ferriki/core@1.3.0':
     optionalDependencies:
-      '@ferriki/darwin-arm64': 1.2.0
-      '@ferriki/linux-arm64-gnu': 1.2.0
-      '@ferriki/linux-arm64-musl': 1.2.0
-      '@ferriki/linux-x64-gnu': 1.2.0
-      '@ferriki/linux-x64-musl': 1.2.0
-      '@ferriki/win32-arm64-msvc': 1.2.0
-      '@ferriki/win32-x64-msvc': 1.2.0
+      '@ferriki/darwin-arm64': 1.3.0
+      '@ferriki/linux-arm64-gnu': 1.3.0
+      '@ferriki/linux-arm64-musl': 1.3.0
+      '@ferriki/linux-x64-gnu': 1.3.0
+      '@ferriki/linux-x64-musl': 1.3.0
+      '@ferriki/win32-arm64-msvc': 1.3.0
+      '@ferriki/win32-x64-msvc': 1.3.0
 
-  '@ferriki/darwin-arm64@1.2.0':
+  '@ferriki/darwin-arm64@1.3.0':
     optional: true
 
-  '@ferriki/linux-arm64-gnu@1.2.0':
+  '@ferriki/linux-arm64-gnu@1.3.0':
     optional: true
 
-  '@ferriki/linux-arm64-musl@1.2.0':
+  '@ferriki/linux-arm64-musl@1.3.0':
     optional: true
 
-  '@ferriki/linux-x64-gnu@1.2.0':
+  '@ferriki/linux-x64-gnu@1.3.0':
     optional: true
 
-  '@ferriki/linux-x64-musl@1.2.0':
+  '@ferriki/linux-x64-musl@1.3.0':
     optional: true
 
-  '@ferriki/win32-arm64-msvc@1.2.0':
+  '@ferriki/win32-arm64-msvc@1.3.0':
     optional: true
 
-  '@ferriki/win32-x64-msvc@1.2.0':
+  '@ferriki/win32-x64-msvc@1.3.0':
     optional: true
 
   '@ferrolink/darwin-arm64@0.2.1':
@@ -9040,36 +9040,36 @@ snapshots:
       '@ferrolink/win32-x64-msvc': 0.2.1
       vite: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
-  ferromark-darwin-arm64@3.6.0:
+  ferromark-darwin-arm64@3.7.0:
     optional: true
 
-  ferromark-linux-arm64-gnu@3.6.0:
+  ferromark-linux-arm64-gnu@3.7.0:
     optional: true
 
-  ferromark-linux-arm64-musl@3.6.0:
+  ferromark-linux-arm64-musl@3.7.0:
     optional: true
 
-  ferromark-linux-x64-gnu@3.6.0:
+  ferromark-linux-x64-gnu@3.7.0:
     optional: true
 
-  ferromark-linux-x64-musl@3.6.0:
+  ferromark-linux-x64-musl@3.7.0:
     optional: true
 
-  ferromark-win32-arm64-msvc@3.6.0:
+  ferromark-win32-arm64-msvc@3.7.0:
     optional: true
 
-  ferromark-win32-x64-msvc@3.6.0:
+  ferromark-win32-x64-msvc@3.7.0:
     optional: true
 
-  ferromark@3.6.0:
+  ferromark@3.7.0:
     optionalDependencies:
-      ferromark-darwin-arm64: 3.6.0
-      ferromark-linux-arm64-gnu: 3.6.0
-      ferromark-linux-arm64-musl: 3.6.0
-      ferromark-linux-x64-gnu: 3.6.0
-      ferromark-linux-x64-musl: 3.6.0
-      ferromark-win32-arm64-msvc: 3.6.0
-      ferromark-win32-x64-msvc: 3.6.0
+      ferromark-darwin-arm64: 3.7.0
+      ferromark-linux-arm64-gnu: 3.7.0
+      ferromark-linux-arm64-musl: 3.7.0
+      ferromark-linux-x64-gnu: 3.7.0
+      ferromark-linux-x64-musl: 3.7.0
+      ferromark-win32-arm64-msvc: 3.7.0
+      ferromark-win32-x64-msvc: 3.7.0
 
   find-up-simple@1.0.1: {}
 
@@ -9078,7 +9078,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  follow-redirects@1.16.1(debug@4.4.3(supports-color@9.4.0)):
+  follow-redirects@1.16.2(debug@4.4.3(supports-color@9.4.0)):
     optionalDependencies:
       debug: 4.4.3(supports-color@9.4.0)
 
@@ -9249,7 +9249,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@9.4.0)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.1(debug@4.4.3(supports-color@9.4.0))
+      follow-redirects: 1.16.2(debug@4.4.3(supports-color@9.4.0))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
