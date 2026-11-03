@@ -7150,6 +7150,14 @@ msgstr ""
 msgid "Saturation"
 msgstr "Saturation"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. <0>Read the banner "
+"options</0>."
+msgstr ""
+"Maintenance planifiée samedi de 08 h à 10 h UTC. <0>Consulter les options du"
+" bandeau</0>."
+
 #: docs/app/content/guide/content-sources.mdx
 msgid "Schema-Backed Collections"
 msgstr "Collections avec schéma"
@@ -9340,9 +9348,10 @@ msgstr "Vérifier la migration"
 msgid "Version"
 msgstr "Version"
 
-#: docs/app/content/guide/components.mdx
-msgid "Version 7 is in beta. <0>Read the banner options</0>."
-msgstr "La version 7 est en bêta. <0>Consulter les options du bandeau</0>."
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid "Version 7 is in beta. <0>Read the banner options</0>."
+#~ msgstr "La version 7 est en bêta. <0>Consulter les options du bandeau</0>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Version controls"

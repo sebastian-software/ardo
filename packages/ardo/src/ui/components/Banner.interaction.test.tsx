@@ -32,6 +32,23 @@ describe("ArdoPageBanner dismissal", () => {
     expect(localStorage.getItem(storageKey)).toBe("1")
   })
 
+  it("moves focus to the main content after dismissal instead of the document body", async () => {
+    const user = userEvent.setup()
+    render(
+      <main id="main-content" tabIndex={-1}>
+        <ArdoPageBanner
+          banner={{ content: "Maintenance tonight", dismissible: true, id: "release-7" }}
+        />
+      </main>
+    )
+
+    await user.click(screen.getByRole("button", { name: "Dismiss banner" }))
+
+    expect(screen.queryByText("Maintenance tonight")).toBeNull()
+    expect(document.activeElement).not.toBe(document.body)
+    expect(document.activeElement).toBe(document.getElementById("main-content"))
+  })
+
   it("stays hidden on later renders when the id was dismissed before", () => {
     localStorage.setItem(storageKey, "1")
 

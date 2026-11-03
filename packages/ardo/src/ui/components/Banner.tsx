@@ -44,6 +44,14 @@ function writeDismissed(id: string): void {
   }
 }
 
+/**
+ * Moves focus to the page's main content, the skip-link target, before the close button
+ * unmounts. Otherwise focus falls back to the document body.
+ */
+function focusMainContent(): void {
+  globalThis.document.getElementById("main-content")?.focus({ preventScroll: true })
+}
+
 // The stores below never change while the page is open, so nothing subscribes to them.
 function subscribeNever(): () => void {
   return () => {
@@ -78,7 +86,7 @@ function BannerFrame({
  *
  * @example
  * ```mdx
- * <Banner variant="warning">Version 7 is in beta. Report issues on GitHub.</Banner>
+ * <Banner variant="warning">Scheduled maintenance on Saturday from 08:00 to 10:00 UTC.</Banner>
  * ```
  */
 export function ArdoBanner({ variant = "info", className, children }: ArdoBannerProps) {
@@ -120,6 +128,7 @@ export function ArdoPageBanner({ banner }: { banner: PageBannerConfig }) {
         aria-label={labels.banner.dismiss}
         onClick={() => {
           writeDismissed(dismissId)
+          focusMainContent()
           setDismissedHere(true)
         }}
       >

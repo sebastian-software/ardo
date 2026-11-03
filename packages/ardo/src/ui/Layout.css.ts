@@ -37,6 +37,13 @@ export const withHeader = style({
   paddingTop: vars.layout.headerHeight,
 })
 
+// Focus moves here programmatically, so the page does not draw a ring around the whole content.
+export const mainTarget = style({
+  selectors: {
+    "&:focus": { outline: "none" },
+  },
+})
+
 export const main = style({
   flex: 1,
   minWidth: 0,

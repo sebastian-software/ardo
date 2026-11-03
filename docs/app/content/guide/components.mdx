@@ -51,14 +51,20 @@ The same variants are available as [GitHub-style alerts](/en/guide/markdown#call
 `Banner` shows a notice at the top of a page, such as a release or a maintenance window. Its `variant` uses the same colors as the callout of that name. Its content can include formatting and links. The banner is static, so it needs no JavaScript. To show a dismissible banner from frontmatter instead, see [Frontmatter](/en/guide/frontmatter#banner).
 
 <GalleryPreview id="gallery-banner" label="Banner example" framed={false}>
-  <Banner variant="warning">
-    Version 7 is in beta. <a href="/en/guide/frontmatter#banner">Read the banner options</a>.
-  </Banner>
+
+<Banner variant="warning">
+
+Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. [Read the banner options](/en/guide/frontmatter#banner).
+
+</Banner>
+
 </GalleryPreview>
 
 ```mdx
 <Banner variant="warning">
-  Version 7 is in beta. [Read the banner options](/en/guide/frontmatter#banner).
+
+Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. [Read the banner options](/en/guide/frontmatter#banner).
+
 </Banner>
 ```
 
