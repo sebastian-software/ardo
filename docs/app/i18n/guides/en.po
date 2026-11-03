@@ -372,6 +372,16 @@ msgstr ""
 "supplied as JSX children. It is the part of the page that hydrates in the "
 "browser."
 
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
+"<0/> prints a Markdown recipe for one common change. The recipes ship inside "
+"the installed package, so they match its version. Run <1/> to list them and "
+"<2/> to print one. The command writes no files; hand its output to your agent."
+msgstr ""
+"<0/> prints a Markdown recipe for one common change. The recipes ship inside "
+"the installed package, so they match its version. Run <1/> to list them and "
+"<2/> to print one. The command writes no files; hand its output to your agent."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "<0/> puts a video or other third-party page in a responsive frame. The frame "
@@ -1560,6 +1570,16 @@ msgstr ""
 "Add a <0/> only when you need extra Vite plugins or Vite-specific settings. "
 "The Ardo CLI adds its build integration automatically, so a custom Vite config"
 " does not need to call <1/>."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Add a documentation version, a language, or an API reference with <0><1/></0>"
+msgstr ""
+"Add a documentation version, a language, or an API reference with <0><1/></0>"
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid "Add a Feature with a Recipe"
+msgstr "Add a Feature with a Recipe"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Add a Page"
@@ -8406,6 +8426,16 @@ msgstr ""
 " their own bounds; navigation and code keep their compact sizes. Ardo leaves "
 "the root font size to the reader. Custom theme tokens can replace any of these"
 " values, including with fixed sizes:"
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
+"The recipes are <0/>, <1/>, and <2/>. Each one checks for an existing setup, "
+"inspects the project, confirms the plan with you, applies the change, and "
+"verifies the build."
+msgstr ""
+"The recipes are <0/>, <1/>, and <2/>. Each one checks for an existing setup, "
+"inspects the project, confirms the plan with you, applies the change, and "
+"verifies the build."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
