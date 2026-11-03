@@ -14,6 +14,19 @@ export const preview = style({
   },
 })
 
+// The stage's padding sets the inset; the example's own block margins would double it.
+globalStyle(`${preview} > :first-child, ${preview} > :first-child > :first-child`, {
+  marginTop: 0,
+})
+globalStyle(`${preview} > :last-child, ${preview} > :last-child > :last-child`, {
+  marginBottom: 0,
+})
+
+export const barePreview = style({
+  minWidth: 0,
+  scrollMarginTop: `calc(${vars.layout.headerHeight} + ${vars.space.lg})`,
+})
+
 export const iconGrid = style({
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))",

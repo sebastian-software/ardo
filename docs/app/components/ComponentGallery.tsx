@@ -10,14 +10,17 @@ import * as styles from "./component-gallery.css"
 export function GalleryPreview({
   id,
   label,
+  framed = true,
   children,
 }: {
   id: string
   label: string
+  /** Components with their own border, such as code blocks, need no stage around them. */
+  framed?: boolean
   children: ReactNode
 }) {
   return (
-    <section id={id} aria-label={label} className={styles.preview}>
+    <section id={id} aria-label={label} className={framed ? styles.preview : styles.barePreview}>
       {children}
     </section>
   )
