@@ -1506,12 +1506,10 @@ msgstr ""
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
-"Add a documentation version, a language, or an API reference with an agent and"
-" <0/>, as described in <1>Agent Instructions</1>"
+"Add a documentation version, a language, or an API reference with <0><1/></0>"
 msgstr ""
 "Añade una versión de la documentación, un idioma o una referencia de API "
-"con un agente y <0/>, tal como se describe en <1>Instrucciones para "
-"agentes</1>"
+"con <0><1/></0>"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Add a Feature with a Recipe"
