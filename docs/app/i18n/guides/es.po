@@ -3287,6 +3287,14 @@ msgstr ""
 "inicial. Las secciones enumeradas aparecen primero; las restantes siguen el "
 "orden generado habitual."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Copy page and View as Markdown on Markdown pages. Defaults to <0/>; see "
+"<1>Page Actions</1>."
+msgstr ""
+"«Copiar página» y «Ver como Markdown» en las páginas Markdown. El valor "
+"predeterminado es <0/>; consulta <1>Acciones de página</1>."
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Copy the directory from the version-matched tag."
 msgstr "Copia el directorio de la etiqueta de la misma versión."
@@ -3586,14 +3594,17 @@ msgid ""
 "Each Markdown and MDX page also gets its own file at its URL with <0/> "
 "appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
 "index links to these files, and each one has the same cleaned content as its "
-"section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
-" per-page files."
+"section in <4/>. Each page with a file also shows Copy page and View as "
+"Markdown links under its title. Set <5/> to keep the index linking to HTML "
+"pages, skip the per-page files, and hide those links."
 msgstr ""
-"Cada página Markdown y MDX también tiene su propio archivo en su URL, con "
-"<0/> añadido, por ejemplo <1/>, o <2/> dentro de una raíz de directorio como"
-" <3/>. El índice enlaza a estos archivos, y cada uno tiene el mismo contenido"
-" limpio que su sección en <4/>. Define <5/> para que el índice siga "
-"enlazando a las páginas HTML y no se generen archivos por página."
+"Cada página Markdown y MDX también tiene su propio archivo en su URL, al que"
+" se añade <0/>, por ejemplo <1/>, o <2/> dentro de una raíz de directorio "
+"como <3/>. El índice enlaza a estos archivos, y cada uno tiene el mismo "
+"contenido limpio que su sección en <4/>. Cada página con archivo muestra "
+"además, bajo el título, los enlaces «Copiar página» y «Ver como "
+"Markdown». Con <5/>, el índice sigue enlazando a páginas HTML, omite los "
+"archivos por página y oculta esos enlaces."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -3776,11 +3787,16 @@ msgstr "Ejemplos"
 msgid ""
 "Exclude a Markdown route from <0/> and <1/>. This is useful for pages that are"
 " valid docs for humans but noisy in a single-file model context, such as "
-"generated changelogs or large fixture references."
+"generated changelogs or large fixture references. It also skips the page's own"
+" <2/> file and hides its Copy page and View as Markdown actions, because those"
+" actions link to that file."
 msgstr ""
-"Excluye una ruta Markdown de <0/> y <1/>. Es útil para páginas válidas para"
-" personas pero ruidosas en un único contexto de modelo, como registros de "
-"cambios generados o referencias de pruebas extensas."
+"Excluye una ruta Markdown de <0/> y <1/>. Resulta útil para páginas que son "
+"documentación válida para las personas, pero que hacen ruido en un contexto "
+"de modelo de un solo archivo, como los registros de cambios generados o las "
+"referencias grandes de fixtures. También omite el archivo <2/> de la página "
+"y oculta sus acciones «Copiar página» y «Ver como Markdown», porque "
+"apuntan a ese archivo."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -4835,12 +4851,13 @@ msgstr ""
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "In frames narrower than <0/>, the outline appears as an expandable \"On this "
-"page\" section below the title, and page actions appear at the end of the "
-"article. Wider frames keep the page rail."
+"page\" section below the title, and the edit link and last-updated date appear"
+" at the end of the article. Wider frames keep the page rail."
 msgstr ""
-"En marcos de menos de <0/>, el índice aparece bajo el título en una sección"
-" desplegable « En esta página », y las acciones de página figuran al final"
-" del artículo. Los marcos más anchos conservan la columna derecha."
+"En marcos más estrechos que <0/>, el índice aparece como una sección "
+"desplegable «En esta página» bajo el título, y el enlace de edición y la "
+"fecha de última actualización aparecen al final del artículo. Los marcos "
+"más anchos mantienen la columna lateral."
 
 #: docs/app/content/guide/components.mdx
 msgid ""
@@ -5343,6 +5360,24 @@ msgstr "El Markdown no se muestra"
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Markdown outside the route tree, or typed collection data"
 msgstr "Markdown fuera del árbol de rutas o colecciones tipadas"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Markdown pages that have a Markdown file also show <0>Copy page</0> and "
+"<1>View as Markdown</1> under their title. Copy page fetches that file when "
+"the reader clicks it and copies its text. View as Markdown links to the file "
+"itself. Set <2/> on <3/> to hide both on every page, or <4/> in a page's "
+"frontmatter to hide them on one page. Pages without a Markdown file, such as "
+"those with <5/>, never show them, and a custom <6/> replaces them with your "
+"own heading."
+msgstr ""
+"Las páginas Markdown que tienen un archivo Markdown también muestran "
+"<0>Copiar página</0> y <1>Ver como Markdown</1> bajo su título. Copiar "
+"página descarga ese archivo al hacer clic y copia su texto. Ver como Markdown"
+" enlaza al propio archivo. Con <2/> en <3/> ocultas ambos en todas las "
+"páginas, o con <4/> en el frontmatter de una página, solo en esa página. "
+"Las páginas sin archivo Markdown, como las que tienen <5/>, nunca los "
+"muestran, y un <6/> propio los sustituye por tu propio encabezado."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "Markdown processing options are configured under the <0/> key."
@@ -5935,6 +5970,10 @@ msgid "Packages and dependencies"
 msgstr "Paquetes y dependencias"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Page Actions"
+msgstr "Acciones de página"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Page and Content Width"
 msgstr "Ancho de página y de contenido"
 
@@ -5949,6 +5988,10 @@ msgstr "Nombres de archivos de página"
 #: docs/app/content/guide/theming.mdx
 msgid "Page outline"
 msgstr "Índice"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "pageActions"
+msgstr "pageActions"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7553,6 +7596,12 @@ msgid "The 50 built-in content icons and the brand icons as React components."
 msgstr "Los 50 iconos de contenido y los de marca como componentes React."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid "The actions appear in built sites and <0/>, not in the dev server."
+msgstr ""
+"Las acciones aparecen en los sitios compilados y en <0/>, no en el servidor de"
+" desarrollo."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The active locale, including during server rendering."
 msgstr "Idioma activo, también durante el render servidor."
 
@@ -9073,6 +9122,17 @@ msgstr ""
 " de forma opcional, <4/> de 1 a 20 (predeterminado: 5), y devuelve títulos de"
 " páginas, títulos de secciones, URL absolutas y fragmentos. No se carga nada"
 " hasta que un agente llama a la herramienta."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Whether to show \"Copy page\" and \"View as Markdown\" under the title. The "
+"actions appear only on pages that have a Markdown file, and <0/> hides them on"
+" this page alone. See <1>Page Actions</1>."
+msgstr ""
+"Indica si se muestran «Copiar página» y «Ver como Markdown» bajo el "
+"título. Las acciones solo aparecen en páginas que tienen un archivo "
+"Markdown, y <0/> las oculta solo en esta página. Consulta <1>Acciones de "
+"página</1>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Whether to show the \"Edit this page\" link."

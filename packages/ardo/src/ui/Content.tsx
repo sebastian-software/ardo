@@ -11,6 +11,7 @@ import { ChromeIcon } from "./chrome-icons"
 import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
+import { ArdoPageActions } from "./PageActions"
 import { getNodeText } from "./text-content"
 import { ArdoVersionBanner } from "./site-controls"
 
@@ -28,6 +29,8 @@ export type ArdoContentProps = {
   header?: ReactNode
   /** Replace edit/updated metadata and previous/next links; false omits them. */
   footer?: ReactNode
+  /** Copy page and View as Markdown in the heading; false hides them. Defaults to ArdoRoot's setting. */
+  pageActions?: boolean
 }
 
 type ContentMetaInput = {
@@ -95,6 +98,7 @@ export function ArdoContent({
   outline,
   header,
   footer,
+  pageActions,
 }: ArdoContentProps) {
   const isBare = useBareContent()
   const pageData = useArdoPageData()
@@ -114,6 +118,7 @@ export function ArdoContent({
   const edit = resolveEditLink(input)
   const updated = resolveLastUpdated(input)
   const { prev, next } = getPrevNextLinks(sidebar, pathname)
+  const actionsPath = resolvePageActionsPath({ pageActions, pageData, siteConfig })
 
   return (
     <article className={`ardo-content ${docStyles.contentContainer}`}>
@@ -128,6 +133,7 @@ export function ArdoContent({
             pageData?.frontmatter.lede,
             children
           )}
+          markdownPath={actionsPath}
         />
       ) : (
         header
@@ -154,12 +160,33 @@ export function ArdoContent({
   )
 }
 
+/**
+ * The Markdown file the heading's page actions link to, or `undefined` when they stay hidden:
+ * the page has no Markdown file, or ArdoRoot, ArdoDocContent, or the page's frontmatter opted out.
+ */
+function resolvePageActionsPath({
+  pageActions,
+  pageData,
+  siteConfig,
+}: {
+  pageActions: boolean | undefined
+  pageData: ReturnType<typeof useArdoPageData>
+  siteConfig: ReturnType<typeof useArdoSiteConfig>
+}): string | undefined {
+  const enabled =
+    (pageActions ?? siteConfig.pageActions ?? true) && pageData?.frontmatter.pageActions !== false
+  return enabled ? pageData?.markdownPath : undefined
+}
+
 function ContentHeader({
   description,
+  markdownPath,
   showDescription,
   title,
 }: {
   description: string
+  /** Set when the page's Markdown actions should show. */
+  markdownPath: string | undefined
   showDescription: boolean
   title: string
 }) {
@@ -170,6 +197,7 @@ function ContentHeader({
       {showDescription && (
         <p className={`ardo-content-description ${docStyles.contentDescription}`}>{description}</p>
       )}
+      {markdownPath !== undefined && <ArdoPageActions markdownPath={markdownPath} />}
     </header>
   )
 }

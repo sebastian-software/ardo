@@ -23,6 +23,7 @@ import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
+import { resolvePageMarkdownPath } from "./page-markdown"
 import { normalizePath, resolveRoutesDir } from "./path-utils"
 import { createPublicationPlugin } from "./publication-plugin"
 import { readProjectMeta } from "./project-meta"
@@ -35,6 +36,8 @@ import { configureVirtualModuleInvalidation } from "./virtual-module-invalidatio
 
 type PluginState = {
   collections?: CollectionsConfig
+  /** Vite's command: `build` for a production build, `serve` for the dev server. */
+  command?: "build" | "serve"
   deploymentBase?: string
   outDir?: string
   previewBase?: string
@@ -98,7 +101,16 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   addApiPlugin(plugins, { api, routesDirOption })
 
   plugins.push(ardoCodeBlockPlugin(siteConfig.markdown))
-  plugins.push(createMdxPlugin(siteConfig.markdown))
+  plugins.push(
+    createMdxPlugin(siteConfig.markdown, (filePath) =>
+      resolvePageMarkdownPath({
+        command: state.command,
+        config: state.resolvedConfig,
+        filePath,
+        routesDir: state.routesDir,
+      })
+    )
+  )
   plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
   plugins.push(...createReactPlugins())
 
@@ -154,6 +166,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
     configResolved(config) {
+      state.command = config.command
       state.routesDir = resolveRoutesDir(config.root, options.routesDirOption)
       state.resolvedConfig = resolveArdoConfig({
         root: config.root,

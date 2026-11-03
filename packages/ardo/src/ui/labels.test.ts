@@ -28,4 +28,24 @@ describe("resolveArdoLabels", () => {
     expect(labels.toc.label).toBe("Auf dieser Seite")
     expect(labels.toc.navLabel).toBe("Table of contents")
   })
+
+  it("provides English defaults for the page action labels", () => {
+    const labels = resolveArdoLabels(undefined)
+
+    expect(labels.page.copyMarkdown).toBe("Copy page")
+    expect(labels.page.viewMarkdown).toBe("View as Markdown")
+    expect(labels.page.copyMarkdownFailed).toBe(
+      "Copying failed. Open the Markdown version instead."
+    )
+  })
+
+  it("merges page action overrides without dropping the other page labels", () => {
+    const labels = resolveArdoLabels({
+      page: { copyMarkdown: "Seite kopieren" },
+    })
+
+    expect(labels.page.copyMarkdown).toBe("Seite kopieren")
+    expect(labels.page.viewMarkdown).toBe("View as Markdown")
+    expect(labels.page.edit).toBe("Edit this page")
+  })
 })

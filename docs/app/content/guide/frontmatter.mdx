@@ -199,6 +199,21 @@ lastUpdated: false
 ---
 ```
 
+### pageActions
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to show "Copy page" and "View as Markdown" under the title. The actions appear only on pages
+that have a Markdown file, and `pageActions` hides them on this page alone. See
+[Page Actions](/en/guide/layout-and-navigation#page-actions).
+
+```yaml
+---
+pageActions: false
+---
+```
+
 ## Build Output Options
 
 ### sitemap
@@ -222,7 +237,8 @@ sitemap: false
 
 Exclude a Markdown route from `/llms.txt` and `/llms-full.txt`. This is useful for pages that are
 valid docs for humans but noisy in a single-file model context, such as generated changelogs or
-large fixture references.
+large fixture references. It also skips the page's own `.md` file and hides its Copy page and View
+as Markdown actions, because those actions link to that file.
 
 ```yaml
 ---

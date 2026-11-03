@@ -10,6 +10,8 @@ import { compileMdxRouteModule } from "./mdx-compile"
 type CompileInput = {
   format: NativeMarkdownFormat
   markdownConfig: ArdoConfig["markdown"]
+  /** The page's Markdown file URL, when the build writes one for this route. */
+  pageMarkdownPath: string | undefined
   source: string
   sourceName: string
 }
@@ -25,8 +27,14 @@ type CompiledRouteEntry = { result: Promise<CompiledRouteModule>; source: string
  */
 const compiledRoutes = new Map<string, CompiledRouteEntry>()
 
-/** Compile Markdown and MDX route modules with Ferromark and Ferriki. */
-export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin {
+/**
+ * Compile Markdown and MDX route modules with Ferromark and Ferriki. `pageMarkdownPath`
+ * names the URL of the page's Markdown file for a route file, or `undefined` when there is none.
+ */
+export function createMdxPlugin(
+  markdownConfig: ArdoConfig["markdown"],
+  pageMarkdownPath?: (filePath: string) => string | undefined
+): Plugin {
   const configKey = JSON.stringify(markdownConfig ?? null)
   return {
     enforce: "pre",
@@ -39,6 +47,7 @@ export function createMdxPlugin(markdownConfig: ArdoConfig["markdown"]): Plugin 
       const compiled = await compileRouteModuleCached(configKey, {
         format,
         markdownConfig,
+        pageMarkdownPath: pageMarkdownPath?.(sourceName),
         source,
         sourceName,
       })
@@ -51,7 +60,8 @@ async function compileRouteModuleCached(
   configKey: string,
   input: CompileInput
 ): Promise<CompiledRouteModule> {
-  const key = `${configKey}\0${input.format}\0${input.sourceName}`
+  // The Markdown file URL depends on site settings, not only on the source, so it is part of the key.
+  const key = `${configKey}\0${input.format}\0${input.sourceName}\0${input.pageMarkdownPath ?? ""}`
   const cached = compiledRoutes.get(key)
   if (cached?.source === input.source) return cached.result
 
@@ -65,8 +75,20 @@ async function compileRouteModuleCached(
   }
 }
 
-async function compileRouteModule({ format, markdownConfig, source, sourceName }: CompileInput) {
-  const module = compileMdxRouteModule({ format, id: sourceName, markdownConfig, source })
+async function compileRouteModule({
+  format,
+  markdownConfig,
+  pageMarkdownPath,
+  source,
+  sourceName,
+}: CompileInput) {
+  const module = compileMdxRouteModule({
+    format,
+    id: sourceName,
+    markdownConfig,
+    pageMarkdownPath,
+    source,
+  })
   const transformed = await transformWithOxc(
     module.code,
     sourceName,

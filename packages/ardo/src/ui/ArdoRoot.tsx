@@ -61,6 +61,11 @@ export type ArdoRootProps = {
   editLink?: { pattern: string; text?: string }
   /** Last updated configuration (applied site-wide via ArdoSiteConfig) */
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /**
+   * "Copy page" and "View as Markdown" in Markdown page headings. `false` hides them on every
+   * page; a page can still hide them with `pageActions: false` in its frontmatter.
+   */
+  pageActions?: boolean
   /** UI chrome labels and aria text, merged with English defaults. */
   labels?: ArdoLabelsInput
   /** TOC label (applied site-wide via ArdoSiteConfig) */
@@ -260,6 +265,7 @@ export function ArdoRoot({
   appleTouchIcon,
   editLink,
   lastUpdated,
+  pageActions,
   labels,
   tocLabel,
   className,
@@ -294,7 +300,14 @@ export function ArdoRoot({
     : null
   const resolvedFooter = showChrome ? resolveFooterSlot(footer ?? chrome.footer) : null
 
-  const siteConfig = useRootSiteConfig({ editLink, labels, lastUpdated, logo, tocLabel })
+  const siteConfig = useRootSiteConfig({
+    editLink,
+    labels,
+    lastUpdated,
+    logo,
+    pageActions,
+    tocLabel,
+  })
 
   const content = (
     <>
@@ -327,7 +340,7 @@ export function ArdoRoot({
 
 type RootSiteConfigInput = Pick<
   ArdoRootProps,
-  "editLink" | "labels" | "lastUpdated" | "logo" | "tocLabel"
+  "editLink" | "labels" | "lastUpdated" | "logo" | "pageActions" | "tocLabel"
 >
 
 /** The site config `ArdoRoot` provides, or `undefined` when none of its props set one. */
@@ -336,17 +349,26 @@ function useRootSiteConfig({
   labels,
   lastUpdated,
   logo,
+  pageActions,
   tocLabel,
 }: RootSiteConfigInput): ArdoSiteConfig | undefined {
   const siteConfig = useMemo<ArdoSiteConfig>(
-    () => ({ editLink, labels: resolveArdoLabels(labels), lastUpdated, logo, tocLabel }),
-    [editLink, labels, lastUpdated, logo, tocLabel]
+    () => ({
+      editLink,
+      labels: resolveArdoLabels(labels),
+      lastUpdated,
+      logo,
+      pageActions,
+      tocLabel,
+    }),
+    [editLink, labels, lastUpdated, logo, pageActions, tocLabel]
   )
   const hasSiteConfig =
     editLink !== undefined ||
     labels !== undefined ||
     lastUpdated !== undefined ||
     logo !== undefined ||
+    pageActions !== undefined ||
     (tocLabel ?? "") !== ""
   return hasSiteConfig ? siteConfig : undefined
 }

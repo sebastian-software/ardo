@@ -156,6 +156,14 @@ function createLlmsPageAssets(
   })
 }
 
+/**
+ * Whether the build writes a Markdown file for each page. The build runs this only when
+ * `seo.llms` is not `false`; a page also needs `llms` not `false` in its frontmatter.
+ */
+export function hasPageMarkdownFiles(config: ResolvedConfig): boolean {
+  return config.seo.llms !== false && resolveLlmsConfig(config).pages
+}
+
 function resolveLlmsConfig(config: ResolvedConfig): ResolvedLlmsConfig {
   const input = typeof config.seo.llms === "object" ? config.seo.llms : {}
   return {

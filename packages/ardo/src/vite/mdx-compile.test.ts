@@ -16,6 +16,32 @@ const compileWithTitle = (title: string) =>
     id: "same.md",
   }).code
 
+function compileStartPage(frontmatterLine: string, pageMarkdownPath?: string): string {
+  return compileMdxRouteModule({
+    format: "md",
+    id: "start.md",
+    markdownConfig: undefined,
+    pageMarkdownPath,
+    source: `---\ntitle: Start\n${frontmatterLine}---\n\n# Start`,
+  }).code
+}
+
+describe("page Markdown link in the route module", () => {
+  it("passes the Markdown file URL to the page data provider", () => {
+    expect(compileStartPage("", "/docs/guide/start.md")).toContain(
+      'markdownPath={"/docs/guide/start.md"}'
+    )
+  })
+
+  it("passes no Markdown file URL when the build writes none", () => {
+    expect(compileStartPage("")).not.toContain("markdownPath")
+  })
+
+  it("passes no Markdown file URL to a page with llms: false", () => {
+    expect(compileStartPage("llms: false\n", "/docs/guide/start.md")).not.toContain("markdownPath")
+  })
+})
+
 describe("prepared route compilation", () => {
   it("prepares once and derives the TOC from the final module heading plan", () => {
     const prepare = vi.spyOn(JsxCompiler.prototype, "prepare")

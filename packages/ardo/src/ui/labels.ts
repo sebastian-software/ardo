@@ -14,6 +14,12 @@ export type ArdoLabels = {
     previous: string
     navigation: string
     label: string
+    /** Copies the page's Markdown to the clipboard. */
+    copyMarkdown: string
+    /** Link to the page's Markdown file. */
+    viewMarkdown: string
+    /** Shown when the page's Markdown cannot be copied. */
+    copyMarkdownFailed: string
   }
 
   publication: {
@@ -124,6 +130,9 @@ export const defaultArdoLabels: ArdoLabels = {
     previous: "Previous",
     navigation: "Page navigation",
     label: "Page",
+    copyMarkdown: "Copy page",
+    viewMarkdown: "View as Markdown",
+    copyMarkdownFailed: "Copying failed. Open the Markdown version instead.",
   },
   publication: {
     authors: "Authors",
