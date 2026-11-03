@@ -227,6 +227,14 @@ msgstr "<0/> en un límite de error"
 msgid "<0/> in tests and component previews"
 msgstr "<0/> en pruebas y vistas previas"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> installs the packages. <1/> runs them once with <2/>, <3/>, <4/>, or "
+"<5/>."
+msgstr ""
+"<0/> instala los paquetes. <1/> los ejecuta una vez con <2/>, <3/>, <4/> o "
+"<5/>."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "<0/> is a complete site: Ardo's header with search and the theme toggle, a "
@@ -351,6 +359,18 @@ msgid ""
 msgstr ""
 "<0/> gestiona providers, contenido y espacios JSX. Esta parte se hidrata en el"
 " navegador."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> puts a video or other third-party page in a responsive frame. The frame "
+"keeps the aspect ratio, loads when it is near the viewport, and sends only the"
+" origin as the referrer. It has no <1/> attribute, so embed only content you "
+"trust."
+msgstr ""
+"<0/> coloca un video u otra página de terceros en un marco adaptable. El "
+"marco mantiene la relación de aspecto, se carga cuando está cerca de la "
+"ventana y solo envía el origen como referente. No tiene el atributo <1/>, "
+"así que incrusta solo contenido de confianza."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "<0/> redirect entries"
@@ -493,6 +513,19 @@ msgstr ""
 "<0/> desplaza juntos los niveles de títulos e índice. <1/> añade un prefijo"
 " a todos los identificadores nativos. Consulta la <2>API Node de Ferromark</2>"
 " para los detalles."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. "
+"Pass a package name, or several names separated by spaces. Set <1/> to install"
+" a development dependency, and use <2/> to run a package once without "
+"installing it. Each tab has the same copy button as a code group."
+msgstr ""
+"<0/> muestra un comando de instalación o ejecución en pestañas para npm, "
+"pnpm, Yarn y Bun. Pasa un nombre de paquete o varios separados por espacios. "
+"Usa <1/> para instalar una dependencia de desarrollo y <2/> para ejecutar un "
+"paquete una sola vez sin instalarlo. Cada pestaña tiene el mismo botón de "
+"copiar que un grupo de código."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -1063,6 +1096,10 @@ msgid "<0>Releases</0> lists what is shipped, experimental, and planned."
 msgstr ""
 "<0>Versiones</0> distingue funciones disponibles, experimentales y previstas."
 
+#: docs/app/content/guide/components.mdx
+msgid "<0>root.tsx</0> — the root layout"
+msgstr "<0>root.tsx</0> — el layout raíz"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "<0>Set up Ardo in this repository following <1/>.</0>"
 msgstr "<0>Configura Ardo en este repositorio siguiendo <1/>.</0>"
@@ -1298,6 +1335,19 @@ msgstr ""
 " generación de la API puede leer proyectos TypeScript configurados por "
 "separado."
 
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid "A nested Markdown list. Names may use bold and a <0/> comment."
+#~ msgstr ""
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"A nested Markdown list. Names may use bold, and an em dash (—) starts a "
+"comment."
+msgstr ""
+"Una lista Markdown anidada. Los nombres pueden ir en negrita, y un guion largo"
+" (—) inicia un comentario."
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "A Polished Default Theme"
 msgstr "Un tema predeterminado cuidado"
@@ -1390,6 +1440,10 @@ msgid ""
 msgstr ""
 "URL pública absoluta del sitio. Ardo la usa para generar URL canónicas, <0/>"
 " y URL absolutas de imágenes sociales en las rutas Markdown."
+
+#: docs/app/content/guide/components.mdx
+msgid "Accessible title of the frame. Required."
+msgstr "Título accesible del marco. Obligatorio."
 
 #: docs/app/content/guide/components.mdx
 msgid "Accordion example"
@@ -1641,6 +1695,17 @@ msgstr "título y descripción de la API;"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "API tooling"
 msgstr "Herramientas API"
+
+#: docs/app/content/guide/components.mdx
+msgid "app/"
+msgstr "app/"
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "app/ - routes/ - index.mdx - <0>root.tsx</0> — the root layout - "
+#~ "package.json"
+#~ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid "app/routes/home.md"
@@ -2161,18 +2226,36 @@ msgstr ""
 msgid "Ardo requires Node.js 22.22.0 or higher. Check your version:"
 msgstr "Ardo necesita Node.js 22.22.0 o posterior. Comprueba tu versión:"
 
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, icons, and landing-page blocks. "
+#~ "Each one follows the theme in light and dark mode and works with the keyboard."
+#~ " The examples below run in the real layout of this site, so switch the theme "
+#~ "in the header or resize the window to see them in context."
+#~ msgstr ""
+#~ "Ardo incluye avisos, insignias, tarjetas, pestañas, acordeones, pasos, "
+#~ "bloques de código, iconos y elementos de portada. Siguen los temas claro y "
+#~ "oscuro y funcionan con teclado. Los ejemplos usan el diseño real: cambia el "
+#~ "tema o el tamaño de ventana para comprobarlos."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
-"cards, tabs, accordions, steps, code blocks, icons, and landing-page blocks. "
-"Each one follows the theme in light and dark mode and works with the keyboard."
-" The examples below run in the real layout of this site, so switch the theme "
-"in the header or resize the window to see them in context."
+"cards, tabs, accordions, steps, code blocks, package manager commands, file "
+"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+"light and dark mode and works with the keyboard. The examples below run in the"
+" real layout of this site, so switch the theme in the header or resize the "
+"window to see them in context."
 msgstr ""
-"Ardo incluye avisos, insignias, tarjetas, pestañas, acordeones, pasos, "
-"bloques de código, iconos y elementos de portada. Siguen los temas claro y "
-"oscuro y funcionan con teclado. Los ejemplos usan el diseño real: cambia el "
-"tema o el tamaño de ventana para comprobarlos."
+"Ardo incluye los componentes que más necesitan las páginas de "
+"documentación: avisos, insignias, tarjetas, pestañas, acordeones, pasos, "
+"bloques de código, comandos de gestores de paquetes, árboles de archivos, "
+"incrustaciones, iconos y bloques de páginas de inicio. Cada uno sigue el tema"
+" en modo claro y oscuro y funciona con el teclado. Los ejemplos de abajo se "
+"muestran en el diseño real de este sitio; cambia el tema en el encabezado o "
+"ajusta el tamaño de la ventana para verlos en contexto."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3657,6 +3740,10 @@ msgstr "editLink"
 msgid "Embedded live playgrounds"
 msgstr "Playgrounds integrados"
 
+#: docs/app/content/guide/components.mdx
+msgid "Embeds"
+msgstr "Incrustaciones"
+
 #: docs/app/content/guide/markdown.mdx
 msgid "Emphasis"
 msgstr "Énfasis"
@@ -3845,6 +3932,10 @@ msgstr ""
 " despliegue, como <2/> en un sitio servido bajo <3/>. Cada aviso indica "
 "archivo y línea."
 
+#: docs/app/content/guide/components.mdx
+msgid "Extra arguments appended to the end of the command."
+msgstr "Argumentos adicionales que se añaden al final del comando."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
 "Extraction updates source messages and preserves existing translations. Edit "
@@ -3932,6 +4023,14 @@ msgstr "Archivo"
 #: docs/app/content/guide/releases/index.mdx
 msgid "File tree block"
 msgstr "Árbol de archivos"
+
+#: docs/app/content/guide/components.mdx
+msgid "File tree example"
+msgstr "Ejemplo de árbol de archivos"
+
+#: docs/app/content/guide/components.mdx
+msgid "File Trees"
+msgstr "Árboles de archivos"
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -4631,6 +4730,10 @@ msgstr "Cómo funciona el build"
 msgid "HTML redirect files for static hosts that only serve files"
 msgstr "Páginas HTML para alojamientos de archivos estáticos"
 
+#: docs/app/content/guide/components.mdx
+msgid "HTTPS URL of the content to embed. Required."
+msgstr "URL HTTPS del contenido que se va a incrustar. Obligatorio."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Hue, chroma, layout, and typography variables are safe on <0/>. These are the "
@@ -4905,6 +5008,10 @@ msgstr ""
 "errores aparecen en el overlay; la generación continúa al corregirlos."
 
 #: docs/app/content/guide/components.mdx
+msgid "index.mdx"
+msgstr "index.mdx"
+
+#: docs/app/content/guide/components.mdx
 msgid "Infrastructure and security"
 msgstr "Infraestructura y seguridad"
 
@@ -4951,6 +5058,14 @@ msgstr ""
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Inspect the Repository"
 msgstr "Examina el repositorio"
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Install as a development dependency: <0/>, or <1/> for Bun. Applies to <2/> "
+"only. Defaults to <3/>."
+msgstr ""
+"Instalar como dependencia de desarrollo: <0/>, o <1/> en Bun. Solo se aplica a"
+" <2/>. Valor predeterminado: <3/>."
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
@@ -5805,6 +5920,16 @@ msgstr ""
 msgid "One MDX Source with Palamedes"
 msgstr "Una fuente MDX con Palamedes"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Only <0/> URLs render. Other URLs render nothing and log a warning in "
+"development. This example is code only, because a live frame would load "
+"third-party content into the gallery."
+msgstr ""
+"Solo se muestran las URL <0/>. Las demás no se muestran y registran una "
+"advertencia en desarrollo. Este ejemplo solo muestra código, porque un marco "
+"en vivo cargaría contenido de terceros en la galería."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
 "Only the English MDX source and the PO catalogs are maintained. Generated "
@@ -5929,6 +6054,22 @@ msgstr "Exports del paquete"
 #: docs/app/content/guide/releases/index.mdx
 msgid "Package manager tabs"
 msgstr "Pestañas de gestores"
+
+#: docs/app/content/guide/components.mdx
+msgid "Package Managers"
+msgstr "Gestores de paquetes"
+
+#: docs/app/content/guide/components.mdx
+msgid "Package managers example"
+msgstr "Ejemplo de gestores de paquetes"
+
+#: docs/app/content/guide/components.mdx
+msgid "Package name, or several names separated by spaces."
+msgstr "Nombre del paquete, o varios nombres separados por espacios."
+
+#: docs/app/content/guide/components.mdx
+msgid "package.json"
+msgstr "package.json"
 
 #: docs/app/content/guide/components.mdx
 msgid "Packages and dependencies"
@@ -6061,6 +6202,10 @@ msgstr ""
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Performance"
 msgstr "Rendimiento"
+
+#: docs/app/content/guide/components.mdx
+msgid "Permissions for the frame, as an <0/> attribute value."
+msgstr "Permisos del marco, como valor del atributo <0/>."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
@@ -6653,6 +6798,10 @@ msgstr "Interfaz por ruta"
 #: docs/app/content/guide/configuration.mdx
 msgid "routes"
 msgstr "routes"
+
+#: docs/app/content/guide/components.mdx
+msgid "routes/"
+msgstr "routes/"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "routesDir"
@@ -7629,6 +7778,17 @@ msgstr ""
 "estático. <1><2/></1> cambia el directorio padre de <3/> y <4/>; ajusta el "
 "alojamiento para servir su subcarpeta <5/>. La estructura refleja las URL "
 "publicadas:"
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The commands are plain text, not highlighted. Build-time highlighting covers "
+"Markdown fences and literal code in TSX files, and these commands are built "
+"from props when the page renders."
+msgstr ""
+"Los comandos son texto sin formato y no tienen resaltado de sintaxis. El "
+"resaltado en tiempo de compilación cubre los bloques Markdown y el código "
+"literal de los archivos TSX, mientras que estos comandos se generan a partir "
+"de las props al renderizar la página."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The compact, in-article table of contents."
@@ -8617,6 +8777,31 @@ msgstr ""
 #~ " Una exportación explícita de <1/> en MDX tiene prioridad sobre el "
 #~ "frontmatter."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Use <0/> to show a project layout. Write the tree as a nested list, with a "
+"blank line between each tag and the list so MDX parses it as Markdown. An item"
+" is a folder when it has nested items or its name ends with <1/>. Folders and "
+"files get icons. Bold text highlights an entry, and text after an em dash "
+"(—) appears as a muted comment. The tree is static and needs no JavaScript."
+msgstr ""
+"Usa <0/> para mostrar la estructura de un proyecto. Escribe el árbol como una"
+" lista anidada, con una línea en blanco entre cada etiqueta y la lista para "
+"que MDX lo interprete como Markdown. Un elemento es una carpeta si tiene "
+"elementos anidados o si su nombre termina en <1/>. Las carpetas y los archivos"
+" reciben iconos. El texto en negrita resalta un elemento, y el texto después "
+"de un guion largo (—) aparece como un comentario atenuado. El árbol es "
+"estático y no necesita JavaScript."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Use <0/> to show a project layout. Write the tree as a nested list. An item is"
+#~ " a folder when it has nested items or its name ends with <1/>. Folders and "
+#~ "files get icons. Bold text highlights an entry, and text after <2/> appears as"
+#~ " a muted comment. The tree is static and needs no JavaScript."
+#~ msgstr ""
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Use <0/> when another tool rewrites heading ids after Ardo has read the route "
@@ -9085,6 +9270,11 @@ msgstr "Indica si se muestra la fecha de la última actualización."
 #: docs/app/content/guide/theming.mdx
 msgid "Why no Preflight?"
 msgstr "¿Por qué sin Preflight?"
+
+#: docs/app/content/guide/components.mdx
+msgid "Width-to-height ratio as a CSS <0/> value. Defaults to <1/>."
+msgstr ""
+"Relación de ancho a alto como valor CSS <0/>. Valor predeterminado: <1/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "With <0/>, the page layout decides how search looks:"

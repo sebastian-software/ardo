@@ -10,7 +10,10 @@ import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
 import { ArdoContentTable } from "../ui/components/ContentTable"
+import { ArdoEmbed } from "../ui/components/Embed"
+import { ArdoFileTree } from "../ui/components/FileTree"
 import { ArdoIcon } from "../ui/components/Icon"
+import { ArdoPackageManagers } from "../ui/components/PackageManagers"
 import { ArdoSteps } from "../ui/components/Steps"
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "../ui/components/Tabs"
 import { ArdoImage } from "../ui/PostImage"
@@ -94,6 +97,9 @@ export function useMDXComponents(): ArdoMDXComponents {
     TabPanels: ArdoTabPanels,
     CodeBlock: ArdoCodeBlock,
     CodeGroup: ArdoCodeGroup,
+    Embed: ArdoEmbed,
+    FileTree: ArdoFileTree,
+    PackageManagers: ArdoPackageManagers,
     ...use(ArdoMDXComponentsContext),
   }
 }

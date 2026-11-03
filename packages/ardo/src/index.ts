@@ -74,8 +74,10 @@ export {
   ArdoDanger,
   ArdoDocLayout,
   ArdoDocPage,
+  ArdoEmbed,
   ArdoFeatureCard,
   ArdoFeatures,
+  ArdoFileTree,
   ArdoFooter,
   ArdoHeader,
   ArdoHero,
@@ -83,6 +85,7 @@ export {
   ArdoInfo,
   ArdoLayout,
   ArdoNote,
+  ArdoPackageManagers,
   ArdoSearch,
   ArdoSidebar,
   ArdoSteps,
@@ -100,6 +103,8 @@ export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./ui"
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./ui"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./ui"
 export type { ArdoStepsProps } from "./ui"
+export type { ArdoEmbedProps, ArdoFileTreeProps } from "./ui"
+export type { ArdoPackageManagersProps } from "./ui"
 export type {
   ArdoContainerProps,
   ArdoContainerType,

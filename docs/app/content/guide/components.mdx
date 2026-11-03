@@ -19,7 +19,7 @@ import { GalleryHero, GalleryIcons, GalleryPreview } from "../../components/Comp
 
 # Components
 
-Ardo ships the components documentation pages need most: callouts, badges, cards, tabs, accordions, steps, code blocks, icons, and landing-page blocks. Each one follows the theme in light and dark mode and works with the keyboard. The examples below run in the real layout of this site, so switch the theme in the header or resize the window to see them in context.
+Ardo ships the components documentation pages need most: callouts, badges, cards, tabs, accordions, steps, code blocks, package manager commands, file trees, embeds, icons, and landing-page blocks. Each one follows the theme in light and dark mode and works with the keyboard. The examples below run in the real layout of this site, so switch the theme in the header or resize the window to see them in context.
 
 In MDX, use the components without imports, for example `Tip`, `Card`, and `Tabs`. In TSX, import their `Ardo`-prefixed equivalents from `ardo/ui`, such as `ArdoTip`, `ArdoCard`, and `ArdoTabs`. Landing-page components are imported explicitly in both.
 
@@ -268,6 +268,64 @@ The `code` prop and template literal children are also supported:
 
 If the `language` prop is dynamic (from a variable), build-time highlighting is skipped and the code renders as plain text.
 
+## Package Managers
+
+`PackageManagers` shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. Pass a package name, or several names separated by spaces. Set `dev` to install a development dependency, and use `type="exec"` to run a package once without installing it. Each tab has the same copy button as a code group.
+
+<GalleryPreview id="gallery-package-managers" label="Package managers example">
+  <PackageManagers pkg="ardo" />
+</GalleryPreview>
+
+```mdx
+<PackageManagers pkg="ardo" />
+<PackageManagers pkg="typescript" dev />
+<PackageManagers pkg="create-ardo" type="exec" />
+```
+
+| Component         | Prop   | Type              | Purpose                                                                                                 |
+| ----------------- | ------ | ----------------- | ------------------------------------------------------------------------------------------------------- |
+| `PackageManagers` | `pkg`  | `string`          | Package name, or several names separated by spaces.                                                     |
+| `PackageManagers` | `dev`  | `boolean`         | Install as a development dependency: `-D`, or `-d` for Bun. Applies to `add` only. Defaults to `false`. |
+| `PackageManagers` | `type` | `"add" \| "exec"` | `add` installs the packages. `exec` runs them once with `npx`, `pnpm dlx`, `yarn dlx`, or `bunx`.       |
+| `PackageManagers` | `args` | `string`          | Extra arguments appended to the end of the command.                                                     |
+
+The commands are plain text, not highlighted. Build-time highlighting covers Markdown fences and literal code in TSX files, and these commands are built from props when the page renders.
+
+## File Trees
+
+Use `FileTree` to show a project layout. Write the tree as a nested list, with a blank line between each tag and the list so MDX parses it as Markdown. An item is a folder when it has nested items or its name ends with `/`. Folders and files get icons. Bold text highlights an entry, and text after an em dash (—) appears as a muted comment. The tree is static and needs no JavaScript.
+
+<GalleryPreview id="gallery-file-tree" label="File tree example">
+
+<FileTree>
+
+- app/
+  - routes/
+    - index.mdx
+  - **root.tsx** — the root layout
+- package.json
+
+</FileTree>
+
+</GalleryPreview>
+
+```mdx
+<FileTree>
+
+- app/
+  - routes/
+    - index.mdx
+  - **root.tsx** — the root layout
+- package.json
+
+</FileTree>
+```
+
+| Component  | Prop        | Type        | Purpose                                                                          |
+| ---------- | ----------- | ----------- | -------------------------------------------------------------------------------- |
+| `FileTree` | `children`  | `ReactNode` | A nested Markdown list. Names may use bold, and an em dash (—) starts a comment. |
+| `FileTree` | `className` | `string`    | Additional CSS class.                                                            |
+
 ## Icons
 
 Ardo includes 50 [Streamline Core Line](https://streamlinehq.com/icons/core-line) icons for documentation content. They share the same 14 × 14 grid, rounded strokes, and `currentColor` as the built-in sidebar and header controls.
@@ -486,3 +544,26 @@ import { ArdoContentContainer } from "ardo/ui"
   <ArdoContentContainer width="page">Your section content</ArdoContentContainer>
 </section>
 ```
+
+## Embeds
+
+`Embed` puts a video or other third-party page in a responsive frame. The frame keeps the aspect ratio, loads when it is near the viewport, and sends only the origin as the referrer. It has no `sandbox` attribute, so embed only content you trust.
+
+Only `https:` URLs render. Other URLs render nothing and log a warning in development. This example is code only, because a live frame would load third-party content into the gallery.
+
+```mdx
+<Embed
+  src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
+  title="Product tour"
+  aspectRatio="16 / 9"
+  allow="fullscreen; picture-in-picture"
+/>
+```
+
+| Component | Prop          | Type     | Purpose                                                                      |
+| --------- | ------------- | -------- | ---------------------------------------------------------------------------- |
+| `Embed`   | `src`         | `string` | HTTPS URL of the content to embed. Required.                                 |
+| `Embed`   | `title`       | `string` | Accessible title of the frame. Required.                                     |
+| `Embed`   | `aspectRatio` | `string` | Width-to-height ratio as a CSS `aspect-ratio` value. Defaults to `"16 / 9"`. |
+| `Embed`   | `allow`       | `string` | Permissions for the frame, as an `allow` attribute value.                    |
+| `Embed`   | `className`   | `string` | Additional CSS class.                                                        |
