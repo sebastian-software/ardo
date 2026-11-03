@@ -2,7 +2,7 @@ import type { PageFrontmatter } from "../config/types"
 import type { RouteIdentity } from "./route-identity"
 import { parsePageBanner } from "./page-banner"
 
-import { isLintRuleId } from "../config/lint-rules"
+import { normalizeLintFrontmatter } from "../config/lint-rules"
 
 export type PageMetadata = {
   localeId?: string
@@ -110,7 +110,7 @@ const structuredFrontmatterNormalizers: Record<
   features: (value) => (isFeatures(value) ? { features: value } : undefined),
   hero: (value) => (isHero(value) ? { hero: value } : undefined),
   layout: normalizeLayout,
-  lint: normalizeLint,
+  lint: normalizeLintFrontmatter,
   next: normalizeNext,
   outline: (value) => (isOutline(value) ? { outline: value } : undefined),
   prev: normalizePrevious,
@@ -244,14 +244,6 @@ function normalizeBanner(value: unknown): PageFrontmatterMetadata | undefined {
 
 function normalizeLayout(value: unknown): PageFrontmatterMetadata | undefined {
   return value === "bare" || value === "default" ? { layout: value } : undefined
-}
-
-function normalizeLint(value: unknown): PageFrontmatterMetadata | undefined {
-  if (typeof value === "boolean") return { lint: value }
-  if (!isRecord(value) || Object.keys(value).some((key) => key !== "disable")) return undefined
-  if (value.disable === undefined) return { lint: {} }
-  if (!Array.isArray(value.disable) || !value.disable.every(isLintRuleId)) return undefined
-  return { lint: { disable: value.disable } }
 }
 
 function normalizeSidebar(value: unknown): PageFrontmatterMetadata | undefined {
