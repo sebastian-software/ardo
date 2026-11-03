@@ -1367,6 +1367,21 @@ msgstr ""
 "Server-Bundle. Metadatenauflösung und wartende React-Komponenten laufen im "
 "selben Kontext:"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A skill's frontmatter must have a <0/> that matches its folder name, using "
+"lowercase letters, digits, and single hyphens, and a non-empty <1/>. Ardo "
+"skips any folder that breaks these rules and reports it as a build warning "
+"that names the folder and the rule. Only single-file skills are published for "
+"now: a folder with other files, such as <2/>, is skipped with a warning."
+msgstr ""
+"Das Frontmatter eines Skills braucht ein <0/>, das zum Ordnernamen passt. Es "
+"verwendet Kleinbuchstaben, Ziffern und einzelne Bindestriche, und eine nicht "
+"leere <1/>. Ardo überspringt jeden Ordner, der diese Regeln verletzt, und "
+"meldet ihn als Build-Warnung mit Ordnername und Regel. Vorerst werden nur "
+"Skills aus einer einzigen Datei veröffentlicht: Ein Ordner mit weiteren "
+"Dateien, etwa <2/>, wird mit einer Warnung übersprungen."
+
 #: docs/app/content/guide/components.mdx
 msgid "A standalone accordion can start open:"
 msgstr "Ein einzelnes Akkordeon kann anfangs offen sein:"
@@ -6357,6 +6372,18 @@ msgstr ""
 msgid "Publish static files"
 msgstr "Statisch veröffentlichen"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Publishes <0>Agent Skills</0> from a folder of skills. Each <1/> becomes <2/>,"
+" and <3/> lists them with a SHA-256 digest of each file. The folder is "
+"resolved from the project root, next to <4/>. If it does not exist, Ardo "
+"publishes nothing."
+msgstr ""
+"Veröffentlicht <0>Agent Skills</0> aus einem Ordner mit Skills. Jedes <1/> "
+"wird zu <2/>, und <3/> listet sie mit einem SHA-256-Digest jeder Datei auf. "
+"Der Ordner wird vom Projektstammverzeichnis aus aufgelöst, neben <4/>. "
+"Existiert er nicht, veröffentlicht Ardo nichts."
+
 #: docs/app/content/guide/components.mdx
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Purpose"
@@ -6960,6 +6987,10 @@ msgid "SEO build outputs"
 msgstr "SEO-Ausgaben"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "seo.agentSkills"
+msgstr "seo.agentSkills"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "seo.jsonLd"
 msgstr "seo.jsonLd"
 
@@ -7068,6 +7099,10 @@ msgstr ""
 "Setze <0/>, um das Inhaltsverzeichnis der Seite auszublenden. Die "
 "aufgeführten Überschriftenebenen gelten websiteweit und werden mit "
 "<1><2/></1> in <3/> festgelegt."
+
+#: docs/app/content/guide/configuration.mdx
+msgid "Set <0/> to publish nothing."
+msgstr "Setze <0/>, um nichts zu veröffentlichen."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -7240,6 +7275,15 @@ msgstr "Sitemap, robots, LLM-Texte, Linkprüfung und Weiterleitungen."
 #: docs/app/content/guide/configuration.mdx
 msgid "siteUrl"
 msgstr "siteUrl"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Skills live at the origin root, so with a <0/> such as <1/> Ardo skips them "
+"silently unless you set <2/> explicitly, and then it logs one line."
+msgstr ""
+"Skills liegen im Stammverzeichnis des Ursprungs. Mit einem <0/> wie <1/> "
+"überspringt Ardo sie stillschweigend, es sei denn, Sie setzen <2/> "
+"ausdrücklich; dann protokolliert Ardo eine Zeile."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Slot"

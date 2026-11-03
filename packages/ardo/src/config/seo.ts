@@ -28,3 +28,12 @@ export function validateSitemapConfig(config: ArdoConfig, errors: string[]): voi
     )
   }
 }
+
+export function validateAgentSkillsConfig(config: ArdoConfig, errors: string[]): void {
+  const agentSkills = config.seo?.agentSkills
+  if (typeof agentSkills !== "object" || agentSkills === null) return
+  const directory = agentSkills.directory
+  if (directory !== undefined && (typeof directory !== "string" || directory.trim() === "")) {
+    errors.push("seo.agentSkills.directory must be a non-empty folder path.")
+  }
+}

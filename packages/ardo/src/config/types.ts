@@ -211,6 +211,16 @@ export type SeoConfig = {
   robots?: boolean | RobotsConfig
   /** Add a `TechArticle` JSON-LD block to Markdown pages when `siteUrl` is set. Default: true. */
   jsonLd?: boolean
+  /**
+   * Publish `skills/<name>/SKILL.md` folders at `/.well-known/agent-skills/`, with an index.
+   * Set `false` to publish nothing. Requires a root deployment base.
+   */
+  agentSkills?: false | AgentSkillsConfig
+}
+
+export type AgentSkillsConfig = {
+  /** Folder of skills, relative to the project root. Default: `skills`. */
+  directory?: string
 }
 
 export type LlmsConfig = {

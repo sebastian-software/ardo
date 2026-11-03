@@ -267,6 +267,35 @@ defineArdoConfig({
 })
 ```
 
+### seo.agentSkills
+
+- **Type:** `false | { directory?: string }`
+- **Default:** `{ directory: "skills" }`
+
+Publishes [Agent Skills](https://agentskills.io) from a folder of skills. Each `<directory>/<name>/SKILL.md`
+becomes `/.well-known/agent-skills/<name>/SKILL.md`, and `/.well-known/agent-skills/index.json` lists
+them with a SHA-256 digest of each file. The folder is resolved from the project root, next to
+`vite.config.ts`. If it does not exist, Ardo publishes nothing.
+
+A skill's frontmatter must have a `name` that matches its folder name, using lowercase letters,
+digits, and single hyphens, and a non-empty `description`. Ardo skips any folder that breaks these
+rules and reports it as a build warning that names the folder and the rule. Only single-file skills
+are published for now: a folder with other files, such as `scripts/`, is skipped with a warning.
+
+Skills live at the origin root, so with a `base` such as `/docs/` Ardo skips them silently unless you set `seo.agentSkills` explicitly, and then it logs one line.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    agentSkills: { directory: "../skills" },
+  },
+})
+```
+
+Set `seo.agentSkills: false` to publish nothing.
+
 ### linkCheck
 
 - **Type:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
