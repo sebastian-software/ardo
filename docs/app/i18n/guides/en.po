@@ -1524,6 +1524,16 @@ msgstr ""
 msgid "Additional CSS class."
 msgstr "Additional CSS class."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Adds a <0/> JSON-LD block to Markdown and MDX pages with a <1/>, so search "
+"engines can read the title, description, canonical URL, and site name. Ardo "
+"writes the block only when <2/> is set, because its URLs must be absolute."
+msgstr ""
+"Adds a <0/> JSON-LD block to Markdown and MDX pages with a <1/>, so search "
+"engines can read the title, description, canonical URL, and site name. Ardo "
+"writes the block only when <2/> is set, because its URLs must be absolute."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "After:"
 msgstr "After:"
@@ -6930,6 +6940,10 @@ msgstr "Select optional features by the project's needs:"
 #: docs/app/content/guide/releases/index.mdx
 msgid "SEO build outputs"
 msgstr "SEO build outputs"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "seo.jsonLd"
+msgstr "seo.jsonLd"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "seo.llms"

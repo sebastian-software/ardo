@@ -2,7 +2,10 @@ import { type ComponentType, createContext, use } from "react"
 
 import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
 
-/** One `<meta>`, `<title>`, or `<link>` description, as returned by a `meta` export. */
+/**
+ * One `<meta>`, `<title>`, `<link>`, or JSON-LD `<script>` description, as returned by a `meta`
+ * export. `"script:ld+json"` is serialized into a `<script type="application/ld+json">`.
+ */
 export type ArdoMetaDescriptor =
   | { charSet: string }
   | { title: string }
@@ -11,6 +14,7 @@ export type ArdoMetaDescriptor =
   | { httpEquiv: string; content: string }
   | { tagName: "link"; [attribute: string]: string }
   | { tagName: "meta"; [attribute: string]: string }
+  | { "script:ld+json": Record<string, unknown> }
 
 /** Signature of the optional `meta` export of a route module or `app/root.tsx`. */
 export type ArdoMetaFunction = () => ArdoMetaDescriptor[]

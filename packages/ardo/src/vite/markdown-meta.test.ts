@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { resolveConfig } from "../config"
+import type { ResolvedConfig } from "../config/types"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { compileMdxRouteModule } from "./mdx-compile"
 
@@ -225,5 +226,95 @@ describe("compiled route modules", () => {
     const code = compileRoute('export const meta = () => [{ title: "Custom" }]\n\n# Upgrade\n')
 
     expect(metaOf(code)).toBeUndefined()
+  })
+})
+
+// The JSON-LD descriptor is the last entry of the generated `meta` array.
+function jsonLdOf(code: string | undefined): unknown {
+  const match = /\{ "script:ld\+json": (\{.*\}) \}/u.exec(code ?? "")
+  return match == null ? undefined : JSON.parse(match[1])
+}
+
+function metaWith(
+  resolved: ResolvedConfig,
+  file = "guide/upgrade.mdx",
+  frontmatter = 'title: "Upgrade"'
+) {
+  return transformMarkdownMeta(
+    `export const frontmatter = { ${frontmatter} }\n`,
+    `${routesDir}/${file}`,
+    { routesDir, resolvedConfig: resolved }
+  )
+}
+
+describe("JSON-LD structured data", () => {
+  it("describes the page as a TechArticle with absolute URLs when siteUrl is set", () => {
+    const result = metaWith(config, "guide/upgrade.mdx", 'title: "Upgrade", description: "Move on"')
+
+    expect(jsonLdOf(result?.code)).toStrictEqual({
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      headline: "Upgrade",
+      description: "Move on",
+      url: "https://example.com/docs/guide/upgrade",
+      image: "https://example.com/docs/social.png",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "Docs",
+        url: "https://example.com/docs/",
+      },
+    })
+  })
+
+  it("names the route locale in inLanguage when the project has locales", () => {
+    const localized = resolveConfig(
+      {
+        title: "Docs",
+        siteUrl: "https://example.com",
+        i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
+      },
+      "/site"
+    )
+    const result = metaWith(localized, "de/guide/upgrade.mdx")
+
+    expect(jsonLdOf(result?.code)).toMatchObject({
+      inLanguage: "de",
+      url: "https://example.com/de/guide/upgrade",
+    })
+  })
+
+  it("omits empty fields", () => {
+    const minimal = resolveConfig({ title: "Docs", siteUrl: "https://example.com" }, "/site")
+
+    expect(jsonLdOf(metaWith(minimal)?.code)).toStrictEqual({
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      headline: "Upgrade",
+      url: "https://example.com/guide/upgrade",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "Docs",
+        url: "https://example.com/",
+      },
+    })
+  })
+
+  it("is absent without siteUrl because its URLs must be absolute", () => {
+    const relative = resolveConfig({ title: "Docs", metadata: { image: "/social.png" } }, "/site")
+    const code = metaWith(relative)?.code
+
+    expect(code).toContain('{ title: "Upgrade | Docs" }')
+    expect(code).not.toContain("script:ld+json")
+  })
+
+  it("is absent when seo.jsonLd is false", () => {
+    const disabled = resolveConfig(
+      { title: "Docs", siteUrl: "https://example.com", seo: { jsonLd: false } },
+      "/site"
+    )
+    const code = metaWith(disabled)?.code
+
+    expect(code).toContain('{ title: "Upgrade | Docs" }')
+    expect(code).not.toContain("script:ld+json")
   })
 })
