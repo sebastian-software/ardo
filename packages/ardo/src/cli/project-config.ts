@@ -12,7 +12,7 @@ const VITE_CONFIG_NAMES = [
   "vite.config.cts",
 ] as const
 
-const ARDO_CONFIG_NAMES = [
+export const ARDO_CONFIG_NAMES = [
   "ardo.config.ts",
   "ardo.config.js",
   "ardo.config.mjs",
@@ -55,7 +55,8 @@ export async function prepareProjectConfig(
   return wrapperPath
 }
 
-async function findProjectConfig(
+/** The first config file in `names` that exists directly under `root`. */
+export async function findProjectConfig(
   root: string,
   names: readonly string[]
 ): Promise<string | undefined> {

@@ -503,6 +503,14 @@ msgstr ""
 "<0/> legt den anfänglichen Einklappzustand fest. Auf enthaltenen Seiten "
 "öffnet sich auch eine eingeklappte Gruppe."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0/> sets the severity of each <1><2/></1> rule. Only <3/> makes <4/> exit "
+"with 1. Lint never affects <5/>."
+msgstr ""
+"<0/> legt den Schweregrad der Regeln von <1><2/></1> fest. Nur <3/> lässt "
+"<4/> mit Code 1 enden. Lint wirkt sich nie auf <5/> aus."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "<0/> sets three hues: <1/> for links, buttons, and focus rings, <2/> for "
@@ -576,6 +584,24 @@ msgid ""
 "<0/> takes site-wide content settings as props and the chrome as children."
 msgstr ""
 "<0/> erhält Website-Einstellungen als Props und Layoutelemente als Kinder."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"<0/> validates the Node.js version, the project config, and every page's "
+"frontmatter without building. Its exit code is 1 when a finding is an error. "
+"<1/> reports authoring rules for Markdown and MDX pages: <2/>, <3/>, <4/>, "
+"<5/>, and <6/>. Its findings are warnings, and only rules that <7><8/></7> "
+"raises to <9/> make it exit with 1. Pages opt out with <10><11/></10>. Both "
+"commands print text by default, accept <12/> for an array of <13/>, and accept"
+" <14/>."
+msgstr ""
+"<0/> prüft die Node.js-Version, die Projektkonfiguration und das Frontmatter "
+"jeder Seite, ohne zu bauen. Der Exitcode ist 1, wenn ein Befund ein Fehler "
+"ist. <1/> meldet Regeln für Markdown- und MDX-Seiten: <2/>, <3/>, <4/>, <5/> "
+"und <6/>. Die Befunde sind Warnungen; nur Regeln, die <7><8/></7> auf <9/> "
+"setzt, lassen den Befehl mit Code 1 enden. Seiten melden sich über "
+"<10><11/></10> im Frontmatter ab. Beide Befehle geben standardmäßig Text aus"
+" und akzeptieren <12/> für ein Array aus <13/>-Objekten sowie <14/>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "<0/> with <1/> and anchor attributes"
@@ -918,10 +944,19 @@ msgstr "<0>Standard:</0> deaktiviert"
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
-" compatibility."
+" compatibility; every <1/> rule warns."
 msgstr ""
 "<0>Standard:</0> ungültige dokumentierte Felder warnen; unbekannte Felder "
-"werden aus Kompatibilitätsgründen ignoriert."
+"werden aus Kompatibilitätsgründen ignoriert; jede Regel von <1/> warnt."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
+#~ " compatibility."
+#~ msgstr ""
+#~ "<0>Standard:</0> ungültige dokumentierte Felder warnen; unbekannte Felder "
+#~ "werden aus Kompatibilitätsgründen ignoriert."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> none"
@@ -3019,6 +3054,10 @@ msgstr "Logo und Favicon ändern"
 msgid "Changelogs and revision history"
 msgstr "Changelogs und Versionsverlauf"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Check and Lint"
+msgstr "Prüfen und Linting"
+
 #: docs/app/content/guide/releases/upgrade-to-v4.mdx
 msgid "Check Existing Links"
 msgstr "Bestehende Links prüfen"
@@ -3623,6 +3662,10 @@ msgstr ""
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Default: <0/>"
 msgstr "Standard:<0/>"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Default: every <0><1/></0> rule is on"
+msgstr "Standard: Jede Regel von <0><1/></0> ist aktiv"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete the removed files"
@@ -5221,19 +5264,20 @@ msgstr ""
 "Als Entwicklungsabhängigkeit installieren: <0/>, bei Bun <1/>. Gilt nur für "
 "<2/>. Standardwert ist <3/>."
 
-#: docs/app/content/guide/agent-instructions.mdx
-msgid ""
-"Install dependencies with the repository's package manager. Run its applicable"
-" typecheck and tests, then build the site. For an existing application, also "
-"run the checks that protect its existing routes. If a check is unavailable, "
-"say which behavior remains unverified. Use <0/> for non-interactive pnpm "
-"environments."
-msgstr ""
-"Installiere Abhängigkeiten mit dem Paketmanager des Repositorys. Führe die "
-"passenden Typprüfungen und Tests aus und baue anschließend die Website. "
-"Prüfe bei einer bestehenden Anwendung auch ihre bisherigen Routen. Ist eine "
-"Prüfung nicht verfügbar, benenne das ungeprüfte Verhalten. Verwende <0/> "
-"für nicht interaktive pnpm-Umgebungen."
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/agent-instructions.mdx
+#~ msgid ""
+#~ "Install dependencies with the repository's package manager. Run its applicable"
+#~ " typecheck and tests, then build the site. For an existing application, also "
+#~ "run the checks that protect its existing routes. If a check is unavailable, "
+#~ "say which behavior remains unverified. Use <0/> for non-interactive pnpm "
+#~ "environments."
+#~ msgstr ""
+#~ "Installiere Abhängigkeiten mit dem Paketmanager des Repositorys. Führe die "
+#~ "passenden Typprüfungen und Tests aus und baue anschließend die Website. "
+#~ "Prüfe bei einer bestehenden Anwendung auch ihre bisherigen Routen. Ist eine "
+#~ "Prüfung nicht verfügbar, benenne das ungeprüfte Verhalten. Verwende <0/> "
+#~ "für nicht interaktive pnpm-Umgebungen."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Install the native tools"
@@ -5466,6 +5510,10 @@ msgstr "Links und Bilder"
 #: docs/app/content/guide/components.mdx
 msgid "Links to external resources"
 msgstr "Externe Ressourcen"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "lint"
+msgstr "lint"
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -7595,6 +7643,25 @@ msgstr "Starte den Entwicklungsserver:"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
+"Start with <0/>, the fast health check. It validates the Node.js version, the "
+"project config, and page frontmatter without building, and exits with 1 on "
+"errors; <1/> gives agents the findings as data. Install dependencies with the "
+"repository's package manager. Run its applicable typecheck and tests, then "
+"build the site. For an existing application, also run the checks that protect "
+"its existing routes. If a check is unavailable, say which behavior remains "
+"unverified. Use <2/> for non-interactive pnpm environments."
+msgstr ""
+"Beginne mit <0/>, dem schnellen Gesundheitscheck. Er prüft die "
+"Node.js-Version, die Projektkonfiguration und das Frontmatter der Seiten ohne "
+"Build und endet bei Fehlern mit 1; <1/> liefert Agents die Befunde als Daten. "
+"Installiere Abhängigkeiten mit dem Paketmanager des Repositorys. Führe die "
+"passenden Typprüfungen und Tests aus und baue anschließend die Website. "
+"Prüfe bei einer bestehenden Anwendung auch ihre bisherigen Routen. Ist eine "
+"Prüfung nicht verfügbar, benenne das ungeprüfte Verhalten. Verwende <2/> "
+"für nicht interaktive pnpm-Umgebungen."
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
 "State the example revision, files to add or change, validation commands, and "
 "unresolved choices before editing. Follow the repository's instructions and "
 "the requested scope."
@@ -8759,6 +8826,14 @@ msgstr "Starte den Entwicklungsserver neu."
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "TSDoc"
 msgstr "TSDoc"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Turn off lint rules for this page. <0/> turns off all of them, and <1/> names "
+"the rules to turn off."
+msgstr ""
+"Schalte Lint-Regeln für diese Seite ab. <0/> schaltet alle aus, und <1/> "
+"benennt die Regeln, die abgeschaltet werden."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""

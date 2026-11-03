@@ -45,7 +45,7 @@ function collectDiagnosticsByLevel(
   return diagnosticsByLevel
 }
 
-function resolveDiagnosticLevel(
+export function resolveDiagnosticLevel(
   kind: "invalid" | "unknown",
   policy: NonNullable<ResolvedConfig["validation"]>["frontmatter"]
 ) {

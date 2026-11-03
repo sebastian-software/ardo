@@ -77,6 +77,33 @@ describe("resolveConfig", () => {
     })
   })
 
+  it("preserves lint severities and rejects unknown rules or levels", () => {
+    expect(
+      resolveConfig(
+        {
+          title: "Test",
+          validation: { lint: { "heading-skip": "error", "shell-prompt": "ignore" } },
+        },
+        "/project"
+      ).validation
+    ).toStrictEqual({ lint: { "heading-skip": "error", "shell-prompt": "ignore" } })
+
+    expect(() =>
+      resolveConfig(
+        // @ts-expect-error Invalid runtime input exercises configuration validation.
+        { title: "Test", validation: { lint: { "heading-tree": "warn" } } },
+        "/project"
+      )
+    ).toThrow('validation.lint has unknown rule "heading-tree"')
+    expect(() =>
+      resolveConfig(
+        // @ts-expect-error Invalid runtime input exercises configuration validation.
+        { title: "Test", validation: { lint: { "multiple-h1": "info" } } },
+        "/project"
+      )
+    ).toThrow('validation.lint.multiple-h1 must be "error", "warn", or "ignore".')
+  })
+
   it("resolves major versioning paths against the deployment base", () => {
     const resolved = resolveConfig(
       {

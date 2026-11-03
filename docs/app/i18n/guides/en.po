@@ -508,6 +508,14 @@ msgstr ""
 "<0/> sets the initial collapsed state for the group. A collapsed group still "
 "opens on the pages inside it."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0/> sets the severity of each <1><2/></1> rule. Only <3/> makes <4/> exit "
+"with 1. Lint never affects <5/>."
+msgstr ""
+"<0/> sets the severity of each <1><2/></1> rule. Only <3/> makes <4/> exit "
+"with 1. Lint never affects <5/>."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "<0/> sets three hues: <1/> for links, buttons, and focus rings, <2/> for "
@@ -579,6 +587,24 @@ msgid ""
 "<0/> takes site-wide content settings as props and the chrome as children."
 msgstr ""
 "<0/> takes site-wide content settings as props and the chrome as children."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"<0/> validates the Node.js version, the project config, and every page's "
+"frontmatter without building. Its exit code is 1 when a finding is an error. "
+"<1/> reports authoring rules for Markdown and MDX pages: <2/>, <3/>, <4/>, "
+"<5/>, and <6/>. Its findings are warnings, and only rules that <7><8/></7> "
+"raises to <9/> make it exit with 1. Pages opt out with <10><11/></10>. Both "
+"commands print text by default, accept <12/> for an array of <13/>, and accept"
+" <14/>."
+msgstr ""
+"<0/> validates the Node.js version, the project config, and every page's "
+"frontmatter without building. Its exit code is 1 when a finding is an error. "
+"<1/> reports authoring rules for Markdown and MDX pages: <2/>, <3/>, <4/>, "
+"<5/>, and <6/>. Its findings are warnings, and only rules that <7><8/></7> "
+"raises to <9/> make it exit with 1. Pages opt out with <10><11/></10>. Both "
+"commands print text by default, accept <12/> for an array of <13/>, and accept"
+" <14/>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "<0/> with <1/> and anchor attributes"
@@ -925,10 +951,19 @@ msgstr "<0>Default:</0> disabled"
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
-" compatibility."
+" compatibility; every <1/> rule warns."
 msgstr ""
 "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
-" compatibility."
+" compatibility; every <1/> rule warns."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
+#~ " compatibility."
+#~ msgstr ""
+#~ "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
+#~ " compatibility."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> none"
@@ -3024,6 +3059,10 @@ msgstr "Change the Logo and Favicon"
 msgid "Changelogs and revision history"
 msgstr "Changelogs and revision history"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Check and Lint"
+msgstr "Check and Lint"
+
 #: docs/app/content/guide/releases/upgrade-to-v4.mdx
 msgid "Check Existing Links"
 msgstr "Check Existing Links"
@@ -3627,6 +3666,10 @@ msgstr ""
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Default: <0/>"
 msgstr "Default: <0/>"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Default: every <0><1/></0> rule is on"
+msgstr "Default: every <0><1/></0> rule is on"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete the removed files"
@@ -5245,19 +5288,20 @@ msgstr ""
 "Install as a development dependency: <0/>, or <1/> for Bun. Applies to <2/> "
 "only. Defaults to <3/>."
 
-#: docs/app/content/guide/agent-instructions.mdx
-msgid ""
-"Install dependencies with the repository's package manager. Run its applicable"
-" typecheck and tests, then build the site. For an existing application, also "
-"run the checks that protect its existing routes. If a check is unavailable, "
-"say which behavior remains unverified. Use <0/> for non-interactive pnpm "
-"environments."
-msgstr ""
-"Install dependencies with the repository's package manager. Run its applicable"
-" typecheck and tests, then build the site. For an existing application, also "
-"run the checks that protect its existing routes. If a check is unavailable, "
-"say which behavior remains unverified. Use <0/> for non-interactive pnpm "
-"environments."
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/agent-instructions.mdx
+#~ msgid ""
+#~ "Install dependencies with the repository's package manager. Run its applicable"
+#~ " typecheck and tests, then build the site. For an existing application, also "
+#~ "run the checks that protect its existing routes. If a check is unavailable, "
+#~ "say which behavior remains unverified. Use <0/> for non-interactive pnpm "
+#~ "environments."
+#~ msgstr ""
+#~ "Install dependencies with the repository's package manager. Run its applicable"
+#~ " typecheck and tests, then build the site. For an existing application, also "
+#~ "run the checks that protect its existing routes. If a check is unavailable, "
+#~ "say which behavior remains unverified. Use <0/> for non-interactive pnpm "
+#~ "environments."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Install the native tools"
@@ -5495,6 +5539,10 @@ msgstr "Links and Images"
 #: docs/app/content/guide/components.mdx
 msgid "Links to external resources"
 msgstr "Links to external resources"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "lint"
+msgstr "lint"
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -7625,6 +7673,24 @@ msgstr "Start the development server:"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
+"Start with <0/>, the fast health check. It validates the Node.js version, the "
+"project config, and page frontmatter without building, and exits with 1 on "
+"errors; <1/> gives agents the findings as data. Install dependencies with the "
+"repository's package manager. Run its applicable typecheck and tests, then "
+"build the site. For an existing application, also run the checks that protect "
+"its existing routes. If a check is unavailable, say which behavior remains "
+"unverified. Use <2/> for non-interactive pnpm environments."
+msgstr ""
+"Start with <0/>, the fast health check. It validates the Node.js version, the "
+"project config, and page frontmatter without building, and exits with 1 on "
+"errors; <1/> gives agents the findings as data. Install dependencies with the "
+"repository's package manager. Run its applicable typecheck and tests, then "
+"build the site. For an existing application, also run the checks that protect "
+"its existing routes. If a check is unavailable, say which behavior remains "
+"unverified. Use <2/> for non-interactive pnpm environments."
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
 "State the example revision, files to add or change, validation commands, and "
 "unresolved choices before editing. Follow the repository's instructions and "
 "the requested scope."
@@ -8787,6 +8853,14 @@ msgstr "Try restarting the dev server"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "TSDoc"
 msgstr "TSDoc"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Turn off lint rules for this page. <0/> turns off all of them, and <1/> names "
+"the rules to turn off."
+msgstr ""
+"Turn off lint rules for this page. <0/> turns off all of them, and <1/> names "
+"the rules to turn off."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""

@@ -220,6 +220,15 @@ The output lands in `build/client/`: one prerendered `index.html` per page, a `4
 pnpm preview
 ```
 
+## Check and Lint
+
+`ardo check` validates the Node.js version, the project config, and every page's frontmatter without building. Its exit code is 1 when a finding is an error. `ardo lint` reports authoring rules for Markdown and MDX pages: `missing-description`, `multiple-h1`, `heading-skip`, `code-language`, and `shell-prompt`. Its findings are warnings, and only rules that [`validation.lint`](/en/guide/configuration#validation) raises to `error` make it exit with 1. Pages opt out with [`lint`](/en/guide/frontmatter#lint). Both commands print text by default, accept `--format json` for an array of `{ file, line, column, rule, severity, message }`, and accept `--config <file>`.
+
+```bash
+pnpm exec ardo check
+pnpm exec ardo lint
+```
+
 ## Next Steps
 
 Your site is running. Now make it yours:

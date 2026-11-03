@@ -367,8 +367,8 @@ manifest. Use `enabled: false` only when another link checker owns the build gat
 
 ### validation
 
-- **Type:** `{ frontmatter?: { invalid?: "warn" | "error" | "ignore"; unknown?: "warn" | "error" | "ignore" } }`
-- **Default:** invalid documented fields warn; unknown fields are ignored for compatibility.
+- **Type:** `{ frontmatter?: { invalid?: "warn" | "error" | "ignore"; unknown?: "warn" | "error" | "ignore" }; lint?: { [rule: string]: "warn" | "error" | "ignore" } }`
+- **Default:** invalid documented fields warn; unknown fields are ignored for compatibility; every `lint` rule warns.
 
 Ardo validates its documented frontmatter fields once while it scans route metadata. Diagnostics name
 the source file and never feed malformed values into sidebar, search, sitemap, redirect, or LLM
@@ -388,6 +388,9 @@ defineArdoConfig({
 
 Use `unknown: "warn"` while adopting strict mode in an established documentation set. Keep it at
 the default only when another tool intentionally owns custom frontmatter fields.
+
+`lint` sets the severity of each [`ardo lint`](/en/guide/getting-started#check-and-lint) rule. Only
+`error` makes `ardo lint` exit with 1. Lint never affects `ardo build`.
 
 ### redirects
 

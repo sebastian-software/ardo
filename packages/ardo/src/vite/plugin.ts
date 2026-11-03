@@ -28,6 +28,7 @@ import { resolvePageMarkdownPath } from "./page-markdown"
 import { normalizePath, resolveRoutesDir } from "./path-utils"
 import { createPublicationPlugin } from "./publication-plugin"
 import { readProjectMeta } from "./project-meta"
+import { defineProjectStateReader } from "./project-state"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
 import { createStaticSitePlugin } from "./static-site-plugin"
@@ -154,7 +155,7 @@ function addContentSourcePlugin(
 }
 
 function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugin {
-  return {
+  const plugin: Plugin = {
     name: "ardo",
     enforce: "pre",
     config(userConfig, env): UserConfig {
@@ -222,6 +223,12 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       })
     },
   }
+  defineProjectStateReader(plugin, () =>
+    state.resolvedConfig == null
+      ? undefined
+      : { resolvedConfig: state.resolvedConfig, routesDir: state.routesDir }
+  )
+  return plugin
 }
 
 function createMainConfig(

@@ -34,6 +34,7 @@ import type {
 } from "./types"
 
 import { resolveI18nConfig } from "./i18n"
+import { isLintRuleId, lintRuleIds } from "./lint-rules"
 import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
@@ -168,9 +169,25 @@ function validateConfig(config: ArdoConfig): void {
 
   validateSitemapConfig(config, errors)
   validateAgentSkillsConfig(config, errors)
+  validateLintConfig(config, errors)
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
+  }
+}
+
+function validateLintConfig(config: ArdoConfig, errors: string[]): void {
+  const lint = config.validation?.lint
+  if (lint == null) return
+
+  for (const [rule, level] of Object.entries(lint)) {
+    if (!isLintRuleId(rule)) {
+      errors.push(
+        `validation.lint has unknown rule "${rule}". Use one of: ${lintRuleIds.join(", ")}.`
+      )
+    } else if (level !== "error" && level !== "warn" && level !== "ignore") {
+      errors.push(`validation.lint.${rule} must be "error", "warn", or "ignore".`)
+    }
   }
 }
 
