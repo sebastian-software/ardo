@@ -9039,6 +9039,10 @@ msgstr "Warnings and important limitations"
 msgid "Web"
 msgstr "Web"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "WebMCP (experimental)"
+msgstr "WebMCP (experimental)"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Webpack"
 msgstr "Webpack"
@@ -9202,6 +9206,20 @@ msgstr ""
 "When your package has subpath exports, map each import path to its entry "
 "point. Every page then shows how to import the declaration, and the index "
 "groups the pages by import path:"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Where the browser supports the experimental <0>WebMCP</0> API, the header "
+"search registers a read-only <1/> tool on <2/>. It uses the same index as the "
+"search field, takes a required <3/> string and an optional <4/> from 1 to 20 "
+"(default 5), and returns page titles, section headings, absolute URLs, and "
+"excerpts. Nothing loads until an agent calls the tool."
+msgstr ""
+"Where the browser supports the experimental <0>WebMCP</0> API, the header "
+"search registers a read-only <1/> tool on <2/>. It uses the same index as the "
+"search field, takes a required <3/> string and an optional <4/> from 1 to 20 "
+"(default 5), and returns page titles, section headings, absolute URLs, and "
+"excerpts. Nothing loads until an agent calls the tool."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Whether to show the \"Edit this page\" link."

@@ -258,6 +258,10 @@ Use `search="field"` or `search="icon"` to pick one presentation for every page.
 collapses to the icon when the page frame is below `64rem` (1024px at the default text size). In every mode, ⌘K
 (Ctrl+K on Windows and Linux) opens search.
 
+### WebMCP (experimental)
+
+Where the browser supports the experimental [WebMCP](https://webmachinelearning.github.io/webmcp/) API, the header search registers a read-only `search_documentation` tool on `document.modelContext`. It uses the same index as the search field, takes a required `query` string and an optional `limit` from 1 to 20 (default 5), and returns page titles, section headings, absolute URLs, and excerpts. Nothing loads until an agent calls the tool.
+
 ### Narrow screens
 
 Below a frame width of `64rem` the header keeps only the menu button, the logo, and search, so a long logo still
