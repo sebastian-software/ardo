@@ -3651,6 +3651,20 @@ msgstr "Downloads and exported artifacts"
 msgid "Drop this into any <0/> file — it works immediately:"
 msgstr "Drop this into any <0/> file — it works immediately:"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Each Markdown and MDX page also gets its own file at its URL with <0/> "
+"appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
+"index links to these files, and each one has the same cleaned content as its "
+"section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
+" per-page files."
+msgstr ""
+"Each Markdown and MDX page also gets its own file at its URL with <0/> "
+"appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
+"index links to these files, and each one has the same cleaned content as its "
+"section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
+" per-page files."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "Each page is a directory with an <0/>. Ardo emits internal page links with a "

@@ -155,7 +155,7 @@ defineArdoConfig({
 
 ### seo.llms
 
-- **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; title?: string; description?: string }`
+- **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; pages?: boolean; title?: string; description?: string }`
 - **Default:** `true`
 
 Generates LLM-friendly text artifacts alongside the other build outputs:
@@ -165,6 +165,11 @@ Generates LLM-friendly text artifacts alongside the other build outputs:
   reference. A generated API or OpenAPI reference appears as one link to its index page.
 - `/llms-full.txt` contains every page, in the same order, as one Markdown file. Each page starts
   with a `##` title, and its own headings move one level down.
+
+Each Markdown and MDX page also gets its own file at its URL with `.md` appended, such as
+`/guide/start.md`, or `index.md` inside a directory root such as `/v6/index.md`. The index links to
+these files, and each one has the same cleaned content as its section in `llms-full.txt`. Set
+`pages: false` to keep the index linking to HTML pages and skip the per-page files.
 
 With documentation versioning enabled, Ardo also emits both files under the current version's
 path, such as `/v6/llms.txt` and `/v6/llms-full.txt`. The versioned index links to its versioned

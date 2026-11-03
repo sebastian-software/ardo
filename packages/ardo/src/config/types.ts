@@ -218,6 +218,11 @@ export type LlmsConfig = {
   fullFileName?: string
   /** Generate the full documentation export next to the concise index. */
   includeFull?: boolean
+  /**
+   * Write one Markdown file per page at its URL with `.md` appended (`/guide/start.md`,
+   * `/index.md` for a directory root) and link those from the index. Defaults to `true`.
+   */
+  pages?: boolean
   /** Override the generated document title. Defaults to the site title. */
   title?: string
   /** Override the generated document summary. Defaults to the site description. */
