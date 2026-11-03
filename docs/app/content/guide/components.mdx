@@ -288,7 +288,7 @@ The `ardo:codeblock-highlight` Vite plugin processes ArdoCodeBlock **before the 
 
 The `code` prop and template literal children are also supported:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoCodeBlock code="const x = 42" language="typescript" />
 ```
 
@@ -382,9 +382,15 @@ All 50 Core icons are available automatically. Use their names directly without 
 ```tsx
 import { BookOpen, Rocket, ShieldCheck } from "ardo/icons"
 
-<BookOpen size={20} />
-<Rocket size={28} className="launch-icon" />
-<ShieldCheck size={20} aria-label="Security checks passed" />
+export function ProjectIcons() {
+  return (
+    <>
+      <BookOpen size={20} />
+      <Rocket size={28} className="launch-icon" />
+      <ShieldCheck size={20} aria-label="Security checks passed" />
+    </>
+  )
+}
 ```
 
 The default size is 24 px. Set `size` to a number or CSS length, or pass native `width` and `height` attributes. Icons inherit the surrounding text color. They are decorative by default; supply `aria-label` or `aria-labelledby` when the icon conveys information without accompanying text.
@@ -566,9 +572,13 @@ Use `ArdoContentContainer` inside a full-width section to align its content with
 ```tsx
 import { ArdoContentContainer } from "ardo/ui"
 
-;<section className="feature-band">
-  <ArdoContentContainer width="page">Your section content</ArdoContentContainer>
-</section>
+export default function FeatureSection() {
+  return (
+    <section className="feature-band">
+      <ArdoContentContainer width="page">Your section content</ArdoContentContainer>
+    </section>
+  )
+}
 ```
 
 ## Embeds
