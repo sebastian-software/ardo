@@ -2844,6 +2844,15 @@ msgstr ""
 "Exporte und JSX-Komponenten; React kompiliert das generierte JSX über Vite. "
 "Metadaten stehen in YAML-Frontmatter."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Both commands load the project config and run its plugins, as <0/> does, so "
+"generated pages such as the API reference may be refreshed."
+msgstr ""
+"Beide Befehle laden die Projektkonfiguration und führen ihre Plugins aus, so "
+"wie <0/> es tut. Dabei können generierte Seiten wie die API-Referenz "
+"aktualisiert werden."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Both files can export an object, a promise, or a callback that receives Vite's"

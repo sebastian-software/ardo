@@ -58,6 +58,7 @@ const diagnosticHelp: Record<DiagnosticsCommand, string> = {
 
 Checks the project without building it: the Node.js version against Ardo's engines,
 the project config, and the frontmatter of every page. Exits 1 when any finding is an error.
+It loads the config and runs its plugins, as the build does, so generated pages may be refreshed.
 
 Options:
   --format <text|json>  Output format (default: text)
@@ -71,7 +72,8 @@ missing-description, multiple-h1, heading-skip, code-language, shell-prompt.
 
 Findings are warnings unless validation.lint raises a rule to "error". Only errors make the
 command exit 1, and so does a project that cannot be loaded. A page can turn rules off with
-frontmatter: lint: false, or lint: { disable: [...] }. Lint never affects ardo build.
+frontmatter: lint: false, or lint: { disable: [...] }. Lint never affects ardo build. It loads the config and runs its plugins, as the build does,
+so generated pages may be refreshed.
 
 Options:
   --format <text|json>  Output format (default: text)

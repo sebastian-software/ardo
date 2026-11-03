@@ -2815,6 +2815,15 @@ msgstr ""
 "exports et composants JSX ; React compile le JSX via Vite. Utilisez le "
 "frontmatter YAML pour les métadonnées."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Both commands load the project config and run its plugins, as <0/> does, so "
+"generated pages such as the API reference may be refreshed."
+msgstr ""
+"Les deux commandes chargent la configuration du projet et exécutent ses "
+"plugins, comme le fait <0/>. Les pages générées, comme la référence de "
+"l’API, peuvent ainsi être actualisées."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Both files can export an object, a promise, or a callback that receives Vite's"
