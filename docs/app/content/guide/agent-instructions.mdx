@@ -77,6 +77,12 @@ For an **upgrade**, update the dependency and the documented integration changes
 - Native API documentation is opt-in. Add the pinned compiler, `oxc-parser`, and the `api` option only when the project needs them, with the versions from [API Documentation](/en/guide/api-documentation#installation).
 - Tailwind is optional. Keep the repository's styling choice.
 
+## Add a Feature with a Recipe
+
+`ardo add` prints a Markdown recipe for one common change. The recipes ship inside the installed package, so they match its version. Run `pnpm exec ardo add` to list them and `pnpm exec ardo add <name>` to print one. The command writes no files; hand its output to your agent.
+
+The recipes are `version`, `locale`, and `api-reference`. Each one checks for an existing setup, inspects the project, confirms the plan with you, applies the change, and verifies the build.
+
 ## Validate and Report
 
 Install dependencies with the repository's package manager. Run its applicable typecheck and tests, then build the site. For an existing application, also run the checks that protect its existing routes. If a check is unavailable, say which behavior remains unverified. Use `CI=true` for non-interactive pnpm environments.
