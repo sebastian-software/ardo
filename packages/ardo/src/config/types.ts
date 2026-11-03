@@ -309,6 +309,21 @@ export type ContentValidationConfig = {
 // Page Types
 // =============================================================================
 
+/** Color of a page banner. Uses the same palette as the callout with the same name. */
+export type PageBannerVariant = "danger" | "info" | "note" | "tip" | "warning"
+
+/** Notice above the page content, from the `banner` frontmatter field. */
+export type PageBannerConfig = {
+  /** Plain text shown in the banner. Markdown syntax is not rendered. */
+  content: string
+  /** Defaults to `"info"`. */
+  variant?: PageBannerVariant
+  /** Stable key for dismissal. Required when `dismissible` is true. */
+  id?: string
+  /** Shows a close button that hides the banner for this browser. */
+  dismissible?: boolean
+}
+
 export type PageFrontmatter = {
   title?: string
   description?: string
@@ -343,6 +358,8 @@ export type PageFrontmatter = {
    * Markdown file of its own, so its Copy page and View as Markdown actions are hidden.
    */
   llms?: boolean
+  /** Notice above the page content. A string sets the text; an object sets the variant and dismissal. */
+  banner?: PageBannerConfig
   redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string
   next?: { text: string; link: string } | false | string

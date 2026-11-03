@@ -1,5 +1,6 @@
 import type { PageFrontmatter } from "../config/types"
 import type { RouteIdentity } from "./route-identity"
+import { parsePageBanner } from "./page-banner"
 
 export type PageMetadata = {
   localeId?: string
@@ -36,6 +37,7 @@ const knownFrontmatterFields = new Set([
   "images",
   "feedContent",
   "_ardoPost",
+  "banner",
   "canonical",
   "collapsed",
   "description",
@@ -99,6 +101,7 @@ const structuredFrontmatterNormalizers: Record<
   string,
   (value: unknown) => PageFrontmatterMetadata | undefined
 > = {
+  banner: normalizeBanner,
   contentWidth: (value) =>
     value === "reading" || value === "page" ? { contentWidth: value } : undefined,
   features: (value) => (isFeatures(value) ? { features: value } : undefined),
@@ -152,7 +155,7 @@ export function validatePageFrontmatter(
       diagnostics.push({
         field,
         kind: "invalid",
-        message: `Invalid value for frontmatter field "${field}".`,
+        message: describeInvalidFrontmatterField(field, value),
       })
       continue
     }
@@ -176,6 +179,15 @@ export function createPageMetadata(input: {
     routePath: input.identity.routePath,
     publicPath: input.identity.publicPath,
   }
+}
+
+/** Names the reason for a banner, which has the most detailed rules; other fields use a short message. */
+function describeInvalidFrontmatterField(field: string, value: unknown): string {
+  const parsed = field === "banner" ? parsePageBanner(value) : undefined
+  if (parsed != null && "reason" in parsed) {
+    return `Invalid value for frontmatter field "banner": ${parsed.reason}.`
+  }
+  return `Invalid value for frontmatter field "${field}".`
 }
 
 function normalizeFrontmatterField(
@@ -219,6 +231,11 @@ function normalizeStructuredFrontmatterField(
 ): PageFrontmatterMetadata | undefined {
   if (!(field in structuredFrontmatterNormalizers)) return undefined
   return structuredFrontmatterNormalizers[field](value)
+}
+
+function normalizeBanner(value: unknown): PageFrontmatterMetadata | undefined {
+  const parsed = parsePageBanner(value)
+  return "banner" in parsed ? { banner: parsed.banner } : undefined
 }
 
 function normalizeLayout(value: unknown): PageFrontmatterMetadata | undefined {

@@ -527,6 +527,20 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
+"<0/> shows a notice at the top of a page, such as a release or a maintenance "
+"window. Its <1/> uses the same colors as the callout of that name. Its content"
+" can include formatting and links. The banner is static, so it needs no "
+"JavaScript. To show a dismissible banner from frontmatter instead, see "
+"<2>Frontmatter</2>."
+msgstr ""
+"<0/> muestra un aviso en la parte superior de una página, como una versión o"
+" una ventana de mantenimiento. La opción <1/> usa los mismos colores que el "
+"callout con ese nombre. Su contenido puede incluir formato y enlaces. El "
+"banner es estático y no necesita JavaScript. Para mostrar un banner "
+"descartable desde el frontmatter, consulta <2>Frontmatter</2>."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
 "<0/> shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. "
 "Pass a package name, or several names separated by spaces. Set <1/> to install"
 " a development dependency, and use <2/> to run a package once without "
@@ -695,6 +709,14 @@ msgstr "<0/>: tokens Vanilla Extract para tus estilos."
 msgid "<0/>, which adds <1/> and <2/>"
 msgstr "<0/>, añade <1/> y <2/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: <1/>, <2/>, <3/>, <4/> (default), or <5/>."
+msgstr "<0/>: <1/>, <2/>, <3/>, <4/> (predeterminado) o <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: A stable key, such as <1/>. Required when <2/> is <3/>."
+msgstr "<0/>: una clave estable, como <1/>. Obligatoria cuando <2/> es <3/>."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/>: renders inside the root for a missing page and replaces the root for a "
@@ -702,6 +724,10 @@ msgid ""
 msgstr ""
 "<0/>: dentro de la raíz para páginas ausentes, en su lugar para errores de "
 "render. Predeterminado: <1/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: Required. The text of the banner."
+msgstr "<0/>: obligatorio. El texto del banner."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -721,6 +747,16 @@ msgstr ""
 "<0/>: tipado como <1/> desde <2/>, sin argumentos, devuelve los mismos "
 "descriptores de antes, como <3/>. Elimínalo si solo definía el título del "
 "sitio: las páginas sin <4/> reciben el título de <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"<0/>: When <1/>, a close button hides the banner in that browser. Ardo stores "
+"the choice under the <2/>, so a new <3/> shows the banner again. Without "
+"JavaScript, the banner stays visible."
+msgstr ""
+"<0/>: si es <1/>, un botón de cierre oculta el banner en este navegador. Ardo"
+" guarda la elección con el <2/>, así que un <3/> nuevo vuelve a mostrar el "
+"banner. Sin JavaScript, el banner permanece visible."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -2645,6 +2681,22 @@ msgstr ""
 "<1>Estable</1> <2>Vista previa</2> <3>Obsoleto</3> <4>Referencia</4> <5>Con "
 "icono</5>."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "banner"
+msgstr "banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner"
+msgstr "Banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner content, such as text with a link."
+msgstr "Contenido del banner, por ejemplo texto con un enlace."
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner example"
+msgstr "Ejemplo de banner"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Bare pages (<0/>, including the home page) show a search icon, so the hero's "
@@ -3192,6 +3244,10 @@ msgstr ""
 "procesos habituales de barra lateral, búsqueda, sitemap, redirecciones y "
 "exportaciones para LLM. Las rutas de origen son relativas al proyecto, así "
 "que el módulo virtual no expone las rutas absolutas del autor."
+
+#: docs/app/content/guide/components.mdx
+msgid "Color of the banner. Defaults to <0/>."
+msgstr "Color del banner. El valor predeterminado es <0/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Color scheme"
@@ -7021,6 +7077,14 @@ msgstr ""
 msgid "Saturation"
 msgstr "Saturación"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. <0>Read the banner "
+"options</0>."
+msgstr ""
+"Mantenimiento programado el sábado de 08:00 a 10:00 UTC. <0>Consulta las "
+"opciones del banner</0>."
+
 #: docs/app/content/guide/content-sources.mdx
 msgid "Schema-Backed Collections"
 msgstr "Colecciones con esquema"
@@ -7352,6 +7416,19 @@ msgstr "Disponible"
 #: docs/app/content/guide/configuration.mdx
 msgid "Show line numbers in code blocks."
 msgstr "Muestra números de línea en los bloques de código."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Shows a notice above the page content, without writing MDX. A string sets the "
+"text in the <0/> variant. An object sets the text and the options below. The "
+"banner is plain text: Markdown syntax is shown as written. For links and "
+"formatting, use <1><2/></1> in MDX."
+msgstr ""
+"Muestra un aviso sobre el contenido de la página, sin escribir MDX. Una "
+"cadena de texto establece el texto de la variante <0/>. Un objeto establece el"
+" texto y las opciones siguientes. El banner es texto sin formato: la sintaxis "
+"de Markdown se muestra tal cual. Para enlaces y formato, usa <1><2/></1> en "
+"MDX."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "sidebar"
@@ -8679,6 +8756,10 @@ msgstr "Estilos tipados con Vanilla Extract"
 msgid "Type: <0/>"
 msgstr "Tipo:<0/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Type: <0/> or <1/>"
+msgstr "Tipo: <0/> o <1/>"
+
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "TypeDoc plugins, sorting, category/group order, and Markdown options"
 msgstr "Plugins TypeDoc, orden, categorías, grupos y opciones Markdown"
@@ -9165,6 +9246,11 @@ msgstr "Verificar la actualización"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Version"
 msgstr "Version"
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid "Version 7 is in beta. <0>Read the banner options</0>."
+#~ msgstr "La versión 7 está en beta. <0>Consulta las opciones del banner</0>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Version controls"

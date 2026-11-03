@@ -36,6 +36,10 @@ export type ArdoLabels = {
     label: string
   }
   container: ArdoContainerLabels
+  banner: {
+    /** Accessible name of the close button on a dismissible page banner. */
+    dismiss: string
+  }
   fileTree: {
     /** Accessible name of the file tree list. */
     label: string
@@ -118,6 +122,7 @@ export type ArdoLabelsInput = {
   publication?: Partial<ArdoLabels["publication"]>
   breadcrumb?: Partial<ArdoLabels["breadcrumb"]>
   container?: Partial<ArdoContainerLabels>
+  banner?: Partial<ArdoLabels["banner"]>
   fileTree?: Partial<ArdoLabels["fileTree"]>
   copyButton?: Partial<ArdoLabels["copyButton"]>
   footer?: Partial<ArdoLabels["footer"]>
@@ -162,6 +167,9 @@ export const defaultArdoLabels: ArdoLabels = {
     danger: "DANGER",
     info: "INFO",
     note: "NOTE",
+  },
+  banner: {
+    dismiss: "Dismiss banner",
   },
   fileTree: {
     label: "File tree",
@@ -242,6 +250,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
     publication: { ...defaultArdoLabels.publication, ...input.publication },
     breadcrumb: { ...defaultArdoLabels.breadcrumb, ...input.breadcrumb },
     container: { ...defaultArdoLabels.container, ...input.container },
+    banner: { ...defaultArdoLabels.banner, ...input.banner },
     fileTree: { ...defaultArdoLabels.fileTree, ...input.fileTree },
     copyButton: { ...defaultArdoLabels.copyButton, ...input.copyButton },
     footer: { ...defaultArdoLabels.footer, ...input.footer },

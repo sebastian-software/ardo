@@ -34,6 +34,9 @@ export function translatedLabels(): ArdoLabels {
       info: t`INFO`,
       note: t`NOTE`,
     },
+    banner: {
+      dismiss: t`Dismiss banner`,
+    },
     fileTree: {
       label: t`File tree`,
       folder: t`Folder`,

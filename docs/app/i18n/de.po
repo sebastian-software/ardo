@@ -323,6 +323,10 @@ msgstr "GEFAHR"
 msgid "dark mode included, for fellow night owls"
 msgstr "Dunkelmodus inklusive, für andere Nachteulen"
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Dismiss banner"
+msgstr "Banner schließen"
+
 #: docs/app/i18n/messages.ts
 msgid "docs should live in your repo and go through review"
 msgstr "deine Dokumentation im Repository liegen und durch Reviews gehen soll"

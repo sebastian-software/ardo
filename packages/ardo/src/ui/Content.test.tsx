@@ -31,6 +31,20 @@ function createPageData(frontmatter: PageData["frontmatter"]): PageData {
 }
 
 describe("ArdoContent", () => {
+  it("renders the frontmatter banner above the page heading and body", () => {
+    const view = renderContent(
+      createPageData({
+        banner: { content: "Read the migration guide.", variant: "warning" },
+        title: "Guide",
+      }),
+      <p>Body text.</p>
+    )
+
+    expect(view).toContain("Read the migration guide.")
+    expect(view.indexOf("Read the migration guide.")).toBeLessThan(view.indexOf("Guide</h1>"))
+    expect(view.indexOf("Read the migration guide.")).toBeLessThan(view.indexOf("Body text."))
+  })
+
   it("does not render duplicate lede text when the first paragraph matches description", () => {
     const view = renderContent(
       createPageData({
