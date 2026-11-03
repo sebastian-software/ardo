@@ -8964,6 +8964,10 @@ msgstr "Avertissements et limites"
 msgid "Web"
 msgstr "Web"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "WebMCP (experimental)"
+msgstr "WebMCP (expérimental)"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Webpack"
 msgstr "Webpack"
@@ -9123,6 +9127,21 @@ msgstr ""
 "Pour les exports de sous-chemins, associez chaque chemin à son point "
 "d’entrée. Chaque page indique alors son import, et l’index regroupe les "
 "déclarations par chemin :"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Where the browser supports the experimental <0>WebMCP</0> API, the header "
+"search registers a read-only <1/> tool on <2/>. It uses the same index as the "
+"search field, takes a required <3/> string and an optional <4/> from 1 to 20 "
+"(default 5), and returns page titles, section headings, absolute URLs, and "
+"excerpts. Nothing loads until an agent calls the tool."
+msgstr ""
+"Lorsque le navigateur prend en charge l’API expérimentale <0>WebMCP</0>, la"
+" recherche de l’en-tête enregistre un outil en lecture seule <1/> sur <2/>."
+" Elle utilise le même index que le champ de recherche, accepte une chaîne "
+"<3/> obligatoire et, en option, <4/> de 1 à 20 (par défaut : 5), et renvoie "
+"les titres de pages, les titres de sections, les URL absolues et les extraits."
+" Rien n’est chargé tant qu’un agent n’appelle pas l’outil."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Whether to show the \"Edit this page\" link."

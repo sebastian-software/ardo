@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import { useArdoPath } from "../../runtime/page-context"
+import { useArdoHrefResolver, useArdoPath } from "../../runtime/page-context"
 
 import { useArdoLabels } from "../../runtime/hooks"
+import { useArdoLocale } from "../../runtime/locale"
 import { ChromeIcon } from "../chrome-icons"
 import { joinClassNames } from "../classnames"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch } from "./Search"
 import { getSearchShortcutModifier, isSearchShortcut } from "./search-a11y"
+import { loadSearchIndex } from "./search-index"
 import { getSearchRecoveryQuery } from "./search-recovery"
+import type { ModelContext } from "./search-webmcp"
 
 export type ArdoHeaderSearchProps = {
   /** Placeholder text for the search input */
@@ -52,6 +55,7 @@ export function ArdoHeaderSearch({
     triggerRef,
   })
   useHeaderSearchShortcut({ inlineRef, overlayRef, onActivate, onOpenOverlay: openOverlay })
+  useSearchWebMcp()
 
   return (
     <>
@@ -108,6 +112,38 @@ export function ArdoHeaderSearch({
         )}
     </>
   )
+}
+
+/**
+ * Expose site search to in-browser agents through WebMCP. The tool module is imported only where
+ * the API exists, and effects never run during SSR. Unmount removes the tool.
+ */
+function useSearchWebMcp() {
+  const locale = useArdoLocale()
+  const resolveHref = useArdoHrefResolver()
+  const resolveRef = useRef(resolveHref)
+  useEffect(() => {
+    resolveRef.current = resolveHref
+  })
+  useEffect(() => {
+    const context = (document as Document & { modelContext?: ModelContext }).modelContext
+    if (typeof context?.registerTool !== "function") return
+    const lifetime = new AbortController()
+    void import("./search-webmcp")
+      .then(({ registerSearchWebMcp }) =>
+        registerSearchWebMcp(
+          context,
+          { locale, loadIndex: loadSearchIndex, resolveHref: (to) => resolveRef.current(to) },
+          lifetime.signal
+        )
+      )
+      .catch(() => {
+        // Agent access is optional; the page works without it.
+      })
+    return () => {
+      lifetime.abort()
+    }
+  }, [locale])
 }
 
 /** Overlay open state; closes on navigation. */
