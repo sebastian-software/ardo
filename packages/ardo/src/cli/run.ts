@@ -2,6 +2,7 @@ import { realpathSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { runAddCommand } from "./add"
 import { runCheckCommand } from "./check"
 import { runLintCommand } from "./lint"
 import { CliUsageError, getPreviewHelp, startPreview } from "./preview"
@@ -46,6 +47,7 @@ Commands:
   preview   Preview the built site
   check     Check the Node.js version, config, and page frontmatter without building
   lint      Report opt-in authoring rules for pages
+  add       List or print agent recipes for common changes
   telemetry Manage optional CLI usage reporting
   update-check Check for a newer stable Ardo release
 
@@ -84,6 +86,7 @@ export async function runCli(
     return runGlobalCommand(command, runtime.stdout)
   }
 
+  if (command === "add") return { type: "exit", code: runAddCommand(commandArgs, runtime) }
   if (command === "telemetry") return runTelemetryCommand(commandArgs, runtime)
   if (command === "update-check") return runUpdateCommand(commandArgs, runtime)
   if (command === "check") return runCheckCommand(commandArgs, runtime)

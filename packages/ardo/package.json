@@ -92,6 +92,7 @@
     "CHANGELOG.md",
     "ICONS-LICENSE.md",
     "dist",
+    "recipes",
     "virtual.d.ts",
     "vite-client.d.ts",
     "bin",

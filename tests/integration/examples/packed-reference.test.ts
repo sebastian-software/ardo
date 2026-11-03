@@ -321,6 +321,12 @@ describe("Basic and optional API configuration as packed-package consumers", () 
           fs.readFileSync(path.join(client, "index.html"), "utf8").replace(/<!--.*?-->/gs, "")
         ).toContain("Count: 0")
         run(consumer, ["exec", "ardo", "--version"])
+        // The recipes ship inside the tarball, so the installed CLI lists and prints them.
+        const recipeList = run(consumer, ["exec", "ardo", "add"])
+        for (const name of ["api-reference", "locale", "version"]) {
+          expect(recipeList).toMatch(new RegExp(`^\\s+${name}\\s+\\S`, "mu"))
+        }
+        expect(run(consumer, ["exec", "ardo", "add", "locale"])).toContain("name: locale")
         // TypeScript stays an optional peer: Ardo never installs it for a Basic site.
         expect(installed.dependencies.typescript).toBeUndefined()
         expect(fs.existsSync(path.join(consumer, "node_modules/oxc-parser"))).toBe(false)

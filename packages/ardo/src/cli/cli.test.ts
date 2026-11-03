@@ -206,6 +206,16 @@ describe("Ardo CLI", () => {
     expect(version.trim()).toMatch(/^\d+\.\d+\.\d+/u)
   })
 
+  it("lists agent recipes without usage reporting or Vite", async () => {
+    const { services, options, output } = serviceFixture()
+    const runVite = vi.fn(async () => ({ code: 0 }))
+    expect(await runCli(["add"], { ...options, runVite })).toStrictEqual({ type: "exit", code: 0 })
+    expect(output.join("")).toContain("Available recipes:")
+    expect(runVite).not.toHaveBeenCalled()
+    expect(services.recordInvocation).not.toHaveBeenCalled()
+    expect(services.complete).not.toHaveBeenCalled()
+  })
+
   it("hands build and dev to Vite with the parsed root and options", async () => {
     const calls: Array<{ command: string; args: readonly string[]; cwd: string }> = []
     const outcome = await runCli(["build", "docs", "--mode", "staging"], {
