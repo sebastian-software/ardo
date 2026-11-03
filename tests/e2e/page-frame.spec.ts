@@ -199,24 +199,32 @@ test("reading and reference widths stay bounded inside the full-width shell", as
   const article = page.locator(".ardo-content")
   const reading = (await article.boundingBox())!
   expect(reading.width).toBeCloseTo(648, 0)
-  expect((await page.locator(".ardo-sidebar").first().boundingBox())!.x).toBe(0)
+  const sidebar = (await page.locator(".ardo-sidebar").first().boundingBox())!
+  expect(sidebar.x).toBe(0)
+  // The rail closes the main area on the right, as the sidebar opens it on the left.
   const doc = page.locator(".ardo-doc-page")
+  const docBox = (await doc.boundingBox())!
+  const rail = (await page.locator(".ardo-page-rail").boundingBox())!
+  expect(rail.x + rail.width).toBeCloseTo(docBox.x + docBox.width, 0)
+  // The reading column centers between sidebar and rail.
+  const before = reading.x - docBox.x
+  const after = rail.x - (reading.x + reading.width)
+  expect(after - before).toBeCloseTo(32, 0)
   await doc.evaluate((element) => element.setAttribute("data-content-width", "page"))
-  expect((await article.boundingBox())!.width).toBeGreaterThan(reading.width)
-  expect((await doc.boundingBox())!.width).toBe(1392)
+  expect((await article.boundingBox())!.width).toBe(1392 - 192 - 32)
   expect((await page.locator("[data-ardo-frame]").boundingBox())!.width).toBe(1920)
   await doc.evaluate((element) => {
     element.setAttribute("data-content-width", "reading")
     element.setAttribute("data-rail", "false")
   })
-  expect((await doc.boundingBox())!.width).toBeCloseTo(648, 0)
+  expect((await article.boundingBox())!.width).toBeCloseTo(648, 0)
 })
 
 test("generated API pages use the wider content measure automatically", async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 900 })
   await page.goto("/v6/en/api-reference/functions/useardopage/")
-  const doc = page.locator('.ardo-doc-page[data-content-width="page"]')
-  expect((await doc.boundingBox())!.width).toBe(1392)
+  await expect(page.locator('.ardo-doc-page[data-content-width="page"]')).toBeVisible()
+  expect((await page.locator(".ardo-content").boundingBox())!.width).toBe(1392 - 192 - 32)
   await expect(page.locator(".ardo-page-rail")).toBeVisible()
 })
 

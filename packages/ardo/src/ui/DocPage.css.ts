@@ -5,17 +5,18 @@ import { compactFrame, frameResponsive, narrowFrame, wideFrame } from "./page-fr
 
 /**
  * 3-column layout: Sidebar (fixed) | Content (fluid) | TOC (fixed)
+ *
+ * The grid spans the main area so the rail sits at its right edge, mirroring
+ * the sidebar on the left. The article keeps its own measure and centers in
+ * the space between them.
  */
 export const docPage = style({
   display: "grid",
   flex: 1,
   minWidth: 0,
   width: "100%",
-  maxWidth: `calc(${vars.layout.contentMaxWidth} + ${vars.layout.tocWidth} + ${vars.space.xl})`,
   gridTemplateColumns: `minmax(0, 1fr) ${vars.layout.tocWidth}`,
-  justifyContent: "start",
   gap: vars.space.xl,
-  margin: "0 auto",
   paddingTop: vars.space["2xl"],
   // Breathing room before the footer band on tall pages; on short pages the
   // grid's flex: 1 grows and the footer sits at the bottom of the viewport.
@@ -23,17 +24,11 @@ export const docPage = style({
   selectors: {
     '&[data-rail="false"]': {
       gridTemplateColumns: "minmax(0, 1fr)",
-      maxWidth: vars.layout.contentMaxWidth,
-    },
-    '&[data-content-width="page"]': { maxWidth: vars.layout.pageMaxWidth },
-    '&[data-content-width="page"][data-rail="false"]': {
-      maxWidth: vars.layout.pageMaxWidth,
     },
   },
   ...frameResponsive({
     [narrowFrame]: {
       gridTemplateColumns: "minmax(0, 1fr)",
-      maxWidth: vars.layout.contentMaxWidth,
     },
     [compactFrame]: {
       paddingTop: vars.space.xl,
@@ -45,6 +40,19 @@ export const contentContainer = style({
   minWidth: 0,
   width: "100%",
   maxWidth: "100%",
+  selectors: {
+    [`${docPage} > &`]: {
+      maxWidth: vars.layout.contentMaxWidth,
+      marginInline: "auto",
+    },
+    // Wide reference pages share the page container's width with the rail.
+    [`${docPage}[data-content-width="page"] > &`]: {
+      maxWidth: `calc(${vars.layout.pageMaxWidth} - ${vars.layout.tocWidth} - ${vars.space.xl})`,
+    },
+    [`${docPage}[data-content-width="page"][data-rail="false"] > &`]: {
+      maxWidth: vars.layout.pageMaxWidth,
+    },
+  },
 })
 
 export const contentHeader = style({

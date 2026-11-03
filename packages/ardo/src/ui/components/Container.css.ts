@@ -47,7 +47,12 @@ export const container = recipe({
 export const containerIcon = recipe({
   base: {
     flexShrink: 0,
-    marginTop: "0.125rem",
+    display: "flex",
+    alignItems: "center",
+    // One line of callout text tall, so the icon centers on the first line.
+    fontSize: vars.fontSize.base,
+    lineHeight: vars.font.lineHeight,
+    height: "1lh",
   },
   variants: {
     type: {
@@ -64,15 +69,17 @@ export const containerBody = style({
   flex: 1,
   minWidth: 0,
   color: vars.color.text,
-  fontSize: vars.fontSize.sm,
-  lineHeight: 1.6,
+  // Callouts hold prose, so title and text use the reading size of the page.
+  fontSize: vars.fontSize.base,
+  lineHeight: vars.font.lineHeight,
 })
 
 export const containerTitle = recipe({
   base: {
     fontWeight: 600,
-    fontSize: vars.fontSize.sm,
-    marginBottom: vars.space.xs,
+    fontSize: "inherit",
+    lineHeight: "inherit",
+    margin: `0 0 ${vars.space.xs}`,
   },
   variants: {
     type: {
