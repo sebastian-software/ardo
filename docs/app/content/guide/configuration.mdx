@@ -365,6 +365,25 @@ defineArdoConfig({
 Use `checkAnchors: false` when another tool rewrites heading ids after Ardo has read the route
 manifest. Use `enabled: false` only when another link checker owns the build gate.
 
+### navigation
+
+- **Type:** `{ viewTransitions?: boolean; speculation?: false | "prefetch" | "prerender" }`
+- **Default:** both off
+
+Every link loads a full page. `viewTransitions: true` cross-fades between pages with a
+cross-document view transition, which skips readers who prefer reduced motion. `speculation`
+starts loading a page when the pointer rests on its link: `"prefetch"` downloads the HTML, and
+`"prerender"` also renders it, so the click shows it at once. Speculation runs in production
+builds only, and skips links with `download`, `target`, or `data-ardo-no-speculation`. Neither
+option adds client JavaScript, and browsers without support navigate as before.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  navigation: { viewTransitions: true, speculation: "prerender" },
+})
+```
+
 ### validation
 
 - **Type:** `{ frontmatter?: { invalid?: "warn" | "error" | "ignore"; unknown?: "warn" | "error" | "ignore" }; lint?: { [rule: string]: "warn" | "error" | "ignore" } }`

@@ -79,6 +79,7 @@ export default defineConfig({
         // Publish the repository's agent skills at /.well-known/agent-skills/.
         agentSkills: { directory: "../skills" },
       },
+      navigation: { viewTransitions: true, speculation: "prerender" },
       publication: {
         from: "posts",
         name: "Ardo News",

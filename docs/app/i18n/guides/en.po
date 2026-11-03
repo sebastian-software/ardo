@@ -991,6 +991,10 @@ msgid "<0>Default:</0> automatic"
 msgstr "<0>Default:</0> automatic"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> both off"
+msgstr "<0>Default:</0> both off"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> disabled"
 msgstr "<0>Default:</0> disabled"
 
@@ -4114,6 +4118,24 @@ msgstr ""
 "router to configure, and the build checks that every internal link points to a"
 " page that exists."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Every link loads a full page. <0/> cross-fades between pages with a "
+"cross-document view transition, which skips readers who prefer reduced motion."
+" <1/> starts loading a page when the pointer rests on its link: <2/> downloads"
+" the HTML, and <3/> also renders it, so the click shows it at once. "
+"Speculation runs in production builds only, and skips links with <4/>, <5/>, "
+"or <6/>. Neither option adds client JavaScript, and browsers without support "
+"navigate as before."
+msgstr ""
+"Every link loads a full page. <0/> cross-fades between pages with a "
+"cross-document view transition, which skips readers who prefer reduced motion."
+" <1/> starts loading a page when the pointer rests on its link: <2/> downloads"
+" the HTML, and <3/> also renders it, so the click shows it at once. "
+"Speculation runs in production builds only, and skips links with <4/>, <5/>, "
+"or <6/>. Neither option adds client JavaScript, and browsers without support "
+"navigate as before."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Every token is also a CSS variable, such as <0/> or <1/>, so a plain "
@@ -6037,6 +6059,10 @@ msgstr "Native Markdown syntax"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Native TypeScript + OXC"
 msgstr "Native TypeScript + OXC"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "navigation"
+msgstr "navigation"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

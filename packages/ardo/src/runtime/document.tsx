@@ -32,6 +32,12 @@ export function ArdoHead() {
       {document.modulePreloads.map((href) => (
         <link key={href} rel="modulepreload" href={href} />
       ))}
+      {document.navigation?.viewTransitionCss != null && (
+        <style>{document.navigation.viewTransitionCss}</style>
+      )}
+      {document.navigation?.speculationRules != null && (
+        <JsonScript type="speculationrules" value={document.navigation.speculationRules} />
+      )}
     </>
   )
 }
@@ -46,12 +52,7 @@ export function ArdoScripts() {
 function MetaTag({ descriptor }: { descriptor: ArdoMetaDescriptor }) {
   if ("title" in descriptor) return <title>{descriptor.title}</title>
   if ("script:ld+json" in descriptor) {
-    return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(descriptor["script:ld+json"]) }}
-      />
-    )
+    return <JsonScript type="application/ld+json" value={descriptor["script:ld+json"]} />
   }
   if ("charSet" in descriptor) return <meta charSet={descriptor.charSet} />
   if ("tagName" in descriptor) {
@@ -59,4 +60,9 @@ function MetaTag({ descriptor }: { descriptor: ArdoMetaDescriptor }) {
     return tagName === "link" ? <link {...attributes} /> : <meta {...attributes} />
   }
   return <meta {...descriptor} />
+}
+
+/** A JSON data script. The serializer escapes `<`, so the data cannot close the element. */
+function JsonScript({ type, value }: { type: string; value: unknown }) {
+  return <script type={type} dangerouslySetInnerHTML={{ __html: serializeJsonLd(value) }} />
 }

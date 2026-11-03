@@ -41,12 +41,14 @@ const budgets = {
     // Largest union of HTML-referenced JS for one locale. Catalogs are
     // checked separately because the active catalog loads before hydration.
     label: "largest locale eager JS gzip",
-    // 2026-11: +≈11 KB per locale for the Embed, FileTree, and PackageManagers API pages,
-    // their shared component code, and the longer component gallery. Measured before this
-    // change at ≈633 KB per locale (de), so the budget keeps about 3% headroom above ≈644 KB.
-    budget: 680_000,
+    // Every page's MDX and every generated API page add a chunk, and the route table in the
+    // entry grows with them, so this metric follows the amount of documentation.
+    // 2026-11: raised from 680 KB after Banner, ardo add, ardo check and lint, and the
+    // navigation option brought the docs to ≈666 KB (de, local build; CI measures ≈2 KB less).
+    // The new NavigationConfig API page alone is ≈2 KB per locale.
+    budget: 700_000,
     baseline:
-      "≈644 KB per locale (2026-11, four-locale docs with the Embed, FileTree, and PackageManagers API pages)",
+      "≈666 KB per locale (2026-11, four-locale docs with the Banner, check, lint, add, and navigation docs)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately

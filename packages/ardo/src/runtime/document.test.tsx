@@ -32,6 +32,34 @@ describe("ArdoHead JSON-LD", () => {
   })
 })
 
+describe("ArdoHead navigation", () => {
+  it("renders the view transition style and the speculation rules", () => {
+    const html = renderToStaticMarkup(
+      <ArdoDocumentProvider
+        value={{
+          meta: [],
+          stylesheets: [],
+          modulePreloads: [],
+          navigation: {
+            viewTransitionCss: "@view-transition{navigation:auto}",
+            speculationRules: { prefetch: [{ where: { selector_matches: "a[href^='/']" } }] },
+          },
+        }}
+      >
+        <ArdoHead />
+      </ArdoDocumentProvider>
+    )
+
+    expect(html).toBe(
+      '<style>@view-transition{navigation:auto}</style><script type="speculationrules">{"prefetch":[{"where":{"selector_matches":"a[href^=\'/\']"}}]}</script>'
+    )
+  })
+
+  it("renders neither without the navigation option", () => {
+    expect(renderHead([])).toBe("")
+  })
+})
+
 describe("serializeJsonLd", () => {
   it("escapes HTML-sensitive and line separator characters as JSON unicode escapes", () => {
     // U+2028 and U+2029 as decimal code units: 8232 and 8233.

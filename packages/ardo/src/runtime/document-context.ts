@@ -1,5 +1,6 @@
 import { createContext } from "react"
 
+import type { ArdoNavigationHead } from "./navigation"
 import type { ArdoMetaDescriptor } from "./page-context"
 
 /** Everything the HTML shell needs that only the renderer knows. */
@@ -16,6 +17,8 @@ export type ArdoDocument = {
   lang?: string
   /** Deployment root containing generated icon files. */
   iconBasePath?: string
+  /** View transition styles and speculation rules from the `navigation` option. */
+  navigation?: ArdoNavigationHead
 } & ArdoDocumentIcons
 
 /** Icon URLs the page passed to `ArdoRoot`, usually imported assets. */

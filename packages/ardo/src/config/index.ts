@@ -16,6 +16,7 @@ import type {
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  NavigationConfig,
   OpenApiConfig,
   PageData,
   PageFrontmatter,
@@ -35,6 +36,7 @@ import type {
 
 import { resolveI18nConfig } from "./i18n"
 import { isLintRuleId, lintRuleIds } from "./lint-rules"
+import { validateNavigationConfig } from "./navigation"
 import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
@@ -69,6 +71,7 @@ export type {
   LlmsConfig,
   MarkdownConfig,
   MetadataConfig,
+  NavigationConfig,
   OpenApiConfig,
   PageData,
   PageFrontmatter,
@@ -133,6 +136,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     head: config.head ?? [],
     seo: config.seo ?? {},
     linkCheck: config.linkCheck ?? {},
+    navigation: config.navigation ?? {},
     redirects: config.redirects ?? [],
     validation: config.validation ?? {},
     openapi: config.openapi,
@@ -170,6 +174,7 @@ function validateConfig(config: ArdoConfig): void {
   validateSitemapConfig(config, errors)
   validateAgentSkillsConfig(config, errors)
   validateLintConfig(config, errors)
+  validateNavigationConfig(config, errors)
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)

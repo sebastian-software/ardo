@@ -167,6 +167,8 @@ export type ArdoConfig = {
   seo?: SeoConfig
   /** Build-time internal link checking */
   linkCheck?: LinkCheckConfig
+  /** Page transitions and speculative loading of linked pages */
+  navigation?: NavigationConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
   /** Build-time validation policy for content metadata. */
@@ -274,6 +276,21 @@ export type ContentSignalsConfig = {
   aiInput?: boolean
   /** Use of content to train AI models. */
   aiTrain?: boolean
+}
+
+/** How the browser moves between pages. Every link still loads a full document. */
+export type NavigationConfig = {
+  /**
+   * Cross-fade between pages with cross-document view transitions. Browsers without support,
+   * and readers who prefer reduced motion, navigate without the animation.
+   */
+  viewTransitions?: boolean
+  /**
+   * Start loading a linked page while the pointer rests on its link, with the Speculation Rules
+   * API. `"prefetch"` downloads the document; `"prerender"` also renders it. Production builds
+   * only.
+   */
+  speculation?: false | "prefetch" | "prerender"
 }
 
 export type LinkCheckConfig = {
@@ -431,6 +448,8 @@ export type ResolvedConfig = {
   contentDir: string
   /** Optional for compatibility with manually constructed test/config fixtures. */
   validation?: ContentValidationConfig
+  /** Optional for the same reason as `validation`. */
+  navigation?: NavigationConfig
   openapi?: OpenApiConfig
   /**
    * Absolute URL of `/.well-known/ard.json`. Set only when discovery files are published, so a
@@ -440,6 +459,13 @@ export type ResolvedConfig = {
 } & Required<
   Omit<
     ArdoConfig,
-    "buildHash" | "buildTime" | "openapi" | "project" | "publication" | "validation" | "vite"
+    | "buildHash"
+    | "buildTime"
+    | "navigation"
+    | "openapi"
+    | "project"
+    | "publication"
+    | "validation"
+    | "vite"
   >
 >
