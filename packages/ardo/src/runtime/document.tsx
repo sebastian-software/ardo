@@ -3,6 +3,7 @@ import { type ReactNode, use } from "react"
 import type { ArdoMetaDescriptor } from "./page-context"
 
 import { ArdoDocumentContext, type ArdoDocument } from "./document-context"
+import { serializeJsonLd } from "./json-ld"
 
 export type { ArdoDocument } from "./document-context"
 
@@ -44,6 +45,14 @@ export function ArdoScripts() {
 
 function MetaTag({ descriptor }: { descriptor: ArdoMetaDescriptor }) {
   if ("title" in descriptor) return <title>{descriptor.title}</title>
+  if ("script:ld+json" in descriptor) {
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(descriptor["script:ld+json"]) }}
+      />
+    )
+  }
   if ("charSet" in descriptor) return <meta charSet={descriptor.charSet} />
   if ("tagName" in descriptor) {
     const { tagName, ...attributes } = descriptor

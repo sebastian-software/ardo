@@ -1508,6 +1508,17 @@ msgstr "Ajoute ou remplace les composants Markdown et leur wrapper."
 msgid "Additional CSS class."
 msgstr "Classe CSS supplémentaire."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Adds a <0/> JSON-LD block to Markdown and MDX pages with a <1/>, so search "
+"engines can read the title, description, canonical URL, and site name. Ardo "
+"writes the block only when <2/> is set, because its URLs must be absolute."
+msgstr ""
+"Ajoute un bloc JSON-LD de type <0/> aux pages Markdown et MDX qui ont un <1/>,"
+" pour que les moteurs de recherche puissent lire le titre, la description, "
+"l'URL canonique et le nom du site. Ardo n'écrit ce bloc que si <2/> est "
+"défini, car ses URL doivent être absolues."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "After:"
 msgstr "Après :"
@@ -6893,6 +6904,10 @@ msgstr "Choisissez les fonctionnalités optionnelles selon les besoins :"
 #: docs/app/content/guide/releases/index.mdx
 msgid "SEO build outputs"
 msgstr "Sorties SEO"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "seo.jsonLd"
+msgstr "seo.jsonLd"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "seo.llms"

@@ -209,6 +209,8 @@ export type SeoConfig = {
   llms?: boolean | LlmsConfig
   sitemap?: boolean | SitemapConfig
   robots?: boolean | RobotsConfig
+  /** Add a `TechArticle` JSON-LD block to Markdown pages when `siteUrl` is set. Default: true. */
+  jsonLd?: boolean
 }
 
 export type LlmsConfig = {

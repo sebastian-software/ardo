@@ -245,6 +245,23 @@ defineArdoConfig({
 
 Set `seo.robots: false` if you want to provide your own `robots.txt` from `public/`.
 
+### seo.jsonLd
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Adds a `TechArticle` JSON-LD block to Markdown and MDX pages with a `title`, so search engines can read the title, description, canonical URL, and site name. Ardo writes the block only when `siteUrl` is set, because its URLs must be absolute.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    jsonLd: false,
+  },
+})
+```
+
 ### linkCheck
 
 - **Type:** `{ enabled?: boolean; checkAnchors?: boolean; exclude?: string[]; level?: "warn" | "error" }`
