@@ -23,6 +23,7 @@ const optionNames = {
   metadata: true,
   seo: true,
   linkCheck: true,
+  navigation: true,
   redirects: true,
   validation: true,
   versioning: true,

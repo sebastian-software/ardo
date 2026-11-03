@@ -9,6 +9,7 @@ import type { ResolvedConfig } from "../config/types"
 import { ArdoApp } from "../runtime/app"
 import { ArdoDocumentProvider } from "../runtime/document"
 import { type ArdoDocumentIcons, ArdoDocumentIconsContext } from "../runtime/document-context"
+import { resolveNavigationHead } from "../runtime/navigation"
 import {
   ARDO_APP_ELEMENT_ID,
   ARDO_PAGE_DATA_ATTRIBUTE,
@@ -63,6 +64,10 @@ export async function renderPage(
   }
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
+  const navigation = resolveNavigationHead(config.navigation, {
+    deploymentBase: config.deploymentBase,
+    dev: import.meta.env.DEV,
+  })
 
   const locale = applyLocaleMetadata(page, config, {
     path: page.data.path,
@@ -83,6 +88,7 @@ export async function renderPage(
         stylesheets: assets.stylesheets,
         lang: locale ?? config.lang,
         iconBasePath: config.deploymentBase,
+        ...(navigation === undefined ? {} : { navigation }),
         ...icons,
       }}
     >

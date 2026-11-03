@@ -982,6 +982,10 @@ msgid "<0>Default:</0> automatic"
 msgstr "<0>Défaut :</0> automatique"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> both off"
+msgstr "<0>Par défaut :</0> les deux désactivés"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> disabled"
 msgstr "<0>Par défaut :</0> désactivé"
 
@@ -4074,6 +4078,26 @@ msgstr ""
 "interactives s’hydratent dans le navigateur. Aucun routeur client à "
 "configurer, et le build vérifie les destinations internes."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Every link loads a full page. <0/> cross-fades between pages with a "
+"cross-document view transition, which skips readers who prefer reduced motion."
+" <1/> starts loading a page when the pointer rests on its link: <2/> downloads"
+" the HTML, and <3/> also renders it, so the click shows it at once. "
+"Speculation runs in production builds only, and skips links with <4/>, <5/>, "
+"or <6/>. Neither option adds client JavaScript, and browsers without support "
+"navigate as before."
+msgstr ""
+"Chaque lien charge une page complète. <0/> fait un fondu entre les pages avec"
+" une transition de vue entre documents, sauf pour les lecteurs qui préfèrent"
+" réduire les animations. <1/> commence à charger une page dès que le "
+"pointeur s’attarde sur son lien : <2/> télécharge le HTML, et <3/> "
+"l’affiche aussi en arrière-plan, si bien qu’elle apparaît dès le clic. "
+"Le chargement spéculatif ne fonctionne que dans les builds de production et "
+"ignore les liens avec <4/>, <5/> ou <6/>. Aucune des deux options n’ajoute "
+"de JavaScript côté client, et les navigateurs qui ne les prennent pas en "
+"charge naviguent comme avant."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Every token is also a CSS variable, such as <0/> or <1/>, so a plain "
@@ -5979,6 +6003,10 @@ msgstr "Syntaxe Markdown native"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Native TypeScript + OXC"
 msgstr "TypeScript natif et OXC"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "navigation"
+msgstr "navigation"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
