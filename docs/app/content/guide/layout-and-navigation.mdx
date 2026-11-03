@@ -223,16 +223,22 @@ Use `ArdoHeader` for the default responsive header. Put `ArdoNav` links directly
 
 ```tsx
 import { ArdoHeader, ArdoHeaderActions, ArdoNav, ArdoNavLink, ArdoSocialLink } from "ardo/ui"
+
 import logo from "./assets/logo.svg"
-;<ArdoHeader logo={logo} title="My Docs" searchPlaceholder="Search documentation...">
-  <ArdoNav>
-    <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
-    <ArdoNavLink to="/api-reference">API</ArdoNavLink>
-  </ArdoNav>
-  <ArdoHeaderActions>
-    <ArdoSocialLink href="https://github.com/example/project" icon="github" />
-  </ArdoHeaderActions>
-</ArdoHeader>
+
+export function SiteHeader() {
+  return (
+    <ArdoHeader logo={logo} title="My Docs" searchPlaceholder="Search documentation...">
+      <ArdoNav>
+        <ArdoNavLink to="/guide/getting-started">Guide</ArdoNavLink>
+        <ArdoNavLink to="/api-reference">API</ArdoNavLink>
+      </ArdoNav>
+      <ArdoHeaderActions>
+        <ArdoSocialLink href="https://github.com/example/project" icon="github" />
+      </ArdoHeaderActions>
+    </ArdoHeader>
+  )
+}
 ```
 
 The `logo` passed to `ArdoRoot` reaches the header and the mobile menu unless the header sets its
@@ -304,17 +310,21 @@ that alignment. Its `width="reading"` option creates a prose column instead.
 ```tsx
 import { ArdoContentContainer } from "ardo/ui"
 
-;<section className="feature-band">
-  <ArdoContentContainer>
-    <h2>Built for your project</h2>
-    <p>Section backgrounds can span the screen while content stays bounded.</p>
-  </ArdoContentContainer>
-</section>
+export default function FeatureSection() {
+  return (
+    <section className="feature-band">
+      <ArdoContentContainer>
+        <h2>Built for your project</h2>
+        <p>Section backgrounds can span the screen while content stays bounded.</p>
+      </ArdoContentContainer>
+    </section>
+  )
+}
 ```
 
 Both widths are theme tokens, so a site can change them without replacing the shell:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot theme={{ tokens: { layout: { pageMaxWidth: "80rem", contentMaxWidth: "38em" } } }}>
   {/* Header, sidebar, footer */}
 </ArdoRoot>
@@ -330,7 +340,7 @@ widths of `80rem` and `90rem`. Headings and larger spacing tokens grow within th
 navigation and code keep their compact sizes. Ardo leaves the root font size to the reader.
 Custom theme tokens can replace any of these values, including with fixed sizes:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot theme={{ tokens: { fontSize: { base: "1rem" }, space: { xl: "2rem" } } }} />
 ```
 
@@ -353,26 +363,36 @@ props create the rail item, and the section children create the panel.
 ```tsx
 import { ArdoGeneratedSidebar, ArdoSidebar, ArdoSidebarSection } from "ardo/ui"
 import { BookOpen, Code } from "ardo/icons"
-;<ArdoSidebar>
-  <ArdoSidebarSection
-    id="guide"
-    label="Guide"
-    to="/guide/getting-started"
-    icon={<BookOpen size={18} />}
-  >
-    <ArdoGeneratedSidebar section="guide" />
-  </ArdoSidebarSection>
 
-  <ArdoSidebarSection id="api-reference" label="API" to="/api-reference" icon={<Code size={18} />}>
-    <ArdoGeneratedSidebar section="api-reference" />
-  </ArdoSidebarSection>
-</ArdoSidebar>
+export function SiteSidebar() {
+  return (
+    <ArdoSidebar>
+      <ArdoSidebarSection
+        id="guide"
+        label="Guide"
+        to="/guide/getting-started"
+        icon={<BookOpen size={18} />}
+      >
+        <ArdoGeneratedSidebar section="guide" />
+      </ArdoSidebarSection>
+
+      <ArdoSidebarSection
+        id="api-reference"
+        label="API"
+        to="/api-reference"
+        icon={<Code size={18} />}
+      >
+        <ArdoGeneratedSidebar section="api-reference" />
+      </ArdoSidebarSection>
+    </ArdoSidebar>
+  )
+}
 ```
 
 `ArdoGeneratedSidebar` renders the Markdown and API navigation generated from route files for the
 given top-level section. For fully manual navigation, compose links and groups directly:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
   <ArdoSidebarGroup title="Guide">
     <ArdoSidebarLink to="/guide/getting-started">Getting Started</ArdoSidebarLink>
@@ -385,7 +405,7 @@ given top-level section. For fully manual navigation, compose links and groups d
 
 Pass `ArdoFooter` as a child of `ArdoRoot`.
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoFooter
   sponsor={{ text: "Example Co", link: "https://example.com" }}
   message="Released under the MIT License."
@@ -398,7 +418,7 @@ Pass `ArdoFooter` as a child of `ArdoRoot`.
 `editLink` and `lastUpdated` are site-wide content settings. Ardo applies them to Markdown and MDX
 document pages, and page frontmatter can opt out with `editLink: false` or `lastUpdated: false`.
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot
   editLink={{
     pattern: "https://github.com/example/project/edit/main/docs/app/routes/:path",

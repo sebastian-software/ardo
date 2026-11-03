@@ -149,7 +149,9 @@ Code can be provided as plain text children, template literal children, or via t
 ```tsx
 import { ArdoCodeBlock } from "ardo/ui"
 
-;<ArdoCodeBlock language="typescript">const x = 42</ArdoCodeBlock>
+export default function MyPage() {
+  return <ArdoCodeBlock language="typescript">const x = 42</ArdoCodeBlock>
+}
 ```
 
 For fully dynamic code, use the `highlightCode` utility from `ardo/vite` at build time:

@@ -48,7 +48,7 @@ Ardo's config file holds no colors or assets. It covers what the build needs: ti
 
 `color`, `accent`, and `neutral` take a preset name or an OKLCH hue angle from `0` to `360`:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot theme={{ color: 240, accent: 170, neutral: 260 }} />
 ```
 
@@ -60,7 +60,7 @@ Without `accent`, Ardo picks a complement of `color`. Without `neutral`, the chr
 
 `chroma` sets how saturated the hue-derived colors are. `1` keeps Ardo's palette, lower values calm it down, and `0` turns a role gray. A number applies to `color` and `accent`; the object form sets each role, `neutral` included:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot
   theme={{
     color: "green",
@@ -77,7 +77,7 @@ Values above `1` push some hues, such as teal, outside the sRGB gamut, so check 
 
 Callouts keep their own hues, so a warning still reads as a warning next to any brand. When a callout hue clashes with your accent, move it with `status`. Ardo derives text, surface, and border for both color schemes:
 
-```tsx
+```tsx title="JSX excerpt"
 <ArdoRoot theme={{ accent: 38, status: { warning: 72 } }} />
 ```
 
