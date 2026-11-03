@@ -61,7 +61,7 @@ export default defineConfig({
     },
     {
       name: "mobile-webkit",
-      testMatch: ["**/mobile-news.spec.ts", "**/page-frame.spec.ts"],
+      testMatch: ["**/mobile-home.spec.ts", "**/mobile-news.spec.ts", "**/page-frame.spec.ts"],
       use: { ...devices["iPhone 13"], browserName: "webkit" },
     },
   ],

@@ -87,12 +87,16 @@ globalStyle(`${page} mark`, {
 export const wrap = style({
   maxWidth: `calc(${vars.layout.pageMaxWidth} + 2 * ${vars.space.lg})`,
   margin: "0 auto",
-  padding: `0 ${vars.space.lg}`,
+  paddingInline: vars.space.lg,
   boxSizing: "border-box",
-  "@media": { "(max-width: 768px)": { padding: `0 ${vars.space.md}` } },
+  "@media": { "(max-width: 768px)": { paddingInline: vars.space.md } },
 })
 
-export const section = style({ paddingTop: "104px", paddingBottom: "40px" })
+export const section = style({
+  paddingTop: "104px",
+  paddingBottom: "40px",
+  "@media": { "(max-width: 768px)": { paddingTop: "72px", paddingBottom: "24px" } },
+})
 
 export const displayFont = style({
   fontFamily: display,
@@ -527,7 +531,10 @@ export const peeking = style({
 
 const columns = (min: string) => `repeat(auto-fit, minmax(min(${min}, 100%), 1fr))`
 
-export const sectionTight = style({ paddingTop: "48px" })
+export const sectionTight = style({
+  paddingTop: "48px",
+  "@media": { "(max-width: 768px)": { paddingTop: "32px" } },
+})
 
 export const hero = style({
   display: "flex",
