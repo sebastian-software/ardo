@@ -75,6 +75,10 @@ export default defineConfig({
       description:
         "React docs, baked into plain HTML. Ardo is a static site generator for React projects: guides in Markdown and MDX, an API reference read from your TypeScript, and search, all prerendered at build time.",
       siteUrl: "https://ardo-docs.dev",
+      seo: {
+        // Publish the repository's agent skills at /.well-known/agent-skills/.
+        agentSkills: { directory: "../skills" },
+      },
       publication: {
         from: "posts",
         name: "Ardo News",

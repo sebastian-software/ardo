@@ -2,6 +2,7 @@ import path from "node:path"
 import { URL } from "node:url"
 
 import type {
+  AgentSkillsConfig,
   ArdoConfig,
   ContentValidationConfig,
   DiagnosticLevel,
@@ -33,7 +34,7 @@ import type {
 
 import { resolveI18nConfig } from "./i18n"
 import { validateOpenApiConfig } from "./openapi"
-import { validateSitemapConfig } from "./seo"
+import { validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
@@ -52,6 +53,7 @@ export type {
 } from "../publication/types"
 
 export type {
+  AgentSkillsConfig,
   ArdoConfig,
   ContentValidationConfig,
   DiagnosticLevel,
@@ -154,6 +156,7 @@ function validateConfig(config: ArdoConfig): void {
   validateOpenApiConfig(config, errors)
 
   validateSitemapConfig(config, errors)
+  validateAgentSkillsConfig(config, errors)
 
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)

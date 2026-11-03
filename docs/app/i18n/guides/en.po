@@ -1421,6 +1421,20 @@ msgstr ""
 "render. This module is only included in the server bundle. Metadata resolution"
 " and suspended React components run inside the same context:"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A skill's frontmatter must have a <0/> that matches its folder name, using "
+"lowercase letters, digits, and single hyphens, and a non-empty <1/>. Ardo "
+"skips any folder that breaks these rules and reports it as a build warning "
+"that names the folder and the rule. Only single-file skills are published for "
+"now: a folder with other files, such as <2/>, is skipped with a warning."
+msgstr ""
+"A skill's frontmatter must have a <0/> that matches its folder name, using "
+"lowercase letters, digits, and single hyphens, and a non-empty <1/>. Ardo "
+"skips any folder that breaks these rules and reports it as a build warning "
+"that names the folder and the rule. Only single-file skills are published for "
+"now: a folder with other files, such as <2/>, is skipped with a warning."
+
 #: docs/app/content/guide/components.mdx
 msgid "A standalone accordion can start open:"
 msgstr "A standalone accordion can start open:"
@@ -6584,6 +6598,18 @@ msgstr ""
 msgid "Publish static files"
 msgstr "Publish static files"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Publishes <0>Agent Skills</0> from a folder of skills. Each <1/> becomes <2/>,"
+" and <3/> lists them with a SHA-256 digest of each file. The folder is "
+"resolved from the project root, next to <4/>. If it does not exist, Ardo "
+"publishes nothing."
+msgstr ""
+"Publishes <0>Agent Skills</0> from a folder of skills. Each <1/> becomes <2/>,"
+" and <3/> lists them with a SHA-256 digest of each file. The folder is "
+"resolved from the project root, next to <4/>. If it does not exist, Ardo "
+"publishes nothing."
+
 #: docs/app/content/guide/components.mdx
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Purpose"
@@ -7182,6 +7208,10 @@ msgid "SEO build outputs"
 msgstr "SEO build outputs"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "seo.agentSkills"
+msgstr "seo.agentSkills"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "seo.jsonLd"
 msgstr "seo.jsonLd"
 
@@ -7288,6 +7318,10 @@ msgid ""
 msgstr ""
 "Set <0/> to hide the outline of this page. Which heading levels the outline "
 "lists is a site-wide setting, <1><2/></1> in <3/>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid "Set <0/> to publish nothing."
+msgstr "Set <0/> to publish nothing."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -7465,6 +7499,14 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "siteUrl"
 msgstr "siteUrl"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Skills live at the origin root, so with a <0/> such as <1/> Ardo skips them "
+"silently unless you set <2/> explicitly, and then it logs one line."
+msgstr ""
+"Skills live at the origin root, so with a <0/> such as <1/> Ardo skips them "
+"silently unless you set <2/> explicitly, and then it logs one line."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Slot"

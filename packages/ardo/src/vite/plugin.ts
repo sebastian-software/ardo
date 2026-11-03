@@ -8,6 +8,7 @@ import type { ArdoPluginOptions, SiteConfigOptions } from "./plugin-options"
 
 import { resolveConfig } from "../config/index"
 import { validateArdoOptionNames } from "../config/plugin-options"
+import { createAgentOutputs } from "./agent-outputs"
 import { addApiPlugin, apiOutputDirectories } from "./api-plugin"
 import { normalizeViteBaseForArdo } from "./base"
 import { createBuildOutputAssets } from "./build-outputs"
@@ -201,9 +202,21 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
-        for (const asset of createBuildOutputAssets(manifest, resolvedConfig, {
-          referenceDirs: state.referenceDirs,
-        })) {
+        const agent = createAgentOutputs(resolvedConfig)
+        if (agent.warnings.length > 0) {
+          this.warn(
+            `[ardo] Agent Skills were skipped:\n${agent.warnings.map((warning) => `- ${warning}`).join("\n")}`
+          )
+        }
+        for (const notice of agent.notices) {
+          console.log(notice)
+        }
+        for (const asset of [
+          ...createBuildOutputAssets(manifest, resolvedConfig, {
+            referenceDirs: state.referenceDirs,
+          }),
+          ...agent.assets,
+        ]) {
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
         }
       })
