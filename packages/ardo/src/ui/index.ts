@@ -33,6 +33,7 @@ export {
   ArdoAccordion,
   ArdoAccordionGroup,
   ArdoBadge,
+  ArdoBanner,
   ArdoCard,
   ArdoCardGroup,
   ArdoCodeBlock,
@@ -75,6 +76,7 @@ export type {
 } from "./components"
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 
+export type { ArdoBannerProps, ArdoBannerVariant } from "./components"
 export type { ArdoEmbedProps } from "./components"
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./components"
 export type { ArdoFileTreeProps } from "./components"

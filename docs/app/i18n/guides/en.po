@@ -550,6 +550,20 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
+"<0/> shows a notice at the top of a page, such as a release or a maintenance "
+"window. Its <1/> uses the same colors as the callout of that name. Its content"
+" can include formatting and links. The banner is static, so it needs no "
+"JavaScript. To show a dismissible banner from frontmatter instead, see "
+"<2>Frontmatter</2>."
+msgstr ""
+"<0/> shows a notice at the top of a page, such as a release or a maintenance "
+"window. Its <1/> uses the same colors as the callout of that name. Its content"
+" can include formatting and links. The banner is static, so it needs no "
+"JavaScript. To show a dismissible banner from frontmatter instead, see "
+"<2>Frontmatter</2>."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
 "<0/> shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. "
 "Pass a package name, or several names separated by spaces. Set <1/> to install"
 " a development dependency, and use <2/> to run a package once without "
@@ -738,6 +752,14 @@ msgstr "<0/>, the Vanilla Extract theme tokens for your own styles."
 msgid "<0/>, which adds <1/> and <2/>"
 msgstr "<0/>, which adds <1/> and <2/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: <1/>, <2/>, <3/>, <4/> (default), or <5/>."
+msgstr "<0/>: <1/>, <2/>, <3/>, <4/> (default), or <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: A stable key, such as <1/>. Required when <2/> is <3/>."
+msgstr "<0/>: A stable key, such as <1/>. Required when <2/> is <3/>."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/>: renders inside the root for a missing page and replaces the root for a "
@@ -745,6 +767,10 @@ msgid ""
 msgstr ""
 "<0/>: renders inside the root for a missing page and replaces the root for a "
 "render error. Ardo uses <1/> when you omit it."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: Required. The text of the banner."
+msgstr "<0/>: Required. The text of the banner."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -763,6 +789,16 @@ msgstr ""
 "<0/>: typed as <1/> from <2/>. It takes no arguments and returns the same "
 "descriptor objects as before, such as <3/>. Drop it when it only set the site "
 "title: pages without a <4/> get the title from <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"<0/>: When <1/>, a close button hides the banner in that browser. Ardo stores "
+"the choice under the <2/>, so a new <3/> shows the banner again. Without "
+"JavaScript, the banner stays visible."
+msgstr ""
+"<0/>: When <1/>, a close button hides the banner in that browser. Ardo stores "
+"the choice under the <2/>, so a new <3/> shows the banner again. Without "
+"JavaScript, the banner stays visible."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -2742,6 +2778,22 @@ msgstr ""
 "<1>Stable</1> <2>Preview</2> <3>Deprecated</3> <4>Reference</4> <5>With "
 "icon</5>."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "banner"
+msgstr "banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner"
+msgstr "Banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner content, such as text with a link."
+msgstr "Banner content, such as text with a link."
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner example"
+msgstr "Banner example"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Bare pages (<0/>, including the home page) show a search icon, so the hero's "
@@ -3312,6 +3364,10 @@ msgstr ""
 "the generated route pages continue through the normal sidebar, search, "
 "sitemap, redirect, and LLM pipelines. Source paths are project-relative, so "
 "the virtual module does not expose an author's absolute filesystem paths."
+
+#: docs/app/content/guide/components.mdx
+msgid "Color of the banner. Defaults to <0/>."
+msgstr "Color of the banner. Defaults to <0/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Color scheme"
@@ -7213,6 +7269,14 @@ msgstr ""
 msgid "Saturation"
 msgstr "Saturation"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. <0>Read the banner "
+"options</0>."
+msgstr ""
+"Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. <0>Read the banner "
+"options</0>."
+
 #: docs/app/content/guide/content-sources.mdx
 msgid "Schema-Backed Collections"
 msgstr "Schema-Backed Collections"
@@ -7547,6 +7611,18 @@ msgstr "Shipped"
 #: docs/app/content/guide/configuration.mdx
 msgid "Show line numbers in code blocks."
 msgstr "Show line numbers in code blocks."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Shows a notice above the page content, without writing MDX. A string sets the "
+"text in the <0/> variant. An object sets the text and the options below. The "
+"banner is plain text: Markdown syntax is shown as written. For links and "
+"formatting, use <1><2/></1> in MDX."
+msgstr ""
+"Shows a notice above the page content, without writing MDX. A string sets the "
+"text in the <0/> variant. An object sets the text and the options below. The "
+"banner is plain text: Markdown syntax is shown as written. For links and "
+"formatting, use <1><2/></1> in MDX."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "sidebar"
@@ -8929,6 +9005,10 @@ msgstr "Type-Safe Styling with Vanilla Extract"
 msgid "Type: <0/>"
 msgstr "Type: <0/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Type: <0/> or <1/>"
+msgstr "Type: <0/> or <1/>"
+
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "TypeDoc plugins, sorting, category/group order, and Markdown options"
 msgstr "TypeDoc plugins, sorting, category/group order, and Markdown options"
@@ -9413,6 +9493,11 @@ msgstr "Verify the upgrade"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Version"
 msgstr "Version"
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid "Version 7 is in beta. <0>Read the banner options</0>."
+#~ msgstr "Version 7 is in beta. <0>Read the banner options</0>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Version controls"

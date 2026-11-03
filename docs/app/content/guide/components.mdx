@@ -46,6 +46,33 @@ Choose the variant that matches the information. All five use the site's theme t
 
 The same variants are available as [GitHub-style alerts](/en/guide/markdown#callouts) in plain Markdown.
 
+## Banner
+
+`Banner` shows a notice at the top of a page, such as a release or a maintenance window. Its `variant` uses the same colors as the callout of that name. Its content can include formatting and links. The banner is static, so it needs no JavaScript. To show a dismissible banner from frontmatter instead, see [Frontmatter](/en/guide/frontmatter#banner).
+
+<GalleryPreview id="gallery-banner" label="Banner example" framed={false}>
+
+<Banner variant="warning">
+
+Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. [Read the banner options](/en/guide/frontmatter#banner).
+
+</Banner>
+
+</GalleryPreview>
+
+```mdx
+<Banner variant="warning">
+
+Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. [Read the banner options](/en/guide/frontmatter#banner).
+
+</Banner>
+```
+
+| Component | Prop       | Type                                                 | Purpose                                    |
+| --------- | ---------- | ---------------------------------------------------- | ------------------------------------------ |
+| `Banner`  | `variant`  | `"tip" \| "warning" \| "danger" \| "info" \| "note"` | Color of the banner. Defaults to `"info"`. |
+| `Banner`  | `children` | `ReactNode`                                          | Banner content, such as text with a link.  |
+
 ## Badges
 
 Badges add a compact status to a sentence. They stay inline: <Badge>New</Badge> <Badge variant="success">Stable</Badge> <Badge variant="warning">Preview</Badge> <Badge variant="danger">Deprecated</Badge> <Badge variant="info">Reference</Badge> <Badge icon="✦">With icon</Badge>.

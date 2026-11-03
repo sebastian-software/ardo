@@ -6,6 +6,7 @@ import { ArdoLink } from "../runtime/page"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "../ui/components/Accordion"
 import { ArdoBadge } from "../ui/components/Badge"
+import { ArdoBanner } from "../ui/components/Banner"
 import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
@@ -81,6 +82,7 @@ export function useMDXComponents(): ArdoMDXComponents {
     Accordion: ArdoAccordion,
     AccordionGroup: ArdoAccordionGroup,
     Badge: ArdoBadge,
+    Banner: ArdoBanner,
     Card: ArdoCard,
     CardGroup: ArdoCardGroup,
     Icon: ArdoIcon,

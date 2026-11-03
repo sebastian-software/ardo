@@ -201,8 +201,11 @@ export function ArdoLayout({
           {sidebar}
           <main
             id="main-content"
+            // Not a tab stop, but a valid focus target for the skip link and for banner dismissal.
+            tabIndex={-1}
             className={[
               styles.readingSize,
+              styles.mainTarget,
               !bare && styles.main,
               !bare && isDocumentScroll && styles.documentScrollMain,
             ]
