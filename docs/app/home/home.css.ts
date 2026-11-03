@@ -87,9 +87,9 @@ globalStyle(`${page} mark`, {
 export const wrap = style({
   maxWidth: `calc(${vars.layout.pageMaxWidth} + 2 * ${vars.space.lg})`,
   margin: "0 auto",
-  padding: `0 ${vars.space.lg}`,
+  paddingInline: vars.space.lg,
   boxSizing: "border-box",
-  "@media": { "(max-width: 768px)": { padding: `0 ${vars.space.md}` } },
+  "@media": { "(max-width: 768px)": { paddingInline: vars.space.md } },
 })
 
 export const section = style({ paddingTop: "104px", paddingBottom: "40px" })
