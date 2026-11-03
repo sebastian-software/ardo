@@ -546,6 +546,21 @@ msgstr ""
 "<0/> sortiert die Gruppe unter benachbarten Seiten und Gruppen. Ordner auf "
 "oberster Ebene werden stattdessen zu Abschnitten; ordne sie mit <1><2/></1>."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0/> states how the content may be used, following <1>Content Signals</1>. "
+"Each signal you set becomes one <2/> line, such as <3/>. Signals you leave out"
+" are not written. Ardo writes no Content Signals line by default, because that"
+" is a policy decision for you. Robots directives do not protect content, so "
+"use authentication for anything private."
+msgstr ""
+"<0/> legt fest, wie Inhalte genutzt werden dürfen, gemäß <1>Content "
+"Signals</1>. Jedes gesetzte Signal wird zu einer Zeile <2/>, etwa <3/>. Nicht "
+"gesetzte Signale werden nicht geschrieben. Ardo schreibt standardmäßig keine"
+" Content-Signals-Zeile, weil das eine Richtlinienentscheidung für Sie ist. "
+"Robots-Anweisungen schützen Inhalte nicht; für Privates brauchen Sie "
+"Authentifizierung."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "<0/> takes <1/>, <2/>, <3/> (for caution), <4/> (for important), and <5/>, "
@@ -3686,6 +3701,19 @@ msgstr "Überschriften aus Komponenten erkennen"
 msgid "Discovery and troubleshooting"
 msgstr "Suche und Problemlösung"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Discovery needs an absolute <0/> and a root <1/>, because <2/> must sit at the"
+" origin root. Without either, Ardo skips these files silently unless you set "
+"<3/> explicitly, and then it logs one line. Set <4/> to publish nothing and "
+"add no links."
+msgstr ""
+"Discovery-Dateien brauchen eine absolute <0/> und eine Stamm-<1/>, weil <2/> "
+"an der Wurzel des Ursprungs liegen muss. Fehlt eines davon, überspringt Ardo "
+"sie stillschweigend, es sei denn, Sie setzen <3/> ausdrücklich; dann "
+"protokolliert Ardo eine Zeile. Setzen Sie <4/>, damit nichts veröffentlicht "
+"und kein Link hinzugefügt wird."
+
 #: docs/app/content/guide/markdown.mdx
 msgid "Display multiple code variants in tabs:"
 msgstr "Zeige mehrere Codevarianten in Tabs an:"
@@ -6561,6 +6589,19 @@ msgstr "Statisch veröffentlichen"
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
+"Publishes <0/> and <1/>, two files with the same content, so agents can find "
+"the site's resources. Each file lists the <2/> index, the homepage's Markdown "
+"version when the homepage is a Markdown page, and the Agent Skills index when "
+"skills are published. Every HTML page also links <3/> with <4/>."
+msgstr ""
+"Veröffentlicht <0/> und <1/>, zwei Dateien mit demselben Inhalt, damit "
+"Agenten die Ressourcen der Website finden. Jede Datei listet den Index <2/>, "
+"die Markdown-Version der Startseite, wenn sie eine Markdown-Seite ist, und den"
+" Agent-Skills-Index, wenn Skills veröffentlicht werden. Jede HTML-Seite "
+"verlinkt außerdem <3/> mit <4/>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
 "Publishes <0>Agent Skills</0> from a folder of skills. Each <1/> becomes <2/>,"
 " and <3/> lists them with a SHA-256 digest of each file. The folder is "
 "resolved from the project root, next to <4/>. If it does not exist, Ardo "
@@ -7176,6 +7217,10 @@ msgstr "Wähle optionale Funktionen nach dem Bedarf des Projekts:"
 #: docs/app/content/guide/releases/index.mdx
 msgid "SEO build outputs"
 msgstr "SEO-Ausgaben"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "seo.agentDiscovery"
+msgstr "seo.agentDiscovery"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "seo.agentSkills"

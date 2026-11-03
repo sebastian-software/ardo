@@ -1,4 +1,7 @@
-import type { ArdoConfig } from "./types"
+import type { ArdoConfig, SeoConfig } from "./types"
+
+/** Where discovery files live; `.well-known` is read at the origin root. */
+const AGENT_DISCOVERY_PATH = "/.well-known/ard.json"
 
 export function validateSitemapConfig(config: ArdoConfig, errors: string[]): void {
   const sitemapPriority =
@@ -36,4 +39,18 @@ export function validateAgentSkillsConfig(config: ArdoConfig, errors: string[]):
   if (directory !== undefined && (typeof directory !== "string" || directory.trim() === "")) {
     errors.push("seo.agentSkills.directory must be a non-empty folder path.")
   }
+}
+
+/**
+ * The absolute URL of `ard.json` when discovery files are published, otherwise undefined. They
+ * need absolute URLs and the origin root, because `/.well-known` cannot sit below a deployment base.
+ */
+export function resolveAgentDiscoveryUrl(input: {
+  deploymentBase: string
+  seo: SeoConfig
+  siteUrl: string
+}): string | undefined {
+  if (input.seo.agentDiscovery === false || input.siteUrl === "") return undefined
+  if (input.deploymentBase !== "/") return undefined
+  return `${input.siteUrl.replace(/\/$/u, "")}${AGENT_DISCOVERY_PATH}`
 }

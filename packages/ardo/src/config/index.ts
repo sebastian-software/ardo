@@ -4,6 +4,7 @@ import { URL } from "node:url"
 import type {
   AgentSkillsConfig,
   ArdoConfig,
+  ContentSignalsConfig,
   ContentValidationConfig,
   DiagnosticLevel,
   DocumentationVersion,
@@ -34,7 +35,7 @@ import type {
 
 import { resolveI18nConfig } from "./i18n"
 import { validateOpenApiConfig } from "./openapi"
-import { validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
+import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
@@ -55,6 +56,7 @@ export type {
 export type {
   AgentSkillsConfig,
   ArdoConfig,
+  ContentSignalsConfig,
   ContentValidationConfig,
   DiagnosticLevel,
   DocumentationVersion,
@@ -108,13 +110,22 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
   const versioning = resolveVersioningConfig(config.versioning, deploymentBase)
   const i18n = resolveI18nConfig(config.i18n)
 
+  const normalizedBase = normalizeBasePath(deploymentBase)
+  const siteUrl = config.siteUrl ?? ""
+  const agentDiscoveryUrl = resolveAgentDiscoveryUrl({
+    deploymentBase: normalizedBase,
+    seo: config.seo ?? {},
+    siteUrl,
+  })
+
   return {
     title: config.title,
     description: config.description ?? "",
     titleSeparator: config.titleSeparator ?? " | ",
     base: resolveVersionedBase(deploymentBase, versioning),
-    deploymentBase: normalizeBasePath(deploymentBase),
-    siteUrl: config.siteUrl ?? "",
+    deploymentBase: normalizedBase,
+    siteUrl,
+    ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
     srcDir,
     outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
