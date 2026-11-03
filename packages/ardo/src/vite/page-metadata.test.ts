@@ -197,4 +197,23 @@ describe("validatePageFrontmatter", () => {
       redirectFrom: ["/old-guide"],
     })
   })
+
+  it("accepts the lint opt-out forms and reports other shapes as invalid", () => {
+    expect(validatePageFrontmatter({ lint: false })).toStrictEqual({
+      diagnostics: [],
+      frontmatter: { lint: false },
+    })
+    expect(
+      validatePageFrontmatter({ lint: { disable: ["missing-description"] } }).frontmatter
+    ).toStrictEqual({ lint: { disable: ["missing-description"] } })
+    for (const lint of [{ disable: ["missing-title"] }, { only: [] }, "off"]) {
+      expect(validatePageFrontmatter({ lint }).diagnostics).toStrictEqual([
+        {
+          field: "lint",
+          kind: "invalid",
+          message: 'Invalid value for frontmatter field "lint".',
+        },
+      ])
+    }
+  })
 })

@@ -1,3 +1,4 @@
+import type { LintRuleId } from "./lint-rules"
 import type { MarkdownConfig } from "./markdown"
 import type { PostFrontmatter, PublicationConfig } from "../publication/types"
 
@@ -303,6 +304,11 @@ export type FrontmatterValidationConfig = {
 export type ContentValidationConfig = {
   /** Validation policy for Markdown and MDX page frontmatter. */
   frontmatter?: FrontmatterValidationConfig
+  /**
+   * Severity of `ardo lint` rules. `error` makes `ardo lint` exit non-zero; `warn` only reports.
+   * Lint never affects `ardo build`. Every rule defaults to `warn`.
+   */
+  lint?: Partial<Record<LintRuleId, DiagnosticLevel>>
 }
 
 // =============================================================================
@@ -381,6 +387,8 @@ export type PageFrontmatter = {
     link?: string
     linkText?: string
   }>
+  /** `false` turns off every `ardo lint` rule for this page; `disable` turns off named rules. */
+  lint?: boolean | { disable?: LintRuleId[] }
 } & Partial<PostFrontmatter> &
   Record<string, unknown>
 

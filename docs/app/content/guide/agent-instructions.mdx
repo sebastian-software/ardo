@@ -85,7 +85,7 @@ The recipes are `version`, `locale`, and `api-reference`. Each one checks for an
 
 ## Validate and Report
 
-Install dependencies with the repository's package manager. Run its applicable typecheck and tests, then build the site. For an existing application, also run the checks that protect its existing routes. If a check is unavailable, say which behavior remains unverified. Use `CI=true` for non-interactive pnpm environments.
+Start with `ardo check`, the fast health check. It validates the Node.js version, the project config, and page frontmatter without building, and exits with 1 on errors; `--format json` gives agents the findings as data. Install dependencies with the repository's package manager. Run its applicable typecheck and tests, then build the site. For an existing application, also run the checks that protect its existing routes. If a check is unavailable, say which behavior remains unverified. Use `CI=true` for non-interactive pnpm environments.
 
 Inspect the generated HTML for the home page and an authored documentation route. Verify generated API or collection pages when enabled. Confirm that `ardo build` reports no broken internal links. Start the development server and check that links load the expected pages and the browser reports no runtime errors. Build success alone does not establish that an existing application's integration is correct.
 

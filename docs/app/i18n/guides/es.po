@@ -504,6 +504,14 @@ msgstr ""
 "<0/> define el estado contraído inicial. El grupo se abre al visitar una "
 "página que contiene."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0/> sets the severity of each <1><2/></1> rule. Only <3/> makes <4/> exit "
+"with 1. Lint never affects <5/>."
+msgstr ""
+"<0/> define la gravedad de las reglas de <1><2/></1>. Solo <3/> hace que <4/> "
+"termine con código 1. Lint nunca afecta a <5/>."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "<0/> sets three hues: <1/> for links, buttons, and focus rings, <2/> for "
@@ -588,6 +596,25 @@ msgstr ""
 msgid ""
 "<0/> takes site-wide content settings as props and the chrome as children."
 msgstr "<0/> recibe los ajustes del sitio como props y la interfaz como hijos."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"<0/> validates the Node.js version, the project config, and every page's "
+"frontmatter without building. Its exit code is 1 when a finding is an error. "
+"<1/> reports authoring rules for Markdown and MDX pages: <2/>, <3/>, <4/>, "
+"<5/>, and <6/>. Its findings are warnings, and only rules that <7><8/></7> "
+"raises to <9/> make it exit with 1. Pages opt out with <10><11/></10>. Both "
+"commands print text by default, accept <12/> for an array of <13/>, and accept"
+" <14/>."
+msgstr ""
+"<0/> comprueba la versión de Node.js, la configuración del proyecto y el "
+"frontmatter de cada página, sin compilar. Su código de salida es 1 cuando un"
+" hallazgo es un error. <1/> informa de las reglas de redacción de las "
+"páginas Markdown y MDX: <2/>, <3/>, <4/>, <5/> y <6/>. Los hallazgos son "
+"advertencias; solo las reglas que <7><8/></7> establece en <9/> hacen que el "
+"comando termine con código 1. Las páginas desactivan reglas con "
+"<10><11/></10> en su frontmatter. Ambos comandos muestran texto por defecto y "
+"aceptan <12/> para un array de <13/>, así como <14/>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "<0/> with <1/> and anchor attributes"
@@ -948,10 +975,19 @@ msgstr "<0>Predeterminado:</0> desactivado"
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
-" compatibility."
+" compatibility; every <1/> rule warns."
 msgstr ""
-"<0>Predeterminado:</0> aviso para campos inválidos; campos desconocidos "
-"ignorados por compatibilidad."
+"<0>Por defecto:</0> los campos documentados no válidos avisan; los campos "
+"desconocidos se ignoran por compatibilidad; cada regla de <1/> avisa."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "<0>Default:</0> invalid documented fields warn; unknown fields are ignored for"
+#~ " compatibility."
+#~ msgstr ""
+#~ "<0>Predeterminado:</0> aviso para campos inválidos; campos desconocidos "
+#~ "ignorados por compatibilidad."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> none"
@@ -2818,6 +2854,15 @@ msgstr ""
 "exports y componentes JSX; React compila el JSX mediante Vite. Usa frontmatter"
 " YAML para metadatos."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Both commands load the project config and run its plugins, as <0/> does, so "
+"generated pages such as the API reference may be refreshed."
+msgstr ""
+"Ambos comandos cargan la configuración del proyecto y ejecutan sus plugins, "
+"igual que lo hace <0/>. Así, las páginas generadas, como la referencia de la"
+" API, pueden actualizarse."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Both files can export an object, a promise, or a callback that receives Vite's"
@@ -3026,6 +3071,10 @@ msgstr "Cambiar logotipo y favicon"
 #: docs/app/content/guide/components.mdx
 msgid "Changelogs and revision history"
 msgstr "Registros de cambios"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "Check and Lint"
+msgstr "Comprobar y lint"
 
 #: docs/app/content/guide/releases/upgrade-to-v4.mdx
 msgid "Check Existing Links"
@@ -3624,6 +3673,10 @@ msgstr ""
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Default: <0/>"
 msgstr "Predeterminado:<0/>"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Default: every <0><1/></0> rule is on"
+msgstr "Por defecto: cada regla de <0><1/></0> está activa"
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete the removed files"
@@ -5204,19 +5257,20 @@ msgstr ""
 "Instalar como dependencia de desarrollo: <0/>, o <1/> en Bun. Solo se aplica a"
 " <2/>. Valor predeterminado: <3/>."
 
-#: docs/app/content/guide/agent-instructions.mdx
-msgid ""
-"Install dependencies with the repository's package manager. Run its applicable"
-" typecheck and tests, then build the site. For an existing application, also "
-"run the checks that protect its existing routes. If a check is unavailable, "
-"say which behavior remains unverified. Use <0/> for non-interactive pnpm "
-"environments."
-msgstr ""
-"Instala las dependencias con el gestor del repositorio. Ejecuta la "
-"comprobación de tipos y las pruebas pertinentes y después compila el sitio. "
-"Para una aplicación existente, ejecuta también los controles que protegen "
-"sus rutas actuales. Si no puedes realizar un control, indica qué "
-"comportamiento queda sin verificar. Usa <0/> en entornos pnpm no interactivos."
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/agent-instructions.mdx
+#~ msgid ""
+#~ "Install dependencies with the repository's package manager. Run its applicable"
+#~ " typecheck and tests, then build the site. For an existing application, also "
+#~ "run the checks that protect its existing routes. If a check is unavailable, "
+#~ "say which behavior remains unverified. Use <0/> for non-interactive pnpm "
+#~ "environments."
+#~ msgstr ""
+#~ "Instala las dependencias con el gestor del repositorio. Ejecuta la "
+#~ "comprobación de tipos y las pruebas pertinentes y después compila el sitio. "
+#~ "Para una aplicación existente, ejecuta también los controles que protegen "
+#~ "sus rutas actuales. Si no puedes realizar un control, indica qué "
+#~ "comportamiento queda sin verificar. Usa <0/> en entornos pnpm no interactivos."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Install the native tools"
@@ -5449,6 +5503,10 @@ msgstr "Enlaces e imágenes"
 #: docs/app/content/guide/components.mdx
 msgid "Links to external resources"
 msgstr "Recursos externos"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "lint"
+msgstr "lint"
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -7581,6 +7639,26 @@ msgstr "Arranca el servidor de desarrollo:"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
+"Start with <0/>, the fast health check. It validates the Node.js version, the "
+"project config, and page frontmatter without building, and exits with 1 on "
+"errors; <1/> gives agents the findings as data. Install dependencies with the "
+"repository's package manager. Run its applicable typecheck and tests, then "
+"build the site. For an existing application, also run the checks that protect "
+"its existing routes. If a check is unavailable, say which behavior remains "
+"unverified. Use <2/> for non-interactive pnpm environments."
+msgstr ""
+"Empieza con <0/>, la comprobación rápida de estado. Valida la versión de "
+"Node.js, la configuración del proyecto y el frontmatter de las páginas sin "
+"compilar, y termina con código 1 si hay errores; <1/> entrega a los agentes "
+"los hallazgos como datos. Instala las dependencias con el gestor de paquetes "
+"del repositorio. Ejecuta las comprobaciones de tipos y las pruebas que "
+"correspondan y, después, compila el sitio. En una aplicación existente, "
+"comprueba también sus rutas actuales. Si una comprobación no está "
+"disponible, indica qué comportamiento queda sin verificar. Usa <2/> para "
+"entornos de pnpm no interactivos."
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
 "State the example revision, files to add or change, validation commands, and "
 "unresolved choices before editing. Follow the repository's instructions and "
 "the requested scope."
@@ -8728,6 +8806,14 @@ msgstr "Reinícialo."
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "TSDoc"
 msgstr "TSDoc"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Turn off lint rules for this page. <0/> turns off all of them, and <1/> names "
+"the rules to turn off."
+msgstr ""
+"Desactiva las reglas de lint en esta página. <0/> las desactiva todas, y <1/>"
+" nombra las reglas que se desactivan."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""

@@ -235,6 +235,21 @@ pageActions: false
 ---
 ```
 
+### lint
+
+- Type: `boolean | { disable?: string[] }`
+- Default: every [`ardo lint`](/en/guide/getting-started#check-and-lint) rule is on
+
+Turn off lint rules for this page. `lint: false` turns off all of them, and `disable` names the rules to turn off.
+
+```yaml
+---
+lint:
+  disable:
+    - missing-description
+---
+```
+
 ## Build Output Options
 
 ### sitemap

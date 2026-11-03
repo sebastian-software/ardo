@@ -51,12 +51,6 @@ export type RouteManifestOptions = {
   markdown?: MarkdownConfig
 }
 
-type RouteManifestScanContext = {
-  entries: RouteManifestEntry[]
-  options: RouteManifestOptions
-  routesDir: string
-}
-
 export function createRouteManifestOptions(
   config: { markdown?: MarkdownConfig; deploymentBase?: string } & Pick<
     ResolvedConfig,
@@ -79,11 +73,23 @@ export async function scanRouteManifest(
   options: RouteManifestOptions = {}
 ): Promise<RouteManifestEntry[]> {
   const entries: RouteManifestEntry[] = []
-  await scanRouteDirectory(routesDir, { entries, options, routesDir })
+  for (const filePath of await listRouteFiles(routesDir)) {
+    const manifestEntry = await createManifestEntry(filePath, routesDir, options)
+    if (manifestEntry != null) {
+      entries.push(manifestEntry)
+    }
+  }
   return entries.sort((left, right) => left.routePath.localeCompare(right.routePath))
 }
 
-async function scanRouteDirectory(dir: string, context: RouteManifestScanContext) {
+/** Every Markdown, MDX, and TSX route file under the routes directory, sorted by path. */
+export async function listRouteFiles(routesDir: string): Promise<string[]> {
+  const files: string[] = []
+  await collectRouteFiles(routesDir, files)
+  return files.sort()
+}
+
+async function collectRouteFiles(dir: string, files: string[]): Promise<void> {
   let entries: Dirent[]
   try {
     entries = await fs.readdir(dir, { withFileTypes: true })
@@ -94,18 +100,15 @@ async function scanRouteDirectory(dir: string, context: RouteManifestScanContext
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      await scanRouteDirectory(fullPath, context)
-      continue
-    }
-
-    const manifestEntry = await createManifestEntry(fullPath, context.routesDir, context.options)
-    if (manifestEntry != null) {
-      context.entries.push(manifestEntry)
+      await collectRouteFiles(fullPath, files)
+    } else if (getRouteExtension(fullPath) != null && !isIgnoredRouteFile(entry.name)) {
+      files.push(fullPath)
     }
   }
 }
 
-async function createManifestEntry(
+/** The manifest entry for one route file, or null for files that are not routes. */
+export async function createManifestEntry(
   filePath: string,
   routesDir: string,
   options: RouteManifestOptions

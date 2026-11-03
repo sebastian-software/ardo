@@ -2,6 +2,8 @@ import type { PageFrontmatter } from "../config/types"
 import type { RouteIdentity } from "./route-identity"
 import { parsePageBanner } from "./page-banner"
 
+import { normalizeLintFrontmatter } from "../config/lint-rules"
+
 export type PageMetadata = {
   localeId?: string
   publicPath: string
@@ -47,6 +49,7 @@ const knownFrontmatterFields = new Set([
   "lastUpdated",
   "layout",
   "lede",
+  "lint",
   "llms",
   "next",
   "ogDescription",
@@ -107,6 +110,7 @@ const structuredFrontmatterNormalizers: Record<
   features: (value) => (isFeatures(value) ? { features: value } : undefined),
   hero: (value) => (isHero(value) ? { hero: value } : undefined),
   layout: normalizeLayout,
+  lint: normalizeLintFrontmatter,
   next: normalizeNext,
   outline: (value) => (isOutline(value) ? { outline: value } : undefined),
   prev: normalizePrevious,
