@@ -4,8 +4,7 @@ import type { RouteManifestEntry } from "./route-manifest"
 import { getCurrentVersion } from "../config/versioning"
 import { resolveSectionLabel } from "../ui/section-kinds"
 import { shiftHeadings } from "./llms-headings"
-import { resolveLlmsContentLinks } from "./llms-links"
-import { stripMdxSyntaxOutsideCodeFences } from "./llms-mdx-strip"
+import { createLlmsBodyRenderer, toPageMarkdownFileName, toPageMarkdownPath } from "./llms-pages"
 import { type ReadingOrderEntry, sortByReadingOrder } from "./reading-order"
 import { buildPublicPath } from "./route-identity"
 
@@ -25,7 +24,7 @@ export type LlmsTextOptions = {
 }
 
 type ResolvedLlmsConfig = Pick<LlmsConfig, "description" | "title"> &
-  Required<Pick<LlmsConfig, "fullFileName" | "includeFull" | "indexFileName">>
+  Required<Pick<LlmsConfig, "fullFileName" | "includeFull" | "indexFileName" | "pages">>
 
 type LlmsTextAsset = {
   fileName: string
@@ -40,8 +39,14 @@ export function generateLlmsTxt(
   const llmsConfig = resolveLlmsConfig(config)
   const links = collapseReferences(getLlmsEntries(entries, config), options.referenceDirs)
   const lines = createHeaderLines(llmsConfig, config)
+  // With per-page files, each link names the page's Markdown instead of its HTML route.
+  const linkUrl = (entry: RouteManifestEntry) =>
+    toAbsolutePublicUrl(
+      llmsConfig.pages ? toPageMarkdownPath(entry.publicPath) : entry.publicPath,
+      config
+    )
 
-  appendDocsSections(lines, links, config)
+  appendDocsSections(lines, links, linkUrl)
   appendFullDocSection(lines, llmsConfig, config)
 
   return `${lines.join("\n").trimEnd()}\n`
@@ -50,31 +55,12 @@ export function generateLlmsTxt(
 export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: ResolvedConfig): string {
   const llmsConfig = resolveLlmsConfig(config)
   const lines = createHeaderLines(llmsConfig, config)
-  const routePaths = new Set(
-    entries.flatMap((entry) => [
-      entry.routePath,
-      ...(entry.sourceLocaleId == null
-        ? []
-        : [`/${entry.sourceLocaleId}${entry.routePath === "/" ? "" : entry.routePath}`]),
-    ])
-  )
+  const renderBody = createLlmsBodyRenderer(entries, config)
 
   for (const { entry } of getLlmsEntries(entries, config)) {
     const title = getEntryTitle(entry)
     const description = entry.metadata.description
-    // A Markdown page is not MDX: a line starting with "export" is prose there.
-    const format = entry.filePath.endsWith(".mdx") ? "mdx" : "md"
-    // Rewrite projected Markdown as Markdown: angle-wrapped local URLs are not MDX JSX.
-    const content = resolveLlmsContentLinks(
-      stripMdxSyntaxOutsideCodeFences(entry.content, title, { format, markdown: config.markdown }),
-      {
-        ...entry,
-        routePaths,
-        routeHrefs: llmsRouteHrefs(entries, entry, config),
-        format: "md",
-      },
-      config
-    )
+    const content = renderBody(entry, title)
 
     lines.push(`## ${title}`, "")
     if (description != null) {
@@ -88,25 +74,6 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
   }
 
   return `${lines.join("\n")}\n`
-}
-
-function llmsRouteHrefs(
-  entries: RouteManifestEntry[],
-  entry: RouteManifestEntry,
-  config: ResolvedConfig
-): ReadonlyMap<string, string> | undefined {
-  if (config.versioning === false || config.versioning.directories == null) return
-  const hrefs = new Map<string, string>()
-  for (const target of entries) {
-    if (target.sourceLocaleId != null)
-      hrefs.set(
-        `/${target.sourceLocaleId}${target.routePath === "/" ? "" : target.routePath}`,
-        target.publicPath
-      )
-    if (target.identity.localeId === entry.identity.localeId)
-      hrefs.set(target.routePath, target.publicPath)
-  }
-  return hrefs
 }
 
 export function getLlmsAssetNames(config: ResolvedConfig) {
@@ -135,6 +102,11 @@ export function createLlmsTextAssets(
     })
   }
 
+  // Page files sit at their own URLs, so versioned indexes link to the same files.
+  if (resolveLlmsConfig(config).pages) {
+    assets.push(...createLlmsPageAssets(entries, config))
+  }
+
   const version = config.versioning === false ? undefined : getCurrentVersion(config.versioning)
   if (version != null) {
     const versionFolder = version.path.slice(config.deploymentBase.length, -1)
@@ -156,6 +128,34 @@ export function createLlmsTextAssets(
   return assets
 }
 
+/**
+ * One Markdown file per page: a `#` title, the description, the source URL, then the same body
+ * as the page's `llms-full.txt` section. The page's own headings keep their authored levels.
+ */
+function createLlmsPageAssets(
+  entries: RouteManifestEntry[],
+  config: ResolvedConfig
+): LlmsTextAsset[] {
+  const renderBody = createLlmsBodyRenderer(entries, config)
+  return getLlmsEntries(entries, config).map(({ entry }) => {
+    const title = getEntryTitle(entry)
+    const description = entry.metadata.description
+    const lines = [`# ${title}`, ""]
+    if (description != null) {
+      lines.push(description, "")
+    }
+    lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
+    const content = renderBody(entry, title)
+    if (content.trim() !== "") {
+      lines.push(content, "")
+    }
+    return {
+      fileName: toPageMarkdownFileName(entry.publicPath, config.deploymentBase),
+      source: `${lines.join("\n").trimEnd()}\n`,
+    }
+  })
+}
+
 function resolveLlmsConfig(config: ResolvedConfig): ResolvedLlmsConfig {
   const input = typeof config.seo.llms === "object" ? config.seo.llms : {}
   return {
@@ -163,6 +163,7 @@ function resolveLlmsConfig(config: ResolvedConfig): ResolvedLlmsConfig {
     fullFileName: input.fullFileName ?? "llms-full.txt",
     includeFull: input.includeFull ?? true,
     indexFileName: input.indexFileName ?? "llms.txt",
+    pages: input.pages ?? true,
     title: input.title,
   }
 }
@@ -234,7 +235,11 @@ function createHeaderLines(llmsConfig: ResolvedLlmsConfig, config: ResolvedConfi
 }
 
 /** One `##` list per section tab; pages outside a section folder go under "Docs". */
-function appendDocsSections(lines: string[], links: LlmsLink[], config: ResolvedConfig): void {
+function appendDocsSections(
+  lines: string[],
+  links: LlmsLink[],
+  linkUrl: (entry: RouteManifestEntry) => string
+): void {
   const localized = new Set(links.map((link) => link.localeId)).size > 1
   let currentGroup: string | undefined
   for (const link of links) {
@@ -255,9 +260,7 @@ function appendDocsSections(lines: string[], links: LlmsLink[], config: Resolved
         ? `Index of ${link.referencePages} generated reference page${link.referencePages === 1 ? "" : "s"}.`
         : undefined)
     const suffix = description == null ? "" : `: ${description}`
-    lines.push(
-      `- [${getEntryTitle(entry)}](${toAbsolutePublicUrl(entry.publicPath, config)})${suffix}`
-    )
+    lines.push(`- [${getEntryTitle(entry)}](${linkUrl(entry)})${suffix}`)
   }
   if (currentGroup != null) lines.push("")
 }

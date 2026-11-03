@@ -250,7 +250,7 @@ describe("build outputs", () => {
     expect(robots).not.toContain("https://example.com/docs/v3/sitemap.xml")
     expect(llms?.source).toContain("- [Full documentation](https://example.com/docs/llms-full.txt)")
     expect(llms?.source).not.toContain("https://example.com/docs/v3/llms-full.txt")
-    expect(llms?.source).toContain("- [Guide](https://example.com/docs/v3/guide)")
+    expect(llms?.source).toContain("- [Guide](https://example.com/docs/v3/guide.md)")
   })
 
   it("combines configured and frontmatter redirects for provider outputs", () => {
@@ -368,7 +368,9 @@ describe("build outputs", () => {
     const llmsFull = assets.find((asset) => asset.fileName === "llms-full.txt")
 
     expect(llms?.source).toContain("# Docs")
-    expect(llms?.source).toContain("- [Guide](https://example.com/docs/guide): Guide description")
+    expect(llms?.source).toContain(
+      "- [Guide](https://example.com/docs/guide.md): Guide description"
+    )
     expect(llms?.source).toContain("- [Full documentation](https://example.com/docs/llms-full.txt)")
     expect(llmsFull?.source).toContain("## Guide")
     expect(llmsFull?.source).toContain("Source: https://example.com/docs/guide")
@@ -387,6 +389,20 @@ describe("build outputs", () => {
     const assets = createBuildOutputAssets(entries, baseConfig)
 
     expect(assets.filter((asset) => asset.fileName.startsWith("search/"))).toStrictEqual([])
+  })
+
+  it("writes a Markdown file for each Markdown page, and none when llms is off", () => {
+    const fileNames = createBuildOutputAssets(entries, baseConfig).map((asset) => asset.fileName)
+    expect(fileNames.filter((fileName) => fileName.endsWith(".md")).sort()).toStrictEqual([
+      "guide.md",
+      "hidden.md",
+    ])
+
+    expect(
+      createBuildOutputAssets(entries, { ...baseConfig, seo: { llms: false } }).some((asset) =>
+        asset.fileName.endsWith(".md")
+      )
+    ).toBe(false)
   })
 
   it("allows llms generation to be disabled or customized", () => {

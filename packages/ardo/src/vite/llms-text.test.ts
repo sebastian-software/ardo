@@ -5,6 +5,7 @@ import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { resolveConfig } from "../config"
+import { toPageMarkdownPath } from "./llms-pages"
 import { createLlmsTextAssets, generateLlmsFullTxt, generateLlmsTxt } from "./llms-text"
 import { createPageMetadata } from "./page-metadata"
 import { createCurrentRouteIdentity } from "./route-identity"
@@ -157,7 +158,7 @@ describe("llms-text", () => {
     )
 
     expect(text).toContain("# Ardo")
-    expect(text).toContain("- [Guide](https://example.com/docs/guide): Start here")
+    expect(text).toContain("- [Guide](https://example.com/docs/guide.md): Start here")
     expect(text).not.toContain("Private")
   })
 
@@ -196,15 +197,15 @@ describe("llms-text", () => {
         "",
         "## Guide",
         "",
-        "- [What is Ardo?](https://example.com/docs/guide/what-is-ardo)",
-        "- [Agent Instructions](https://example.com/docs/guide/agent)",
-        "- [Releases](https://example.com/docs/guide/releases)",
-        "- [Upgrade to v6](https://example.com/docs/guide/releases/v6)",
-        "- [Troubleshooting](https://example.com/docs/guide/troubleshooting)",
+        "- [What is Ardo?](https://example.com/docs/guide/what-is-ardo.md)",
+        "- [Agent Instructions](https://example.com/docs/guide/agent.md)",
+        "- [Releases](https://example.com/docs/guide/releases.md)",
+        "- [Upgrade to v6](https://example.com/docs/guide/releases/v6.md)",
+        "- [Troubleshooting](https://example.com/docs/guide/troubleshooting.md)",
         "",
         "## API",
         "",
-        "- [API Reference](https://example.com/docs/api-reference): Index of 2 generated reference pages.",
+        "- [API Reference](https://example.com/docs/api-reference.md): Index of 2 generated reference pages.",
         "",
         "## More",
         "",
@@ -256,7 +257,7 @@ describe("llms-text", () => {
       { referenceDirs: ["api-reference"] }
     )
     expect(text).toContain(
-      "## API\n\n- [ArdoCard](https://example.com/docs/api-reference/components/ardocard)\n"
+      "## API\n\n- [ArdoCard](https://example.com/docs/api-reference/components/ardocard.md)\n"
     )
   })
 
@@ -386,5 +387,170 @@ describe("llms-text", () => {
     )
 
     expect(full?.source).toContain("export a different one from `root.tsx`.")
+  })
+
+  it("names a page's Markdown after its URL, with index.md for a directory root", () => {
+    expect(toPageMarkdownPath("/docs/guide/start")).toBe("/docs/guide/start.md")
+    expect(toPageMarkdownPath("/docs/")).toBe("/docs/index.md")
+    expect(toPageMarkdownPath("/docs/v6/de/")).toBe("/docs/v6/de/index.md")
+  })
+
+  it("writes one Markdown file per opted-in page, with index.md for the root", () => {
+    const pages = [
+      entry({ frontmatter: { title: "Home" }, routePath: "/" }),
+      entry({ frontmatter: { title: "Start" }, routePath: "/guide/start" }),
+      entry({ frontmatter: { llms: false, title: "Private" }, routePath: "/private" }),
+    ]
+
+    expect(createLlmsTextAssets(pages, config).map((asset) => asset.fileName)).toStrictEqual([
+      "llms.txt",
+      "llms-full.txt",
+      "index.md",
+      "guide/start.md",
+    ])
+  })
+
+  it("keeps versioned and localized page files under their URL folders, once each", () => {
+    const localized = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        siteUrl: "https://example.com",
+        i18n: { defaultLocale: "en", locales: [{ id: "en" }] },
+        versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
+      },
+      "/tmp"
+    )
+    const assets = createLlmsTextAssets(
+      [
+        entry({
+          frontmatter: { title: "Home" },
+          publicPath: "/docs/v6/en/",
+          routePath: "/",
+        }),
+        entry({
+          frontmatter: { title: "Start" },
+          publicPath: "/docs/v6/en/guide/start",
+          routePath: "/guide/start",
+        }),
+      ],
+      localized
+    )
+
+    expect(assets.map((asset) => asset.fileName)).toStrictEqual([
+      "llms.txt",
+      "llms-full.txt",
+      "v6/en/index.md",
+      "v6/en/guide/start.md",
+      "v6/llms.txt",
+      "v6/llms-full.txt",
+    ])
+    expect(assets.find((asset) => asset.fileName === "v6/llms.txt")?.source).toContain(
+      "- [Start](https://example.com/docs/v6/en/guide/start.md)"
+    )
+  })
+
+  it("writes page files with the title as #, the full-text body, and unshifted headings", () => {
+    const start = entry({
+      content: "# Start\n\n## Install\n\n[Next](/guide/next)\n\nKeep this.\n",
+      frontmatter: { description: "Begin here", title: "Start" },
+      routePath: "/guide/start",
+    })
+    const assets = createLlmsTextAssets([start, entry({ routePath: "/guide/next" })], config)
+    const page = assets.find((asset) => asset.fileName === "guide/start.md")?.source
+    const full = assets.find((asset) => asset.fileName === "llms-full.txt")?.source
+
+    expect(page).toBe(
+      [
+        "# Start",
+        "",
+        "Begin here",
+        "",
+        "Source: https://example.com/docs/guide/start",
+        "",
+        "## Install",
+        "",
+        "[Next](<https://example.com/docs/guide/next/>)",
+        "",
+        "Keep this.",
+        "",
+      ].join("\n")
+    )
+    expect(full).toContain("\n### Install\n")
+    expect(full).toContain("[Next](<https://example.com/docs/guide/next/>)\n\nKeep this.")
+  })
+
+  it("links reference index pages to Markdown, and gives every reference page a file", () => {
+    const pages = [
+      entry({
+        frontmatter: { title: "API Reference" },
+        routePath: "/api-reference",
+        sourcePath: "api-reference/index.md",
+      }),
+      entry({
+        frontmatter: { title: "ArdoCard" },
+        routePath: "/api-reference/components/ardocard",
+        sourcePath: "api-reference/components/ardocard.md",
+      }),
+    ]
+    const assets = createLlmsTextAssets(pages, config, { referenceDirs: ["api-reference"] })
+    const markdown = assets
+      .map((asset) => asset.fileName)
+      .filter((fileName) => fileName.endsWith(".md"))
+      .sort()
+    const index = assets.find((asset) => asset.fileName === "llms.txt")?.source
+
+    expect(markdown).toStrictEqual(["api-reference.md", "api-reference/components/ardocard.md"])
+    expect(index).toContain("- [API Reference](https://example.com/docs/api-reference.md)")
+    expect(index).not.toContain("ardocard")
+  })
+
+  it("links HTML pages and writes no page files when seo.llms.pages is false", () => {
+    const pagesOff = { ...config, seo: { ...config.seo, llms: { pages: false } } }
+    const assets = createLlmsTextAssets(
+      [entry({ frontmatter: { title: "Start" }, routePath: "/guide/start" })],
+      pagesOff
+    )
+
+    expect(assets.map((asset) => asset.fileName)).toStrictEqual(["llms.txt", "llms-full.txt"])
+    expect(assets.find((asset) => asset.fileName === "llms.txt")?.source).toContain(
+      "- [Start](https://example.com/docs/guide/start)"
+    )
+  })
+
+  it("collapses blank-line runs between blocks but keeps blank lines inside code fences", () => {
+    const page = entry({
+      content:
+        "First paragraph.\n\n\n\nSecond paragraph.\n\n```txt\nalpha\n\n\nomega\n```\n\n\n\nLast.\n",
+      frontmatter: { title: "Blank Lines" },
+      routePath: "/guide/blank-lines",
+    })
+    const assets = createLlmsTextAssets([page], config)
+    const source = assets.find((asset) => asset.fileName === "guide/blank-lines.md")?.source
+
+    expect(source).toBe(
+      [
+        "# Blank Lines",
+        "",
+        "Source: https://example.com/docs/guide/blank-lines",
+        "",
+        "First paragraph.",
+        "",
+        "Second paragraph.",
+        "",
+        "```txt",
+        "alpha",
+        "",
+        "",
+        "omega",
+        "```",
+        "",
+        "Last.",
+        "",
+      ].join("\n")
+    )
+    expect(assets.find((asset) => asset.fileName === "llms-full.txt")?.source).toContain(
+      "First paragraph.\n\nSecond paragraph.\n\n```txt\nalpha\n\n\nomega\n```\n\nLast."
+    )
   })
 })
