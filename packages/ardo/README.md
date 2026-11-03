@@ -34,7 +34,8 @@ pinned TypeScript 7.1 nightly named in its guide.
 
 Keep the docs project in its own package or directory. Declare its component libraries locally and import their public exports; sibling application source is outside the docs package boundary.
 
-Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Run `ardo add` to list recipes for common changes, such as a new docs version or language. Ardo
+Use `ardo dev`, `ardo build`, and `ardo preview` in your package scripts. Run `ardo add`
+to list recipes for common changes, such as a new docs version or language. Ardo
 manages the React, React DOM, and Vite dependencies. Follow the
 [Basic example](https://ardo-docs.dev/v6/guide/agent-instructions#the-basic-example) for app files, TypeScript configuration,
 and the minimal pnpm esbuild build-script policy.

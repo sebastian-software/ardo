@@ -1,6 +1,18 @@
+import { readFileSync } from "node:fs"
+import path from "node:path"
 import { describe, expect, it } from "vitest"
 
-import { listRecipes } from "./add"
+import { listRecipes, recipesDirectory } from "./add"
+
+const apiDocsGuide = path.resolve(
+  import.meta.dirname,
+  "../../../../docs/app/content/guide/api-documentation.mdx"
+)
+
+/** The compiler and parser pins from the `pnpm add -D typescript@… oxc-parser@…` install line. */
+function pinnedVersions(source: string): string[] {
+  return /pnpm add -D typescript@(\S+) oxc-parser@(\S+)/u.exec(source)?.slice(1) ?? []
+}
 
 const stepHeadings = [
   /^Check the existing setup$/u,
@@ -60,4 +72,11 @@ describe("shipped agent recipes", () => {
       expect(recipe.markdown).toMatch(/## Verify[\s\S]*`ardo check` is available/u)
     }
   )
+
+  it("pins the same compiler and parser as the API documentation guide", () => {
+    const guide = readFileSync(apiDocsGuide, "utf8")
+    const recipe = readFileSync(path.join(recipesDirectory, "api-reference.md"), "utf8")
+    expect(pinnedVersions(guide)).toHaveLength(2)
+    expect(pinnedVersions(recipe)).toStrictEqual(pinnedVersions(guide))
+  })
 })
