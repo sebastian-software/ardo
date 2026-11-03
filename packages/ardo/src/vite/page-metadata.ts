@@ -53,6 +53,7 @@ const knownFrontmatterFields = new Set([
   "ogType",
   "order",
   "outline",
+  "pageActions",
   "prev",
   "redirectFrom",
   "sidebar",
@@ -90,6 +91,7 @@ const booleanFrontmatterFields = new Set([
   "lastUpdated",
   "lede",
   "llms",
+  "pageActions",
   "sitemap",
 ])
 

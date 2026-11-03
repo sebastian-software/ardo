@@ -9,6 +9,7 @@ import {
   prepareNativeMarkdown,
 } from "../markdown/native-metadata"
 import { buildToc } from "../markdown/toc"
+import { parsePageFrontmatterMetadata } from "./page-metadata"
 
 /** What the document's ESM exports and binds at the top level, as Ferromark reports it. */
 type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
@@ -30,6 +31,8 @@ export function compileMdxRouteModule(input: {
   format: NativeMarkdownFormat
   id: string
   markdownConfig: ArdoConfig["markdown"]
+  /** URL of the page's Markdown file, when the build writes one for this route. */
+  pageMarkdownPath?: string
   source: string
 }): { code: string; map: JsxModuleMap } {
   const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
@@ -48,7 +51,14 @@ export function compileMdxRouteModule(input: {
   })
   const metadata = createNativeMarkdownMetadata(input.source, frontmatter, result)
   return {
-    code: result.code + createRouteCode({ markdownConfig: input.markdownConfig, metadata, result }),
+    code:
+      result.code +
+      createRouteCode({
+        markdownConfig: input.markdownConfig,
+        metadata,
+        pageMarkdownPath: input.pageMarkdownPath,
+        result,
+      }),
     map: result.map,
   }
 }
@@ -56,6 +66,7 @@ export function compileMdxRouteModule(input: {
 function createRouteCode(input: {
   markdownConfig: ArdoConfig["markdown"]
   metadata: NativeMarkdownMetadata
+  pageMarkdownPath: string | undefined
   result: JsxModuleResult
 }): string {
   const scope: AuthoredScope = {
@@ -66,6 +77,12 @@ function createRouteCode(input: {
   const frontmatter = scope.bindings.has("frontmatter")
     ? "frontmatter"
     : JSON.stringify(input.metadata.frontmatter)
+  // `llms: false` removes the page's Markdown file, so the page has no link to it either.
+  const markdownPath =
+    input.pageMarkdownPath != null &&
+    parsePageFrontmatterMetadata(input.metadata.frontmatter).llms !== false
+      ? ` markdownPath={${JSON.stringify(input.pageMarkdownPath)}}`
+      : ""
   const lines = [
     `import { ArdoPageDataProvider as _ArdoPageDataProvider } from "ardo/runtime";`,
     `const _ardoFrontmatter = ${frontmatter};`,
@@ -74,7 +91,7 @@ function createRouteCode(input: {
     ...createDataExport("toc", "_ardoToc", scope),
     ...createHandleExport(input.metadata.frontmatter, scope),
     `function _ardoRoute(props = {}) {`,
-    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
+    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
     `}`,
     `export default _ardoRoute;`,
   ]

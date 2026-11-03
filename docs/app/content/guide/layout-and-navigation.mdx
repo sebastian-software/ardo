@@ -196,24 +196,25 @@ children. It is the part of the page that hydrates in the browser.
 
 `ArdoRoot` takes site-wide content settings as props and the chrome as children.
 
-| Prop             | Type                                                                               | Purpose                                                                                          |
-| ---------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `theme`          | `ArdoThemeProps`                                                                   | Hues, saturation, callout colors, fonts, and tokens; see [Theming](/en/guide/theming).           |
-| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Header and mobile menu logo, usually an imported file.                                           |
-| `icon`           | `string`                                                                           | Favicon, usually an imported SVG or PNG. Defaults to the generated owl icons.                    |
-| `appleTouchIcon` | `string`                                                                           | 180×180 PNG for iOS home screens.                                                                |
-| `header`         | `ReactNode \| false`                                                               | Your own header in place of `ArdoHeader`, or `false` for none.                                   |
-| `sidebar`        | `ReactNode \| false`                                                               | Your own sidebar in place of `ArdoSidebar`, or `false` for none.                                 |
-| `footer`         | `ReactNode \| false`                                                               | Your own footer in place of `ArdoFooter`, or `false` for none.                                   |
-| `editLink`       | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                                  |
-| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                                         |
-| `labels`         | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                                              |
-| `scrollMode`     | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.                                     |
-| `tocLabel`       | `string`                                                                           | Label for the table-of-contents panel.                                                           |
-| `className`      | `string`                                                                           | Replace the default layout class.                                                                |
-| `config`         | `ArdoConfig`                                                                       | The site config. Ardo's entries provide it from `ardo.config.ts`; pass it in tests and previews. |
-| `components`     | `ArdoMDXComponents`                                                                | Add to or replace the default Markdown component set, including its wrapper.                     |
-| `children`       | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides.                       |
+| Prop             | Type                                                                               | Purpose                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `theme`          | `ArdoThemeProps`                                                                   | Hues, saturation, callout colors, fonts, and tokens; see [Theming](/en/guide/theming).                   |
+| `logo`           | `string \| { light: string; dark: string } \| ReactElement`                        | Header and mobile menu logo, usually an imported file.                                                   |
+| `icon`           | `string`                                                                           | Favicon, usually an imported SVG or PNG. Defaults to the generated owl icons.                            |
+| `appleTouchIcon` | `string`                                                                           | 180×180 PNG for iOS home screens.                                                                        |
+| `header`         | `ReactNode \| false`                                                               | Your own header in place of `ArdoHeader`, or `false` for none.                                           |
+| `sidebar`        | `ReactNode \| false`                                                               | Your own sidebar in place of `ArdoSidebar`, or `false` for none.                                         |
+| `footer`         | `ReactNode \| false`                                                               | Your own footer in place of `ArdoFooter`, or `false` for none.                                           |
+| `editLink`       | `{ pattern: string; text?: string }`                                               | Site-wide edit-link pattern for Markdown pages.                                                          |
+| `lastUpdated`    | `{ enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }` | Site-wide last-updated display settings.                                                                 |
+| `pageActions`    | `boolean`                                                                          | Copy page and View as Markdown on Markdown pages. Defaults to `true`; see [Page Actions](#page-actions). |
+| `labels`         | `ArdoLabelsInput`                                                                  | Override default UI chrome strings.                                                                      |
+| `scrollMode`     | `"viewport" \| "document"`                                                         | Use the viewport shell (default) or let the document scroll.                                             |
+| `tocLabel`       | `string`                                                                           | Label for the table-of-contents panel.                                                                   |
+| `className`      | `string`                                                                           | Replace the default layout class.                                                                        |
+| `config`         | `ArdoConfig`                                                                       | The site config. Ardo's entries provide it from `ardo.config.ts`; pass it in tests and previews.         |
+| `components`     | `ArdoMDXComponents`                                                                | Add to or replace the default Markdown component set, including its wrapper.                             |
+| `children`       | `ReactNode`                                                                        | `ArdoHeader`, `ArdoSidebar`, `ArdoFooter`, and optional content overrides.                               |
 
 ## Header
 
@@ -427,8 +428,19 @@ disables them by default; its frontmatter mapping can opt in when a meaningful
 source pattern is configured.
 
 In frames narrower than `80rem`, the outline appears as an expandable
-"On this page" section below the title, and page actions appear at the end of the
-article. Wider frames keep the page rail.
+"On this page" section below the title, and the edit link and last-updated date appear at the end
+of the article. Wider frames keep the page rail.
+
+## Page Actions
+
+Markdown pages that have a Markdown file also show **Copy page** and **View as Markdown** under their
+title. Copy page fetches that file when the reader clicks it and copies its text. View as Markdown
+links to the file itself. Set `pageActions={false}` on `ArdoRoot` to hide both on every page, or
+`pageActions: false` in a page's frontmatter to hide them on one page. Pages without a Markdown file,
+such as those with `llms: false`, never show them, and a custom `header` replaces them with your own
+heading.
+
+The actions appear in built sites and `ardo preview`, not in the dev server.
 
 ## Route-Level Chrome
 

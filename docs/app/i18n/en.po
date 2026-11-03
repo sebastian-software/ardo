@@ -286,6 +286,10 @@ msgstr "Copy"
 msgid "Copy code"
 msgstr "Copy code"
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Copy page"
+msgstr "Copy page"
+
 #: docs/app/i18n/messages.ts
 msgid "Copy prompt"
 msgstr "Copy prompt"
@@ -301,6 +305,10 @@ msgstr "Copying failed. Copy the prompt below manually."
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Copying failed. Copy the selected code below manually."
 msgstr "Copying failed. Copy the selected code below manually."
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Copying failed. Open the Markdown version instead."
+msgstr "Copying failed. Open the Markdown version instead."
 
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "DANGER"
@@ -877,6 +885,10 @@ msgstr "Updated"
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Version"
 msgstr "Version"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "View as Markdown"
+msgstr "View as Markdown"
 
 #: docs/app/i18n/messages.ts
 msgid "View on GitHub"

@@ -20,6 +20,9 @@ export function translatedLabels(): ArdoLabels {
       previous: t`Previous`,
       navigation: t`Page navigation`,
       label: t`Page`,
+      copyMarkdown: t`Copy page`,
+      viewMarkdown: t`View as Markdown`,
+      copyMarkdownFailed: t`Copying failed. Open the Markdown version instead.`,
     },
     breadcrumb: {
       label: t`Breadcrumb`,

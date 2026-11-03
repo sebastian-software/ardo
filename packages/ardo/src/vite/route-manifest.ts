@@ -122,14 +122,12 @@ async function createManifestEntry(
       : readNativeMarkdownMetadata(content, extension === ".mdx" ? "mdx" : "md", options.markdown)
   const data = toFrontmatterRecord(parsed.frontmatter)
   const stat = await fs.stat(filePath)
-  const relativePath = path.relative(routesDir, filePath)
-  const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
-  const routePath = toRoutePath(localizedRoute.relativePath, extension)
-  const identity = createManifestRouteIdentity(
-    routePath,
-    localizedRoute.localeId ?? options.localeId,
-    options
-  )
+  const { identity, localeId, relativePath } = resolveRouteFileIdentity({
+    extension,
+    filePath,
+    options,
+    routesDir,
+  })
   const frontmatterResult = validatePageFrontmatter(data)
   const frontmatter = frontmatterResult.frontmatter
 
@@ -151,9 +149,31 @@ async function createManifestEntry(
     path: identity.routePath,
     publicPath: identity.publicPath,
     routePath: identity.routePath,
-    sourceLocaleId: localizedRoute.localeId,
+    sourceLocaleId: localeId,
     source: extension === ".tsx" ? "tsx" : "markdown",
   }
+}
+
+/**
+ * The identity of a route file, computed the way the manifest computes it. Build steps that
+ * need one page's public URL call this, so they cannot drift from the manifest's URLs.
+ */
+export function resolveRouteFileIdentity(input: {
+  extension: ".md" | ".mdx" | ".tsx"
+  filePath: string
+  options: RouteManifestOptions
+  routesDir: string
+}): { identity: RouteIdentity; localeId: string | undefined; relativePath: string } {
+  const { extension, filePath, options, routesDir } = input
+  const relativePath = path.relative(routesDir, filePath)
+  const localizedRoute = splitLocaleRoute(relativePath, options.localeIds)
+  const routePath = toRoutePath(localizedRoute.relativePath, extension)
+  const identity = createManifestRouteIdentity(
+    routePath,
+    localizedRoute.localeId ?? options.localeId,
+    options
+  )
+  return { identity, localeId: localizedRoute.localeId, relativePath }
 }
 
 export function createManifestRouteIdentity(

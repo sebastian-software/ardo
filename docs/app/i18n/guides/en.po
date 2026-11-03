@@ -3450,6 +3450,14 @@ msgstr ""
 "configured order. Any section not listed still appears automatically after the"
 " configured sections using the normal generated order."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Copy page and View as Markdown on Markdown pages. Defaults to <0/>; see "
+"<1>Page Actions</1>."
+msgstr ""
+"Copy page and View as Markdown on Markdown pages. Defaults to <0/>; see "
+"<1>Page Actions</1>."
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Copy the directory from the version-matched tag."
 msgstr "Copy the directory from the version-matched tag."
@@ -3749,14 +3757,31 @@ msgid ""
 "Each Markdown and MDX page also gets its own file at its URL with <0/> "
 "appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
 "index links to these files, and each one has the same cleaned content as its "
-"section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
-" per-page files."
+"section in <4/>. Each page with a file also shows Copy page and View as "
+"Markdown links under its title. Set <5/> to keep the index linking to HTML "
+"pages, skip the per-page files, and hide those links."
 msgstr ""
 "Each Markdown and MDX page also gets its own file at its URL with <0/> "
 "appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
 "index links to these files, and each one has the same cleaned content as its "
-"section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
-" per-page files."
+"section in <4/>. Each page with a file also shows Copy page and View as "
+"Markdown links under its title. Set <5/> to keep the index linking to HTML "
+"pages, skip the per-page files, and hide those links."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Each Markdown and MDX page also gets its own file at its URL with <0/> "
+#~ "appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
+#~ "index links to these files, and each one has the same cleaned content as its "
+#~ "section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
+#~ " per-page files."
+#~ msgstr ""
+#~ "Each Markdown and MDX page also gets its own file at its URL with <0/> "
+#~ "appended, such as <1/>, or <2/> inside a directory root such as <3/>. The "
+#~ "index links to these files, and each one has the same cleaned content as its "
+#~ "section in <4/>. Set <5/> to keep the index linking to HTML pages and skip the"
+#~ " per-page files."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -3942,15 +3967,30 @@ msgstr "Example frame"
 msgid "Examples"
 msgstr "Examples"
 
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/frontmatter.mdx
+#~ msgid ""
+#~ "Exclude a Markdown route from <0/> and <1/>. This is useful for pages that are"
+#~ " valid docs for humans but noisy in a single-file model context, such as "
+#~ "generated changelogs or large fixture references."
+#~ msgstr ""
+#~ "Exclude a Markdown route from <0/> and <1/>. This is useful for pages that are"
+#~ " valid docs for humans but noisy in a single-file model context, such as "
+#~ "generated changelogs or large fixture references."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Exclude a Markdown route from <0/> and <1/>. This is useful for pages that are"
 " valid docs for humans but noisy in a single-file model context, such as "
-"generated changelogs or large fixture references."
+"generated changelogs or large fixture references. It also skips the page's own"
+" <2/> file and hides its Copy page and View as Markdown actions, because those"
+" actions link to that file."
 msgstr ""
 "Exclude a Markdown route from <0/> and <1/>. This is useful for pages that are"
 " valid docs for humans but noisy in a single-file model context, such as "
-"generated changelogs or large fixture references."
+"generated changelogs or large fixture references. It also skips the page's own"
+" <2/> file and hides its Copy page and View as Markdown actions, because those"
+" actions link to that file."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -5021,15 +5061,26 @@ msgstr ""
 " and naming it before <2/> and <3/> lets your utility classes win over Ardo's "
 "content styles."
 
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "In frames narrower than <0/>, the outline appears as an expandable \"On this "
+#~ "page\" section below the title, and page actions appear at the end of the "
+#~ "article. Wider frames keep the page rail."
+#~ msgstr ""
+#~ "In frames narrower than <0/>, the outline appears as an expandable \"On this "
+#~ "page\" section below the title, and page actions appear at the end of the "
+#~ "article. Wider frames keep the page rail."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "In frames narrower than <0/>, the outline appears as an expandable \"On this "
-"page\" section below the title, and page actions appear at the end of the "
-"article. Wider frames keep the page rail."
+"page\" section below the title, and the edit link and last-updated date appear"
+" at the end of the article. Wider frames keep the page rail."
 msgstr ""
 "In frames narrower than <0/>, the outline appears as an expandable \"On this "
-"page\" section below the title, and page actions appear at the end of the "
-"article. Wider frames keep the page rail."
+"page\" section below the title, and the edit link and last-updated date appear"
+" at the end of the article. Wider frames keep the page rail."
 
 #: docs/app/content/guide/components.mdx
 msgid ""
@@ -5550,6 +5601,24 @@ msgstr "Markdown Not Rendering"
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Markdown outside the route tree, or typed collection data"
 msgstr "Markdown outside the route tree, or typed collection data"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Markdown pages that have a Markdown file also show <0>Copy page</0> and "
+"<1>View as Markdown</1> under their title. Copy page fetches that file when "
+"the reader clicks it and copies its text. View as Markdown links to the file "
+"itself. Set <2/> on <3/> to hide both on every page, or <4/> in a page's "
+"frontmatter to hide them on one page. Pages without a Markdown file, such as "
+"those with <5/>, never show them, and a custom <6/> replaces them with your "
+"own heading."
+msgstr ""
+"Markdown pages that have a Markdown file also show <0>Copy page</0> and "
+"<1>View as Markdown</1> under their title. Copy page fetches that file when "
+"the reader clicks it and copies its text. View as Markdown links to the file "
+"itself. Set <2/> on <3/> to hide both on every page, or <4/> in a page's "
+"frontmatter to hide them on one page. Pages without a Markdown file, such as "
+"those with <5/>, never show them, and a custom <6/> replaces them with your "
+"own heading."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "Markdown processing options are configured under the <0/> key."
@@ -6179,6 +6248,10 @@ msgid "Packages and dependencies"
 msgstr "Packages and dependencies"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Page Actions"
+msgstr "Page Actions"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Page and Content Width"
 msgstr "Page and Content Width"
 
@@ -6193,6 +6266,10 @@ msgstr "Page Filenames"
 #: docs/app/content/guide/theming.mdx
 msgid "Page outline"
 msgstr "Page outline"
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "pageActions"
+msgstr "pageActions"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7822,6 +7899,10 @@ msgid "The 50 built-in content icons and the brand icons as React components."
 msgstr "The 50 built-in content icons and the brand icons as React components."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid "The actions appear in built sites and <0/>, not in the dev server."
+msgstr "The actions appear in built sites and <0/>, not in the dev server."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The active locale, including during server rendering."
 msgstr "The active locale, including during server rendering."
 
@@ -9406,6 +9487,27 @@ msgstr ""
 "search field, takes a required <3/> string and an optional <4/> from 1 to 20 "
 "(default 5), and returns page titles, section headings, absolute URLs, and "
 "excerpts. Nothing loads until an agent calls the tool."
+
+#~ #@ obsolete-since: 2026-11-03
+#~ #: docs/app/content/guide/frontmatter.mdx
+#~ msgid ""
+#~ "Whether to show \"Copy page\" and \"View as Markdown\" under the title. The "
+#~ "actions appear only on pages that have a Markdown file, and <0/> hides them on"
+#~ " this page alone. See <1>Edit Links and Last Updated</1>."
+#~ msgstr ""
+#~ "Whether to show \"Copy page\" and \"View as Markdown\" under the title. The "
+#~ "actions appear only on pages that have a Markdown file, and <0/> hides them on"
+#~ " this page alone. See <1>Edit Links and Last Updated</1>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Whether to show \"Copy page\" and \"View as Markdown\" under the title. The "
+"actions appear only on pages that have a Markdown file, and <0/> hides them on"
+" this page alone. See <1>Page Actions</1>."
+msgstr ""
+"Whether to show \"Copy page\" and \"View as Markdown\" under the title. The "
+"actions appear only on pages that have a Markdown file, and <0/> hides them on"
+" this page alone. See <1>Page Actions</1>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Whether to show the \"Edit this page\" link."

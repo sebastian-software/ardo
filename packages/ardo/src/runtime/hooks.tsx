@@ -108,6 +108,7 @@ export { ArdoConfigContext }
 
 type ArdoPageDataProviderProps = {
   frontmatter: PageData["frontmatter"]
+  markdownPath?: string
   toc: TOCItem[]
   children: ReactNode
 }
@@ -116,7 +117,12 @@ type ArdoPageDataProviderProps = {
  * Provides a Markdown page's frontmatter and outline to `useArdoPageData` and `useArdoTOC`. Ardo
  * wraps every compiled Markdown and MDX page in it.
  */
-export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDataProviderProps) {
+export function ArdoPageDataProvider({
+  frontmatter,
+  markdownPath,
+  toc,
+  children,
+}: ArdoPageDataProviderProps) {
   const parent = use(ArdoContext)
   const { source } = useArdoPage()
   const pageData: PageData = useMemo(
@@ -128,8 +134,9 @@ export function ArdoPageDataProvider({ frontmatter, toc, children }: ArdoPageDat
       filePath: source?.relativePath ?? "",
       relativePath: source?.relativePath ?? "",
       lastUpdated: source?.lastUpdated,
+      markdownPath,
     }),
-    [frontmatter, toc, source]
+    [frontmatter, markdownPath, toc, source]
   )
   const value = useMemo(
     () => (parent ? { ...parent, currentPage: pageData } : null),
@@ -150,6 +157,8 @@ export type ArdoSiteConfig = {
   /** Header and mobile menu logo. */
   logo?: ArdoLogo
   lastUpdated?: { enabled?: boolean; text?: string; formatOptions?: Intl.DateTimeFormatOptions }
+  /** Copy page and View as Markdown on Markdown pages; false hides them. Default: true. */
+  pageActions?: boolean
   tocLabel?: string
 }
 

@@ -67,6 +67,7 @@ export function ArdoDocContent({
   children,
   editLink,
   lastUpdated,
+  pageActions,
   tocLabel,
   tocSource,
   header,
@@ -97,6 +98,7 @@ export function ArdoDocContent({
       <ArdoContent
         editLink={editLink}
         lastUpdated={lastUpdated}
+        pageActions={pageActions}
         metaPlacement="footer-on-narrow"
         header={header}
         footer={footer}

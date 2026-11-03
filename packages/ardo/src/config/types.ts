@@ -304,9 +304,15 @@ export type PageFrontmatter = {
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
+  /** Set to false to hide the Copy page and View as Markdown actions on this page. */
+  pageActions?: boolean
   sitemap?: boolean
   /** Set to false to use description only as metadata, not as visible page lede. */
   lede?: boolean
+  /**
+   * Set to false to leave the page out of `llms.txt` and `llms-full.txt`. It also gets no
+   * Markdown file of its own, so its Copy page and View as Markdown actions are hidden.
+   */
   llms?: boolean
   redirectFrom?: string | string[]
   prev?: { text: string; link: string } | false | string
@@ -348,6 +354,8 @@ export type PageData = {
   lastUpdated?: number
   filePath: string
   relativePath: string
+  /** URL of the page's Markdown file, when the build writes one; the page actions link to it. */
+  markdownPath?: string
 }
 
 // =============================================================================
