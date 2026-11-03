@@ -37,18 +37,23 @@ const budgets = {
     budget: 50_000,
     baseline: "≈25 KB (2026-10, React in its own chunk)",
   },
+  pageEagerJsGzip: {
+    // What one visitor downloads to open a page: React, the entry, the shared UI chunks,
+    // and that page's own content chunk. New pages don't move it; a library that lands in
+    // a shared chunk, or one page that grows very large, does. Keep this one tight.
+    label: "largest page eager JS gzip",
+    budget: 225_000,
+    baseline: "≈207 KB largest page, ≈187 KB median (2026-11, de/guide/layout-and-navigation)",
+  },
   eagerJsGzip: {
     // Largest union of HTML-referenced JS for one locale. Catalogs are
     // checked separately because the active catalog loads before hydration.
+    // Every page's MDX and every generated API page add a chunk, so this follows the
+    // amount of documentation, not what a visitor loads. Deliberately roomy, like the
+    // total below: it only catches runaway growth, and pageEagerJsGzip guards visitors.
     label: "largest locale eager JS gzip",
-    // Every page's MDX and every generated API page add a chunk, and the route table in the
-    // entry grows with them, so this metric follows the amount of documentation.
-    // 2026-11: raised from 680 KB after Banner, ardo add, ardo check and lint, and the
-    // navigation option brought the docs to ≈666 KB (de, local build; CI measures ≈2 KB less).
-    // The new NavigationConfig API page alone is ≈2 KB per locale.
-    budget: 700_000,
-    baseline:
-      "≈666 KB per locale (2026-11, four-locale docs with the Banner, check, lint, add, and navigation docs)",
+    budget: 900_000,
+    baseline: "≈666 KB per locale (2026-11, four-locale docs, local build; CI measures ≈2 KB less)",
   },
   totalJsGzip: {
     // Everything emitted, including lazily loaded chunks. Deliberately
@@ -143,6 +148,36 @@ async function measureEagerJs(jsFiles, directory) {
   return { count: eagerFiles.length, total: sizes.reduce((sum, size) => sum + size, 0) }
 }
 
+/**
+ * The JS one visitor downloads to open a page: the gzip size of every file its HTML references
+ * through <script src> or <link rel="modulepreload">. Returns the largest page and the median,
+ * so the budget follows the heaviest page rather than the amount of documentation.
+ */
+async function measurePageEagerJs(jsFiles, directory) {
+  const filesByName = new Map(jsFiles.map((file) => [path.basename(file), file]))
+  const sizes = new Map()
+  const sizeOf = async (name) => {
+    if (!sizes.has(name)) sizes.set(name, await gzipSize(filesByName.get(name)))
+    return sizes.get(name)
+  }
+  const referencePattern = /(?:src|href)="([^"]+\.js)"/g
+  const pages = []
+  for (const htmlFile of await collectFiles(directory, ".html")) {
+    const html = await readFile(htmlFile, "utf8")
+    const names = new Set(
+      [...html.matchAll(referencePattern)]
+        .map((match) => path.basename(match[1]))
+        .filter((name) => filesByName.has(name))
+    )
+    let total = 0
+    for (const name of names) total += await sizeOf(name)
+    pages.push({ page: path.relative(clientDir, path.dirname(htmlFile)), total })
+  }
+  if (pages.length === 0) throw new Error(`No prerendered pages found in ${directory}`)
+  pages.sort((left, right) => left.total - right.total)
+  return { largest: pages.at(-1), median: pages[Math.floor(pages.length / 2)].total }
+}
+
 async function measureLocaleChunks(jsFiles, locales, prefix) {
   const chunks = await Promise.all(
     locales.map(async (locale) => {
@@ -208,11 +243,16 @@ async function main() {
   const eager = eagerByLocale.reduce((largest, item) =>
     item.total > largest.total ? item : largest
   )
+  const pageEager = await measurePageEagerJs(
+    jsFiles,
+    path.join(clientDir, current.path.replace(/^\//u, ""))
+  )
   const searchIndex = await measureLocaleChunks(jsFiles, current.locales, "search-index_locale_")
   const catalog = await measureLocaleCatalogs(jsFiles, current.locales)
 
   const results = [
     { key: "entryClientGzip", value: await measureEntryClient(jsFiles), format: formatBytes },
+    { key: "pageEagerJsGzip", value: pageEager.largest.total, format: formatBytes },
     { key: "eagerJsGzip", value: eager.total, format: formatBytes },
     { key: "totalJsGzip", value: await measureTotalJs(jsFiles), format: formatBytes },
     { key: "searchIndexGzip", value: searchIndex, format: formatBytes },
@@ -224,6 +264,9 @@ async function main() {
 
   console.log(
     `[budgets] locale eager JS: ${eagerByLocale.map((item) => `${item.locale} ${formatBytes(item.total)}`).join(", ")}`
+  )
+  console.log(
+    `[budgets] page eager JS: largest ${formatBytes(pageEager.largest.total)} (${pageEager.largest.page}), median ${formatBytes(pageEager.median)}`
   )
   console.log(`[budgets] client JS files: ${jsFiles.length} (${eager.count} eager)\n`)
 

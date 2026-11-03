@@ -205,7 +205,8 @@ budgets to make CI pass. No lint rule is disabled by the budget checker.
 The docs site build is guarded by performance budgets (`pnpm docs:budgets`, runs in CI). The check builds the docs site and fails on material regressions in:
 
 - **`entry.client` gzip size** — the main client entry served to every visitor
-- **Eager client JS gzip size** — all JavaScript referenced from prerendered HTML; lazily loaded chunks are excluded
+- **Page eager JS gzip size** — the JavaScript the heaviest page references from its HTML, which is what one visitor downloads to open it; the tight one
+- **Locale eager JS gzip size** — all JavaScript referenced from one locale's prerendered HTML, so it grows with the amount of documentation; a roomy cap that only catches runaway growth
 - **Total client JS gzip size** — everything emitted including lazy chunks, with a deliberately roomy cap
 - **Search index gzip size** — the serialized `virtual:ardo/search-index` payload
 - **Docs build duration** — a generous cap that only catches pathological slowdowns
