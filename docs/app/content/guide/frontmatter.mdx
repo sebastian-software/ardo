@@ -68,6 +68,27 @@ lede: false
 ---
 ```
 
+### banner
+
+- Type: `string` or `object`
+
+Shows a notice above the page content, without writing MDX. A string sets the text in the `info` variant. An object sets the text and the options below. The banner is plain text: Markdown syntax is shown as written. For links and formatting, use [`Banner`](/en/guide/components#banner) in MDX.
+
+```yaml
+---
+banner:
+  content: Version 7 is in beta. Report issues on GitHub.
+  variant: warning
+  id: v7-beta
+  dismissible: true
+---
+```
+
+- `content`: Required. The text of the banner.
+- `variant`: `tip`, `warning`, `danger`, `info` (default), or `note`.
+- `id`: A stable key, such as `v7-beta`. Required when `dismissible` is `true`.
+- `dismissible`: When `true`, a close button hides the banner in that browser. Ardo stores the choice under the `id`, so a new `id` shows the banner again. Without JavaScript, the banner stays visible.
+
 ### Social metadata
 
 Markdown routes without their own `meta` export get generated browser, canonical, Open Graph, and Twitter metadata from frontmatter and site config.

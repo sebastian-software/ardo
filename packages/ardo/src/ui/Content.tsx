@@ -12,6 +12,7 @@ import { ardoContent } from "./content.css"
 import * as docStyles from "./DocPage.css"
 import * as footerStyles from "./Footer.css"
 import { ArdoPageActions } from "./PageActions"
+import { ArdoPageBanner } from "./components/Banner"
 import { getNodeText } from "./text-content"
 import { ArdoVersionBanner } from "./site-controls"
 
@@ -110,7 +111,12 @@ export function ArdoContent({
 
   if (isBare) {
     return (
-      <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>{children}</div>
+      <>
+        <ContentBanner />
+        <div className={`ardo-content-body ${docStyles.contentBody} ${ardoContent}`}>
+          {children}
+        </div>
+      </>
     )
   }
 
@@ -123,6 +129,7 @@ export function ArdoContent({
   return (
     <article className={`ardo-content ${docStyles.contentContainer}`}>
       <ArdoVersionBanner />
+      <ContentBanner />
       <ArdoBreadcrumb />
       {header === undefined ? (
         <ContentHeader
@@ -158,6 +165,14 @@ export function ArdoContent({
       )}
     </article>
   )
+}
+
+/** The page's frontmatter banner. Keyed by path, so a dismissal does not carry over to the next page. */
+function ContentBanner() {
+  const pageData = useArdoPageData()
+  const pathname = useArdoPath()
+  const banner = pageData?.frontmatter.banner
+  return banner == null ? null : <ArdoPageBanner key={pathname} banner={banner} />
 }
 
 /**

@@ -326,6 +326,10 @@ msgstr "PELIGRO"
 msgid "dark mode included, for fellow night owls"
 msgstr "modo oscuro incluido, para los noctámbulos"
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Dismiss banner"
+msgstr "Cerrar el banner"
+
 #: docs/app/i18n/messages.ts
 msgid "docs should live in your repo and go through review"
 msgstr "tu documentación debe vivir en el repositorio y pasar por revisión"

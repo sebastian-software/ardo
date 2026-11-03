@@ -527,6 +527,20 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
+"<0/> shows a notice at the top of a page, such as a release or a maintenance "
+"window. Its <1/> uses the same colors as the callout of that name. Its content"
+" can include formatting and links. The banner is static, so it needs no "
+"JavaScript. To show a dismissible banner from frontmatter instead, see "
+"<2>Frontmatter</2>."
+msgstr ""
+"<0/> zeigt einen Hinweis am oberen Rand einer Seite, etwa zu einer Version "
+"oder einem Wartungsfenster. Die Option <1/> verwendet dieselben Farben wie der"
+" gleichnamige Callout. Der Inhalt kann Formatierungen und Links enthalten. Das"
+" Banner ist statisch und benötigt kein JavaScript. Um stattdessen ein "
+"schließbares Banner aus dem Frontmatter anzuzeigen, siehe <2>Frontmatter</2>."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
 "<0/> shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. "
 "Pass a package name, or several names separated by spaces. Set <1/> to install"
 " a development dependency, and use <2/> to run a package once without "
@@ -699,6 +713,16 @@ msgstr "<0/>: Vanilla-Extract-Tokens für eigene Styles."
 msgid "<0/>, which adds <1/> and <2/>"
 msgstr "<0/>, ergänzt <1/> und <2/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: <1/>, <2/>, <3/>, <4/> (default), or <5/>."
+msgstr "<0/>: <1/>, <2/>, <3/>, <4/> (Standard) oder <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: A stable key, such as <1/>. Required when <2/> is <3/>."
+msgstr ""
+"<0/>: Ein stabiler Schlüssel, etwa <1/>. Pflicht, wenn <2/> den Wert <3/> "
+"hat."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/>: renders inside the root for a missing page and replaces the root for a "
@@ -706,6 +730,10 @@ msgid ""
 msgstr ""
 "<0/>: bei fehlenden Seiten innerhalb der Root, bei Renderfehlern anstelle der "
 "Root. Standard ist <1/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid "<0/>: Required. The text of the banner."
+msgstr "<0/>: Pflichtangabe. Der Text des Banners."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -724,6 +752,16 @@ msgstr ""
 "<0/>: als <1/> aus <2/> typisiert. Es nimmt keine Argumente und liefert die "
 "bisherigen Deskriptoren, etwa <3/>. Entferne den Export, wenn er nur den "
 "Website-Titel setzte: Seiten ohne <4/> erhalten ihren Titel aus <5/>."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"<0/>: When <1/>, a close button hides the banner in that browser. Ardo stores "
+"the choice under the <2/>, so a new <3/> shows the banner again. Without "
+"JavaScript, the banner stays visible."
+msgstr ""
+"<0/>: Bei <1/> blendet eine Schließen-Schaltfläche das Banner in diesem "
+"Browser aus. Ardo speichert die Auswahl unter der <2/>, daher zeigt eine neue "
+"<3/> das Banner wieder an. Ohne JavaScript bleibt das Banner sichtbar."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -2687,6 +2725,22 @@ msgstr ""
 "Badges ergänzen einen kompakten Status im Text: <0>Neu</0> <1>Stabil</1> "
 "<2>Vorschau</2> <3>Veraltet</3> <4>Referenz</4> <5>Mit Icon</5>."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "banner"
+msgstr "banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner"
+msgstr "Banner"
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner content, such as text with a link."
+msgstr "Inhalt des Banners, etwa Text mit einem Link."
+
+#: docs/app/content/guide/components.mdx
+msgid "Banner example"
+msgstr "Beispiel für ein Banner"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Bare pages (<0/>, including the home page) show a search icon, so the hero's "
@@ -3242,6 +3296,10 @@ msgstr ""
 "Seitenleiste, Suche, Sitemap, Weiterleitungen und LLM-Exporte. Quellpfade sind"
 " relativ zum Projekt. Das virtuelle Modul legt daher keine absoluten "
 "Dateisystempfade des Autors offen."
+
+#: docs/app/content/guide/components.mdx
+msgid "Color of the banner. Defaults to <0/>."
+msgstr "Farbe des Banners. Standard ist <0/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Color scheme"
@@ -7444,6 +7502,19 @@ msgid "Show line numbers in code blocks."
 msgstr "Zeilennummern in Codeblöcken anzeigen."
 
 #: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"Shows a notice above the page content, without writing MDX. A string sets the "
+"text in the <0/> variant. An object sets the text and the options below. The "
+"banner is plain text: Markdown syntax is shown as written. For links and "
+"formatting, use <1><2/></1> in MDX."
+msgstr ""
+"Zeigt einen Hinweis über dem Seiteninhalt an, ohne MDX zu schreiben. Eine "
+"Zeichenkette setzt den Text in der Variante <0/>. Ein Objekt setzt den Text "
+"und die unten beschriebenen Optionen. Das Banner ist reiner Text: "
+"Markdown-Syntax wird wörtlich angezeigt. Für Links und Formatierungen "
+"verwende in MDX <1><2/></1>."
+
+#: docs/app/content/guide/frontmatter.mdx
 msgid "sidebar"
 msgstr "sidebar"
 
@@ -8788,6 +8859,10 @@ msgstr "Typsicheres Styling mit Vanilla Extract"
 msgid "Type: <0/>"
 msgstr "Typ:<0/>"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Type: <0/> or <1/>"
+msgstr "Typ: <0/> oder <1/>"
+
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "TypeDoc plugins, sorting, category/group order, and Markdown options"
 msgstr "TypeDoc-Plugins, Sortierung, Kategorien, Gruppen und Markdown-Optionen"
@@ -9281,6 +9356,10 @@ msgstr "Upgrade prüfen"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Version"
 msgstr "Version"
+
+#: docs/app/content/guide/components.mdx
+msgid "Version 7 is in beta. <0>Read the banner options</0>."
+msgstr "Version 7 ist in der Beta-Phase. <0>Die Banner-Optionen ansehen</0>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Version controls"
