@@ -1,4 +1,4 @@
-import type { ResolvedConfig } from "../config/types"
+import type { ContentSignalsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./build-versioning"
@@ -18,6 +18,10 @@ export function generateRobots(config: ResolvedConfig) {
   const allowRules = robotsConfig.allow ?? ["/"]
   const disallowRules = robotsConfig.disallow ?? []
   const lines = ["User-agent: *"]
+  const contentSignals = generateContentSignalsLine(robotsConfig.contentSignals)
+  if (contentSignals !== undefined) {
+    lines.push(contentSignals)
+  }
 
   for (const rule of allowRules) {
     lines.push(`Allow: ${rule}`)
@@ -29,6 +33,19 @@ export function generateRobots(config: ResolvedConfig) {
 
   lines.push(`Sitemap: ${toAbsoluteUrl("/sitemap.xml", config)}`)
   return `${lines.join("\n")}\n`
+}
+
+/** `Content-Signal: search=yes, ai-input=yes, ai-train=no`, listing only the signals that are set. */
+function generateContentSignalsLine(signals: ContentSignalsConfig | undefined) {
+  const values = [
+    ["search", signals?.search],
+    ["ai-input", signals?.aiInput],
+    ["ai-train", signals?.aiTrain],
+  ] as const
+  const pairs = values.flatMap(([name, value]) =>
+    value === undefined ? [] : [`${name}=${value ? "yes" : "no"}`]
+  )
+  return pairs.length === 0 ? undefined : `Content-Signal: ${pairs.join(", ")}`
 }
 
 export function collectRedirects(entries: RouteManifestEntry[], config: ResolvedConfig) {

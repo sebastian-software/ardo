@@ -202,7 +202,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {
-        const agent = createAgentOutputs(resolvedConfig)
+        const agent = createAgentOutputs(manifest, resolvedConfig)
         if (agent.warnings.length > 0) {
           this.warn(
             `[ardo] Agent Skills were skipped:\n${agent.warnings.map((warning) => `- ${warning}`).join("\n")}`

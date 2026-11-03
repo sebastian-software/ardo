@@ -58,6 +58,9 @@ export async function renderPage(
     route,
     siteTitle: config.title,
   })
+  if (config.agentDiscoveryUrl !== undefined) {
+    page.meta.push({ tagName: "link", rel: "ard", href: config.agentDiscoveryUrl })
+  }
   const assets = options.assets(page.data.routeId)
   const Layout = root.Layout ?? ArdoRootLayout
 

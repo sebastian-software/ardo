@@ -433,6 +433,48 @@ describe("build outputs", () => {
   })
 })
 
+describe("robots Content Signals", () => {
+  it("adds no Content-Signal line unless a signal is set", () => {
+    expect(generateRobots(baseConfig)).not.toContain("Content-Signal")
+    expect(
+      generateRobots(
+        resolveConfig({ title: "Docs", seo: { robots: { contentSignals: {} } } }, "/site")
+      )
+    ).not.toContain("Content-Signal")
+  })
+
+  it("writes only the configured signals, after the user agent and before the rules", () => {
+    const config = resolveConfig(
+      {
+        title: "Docs",
+        siteUrl: "https://example.com",
+        seo: {
+          robots: {
+            contentSignals: { search: true, aiInput: true, aiTrain: false },
+          },
+        },
+      },
+      "/site"
+    )
+
+    expect(generateRobots(config).split("\n").slice(0, 3)).toStrictEqual([
+      "User-agent: *",
+      "Content-Signal: search=yes, ai-input=yes, ai-train=no",
+      "Allow: /",
+    ])
+  })
+
+  it("writes a partial policy with only the signal that is set", () => {
+    const config = resolveConfig(
+      { title: "Docs", seo: { robots: { contentSignals: { aiTrain: false } } } },
+      "/site"
+    )
+
+    expect(generateRobots(config)).toContain("Content-Signal: ai-train=no\n")
+    expect(generateRobots(config)).not.toContain("search=")
+  })
+})
+
 it("redirects an unversioned localized site root to its default language", () => {
   const config = resolveConfig(
     { title: "Docs", base: "/project/", i18n: { defaultLocale: "de", locales: [{ id: "de" }] } },

@@ -216,6 +216,11 @@ export type SeoConfig = {
    * Set `false` to publish nothing. Requires a root deployment base.
    */
   agentSkills?: false | AgentSkillsConfig
+  /**
+   * Publish `/.well-known/ard.json` and `/.well-known/ai-catalog.json`, and link them from every
+   * page. Needs `siteUrl` and a root deployment base. Default: true.
+   */
+  agentDiscovery?: boolean
 }
 
 export type AgentSkillsConfig = {
@@ -254,6 +259,20 @@ export type SitemapChangefreq =
 export type RobotsConfig = {
   allow?: string[]
   disallow?: string[]
+  /**
+   * Content Signals policy (https://contentsignals.org) written as one `Content-Signal` line.
+   * Only the signals you set appear. Nothing is written by default.
+   */
+  contentSignals?: ContentSignalsConfig
+}
+
+export type ContentSignalsConfig = {
+  /** Search indexing. */
+  search?: boolean
+  /** Use of content as input to AI answers, such as retrieval. */
+  aiInput?: boolean
+  /** Use of content to train AI models. */
+  aiTrain?: boolean
 }
 
 export type LinkCheckConfig = {
@@ -388,6 +407,11 @@ export type ResolvedConfig = {
   /** Optional for compatibility with manually constructed test/config fixtures. */
   validation?: ContentValidationConfig
   openapi?: OpenApiConfig
+  /**
+   * Absolute URL of `/.well-known/ard.json`. Set only when discovery files are published, so a
+   * page links it exactly when the file exists.
+   */
+  agentDiscoveryUrl?: string
 } & Required<
   Omit<
     ArdoConfig,

@@ -230,7 +230,7 @@ sitemap inclusion; set the page's robots metadata separately when it should be
 
 ### seo.robots
 
-- **Type:** `boolean | { allow?: string[]; disallow?: string[] }`
+- **Type:** `boolean | { allow?: string[]; disallow?: string[]; contentSignals?: { search?: boolean; aiInput?: boolean; aiTrain?: boolean } }`
 - **Default:** `true`
 
 Generates `/robots.txt`. By default Ardo allows all crawlers and points them at the generated
@@ -244,10 +244,17 @@ defineArdoConfig({
     robots: {
       allow: ["/"],
       disallow: ["/drafts/"],
+      contentSignals: { search: true, aiInput: true, aiTrain: false },
     },
   },
 })
 ```
+
+`contentSignals` states how the content may be used, following [Content Signals](https://contentsignals.org).
+Each signal you set becomes one `Content-Signal` line, such as `search=yes, ai-input=yes, ai-train=no`.
+Signals you leave out are not written. Ardo writes no Content Signals line by default, because
+that is a policy decision for you. Robots directives do not protect content, so use authentication
+for anything private.
 
 Set `seo.robots: false` if you want to provide your own `robots.txt` from `public/`.
 
@@ -296,6 +303,30 @@ defineArdoConfig({
 ```
 
 Set `seo.agentSkills: false` to publish nothing.
+
+### seo.agentDiscovery
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Publishes `/.well-known/ard.json` and `/.well-known/ai-catalog.json`, two files with the same
+content, so agents can find the site's resources. Each file lists the `llms.txt` index, the
+homepage's Markdown version when the homepage is a Markdown page, and the Agent Skills index when
+skills are published. Every HTML page also links `ard.json` with `<link rel="ard">`.
+
+Discovery needs an absolute `siteUrl` and a root `base`, because `/.well-known` must sit at the
+origin root. Without either, Ardo skips these files silently unless you set `agentDiscovery` explicitly, and then it logs one line. Set `agentDiscovery: false`
+to publish nothing and add no links.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  seo: {
+    agentDiscovery: false,
+  },
+})
+```
 
 ### linkCheck
 

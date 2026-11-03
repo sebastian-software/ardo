@@ -53,6 +53,8 @@ export async function loadVirtualModule(
       sidebar: state.resolvedConfig.sidebar,
       i18n: state.resolvedConfig.i18n,
       project: state.resolvedConfig.project,
+      // Pages link ard.json from the server render; JSON drops the key when it is absent.
+      agentDiscoveryUrl: state.resolvedConfig.agentDiscoveryUrl,
       buildTime: new Date().toISOString(),
       buildHash: detectGitHash(state.resolvedConfig.root),
     }
