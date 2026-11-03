@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.2.0...ardo-v6.3.0) (2026-11-03)
+
+
+### Features
+
+* use full-width shells with bounded content ([b9f4c7c](https://github.com/sebastian-software/ardo/commit/b9f4c7c121049d0593eb54f6cb4df379625b3970))
+
 ## [6.2.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.1.2...ardo-v6.2.0) (2026-11-02)
 
 
