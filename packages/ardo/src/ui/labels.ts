@@ -30,6 +30,14 @@ export type ArdoLabels = {
     label: string
   }
   container: ArdoContainerLabels
+  fileTree: {
+    /** Accessible name of the file tree list. */
+    label: string
+    /** Screen-reader name of the folder icon. */
+    folder: string
+    /** Screen-reader name of the file icon. */
+    file: string
+  }
   copyButton: {
     copy: string
     copied: string
@@ -104,6 +112,7 @@ export type ArdoLabelsInput = {
   publication?: Partial<ArdoLabels["publication"]>
   breadcrumb?: Partial<ArdoLabels["breadcrumb"]>
   container?: Partial<ArdoContainerLabels>
+  fileTree?: Partial<ArdoLabels["fileTree"]>
   copyButton?: Partial<ArdoLabels["copyButton"]>
   footer?: Partial<ArdoLabels["footer"]>
   header?: Partial<ArdoLabels["header"]>
@@ -144,6 +153,11 @@ export const defaultArdoLabels: ArdoLabels = {
     danger: "DANGER",
     info: "INFO",
     note: "NOTE",
+  },
+  fileTree: {
+    label: "File tree",
+    folder: "Folder",
+    file: "File",
   },
   copyButton: {
     copy: "Copy",
@@ -219,6 +233,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
     publication: { ...defaultArdoLabels.publication, ...input.publication },
     breadcrumb: { ...defaultArdoLabels.breadcrumb, ...input.breadcrumb },
     container: { ...defaultArdoLabels.container, ...input.container },
+    fileTree: { ...defaultArdoLabels.fileTree, ...input.fileTree },
     copyButton: { ...defaultArdoLabels.copyButton, ...input.copyButton },
     footer: { ...defaultArdoLabels.footer, ...input.footer },
     header: { ...defaultArdoLabels.header, ...input.header },

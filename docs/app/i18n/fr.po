@@ -362,9 +362,21 @@ msgstr "Développer"
 msgid "Fast all the way down."
 msgstr "Rapide de bout en bout."
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File"
+msgstr "Fichier"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File tree"
+msgstr "Arborescence de fichiers"
+
 #: docs/app/i18n/messages.ts
 msgid "fit check"
 msgstr "est-ce pour vous ?"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Folder"
+msgstr "Dossier"
 
 #: docs/app/i18n/messages.ts
 msgid "From repo to website, no server to babysit."

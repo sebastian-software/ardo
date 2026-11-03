@@ -40,12 +40,15 @@ export {
   ArdoContainer,
   ArdoCopyButton,
   ArdoDanger,
+  ArdoEmbed,
   ArdoFeatureCard,
   ArdoFeatures,
+  ArdoFileTree,
   ArdoHero,
   ArdoIcon,
   ArdoInfo,
   ArdoNote,
+  ArdoPackageManagers,
   ArdoSearch,
   ArdoSteps,
   ArdoTab,
@@ -72,7 +75,10 @@ export type {
 } from "./components"
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 
+export type { ArdoEmbedProps } from "./components"
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./components"
+export type { ArdoFileTreeProps } from "./components"
+export type { ArdoPackageManagersProps } from "./components"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./components"
 export type { ArdoStepsProps } from "./components"
 

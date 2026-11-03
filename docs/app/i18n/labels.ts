@@ -31,6 +31,11 @@ export function translatedLabels(): ArdoLabels {
       info: t`INFO`,
       note: t`NOTE`,
     },
+    fileTree: {
+      label: t`File tree`,
+      folder: t`Folder`,
+      file: t`File`,
+    },
     copyButton: {
       copy: t`Copy`,
       copied: t`Copied!`,

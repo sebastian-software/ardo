@@ -359,9 +359,21 @@ msgstr "Ausklappen"
 msgid "Fast all the way down."
 msgstr "Schnell bis ins Fundament."
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File"
+msgstr "Datei"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File tree"
+msgstr "Dateibaum"
+
 #: docs/app/i18n/messages.ts
 msgid "fit check"
 msgstr "passt das?"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Folder"
+msgstr "Ordner"
 
 #: docs/app/i18n/messages.ts
 msgid "From repo to website, no server to babysit."

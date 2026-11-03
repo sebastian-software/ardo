@@ -354,9 +354,21 @@ msgstr "Expand"
 msgid "Fast all the way down."
 msgstr "Fast all the way down."
 
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File"
+msgstr "File"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "File tree"
+msgstr "File tree"
+
 #: docs/app/i18n/messages.ts
 msgid "fit check"
 msgstr "fit check"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "Folder"
+msgstr "Folder"
 
 #: docs/app/i18n/messages.ts
 msgid "From repo to website, no server to babysit."
