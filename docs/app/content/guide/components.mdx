@@ -210,7 +210,7 @@ Wrap an ordered list in `Steps` to show a sequence. Each step can contain prose,
 
 Code blocks include a copy button that copies the code without the title or line numbers. Markdown fences are highlighted at build time; the `CodeBlock` component also accepts a string directly.
 
-<GalleryPreview id="gallery-code" label="Code example">
+<GalleryPreview id="gallery-code" label="Code example" framed={false}>
   <CodeBlock language="bash" title="terminal" code="pnpm add ardo" />
 </GalleryPreview>
 
@@ -220,7 +220,7 @@ Code blocks include a copy button that copies the code without the title or line
 
 Use `CodeGroup` for related snippets with their own file names:
 
-<GalleryPreview id="gallery-code-group" label="Code group example">
+<GalleryPreview id="gallery-code-group" label="Code group example" framed={false}>
   <CodeGroup labels="Configuration,Home route">
     <CodeBlock
       language="typescript"
@@ -271,7 +271,7 @@ If the `language` prop is dynamic (from a variable), build-time highlighting is 
 
 `PackageManagers` shows one install or run command in tabs for npm, pnpm, Yarn, and Bun. Pass a package name, or several names separated by spaces. Set `dev` to install a development dependency, and use `type="exec"` to run a package once without installing it. Each tab has the same copy button as a code group.
 
-<GalleryPreview id="gallery-package-managers" label="Package managers example">
+<GalleryPreview id="gallery-package-managers" label="Package managers example" framed={false}>
   <PackageManagers pkg="ardo" />
 </GalleryPreview>
 
@@ -294,7 +294,7 @@ The commands are plain text, not highlighted. Build-time highlighting covers Mar
 
 Use `FileTree` to show a project layout. Write the tree as a nested list, with a blank line between each tag and the list so MDX parses it as Markdown. An item is a folder when it has nested items or its name ends with `/`. Folders and files get icons. Bold text highlights an entry, and text after an em dash (—) appears as a muted comment. The tree is static and needs no JavaScript.
 
-<GalleryPreview id="gallery-file-tree" label="File tree example">
+<GalleryPreview id="gallery-file-tree" label="File tree example" framed={false}>
 
 <FileTree>
 
