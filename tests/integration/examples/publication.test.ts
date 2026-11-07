@@ -72,6 +72,108 @@ it("builds a complete publication beside versioned documentation under a deploym
   scan(output)
 })
 
+it("builds a site-designed publication with tag archives, own metadata, and no trailing slashes", () => {
+  const directory = fs.realpathSync(createTestProject("publication"))
+  directories.push(directory)
+  const reading = path.join(directory, "posts/reading.mdx")
+  fs.writeFileSync(
+    reading,
+    fs.readFileSync(reading, "utf8").replace("tags: [Design, Engineering]", "tags: [design]")
+  )
+  fs.mkdirSync(path.join(directory, "app/blog"))
+  fs.writeFileSync(
+    path.join(directory, "app/blog/Overview.tsx"),
+    'import type { PublicationIndexProps } from "ardo/config"\nexport default function Overview({ publication }: PublicationIndexProps) {\n  return <main data-site="overview">{publication.posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>\n}\n'
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/blog/Post.tsx"),
+    'import type { PublicationPostProps } from "ardo/config"\nexport default function SitePost({ post, children }: PublicationPostProps) {\n  return <article data-site="post"><h1>{post.title}</h1>{children}</article>\n}\n'
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/blog/Tag.tsx"),
+    'import type { PublicationTagProps } from "ardo/config"\nconst labels: Record<string, string> = { design: "Gestaltung" }\nexport default function Tag({ tag, posts }: PublicationTagProps) {\n  return <main data-site="tag"><h1>{labels[tag.key]}</h1>{posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>\n}\n'
+  )
+  const config = path.join(directory, "ardo.config.ts")
+  fs.writeFileSync(
+    config,
+    fs.readFileSync(config, "utf8").replace(
+      "publication: {",
+      `publication: {
+    trailingSlash: false,
+    tags: true,
+    feeds: { entryIds: "publication" },
+    components: { index: "app/blog/Overview.tsx", post: "app/blog/Post.tsx", tag: "app/blog/Tag.tsx" },
+    meta: {
+      index: ({ publication }) => [
+        { title: "Site blog" },
+        { tagName: "link", rel: "canonical", href: publication.url },
+      ],
+      post: ({ post }) => [
+        { title: post.title + " · Site" },
+        { tagName: "link", rel: "canonical", href: post.url },
+        { property: "og:type", content: "article" },
+      ],
+      tag: ({ tag }) => [{ title: "Gestaltung · Site" }, { tagName: "link", rel: "canonical", href: tag.url }],
+    },`
+    )
+  )
+  execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"], {
+    cwd: directory,
+    stdio: "pipe",
+    timeout: 120_000,
+  })
+  // Generated routes, site components, and the config's metadata functions pass strict TypeScript.
+  try {
+    execFileSync(
+      "pnpm",
+      ["--config.verifyDepsBeforeRun=false", "exec", "tsc", "--noEmit", "-p", "tsconfig.json"],
+      { cwd: directory, stdio: "pipe", timeout: 120_000 }
+    )
+  } catch (error) {
+    throw new Error(String((error as { stdout?: Buffer }).stdout ?? error), { cause: error })
+  }
+  expect(fs.existsSync(path.join(directory, "app/routes/news/tags/design/index.tsx"))).toBe(true)
+  const output = path.join(directory, "build/client")
+  const canonicals = (html: string) =>
+    [...html.matchAll(/<link[^>]+rel="canonical"[^>]*>/gu)].map((match) => match[0])
+  const listing = fs.readFileSync(path.join(output, "news/index.html"), "utf8")
+  expect(listing).toContain('data-site="overview"')
+  expect(listing).toContain("<title>Site blog</title>")
+  expect(canonicals(listing)).toStrictEqual([
+    '<link rel="canonical" href="https://example.test/project/news"/>',
+  ])
+  const post = fs.readFileSync(path.join(output, "news/reading/index.html"), "utf8")
+  expect(post).toContain('data-site="post"')
+  expect(post).toContain("A good article gives its reader room to think.")
+  expect(post).not.toContain("ardo-post-body")
+  expect(post).toContain("<title>Designing for a clearer reading experience · Site</title>")
+  expect(canonicals(post)).toStrictEqual([
+    '<link rel="canonical" href="https://example.test/project/news/reading"/>',
+  ])
+  expect(post).not.toContain("og:url")
+  expect(post).not.toContain("twitter:card")
+  const tag = fs.readFileSync(path.join(output, "news/tags/design/index.html"), "utf8")
+  expect(tag).toContain('data-site="tag"')
+  expect(tag).toContain("Gestaltung")
+  expect(tag).toContain("Designing for a clearer reading experience")
+  expect(tag).not.toContain("An example that responds")
+  expect(canonicals(tag)).toStrictEqual([
+    '<link rel="canonical" href="https://example.test/project/news/tags/design"/>',
+  ])
+  const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
+  expect(sitemap).toContain("<loc>https://example.test/project/news/tags/design</loc>")
+  const atom = fs.readFileSync(path.join(output, "news/atom.xml"), "utf8")
+  expect(atom).toContain('xml:lang="en"')
+  expect(atom).toContain('<link href="https://example.test/project/news/reading"/>')
+  expect(atom).toContain(
+    "<id>urn:ardo:publication:example.test/project/news:post:07137892-fca6-4699-a5ea-609c80dbf814</id>"
+  )
+  expect(atom).toContain('<category term="design"/>')
+  expect(fs.readFileSync(path.join(output, "news/rss.xml"), "utf8")).toContain(
+    "<language>en</language>"
+  )
+})
+
 it("rejects publication sources in publicDir before Vite can copy draft bodies", () => {
   const directory = fs.realpathSync(createTestProject("publication"))
   directories.push(directory)

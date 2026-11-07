@@ -5,6 +5,9 @@ import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
 /**
  * One `<meta>`, `<title>`, `<link>`, or JSON-LD `<script>` description, as returned by a `meta`
  * export. `"script:ld+json"` is serialized into a `<script type="application/ld+json">`.
+ *
+ * Undefined `tagName` attributes are omitted. Allowing them lets TypeScript accept an inferred
+ * list that mixes `{ title }` with `link` descriptors, which it widens with `title?: undefined`.
  */
 export type ArdoMetaDescriptor =
   | { charSet: string }
@@ -12,8 +15,8 @@ export type ArdoMetaDescriptor =
   | { name: string; content: string }
   | { property: string; content: string }
   | { httpEquiv: string; content: string }
-  | { tagName: "link"; [attribute: string]: string }
-  | { tagName: "meta"; [attribute: string]: string }
+  | { tagName: "link"; [attribute: string]: string | undefined }
+  | { tagName: "meta"; [attribute: string]: string | undefined }
   | { "script:ld+json": Record<string, unknown> }
 
 /** Signature of the optional `meta` export of a route module or `app/root.tsx`. */

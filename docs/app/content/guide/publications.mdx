@@ -66,6 +66,11 @@ The article starts here. Use ordinary Markdown, or MDX components when the story
 The URL is `/news/a-readable-update/`. A nested `posts/design/typography.mdx` becomes
 `/news/design/typography/`. Set `path: /news/a-permanent-address` to choose an address
 independently of the source filename. Custom paths must remain inside the publication subtree.
+Set `trailingSlash: false` to drop the final slash from the `url` of the publication, its posts,
+and its tag archives. This also changes the index's default canonical link, the feed links, and
+the Atom feed's own `<id>`. Sitemap entries and the default canonical links of posts and tag
+archives never end with a slash. The host must then serve `news/index.html` at `/news` without
+redirecting to `/news/`; GitHub Pages, for example, redirects.
 
 Assign `id` once and preserve it when renaming the file, title, or URL. To create a UUID, run:
 
@@ -180,7 +185,15 @@ one breakpoint policy fits every image.
 
 Ardo generates `/news/atom.xml` and `/news/rss.xml`, including the full portable article,
 authors, tags, and absolute image URLs. The index links both feeds and includes feed
-discovery metadata. Stable post IDs remain the feed identity when a URL changes.
+discovery metadata. Stable post IDs remain the feed identity when a URL changes. Both feeds
+declare the publication's locale, or the site's `lang`. Set `lang` on a single-language
+site, because it otherwise defaults to `en`.
+
+An entry ID contains only the post ID by default. When several sites or publications share
+post IDs, for example a translated post on two single-language sites, set
+`feeds: { entryIds: "publication" }`. The ID then includes the publication's host and path,
+so feed readers keep both entries. Readers treat entries with new IDs as new posts, so choose
+the option before the first release, or accept one round of repeated entries.
 
 Ordinary Markdown exports directly. When MDX contains components, expressions, module
 statements, or HTML that the static projection would omit, supply the complete portable
@@ -231,13 +244,66 @@ With strict localization enabled, organize posts under `posts/<locale>/`. Ardo g
 validation still applies; this feature does not introduce translation fallbacks.
 Pass translated UI labels through `ArdoRoot`'s `labels.publication`.
 
+## Tag archives
+
+Set `tags: true` to generate a page for each tag at `/news/tags/<key>`. The sitemap lists
+these pages. Tag keys must be lowercase slugs with hyphens, such as `release-notes`. The build
+fails when a key does not match, when a post lists a key twice, or when a post path falls
+under `/news/tags`. Feeds keep the key as category. To show a translated label, map the key in
+your tag component. Without archives, tags can be any text. With `i18n`, every locale needs
+the same tag keys, because each localized page must exist in every locale.
+
+## Own presentation and metadata
+
+A site with its own design can render the generated pages with its own components and
+metadata. Component paths are relative to the project root. Each module default-exports a
+React component:
+
+```ts
+publication: {
+  // from, authors, ...
+  trailingSlash: false,
+  tags: true,
+  components: {
+    index: "app/blog/BlogIndex.tsx", // Receives { publication }
+    post: "app/blog/BlogPost.tsx", // Receives { post, children }
+    tag: "app/blog/BlogTag.tsx", // Receives { publication, tag, posts }
+  },
+  meta: {
+    index: ({ publication }) => [
+      { title: "Blog" },
+      { tagName: "link", rel: "canonical", href: publication.url },
+    ],
+    post: ({ post }) => [
+      { title: post.title },
+      { tagName: "link", rel: "canonical", href: post.url },
+      { property: "og:type", content: "article" },
+    ],
+    tag: ({ tag }) => [{ title: tagLabels[tag.key] }],
+  },
+}
+```
+
+The post component wraps the rendered article in place of `ArdoPost`. Every Markdown page's
+JavaScript includes it, because any page can be a post. Type the components with
+`PublicationIndexProps`, `PublicationPostProps`, and `PublicationTagProps` from `ardo/config`;
+the generated routes pass all of these props. Each `meta` function runs during the build with the
+complete publication and returns the route's metadata as serializable descriptors. The result
+replaces everything Ardo would generate for that route, including the canonical link, Open
+Graph, Twitter, and JSON-LD tags, so the page never has two canonical links. A route without
+its `meta` function keeps Ardo's metadata. With `i18n`, Ardo still adds the locale alternate
+links of every page, and a canonical link when the site's metadata has none. A function must
+return its list synchronously; the build reports a failing function with the post or tag.
+
 ## Custom layouts and AT metadata
 
 Import the publication data from `virtual:ardo/publication` to reuse it elsewhere. The
 default export is the default locale's publication; `publications` maps locale IDs (or `default`
 without localization) to their data. `ArdoPostList`, `ArdoPost`, `ArdoImage`, and
 `ardoImagePresets` are available from `ardo/ui`. The source of post content remains MDX;
-the public data export contains metadata and prepared image descriptors.
+the public data export contains metadata and prepared image descriptors. With tag archives,
+`publication.tags` lists each tag's key, path, and URL; pass one as `tag` to `ArdoPostList` to
+list only its posts.
 
 Use `ArdoPostNavigation` from `ardo/ui` for compact article navigation. Pass the current
 locale's publication to it through `ArdoHeader`'s `mobileMenuContent` prop to populate a

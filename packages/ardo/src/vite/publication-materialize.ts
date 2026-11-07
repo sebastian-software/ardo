@@ -3,6 +3,7 @@ import path from "node:path"
 import type { ResolvedConfig } from "../config/types"
 import type { Publication, PublicationConfig } from "../publication/types"
 import { preparePublication, type PreparedPublication } from "./publication"
+import { validateTagLocales } from "./publication-tags"
 
 export const PUBLICATION_ID = "virtual:ardo/publication"
 export const RESOLVED_PUBLICATION_ID = `\0${PUBLICATION_ID}`
@@ -22,6 +23,8 @@ export async function refreshPublication(builder: PublicationBuilder): Promise<v
   const locales =
     config.i18n === false ? [undefined] : config.i18n.locales.map((locale) => locale.id)
   const prepared = await prepareAll(builder, { config, locales })
+  if (builder.options.tags === true)
+    validateTagLocales(prepared.map((entry, index) => ({ locale: locales[index], entry })))
   const directories = locales.map((locale) =>
     path.resolve(builder.site.routesDir, locale ?? "", builder.options.to ?? "news")
   )

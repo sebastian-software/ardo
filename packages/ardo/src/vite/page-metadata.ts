@@ -3,6 +3,11 @@ import type { RouteIdentity } from "./route-identity"
 import { parsePageBanner } from "./page-banner"
 
 import { normalizeLintFrontmatter } from "../config/lint-rules"
+import {
+  booleanFrontmatterFields,
+  knownFrontmatterFields,
+  stringFrontmatterFields,
+} from "./page-frontmatter-fields"
 
 export type PageMetadata = {
   localeId?: string
@@ -24,81 +29,6 @@ export type PageMetadataValidationResult = {
   diagnostics: PageMetadataDiagnostic[]
   frontmatter: PageFrontmatterMetadata
 }
-
-const knownFrontmatterFields = new Set([
-  "id",
-  "path",
-  "publishedAt",
-  "updatedAt",
-  "tags",
-  "authors",
-  "coverImage",
-  "draft",
-  "fullWidth",
-  "contentWidth",
-  "images",
-  "feedContent",
-  "_ardoPost",
-  "banner",
-  "canonical",
-  "collapsed",
-  "description",
-  "editLink",
-  "features",
-  "hero",
-  "lastUpdated",
-  "layout",
-  "lede",
-  "lint",
-  "llms",
-  "next",
-  "ogDescription",
-  "ogImage",
-  "ogTitle",
-  "ogType",
-  "order",
-  "outline",
-  "pageActions",
-  "prev",
-  "redirectFrom",
-  "sidebar",
-  "sitemap",
-  "title",
-  "twitterCard",
-  "twitterDescription",
-  "twitterImage",
-  "twitterTitle",
-])
-
-const stringFrontmatterFields = new Set([
-  "id",
-  "path",
-  "publishedAt",
-  "updatedAt",
-  "feedContent",
-  "canonical",
-  "description",
-  "ogDescription",
-  "ogImage",
-  "ogTitle",
-  "ogType",
-  "title",
-  "twitterDescription",
-  "twitterImage",
-  "twitterTitle",
-])
-
-const booleanFrontmatterFields = new Set([
-  "draft",
-  "fullWidth",
-  "collapsed",
-  "editLink",
-  "lastUpdated",
-  "lede",
-  "llms",
-  "pageActions",
-  "sitemap",
-])
 
 const structuredFrontmatterNormalizers: Record<
   string,
@@ -204,6 +134,7 @@ function normalizeFrontmatterField(
       : undefined
   if (field === "coverImage" || field === "images" || field === "_ardoPost")
     return isRecord(value) ? { [field]: value } : undefined
+  if (field === "_ardoMeta") return Array.isArray(value) ? { [field]: value } : undefined
   return (
     normalizePrimitiveFrontmatterField(field, value) ??
     normalizeStructuredFrontmatterField(field, value)
