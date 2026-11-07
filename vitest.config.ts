@@ -16,6 +16,9 @@ export default defineConfig({
       "virtual:ardo/search-index": fileURLToPath(
         new URL("./tests/mocks/search-index.ts", import.meta.url)
       ),
+      "virtual:ardo/publication-post": fileURLToPath(
+        new URL("./tests/mocks/publication-post.ts", import.meta.url)
+      ),
     },
   },
   test: {

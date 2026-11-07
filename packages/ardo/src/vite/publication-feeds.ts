@@ -1,6 +1,6 @@
 import { toHtml } from "ferromark"
 import type { ResolvedConfig } from "../config/types"
-import type { Post, Publication } from "../publication/types"
+import type { Post, Publication, PublicationFeedsConfig } from "../publication/types"
 import { getNativeMarkdownCompileOptions, prepareNativeMarkdown } from "../markdown/native-metadata"
 import { rewritePortableReferences } from "./publication-links"
 
@@ -63,15 +63,22 @@ function renderCover(post: Post): string {
     : `<figure><img src="${xml(new URL(source, post.url).href)}" alt="${xml(image.alt)}">${image.caption == null ? "" : `<figcaption>${xml(image.caption)}</figcaption>`}</figure>\n`
 }
 
+export type FeedOptions = Required<PublicationFeedsConfig> & {
+  /** BCP 47 language of the publication's content. */
+  language: string
+}
+
 export function createPublicationFeeds(
   publication: Publication,
-  posts: PortablePost[]
+  posts: PortablePost[],
+  options: FeedOptions
 ): Array<{ fileName: string; source: string }> {
   const prefix = publication.path.replaceAll(/^\/+|\/+$/gu, "")
   const updated = latestUpdate(posts)
+  const postId = entryId(publication, options.entryIds)
   const atom = [
     '<?xml version="1.0" encoding="utf-8"?>',
-    '<feed xmlns="http://www.w3.org/2005/Atom">',
+    `<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="${xml(options.language)}">`,
     `<id>${xml(publication.url)}</id><title>${xml(publication.name)}</title>`,
     `<link rel="self" href="${xml(publication.atomUrl)}"/><link href="${xml(publication.url)}"/>`,
     `<updated>${updated}</updated>`,
@@ -88,7 +95,7 @@ export function createPublicationFeeds(
   const rss = [
     '<?xml version="1.0" encoding="utf-8"?>',
     '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel>',
-    `<title>${xml(publication.name)}</title><link>${xml(publication.url)}</link><description>${xml(publication.description ?? publication.name)}</description>`,
+    `<title>${xml(publication.name)}</title><link>${xml(publication.url)}</link><description>${xml(publication.description ?? publication.name)}</description><language>${xml(options.language)}</language>`,
     `<atom:link href="${xml(publication.rssUrl)}" rel="self" type="application/rss+xml"/>`,
     ...posts.map(
       ({ post, html }) =>
@@ -103,8 +110,19 @@ export function createPublicationFeeds(
   ]
 }
 
-function postId(post: Post): string {
-  return `urn:ardo:post:${encodeURIComponent(post.id)}`
+/**
+ * Post IDs keep an entry's identity when its URL changes. A publication-qualified ID adds the
+ * publication's host and path, without scheme or trailing slash, so that publications sharing
+ * post IDs stay distinct in aggregators, independent of https and the trailing-slash policy.
+ */
+function entryId(
+  publication: Publication,
+  policy: FeedOptions["entryIds"]
+): (post: Post) => string {
+  if (policy === "post") return (post) => `urn:ardo:post:${encodeURIComponent(post.id)}`
+  const url = new URL(publication.url)
+  const scope = `${url.host}${url.pathname.replace(/\/+$/u, "")}`
+  return (post) => `urn:ardo:publication:${scope}:post:${encodeURIComponent(post.id)}`
 }
 function xml(value: string): string {
   return value

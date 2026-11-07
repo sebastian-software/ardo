@@ -1520,6 +1520,16 @@ msgstr ""
 "render. This module is only included in the server bundle. Metadata resolution"
 " and suspended React components run inside the same context:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A site with its own design can render the generated pages with its own "
+"components and metadata. Component paths are relative to the project root. "
+"Each module default-exports a React component:"
+msgstr ""
+"A site with its own design can render the generated pages with its own "
+"components and metadata. Component paths are relative to the project root. "
+"Each module default-exports a React component:"
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "A skill's frontmatter must have a <0/> that matches its folder name, using "
@@ -1802,6 +1812,22 @@ msgstr ""
 msgid "An edit link built from the site settings and the current page:"
 msgstr "An edit link built from the site settings and the current page:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"An entry ID contains only the post ID by default. When several sites or "
+"publications share post IDs, for example a translated post on two "
+"single-language sites, set <0/>. The ID then includes the publication's host "
+"and path, so feed readers keep both entries. Readers treat entries with new "
+"IDs as new posts, so choose the option before the first release, or accept one"
+" round of repeated entries."
+msgstr ""
+"An entry ID contains only the post ID by default. When several sites or "
+"publications share post IDs, for example a translated post on two "
+"single-language sites, set <0/>. The ID then includes the publication's host "
+"and path, so feed readers keep both entries. Readers treat entries with new "
+"IDs as new posts, so choose the option before the first release, or accept one"
+" round of repeated entries."
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -2061,17 +2087,32 @@ msgstr ""
 "Ardo combines page-level redirects with the <0><1/></0> option in <2/> and "
 "emits host-friendly redirect assets during production builds."
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "Ardo generates <0/> and <1/>, including the full portable article, authors, "
+#~ "tags, and absolute image URLs. The index links both feeds and includes feed "
+#~ "discovery metadata. Stable post IDs remain the feed identity when a URL "
+#~ "changes."
+#~ msgstr ""
+#~ "Ardo generates <0/> and <1/>, including the full portable article, authors, "
+#~ "tags, and absolute image URLs. The index links both feeds and includes feed "
+#~ "discovery metadata. Stable post IDs remain the feed identity when a URL "
+#~ "changes."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "Ardo generates <0/> and <1/>, including the full portable article, authors, "
 "tags, and absolute image URLs. The index links both feeds and includes feed "
 "discovery metadata. Stable post IDs remain the feed identity when a URL "
-"changes."
+"changes. Both feeds declare the publication's locale, or the site's <2/>. Set "
+"<3/> on a single-language site, because it otherwise defaults to <4/>."
 msgstr ""
 "Ardo generates <0/> and <1/>, including the full portable article, authors, "
 "tags, and absolute image URLs. The index links both feeds and includes feed "
 "discovery metadata. Stable post IDs remain the feed identity when a URL "
-"changes."
+"changes. Both feeds declare the publication's locale, or the site's <2/>. Set "
+"<3/> on a single-language site, because it otherwise defaults to <4/>."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -5224,19 +5265,38 @@ msgstr ""
 "Import the files and pass them to <0/>. Vite fingerprints imported files, so a"
 " new logo reaches readers with the next deploy:"
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "Import the publication data from <0/> to reuse it elsewhere. The default "
+#~ "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
+#~ "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
+#~ "from <7/>. The source of post content remains MDX; the public data export "
+#~ "contains metadata and prepared image descriptors."
+#~ msgstr ""
+#~ "Import the publication data from <0/> to reuse it elsewhere. The default "
+#~ "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
+#~ "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
+#~ "from <7/>. The source of post content remains MDX; the public data export "
+#~ "contains metadata and prepared image descriptors."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "Import the publication data from <0/> to reuse it elsewhere. The default "
 "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
 "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
 "from <7/>. The source of post content remains MDX; the public data export "
-"contains metadata and prepared image descriptors."
+"contains metadata and prepared image descriptors. With tag archives, <8/> "
+"lists each tag's key, path, and URL; pass one as <9/> to <10/> to list only "
+"its posts."
 msgstr ""
 "Import the publication data from <0/> to reuse it elsewhere. The default "
 "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
 "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
 "from <7/>. The source of post content remains MDX; the public data export "
-"contains metadata and prepared image descriptors."
+"contains metadata and prepared image descriptors. With tag archives, <8/> "
+"lists each tag's key, path, and URL; pass one as <9/> to <10/> to list only "
+"its posts."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -6413,6 +6473,10 @@ msgstr "Output formats"
 msgid "Override default UI chrome strings."
 msgstr "Override default UI chrome strings."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Own presentation and metadata"
+msgstr "Own presentation and metadata"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Ownership"
 msgstr "Ownership"
@@ -7519,6 +7583,24 @@ msgstr ""
 "instant makes it eligible; an already deployed static site does not publish "
 "itself when the clock reaches that date."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Set <0/> to generate a page for each tag at <1/>. The sitemap lists these "
+"pages. Tag keys must be lowercase slugs with hyphens, such as <2/>. The build "
+"fails when a key does not match, when a post lists a key twice, or when a post"
+" path falls under <3/>. Feeds keep the key as category. To show a translated "
+"label, map the key in your tag component. Without archives, tags can be any "
+"text. With <4/>, every locale needs the same tag keys, because each localized "
+"page must exist in every locale."
+msgstr ""
+"Set <0/> to generate a page for each tag at <1/>. The sitemap lists these "
+"pages. Tag keys must be lowercase slugs with hyphens, such as <2/>. The build "
+"fails when a key does not match, when a post lists a key twice, or when a post"
+" path falls under <3/>. Feeds keep the key as category. To show a translated "
+"label, map the key in your tag component. Without archives, tags can be any "
+"text. With <4/>, every locale needs the same tag keys, because each localized "
+"page must exist in every locale."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Set <0/> to hide the outline of this page. Which heading levels the outline "
@@ -7985,6 +8067,10 @@ msgstr "Tabs"
 #: docs/app/content/guide/components.mdx
 msgid "Tabs example"
 msgstr "Tabs example"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Tag archives"
+msgstr "Tag archives"
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid "tag-based grouping;"
@@ -8494,6 +8580,32 @@ msgstr ""
 "On a narrow screen, open the menu and the on-page outline. Use search and the "
 "theme toggle in the header to inspect their real behavior."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The post component wraps the rendered article in place of <0/>. Every Markdown"
+" page's JavaScript includes it, because any page can be a post. Type the "
+"components with <1/>, <2/>, and <3/> from <4/>; the generated routes pass all "
+"of these props. Each <5/> function runs during the build with the complete "
+"publication and returns the route's metadata as serializable descriptors. The "
+"result replaces everything Ardo would generate for that route, including the "
+"canonical link, Open Graph, Twitter, and JSON-LD tags, so the page never has "
+"two canonical links. A route without its <6/> function keeps Ardo's metadata. "
+"With <7/>, Ardo still adds the locale alternate links of every page, and a "
+"canonical link when the site's metadata has none. A function must return its "
+"list synchronously; the build reports a failing function with the post or tag."
+msgstr ""
+"The post component wraps the rendered article in place of <0/>. Every Markdown"
+" page's JavaScript includes it, because any page can be a post. Type the "
+"components with <1/>, <2/>, and <3/> from <4/>; the generated routes pass all "
+"of these props. Each <5/> function runs during the build with the complete "
+"publication and returns the route's metadata as serializable descriptors. The "
+"result replaces everything Ardo would generate for that route, including the "
+"canonical link, Open Graph, Twitter, and JSON-LD tags, so the page never has "
+"two canonical links. A route without its <6/> function keeps Ardo's metadata. "
+"With <7/>, Ardo still adds the locale alternate links of every page, and a "
+"canonical link when the site's metadata has none. A function must return its "
+"list synchronously; the build reports a failing function with the post or tag."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "The preset sets <0/>, <1/>, and Ardo's type declarations, so React, MDX, and "
@@ -8617,15 +8729,36 @@ msgstr ""
 msgid "The UI is small; the harder part is deciding where feedback data goes."
 msgstr "The UI is small; the harder part is deciding where feedback data goes."
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
+#~ "independently of the source filename. Custom paths must remain inside the "
+#~ "publication subtree."
+#~ msgstr ""
+#~ "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
+#~ "independently of the source filename. Custom paths must remain inside the "
+#~ "publication subtree."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
 "independently of the source filename. Custom paths must remain inside the "
-"publication subtree."
+"publication subtree. Set <4/> to drop the final slash from the <5/> of the "
+"publication, its posts, and its tag archives. This also changes the index's "
+"default canonical link, the feed links, and the Atom feed's own <6/>. Sitemap "
+"entries and the default canonical links of posts and tag archives never end "
+"with a slash. The host must then serve <7/> at <8/> without redirecting to "
+"<9/>; GitHub Pages, for example, redirects."
 msgstr ""
 "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
 "independently of the source filename. Custom paths must remain inside the "
-"publication subtree."
+"publication subtree. Set <4/> to drop the final slash from the <5/> of the "
+"publication, its posts, and its tag archives. This also changes the index's "
+"default canonical link, the feed links, and the Atom feed's own <6/>. Sitemap "
+"entries and the default canonical links of posts and tag archives never end "
+"with a slash. The host must then serve <7/> at <8/> without redirecting to "
+"<9/>; GitHub Pages, for example, redirects."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid ""

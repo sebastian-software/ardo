@@ -1,13 +1,19 @@
 import fs from "node:fs/promises"
 import type { Post } from "../publication/types"
 import { prepareNativeMarkdown } from "../markdown/native-metadata"
-import type { PublicationContext } from "./publication-context"
+import { publicationUrl, type PublicationContext } from "./publication-context"
 import { parsePostMetadata, type PostMetadata } from "./post-metadata"
 import { preparePostAuthors, preparePostImages } from "./publication-images"
 import { createPortablePostBody } from "./publication-feeds"
-import { createPostRoute } from "./publication-routes"
+import type { PostRouteInput } from "./publication-routes"
 
-export async function preparePublicationPost(sourceFile: string, context: PublicationContext) {
+export type PreparedPost = { post: Post; html: string; route: PostRouteInput }
+
+/** The route is generated later, once site metadata can see the complete publication. */
+export async function preparePublicationPost(
+  sourceFile: string,
+  context: PublicationContext
+): Promise<PreparedPost | undefined> {
   try {
     const source = await fs.readFile(sourceFile, "utf8")
     const format = sourceFile.endsWith(".mdx") ? "mdx" : "md"
@@ -29,15 +35,7 @@ export async function preparePublicationPost(sourceFile: string, context: Public
         post,
         config: context.config,
       }),
-      route: createPostRoute({
-        data,
-        source,
-        sourceFile,
-        prepared,
-        post,
-        routePath: metadata.routePath,
-        context,
-      }),
+      route: { data, source, sourceFile, prepared, post, routePath: metadata.routePath, context },
     }
   } catch (error) {
     throw new Error(
@@ -63,7 +61,7 @@ function createPost(
     tags: metadata.tags,
     ...rendering,
     path: route,
-    url: new URL(`${context.config.deploymentBase}${route.slice(1)}/`, context.config.siteUrl).href,
+    url: publicationUrl(route, context),
     publicationPath: context.publication.path,
     publicationName: context.publication.name,
     atomUrl: context.publication.atomUrl,

@@ -42,19 +42,7 @@ import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapCon
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
-export type {
-  AuthorProfile,
-  ImageComposition,
-  ImageCore,
-  ImageFrame,
-  ImagePreset,
-  Post,
-  PostFrontmatter,
-  PostImage,
-  PostImageInput,
-  Publication,
-  PublicationConfig,
-} from "../publication/types"
+export type * from "../publication/types"
 
 export type {
   AgentSkillsConfig,
