@@ -651,6 +651,7 @@ Your components read Ardo's state through hooks from `ardo/runtime`:
 | `useArdoPageData()`   | Inside Markdown and MDX page content: the page's title, frontmatter, table of contents, and source path. |
 | `useArdoTOC()`        | The current page's table of contents, or an empty list.                                                  |
 | `useArdoPath()`       | The current page path without the base path.                                                             |
+| `useArdoPage()`       | The current page: path, base path, route `handle`, and the `frontmatter` of a Markdown or MDX route.     |
 | `useArdoLocale()`     | The active locale, including during server rendering.                                                    |
 | `useArdoContext()`    | The config, sidebar, and current page together.                                                          |
 
@@ -751,6 +752,27 @@ export function Layout({ children }: { children: ReactNode }) {
 
 A custom shell does not include `ArdoRootLayout`'s theme bootstrap or favicons. Prefer wrapping
 `ArdoRootLayout` unless the site needs full control over the document.
+
+A root without `ArdoRoot` renders the page with `ArdoOutlet` from `ardo/runtime`. Markdown and MDX
+pages and [publications](./publications) work there too. Ordinary Markdown pages render in a
+plain content container, without the outline, sidebar, and previous and next links of the
+documentation frame, which need `ArdoRoot`. Posts keep their frame. The root can read the current
+page's frontmatter, including fields Ardo does not know, with `useArdoPage().frontmatter`. The
+value comes from that page's own route chunk, on the server and during hydration:
+
+```tsx
+import { ArdoOutlet, useArdoPage } from "ardo/runtime"
+
+export default function Root() {
+  const counterpart = useArdoPage().frontmatter?.counterpart
+  return (
+    <main>
+      {typeof counterpart === "string" && <a href={counterpart}>Deutsch</a>}
+      <ArdoOutlet />
+    </main>
+  )
+}
+```
 
 ## Error Pages
 

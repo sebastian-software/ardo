@@ -1543,6 +1543,25 @@ msgstr ""
 "Un site à la racine n’a pas besoin de chemin de base. Définissez <0/> dans"
 " <1/> uniquement pour un sous-chemin."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"A root without <0/> renders the page with <1/> from <2/>. Markdown and MDX "
+"pages and <3>publications</3> work there too. Ordinary Markdown pages render "
+"in a plain content container, without the outline, sidebar, and previous and "
+"next links of the documentation frame, which need <4/>. Posts keep their "
+"frame. The root can read the current page's frontmatter, including fields Ardo"
+" does not know, with <5/>. The value comes from that page's own route chunk, "
+"on the server and during hydration:"
+msgstr ""
+"Une racine sans <0/> rend la page avec <1/> de <2/>. Les pages Markdown et MDX"
+" et les <3>publications</3> y fonctionnent aussi. Les pages Markdown "
+"ordinaires s'affichent dans un simple conteneur de contenu, sans le plan, la "
+"barre latérale ni les liens précédent et suivant du cadre de documentation,"
+" qui nécessitent <4/>. Les articles gardent leur cadre. La racine lit le "
+"frontmatter de la page courante, y compris les champs qu'Ardo ne connaît pas,"
+" avec <5/>. La valeur provient du chunk de route propre à la page, sur le "
+"serveur et pendant l'hydratation :"
+
 #: docs/app/content/guide/components.mdx
 msgid "A route can use frontmatter to override its title and sidebar position."
 msgstr ""
@@ -3833,6 +3852,10 @@ msgstr ""
 "Vos layouts peuvent placer <0/> (select), <1/> (avec libellé) et <2/> "
 "(bandeau). Ils restent vides avec moins de deux versions."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Custom post fields"
+msgstr "Champs d'article personnalisés"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
 msgstr "Personnaliser les composants Markdown"
@@ -4051,6 +4074,17 @@ msgstr "Téléchargements et exports"
 #: docs/app/content/guide/theming.mdx
 msgid "Drop this into any <0/> file — it works immediately:"
 msgstr "Ce contenu fonctionne directement dans tout <0/>:"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+"page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+" later than that moment."
+msgstr ""
+"La propriété <0/> de chaque entrée est la dernière modification de la page"
+" : <1/> ou <2/> d'un article, sinon le dernier commit Git du fichier de la "
+"page, sinon sa date de fichier. Avec <3><4/></3>, aucune entrée n'est "
+"postérieure à ce moment."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -4738,6 +4772,21 @@ msgstr "Depuis la racine du dépôt :"
 #: docs/app/content/guide/markdown.mdx
 msgid "Frontmatter"
 msgstr "Frontmatter"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Frontmatter fields that Ardo does not read reach the post as <0/>, for example"
+" <1/>. The post module receives them in its props and <2/>; check each value's"
+" type before use. They stay on the post's own page: the posts of listings and "
+"of <3/> have an empty <4/>, so one post's fields do not ship with every other "
+"page. The root reads the same fields with <5/>."
+msgstr ""
+"Les champs de frontmatter qu'Ardo ne lit pas parviennent à l'article sous la "
+"forme <0/>, par exemple <1/>. Le module d'article les reçoit dans ses props "
+"et dans <2/> ; vérifiez le type de chaque valeur avant de l'utiliser. Ils "
+"restent sur la page propre à l'article : les articles des listes et de <3/> "
+"ont un <4/> vide, afin que les champs d'un article ne soient pas livrés avec "
+"toutes les autres pages. La racine lit les mêmes champs avec <5/>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -8320,15 +8369,28 @@ msgid ""
 "The <0/> function runs during rendering, so it can translate like <1/> does. "
 "The module types <2/>, <3/>, and <4/> from <5/> describe the exports. When an "
 "export does not match its type, the generated route fails the site's type "
-"check. The data a module receives is shared with the page; do not change it. A"
-" post's own <6/> export replaces both Ardo's and the module's metadata."
+"check. Every page and module shares the publication data, so Ardo freezes it, "
+"and its lists are read-only: sort a copy, such as <6/>. <7/> is a new list for"
+" every call. The defaults of the index, posts, and tag archives all end with "
+"the publication's Atom and RSS discovery links. With a post module, the build "
+"fails when a post exports its own <8/>, because that would drop the canonical,"
+" Open Graph, and feed links of the post; vary the metadata in the module's "
+"<9/> instead. Without a post module, a post's own <10/> replaces Ardo's "
+"metadata, as on any page."
 msgstr ""
 "La fonction <0/> s'exécute pendant le rendu ; elle peut donc traduire comme "
 "<1/>. Les types de module <2/>, <3/> et <4/> de <5/> décrivent les exports. "
 "Lorsqu'un export ne correspond pas à son type, la route générée fait "
-"échouer la vérification de types du site. Les données qu'un module reçoit "
-"sont partagées avec la page ; ne les modifiez pas. Un export <6/> propre à "
-"un article remplace à la fois les métadonnées d'Ardo et celles du module."
+"échouer la vérification de types du site. Toutes les pages et tous les "
+"modules partagent les données de publication ; Ardo les gèle donc, et leurs "
+"listes sont en lecture seule : triez une copie, comme <6/>. <7/> est une "
+"nouvelle liste à chaque appel. Les valeurs par défaut de l'index, des "
+"articles et des archives par étiquette se terminent toutes par les liens de "
+"découverte Atom et RSS de la publication. Avec un module d'article, le build "
+"échoue lorsqu'un article exporte son propre <8/>, car cela supprimerait les "
+"liens canonique, Open Graph et de flux de l'article ; faites plutôt varier "
+"les métadonnées dans le <9/> du module. Sans module d'article, le <10/> "
+"propre à un article remplace les métadonnées d'Ardo, comme sur toute page."
 
 #: docs/app/content/guide/theming.mdx
 msgid "The <0/> object provides tokens for:"
@@ -8574,6 +8636,14 @@ msgstr ""
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The current page path without the base path."
 msgstr "Chemin de page sans base."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The current page: path, base path, route <0/>, and the <1/> of a Markdown or "
+"MDX route."
+msgstr ""
+"La page courante : chemin, chemin de base, <0/> de la route et <1/> d'une "
+"route Markdown ou MDX."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The current page's table of contents, or an empty list."

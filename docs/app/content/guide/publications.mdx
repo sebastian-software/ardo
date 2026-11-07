@@ -378,8 +378,21 @@ export function meta({ label, defaults }: PublicationTagMetaArgs) {
 The `meta` function runs during rendering, so it can translate like `label` does. The module
 types `PublicationIndexModule`, `PublicationPostModule`, and `PublicationTagModule` from
 `ardo/config` describe the exports. When an export does not match its type, the generated
-route fails the site's type check. The data a module receives is shared with the page; do not
-change it. A post's own `meta` export replaces both Ardo's and the module's metadata.
+route fails the site's type check. Every page and module shares the publication data, so Ardo
+freezes it, and its lists are read-only: sort a copy, such as `[...publication.posts].sort(…)`.
+`defaults` is a new list for every call. The defaults of the index, posts, and tag archives all
+end with the publication's Atom and RSS discovery links. With a post module, the build fails when
+a post exports its own `meta`, because that would drop the canonical, Open Graph, and feed links
+of the post; vary the metadata in the module's `meta` instead. Without a post module, a post's
+own `meta` replaces Ardo's metadata, as on any page.
+
+### Custom post fields
+
+Frontmatter fields that Ardo does not read reach the post as `post.data`, for example
+`nextStep: /contact`. The post module receives them in its props and `meta`; check each value's
+type before use. They stay on the post's own page: the posts of listings and of
+`virtual:ardo/publication` have an empty `data`, so one post's fields do not ship with every
+other page. The root reads the same fields with `useArdoPage().frontmatter`.
 
 Only the generated publication routes import these modules. The post frame is part of post
 pages and not of documentation or other pages. With `i18n`, Ardo still adds the locale alternate

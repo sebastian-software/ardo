@@ -228,6 +228,10 @@ before deployment base, version, and locale prefixes are added. This only contro
 sitemap inclusion; set the page's robots metadata separately when it should be
 `noindex`.
 
+Each entry's `lastmod` is the page's last change: a post's `updatedAt` or `publishedAt`, else the
+page file's last Git commit, else its file time. With [`buildTime`](#buildtime), no entry is
+later than that moment.
+
 ### seo.robots
 
 - **Type:** `boolean | { allow?: string[]; disallow?: string[]; contentSignals?: { search?: boolean; aiInput?: boolean; aiTrain?: boolean } }`

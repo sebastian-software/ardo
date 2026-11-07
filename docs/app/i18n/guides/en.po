@@ -1554,6 +1554,24 @@ msgstr ""
 "A root deployment needs no base-path setting. Set <0/> in <1/> only when your "
 "site is served from a subpath."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"A root without <0/> renders the page with <1/> from <2/>. Markdown and MDX "
+"pages and <3>publications</3> work there too. Ordinary Markdown pages render "
+"in a plain content container, without the outline, sidebar, and previous and "
+"next links of the documentation frame, which need <4/>. Posts keep their "
+"frame. The root can read the current page's frontmatter, including fields Ardo"
+" does not know, with <5/>. The value comes from that page's own route chunk, "
+"on the server and during hydration:"
+msgstr ""
+"A root without <0/> renders the page with <1/> from <2/>. Markdown and MDX "
+"pages and <3>publications</3> work there too. Ordinary Markdown pages render "
+"in a plain content container, without the outline, sidebar, and previous and "
+"next links of the documentation frame, which need <4/>. Posts keep their "
+"frame. The root can read the current page's frontmatter, including fields Ardo"
+" does not know, with <5/>. The value comes from that page's own route chunk, "
+"on the server and during hydration:"
+
 #: docs/app/content/guide/components.mdx
 msgid "A route can use frontmatter to override its title and sidebar position."
 msgstr "A route can use frontmatter to override its title and sidebar position."
@@ -3854,6 +3872,10 @@ msgstr ""
 " <1/> adds the visible label, and <2/> is the older-version notice. Each "
 "renders nothing unless the build has two or more versions."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Custom post fields"
+msgstr "Custom post fields"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
 msgstr "Customize the Markdown Component Set"
@@ -4069,6 +4091,16 @@ msgstr "Downloads and exported artifacts"
 #: docs/app/content/guide/theming.mdx
 msgid "Drop this into any <0/> file — it works immediately:"
 msgstr "Drop this into any <0/> file — it works immediately:"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+"page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+" later than that moment."
+msgstr ""
+"Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+"page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+" later than that moment."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -4770,6 +4802,20 @@ msgstr "From the repository root:"
 #: docs/app/content/guide/markdown.mdx
 msgid "Frontmatter"
 msgstr "Frontmatter"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Frontmatter fields that Ardo does not read reach the post as <0/>, for example"
+" <1/>. The post module receives them in its props and <2/>; check each value's"
+" type before use. They stay on the post's own page: the posts of listings and "
+"of <3/> have an empty <4/>, so one post's fields do not ship with every other "
+"page. The root reads the same fields with <5/>."
+msgstr ""
+"Frontmatter fields that Ardo does not read reach the post as <0/>, for example"
+" <1/>. The post module receives them in its props and <2/>; check each value's"
+" type before use. They stay on the post's own page: the posts of listings and "
+"of <3/> have an empty <4/>, so one post's fields do not ship with every other "
+"page. The root reads the same fields with <5/>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -8358,14 +8404,26 @@ msgid ""
 "The <0/> function runs during rendering, so it can translate like <1/> does. "
 "The module types <2/>, <3/>, and <4/> from <5/> describe the exports. When an "
 "export does not match its type, the generated route fails the site's type "
-"check. The data a module receives is shared with the page; do not change it. A"
-" post's own <6/> export replaces both Ardo's and the module's metadata."
+"check. Every page and module shares the publication data, so Ardo freezes it, "
+"and its lists are read-only: sort a copy, such as <6/>. <7/> is a new list for"
+" every call. The defaults of the index, posts, and tag archives all end with "
+"the publication's Atom and RSS discovery links. With a post module, the build "
+"fails when a post exports its own <8/>, because that would drop the canonical,"
+" Open Graph, and feed links of the post; vary the metadata in the module's "
+"<9/> instead. Without a post module, a post's own <10/> replaces Ardo's "
+"metadata, as on any page."
 msgstr ""
 "The <0/> function runs during rendering, so it can translate like <1/> does. "
 "The module types <2/>, <3/>, and <4/> from <5/> describe the exports. When an "
 "export does not match its type, the generated route fails the site's type "
-"check. The data a module receives is shared with the page; do not change it. A"
-" post's own <6/> export replaces both Ardo's and the module's metadata."
+"check. Every page and module shares the publication data, so Ardo freezes it, "
+"and its lists are read-only: sort a copy, such as <6/>. <7/> is a new list for"
+" every call. The defaults of the index, posts, and tag archives all end with "
+"the publication's Atom and RSS discovery links. With a post module, the build "
+"fails when a post exports its own <8/>, because that would drop the canonical,"
+" Open Graph, and feed links of the post; vary the metadata in the module's "
+"<9/> instead. Without a post module, a post's own <10/> replaces Ardo's "
+"metadata, as on any page."
 
 #: docs/app/content/guide/theming.mdx
 msgid "The <0/> object provides tokens for:"
@@ -8610,6 +8668,14 @@ msgstr ""
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The current page path without the base path."
 msgstr "The current page path without the base path."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The current page: path, base path, route <0/>, and the <1/> of a Markdown or "
+"MDX route."
+msgstr ""
+"The current page: path, base path, route <0/>, and the <1/> of a Markdown or "
+"MDX route."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The current page's table of contents, or an empty list."
