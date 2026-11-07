@@ -1023,6 +1023,13 @@ msgstr "<0>Défaut :</0> le champ <1/> de <2/>, sinon <3/>"
 msgid "<0>Default:</0> the generated owl icons"
 msgstr "<0>Défaut :</0> icônes de chouette générées"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0>Default:</0> the short Git commit hash, or none when Git is unavailable"
+msgstr ""
+"<0>Défaut :</0> le hash court du commit Git, ou aucun si Git n’est pas "
+"disponible"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "<0>Deploy your site</0> to GitHub Pages, Netlify, Vercel, or any static host"
@@ -3035,6 +3042,10 @@ msgstr ""
 "Les options de build vont dans <0/>. Tout ce qui entoure le contenu se compose"
 " en React dans <1/>. Quelques tâches courantes suffisent généralement ; la "
 "référence suit."
+
+#: docs/app/content/guide/configuration.mdx
+msgid "buildHash"
+msgstr "buildHash"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "buildTime"
@@ -6234,6 +6245,12 @@ msgstr ""
 " historiques conservés ne sont pas réécrits automatiquement. Dans ce mode, "
 "les ressources partagées restent à la racine du déploiement."
 
+#: docs/app/content/guide/configuration.mdx
+msgid "On <0/> events, <1/> is the merge commit, not the head commit."
+msgstr ""
+"Pour les événements <0/>, <1/> est le commit de fusion, et non le commit de "
+"tête."
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -7614,6 +7631,20 @@ msgstr ""
 "développement, des instructions adaptées à la version et l’exemple Basic "
 "testé."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Sets the commit reference shown next to the build time. A configured value "
+"replaces Git detection, and <0/> shows no hash and runs no Git command. The "
+"footer shows the hash only together with the build time, and the <1/> prop "
+"still overrides it. A value that is not a string fails the build with <2/> "
+"followed by <3/>"
+msgstr ""
+"Définit la référence de commit affichée à côté de l’heure du build. "
+"Une valeur configurée remplace la détection Git, et <0/> n’affiche aucun "
+"hash et n’exécute aucune commande Git. Le pied de page n’affiche le hash "
+"qu’avec l’heure du build, et la prop <1/> le remplace toujours. Une valeur"
+" qui n’est pas une chaîne fait échouer le build avec <2/> suivi de <3/>"
+
 #: docs/app/content/guide/components.mdx
 msgid "Settings and configuration"
 msgstr "Réglages et configuration"
@@ -8646,6 +8677,19 @@ msgid ""
 msgstr ""
 "Le déploiement V6 utilise <0/>, <1/>, <2/> et <3/>. Les anciennes versions de"
 " documentation conservent leur langue et leurs URL d’origine."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"The value is used as given and published with the site: it is part of <0/> and"
+" therefore of every page and the client bundle. Ardo reads no environment "
+"variable. To use one, map it yourself. <1/> matters, because an empty variable"
+" would otherwise switch the hash off instead of falling back to Git."
+msgstr ""
+"La valeur est utilisée telle quelle et publiée avec le site : elle fait "
+"partie de <0/> et donc de chaque page et du bundle client. Ardo ne lit aucune "
+"variable d’environnement. Pour en utiliser une, associez-la vous-même. <1/>"
+" est important, car une variable vide désactiverait sinon le hash au lieu de "
+"revenir à Git."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

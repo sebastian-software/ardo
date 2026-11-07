@@ -4,10 +4,21 @@ import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
 
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+
+import type * as GitUtils from "./git-utils"
 
 import { resetBuildTimeLogForTests } from "../config/build-time"
 import { ardoPlugin } from "./plugin"
+
+const { detectGitHash } = vi.hoisted(() => ({
+  detectGitHash: vi.fn((_cwd: string): string | undefined => "abc1234"),
+}))
+
+vi.mock("./git-utils", async (importOriginal) => ({
+  ...(await importOriginal<typeof GitUtils>()),
+  detectGitHash,
+}))
 
 type ArdoPluginHooks = {
   config: (
@@ -438,5 +449,46 @@ describe("ardoPlugin buildTime", () => {
 
     expect(log).not.toHaveBeenCalled()
     expect(warn).not.toHaveBeenCalled()
+  })
+})
+
+describe("ardoPlugin buildHash", () => {
+  const BUILD = { command: "build", mode: "production" } as const
+
+  beforeEach(() => {
+    detectGitHash.mockClear()
+    detectGitHash.mockReturnValue("abc1234")
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  async function loadClientConfig(options: Parameters<typeof ardoPlugin>[0]) {
+    const plugin = getMainPlugin(options)
+    plugin.config({ root: "/project" }, BUILD)
+    plugin.configResolved({ base: "/", build: { ssr: false }, root: "/project" })
+    return String(await plugin.load("\0virtual:ardo/config"))
+  }
+
+  it("exposes a configured buildHash without detecting the git hash", async () => {
+    const code = await loadClientConfig({ title: "Docs", buildHash: "custom-ref" })
+
+    expect(code).toContain('"buildHash":"custom-ref"')
+    expect(detectGitHash).not.toHaveBeenCalled()
+  })
+
+  it("keeps an empty buildHash as the explicit choice to show no hash", async () => {
+    const code = await loadClientConfig({ title: "Docs", buildHash: "" })
+
+    expect(code).toContain('"buildHash":""')
+    expect(detectGitHash).not.toHaveBeenCalled()
+  })
+
+  it("detects the git hash of the project root when buildHash is not set", async () => {
+    const code = await loadClientConfig({ title: "Docs" })
+
+    expect(code).toContain('"buildHash":"abc1234"')
+    expect(detectGitHash).toHaveBeenCalledWith("/project")
   })
 })

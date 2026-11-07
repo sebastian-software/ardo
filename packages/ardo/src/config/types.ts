@@ -206,7 +206,16 @@ export type ArdoConfig = {
    * environment variable for it; map one in `ardo.config.ts` if needed.
    */
   buildTime?: string
-  /** Git commit hash (set automatically by the Vite plugin) */
+  /**
+   * The commit reference Ardo shows next to the build time, for example a CI commit hash. Opt-in:
+   * without it, Ardo detects the short Git commit hash as before. Set `""` to show no hash; Ardo
+   * then runs no Git command.
+   *
+   * The value is used as given and is published with the site. Ardo reads no environment variable
+   * for it; map one in `ardo.config.ts` if needed. At runtime, `config.buildHash` from
+   * `virtual:ardo/config` holds the configured or detected hash, is `""` when disabled, and is
+   * absent when neither exists.
+   */
   buildHash?: string
 }
 
@@ -470,6 +479,11 @@ export type ResolvedConfig = {
    * `buildTime`; each clock site falls back to the current time when it is absent.
    */
   buildTime?: string
+  /**
+   * The configured commit reference, `""` included. Present exactly when the site configured
+   * `buildHash`; the client config falls back to the detected Git hash when it is absent.
+   */
+  buildHash?: string
 } & Required<
   Omit<
     ArdoConfig,

@@ -1031,6 +1031,12 @@ msgstr "<0>Default:</0> the <1/> in <2/>, then <3/>"
 msgid "<0>Default:</0> the generated owl icons"
 msgstr "<0>Default:</0> the generated owl icons"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0>Default:</0> the short Git commit hash, or none when Git is unavailable"
+msgstr ""
+"<0>Default:</0> the short Git commit hash, or none when Git is unavailable"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "<0>Deploy your site</0> to GitHub Pages, Netlify, Vercel, or any static host"
@@ -3063,6 +3069,10 @@ msgstr ""
 "Build-time options belong in <0/>. Everything around the content, from the "
 "header to the sidebar and the footer, is React in <1/>. Most sites need only a"
 " few of the common tasks below; the rest of the page is the reference."
+
+#: docs/app/content/guide/configuration.mdx
+msgid "buildHash"
+msgstr "buildHash"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "buildTime"
@@ -6285,6 +6295,10 @@ msgstr ""
 "directories before enabling it. Retained historical builds are not rewritten "
 "automatically. Shared assets stay under the deployment root in this mode."
 
+#: docs/app/content/guide/configuration.mdx
+msgid "On <0/> events, <1/> is the merge commit, not the head commit."
+msgstr "On <0/> events, <1/> is the merge commit, not the head commit."
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -7667,6 +7681,20 @@ msgstr ""
 "Set up, adopt, or upgrade Ardo 6 with a coding agent, from version-matched "
 "instructions and the tested Basic example."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Sets the commit reference shown next to the build time. A configured value "
+"replaces Git detection, and <0/> shows no hash and runs no Git command. The "
+"footer shows the hash only together with the build time, and the <1/> prop "
+"still overrides it. A value that is not a string fails the build with <2/> "
+"followed by <3/>"
+msgstr ""
+"Sets the commit reference shown next to the build time. A configured value "
+"replaces Git detection, and <0/> shows no hash and runs no Git command. The "
+"footer shows the hash only together with the build time, and the <1/> prop "
+"still overrides it. A value that is not a string fails the build with <2/> "
+"followed by <3/>"
+
 #: docs/app/content/guide/components.mdx
 msgid "Settings and configuration"
 msgstr "Settings and configuration"
@@ -8700,6 +8728,18 @@ msgid ""
 msgstr ""
 "The V6 deployment uses <0/>, <1/>, <2/>, and <3/>. Older documentation "
 "versions retain their original language and URLs."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"The value is used as given and published with the site: it is part of <0/> and"
+" therefore of every page and the client bundle. Ardo reads no environment "
+"variable. To use one, map it yourself. <1/> matters, because an empty variable"
+" would otherwise switch the hash off instead of falling back to Git."
+msgstr ""
+"The value is used as given and published with the site: it is part of <0/> and"
+" therefore of every page and the client bundle. Ardo reads no environment "
+"variable. To use one, map it yourself. <1/> matters, because an empty variable"
+" would otherwise switch the hash off instead of falling back to Git."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

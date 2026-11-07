@@ -675,6 +675,30 @@ defineArdoConfig(({ command }) => {
 A build run inside a shell that sets the variable implicitly, such as a Nix dev shell that sets it
 to 1980, is pinned too. The logged `Build time pinned to …` line shows the moment.
 
+### buildHash
+
+- **Type:** `string`
+- **Default:** the short Git commit hash, or none when Git is unavailable
+
+Sets the commit reference shown next to the build time. A configured value replaces Git detection,
+and `""` shows no hash and runs no Git command. The footer shows the hash only together with the build
+time, and the `<ArdoFooter buildHash>` prop still overrides it. A value that is not a string fails the
+build with `[ardo] Invalid config:` followed by `- buildHash must be a string.`
+
+The value is used as given and published with the site: it is part of `virtual:ardo/config` and
+therefore of every page and the client bundle. Ardo reads no environment variable. To use one, map
+it yourself. `|| undefined` matters, because an empty variable would otherwise switch the hash off
+instead of falling back to Git.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  buildHash: process.env.GITHUB_SHA?.slice(0, 7) || undefined,
+})
+```
+
+On `pull_request` events, `GITHUB_SHA` is the merge commit, not the head commit.
+
 ---
 
 ## Integration Options

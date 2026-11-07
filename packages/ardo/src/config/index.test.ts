@@ -310,6 +310,33 @@ describe("resolveConfig", () => {
     expect("buildTime" in resolved).toBe(false)
   })
 
+  it("keeps a configured buildHash as the pinned commit reference", () => {
+    expect(resolveConfig({ title: "Test", buildHash: "abc1234" }, "/project").buildHash).toBe(
+      "abc1234"
+    )
+  })
+
+  it("keeps an empty buildHash so that it can switch the reference off", () => {
+    const resolved = resolveConfig({ title: "Test", buildHash: "" }, "/project")
+    expect(resolved.buildHash).toBe("")
+    expect("buildHash" in resolved).toBe(true)
+  })
+
+  it("leaves buildHash absent when it is not configured", () => {
+    const resolved = resolveConfig({ title: "Test" }, "/project")
+    expect(resolved.buildHash).toBeUndefined()
+    expect("buildHash" in resolved).toBe(false)
+  })
+
+  it.each([
+    ["number", 123],
+    ["null", null],
+  ])("rejects a non-string buildHash (%s) in the aggregated error", (_name, buildHash) => {
+    expect(() =>
+      resolveConfig({ title: "Test", buildHash: buildHash as never }, "/project")
+    ).toThrow("- buildHash must be a string.")
+  })
+
   it.each([
     ["no zone", "2026-12-01T00:00:00"],
     ["date only", "2026-12-01"],
