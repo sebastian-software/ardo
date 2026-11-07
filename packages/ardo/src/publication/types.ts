@@ -115,13 +115,14 @@ export type PublicationTagProps = {
   tag: PublicationTag
   /** The tag's display label: the site's `tagLabel`, or the key. */
   label: string
-  posts: Post[]
+  posts: readonly Post[]
 }
 
 /**
  * What a publication route module's `meta` export receives. `defaults` are the descriptors Ardo
- * would render without the export; the returned list replaces them, so spread `defaults` to
- * extend them. The data is shared with the page and must not be changed.
+ * would render without the export, a new list on every call; the returned list replaces them, so
+ * spread `defaults` to extend them. The publication, post, and tag data is frozen and shared with
+ * the page.
  */
 export type PublicationIndexMetaArgs = {
   publication: Publication
@@ -137,7 +138,7 @@ export type PublicationTagMetaArgs = {
   tag: PublicationTag
   /** The tag's display label: the site's `tagLabel`, or the key. */
   label: string
-  posts: Post[]
+  posts: readonly Post[]
   defaults: ArdoMetaDescriptor[]
 }
 
@@ -174,14 +175,18 @@ export type PostFrontmatter = {
   feedContent?: string
 }
 
+/**
+ * A published post. Ardo freezes the data it hands to pages and site modules, which share it, so
+ * the arrays are read-only: sort a copy, such as `[...publication.posts].sort(…)`.
+ */
 export type Post = {
   id: string
   title: string
   description?: string
   publishedAt: string
   updatedAt?: string
-  tags: string[]
-  authors: AuthorProfile[]
+  tags: readonly string[]
+  authors: readonly AuthorProfile[]
   path: string
   url: string
   publicationPath: string
@@ -189,7 +194,14 @@ export type Post = {
   atomUrl: string
   rssUrl: string
   coverImage?: PostImage
-  images: Record<string, PostImage>
+  images: Readonly<Record<string, PostImage>>
+  /**
+   * Frontmatter fields Ardo does not know, such as a site's `nextStep`, as authored. Values are
+   * YAML data; check their type before use. Set on the post's own page, in the post module's
+   * props and `meta`; the posts of `virtual:ardo/publication` and of listing pages have `{}`, so
+   * one page's fields do not ship with every other page.
+   */
+  data: Readonly<Record<string, unknown>>
 }
 
 export type Publication = {
@@ -200,9 +212,9 @@ export type Publication = {
   url: string
   atomUrl: string
   rssUrl: string
-  posts: Post[]
+  posts: readonly Post[]
   /** Tag archives, ordered by key. Present only when `tags` is enabled. */
-  tags?: PublicationTag[]
+  tags?: readonly PublicationTag[]
 }
 
 export type PublicationTag = {

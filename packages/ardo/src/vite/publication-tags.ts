@@ -36,7 +36,10 @@ export function validatePostTags(post: { tags: string[]; routePath: string }, pr
  * surface as a missing translation of a page, so name the tag and the locales instead.
  */
 export function validateTagLocales(
-  publications: Array<{ locale?: string; entry: { publication: { tags?: PublicationTag[] } } }>
+  publications: Array<{
+    locale?: string
+    entry: { publication: { tags?: readonly PublicationTag[] } }
+  }>
 ): void {
   const keys = publications.map(
     ({ entry }) => new Set(entry.publication.tags?.map((tag) => tag.key))
@@ -89,11 +92,11 @@ export function createTagRoute(input: {
   // label is resolved while the page renders, so it can come from the site's translations.
   const lines = [
     ...routePrelude({ context, filePath, modules, view: modules.tag, type: "Tag" }),
-    `const tag = ${JSON.stringify(tag)}`,
+    `const tag = Object.freeze(${JSON.stringify(tag)})`,
     ...(modules.tag == null
       ? []
       : [
-          `const posts = publication.posts.filter((post) => post.tags.includes(${JSON.stringify(tag.key)}))`,
+          `const posts = Object.freeze(publication.posts.filter((post) => post.tags.includes(${JSON.stringify(tag.key)})))`,
         ]),
     "export const meta = () => {",
     "  const tagLabel = label(tag.key)",

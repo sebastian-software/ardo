@@ -100,10 +100,13 @@ export function transformMarkdownMeta(
   }
 }
 
-/** A post route with a site module hands the defaults to its `meta` export (see mdx-compile). */
+/**
+ * A publication post adds its feed links to the defaults and hands them to the site module's
+ * `meta` export, if any (see mdx-compile).
+ */
 function metaValue(entries: string[], id: string, state: MarkdownMetaState): string {
   const defaults = `[${entries.join(", ")}]`
-  return state.publicationPost?.(id.split("?", 1)[0])?.view == null
+  return state.publicationPost?.(id.split("?", 1)[0]) == null
     ? defaults
     : `_ardoPostMeta(${defaults})`
 }

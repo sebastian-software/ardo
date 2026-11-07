@@ -4,6 +4,7 @@ import type { ResolvedConfig } from "../config/types"
 import type { PublicationConfig } from "../publication/types"
 import { configurePublicationDev } from "./publication-dev"
 import { normalizePath } from "./path-utils"
+import { publicationModuleCode } from "./publication-module"
 import type { PublicationPostBinding } from "./publication-routes"
 import { isGeneratedPublicationFile } from "./publication-dev-cache"
 import {
@@ -62,7 +63,7 @@ export function createPublicationPlugin(options: PublicationConfig, site: Public
       const config = site.resolvedConfig
       const locale =
         config?.i18n === false || config?.i18n == null ? "default" : config.i18n.defaultLocale
-      return `export const publications = ${JSON.stringify(builder.publications)}; export default publications[${JSON.stringify(locale)}];`
+      return publicationModuleCode(builder.publications, locale)
     },
     generateBundle() {
       if (this.environment.name !== "client") return

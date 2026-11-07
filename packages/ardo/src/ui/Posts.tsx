@@ -155,7 +155,13 @@ function PostDate({ value, lang }: { value: string; lang: string }) {
   )
 }
 
-function Byline({ authors, compact = false }: { authors: AuthorProfile[]; compact?: boolean }) {
+function Byline({
+  authors,
+  compact = false,
+}: {
+  authors: readonly AuthorProfile[]
+  compact?: boolean
+}) {
   const labels = useArdoLabels().publication
   return (
     <ul className={styles.authors} aria-label={labels.authors}>

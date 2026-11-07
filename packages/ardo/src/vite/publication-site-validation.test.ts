@@ -66,11 +66,32 @@ describe("generated post routes", () => {
     expect(result.routes[0].content).not.toContain("Injected")
   })
 
-  it("keep a post's own meta export, which replaces the site module's metadata", async () => {
+  it("reject a post's own meta export while a post module supplies the metadata", async () => {
     const p = await project()
     await fs.mkdir(path.join(p.root, "app/blog"), { recursive: true })
     await fs.writeFile(path.join(p.root, "app/blog/Post.tsx"), "export default () => null\n")
     p.options.components = { post: "app/blog/Post.tsx" }
+    await p.write("first", "feedContent: Body text.\n", {
+      body: 'export const meta = () => [{ title: "Own" }]\n\nBody text.',
+      ext: "mdx",
+    })
+    const result = await preparePublication(p)
+    const route = result.routes[0]
+    const compile = () =>
+      compileMdxRouteModule({
+        source: route.content,
+        markdownConfig: undefined,
+        format: "mdx",
+        id: route.filePath,
+        publicationPost: route.post,
+      })
+    expect(compile).toThrow(
+      "[ardo] posts/first.mdx exports meta, but publication.components.post supplies the metadata of every post"
+    )
+  })
+
+  it("keep a post's own meta export without a post module, as on any page", async () => {
+    const p = await project()
     await p.write("first", "feedContent: Body text.\n", {
       body: 'export const meta = () => [{ title: "Own" }]\n\nBody text.',
       ext: "mdx",

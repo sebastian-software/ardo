@@ -21,7 +21,7 @@ export type PublicationRoute = {
 }
 
 /** The latest update among `posts`, or `fallback` (the pinned buildTime) for an empty list. */
-export function latestPostDate(posts: Post[], fallback?: string): string | undefined {
+export function latestPostDate(posts: readonly Post[], fallback?: string): string | undefined {
   let latest: string | undefined
   for (const post of posts) {
     const date = new Date(post.updatedAt ?? post.publishedAt).toISOString()
@@ -43,6 +43,10 @@ export type PublicationPostBinding = {
   tagLabel?: string
   /** Path prefix of the tag archives, such as `/news/tags/`, when `tags` is enabled. */
   tagArchive?: string
+  /** The publication's feed discovery links, part of every post's default metadata. */
+  feeds: ArdoMetaDescriptor[]
+  /** The post's source file, named by build errors. */
+  sourceFile: string
 }
 
 export type PostRouteInput = {
@@ -96,6 +100,8 @@ export function createPostRoute(
     lastmod: latestPostDate([post]),
     post: {
       publication: publicationKey(context),
+      feeds: feedDiscoveryMeta(context.publication),
+      sourceFile: path.relative(context.config.root, input.sourceFile),
       ...(modules.post == null ? {} : { view: normalizePath(modules.post) }),
       ...(modules.tagLabel == null ? {} : { tagLabel: normalizePath(modules.tagLabel) }),
       ...(context.options.tags === true ? { tagArchive: tagArchivePrefix(context) } : {}),

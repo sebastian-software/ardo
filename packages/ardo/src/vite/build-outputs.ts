@@ -6,6 +6,9 @@ import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
 import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
 import { spellPagePath } from "../runtime/trailing-slash"
+import path from "node:path"
+import { getGitFileTimestamps } from "./git-utils"
+import { normalizePath } from "./path-utils"
 
 export { generateSitemap } from "./sitemap"
 
@@ -117,11 +120,22 @@ export function generateVercelRedirects(redirects: Array<{ from: string; to: str
 export function createBuildOutputAssets(
   entries: RouteManifestEntry[],
   config: ResolvedConfig,
-  llms: LlmsTextOptions = {}
+  llms: LlmsTextOptions & {
+    /** With it, sitemap dates of pages without post dates come from their last Git commit. */
+    routesDir?: string
+  } = {}
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
   if (config.seo.sitemap !== false) {
-    assets.push({ fileName: "sitemap.xml", source: generateSitemap(entries, config) })
+    const commits = llms.routesDir == null ? undefined : getGitFileTimestamps(llms.routesDir)
+    const commitTime = (filePath: string) =>
+      llms.routesDir == null
+        ? undefined
+        : commits?.get(normalizePath(path.relative(llms.routesDir, filePath)))
+    assets.push({
+      fileName: "sitemap.xml",
+      source: generateSitemap(entries, config, commitTime),
+    })
   }
 
   if (config.seo.robots !== false) {

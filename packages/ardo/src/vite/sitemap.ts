@@ -2,7 +2,28 @@ import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 import { spellPagePath } from "../runtime/trailing-slash"
 
-export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedConfig) {
+/**
+ * When a page last changed: a post's own dates, else the page file's last commit, else its file
+ * time. Never later than a pinned `buildTime`, so a build at that moment reports no later change.
+ */
+export function sitemapLastmod(
+  entry: RouteManifestEntry,
+  config: Pick<ResolvedConfig, "buildTime">,
+  commitTime?: (filePath: string) => number | undefined
+): Date {
+  const dated = typeof entry.frontmatter.publishedAt === "string"
+  const commit = dated ? undefined : commitTime?.(entry.filePath)
+  const date = commit == null ? entry.lastmod : new Date(commit)
+  if (config.buildTime == null) return date
+  const pinned = new Date(config.buildTime)
+  return date > pinned ? pinned : date
+}
+
+export function generateSitemap(
+  entries: RouteManifestEntry[],
+  config: ResolvedConfig,
+  commitTime?: (filePath: string) => number | undefined
+) {
   const sitemapConfig = typeof config.seo.sitemap === "object" ? config.seo.sitemap : {}
   const changefreq = sitemapConfig.changefreq ?? "weekly"
   const priority = sitemapConfig.priority ?? 0.7
@@ -23,7 +44,7 @@ export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedC
       return [
         "  <url>",
         `    <loc>${escapeXml(loc)}</loc>`,
-        `    <lastmod>${entry.lastmod.toISOString()}</lastmod>`,
+        `    <lastmod>${sitemapLastmod(entry, config, commitTime).toISOString()}</lastmod>`,
         `    <changefreq>${changefreq}</changefreq>`,
         `    <priority>${priority.toFixed(1)}</priority>`,
         "  </url>",

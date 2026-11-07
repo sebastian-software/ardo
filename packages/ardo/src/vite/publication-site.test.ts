@@ -102,9 +102,10 @@ describe("publication route modules", () => {
     p.options.components = { post: "app/blog/Post.tsx" }
     const result = await preparePublication(p)
     const route = routeAt(result.routes, "app/routes/news/first/index.md")
-    expect(route.post).toStrictEqual({
+    expect(route.post).toMatchObject({
       publication: "default",
       view: `${p.root}/app/blog/Post.tsx`,
+      sourceFile: "posts/first.md",
     })
     expect(route.content).not.toContain("_ardoMeta")
     const { code } = compilePost(route, p.config, p.routesDir)
@@ -130,12 +131,19 @@ describe("publication route modules", () => {
     await p.write("first")
     const result = await preparePublication(p)
     const route = routeAt(result.routes, "app/routes/news/first/index.md")
-    expect(route.post).toStrictEqual({ publication: "default" })
+    expect(route.post).toMatchObject({ publication: "default" })
+    expect(route.post?.view).toBeUndefined()
     const { code } = compilePost(route, p.config, p.routesDir)
     expect(code).toContain("ArdoPost as _ArdoPostFrame")
-    expect(code).not.toContain("_ardoPostMeta")
     expect(code).not.toContain("virtual:ardo/publication")
-    expect(code).toContain('export const meta = () => [{ title: "first | Example" }')
+    expect(code).toContain('export const meta = () => _ardoPostMeta([{ title: "first | Example" }')
+    // Every post's defaults end with the publication's feed links, like the index and tags.
+    expect(code).toContain(
+      '...[{"tagName":"link","rel":"alternate","type":"application/atom+xml","href":"https://example.test/project/news/atom.xml","title":"News"},{"tagName":"link","rel":"alternate","type":"application/rss+xml","href":"https://example.test/project/news/rss.xml","title":"News"}]'
+    )
+    expect(code).toContain("  return defaults;")
+    // The post data is frozen before the frame or meta can see it.
+    expect(code).toContain("_ardoFreeze(_ardoFrontmatter._ardoPost);")
     expect(code).toContain(
       '{ tagName: "link", rel: "canonical", href: "https://example.test/project/news/first" }'
     )
@@ -307,7 +315,7 @@ describe("tag archives", () => {
     ])
     const design = routeAt(result.routes, "app/routes/news/tags/design/index.tsx").content
     expect(design).toContain(
-      'const tag = {"key":"design","path":"/news/tags/design","url":"https://example.test/project/news/tags/design/"}'
+      'const tag = Object.freeze({"key":"design","path":"/news/tags/design","url":"https://example.test/project/news/tags/design/"})'
     )
     expect(design).toContain("<View publication={publication} tag={tag} />")
     expect(design).toContain('label={label} archive={"/news/tags/"}')
@@ -341,7 +349,7 @@ describe("tag archives", () => {
       "<View publication={publication} tag={tag} label={label(tag.key)} posts={posts} />"
     )
     const route = routeAt(result.routes, "app/routes/news/first/index.md")
-    expect(route.post).toStrictEqual({
+    expect(route.post).toMatchObject({
       publication: "default",
       tagLabel: `${p.root}/app/blog/tag-label.ts`,
       tagArchive: "/news/tags/",

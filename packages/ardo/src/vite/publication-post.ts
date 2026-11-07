@@ -6,6 +6,7 @@ import { parsePostMetadata, type PostMetadata } from "./post-metadata"
 import { preparePostAuthors, preparePostImages } from "./publication-images"
 import { createPortablePostBody } from "./publication-feeds"
 import type { PostRouteInput } from "./publication-routes"
+import { knownFrontmatterFields } from "./page-frontmatter-fields"
 
 export type PreparedPost = { post: Post; html: string; route: PostRouteInput }
 
@@ -25,7 +26,7 @@ export async function preparePublicationPost(
     if (metadata.draft || new Date(metadata.publishedAt) > (context.now ?? new Date())) return
     const authors = await preparePostAuthors(metadata.authorKeys, context)
     const images = await preparePostImages({ data, prepared, sourceFile, context })
-    const post = createPost(metadata, { authors, ...images }, context)
+    const post = createPost(metadata, { authors, ...images, data: siteFields(data) }, context)
     return {
       post,
       html: createPortablePostBody({
@@ -45,9 +46,16 @@ export async function preparePublicationPost(
   }
 }
 
+/** Authored frontmatter fields that Ardo does not read, which the site may use. */
+function siteFields(data: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(data).filter(([key]) => !knownFrontmatterFields.has(key) && !key.startsWith("_"))
+  )
+}
+
 function createPost(
   metadata: PostMetadata,
-  rendering: Pick<Post, "authors" | "images" | "coverImage">,
+  rendering: Pick<Post, "authors" | "images" | "coverImage" | "data">,
   context: PublicationContext
 ): Post {
   const route =

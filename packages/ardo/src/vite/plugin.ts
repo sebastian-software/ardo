@@ -37,7 +37,6 @@ import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./version
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 
-/** `publicationPost` is set by the publication plugin for its generated post routes. */
 type PluginState = Pick<PublicationSite, "publicationPost"> & {
   /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
   buildTime?: string
@@ -226,9 +225,8 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
           console.log(notice)
         }
         for (const asset of [
-          ...createBuildOutputAssets(manifest, resolvedConfig, {
-            referenceDirs: state.referenceDirs,
-          }),
+          // The state carries referenceDirs for llms.txt and routesDir for sitemap dates.
+          ...createBuildOutputAssets(manifest, resolvedConfig, state),
           ...agent.assets,
         ]) {
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })

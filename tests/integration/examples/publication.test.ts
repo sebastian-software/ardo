@@ -97,7 +97,9 @@ it("builds a site-designed publication from route modules, with labels and one U
   const reading = path.join(directory, "posts/reading.mdx")
   fs.writeFileSync(
     reading,
-    fs.readFileSync(reading, "utf8").replace("tags: [Design, Engineering]", "tags: [design]")
+    fs
+      .readFileSync(reading, "utf8")
+      .replace("tags: [Design, Engineering]", "tags: [design]\nnextStep: https://contact.example/")
   )
   fs.mkdirSync(path.join(directory, "app/blog"))
   fs.writeFileSync(
@@ -117,21 +119,33 @@ export function meta({ publication, defaults }: PublicationIndexMetaArgs) {
 import { useArdoPublicationTags } from "ardo/ui"
 export default function SitePost({ post, children }: PublicationPostProps) {
   const tags = useArdoPublicationTags()
-  return <article data-site="post"><h1>{post.title}</h1>{children}<p data-marker="SITE_POST_FRAME_MARKER">{post.tags.map(tags.label).join(", ")}</p></article>
+  const next = typeof post.data.nextStep === "string" ? post.data.nextStep : undefined
+  return <article data-site="post"><h1>{post.title}</h1>{children}<p data-marker="SITE_POST_FRAME_MARKER">{post.tags.map(tags.label).join(", ")}</p>{next && <a data-next href={next}>Next</a>}</article>
 }
 export const meta = ({ post, publication, defaults }: PublicationPostMetaArgs) => [
   { title: post.title + " · " + publication.name },
-  ...defaults.filter((entry) => "tagName" in entry && entry.rel === "canonical"),
+  ...defaults.filter((entry) => "tagName" in entry && (entry.rel === "canonical" || entry.rel === "alternate")),
   { property: "og:type", content: "article" },
+  { name: "next-step", content: String(post.data.nextStep) },
 ]
 `
   )
   // No meta export: the archive keeps Ardo's metadata, titled with the label.
   fs.writeFileSync(
     path.join(directory, "app/blog/Tag.tsx"),
-    `import type { PublicationTagProps } from "ardo/config"
+    `import type { Post, PublicationTagMetaArgs, PublicationTagProps } from "ardo/config"
 export default function Tag({ label, posts }: PublicationTagProps) {
   return <main data-site="tag"><h1>{label}</h1>{posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>
+}
+// The spike's bug: sorting the shared posts in meta reordered the index. The data is frozen.
+export function meta({ publication, defaults }: PublicationTagMetaArgs) {
+  let mutation = "applied"
+  try {
+    ;(publication.posts as Post[]).sort((left, right) => left.title.localeCompare(right.title))
+  } catch {
+    mutation = "blocked"
+  }
+  return [...defaults, { name: "mutation", content: mutation }]
 }
 `
   )
@@ -216,6 +230,19 @@ export default tagLabel
   expect(canonicals(tag)).toStrictEqual([
     '<link rel="canonical" href="https://example.test/project/news/tags/design"/>',
   ])
+  // The post module's defaults carry the feed links, like the index and tag defaults.
+  expect(post).toMatch(
+    /<link rel="alternate" type="application\/atom\+xml"[^>]+title="Field notes"\/>/u
+  )
+  // Custom frontmatter reaches the post module as post.data.
+  expect(post).toContain('<a data-next="true" href="https://contact.example/">Next</a>')
+  expect(post).toContain('<meta name="next-step" content="https://contact.example/"/>')
+  // A mutation of the shared data in a tag's meta is blocked and leaves the index order intact.
+  expect(tag).toContain('<meta name="mutation" content="blocked"/>')
+  const order = [
+    ...listing.matchAll(/<a href="https:\/\/example\.test\/project\/news\/([^"]+)"/gu),
+  ].map((match) => match[1])
+  expect(order).toStrictEqual(["reading", "interactive"])
   // Only post routes load the post frame; a documentation page does not.
   const guide = fs.readFileSync(path.join(output, "v2/guide/getting-started/index.html"), "utf8")
   expect(pageScripts(output, post).some((code) => code.includes("SITE_POST_FRAME_MARKER"))).toBe(

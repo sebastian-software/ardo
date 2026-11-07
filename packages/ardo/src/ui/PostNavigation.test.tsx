@@ -23,6 +23,7 @@ const publication: Publication = {
     authors: [],
     tags: [],
     images: {},
+    data: {},
     publicationPath: "/de/news",
     publicationName: "News",
     atomUrl: "https://example.com/project/de/news/atom.xml",
