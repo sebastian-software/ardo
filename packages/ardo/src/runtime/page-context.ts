@@ -45,6 +45,12 @@ export type ArdoPage = {
   error?: ArdoPageError
   /** The route module's `handle` export. */
   handle?: unknown
+  /**
+   * The route module's `frontmatter` export: a Markdown page's frontmatter, including fields Ardo
+   * does not read, such as a site's own `counterpart`. It comes from the page's own route chunk,
+   * so the root can read it on the server and during hydration.
+   */
+  frontmatter?: Readonly<Record<string, unknown>>
   /** Path of the page without the base path, starting with a slash. */
   path: string
   /** Source identity and modification time from the route table, sent to the client in the page data. */

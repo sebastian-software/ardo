@@ -7,6 +7,8 @@ import { ArdoErrorBoundary } from "../ui/ErrorBoundary"
 /** Exports Ardo reads from a route module. */
 export type ArdoRouteModule = {
   default?: ComponentType
+  /** A Markdown route's frontmatter, which Ardo's compiler exports. */
+  frontmatter?: Record<string, unknown>
   handle?: unknown
   meta?: () => ArdoMetaDescriptor[]
 }
@@ -51,6 +53,7 @@ export type ArdoResolvedPage = {
   component: ComponentType
   data: ArdoPageData
   error?: ArdoPageError
+  frontmatter?: ArdoPage["frontmatter"]
   handle?: unknown
   source?: ArdoPage["source"]
   meta: ArdoMetaDescriptor[]
@@ -95,6 +98,7 @@ export async function resolvePage(input: {
         source: input.source ?? route.source,
       },
       handle: module.handle,
+      ...(isRecord(module.frontmatter) ? { frontmatter: module.frontmatter } : {}),
       source: input.source ?? route.source,
       meta: withDefaultTitle((module.meta ?? root.meta)?.() ?? [], input.siteTitle),
     }
@@ -168,6 +172,10 @@ function withDefaultTitle(
   if (siteTitle == null || siteTitle === "") return meta
   if (meta.some((descriptor) => "title" in descriptor && !("tagName" in descriptor))) return meta
   return [...meta, { title: siteTitle }]
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object" && !Array.isArray(value)
 }
 
 function matchesPattern(pattern: string, pathname: string): boolean {

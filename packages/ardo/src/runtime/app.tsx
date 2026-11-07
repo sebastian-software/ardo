@@ -27,6 +27,7 @@ export function ArdoPageTree({ config, page, root }: ArdoAppProps) {
       base={page.data.base}
       component={page.component}
       error={page.error}
+      frontmatter={page.frontmatter}
       handle={page.handle}
       path={page.data.path}
       source={page.source}

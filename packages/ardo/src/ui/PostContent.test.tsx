@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { expect, it } from "vitest"
+import { describe, expect, it } from "vitest"
 import type { Post, Publication } from "../publication/types"
 import { ArdoPageDataProvider, ArdoProvider } from "../runtime/hooks"
 import { ArdoPageProvider } from "../runtime/page"
@@ -17,6 +17,7 @@ const post: Post = {
   tags: ["design", "release-notes"],
   authors: [],
   images: {},
+  data: {},
   path: "/blog/first",
   url: "https://example.test/blog/first",
   publicationPath: "/blog",
@@ -131,4 +132,36 @@ it("titles a tag archive with the tag's label", () => {
   expect(render(<ArdoPostList publication={publication} tag={tag} />)).toMatch(
     /<h1[^>]*>design<\/h1>/u
   )
+})
+
+function renderBare(node: ReactNode, frontmatter: Record<string, unknown>) {
+  return renderToStaticMarkup(
+    <ArdoPageProvider base="/" path="/blog/first">
+      <ArdoPageDataProvider frontmatter={frontmatter} toc={[]}>
+        {node}
+      </ArdoPageDataProvider>
+    </ArdoPageProvider>
+  )
+}
+
+describe("Markdown in a custom shell without ArdoProvider", () => {
+  it("renders a page in a plain content container instead of throwing", () => {
+    const html = renderBare(
+      <ArdoMarkdownContent>
+        <p>Body text.</p>
+      </ArdoMarkdownContent>,
+      { title: "Notes" }
+    )
+    expect(html).toMatch(/^<div class="ardo-markdown [^"]+"><p>Body text.<\/p><\/div>$/u)
+  })
+
+  it("leaves a post to its frame and still gives its content the page data", () => {
+    const html = renderBare(
+      <ArdoMarkdownContent>
+        <p>Body text.</p>
+      </ArdoMarkdownContent>,
+      { _ardoPost: post }
+    )
+    expect(html).toBe("<p>Body text.</p>")
+  })
 })
