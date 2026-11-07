@@ -434,6 +434,39 @@ defineArdoConfig({
 
 Use frontmatter `redirectFrom` when a redirect belongs to one page instead of the whole site.
 
+### trailingSlash
+
+- **Type:** `boolean`
+- **Default:** unset
+
+Chooses one spelling for every page URL Ardo generates: `true` ends page URLs with a slash, such
+as `/guide/`, and `false` drops it, such as `/guide`. The setting applies to sitemap entries,
+canonical and `og:url` links, locale alternate links, internal links, redirect targets, the URLs
+of the publication, its posts and tag archives, and the links in feeds. The site root, the
+deployment `base`, keeps its slash.
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  trailingSlash: false,
+})
+```
+
+`ardo dev` and `ardo preview` redirect the other spelling of a page to the configured one, and
+keep the query string. The dev server answers with 302, so browsers do not cache it, and
+preview with 301, as a host would. The static output cannot do this itself, because one
+`guide/index.html` file serves both `/guide` and `/guide/`. Configure the production host to
+redirect the same way. With `true`, hosts that redirect a directory without slash, such as GitHub
+Pages, already match. With `false`, the host must serve `guide/index.html` at `/guide` and
+redirect `/guide/` there, for example with `"trailingSlash": false` on Vercel. GitHub Pages
+always redirects `/guide` to `/guide/`, so use `true` there or leave the setting unset. Until the
+host redirects, both addresses show the page, and its canonical link names the configured one.
+
+Without the setting, Ardo keeps the output of earlier versions: sitemap entries and default
+canonical links end without the slash, internal links and publication URLs with it, and dev and
+preview serve both spellings.
+
 ### versioning
 
 - **Type:** `false | { current: string; versions: Array<{ id: string; label?: string; path: string; locales?: string[] }>; directories?: string[]; rootRedirect?: boolean }`
