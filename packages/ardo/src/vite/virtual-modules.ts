@@ -1,8 +1,11 @@
+import { resolve as resolvePath } from "node:path"
+
 import type { ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
 
 import { readCollections } from "./collections"
 import { detectGitHash } from "./git-utils"
+import { normalizePath } from "./path-utils"
 import { createRouteManifestOptions } from "./route-manifest"
 import { generateSearchIndex } from "./search-index"
 import { generateContextSidebars } from "./sidebar-index"
@@ -13,6 +16,8 @@ export const VIRTUAL_GENERATED_SIDEBARS_ID = "virtual:ardo/generated-sidebars"
 export const VIRTUAL_SEARCH_LOADERS_ID = "virtual:ardo/search-loaders"
 export const VIRTUAL_SEARCH_ID = "virtual:ardo/search-index"
 export const VIRTUAL_COLLECTIONS_ID = "virtual:ardo/collections"
+/** The site's post frame (`publication.components.post`), or `null`. Every page can import it. */
+export const VIRTUAL_PUBLICATION_POST_ID = "virtual:ardo/publication-post"
 
 export const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_MODULE_ID]: `\0${VIRTUAL_MODULE_ID}`,
@@ -20,10 +25,13 @@ export const RESOLVED_IDS: Record<string, string> = {
   [VIRTUAL_SEARCH_LOADERS_ID]: `\0${VIRTUAL_SEARCH_LOADERS_ID}`,
   [VIRTUAL_SEARCH_ID]: `\0${VIRTUAL_SEARCH_ID}`,
   [VIRTUAL_COLLECTIONS_ID]: `\0${VIRTUAL_COLLECTIONS_ID}`,
+  [VIRTUAL_PUBLICATION_POST_ID]: `\0${VIRTUAL_PUBLICATION_POST_ID}`,
 }
 
 export type ArdoVirtualModuleState = {
   collections?: CollectionsConfig
+  /** `publication.components.post`, relative to the project root. */
+  publicationPostComponent?: string
   resolvedConfig?: ResolvedConfig
   routesDir: string
 }
@@ -34,6 +42,23 @@ export function resolveVirtualModuleId(id: string): string | undefined {
 }
 
 export async function loadVirtualModule(
+  id: string,
+  state: ArdoVirtualModuleState
+): Promise<string | undefined> {
+  return id === RESOLVED_IDS[VIRTUAL_PUBLICATION_POST_ID]
+    ? publicationPostModule(state)
+    : loadDataModule(id, state)
+}
+
+function publicationPostModule(state: ArdoVirtualModuleState): string | undefined {
+  if (state.resolvedConfig == null) return undefined
+  const component = state.publicationPostComponent
+  return component == null
+    ? "export default null;"
+    : `export { default } from ${JSON.stringify(normalizePath(resolvePath(state.resolvedConfig.root, component)))};`
+}
+
+async function loadDataModule(
   id: string,
   state: ArdoVirtualModuleState
 ): Promise<string | undefined> {

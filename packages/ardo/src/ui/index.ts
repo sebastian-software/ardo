@@ -26,7 +26,14 @@ export type {
   PostImage,
   PostImageInput,
   Publication,
+  PublicationComponentsConfig,
   PublicationConfig,
+  PublicationFeedsConfig,
+  PublicationIndexProps,
+  PublicationMetaConfig,
+  PublicationPostProps,
+  PublicationTag,
+  PublicationTagProps,
 } from "../publication/types"
 // UI components
 export {

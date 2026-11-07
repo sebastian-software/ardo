@@ -18,6 +18,15 @@ declare module "virtual:ardo/generated-sidebars" {
   export const sectionIndexes: Record<string, string>
 }
 
+declare module "virtual:ardo/publication-post" {
+  import type { ComponentType } from "react"
+  import type { PublicationPostProps } from "./publication/types"
+
+  /** The module named by `publication.components.post`, or null. */
+  const SitePost: ComponentType<PublicationPostProps> | null
+  export default SitePost
+}
+
 declare module "virtual:ardo/search-index" {
   interface SearchDoc {
     id: string

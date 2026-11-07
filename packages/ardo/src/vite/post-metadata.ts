@@ -3,6 +3,7 @@ import path from "node:path"
 import { canonicalTimestamp, isTimestamp, timestampError } from "../config/build-time"
 import type { PostImageInput } from "../publication/types"
 import type { PublicationContext } from "./publication-context"
+import { validatePostTags } from "./publication-tags"
 
 export type PostMetadata = {
   id: string
@@ -33,6 +34,7 @@ export function parsePostMetadata(
     draft: data.draft === true,
   }
   validateLifecycle(metadata, data.draft)
+  if (context.options.tags === true) validatePostTags(metadata, context.prefix)
   checkIdentity(metadata, context)
   return metadata
 }

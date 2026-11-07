@@ -46,6 +46,8 @@ type PluginState = {
   deploymentBase?: string
   outDir?: string
   previewBase?: string
+  /** `publication.components.post`, served by `virtual:ardo/publication-post`. */
+  publicationPostComponent?: string
   /** Generated API and OpenAPI folders, which `llms.txt` links by their index. */
   referenceDirs: string[]
   resolvedConfig?: ResolvedConfig
@@ -76,6 +78,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...(buildTime === undefined ? {} : { buildTime }),
     collections,
     outDir: siteConfig.outDir,
+    publicationPostComponent: publication?.components?.post,
     referenceDirs: [
       ...apiOutputDirectories(api),
       ...(openapi == null ? [] : [openapi.out ?? "api"]),

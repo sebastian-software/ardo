@@ -1,3 +1,6 @@
+import type { ReactNode } from "react"
+import type { ArdoMetaDescriptor } from "../runtime/page-context"
+
 /** A square around the core subject. x/y are normalized center coordinates;
  * size is a fraction of the oriented source's shorter side. */
 export type ImageCore = { x: number; y: number; size: number }
@@ -60,7 +63,58 @@ export type PublicationConfig = {
   description?: string
   authors: Record<string, AuthorProfile>
   images?: { widths?: number[]; presets?: Record<string, ImagePreset> }
+  /**
+   * End publication, post, and tag archive URLs, and the feed links built from them, with a
+   * slash. Default: true.
+   */
+  trailingSlash?: boolean
+  /**
+   * Generate one archive page per tag at `/<to>/tags/<key>`. Tag keys must be lowercase,
+   * hyphenated slugs. Default: false.
+   */
+  tags?: boolean
+  feeds?: PublicationFeedsConfig
+  /** Site modules that render the generated routes in place of Ardo's components. */
+  components?: PublicationComponentsConfig
+  /** Build-time functions whose result replaces Ardo's metadata of the generated routes. */
+  meta?: PublicationMetaConfig
 }
+
+export type PublicationFeedsConfig = {
+  /**
+   * Atom entry IDs and RSS GUIDs. `"post"` (default) uses the post ID alone. `"publication"`
+   * qualifies it with the publication's host and path, so publications that share post IDs, such
+   * as translations on separate sites, publish distinct entries. Changing it re-announces every
+   * entry to existing subscribers.
+   */
+  entryIds?: "post" | "publication"
+}
+
+/**
+ * Module paths, relative to the project root. Each module default-exports a React component:
+ * `index` receives {@link PublicationIndexProps}, `post` {@link PublicationPostProps}, and `tag`
+ * {@link PublicationTagProps}.
+ */
+export type PublicationComponentsConfig = {
+  index?: string
+  post?: string
+  tag?: string
+}
+
+/** The returned descriptors are the route's complete metadata and must be JSON-serializable. */
+export type PublicationMetaConfig = {
+  index?: (input: { publication: Publication }) => ArdoMetaDescriptor[]
+  post?: (input: { publication: Publication; post: Post }) => ArdoMetaDescriptor[]
+  tag?: (input: {
+    publication: Publication
+    tag: PublicationTag
+    posts: Post[]
+  }) => ArdoMetaDescriptor[]
+}
+
+export type PublicationIndexProps = { publication: Publication }
+export type PublicationPostProps = { post: Post; children: ReactNode }
+export type PublicationTagProps = { publication: Publication; tag: PublicationTag; posts: Post[] }
 
 /** Metadata authored in a post's YAML frontmatter. IDs are assigned once. */
 export type PostFrontmatter = {
@@ -106,4 +160,13 @@ export type Publication = {
   atomUrl: string
   rssUrl: string
   posts: Post[]
+  /** Tag archives, ordered by key. Present only when `tags` is enabled. */
+  tags?: PublicationTag[]
+}
+
+export type PublicationTag = {
+  /** The tag as authored in the posts' frontmatter and emitted as feed category. */
+  key: string
+  path: string
+  url: string
 }

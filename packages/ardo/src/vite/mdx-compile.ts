@@ -56,6 +56,7 @@ export function compileMdxRouteModule(input: {
       createRouteCode({
         markdownConfig: input.markdownConfig,
         metadata,
+        id: input.id,
         pageMarkdownPath: input.pageMarkdownPath,
         result,
       }),
@@ -64,6 +65,7 @@ export function compileMdxRouteModule(input: {
 }
 
 function createRouteCode(input: {
+  id: string
   markdownConfig: ArdoConfig["markdown"]
   metadata: NativeMarkdownMetadata
   pageMarkdownPath: string | undefined
@@ -90,6 +92,7 @@ function createRouteCode(input: {
     ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
     ...createDataExport("toc", "_ardoToc", scope),
     ...createHandleExport(input.metadata.frontmatter, scope),
+    ...createMetaExport(input.metadata.frontmatter, scope, input.id),
     `function _ardoRoute(props = {}) {`,
     `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
     `}`,
@@ -107,6 +110,24 @@ function createDataExport(
   if (scope.exports.has(name)) return []
   if (scope.bindings.has(name)) return [`export { ${name} };`]
   return [`export { ${local} as ${name} };`]
+}
+
+/**
+ * A generated publication route carries the site's complete metadata in `_ardoMeta`. Exporting
+ * it as `meta` replaces the metadata Ardo would derive, so canonical and social tags never repeat.
+ */
+function createMetaExport(
+  frontmatter: PageFrontmatter,
+  scope: AuthoredScope,
+  id: string
+): string[] {
+  const meta = frontmatter._ardoMeta
+  if (!Array.isArray(meta)) return []
+  if (scope.exports.has("meta") || scope.bindings.has("meta"))
+    throw new Error(
+      `[ardo] ${id} declares its own meta, but publication.meta.post supplies the metadata of every post. Remove one of them.`
+    )
+  return [`export const meta = () => ${JSON.stringify(meta)};`]
 }
 
 function createHandleExport(frontmatter: PageFrontmatter, scope: AuthoredScope): string[] {
