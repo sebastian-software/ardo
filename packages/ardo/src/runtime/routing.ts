@@ -166,7 +166,7 @@ function withDefaultTitle(
   siteTitle: string | undefined
 ): ArdoMetaDescriptor[] {
   if (siteTitle == null || siteTitle === "") return meta
-  if (meta.some((descriptor) => "title" in descriptor)) return meta
+  if (meta.some((descriptor) => "title" in descriptor && !("tagName" in descriptor))) return meta
   return [...meta, { title: siteTitle }]
 }
 

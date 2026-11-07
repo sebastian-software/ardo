@@ -70,3 +70,21 @@ describe("serializeJsonLd", () => {
     )
   })
 })
+
+describe("ArdoHead link descriptors", () => {
+  it("renders a link with a title attribute as a link, not as the page title", () => {
+    const html = renderHead([
+      { title: "News" },
+      {
+        tagName: "link",
+        rel: "alternate",
+        type: "application/atom+xml",
+        href: "https://example.test/news/atom.xml",
+        title: "News",
+      },
+    ])
+    expect(html).toBe(
+      '<title>News</title><link rel="alternate" type="application/atom+xml" href="https://example.test/news/atom.xml" title="News"/>'
+    )
+  })
+})
