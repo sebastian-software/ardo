@@ -195,7 +195,16 @@ export type ArdoConfig = {
    * Available at runtime via `config.project` from `virtual:ardo/config`.
    */
   project?: ProjectMeta
-  /** Build timestamp (ISO string, set automatically by the Vite plugin) */
+  /**
+   * Pins the build moment, for example so two language builds of one site agree on it. Opt-in:
+   * without it, Ardo uses the current time as before.
+   *
+   * Must be an RFC 3339 timestamp with a time zone, such as `"2026-10-15T00:00:00Z"`; Ardo
+   * normalizes it to UTC. When set, it decides which scheduled posts (with a future `publishedAt`)
+   * the publication shows; posts with `draft: true` stay hidden regardless. It becomes
+   * `config.buildTime` in `virtual:ardo/config` and the `__BUILD_TIME__` define. Ardo reads no
+   * environment variable for it; map one in `ardo.config.ts` if needed.
+   */
   buildTime?: string
   /** Git commit hash (set automatically by the Vite plugin) */
   buildHash?: string
@@ -456,6 +465,11 @@ export type ResolvedConfig = {
    * page links it exactly when the file exists.
    */
   agentDiscoveryUrl?: string
+  /**
+   * The pinned build moment in canonical UTC ISO form. Present exactly when the site configured
+   * `buildTime`; each clock site falls back to the current time when it is absent.
+   */
+  buildTime?: string
 } & Required<
   Omit<
     ArdoConfig,

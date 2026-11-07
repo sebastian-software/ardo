@@ -625,6 +625,56 @@ Reserved for Vite-adjacent integration data. Configure Vite-specific settings in
 Project metadata exposed through `virtual:ardo/config`. The Vite plugin auto-detects these values
 from `package.json` when possible.
 
+### buildTime
+
+- **Type:** `string`
+- **Default:** none; each build uses the current time
+
+Pins the moment a build treats as "now". The value must be an RFC 3339 timestamp with a time zone and
+a valid calendar date, the same rule as a post's `publishedAt`. Use `Z`, such as `"2026-10-15T00:00:00Z"`.
+Without `buildTime`, nothing changes.
+
+When set, the publication decides scheduled posts against this moment: a post whose
+`publishedAt` is at or before it is eligible. Posts with `draft: true` stay hidden regardless. `config.buildTime` in `virtual:ardo/config`, which the
+footer renders, and the `__BUILD_TIME__` define both equal the value normalized to a UTC ISO string.
+The footer renders UTC, so a value with an offset can show the previous or next day.
+Use it to make several builds, such as one per language, agree on one publication moment, or to
+preview a future date.
+
+An invalid value fails the build with `[ardo] buildTime must be an RFC 3339 timestamp with a time zone.`
+or `[ardo] buildTime must contain a valid calendar date.`
+
+Once per process for each pinned moment, Ardo logs `[ardo] Build time pinned to <iso> (buildTime).`.
+A changed value after a dev restart logs again. If the moment is later
+than the real time, it logs a warning instead: `[ardo] Build time pinned to <iso> (buildTime), which is in the future. Posts scheduled up to that moment are published.`
+`ardo preview` serves an existing build and prints neither.
+
+Only Ardo's own `vite` option overrides `__BUILD_TIME__`, for example
+`ardo({ vite: { define: { __BUILD_TIME__: JSON.stringify("custom") } } })`. A top-level `define` in
+`vite.config.ts` does not.
+
+Ardo does not read `SOURCE_DATE_EPOCH` or any other environment variable. To pin builds in CI, map
+the variable yourself with the function form of `defineArdoConfig`, and only for `build`. Dev shells
+may set `SOURCE_DATE_EPOCH` implicitly, and `ardo dev` should not be affected. Treat an empty
+variable as unset, because `Number("")` is `0` and would pin 1970.
+
+```ts
+defineArdoConfig(({ command }) => {
+  const raw = process.env.SOURCE_DATE_EPOCH
+  const seconds = raw ? Number(raw) : Number.NaN
+  return {
+    title: "My Docs",
+    buildTime:
+      command === "build" && Number.isFinite(seconds)
+        ? new Date(seconds * 1000).toISOString()
+        : undefined,
+  }
+})
+```
+
+A build run inside a shell that sets the variable implicitly, such as a Nix dev shell that sets it
+to 1980, is pinned too. The logged `Build time pinned to …` line shows the moment.
+
 ---
 
 ## Integration Options

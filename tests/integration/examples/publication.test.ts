@@ -176,3 +176,54 @@ it("builds localized site/news paths and versioned documentation with matching l
     "https://example.test/project/v2/de/guide/getting-started/"
   )
 })
+
+it("builds the publication at a pinned buildTime across pages, feeds, sitemap and client", () => {
+  const directory = fs.realpathSync(createTestProject("publication"))
+  directories.push(directory)
+  const config = path.join(directory, "ardo.config.ts")
+  fs.writeFileSync(
+    config,
+    fs
+      .readFileSync(config, "utf8")
+      .replace(
+        'title: "Publication example",',
+        'title: "Publication example",\n  buildTime: "2026-10-15T00:00:00Z",'
+      )
+  )
+  execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"], {
+    cwd: directory,
+    stdio: "pipe",
+    timeout: 120_000,
+  })
+  const output = path.join(directory, "build/client")
+  expect(fs.existsSync(path.join(output, "news/interactive/index.html"))).toBe(true)
+  expect(fs.existsSync(path.join(output, "news/reading"))).toBe(false)
+  const listing = fs.readFileSync(path.join(output, "news/index.html"), "utf8")
+  expect(listing).not.toContain("news/reading")
+  // ArdoFooter prints the pinned date in UTC with the site locale "en"; React separates the
+  // adjacent text parts of that line with empty comments.
+  expect(listing.replaceAll("<!-- -->", "")).toContain("Built on October 15, 2026")
+  for (const name of ["atom.xml", "rss.xml"]) {
+    const feed = fs.readFileSync(path.join(output, "news", name), "utf8")
+    expect(feed).toContain("urn:ardo:post:")
+    expect(feed).not.toContain("designing-for-a-clearer-reading-experience")
+    expect(feed).not.toContain("Designing for a clearer reading experience")
+  }
+  const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
+  expect(sitemap).toContain("https://example.test/project/news/interactive")
+  expect(sitemap).not.toContain("news/reading")
+  const carriers: string[] = []
+  const scan = (target: string): void => {
+    for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
+      const file = path.join(target, entry.name)
+      if (entry.isDirectory()) scan(file)
+      else if (
+        entry.name.endsWith(".js") &&
+        fs.readFileSync(file, "utf8").includes("2026-10-15T00:00:00.000Z")
+      )
+        carriers.push(path.relative(output, file))
+    }
+  }
+  scan(output)
+  expect(carriers).not.toHaveLength(0)
+})

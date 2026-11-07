@@ -2,14 +2,16 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import sharp from "sharp"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { resolveConfig } from "../config"
 import type { PublicationConfig } from "../publication/types"
 import { calculateImageCrop, preparePostImage } from "./post-images"
 import { preparePublication } from "./publication"
+import { refreshPublication, type PublicationBuilder } from "./publication-materialize"
 
 const roots: string[] = []
 afterEach(async () => {
+  vi.useRealTimers()
   for (const root of roots.splice(0)) await fs.rm(root, { recursive: true, force: true })
 })
 
@@ -201,6 +203,53 @@ describe("publication lifecycle and portable output", () => {
     expect(result.publication.posts[0].path).toBe("/de/news/first")
     expect(result.feeds[0].fileName).toBe("de/news/atom.xml")
     expect(result.routes[0].filePath).toContain("/app/routes/de/news/first/index.mdx")
+  })
+})
+
+async function builder(buildTime?: string) {
+  const p = await project()
+  await p.write("early")
+  await p.write("scheduled", "", "Scheduled body")
+  const file = path.join(p.root, "posts/scheduled.mdx")
+  const source = await fs.readFile(file, "utf8")
+  await fs.writeFile(file, source.replace("2026-01-02", "2026-06-01"))
+  const resolved = resolveConfig(
+    { title: "Example", siteUrl: "https://example.test", base: "/project/", buildTime },
+    p.root
+  )
+  const state: PublicationBuilder = {
+    options: p.options,
+    site: { resolvedConfig: resolved, routesDir: p.routesDir },
+    prepared: [],
+    publications: {},
+    sources: new Map(),
+    queue: Promise.resolve(),
+  }
+  const ids = () => state.publications.default.posts.map((post) => post.id).sort()
+  return { state, ids }
+}
+
+describe("publication build moment", () => {
+  it("keeps visibility on the pinned moment while the system time advances", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-05-01T00:00:00Z"))
+    const { state, ids } = await builder("2026-05-01T00:00:00Z")
+    await refreshPublication(state)
+    expect(ids()).toStrictEqual(["early"])
+    vi.setSystemTime(new Date("2026-07-01T00:00:00Z"))
+    await refreshPublication(state)
+    expect(ids()).toStrictEqual(["early"])
+  })
+
+  it("publishes a scheduled post on the second refresh without a pinned moment", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-05-01T00:00:00Z"))
+    const { state, ids } = await builder()
+    await refreshPublication(state)
+    expect(ids()).toStrictEqual(["early"])
+    vi.setSystemTime(new Date("2026-07-01T00:00:00Z"))
+    await refreshPublication(state)
+    expect(ids()).toStrictEqual(["early", "scheduled"])
   })
 })
 

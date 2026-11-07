@@ -6,6 +6,7 @@ import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
 import type { ArdoPluginOptions, SiteConfigOptions } from "./plugin-options"
 
+import { reportPinnedBuildTime, resolvePinnedBuildTime } from "../config/build-time"
 import { resolveConfig } from "../config/index"
 import { validateArdoOptionNames } from "../config/plugin-options"
 import { createAgentOutputs } from "./agent-outputs"
@@ -37,6 +38,8 @@ import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 
 type PluginState = {
+  /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
+  buildTime?: string
   collections?: CollectionsConfig
   /** Vite's command: `build` for a production build, `serve` for the dev server. */
   command?: "build" | "serve"
@@ -68,7 +71,9 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     routesDir: routesDirOption,
     ...siteConfig
   } = validateArdoOptionNames(options)
+  const buildTime = resolvePinnedBuildTime(siteConfig.buildTime)
   const state: PluginState = {
+    ...(buildTime === undefined ? {} : { buildTime }),
     collections,
     outDir: siteConfig.outDir,
     referenceDirs: [
@@ -159,13 +164,19 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
     name: "ardo",
     enforce: "pre",
     config(userConfig, env): UserConfig {
-      return createMainConfig(state, {
+      const mainConfig = createMainConfig(state, {
         userConfig,
         command: env.isPreview ? "build" : env.command,
         isPreview: env.isPreview === true,
         siteConfig: options.siteConfig,
         routesDirOption: options.routesDirOption,
       })
+      // Report only a configuration that resolved, so a failing one does not print the pinned
+      // line first. Preview serves an existing build, so nothing is built at the pinned moment.
+      if (state.buildTime !== undefined && env.isPreview !== true) {
+        reportPinnedBuildTime(state.buildTime)
+      }
+      return mainConfig
     },
     configResolved(config) {
       state.command = config.command
@@ -175,6 +186,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         siteConfig: options.siteConfig,
         viteBase: config.base,
         deploymentBaseOverride: state.deploymentBase,
+        buildTime: state.buildTime,
       })
     },
     resolveId(id) {
@@ -245,7 +257,7 @@ function createMainConfig(
   const root = userConfig.root ?? process.cwd()
   state.routesDir = resolveRoutesDir(root, routesDirOption)
   const config: UserConfig = {
-    define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
+    define: { __BUILD_TIME__: JSON.stringify(state.buildTime ?? new Date().toISOString()) },
     optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
     // Bundle components and their server renderer in the same dependency graph.
     server: { fs: { strict: true, allow: [root] } },
@@ -282,7 +294,9 @@ function resolveArdoConfig({
   siteConfig,
   viteBase,
   deploymentBaseOverride,
+  buildTime,
 }: {
+  buildTime: string | undefined
   deploymentBaseOverride: string | undefined
   siteConfig: SiteConfigOptions
   root: string
@@ -304,6 +318,8 @@ function resolveArdoConfig({
       ...siteConfig,
       base: deploymentBase,
       project,
+      // The plugin validated and canonicalized the moment, so every instance agrees on it.
+      ...(buildTime === undefined ? {} : { buildTime }),
     },
     root
   )

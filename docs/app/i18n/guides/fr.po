@@ -1012,6 +1012,10 @@ msgid "<0>Default:</0> none"
 msgstr "<0>Défaut :</0> aucun"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> none; each build uses the current time"
+msgstr "<0>Défaut :</0> aucun ; chaque build utilise l'heure actuelle"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> the <1/> in <2/>, then <3/>"
 msgstr "<0>Défaut :</0> le champ <1/> de <2/>, sinon <3/>"
 
@@ -1372,6 +1376,16 @@ msgstr "6. Créer les premières pages"
 #: docs/app/content/guide/components.mdx
 msgid "A <0/> and matching <1/>."
 msgstr "<0/> et <1/> correspondants."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A build run inside a shell that sets the variable implicitly, such as a Nix "
+"dev shell that sets it to 1980, is pinned too. The logged <0/> line shows the "
+"moment."
+msgstr ""
+"Un build exécuté dans un shell qui définit la variable implicitement, par "
+"exemple un shell de développement Nix qui la fixe à 1980, est également "
+"figé. La ligne journalisée <0/> indique le moment."
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -1811,6 +1825,10 @@ msgstr ""
 "spécification qui n’est pas un objet fait échouer le build avec une erreur"
 " Ardo exploitable."
 
+#: docs/app/content/guide/configuration.mdx
+msgid "An invalid value fails the build with <0/> or <1/>"
+msgstr "Une valeur invalide fait échouer le build avec <0/> ou <1/>"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "Any TypeScript 6 or newer typechecks an Ardo site. The optional <0>API "
@@ -2047,6 +2065,19 @@ msgid ""
 msgstr ""
 "Ardo combine ces redirections avec l’option <0><1/></0> d’<2/> et produit "
 "les fichiers adaptés aux hébergeurs lors du build de production."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Ardo does not read <0/> or any other environment variable. To pin builds in "
+"CI, map the variable yourself with the function form of <1/>, and only for "
+"<2/>. Dev shells may set <3/> implicitly, and <4/> should not be affected. "
+"Treat an empty variable as unset, because <5/> is <6/> and would pin 1970."
+msgstr ""
+"Ardo ne lit ni <0/> ni aucune autre variable d'environnement. Pour figer les "
+"builds en CI, associez vous-même la variable avec la forme fonction de <1/>, "
+"et uniquement pour <2/>. Les shells de développement peuvent définir <3/> "
+"implicitement, et <4/> ne doit pas en être affecté. Traitez une variable "
+"vide comme non définie, car <5/> vaut <6/> et figerait l'année 1970."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -3004,6 +3035,10 @@ msgstr ""
 "Les options de build vont dans <0/>. Tout ce qui entoure le contenu se compose"
 " en React dans <1/>. Quelques tâches courantes suffisent généralement ; la "
 "référence suit."
+
+#: docs/app/content/guide/configuration.mdx
+msgid "buildTime"
+msgstr "buildTime"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Built-in analytics product"
@@ -6222,6 +6257,18 @@ msgstr ""
 #~ "Jusqu’à 1280 px, le sommaire se déplie sous le titre et les actions se "
 #~ "trouvent en fin d’article. Les grands écrans gardent le rail droit."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Once per process for each pinned moment, Ardo logs <0/>. A changed value after"
+" a dev restart logs again. If the moment is later than the real time, it logs "
+"a warning instead: <1/> <2/> serves an existing build and prints neither."
+msgstr ""
+"Une fois par processus et par moment figé, Ardo journalise <0/>. Une valeur "
+"modifiée après un redémarrage du serveur de développement est journalisée"
+" à nouveau. Si le moment est postérieur à l'heure réelle, il journalise un"
+" avertissement à la place : <1/> <2/> sert un build existant et n'affiche ni "
+"l'un ni l'autre."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
 "One English MDX source, PO translations, and four static language routes with "
@@ -6243,6 +6290,14 @@ msgstr ""
 "Seules les URL <0/> s'affichent. Les autres ne s'affichent pas et déclenchent"
 " un avertissement en développement. Cet exemple ne montre que du code, car un"
 " cadre en direct chargerait du contenu tiers dans la galerie."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Only Ardo's own <0/> option overrides <1/>, for example <2/>. A top-level <3/>"
+" in <4/> does not."
+msgstr ""
+"Seule l'option <0/> propre à Ardo remplace <1/>, par exemple <2/>. Un <3/> de"
+" premier niveau dans <4/> ne le fait pas."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
@@ -6535,6 +6590,17 @@ msgid ""
 "require care."
 msgstr ""
 "TypeScript 7.1 nightly épinglé ; compatibilité et stabilité à surveiller."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Pins the moment a build treats as \"now\". The value must be an RFC 3339 "
+"timestamp with a time zone and a valid calendar date, the same rule as a "
+"post's <0/>. Use <1/>, such as <2/>. Without <3/>, nothing changes."
+msgstr ""
+"Fixe le moment qu'un build considère comme « maintenant ». La valeur doit "
+"être un horodatage RFC 3339 avec fuseau horaire et une date de calendrier "
+"valide, selon la même règle que <0/> d'un article. Utilisez <1/>, par "
+"exemple <2/>. Sans <3/>, rien ne change."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7457,12 +7523,17 @@ msgid ""
 "Set <0/> to exclude a post from generated pages, JavaScript, feeds, search, "
 "and sitemaps. A future <1/> also excludes the post. A build at or after that "
 "instant makes it eligible; an already deployed static site does not publish "
-"itself when the clock reaches that date."
+"itself when the clock reaches that date. When <2><3/></2> is set, Ardo decides"
+" which scheduled posts are visible against that pinned moment instead of the "
+"current time. Drafts stay hidden regardless."
 msgstr ""
 "Définissez <0/> pour exclure un article des pages générées, du JavaScript,"
 " des flux, de la recherche et des sitemaps. Une valeur future de <1/> l'exclut"
 " également. Un build à cette date ou après le rend publiable ; un site "
 "statique déjà déployé ne se publie pas automatiquement à l'heure prévue."
+" Lorsque <2><3/></2> est défini, Ardo décide, selon ce moment figé plutôt "
+"que selon l'heure actuelle, quels articles planifiés sont visibles. Les "
+"brouillons restent masqués dans tous les cas."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -9660,6 +9731,25 @@ msgid ""
 msgstr ""
 "Lors d’une migration, déplacez les options de <0/> vers <1/> avant de "
 "retirer le plugin. Ardo signale une erreur si les deux formes restent actives."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"When set, the publication decides scheduled posts against this moment: a post "
+"whose <0/> is at or before it is eligible. Posts with <1/> stay hidden "
+"regardless. <2/> in <3/>, which the footer renders, and the <4/> define both "
+"equal the value normalized to a UTC ISO string. The footer renders UTC, so a "
+"value with an offset can show the previous or next day. Use it to make several"
+" builds, such as one per language, agree on one publication moment, or to "
+"preview a future date."
+msgstr ""
+"Lorsqu'elle est définie, la publication décide des articles planifiés selon"
+" ce moment : un article dont <0/> est égal ou antérieur à celui-ci est "
+"publiable. Les articles avec <1/> restent masqués dans tous les cas. <2/> "
+"dans <3/>, que le pied de page affiche, et le define <4/> correspondent tous "
+"deux à la valeur normalisée en chaîne ISO UTC. Le pied de page affiche "
+"l'UTC, donc une valeur avec décalage peut afficher la veille ou le lendemain."
+" Utilisez-la pour que plusieurs builds, par exemple un par langue, s'accordent"
+" sur un même moment de publication, ou pour prévisualiser une date future."
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
+import { canonicalTimestamp, isTimestamp, timestampError } from "../config/build-time"
 import type { PostImageInput } from "../publication/types"
 import type { PublicationContext } from "./publication-context"
 
@@ -109,16 +110,9 @@ export function record(value: unknown, field: string): Record<string, unknown> {
   return value as Record<string, unknown>
 }
 function readDate(value: unknown, field: string): string {
-  if (
-    typeof value !== "string" ||
-    !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/u.test(value) ||
-    !Number.isFinite(Date.parse(value))
-  )
-    throw new Error(`${field} must be an RFC 3339 timestamp with a time zone.`)
-  const [year, month, day] = value.slice(0, 10).split("-").map(Number)
-  if (month < 1 || month > 12 || day < 1 || day > new Date(Date.UTC(year, month, 0)).getUTCDate())
-    throw new Error(`${field} must contain a valid calendar date.`)
-  return new Date(value).toISOString()
+  // Post dates follow the same RFC 3339 rule as the configured buildTime.
+  if (isTimestamp(value)) return canonicalTimestamp(value)
+  throw new Error(`${field} ${timestampError(value)}`)
 }
 export function readCoverImage(value: unknown): PostImageInput {
   const image = record(value, "coverImage")

@@ -294,4 +294,31 @@ describe("resolveConfig", () => {
       )
     ).toThrow("openapi.spec must be a local file path")
   })
+
+  it("resolves a configured buildTime to its canonical UTC form", () => {
+    expect(
+      resolveConfig({ title: "Test", buildTime: "2026-12-01T00:00:00+01:00" }, "/project").buildTime
+    ).toBe("2026-11-30T23:00:00.000Z")
+    expect(
+      resolveConfig({ title: "Test", buildTime: "2026-10-15T00:00:00Z" }, "/project").buildTime
+    ).toBe("2026-10-15T00:00:00.000Z")
+  })
+
+  it("leaves buildTime absent when it is not configured", () => {
+    const resolved = resolveConfig({ title: "Test" }, "/project")
+    expect(resolved.buildTime).toBeUndefined()
+    expect("buildTime" in resolved).toBe(false)
+  })
+
+  it.each([
+    ["no zone", "2026-12-01T00:00:00"],
+    ["date only", "2026-12-01"],
+    ["impossible date", "2026-02-30T00:00:00Z"],
+    ["non-string", new Date("2026-12-01T00:00:00Z")],
+  ])("rejects an invalid buildTime (%s) in the aggregated error", (_name, buildTime) => {
+    expect(() =>
+      // @ts-expect-error JavaScript configs can pass values outside the option type.
+      resolveConfig({ title: "Test", buildTime }, "/project")
+    ).toThrow("- buildTime must")
+  })
 })

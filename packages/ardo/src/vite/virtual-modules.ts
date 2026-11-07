@@ -57,7 +57,8 @@ export async function loadVirtualModule(
       agentDiscoveryUrl: state.resolvedConfig.agentDiscoveryUrl,
       // The server render turns this into view transition styles and speculation rules.
       navigation: state.resolvedConfig.navigation,
-      buildTime: new Date().toISOString(),
+      // A pinned buildTime keeps the footer on the moment the publication used.
+      buildTime: state.resolvedConfig.buildTime ?? new Date().toISOString(),
       buildHash: detectGitHash(state.resolvedConfig.root),
     }
     return `export default ${JSON.stringify(clientConfig)}`

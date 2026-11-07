@@ -4,8 +4,9 @@ import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
 
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
+import { resetBuildTimeLogForTests } from "../config/build-time"
 import { ardoPlugin } from "./plugin"
 
 type ArdoPluginHooks = {
@@ -317,5 +318,125 @@ describe("ardoPlugin", () => {
       // @ts-expect-error JavaScript configs can still pass the removed option.
       getMainPlugin({ title: "Docs", brand: { color: "blue" } })
     ).toThrow("The brand option moved into JSX")
+  })
+})
+
+function stubConsole() {
+  return {
+    log: vi.spyOn(console, "log").mockImplementation(vi.fn()),
+    warn: vi.spyOn(console, "warn").mockImplementation(vi.fn()),
+  }
+}
+
+describe("ardoPlugin buildTime", () => {
+  const BUILD = { command: "build", mode: "production" } as const
+  const PINNED = "2026-10-15T00:00:00.000Z"
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+    resetBuildTimeLogForTests()
+  })
+
+  it("pins __BUILD_TIME__ and the client config to the canonical moment", async () => {
+    stubConsole()
+    const plugin = getMainPlugin({ title: "Docs", buildTime: "2026-10-15T02:00:00+02:00" })
+    const config = plugin.config({ root: "/project" }, BUILD)
+    plugin.configResolved({ base: "/", build: { ssr: false }, root: "/project" })
+    const code = String(await plugin.load("\0virtual:ardo/config"))
+
+    expect(config.define).toMatchObject({ __BUILD_TIME__: JSON.stringify(PINNED) })
+    expect(code).toContain(`"buildTime":"${PINNED}"`)
+  })
+
+  it("lets Ardo's vite option override the pinned define", () => {
+    stubConsole()
+    const plugin = getMainPlugin({
+      title: "Docs",
+      buildTime: "2026-10-15T00:00:00Z",
+      vite: { define: { __BUILD_TIME__: JSON.stringify("custom") } },
+    })
+
+    expect(plugin.config({ root: "/project" }, BUILD).define).toMatchObject({
+      __BUILD_TIME__: '"custom"',
+    })
+  })
+
+  it("keeps the current clock when buildTime is not set", async () => {
+    const log = stubConsole().log
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-11-07T12:00:00Z"))
+    const plugin = getMainPlugin({ title: "Docs" })
+    const config = plugin.config({ root: "/project" }, BUILD)
+    plugin.configResolved({ base: "/", build: { ssr: false }, root: "/project" })
+
+    expect(config.define).toMatchObject({ __BUILD_TIME__: '"2026-11-07T12:00:00.000Z"' })
+    expect(String(await plugin.load("\0virtual:ardo/config"))).toContain(
+      '"buildTime":"2026-11-07T12:00:00.000Z"'
+    )
+    expect(log).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    [
+      "no zone",
+      "2026-12-01T00:00:00",
+      "[ardo] buildTime must be an RFC 3339 timestamp with a time zone.",
+    ],
+    ["date only", "2026-12-01", "[ardo] buildTime must be an RFC 3339 timestamp with a time zone."],
+    [
+      "impossible date",
+      "2026-02-30T00:00:00Z",
+      "[ardo] buildTime must contain a valid calendar date.",
+    ],
+    [
+      "non-string",
+      new Date("2026-12-01T00:00:00Z"),
+      "[ardo] buildTime must be an RFC 3339 timestamp with a time zone.",
+    ],
+  ])("throws from ardoPlugin() for an invalid buildTime (%s)", (_name, buildTime, message) => {
+    // @ts-expect-error JavaScript configs can pass values outside the option type.
+    expect(() => ardoPlugin({ title: "Docs", buildTime })).toThrow(message)
+  })
+
+  it("logs the pinned moment once across plugin instances", () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-11-07T00:00:00Z"))
+    const { log, warn } = stubConsole()
+    for (let instance = 0; instance < 2; instance++)
+      getMainPlugin({ title: "Docs", buildTime: "2026-10-15T00:00:00Z" }).config(
+        { root: "/project" },
+        BUILD
+      )
+
+    expect(log).toHaveBeenCalledTimes(1)
+    expect(log).toHaveBeenCalledWith(`[ardo] Build time pinned to ${PINNED} (buildTime).`)
+    expect(warn).not.toHaveBeenCalled()
+  })
+
+  it("warns when the pinned moment is in the future", () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-11-07T00:00:00Z"))
+    const { log, warn } = stubConsole()
+    getMainPlugin({ title: "Docs", buildTime: "2026-12-01T00:00:00Z" }).config(
+      { root: "/project" },
+      BUILD
+    )
+
+    expect(warn).toHaveBeenCalledWith(
+      "[ardo] Build time pinned to 2026-12-01T00:00:00.000Z (buildTime), which is in the future. Posts scheduled up to that moment are published."
+    )
+    expect(log).not.toHaveBeenCalled()
+  })
+
+  it("prints nothing in preview", () => {
+    const { log, warn } = stubConsole()
+    getMainPlugin({ title: "Docs", buildTime: "2026-10-15T00:00:00Z" }).config(
+      { root: "/project" },
+      { ...BUILD, isPreview: true }
+    )
+
+    expect(log).not.toHaveBeenCalled()
+    expect(warn).not.toHaveBeenCalled()
   })
 })

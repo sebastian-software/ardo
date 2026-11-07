@@ -39,7 +39,8 @@ async function prepareAll(
   input: { config: ResolvedConfig; locales: Array<string | undefined> }
 ): Promise<PreparedPublication[]> {
   const result = []
-  const now = new Date()
+  // A pinned buildTime keeps visibility stable across refreshes; otherwise use the current time.
+  const now = input.config.buildTime === undefined ? new Date() : new Date(input.config.buildTime)
   // Validate every locale and image before replacing any generated routes.
   for (const localeId of input.locales)
     result.push(

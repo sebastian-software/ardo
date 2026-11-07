@@ -34,6 +34,7 @@ import type {
   TOCItem,
 } from "./types"
 
+import { canonicalTimestamp, validateBuildTimeConfig } from "./build-time"
 import { resolveI18nConfig } from "./i18n"
 import { isLintRuleId, lintRuleIds } from "./lint-rules"
 import { validateNavigationConfig } from "./navigation"
@@ -130,6 +131,8 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     deploymentBase: normalizedBase,
     siteUrl,
     ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
+    // Present only when the site pins its build moment; otherwise each clock site uses its own.
+    ...(config.buildTime === undefined ? {} : { buildTime: canonicalTimestamp(config.buildTime) }),
     srcDir,
     outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
@@ -160,13 +163,8 @@ function validateConfig(config: ArdoConfig): void {
   if ("typedoc" in config)
     errors.push("The typedoc option was removed. Configure api in ardo() instead.")
 
-  if (config.base !== undefined && !isValidBasePath(config.base)) {
-    errors.push('base must start and end with "/" (for example "/docs/").')
-  }
-
-  if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl)) {
-    errors.push("siteUrl must be an absolute URL.")
-  }
+  validateBaseAndSiteUrl(config, errors)
+  validateBuildTimeConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
   validateOpenApiConfig(config, errors)
@@ -179,6 +177,13 @@ function validateConfig(config: ArdoConfig): void {
   if (errors.length > 0) {
     throw new Error(`[ardo] Invalid config:\n${errors.map((error) => `- ${error}`).join("\n")}`)
   }
+}
+
+function validateBaseAndSiteUrl(config: ArdoConfig, errors: string[]): void {
+  if (config.base !== undefined && !isValidBasePath(config.base))
+    errors.push('base must start and end with "/" (for example "/docs/").')
+  if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl))
+    errors.push("siteUrl must be an absolute URL.")
 }
 
 function validateLintConfig(config: ArdoConfig, errors: string[]): void {

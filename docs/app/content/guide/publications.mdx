@@ -81,6 +81,8 @@ professional titles, biographies, links, and optional AT DIDs.
 Set `draft: true` to exclude a post from generated pages, JavaScript, feeds, search, and sitemaps.
 A future `publishedAt` also excludes the post. A build at or after that instant makes it eligible;
 an already deployed static site does not publish itself when the clock reaches that date.
+When [`buildTime`](/en/guide/configuration#buildtime) is set, Ardo decides which scheduled posts
+are visible against that pinned moment instead of the current time. Drafts stay hidden regardless.
 
 ## Local images and framing
 
