@@ -5,6 +5,7 @@ import { canonicalUrl, publicationUrl, type PublicationContext } from "./publica
 import type { PublicationComponents } from "./publication-options"
 import {
   feedDiscoveryMeta,
+  latestPostDate,
   routePrelude,
   tagProps,
   type PublicationRoute,
@@ -107,5 +108,12 @@ export function createTagRoute(input: {
       : `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} tag={tag} label={label(tag.key)} posts={posts} /></ArdoPublicationTags>`,
     "}",
   ]
-  return { filePath, content: `${lines.join("\n")}\n` }
+  return {
+    filePath,
+    content: `${lines.join("\n")}\n`,
+    lastmod: latestPostDate(
+      publication.posts.filter((post) => post.tags.includes(tag.key)),
+      config.buildTime
+    ),
+  }
 }

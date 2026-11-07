@@ -13,6 +13,21 @@ export type PublicationRoute = {
   content: string
   /** How a generated post route mounts the site's modules. */
   post?: PublicationPostBinding
+  /**
+   * The file's modification time: the latest update of the posts the page shows. Sitemap entries
+   * and the route table read it, so a rewrite on every build must not stamp the build's clock.
+   */
+  lastmod?: string
+}
+
+/** The latest update among `posts`, or `fallback` (the pinned buildTime) for an empty list. */
+export function latestPostDate(posts: Post[], fallback?: string): string | undefined {
+  let latest: string | undefined
+  for (const post of posts) {
+    const date = new Date(post.updatedAt ?? post.publishedAt).toISOString()
+    if (latest == null || date > latest) latest = date
+  }
+  return latest ?? fallback
 }
 
 /**
@@ -78,6 +93,7 @@ export function createPostRoute(
     ),
     sourceFile: input.sourceFile,
     content: `---\n${stringify(frontmatter)}---\n${body.trimStart()}`,
+    lastmod: latestPostDate([post]),
     post: {
       publication: publicationKey(context),
       ...(modules.post == null ? {} : { view: normalizePath(modules.post) }),
@@ -111,7 +127,11 @@ export function createPublicationIndex(
     `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} /></ArdoPublicationTags>`,
     "}",
   ]
-  return { filePath, content: `${lines.join("\n")}\n` }
+  return {
+    filePath,
+    content: `${lines.join("\n")}\n`,
+    lastmod: latestPostDate(publication.posts, config.buildTime),
+  }
 }
 
 /**

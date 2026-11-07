@@ -303,10 +303,11 @@ it("keeps React SSR working after a colocated image triggers publication regener
       const route = path.join(directory, "app/routes/news/reading/index.mdx")
       const image = path.join(directory, "posts/scene.png")
       for (let update = 0; update < 3; update++) {
-        const timestamp = fs.statSync(route).mtimeMs
+        // The route keeps its post's date as mtime; a rewrite still advances its ctime.
+        const timestamp = fs.statSync(route).ctimeMs
         fs.writeFileSync(image, fs.readFileSync(image))
         await expect
-          .poll(() => fs.statSync(route).mtimeMs, { timeout: 10_000 })
+          .poll(() => fs.statSync(route).ctimeMs, { timeout: 10_000 })
           .toBeGreaterThan(timestamp)
         const after = await fetch(`${origin}/project/news/reading/`)
         expect(after.status).toBe(200)
@@ -366,9 +367,27 @@ it("builds localized site/news paths and versioned documentation with matching l
   )
 })
 
-it("builds the publication at a pinned buildTime across pages, feeds, sitemap and client", () => {
+it("builds the publication at a pinned buildTime across pages, tags, feeds, sitemap and client", () => {
   const directory = fs.realpathSync(createTestProject("publication"))
   directories.push(directory)
+  // "reading" (2026-10-20) is scheduled after the pinned moment, "interactive" (2026-10-10) before.
+  const reading = path.join(directory, "posts/reading.mdx")
+  fs.writeFileSync(
+    reading,
+    fs
+      .readFileSync(reading, "utf8")
+      .replace("tags: [Design, Engineering]", "tags: [design, engineering]")
+  )
+  const interactive = path.join(directory, "posts/interactive.mdx")
+  fs.writeFileSync(
+    interactive,
+    fs
+      .readFileSync(interactive, "utf8")
+      .replace(
+        "publishedAt: 2026-10-10T09:00:00Z",
+        "publishedAt: 2026-10-10T09:00:00Z\ntags: [engineering]"
+      )
+  )
   const config = path.join(directory, "ardo.config.ts")
   fs.writeFileSync(
     config,
@@ -378,6 +397,7 @@ it("builds the publication at a pinned buildTime across pages, feeds, sitemap an
         'title: "Publication example",',
         'title: "Publication example",\n  buildTime: "2026-10-15T00:00:00Z",'
       )
+      .replace("publication: {", "publication: {\n    tags: true,")
   )
   execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"], {
     cwd: directory,
@@ -398,9 +418,35 @@ it("builds the publication at a pinned buildTime across pages, feeds, sitemap an
     expect(feed).not.toContain("designing-for-a-clearer-reading-experience")
     expect(feed).not.toContain("Designing for a clearer reading experience")
   }
+  // Tag archives list visible posts only; a tag used only by the scheduled post has none.
+  expect(fs.existsSync(path.join(output, "news/tags/design"))).toBe(false)
+  const engineering = fs.readFileSync(path.join(output, "news/tags/engineering/index.html"), "utf8")
+  expect(engineering).toContain("An example that responds")
+  expect(engineering).not.toContain("news/reading")
+  // Feed timestamps come from the visible posts, never from the build's clock.
+  const atom = fs.readFileSync(path.join(output, "news/atom.xml"), "utf8")
+  const updated = [...atom.matchAll(/<(?:updated|published)>([^<]+)</gu)].map((match) =>
+    new Date(match[1]).toISOString()
+  )
+  expect(new Set(updated)).toStrictEqual(new Set(["2026-10-10T09:00:00.000Z"]))
+  const rss = fs.readFileSync(path.join(output, "news/rss.xml"), "utf8")
+  expect(rss).not.toContain("lastBuildDate")
+  expect([...rss.matchAll(/<pubDate>([^<]+)</gu)].map((match) => match[1])).toStrictEqual([
+    "Sat, 10 Oct 2026 09:00:00 GMT",
+  ])
   const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
   expect(sitemap).toContain("https://example.test/project/news/interactive")
   expect(sitemap).not.toContain("news/reading")
+  expect(sitemap).not.toContain("news/tags/design")
+  // Generated listings take their lastmod from their newest visible post, not the build's clock.
+  const lastmod = (loc: string) =>
+    new RegExp(`<loc>${loc}</loc>\\s*<lastmod>([^<]+)</lastmod>`, "u").exec(sitemap)?.[1]
+  for (const loc of [
+    "https://example.test/project/news",
+    "https://example.test/project/news/interactive",
+    "https://example.test/project/news/tags/engineering",
+  ])
+    expect(lastmod(loc), loc).toBe("2026-10-10T09:00:00.000Z")
   const carriers: string[] = []
   const scan = (target: string): void => {
     for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
