@@ -34,7 +34,7 @@ import type {
   TOCItem,
 } from "./types"
 
-import { canonicalTimestamp, validateBuildTimeConfig } from "./build-time"
+import { resolveBuildMetadata, validateBuildMetadataConfig } from "./build-time"
 import { resolveI18nConfig } from "./i18n"
 import { isLintRuleId, lintRuleIds } from "./lint-rules"
 import { validateNavigationConfig } from "./navigation"
@@ -131,8 +131,8 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     deploymentBase: normalizedBase,
     siteUrl,
     ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
-    // Present only when the site pins its build moment; otherwise each clock site uses its own.
-    ...(config.buildTime === undefined ? {} : { buildTime: canonicalTimestamp(config.buildTime) }),
+    // buildTime and buildHash are present only when configured; otherwise Ardo uses the clock and Git.
+    ...resolveBuildMetadata(config),
     srcDir,
     outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
@@ -164,7 +164,7 @@ function validateConfig(config: ArdoConfig): void {
     errors.push("The typedoc option was removed. Configure api in ardo() instead.")
 
   validateBaseAndSiteUrl(config, errors)
-  validateBuildTimeConfig(config, errors)
+  validateBuildMetadataConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
   validateOpenApiConfig(config, errors)

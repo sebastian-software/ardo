@@ -10,11 +10,12 @@ function renderFooter(
   options: {
     lang?: string
     labels?: NonNullable<Parameters<typeof resolveArdoLabels>[0]>
+    config?: { buildTime?: string; buildHash?: string }
   } = {}
 ): string {
   const labels = options.labels === undefined ? undefined : resolveArdoLabels(options.labels)
   const content = (
-    <ArdoProvider config={{ title: "Docs", lang: options.lang }} sidebar={[]}>
+    <ArdoProvider config={{ title: "Docs", lang: options.lang, ...options.config }} sidebar={[]}>
       {node}
     </ArdoProvider>
   )
@@ -25,6 +26,13 @@ function renderFooter(
       <ArdoSiteConfigProvider value={{ labels }}>{content}</ArdoSiteConfigProvider>
     )
   return renderToStaticMarkup(wrapped)
+}
+
+/** The footer's "Built on …" line; asserting it first keeps reference checks from passing vacuously. */
+function buildLine(view: string): string {
+  const [line] = /<p[^>]*>Built on[^<]*<\/p>/.exec(view) ?? []
+  expect(line).toBeDefined()
+  return line as string
 }
 
 describe("ArdoFooter", () => {
@@ -98,5 +106,35 @@ describe("ArdoFooter", () => {
 
     expect(view).toContain("Erstellt am")
     expect(view).toContain("Erstellt mit Ardo")
+  })
+
+  describe("build reference", () => {
+    const buildTime = "2026-01-05T12:00:00.000Z"
+
+    it("shows a configured buildHash after the build date", () => {
+      const view = renderFooter(<ArdoFooter ardoLink={false} />, {
+        config: { buildTime, buildHash: "x" },
+      })
+
+      expect(buildLine(view)).toContain("(x)")
+    })
+
+    it("omits the reference when the configured buildHash is empty", () => {
+      const view = renderFooter(<ArdoFooter ardoLink={false} />, {
+        config: { buildTime, buildHash: "" },
+      })
+
+      expect(buildLine(view)).not.toContain("(")
+    })
+
+    it("prefers the buildHash prop over the configured one", () => {
+      const view = renderFooter(<ArdoFooter ardoLink={false} buildHash="prop-ref" />, {
+        config: { buildTime, buildHash: "config-ref" },
+      })
+      const line = buildLine(view)
+
+      expect(line).toContain("(prop-ref)")
+      expect(line).not.toContain("config-ref")
+    })
   })
 })

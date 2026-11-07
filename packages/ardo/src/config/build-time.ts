@@ -41,6 +41,29 @@ export function canonicalTimestamp(value: string): string {
   return new Date(value).toISOString()
 }
 
+/**
+ * Returns the configured build metadata for `ResolvedConfig`: `buildTime` in canonical form and
+ * `buildHash` as given (`""` included). A key is present exactly when the site configured it.
+ */
+export function resolveBuildMetadata(
+  config: ArdoConfig
+): Pick<ArdoConfig, "buildHash" | "buildTime"> {
+  return {
+    ...(config.buildTime === undefined ? {} : { buildTime: canonicalTimestamp(config.buildTime) }),
+    ...(config.buildHash === undefined ? {} : { buildHash: config.buildHash }),
+  }
+}
+
+/**
+ * Adds the `validateConfig` errors for `buildTime` and `buildHash`. A `buildHash` must be a string,
+ * because JavaScript configs bypass the types.
+ */
+export function validateBuildMetadataConfig(config: ArdoConfig, errors: string[]): void {
+  validateBuildTimeConfig(config, errors)
+  if (config.buildHash !== undefined && typeof config.buildHash !== "string")
+    errors.push("buildHash must be a string.")
+}
+
 /** Adds the `validateConfig` error for an invalid `buildTime`, such as `buildTime must …`. */
 export function validateBuildTimeConfig(config: ArdoConfig, errors: string[]): void {
   if (config.buildTime === undefined) return
