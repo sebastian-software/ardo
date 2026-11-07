@@ -4,10 +4,14 @@ import { extractFrontmatterValue } from "./markdown-frontmatter"
 import { buildTechArticleEntry } from "./markdown-structured-data"
 import { isPathInsideDirectory, normalizePath } from "./path-utils"
 import { createSourceRouteIdentity } from "./route-identity"
+import { spellPagePath } from "../runtime/trailing-slash"
+import type { PublicationPostBinding } from "./publication-routes"
 
 type MarkdownMetaState = {
   resolvedConfig?: ResolvedConfig
   routesDir: string
+  /** The binding of a generated publication post, whose site module may export `meta`. */
+  publicationPost?: (file: string) => PublicationPostBinding | undefined
 }
 
 type MetaInput = {
@@ -90,9 +94,21 @@ export function transformMarkdownMeta(
     twitterImage: extractFrontmatterValue(code, "twitterImage"),
     twitterTitle: extractFrontmatterValue(code, "twitterTitle"),
   })
-  return { code: `${code}\nexport const meta = () => [${entries.join(", ")}];\n`, map: null }
+  return {
+    code: `${code}\nexport const meta = () => ${metaValue(entries, id, state)};\n`,
+    map: null,
+  }
 }
 
+/** A post route with a site module hands the defaults to its `meta` export (see mdx-compile). */
+function metaValue(entries: string[], id: string, state: MarkdownMetaState): string {
+  const defaults = `[${entries.join(", ")}]`
+  return state.publicationPost?.(id.split("?", 1)[0])?.view == null
+    ? defaults
+    : `_ardoPostMeta(${defaults})`
+}
+
+/** The route's locale and canonical public path, spelled by the site's `trailingSlash`. */
 function getSourceRoute(
   id: string,
   state: MarkdownMetaState
@@ -107,7 +123,11 @@ function getSourceRoute(
   }
 
   const identity = createSourceRouteIdentity(routePath, state.resolvedConfig)
-  return { localeId: identity.localeId, publicPath: identity.publicPath }
+  const { trailingSlash, deploymentBase } = state.resolvedConfig
+  return {
+    localeId: identity.localeId,
+    publicPath: spellPagePath(identity.publicPath, trailingSlash, deploymentBase),
+  }
 }
 
 function shouldInjectMeta(code: string, id: string, state: MarkdownMetaState): boolean {

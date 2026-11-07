@@ -134,7 +134,6 @@ function normalizeFrontmatterField(
       : undefined
   if (field === "coverImage" || field === "images" || field === "_ardoPost")
     return isRecord(value) ? { [field]: value } : undefined
-  if (field === "_ardoMeta") return Array.isArray(value) ? { [field]: value } : undefined
   return (
     normalizePrimitiveFrontmatterField(field, value) ??
     normalizeStructuredFrontmatterField(field, value)

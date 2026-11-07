@@ -3,7 +3,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { afterEach, expect, it } from "vitest"
 import { createTestProject } from "./project"
-import { assertDevSSR } from "./dev-server"
+import { assertDevSSR, assertPreviewSSR } from "./dev-server"
 
 const directories: string[] = []
 afterEach(() => {
@@ -32,6 +32,11 @@ it("builds a complete publication beside versioned documentation under a deploym
   )
   expect(fs.existsSync(path.join(output, "news/draft"))).toBe(false)
   expect(listing).toContain("Field notes")
+  // Feed discovery links stay links; they carry a `title` attribute.
+  expect(listing).toMatch(
+    /<link rel="alternate" type="application\/atom\+xml"[^>]+title="Field notes"\/>/u
+  )
+  expect(listing.match(/<title>/gu)).toHaveLength(1)
   expect(post).toContain("Alex Morgan")
   expect(post).toContain("Sam Rivera")
   expect(post).toContain("<picture>")
@@ -57,8 +62,15 @@ it("builds a complete publication beside versioned documentation under a deploym
     expect(feed).toContain(".jpg")
     expect(feed).not.toContain(".avif")
   }
+  // Without trailingSlash, Ardo keeps its earlier spelling: listing and post URLs and links with
+  // the slash, sitemap entries and the post's default canonical without it.
+  expect(listing).toContain('<link rel="canonical" href="https://example.test/project/news/"/>')
+  expect(post).toContain('<link rel="canonical" href="https://example.test/project/news/reading"/>')
+  expect(fs.readFileSync(path.join(output, "news/atom.xml"), "utf8")).toContain(
+    '<link href="https://example.test/project/news/reading/"/>'
+  )
   const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
-  expect(sitemap).toContain("https://example.test/project/news/reading")
+  expect(sitemap).toContain("<loc>https://example.test/project/news/reading</loc>")
   expect(sitemap).toContain("https://example.test/project/v2/guide/getting-started")
   expect(sitemap).not.toContain("draft")
   const scan = (directory: string): void => {
@@ -72,7 +84,14 @@ it("builds a complete publication beside versioned documentation under a deploym
   scan(output)
 })
 
-it("builds a site-designed publication with tag archives, own metadata, and no trailing slashes", () => {
+/** Every JavaScript file an HTML page loads or preloads. */
+function pageScripts(output: string, html: string): string[] {
+  return [...html.matchAll(/(?:src|href)="\/project\/([^"]+\.js)"/gu)].map((match) =>
+    fs.readFileSync(path.join(output, match[1]), "utf8")
+  )
+}
+
+it("builds a site-designed publication from route modules, with labels and one URL spelling", async () => {
   const directory = fs.realpathSync(createTestProject("publication"))
   directories.push(directory)
   const reading = path.join(directory, "posts/reading.mdx")
@@ -83,46 +102,71 @@ it("builds a site-designed publication with tag archives, own metadata, and no t
   fs.mkdirSync(path.join(directory, "app/blog"))
   fs.writeFileSync(
     path.join(directory, "app/blog/Overview.tsx"),
-    'import type { PublicationIndexProps } from "ardo/config"\nexport default function Overview({ publication }: PublicationIndexProps) {\n  return <main data-site="overview">{publication.posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>\n}\n'
+    `import type { PublicationIndexMetaArgs, PublicationIndexProps } from "ardo/config"
+export default function Overview({ publication }: PublicationIndexProps) {
+  return <main data-site="overview">{publication.posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>
+}
+export function meta({ publication, defaults }: PublicationIndexMetaArgs) {
+  return [{ title: "Site blog" }, ...defaults.filter((entry) => "tagName" in entry || !("title" in entry)), { name: "posts", content: String(publication.posts.length) }]
+}
+`
   )
   fs.writeFileSync(
     path.join(directory, "app/blog/Post.tsx"),
-    'import type { PublicationPostProps } from "ardo/config"\nexport default function SitePost({ post, children }: PublicationPostProps) {\n  return <article data-site="post"><h1>{post.title}</h1>{children}</article>\n}\n'
+    `import type { PublicationPostMetaArgs, PublicationPostProps } from "ardo/config"
+import { useArdoPublicationTags } from "ardo/ui"
+export default function SitePost({ post, children }: PublicationPostProps) {
+  const tags = useArdoPublicationTags()
+  return <article data-site="post"><h1>{post.title}</h1>{children}<p data-marker="SITE_POST_FRAME_MARKER">{post.tags.map(tags.label).join(", ")}</p></article>
+}
+export const meta = ({ post, publication, defaults }: PublicationPostMetaArgs) => [
+  { title: post.title + " · " + publication.name },
+  ...defaults.filter((entry) => "tagName" in entry && entry.rel === "canonical"),
+  { property: "og:type", content: "article" },
+]
+`
   )
+  // No meta export: the archive keeps Ardo's metadata, titled with the label.
   fs.writeFileSync(
     path.join(directory, "app/blog/Tag.tsx"),
-    'import type { PublicationTagProps } from "ardo/config"\nconst labels: Record<string, string> = { design: "Gestaltung" }\nexport default function Tag({ tag, posts }: PublicationTagProps) {\n  return <main data-site="tag"><h1>{labels[tag.key]}</h1>{posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>\n}\n'
+    `import type { PublicationTagProps } from "ardo/config"
+export default function Tag({ label, posts }: PublicationTagProps) {
+  return <main data-site="tag"><h1>{label}</h1>{posts.map((post) => <a key={post.id} href={post.url}>{post.title}</a>)}</main>
+}
+`
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/blog/tag-label.ts"),
+    `import type { PublicationTagLabel } from "ardo/config"
+const labels: Record<string, string> = { design: "Gestaltung" }
+const tagLabel: PublicationTagLabel = (key) => labels[key] ?? key
+export default tagLabel
+`
   )
   const config = path.join(directory, "ardo.config.ts")
   fs.writeFileSync(
     config,
-    fs.readFileSync(config, "utf8").replace(
-      "publication: {",
-      `publication: {
-    trailingSlash: false,
+    fs
+      .readFileSync(config, "utf8")
+      .replace(
+        'title: "Publication example",',
+        'title: "Publication example",\n  trailingSlash: false,'
+      )
+      .replace(
+        "publication: {",
+        `publication: {
     tags: true,
     feeds: { entryIds: "publication" },
     components: { index: "app/blog/Overview.tsx", post: "app/blog/Post.tsx", tag: "app/blog/Tag.tsx" },
-    meta: {
-      index: ({ publication }) => [
-        { title: "Site blog" },
-        { tagName: "link", rel: "canonical", href: publication.url },
-      ],
-      post: ({ post }) => [
-        { title: post.title + " · Site" },
-        { tagName: "link", rel: "canonical", href: post.url },
-        { property: "og:type", content: "article" },
-      ],
-      tag: ({ tag }) => [{ title: "Gestaltung · Site" }, { tagName: "link", rel: "canonical", href: tag.url }],
-    },`
-    )
+    tagLabel: "app/blog/tag-label.ts",`
+      )
   )
   execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"], {
     cwd: directory,
     stdio: "pipe",
     timeout: 120_000,
   })
-  // Generated routes, site components, and the config's metadata functions pass strict TypeScript.
+  // Generated routes and the site's route modules pass strict TypeScript.
   try {
     execFileSync(
       "pnpm",
@@ -132,47 +176,90 @@ it("builds a site-designed publication with tag archives, own metadata, and no t
   } catch (error) {
     throw new Error(String((error as { stdout?: Buffer }).stdout ?? error), { cause: error })
   }
-  expect(fs.existsSync(path.join(directory, "app/routes/news/tags/design/index.tsx"))).toBe(true)
+  const tagRoute = fs.readFileSync(
+    path.join(directory, "app/routes/news/tags/design/index.tsx"),
+    "utf8"
+  )
+  // The label is resolved while the page renders, not written into the route.
+  expect(tagRoute).not.toContain("Gestaltung")
   const output = path.join(directory, "build/client")
   const canonicals = (html: string) =>
     [...html.matchAll(/<link[^>]+rel="canonical"[^>]*>/gu)].map((match) => match[0])
   const listing = fs.readFileSync(path.join(output, "news/index.html"), "utf8")
   expect(listing).toContain('data-site="overview"')
   expect(listing).toContain("<title>Site blog</title>")
+  expect(listing).toContain('<meta name="posts" content="2"/>')
+  expect(listing).toContain('type="application/atom+xml"')
   expect(canonicals(listing)).toStrictEqual([
     '<link rel="canonical" href="https://example.test/project/news"/>',
   ])
   const post = fs.readFileSync(path.join(output, "news/reading/index.html"), "utf8")
   expect(post).toContain('data-site="post"')
   expect(post).toContain("A good article gives its reader room to think.")
+  expect(post).toContain(">Gestaltung</p>")
   expect(post).not.toContain("ardo-post-body")
-  expect(post).toContain("<title>Designing for a clearer reading experience · Site</title>")
+  expect(post).toContain("<title>Designing for a clearer reading experience · Field notes</title>")
   expect(canonicals(post)).toStrictEqual([
     '<link rel="canonical" href="https://example.test/project/news/reading"/>',
   ])
   expect(post).not.toContain("og:url")
   expect(post).not.toContain("twitter:card")
+  // Internal links follow the site's spelling too.
+  expect(post).toContain('href="/project/v2/guide/getting-started"')
+  expect(post).not.toContain('href="/project/v2/guide/getting-started/"')
   const tag = fs.readFileSync(path.join(output, "news/tags/design/index.html"), "utf8")
   expect(tag).toContain('data-site="tag"')
-  expect(tag).toContain("Gestaltung")
+  expect(tag).toContain("<h1>Gestaltung</h1>")
+  expect(tag).toContain("<title>Gestaltung | Field notes | Publication example</title>")
   expect(tag).toContain("Designing for a clearer reading experience")
   expect(tag).not.toContain("An example that responds")
   expect(canonicals(tag)).toStrictEqual([
     '<link rel="canonical" href="https://example.test/project/news/tags/design"/>',
   ])
+  // Only post routes load the post frame; a documentation page does not.
+  const guide = fs.readFileSync(path.join(output, "v2/guide/getting-started/index.html"), "utf8")
+  expect(pageScripts(output, post).some((code) => code.includes("SITE_POST_FRAME_MARKER"))).toBe(
+    true
+  )
+  for (const code of pageScripts(output, guide)) {
+    expect(code).not.toContain("SITE_POST_FRAME_MARKER")
+    expect(code).not.toContain("ardo-post-body")
+  }
   const sitemap = fs.readFileSync(path.join(output, "sitemap.xml"), "utf8")
   expect(sitemap).toContain("<loc>https://example.test/project/news/tags/design</loc>")
+  expect(sitemap).toContain("<loc>https://example.test/project/news/reading</loc>")
+  expect(sitemap).toContain("<loc>https://example.test/project/news</loc>")
+  expect(sitemap).toContain("<loc>https://example.test/project/</loc>")
   const atom = fs.readFileSync(path.join(output, "news/atom.xml"), "utf8")
   expect(atom).toContain('xml:lang="en"')
+  expect(atom).toContain('<link href="https://example.test/project/news"/>')
   expect(atom).toContain('<link href="https://example.test/project/news/reading"/>')
   expect(atom).toContain(
     "<id>urn:ardo:publication:example.test/project/news:post:07137892-fca6-4699-a5ea-609c80dbf814</id>"
   )
+  // Feeds keep the stable key; they are built without an active locale.
   expect(atom).toContain('<category term="design"/>')
   expect(fs.readFileSync(path.join(output, "news/rss.xml"), "utf8")).toContain(
     "<language>en</language>"
   )
-})
+  // Dev and preview send the other spelling of a page to the configured one.
+  const expectation = {
+    pathname: "/project/",
+    pages: [{ pathname: "/project/news/tags/design", contains: ["Gestaltung"] }],
+    redirects: [
+      { pathname: "/project/news/reading/", location: "/project/news/reading" },
+      { pathname: "/project/news/tags/design/?q=1", location: "/project/news/tags/design?q=1" },
+    ],
+  }
+  await assertDevSSR(directory, {
+    ...expectation,
+    redirects: expectation.redirects.map((entry) => ({ ...entry, status: 302 })),
+  })
+  await assertPreviewSSR(directory, {
+    ...expectation,
+    redirects: expectation.redirects.map((entry) => ({ ...entry, status: 301 })),
+  })
+}, 240_000)
 
 it("rejects publication sources in publicDir before Vite can copy draft bodies", () => {
   const directory = fs.realpathSync(createTestProject("publication"))

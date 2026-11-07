@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
 
 /** A square around the core subject. x/y are normalized center coordinates;
@@ -64,20 +64,21 @@ export type PublicationConfig = {
   authors: Record<string, AuthorProfile>
   images?: { widths?: number[]; presets?: Record<string, ImagePreset> }
   /**
-   * End publication, post, and tag archive URLs, and the feed links built from them, with a
-   * slash. Default: true.
-   */
-  trailingSlash?: boolean
-  /**
    * Generate one archive page per tag at `/<to>/tags/<key>`. Tag keys must be lowercase,
    * hyphenated slugs. Default: false.
    */
   tags?: boolean
   feeds?: PublicationFeedsConfig
-  /** Site modules that render the generated routes in place of Ardo's components. */
+  /**
+   * Site modules that render the generated routes in place of Ardo's components. A module may
+   * also export `meta`, which Ardo calls when it renders the route.
+   */
   components?: PublicationComponentsConfig
-  /** Build-time functions whose result replaces Ardo's metadata of the generated routes. */
-  meta?: PublicationMetaConfig
+  /**
+   * Module whose default export is a {@link PublicationTagLabel}, relative to the project root.
+   * Without it, tags show their key.
+   */
+  tagLabel?: string
 }
 
 export type PublicationFeedsConfig = {
@@ -91,9 +92,9 @@ export type PublicationFeedsConfig = {
 }
 
 /**
- * Module paths, relative to the project root. Each module default-exports a React component:
- * `index` receives {@link PublicationIndexProps}, `post` {@link PublicationPostProps}, and `tag`
- * {@link PublicationTagProps}.
+ * Route modules, relative to the project root. Only the generated routes import them, so other
+ * pages do not load their code. See {@link PublicationIndexModule},
+ * {@link PublicationPostModule}, and {@link PublicationTagModule} for their exports.
  */
 export type PublicationComponentsConfig = {
   index?: string
@@ -101,20 +102,60 @@ export type PublicationComponentsConfig = {
   tag?: string
 }
 
-/** The returned descriptors are the route's complete metadata and must be JSON-serializable. */
-export type PublicationMetaConfig = {
-  index?: (input: { publication: Publication }) => ArdoMetaDescriptor[]
-  post?: (input: { publication: Publication; post: Post }) => ArdoMetaDescriptor[]
-  tag?: (input: {
-    publication: Publication
-    tag: PublicationTag
-    posts: Post[]
-  }) => ArdoMetaDescriptor[]
-}
+/**
+ * The display label of a tag key, called while Ardo renders a page, so it can use the site's
+ * translation runtime. The key stays the tag's identity in URLs, the sitemap, and feeds.
+ */
+export type PublicationTagLabel = (key: string) => string
 
 export type PublicationIndexProps = { publication: Publication }
 export type PublicationPostProps = { post: Post; children: ReactNode }
-export type PublicationTagProps = { publication: Publication; tag: PublicationTag; posts: Post[] }
+export type PublicationTagProps = {
+  publication: Publication
+  tag: PublicationTag
+  /** The tag's display label: the site's `tagLabel`, or the key. */
+  label: string
+  posts: Post[]
+}
+
+/**
+ * What a publication route module's `meta` export receives. `defaults` are the descriptors Ardo
+ * would render without the export; the returned list replaces them, so spread `defaults` to
+ * extend them. The data is shared with the page and must not be changed.
+ */
+export type PublicationIndexMetaArgs = {
+  publication: Publication
+  defaults: ArdoMetaDescriptor[]
+}
+export type PublicationPostMetaArgs = {
+  publication: Publication
+  post: Post
+  defaults: ArdoMetaDescriptor[]
+}
+export type PublicationTagMetaArgs = {
+  publication: Publication
+  tag: PublicationTag
+  /** The tag's display label: the site's `tagLabel`, or the key. */
+  label: string
+  posts: Post[]
+  defaults: ArdoMetaDescriptor[]
+}
+
+/** Exports of `publication.components.index`. */
+export type PublicationIndexModule = {
+  default: ComponentType<PublicationIndexProps>
+  meta?: (args: PublicationIndexMetaArgs) => ArdoMetaDescriptor[]
+}
+/** Exports of `publication.components.post`, which frames each post's content. */
+export type PublicationPostModule = {
+  default: ComponentType<PublicationPostProps>
+  meta?: (args: PublicationPostMetaArgs) => ArdoMetaDescriptor[]
+}
+/** Exports of `publication.components.tag`. */
+export type PublicationTagModule = {
+  default: ComponentType<PublicationTagProps>
+  meta?: (args: PublicationTagMetaArgs) => ArdoMetaDescriptor[]
+}
 
 /** Metadata authored in a post's YAML frontmatter. IDs are assigned once. */
 export type PostFrontmatter = {

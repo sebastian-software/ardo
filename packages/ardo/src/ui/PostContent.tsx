@@ -1,14 +1,12 @@
 import type { ReactNode } from "react"
-import SitePost from "virtual:ardo/publication-post"
-import type { Post } from "../publication/types"
 import { useArdoPageData } from "../runtime/hooks"
 import { ArdoDocContent } from "./DocPage"
-import { ArdoPost } from "./Posts"
 
+/**
+ * The MDX wrapper of every Markdown page. A generated publication post mounts its own frame in
+ * its route, so the post frame, Ardo's or the site's, is not part of other pages' code.
+ */
 export function ArdoMarkdownContent({ children }: { children: ReactNode }) {
-  const post = useArdoPageData()?.frontmatter._ardoPost as Post | undefined
-  if (post == null) return <ArdoDocContent>{children}</ArdoDocContent>
-  // `publication.components.post` replaces Ardo's article frame on generated post routes.
-  const Frame = SitePost ?? ArdoPost
-  return <Frame post={post}>{children}</Frame>
+  if (useArdoPageData()?.frontmatter._ardoPost != null) return children
+  return <ArdoDocContent>{children}</ArdoDocContent>
 }

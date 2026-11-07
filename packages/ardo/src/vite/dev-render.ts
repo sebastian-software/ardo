@@ -4,6 +4,7 @@ import path from "node:path"
 
 import type { ResolvedConfig } from "../config/types"
 import { getVersioningRedirects } from "./build-versioning"
+import { spellPagePath } from "../runtime/trailing-slash"
 
 import type { ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
 
@@ -52,15 +53,7 @@ async function handleRequest(
 ): Promise<{ html: string; status: number; location?: string } | undefined> {
   const pathname = readRequestPathname(request)
   if (pathname == null) return undefined
-  const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
-  const redirect =
-    config == null
-      ? undefined
-      : getDevRedirect(
-          pathname,
-          config,
-          routes.map((route) => route.path)
-        )
+  const redirect = findRedirect(server, request, { pathname, routesDir, config })
   if (redirect != null) return redirectResponse(request, redirect)
   const pagePath = toPagePath(request, server.config.base, (value) =>
     isMountedPagePath(value, { routesDir, config })
@@ -92,6 +85,29 @@ async function handleRequest(
   }
 }
 
+/** A configured or migration redirect first, then the site's spelling of the page. */
+function findRedirect(
+  server: ViteDevServer,
+  request: Connect.IncomingMessage,
+  input: { pathname: string; routesDir: string; config?: ResolvedConfig }
+): string | undefined {
+  const { pathname, routesDir, config } = input
+  if (config == null) return undefined
+  const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
+  return (
+    getDevRedirect(
+      pathname,
+      config,
+      routes.map((route) => route.path)
+    ) ??
+    getTrailingSlashRedirect(request, {
+      base: server.config.base,
+      trailingSlash: config.trailingSlash,
+      isPage: (value) => isMountedPagePath(value, { routesDir, config }),
+    })
+  )
+}
+
 function isMountedPagePath(
   pathname: string,
   { routesDir, config }: { routesDir: string; config?: ResolvedConfig }
@@ -117,6 +133,24 @@ async function injectViteTags(server: ViteDevServer, url: string, html: string):
   const head = /<head>([\s\S]*)<\/head>/u.exec(template)?.[1] ?? ""
   const body = /<body>([\s\S]*)<\/body>/u.exec(template)?.[1] ?? ""
   return html.replace("<head>", () => `<head>${head}`).replace("</body>", () => `${body}</body>`)
+}
+
+/**
+ * The canonical spelling of a page request when the site sets `trailingSlash` and the request uses
+ * the other one, such as `/guide/` for `trailingSlash: false`. The base root keeps its slash.
+ */
+export function getTrailingSlashRedirect(
+  request: Pick<Connect.IncomingMessage, "headers" | "method" | "originalUrl" | "url">,
+  input: { base: string; trailingSlash: boolean | undefined; isPage: (pathname: string) => boolean }
+): string | undefined {
+  if (input.trailingSlash == null) return undefined
+  const pathname = readRequestPathname(request)
+  if (pathname == null || !pathname.startsWith(input.base)) return undefined
+  const page = pathname.slice(input.base.length).replace(/\/+$/u, "")
+  if (page === "" || !input.isPage(`/${page}`)) return undefined
+  const raw = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid").pathname
+  const target = `${raw.replace(/\/+$/u, "")}${input.trailingSlash ? "/" : ""}`
+  return target === raw ? undefined : target
 }
 
 /** Path of the requested page without the base, or `undefined` for anything that is not a page. */
@@ -194,7 +228,8 @@ export function getDevRedirect(
     if (config.i18n.locales.some(({ id }) => id === relative.split("/")[1])) continue
     const unlocalized = createCurrentRouteIdentity(relative, { ...config, i18n: false })
     if (normalizeRedirectPath(unlocalized.publicPath) !== normalizeRedirectPath(pathname)) continue
-    return `${createSourceRouteIdentity(route, config).publicPath.replace(/\/$/u, "")}/`
+    const target = `${createSourceRouteIdentity(route, config).publicPath.replace(/\/$/u, "")}/`
+    return spellPagePath(target, config.trailingSlash, config.deploymentBase)
   }
 }
 

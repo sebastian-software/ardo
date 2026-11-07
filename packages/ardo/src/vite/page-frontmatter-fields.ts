@@ -13,7 +13,6 @@ export const knownFrontmatterFields = new Set([
   "images",
   "feedContent",
   "_ardoPost",
-  "_ardoMeta",
   "banner",
   "canonical",
   "collapsed",

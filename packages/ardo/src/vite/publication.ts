@@ -8,15 +8,13 @@ import {
 } from "./publication-context"
 import { preparePublicationPost, type PreparedPost } from "./publication-post"
 import { readPostFiles } from "./post-metadata"
-import { resolvePublicationComponents } from "./publication-options"
-import { frozenCopy, runSiteMeta } from "./publication-site-meta"
+import { resolvePublicationComponents, type PublicationComponents } from "./publication-options"
 import {
   createPostRoute,
   createPublicationIndex,
   type PublicationRoute,
 } from "./publication-routes"
 import { createPublicationFeeds } from "./publication-feeds"
-import { taggedPosts } from "../publication/tags"
 import { createPublicationTags, createTagRoute } from "./publication-tags"
 
 export type PreparedPublication = {
@@ -50,51 +48,15 @@ export async function preparePublication(input: PublicationInput): Promise<Prepa
   }
 }
 
-/**
- * Site metadata functions run once the publication is complete, so they can list every post.
- * They receive one frozen copy of the data; the pages keep the original.
- */
 function createRoutes(
   context: PublicationContext,
   entries: PreparedPost[],
-  components: Awaited<ReturnType<typeof resolvePublicationComponents>>
+  modules: PublicationComponents
 ): PublicationRoute[] {
-  const { index, post, tag } = context.options.meta ?? {}
-  const data =
-    index == null && post == null && tag == null ? undefined : frozenCopy(context.publication)
   return [
-    ...entries.map((entry, position) =>
-      createPostRoute({
-        ...entry.route,
-        meta:
-          post &&
-          data &&
-          runSiteMeta("post", `post ${JSON.stringify(entry.post.id)}`, () =>
-            post({ publication: data, post: data.posts[position] })
-          ),
-      })
-    ),
-    createPublicationIndex(context, {
-      component: components.index,
-      meta:
-        index &&
-        data &&
-        runSiteMeta("index", context.publication.path, () => index({ publication: data })),
-    }),
-    ...(context.publication.tags ?? []).map((entry, position) =>
-      createTagRoute({
-        context,
-        tag: entry,
-        component: components.tag,
-        meta:
-          tag &&
-          data &&
-          runSiteMeta("tag", `tag ${JSON.stringify(entry.key)}`, () => {
-            const archive = data.tags?.[position] ?? entry
-            return tag({ publication: data, tag: archive, posts: taggedPosts(data.posts, archive) })
-          }),
-      })
-    ),
+    ...entries.map((entry) => createPostRoute({ ...entry.route, modules })),
+    createPublicationIndex(context, modules),
+    ...(context.publication.tags ?? []).map((tag) => createTagRoute({ context, tag, modules })),
   ]
 }
 

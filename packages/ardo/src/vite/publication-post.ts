@@ -9,7 +9,7 @@ import type { PostRouteInput } from "./publication-routes"
 
 export type PreparedPost = { post: Post; html: string; route: PostRouteInput }
 
-/** The route is generated later, once site metadata can see the complete publication. */
+/** The route is generated with the others, which share the resolved site modules. */
 export async function preparePublicationPost(
   sourceFile: string,
   context: PublicationContext

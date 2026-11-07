@@ -5,6 +5,7 @@ import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./bui
 import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
 import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
+import { spellPagePath } from "../runtime/trailing-slash"
 
 export { generateSitemap } from "./sitemap"
 
@@ -52,6 +53,9 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
   const redirects = [...config.redirects]
   redirects.push(...getVersioningRedirects(config, entries))
 
+  // Generated redirects end at the page's canonical spelling, so they need no second hop.
+  const target = (publicPath: string) =>
+    spellPagePath(publicPath, config.trailingSlash, config.deploymentBase)
   for (const entry of entries) {
     if (
       config.i18n !== false &&
@@ -62,13 +66,13 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
     ) {
       redirects.push({
         from: createCurrentRouteIdentity(entry.routePath, { ...config, i18n: false }).publicPath,
-        to: entry.publicPath,
+        to: target(entry.publicPath),
       })
     }
     for (const from of entry.metadata.redirectFrom ?? []) {
       // Keep `from` as the authored static source path; `to` uses the canonical
       // public route because generated HTML and provider redirects share this contract.
-      redirects.push({ from, to: entry.publicPath })
+      redirects.push({ from, to: target(entry.publicPath) })
     }
   }
 

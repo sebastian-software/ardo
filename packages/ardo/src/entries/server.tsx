@@ -20,6 +20,7 @@ import {
   matchRoute,
   resolvePage,
 } from "../runtime/routing"
+import { spellPagePath } from "../runtime/trailing-slash"
 import { ArdoRootLayout } from "../ui/Layout"
 
 /** The full route table, which only the server entry carries; the client gets its logical paths. */
@@ -158,7 +159,11 @@ function applyLocaleMetadata(
     config.siteUrl !== ""
   ) {
     const routePath = path.slice(locale.length + 1) || "/"
-    const href = (id: string) => new URL(`${base}${id}${routePath}`, config.siteUrl).href
+    const href = (id: string) =>
+      new URL(
+        spellPagePath(`${base}${id}${routePath}`, config.trailingSlash, config.deploymentBase),
+        config.siteUrl
+      ).href
     if (!page.meta.some((meta) => "rel" in meta && meta.rel === "canonical")) {
       page.meta.push({ tagName: "link", rel: "canonical", href: href(locale) })
     }

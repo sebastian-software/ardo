@@ -5,3 +5,6 @@ export const ArdoRoutePathsContext = createContext<ReadonlySet<string>>(new Set(
 
 /** Target public addresses for projects with directory-based versioning. */
 export const ArdoRouteHrefsContext = createContext<ReadonlyMap<string, string>>(new Map())
+
+/** The site's `trailingSlash` setting, which decides how page links end. */
+export const ArdoTrailingSlashContext = createContext<boolean | undefined>(undefined)

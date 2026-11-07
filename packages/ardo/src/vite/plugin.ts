@@ -27,7 +27,7 @@ import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { resolvePageMarkdownPath } from "./page-markdown"
 import { normalizePath, resolveRoutesDir } from "./path-utils"
-import { createPublicationPlugin } from "./publication-plugin"
+import { createPublicationPlugin, type PublicationSite } from "./publication-plugin"
 import { readProjectMeta } from "./project-meta"
 import { defineProjectStateReader } from "./project-state"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
@@ -37,7 +37,8 @@ import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./version
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 
-type PluginState = {
+/** `publicationPost` is set by the publication plugin for its generated post routes. */
+type PluginState = Pick<PublicationSite, "publicationPost"> & {
   /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
   buildTime?: string
   collections?: CollectionsConfig
@@ -46,8 +47,6 @@ type PluginState = {
   deploymentBase?: string
   outDir?: string
   previewBase?: string
-  /** `publication.components.post`, served by `virtual:ardo/publication-post`. */
-  publicationPostComponent?: string
   /** Generated API and OpenAPI folders, which `llms.txt` links by their index. */
   referenceDirs: string[]
   resolvedConfig?: ResolvedConfig
@@ -78,7 +77,6 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...(buildTime === undefined ? {} : { buildTime }),
     collections,
     outDir: siteConfig.outDir,
-    publicationPostComponent: publication?.components?.post,
     referenceDirs: [
       ...apiOutputDirectories(api),
       ...(openapi == null ? [] : [openapi.out ?? "api"]),
@@ -110,19 +108,19 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
   )
   addApiPlugin(plugins, { api, routesDirOption })
 
-  plugins.push(ardoCodeBlockPlugin(siteConfig.markdown))
   plugins.push(
-    createMdxPlugin(siteConfig.markdown, (filePath) =>
-      resolvePageMarkdownPath({
+    ardoCodeBlockPlugin(siteConfig.markdown),
+    createMdxPlugin(siteConfig.markdown, (filePath) => ({
+      pageMarkdownPath: resolvePageMarkdownPath({
         command: state.command,
         config: state.resolvedConfig,
         filePath,
         routesDir: state.routesDir,
-      })
-    )
+      }),
+      publicationPost: state.publicationPost?.(filePath),
+    }))
   )
-  plugins.push(...vanillaExtractPlugin({ identifiers: "short" }))
-  plugins.push(...createReactPlugins())
+  plugins.push(...vanillaExtractPlugin({ identifiers: "short" }), ...createReactPlugins())
 
   return plugins
 }

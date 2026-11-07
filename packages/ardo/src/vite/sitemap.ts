@@ -1,5 +1,6 @@
 import type { ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
+import { spellPagePath } from "../runtime/trailing-slash"
 
 export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedConfig) {
   const sitemapConfig = typeof config.seo.sitemap === "object" ? config.seo.sitemap : {}
@@ -15,7 +16,10 @@ export function generateSitemap(entries: RouteManifestEntry[], config: ResolvedC
         )
     )
     .map((entry) => {
-      const loc = toAbsolutePublicUrl(entry.publicPath, config)
+      const loc = toAbsolutePublicUrl(
+        spellPagePath(entry.publicPath, config.trailingSlash, config.deploymentBase),
+        config
+      )
       return [
         "  <url>",
         `    <loc>${escapeXml(loc)}</loc>`,

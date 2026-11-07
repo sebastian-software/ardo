@@ -5,6 +5,7 @@ import { isVersionedRoute } from "../config/versioning"
 import { ardoImagePresets } from "../publication/presets"
 import type { ImageAsset } from "./post-images"
 import { validatePublicationOptions } from "./publication-options"
+import { spellPagePath } from "../runtime/trailing-slash"
 
 export type PublicationInput = {
   options: PublicationConfig
@@ -63,21 +64,30 @@ export function createPublicationContext(input: PublicationInput): PublicationCo
   }
 }
 
-/** Absolute URL of a generated publication page, following the trailing-slash policy. */
-export function publicationUrl(
-  routePath: string,
-  { config, options }: Pick<PublicationInput, "config" | "options">
-): string {
-  const slash = options.trailingSlash === false ? "" : "/"
-  return new URL(`${config.deploymentBase}${routePath.slice(1)}${slash}`, config.siteUrl).href
+/**
+ * Absolute URL of a generated publication page, spelled by the site's `trailingSlash`. Unset, it
+ * keeps the publication's earlier slash.
+ */
+export function publicationUrl(routePath: string, { config }: Pick<PublicationInput, "config">) {
+  const pathname = spellPagePath(
+    `${config.deploymentBase}${routePath.slice(1)}`,
+    config.trailingSlash ?? true,
+    config.deploymentBase
+  )
+  return new URL(pathname, config.siteUrl).href
 }
 
-/** The sitemap's absolute URL of a generated page, which never ends with a slash. */
-export function canonicalUrl(
-  routePath: string,
-  { config }: Pick<PublicationInput, "config">
-): string {
-  return new URL(`${config.deploymentBase}${routePath.slice(1)}`, config.siteUrl).href
+/**
+ * The sitemap's absolute URL of a generated page, used as its default canonical link. Unset
+ * `trailingSlash` keeps the sitemap's earlier spelling without the slash.
+ */
+export function canonicalUrl(routePath: string, { config }: Pick<PublicationInput, "config">) {
+  const pathname = spellPagePath(
+    `${config.deploymentBase}${routePath.slice(1)}`,
+    config.trailingSlash,
+    config.deploymentBase
+  )
+  return new URL(pathname, config.siteUrl).href
 }
 
 /** Language of the publication's feeds: its locale, or the site language. */

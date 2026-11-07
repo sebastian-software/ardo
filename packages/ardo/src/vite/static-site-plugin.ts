@@ -106,7 +106,7 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
     },
     async configurePreviewServer(server) {
       await assertPreviewEntry(server, state.resolvedConfig)
-      return configureStaticPreview(server)
+      return configureStaticPreview(server, state.resolvedConfig?.trailingSlash)
     },
     configureServer(server) {
       // Runs after Vite's own middleware, so modules and public files win.

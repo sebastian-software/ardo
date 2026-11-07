@@ -10,6 +10,7 @@ import {
 } from "../markdown/native-metadata"
 import { buildToc } from "../markdown/toc"
 import { parsePageFrontmatterMetadata } from "./page-metadata"
+import type { PublicationPostBinding } from "./publication-routes"
 
 /** What the document's ESM exports and binds at the top level, as Ferromark reports it. */
 type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
@@ -19,7 +20,19 @@ type AuthoredScope = { bindings: Set<string>; exports: Set<string> }
  * authored declaration of one of them, so no pass over the document is needed
  * to find free names.
  */
-const routeBindings = ["_ArdoPageDataProvider", "_ardoFrontmatter", "_ardoRoute", "_ardoToc"]
+const routeBindings = [
+  "_ArdoPageDataProvider",
+  "_ArdoPostFrame",
+  "_ArdoPublicationTags",
+  "_ardoFrontmatter",
+  "_ardoPostMeta",
+  "_ardoPostView",
+  "_ardoPublications",
+  "_ardoRoute",
+  "_ardoTagArchive",
+  "_ardoTagLabel",
+  "_ardoToc",
+]
 
 /**
  * Compile a Markdown or MDX route with Ferromark's MDX module output and append
@@ -33,6 +46,8 @@ export function compileMdxRouteModule(input: {
   markdownConfig: ArdoConfig["markdown"]
   /** URL of the page's Markdown file, when the build writes one for this route. */
   pageMarkdownPath?: string
+  /** Set for a generated publication post: the frame and modules the route mounts. */
+  publicationPost?: PublicationPostBinding
   source: string
 }): { code: string; map: JsxModuleMap } {
   const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
@@ -56,8 +71,8 @@ export function compileMdxRouteModule(input: {
       createRouteCode({
         markdownConfig: input.markdownConfig,
         metadata,
-        id: input.id,
         pageMarkdownPath: input.pageMarkdownPath,
+        publicationPost: input.publicationPost,
         result,
       }),
     map: result.map,
@@ -65,10 +80,10 @@ export function compileMdxRouteModule(input: {
 }
 
 function createRouteCode(input: {
-  id: string
   markdownConfig: ArdoConfig["markdown"]
   metadata: NativeMarkdownMetadata
   pageMarkdownPath: string | undefined
+  publicationPost: PublicationPostBinding | undefined
   result: JsxModuleResult
 }): string {
   const scope: AuthoredScope = {
@@ -85,16 +100,21 @@ function createRouteCode(input: {
     parsePageFrontmatterMetadata(input.metadata.frontmatter).llms !== false
       ? ` markdownPath={${JSON.stringify(input.pageMarkdownPath)}}`
       : ""
+  const post = input.publicationPost
+  const content =
+    post == null
+      ? "<MDXContent {...props} />"
+      : "<_ArdoPublicationTags label={_ardoTagLabel} archive={_ardoTagArchive}><_ArdoPostFrame post={_ardoFrontmatter._ardoPost}><MDXContent {...props} /></_ArdoPostFrame></_ArdoPublicationTags>"
   const lines = [
     `import { ArdoPageDataProvider as _ArdoPageDataProvider } from "ardo/runtime";`,
+    ...(post == null ? [] : createPostFrameCode(post)),
     `const _ardoFrontmatter = ${frontmatter};`,
     `const _ardoToc = ${JSON.stringify(toc)};`,
     ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
     ...createDataExport("toc", "_ardoToc", scope),
     ...createHandleExport(input.metadata.frontmatter, scope),
-    ...createMetaExport(input.metadata.frontmatter, scope, input.id),
     `function _ardoRoute(props = {}) {`,
-    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}><MDXContent {...props} /></_ArdoPageDataProvider>;`,
+    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}>${content}</_ArdoPageDataProvider>;`,
     `}`,
     `export default _ardoRoute;`,
   ]
@@ -113,21 +133,36 @@ function createDataExport(
 }
 
 /**
- * A generated publication route carries the site's complete metadata in `_ardoMeta`. Exporting
- * it as `meta` replaces the metadata Ardo would derive, so canonical and social tags never repeat.
+ * A generated publication post mounts its frame here rather than in the global MDX wrapper, so the
+ * site's post module is part of post routes only. `_ardoPostMeta` lets the site module's `meta`
+ * export extend or replace the metadata that `transformMarkdownMeta` derives for the post.
  */
-function createMetaExport(
-  frontmatter: PageFrontmatter,
-  scope: AuthoredScope,
-  id: string
-): string[] {
-  const meta = frontmatter._ardoMeta
-  if (!Array.isArray(meta)) return []
-  if (scope.exports.has("meta") || scope.bindings.has("meta"))
-    throw new Error(
-      `[ardo] ${id} declares its own meta, but publication.meta.post supplies the metadata of every post. Remove one of them.`
-    )
-  return [`export const meta = () => ${JSON.stringify(meta)};`]
+function createPostFrameCode(post: PublicationPostBinding): string[] {
+  const view = post.view
+  return [
+    view == null
+      ? `import { ArdoPost as _ArdoPostFrame, ArdoPublicationTags as _ArdoPublicationTags } from "ardo/ui";`
+      : `import { ArdoPublicationTags as _ArdoPublicationTags } from "ardo/ui";`,
+    ...(view == null
+      ? []
+      : [
+          `import * as _ardoPostView from ${JSON.stringify(view)};`,
+          `import { publications as _ardoPublications } from "virtual:ardo/publication";`,
+          `const _ArdoPostFrame = _ardoPostView.default;`,
+        ]),
+    post.tagLabel == null
+      ? "const _ardoTagLabel = undefined;"
+      : `import _ardoTagLabel from ${JSON.stringify(post.tagLabel)};`,
+    `const _ardoTagArchive = ${JSON.stringify(post.tagArchive)};`,
+    ...(view == null
+      ? []
+      : [
+          "function _ardoPostMeta(defaults) {",
+          "  const meta = _ardoPostView.meta;",
+          `  return meta == null ? defaults : meta({ publication: _ardoPublications[${JSON.stringify(post.publication)}], post: _ardoFrontmatter._ardoPost, defaults });`,
+          "}",
+        ]),
+  ]
 }
 
 function createHandleExport(frontmatter: PageFrontmatter, scope: AuthoredScope): string[] {

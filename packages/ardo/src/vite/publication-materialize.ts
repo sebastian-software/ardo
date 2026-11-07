@@ -4,6 +4,8 @@ import type { ResolvedConfig } from "../config/types"
 import type { Publication, PublicationConfig } from "../publication/types"
 import { preparePublication, type PreparedPublication } from "./publication"
 import { validateTagLocales } from "./publication-tags"
+import type { PublicationPostBinding } from "./publication-routes"
+import { normalizePath } from "./path-utils"
 
 export const PUBLICATION_ID = "virtual:ardo/publication"
 export const RESOLVED_PUBLICATION_ID = `\0${PUBLICATION_ID}`
@@ -14,6 +16,8 @@ export type PublicationBuilder = {
   prepared: PreparedPublication[]
   publications: Record<string, Publication>
   sources: Map<string, string>
+  /** Generated post routes by normalized file path, with the modules they mount. */
+  posts: Map<string, PublicationPostBinding>
   queue: Promise<void>
 }
 
@@ -29,9 +33,10 @@ export async function refreshPublication(builder: PublicationBuilder): Promise<v
     path.resolve(builder.site.routesDir, locale ?? "", builder.options.to ?? "news")
   )
   await validateDirectories(directories, path.resolve(config.root, builder.options.from))
-  const sources = await writeRoutes(directories, prepared)
+  const { sources, posts } = await writeRoutes(directories, prepared)
   builder.prepared = prepared
   builder.sources = sources
+  builder.posts = posts
   builder.publications = Object.fromEntries(
     prepared.map((entry, index) => [locales[index] ?? "default", entry.publication])
   )
@@ -76,8 +81,9 @@ async function validateDirectories(directories: string[], source: string): Promi
 async function writeRoutes(
   directories: string[],
   prepared: PreparedPublication[]
-): Promise<Map<string, string>> {
+): Promise<{ sources: Map<string, string>; posts: Map<string, PublicationPostBinding> }> {
   const sources = new Map<string, string>()
+  const posts = new Map<string, PublicationPostBinding>()
   for (const directory of directories) {
     await fs.rm(directory, { recursive: true, force: true })
     await fs.mkdir(directory, { recursive: true })
@@ -88,9 +94,10 @@ async function writeRoutes(
       await fs.mkdir(path.dirname(route.filePath), { recursive: true })
       await fs.writeFile(route.filePath, route.content)
       if (route.sourceFile != null) sources.set(route.filePath, route.sourceFile)
+      if (route.post != null) posts.set(normalizePath(route.filePath), route.post)
     }
   }
-  return sources
+  return { sources, posts }
 }
 
 export function isInside(file: string, directory: string): boolean {

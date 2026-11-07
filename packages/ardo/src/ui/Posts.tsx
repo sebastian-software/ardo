@@ -12,6 +12,7 @@ import { ArdoLink } from "../runtime/page"
 import { ardoContent } from "./content.css"
 import { ArdoImage } from "./PostImage"
 import { taggedPosts } from "../publication/tags"
+import { useArdoPublicationTags } from "./publication-tags-context"
 import * as styles from "./Posts.css"
 
 export type ArdoPostProps = { post: Post; children: ReactNode }
@@ -25,6 +26,7 @@ export type ArdoPostListProps = {
 export function ArdoPost({ post, children }: ArdoPostProps) {
   const lang = usePostLocale()
   const labels = useArdoLabels().publication
+  const tags = useArdoPublicationTags()
   return (
     <article className={`ardo-post ${styles.article}`}>
       <header className={styles.heading}>
@@ -49,7 +51,15 @@ export function ArdoPost({ post, children }: ArdoPostProps) {
         {post.tags.length > 0 && (
           <ul className={styles.tags} aria-label={labels.tags}>
             {post.tags.map((tag) => (
-              <li key={tag}>{tag}</li>
+              <li key={tag}>
+                {tags.path == null ? (
+                  tags.label(tag)
+                ) : (
+                  <ArdoLink to={tags.path(tag)} rel="tag">
+                    {tags.label(tag)}
+                  </ArdoLink>
+                )}
+              </li>
             ))}
           </ul>
         )}
@@ -68,6 +78,7 @@ export function ArdoPost({ post, children }: ArdoPostProps) {
 export function ArdoPostList({ publication, imagePreset, tag }: ArdoPostListProps) {
   const lang = usePostLocale()
   const labels = useArdoLabels().publication
+  const tags = useArdoPublicationTags()
   const posts = tag == null ? publication.posts : taggedPosts(publication.posts, tag)
   return (
     <section className={`ardo-post-list ${styles.publication}`}>
@@ -84,7 +95,7 @@ export function ArdoPostList({ publication, imagePreset, tag }: ArdoPostListProp
             <ArdoLink to={publication.path} className={styles.back}>
               {publication.name}
             </ArdoLink>
-            <h1 className={styles.title}>{tag.key}</h1>
+            <h1 className={styles.title}>{tags.label(tag.key)}</h1>
           </>
         )}
         <FeedLinks atom={publication.atomUrl} rss={publication.rssUrl} />

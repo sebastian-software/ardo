@@ -6,14 +6,23 @@ import type { ArdoConfig } from "../config/types"
 import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
 import { compileMdxRouteModule } from "./mdx-compile"
+import type { PublicationPostBinding } from "./publication-routes"
 
 type CompileInput = {
   format: NativeMarkdownFormat
   markdownConfig: ArdoConfig["markdown"]
   /** The page's Markdown file URL, when the build writes one for this route. */
   pageMarkdownPath: string | undefined
+  /** The modules a generated publication post mounts, for exactly those routes. */
+  publicationPost: PublicationPostBinding | undefined
   source: string
   sourceName: string
+}
+
+/** What the plugin knows about one route file. */
+export type RouteContext = {
+  pageMarkdownPath?: string
+  publicationPost?: PublicationPostBinding
 }
 
 type CompiledRouteModule = Awaited<ReturnType<typeof compileRouteModule>>
@@ -28,12 +37,13 @@ type CompiledRouteEntry = { result: Promise<CompiledRouteModule>; source: string
 const compiledRoutes = new Map<string, CompiledRouteEntry>()
 
 /**
- * Compile Markdown and MDX route modules with Ferromark and Ferriki. `pageMarkdownPath`
- * names the URL of the page's Markdown file for a route file, or `undefined` when there is none.
+ * Compile Markdown and MDX route modules with Ferromark and Ferriki. `route` tells, for a route
+ * file, the URL of the page's Markdown file, if the build writes one, and the binding of a
+ * generated publication post.
  */
 export function createMdxPlugin(
   markdownConfig: ArdoConfig["markdown"],
-  pageMarkdownPath?: (filePath: string) => string | undefined
+  route?: (filePath: string) => RouteContext
 ): Plugin {
   const configKey = JSON.stringify(markdownConfig ?? null)
   return {
@@ -44,10 +54,12 @@ export function createMdxPlugin(
       if (format == null) return
 
       const sourceName = id.split("?", 1)[0] ?? id
+      const context = route?.(sourceName)
       const compiled = await compileRouteModuleCached(configKey, {
         format,
         markdownConfig,
-        pageMarkdownPath: pageMarkdownPath?.(sourceName),
+        pageMarkdownPath: context?.pageMarkdownPath,
+        publicationPost: context?.publicationPost,
         source,
         sourceName,
       })
@@ -61,7 +73,13 @@ async function compileRouteModuleCached(
   input: CompileInput
 ): Promise<CompiledRouteModule> {
   // The Markdown file URL depends on site settings, not only on the source, so it is part of the key.
-  const key = `${configKey}\0${input.format}\0${input.sourceName}\0${input.pageMarkdownPath ?? ""}`
+  const key = [
+    configKey,
+    input.format,
+    input.sourceName,
+    input.pageMarkdownPath ?? "",
+    JSON.stringify(input.publicationPost ?? null),
+  ].join("\0")
   const cached = compiledRoutes.get(key)
   if (cached?.source === input.source) return cached.result
 
@@ -79,6 +97,7 @@ async function compileRouteModule({
   format,
   markdownConfig,
   pageMarkdownPath,
+  publicationPost,
   source,
   sourceName,
 }: CompileInput) {
@@ -87,6 +106,7 @@ async function compileRouteModule({
     id: sourceName,
     markdownConfig,
     pageMarkdownPath,
+    publicationPost,
     source,
   })
   const transformed = await transformWithOxc(

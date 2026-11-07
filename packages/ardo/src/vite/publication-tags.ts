@@ -2,8 +2,13 @@ import path from "node:path"
 import type { PublicationTag } from "../publication/types"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
 import { canonicalUrl, publicationUrl, type PublicationContext } from "./publication-context"
-import { importPath } from "./publication-options"
-import { feedDiscoveryMeta, type PublicationRoute } from "./publication-routes"
+import type { PublicationComponents } from "./publication-options"
+import {
+  feedDiscoveryMeta,
+  routePrelude,
+  tagProps,
+  type PublicationRoute,
+} from "./publication-routes"
 
 const TAG_KEY = /^[\da-z]+(?:-[\da-z]+)*$/u
 
@@ -13,7 +18,7 @@ export function validatePostTags(post: { tags: string[]; routePath: string }, pr
   for (const tag of post.tags) {
     if (!TAG_KEY.test(tag))
       throw new Error(
-        `Tag ${JSON.stringify(tag)} must be a lowercase, hyphenated slug such as "release-notes"; tag archives use it as URL segment. Map keys to display labels in the site's components.`
+        `Tag ${JSON.stringify(tag)} must be a lowercase, hyphenated slug such as "release-notes"; tag archives use it as URL segment. Show display labels with publication.tagLabel.`
       )
     if (seen.has(tag)) throw new Error(`Post lists tag ${JSON.stringify(tag)} more than once.`)
     seen.add(tag)
@@ -58,10 +63,11 @@ export function createPublicationTags(context: PublicationContext): PublicationT
 export function createTagRoute(input: {
   context: PublicationContext
   tag: PublicationTag
-  component?: string
-  meta?: ArdoMetaDescriptor[]
+  modules?: PublicationComponents
 }): PublicationRoute {
-  const { context, tag, component } = input
+  const { context, tag } = input
+  const modules = input.modules ?? {}
+  const { publication, config, options } = context
   const filePath = path.join(
     context.routesDir,
     context.localizedPrefix,
@@ -69,36 +75,37 @@ export function createTagRoute(input: {
     tag.key,
     "index.tsx"
   )
-  // The tag is a literal, so the route type-checks without narrowing `publication.tags`.
+  const separator = JSON.stringify(
+    `${config.titleSeparator}${publication.name}${config.titleSeparator}${config.title}`
+  )
+  const rest: ArdoMetaDescriptor[] = [
+    { name: "description", content: options.description ?? config.description },
+    // Like a post's default canonical, it matches the tag's sitemap entry.
+    { tagName: "link", rel: "canonical", href: canonicalUrl(tag.path, context) },
+    ...feedDiscoveryMeta(publication),
+  ]
+  // The tag is a literal, so the route type-checks without narrowing `publication.tags`. The
+  // label is resolved while the page renders, so it can come from the site's translations.
   const lines = [
-    'import { publications } from "virtual:ardo/publication"',
-    component == null
-      ? 'import { ArdoPostList } from "ardo/ui"'
-      : `import PublicationTag from ${JSON.stringify(importPath(filePath, component))}`,
-    `const publication = publications[${JSON.stringify(context.localeId ?? "default")}]`,
+    ...routePrelude({ context, filePath, modules, view: modules.tag, type: "Tag" }),
     `const tag = ${JSON.stringify(tag)}`,
-    ...(component == null
+    ...(modules.tag == null
       ? []
       : [
           `const posts = publication.posts.filter((post) => post.tags.includes(${JSON.stringify(tag.key)}))`,
         ]),
-    'export const handle = { layout: "bare" }',
-    `export const meta = () => ${JSON.stringify(input.meta ?? defaultTagMeta(context, tag))}`,
-    component == null
-      ? "export default function Tag() { return <ArdoPostList publication={publication} tag={tag} /> }"
-      : "export default function Tag() { return <PublicationTag publication={publication} tag={tag} posts={posts} /> }",
+    "export const meta = () => {",
+    "  const tagLabel = label(tag.key)",
+    `  const defaults: ArdoMetaDescriptor[] = [{ title: tagLabel + ${separator} }, ${JSON.stringify(rest).slice(1, -1)}]`,
+    modules.tag == null
+      ? "  return defaults"
+      : "  return site.meta == null ? defaults : site.meta({ publication, tag, label: tagLabel, posts, defaults })",
+    "}",
+    "export default function Tag() {",
+    modules.tag == null
+      ? `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} tag={tag} /></ArdoPublicationTags>`
+      : `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} tag={tag} label={label(tag.key)} posts={posts} /></ArdoPublicationTags>`,
+    "}",
   ]
   return { filePath, content: `${lines.join("\n")}\n` }
-}
-
-function defaultTagMeta(context: PublicationContext, tag: PublicationTag): ArdoMetaDescriptor[] {
-  const { publication, config, options } = context
-  const separator = config.titleSeparator
-  return [
-    { title: `${tag.key}${separator}${publication.name}${separator}${config.title}` },
-    { name: "description", content: options.description ?? config.description },
-    // Like a post's default canonical, it matches the sitemap entry, which has no final slash.
-    { tagName: "link", rel: "canonical", href: canonicalUrl(tag.path, context) },
-    ...feedDiscoveryMeta(publication),
-  ]
 }

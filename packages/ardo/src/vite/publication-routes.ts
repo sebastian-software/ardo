@@ -4,9 +4,31 @@ import type { PreparedJsxDocument } from "ferromark"
 import type { Post, Publication } from "../publication/types"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
 import type { PublicationContext } from "./publication-context"
-import { importPath } from "./publication-options"
+import { importPath, type PublicationComponents } from "./publication-options"
+import { normalizePath } from "./path-utils"
 
-export type PublicationRoute = { filePath: string; sourceFile?: string; content: string }
+export type PublicationRoute = {
+  filePath: string
+  sourceFile?: string
+  content: string
+  /** How a generated post route mounts the site's modules. */
+  post?: PublicationPostBinding
+}
+
+/**
+ * What a generated post route imports. The post's Markdown compiles like any page; Ardo adds the
+ * frame and metadata from these modules, so no other page bundles them.
+ */
+export type PublicationPostBinding = {
+  /** Key of the post's publication in `virtual:ardo/publication`. */
+  publication: string
+  /** Absolute path of `publication.components.post`; Ardo's `ArdoPost` without it. */
+  view?: string
+  /** Absolute path of `publication.tagLabel`. */
+  tagLabel?: string
+  /** Path prefix of the tag archives, such as `/news/tags/`, when `tags` is enabled. */
+  tagArchive?: string
+}
 
 export type PostRouteInput = {
   data: Record<string, unknown>
@@ -18,9 +40,8 @@ export type PostRouteInput = {
   context: PublicationContext
 }
 
-/** `meta` is the site's complete route metadata; without it, Ardo derives the page metadata. */
 export function createPostRoute(
-  input: PostRouteInput & { meta?: ArdoMetaDescriptor[] }
+  input: PostRouteInput & { modules?: PublicationComponents }
 ): PublicationRoute {
   const { data, source, prepared, post, context } = input
   const span = prepared.metadata.frontMatterSpan
@@ -31,8 +52,8 @@ export function createPostRoute(
       : Buffer.concat([bytes.subarray(0, span.start), bytes.subarray(span.end)]).toString()
   const cover = post.coverImage
   const socialImage = (cover?.fallback ?? cover?.families[0]?.renditions.at(-1))?.src
-  // Ardo owns the internal fields; authored values must not leak into the generated route.
-  const { feedContent: _feedContent, _ardoPost: _post, _ardoMeta: _meta, ...authored } = data
+  // Ardo owns the internal field; an authored value must not leak into the generated route.
+  const { feedContent: _feedContent, _ardoPost: _post, ...authored } = data
   const frontmatter = {
     ...authored,
     title: post.title,
@@ -46,8 +67,8 @@ export function createPostRoute(
     lastUpdated: false,
     ...(socialImage == null ? {} : { ogImage: socialImage }),
     _ardoPost: post,
-    ...(input.meta == null ? {} : { _ardoMeta: input.meta }),
   }
+  const modules = input.modules ?? {}
   return {
     filePath: path.join(
       context.routesDir,
@@ -57,32 +78,93 @@ export function createPostRoute(
     ),
     sourceFile: input.sourceFile,
     content: `---\n${stringify(frontmatter)}---\n${body.trimStart()}`,
+    post: {
+      publication: publicationKey(context),
+      ...(modules.post == null ? {} : { view: normalizePath(modules.post) }),
+      ...(modules.tagLabel == null ? {} : { tagLabel: normalizePath(modules.tagLabel) }),
+      ...(context.options.tags === true ? { tagArchive: tagArchivePrefix(context) } : {}),
+    },
   }
 }
 
 export function createPublicationIndex(
   context: PublicationContext,
-  site: { component?: string; meta?: ArdoMetaDescriptor[] } = {}
+  modules: PublicationComponents = {}
 ): PublicationRoute {
   const { publication, config, options } = context
-  const meta = site.meta ?? [
+  const defaults = [
     { title: `${publication.name}${config.titleSeparator}${config.title}` },
     { name: "description", content: options.description ?? config.description },
     { tagName: "link", rel: "canonical", href: publication.url },
     ...feedDiscoveryMeta(publication),
   ]
   const filePath = path.join(context.routesDir, context.localizedPrefix, "index.tsx")
-  const [component, element] =
-    site.component == null
-      ? ['import { ArdoPostList } from "ardo/ui"', "ArdoPostList"]
-      : [
-          `import PublicationIndex from ${JSON.stringify(importPath(filePath, site.component))}`,
-          "PublicationIndex",
-        ]
-  return {
-    filePath,
-    content: `import { publications } from "virtual:ardo/publication"\n${component}\nconst publication = publications[${JSON.stringify(context.localeId ?? "default")}]\nexport const handle = { layout: "bare" }\nexport const meta = () => ${JSON.stringify(meta)}\nexport default function News() { return <${element} publication={publication} /> }\n`,
-  }
+  const lines = [
+    ...routePrelude({ context, filePath, modules, view: modules.index, type: "Index" }),
+    "export const meta = () => {",
+    `  const defaults: ArdoMetaDescriptor[] = ${JSON.stringify(defaults)}`,
+    modules.index == null
+      ? "  return defaults"
+      : "  return site.meta == null ? defaults : site.meta({ publication, defaults })",
+    "}",
+    "export default function News() {",
+    `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} /></ArdoPublicationTags>`,
+    "}",
+  ]
+  return { filePath, content: `${lines.join("\n")}\n` }
+}
+
+/**
+ * The imports and bindings that every generated listing route shares. With a site module, `site`
+ * is typed as its module contract, so a wrong export fails the site's type check.
+ */
+export function routePrelude(input: {
+  context: PublicationContext
+  filePath: string
+  modules: PublicationComponents
+  view: string | undefined
+  type: "Index" | "Tag"
+}): string[] {
+  const { context, filePath, modules, view, type } = input
+  const ui = ["ArdoPublicationTags", ...(view == null ? ["ArdoPostList"] : [])]
+  const types = [
+    ...(view == null ? [] : [`Publication${type}Module`]),
+    ...(modules.tagLabel == null ? [] : ["PublicationTagLabel"]),
+  ]
+  return [
+    'import type { ArdoMetaDescriptor } from "ardo/runtime"',
+    `import { ${[...ui, ...types.map((name) => `type ${name}`)].join(", ")} } from "ardo/ui"`,
+    'import { publications } from "virtual:ardo/publication"',
+    ...(view == null
+      ? []
+      : [`import * as view from ${JSON.stringify(importPath(filePath, view))}`]),
+    ...(modules.tagLabel == null
+      ? []
+      : [`import tagLabel from ${JSON.stringify(importPath(filePath, modules.tagLabel))}`]),
+    `const publication = publications[${JSON.stringify(publicationKey(context))}]`,
+    ...(view == null
+      ? ["const View = ArdoPostList"]
+      : [`const site: Publication${type}Module = view`, "const View = site.default"]),
+    modules.tagLabel == null
+      ? "const label = (key: string) => key"
+      : "const label: PublicationTagLabel = tagLabel",
+    'export const handle = { layout: "bare" }',
+  ]
+}
+
+/** Props of `ArdoPublicationTags`: the label function and, with archives, their path prefix. */
+export function tagProps(context: PublicationContext): string {
+  return context.options.tags === true
+    ? ` label={label} archive={${JSON.stringify(tagArchivePrefix(context))}}`
+    : " label={label}"
+}
+
+function tagArchivePrefix(context: PublicationContext): string {
+  return `${context.publication.path}/tags/`
+}
+
+function publicationKey(context: PublicationContext): string {
+  return context.localeId ?? "default"
 }
 
 /** Feed autodiscovery links of the generated listing pages. */

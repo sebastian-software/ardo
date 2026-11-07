@@ -121,6 +121,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
     // buildTime and buildHash are present only when configured; otherwise Ardo uses the clock and Git.
     ...resolveBuildMetadata(config),
+    ...trailingSlashSetting(config),
     srcDir,
     outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
@@ -146,12 +147,19 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
   }
 }
 
+/** Without a spelling, Ardo keeps its earlier mixed output. */
+function trailingSlashSetting(config: ArdoConfig): Pick<ResolvedConfig, "trailingSlash"> {
+  return config.trailingSlash === undefined ? {} : { trailingSlash: config.trailingSlash }
+}
+
 function validateConfig(config: ArdoConfig): void {
   const errors: string[] = []
   if ("typedoc" in config)
     errors.push("The typedoc option was removed. Configure api in ardo() instead.")
 
   validateBaseAndSiteUrl(config, errors)
+  if (config.trailingSlash !== undefined && typeof config.trailingSlash !== "boolean")
+    errors.push("trailingSlash must be a boolean.")
   validateBuildMetadataConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)

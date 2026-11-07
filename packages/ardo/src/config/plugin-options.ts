@@ -25,6 +25,7 @@ const optionNames = {
   linkCheck: true,
   navigation: true,
   redirects: true,
+  trailingSlash: true,
   validation: true,
   versioning: true,
   i18n: true,

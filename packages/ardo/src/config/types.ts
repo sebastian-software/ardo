@@ -171,6 +171,17 @@ export type ArdoConfig = {
   navigation?: NavigationConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
+  /**
+   * Whether page URLs end with a slash (`/guide/`) or not (`/guide`). Applies to sitemap entries,
+   * canonical and alternate links, internal links, and publication, post, tag, and feed URLs.
+   * The dev server and `ardo preview` redirect the other spelling of a page to it; production
+   * hosts must be configured to do the same (see the configuration guide). The site root keeps
+   * its slash.
+   *
+   * Unset, Ardo keeps its earlier output: sitemap entries and default canonical links without
+   * the slash, internal links and publication URLs with it, and both spellings are served.
+   */
+  trailingSlash?: boolean
   /** Build-time validation policy for content metadata. */
   validation?: ContentValidationConfig
   /**
@@ -484,11 +495,14 @@ export type ResolvedConfig = {
    * `buildHash`; the client config falls back to the detected Git hash when it is absent.
    */
   buildHash?: string
+  /** The configured `trailingSlash`; absent when the site keeps Ardo's earlier mixed spelling. */
+  trailingSlash?: boolean
 } & Required<
   Omit<
     ArdoConfig,
     | "buildHash"
     | "buildTime"
+    | "trailingSlash"
     | "navigation"
     | "openapi"
     | "project"

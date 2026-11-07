@@ -123,6 +123,8 @@ type ServerExpectation = {
   pathname?: string
   args?: string[]
   pages?: { pathname: string; contains: string[] }[]
+  /** Requests that must answer with this redirect status and `Location`, unfollowed. */
+  redirects?: { pathname: string; status: number; location: string }[]
 }
 
 async function assertServerSSR(
@@ -195,6 +197,14 @@ async function assertServerSSR(
       const pageHtml = await pageResponse.text()
       expect(pageResponse.status, `${page.pathname}: ${pageHtml.slice(0, 2_000)}`).toBe(200)
       for (const content of page.contains) expect(pageHtml).toContain(content)
+    }
+    for (const redirect of expected?.redirects ?? []) {
+      const redirectResponse = await fetch(`http://${devHost}:${port}${redirect.pathname}`, {
+        redirect: "manual",
+        signal: AbortSignal.timeout(60_000),
+      })
+      expect(redirectResponse.status, redirect.pathname).toBe(redirect.status)
+      expect(redirectResponse.headers.get("location"), redirect.pathname).toBe(redirect.location)
     }
   } catch (error) {
     failure = error

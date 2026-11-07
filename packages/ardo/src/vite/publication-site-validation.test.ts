@@ -4,6 +4,7 @@ import path from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
 import { resolveConfig } from "../config"
 import type { PublicationConfig } from "../publication/types"
+import { transformMarkdownMeta } from "./markdown-meta"
 import { compileMdxRouteModule } from "./mdx-compile"
 import { preparePublication } from "./publication"
 import { refreshPublication } from "./publication-materialize"
@@ -34,7 +35,7 @@ async function project(siteUrl = "https://example.test") {
 }
 
 describe("publication option validation", () => {
-  it("rejects unknown keys, non-object groups, and tag views without tag archives", async () => {
+  it("rejects unknown keys, non-object groups, bad module paths, and tag views without archives", async () => {
     const p = await project()
     await p.write("first")
     const attempt = (options: Partial<PublicationConfig>) =>
@@ -45,11 +46,11 @@ describe("publication option validation", () => {
     await expect(attempt({ feeds: { ids: "post" } as never })).rejects.toThrow(
       "Unknown option publication.feeds.ids"
     )
-    await expect(attempt({ meta: "post" as never })).rejects.toThrow(
-      "[ardo] publication.meta must be an object."
+    await expect(attempt({ components: "post" as never })).rejects.toThrow(
+      "[ardo] publication.components must be an object."
     )
-    await expect(attempt({ meta: { tag: () => [] } })).rejects.toThrow(
-      "[ardo] publication.meta.tag needs tags: true"
+    await expect(attempt({ tagLabel: 42 as never })).rejects.toThrow(
+      "[ardo] publication.tagLabel must be a module path."
     )
     await expect(attempt({ components: { tag: "x.tsx" } })).rejects.toThrow(
       "[ardo] publication.components.tag needs tags: true"
@@ -57,80 +58,54 @@ describe("publication option validation", () => {
   })
 })
 
-describe("site metadata functions", () => {
-  it("name the route when they throw or do not return synchronously", async () => {
-    const p = await project()
-    await p.write("first", "tags: [design]\n")
-    p.options.tags = true
-    p.options.meta = {
-      post() {
-        throw new Error("boom")
-      },
-    }
-    await expect(preparePublication(p)).rejects.toThrow(
-      '[ardo] publication.meta.post failed for post "first": boom'
-    )
-    p.options.meta = { tag: (async () => []) as never }
-    await expect(preparePublication(p)).rejects.toThrow(
-      'publication.meta.tag must synchronously return an array of meta descriptors (tag "design").'
-    )
-  })
-
-  it("receive a frozen copy of the publication data", async () => {
-    const p = await project()
-    await p.write("first")
-    const frozen: boolean[] = []
-    p.options.meta = {
-      post({ publication, post }) {
-        frozen.push(Object.isFrozen(publication), Object.isFrozen(post), Object.isFrozen(post.tags))
-        return [{ title: post.title }]
-      },
-    }
-    const result = await preparePublication(p)
-    expect(frozen).toStrictEqual([true, true, true])
-    expect(Object.isFrozen(result.publication.posts[0])).toBe(false)
-  })
-})
-
 describe("generated post routes", () => {
-  it("drop authored internal fields", async () => {
+  it("drop the authored internal field", async () => {
     const p = await project()
-    await p.write("first", "_ardoMeta:\n  - title: Injected\n_ardoPost:\n  title: Injected\n")
+    await p.write("first", "_ardoPost:\n  title: Injected\n")
     const result = await preparePublication(p)
     expect(result.routes[0].content).not.toContain("Injected")
   })
 
-  it("reject a post's own meta export while publication.meta.post is set", async () => {
+  it("keep a post's own meta export, which replaces the site module's metadata", async () => {
     const p = await project()
+    await fs.mkdir(path.join(p.root, "app/blog"), { recursive: true })
+    await fs.writeFile(path.join(p.root, "app/blog/Post.tsx"), "export default () => null\n")
+    p.options.components = { post: "app/blog/Post.tsx" }
     await p.write("first", "feedContent: Body text.\n", {
-      body: "export const meta = () => []\n\nBody text.",
+      body: 'export const meta = () => [{ title: "Own" }]\n\nBody text.',
       ext: "mdx",
     })
-    p.options.meta = { post: ({ post }) => [{ title: post.title }] }
     const result = await preparePublication(p)
     const route = result.routes[0]
-    expect(() =>
-      compileMdxRouteModule({
-        source: route.content,
-        markdownConfig: undefined,
-        format: "mdx",
-        id: route.filePath,
+    const compiled = compileMdxRouteModule({
+      source: route.content,
+      markdownConfig: undefined,
+      format: "mdx",
+      id: route.filePath,
+      publicationPost: route.post,
+    }).code
+    expect(compiled).toContain('export const meta = () => [{ title: "Own" }]')
+    expect(
+      transformMarkdownMeta(compiled, route.filePath, {
+        routesDir: p.routesDir,
+        resolvedConfig: p.config,
+        publicationPost: () => route.post,
       })
-    ).toThrow("declares its own meta, but publication.meta.post supplies the metadata")
+    ).toBeUndefined()
   })
 })
 
 describe("publication-qualified feed entry IDs", () => {
-  it("stay stable across a scheme change and the trailing-slash policy", async () => {
+  it("stay stable across a scheme change and the site's trailing-slash setting", async () => {
     const ids = []
     for (const [siteUrl, trailingSlash] of [
       ["https://example.test", true],
       ["http://example.test", false],
     ] as const) {
       const p = await project(siteUrl)
+      p.config = { ...p.config, trailingSlash }
       await p.write("first")
       p.options.feeds = { entryIds: "publication" }
-      p.options.trailingSlash = trailingSlash
       const result = await preparePublication(p)
       const atom = result.feeds[0].source
       ids.push(/<entry><id>([^<]+)<\/id>/u.exec(atom)?.[1])
@@ -160,6 +135,7 @@ async function localized(deTags: string) {
     prepared: [],
     publications: {},
     sources: new Map<string, string>(),
+    posts: new Map(),
     queue: Promise.resolve(),
   }
   return { p, refresh: () => refreshPublication(builder) }
