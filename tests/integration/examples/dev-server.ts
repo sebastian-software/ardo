@@ -97,6 +97,25 @@ async function stopDevServer(child: ChildProcess): Promise<void> {
   }
 }
 
+/**
+ * Vite checks a port before binding it by listening briefly on the wildcard addresses
+ * (`isPortAvailable` in `httpServerStart`). A TCP probe of 127.0.0.1 can connect to that
+ * short-lived listener, so "ready" may come just before the real server binds. A refused
+ * connection reached no HTTP server, so retrying it never repeats the first request.
+ */
+async function fetchOnceListening(url: string, timeoutMs = 30_000): Promise<Response> {
+  const deadline = Date.now() + timeoutMs
+  for (;;) {
+    try {
+      return await fetch(url, { signal: AbortSignal.timeout(60_000) })
+    } catch (error) {
+      const code = (error as { cause?: { code?: unknown } }).cause?.code
+      if (code !== "ECONNREFUSED" || Date.now() > deadline) throw error
+      await delay(100)
+    }
+  }
+}
+
 type ServerExpectation = {
   afterFirstResponse?: (context: { origin: string; html: string }) => Promise<void>
   title?: string
@@ -154,10 +173,11 @@ async function assertServerSSR(
     )
 
     // A TCP readiness probe above avoids consuming the first HTTP request, which
-    // must exercise the project's initial dev SSR dependency graph.
-    const response = await fetch(`http://${devHost}:${port}${expected?.pathname ?? "/"}`, {
-      signal: AbortSignal.timeout(60_000),
-    })
+    // must exercise the project's initial dev SSR dependency graph. The probe can
+    // still succeed before Ardo listens, so the request retries refused connections.
+    const response = await fetchOnceListening(
+      `http://${devHost}:${port}${expected?.pathname ?? "/"}`
+    )
     const html = await response.text()
     expect(response.status, `First server response: ${html.slice(0, 2_000)}`).toBe(200)
     const normalizedHtml = html.replace(/<!--.*?-->/gs, "")
