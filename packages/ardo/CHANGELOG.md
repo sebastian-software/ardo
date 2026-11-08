@@ -1,5 +1,32 @@
 # Changelog
 
+## [6.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.3.0...ardo-v6.4.0) (2026-11-08)
+
+
+### Features
+
+* add ardo add for agent recipes ([#489](https://github.com/sebastian-software/ardo/issues/489)) ([dd251fc](https://github.com/sebastian-software/ardo/commit/dd251fc6e3be6688a52a7c8ed2c67876946b11f6)), closes [#475](https://github.com/sebastian-software/ardo/issues/475)
+* add ardo check and ardo lint commands ([#491](https://github.com/sebastian-software/ardo/issues/491)) ([3b7b206](https://github.com/sebastian-software/ardo/commit/3b7b20663bffd65a4f4fc820fad737381170272d)), closes [#470](https://github.com/sebastian-software/ardo/issues/470)
+* add copy and view-as-Markdown page actions ([0538207](https://github.com/sebastian-software/ardo/commit/053820735fd76a1a11f94483c021b78838346f51))
+* add file tree, package manager, and embed components ([48408fc](https://github.com/sebastian-software/ardo/commit/48408fcee83ca855ce3e7076d4a61f80530cde4e))
+* add JSON-LD structured data to Markdown pages ([0b522cd](https://github.com/sebastian-software/ardo/commit/0b522cd37a5a9c86b8c0d26b67df363993a38972))
+* add the Banner component ([#490](https://github.com/sebastian-software/ardo/issues/490)) ([b08852e](https://github.com/sebastian-software/ardo/commit/b08852e74aabf244b31556ed4657b95b2f8498e0)), closes [#469](https://github.com/sebastian-software/ardo/issues/469)
+* add view transitions and speculation rules ([#493](https://github.com/sebastian-software/ardo/issues/493)) ([d8e583e](https://github.com/sebastian-software/ardo/commit/d8e583e10cc78e4c5dcba0abb35761483e84d21b))
+* expose site search as a WebMCP tool ([4cb0325](https://github.com/sebastian-software/ardo/commit/4cb0325b6ab4c8c7e1d49005dfd71de95c7fe0d5))
+* honour a configured buildTime as the pinned build moment ([f91c318](https://github.com/sebastian-software/ardo/commit/f91c3186bf54065d10b4837458bcfb62c60c31d8)), closes [#502](https://github.com/sebastian-software/ardo/issues/502)
+* keep the route table out of the client entry ([#508](https://github.com/sebastian-software/ardo/issues/508)) ([c0cd15c](https://github.com/sebastian-software/ardo/commit/c0cd15c174752af725347ef976c1c93d4eb606f6))
+* let custom sites control publication pages, URLs, feeds, and tags ([#506](https://github.com/sebastian-software/ardo/issues/506)) ([f4fa2a8](https://github.com/sebastian-software/ardo/commit/f4fa2a88a0754a293a94dfd1e671609b07a310c7))
+* publish a Markdown version of every page ([1888477](https://github.com/sebastian-software/ardo/commit/18884776117a86619f5fdb203cb9d3242043d262))
+* publish agent discovery files ([7112100](https://github.com/sebastian-software/ardo/commit/711210066b650d41aa3f15d56285087c1d840ee4))
+* publish Agent Skills from the docs site ([ed2a4c7](https://github.com/sebastian-software/ardo/commit/ed2a4c763b1e81833bd2916adbce5d65a02e7cfa))
+
+
+### Bug Fixes
+
+* honour a configured buildHash instead of always detecting Git ([#507](https://github.com/sebastian-software/ardo/issues/507)) ([558f44e](https://github.com/sebastian-software/ardo/commit/558f44e18ee0027db8257786f348da1d7c9c2bed))
+* pin the page rail to the right edge and align callouts ([#487](https://github.com/sebastian-software/ardo/issues/487)) ([d2667a0](https://github.com/sebastian-software/ardo/commit/d2667a013f37317d7e96de0d5fad5ca59d0e3c73))
+* spell llms page URLs with the trailingSlash setting ([#509](https://github.com/sebastian-software/ardo/issues/509)) ([0371386](https://github.com/sebastian-software/ardo/commit/03713868af9a17eea68873a16130510895530482))
+
 ## [6.3.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.2.0...ardo-v6.3.0) (2026-11-03)
 
 
