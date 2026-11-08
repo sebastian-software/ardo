@@ -15,7 +15,7 @@ type LinkContext = Pick<RouteManifestEntry, "publicPath" | "routePath"> & {
 }
 type LinkConfig = Pick<
   ResolvedConfig,
-  "base" | "deploymentBase" | "siteUrl" | "versioning" | "i18n"
+  "base" | "deploymentBase" | "siteUrl" | "trailingSlash" | "versioning" | "i18n"
 >
 
 /** Native source spans identify links without touching code, images, or external URLs. */
@@ -62,6 +62,7 @@ function resolveDestination(destination: string, entry: LinkContext, config: Lin
     base: explicitLocale && !scoped ? config.base : base,
     path: entry.routePath,
     routeHrefs: entry.routeHrefs,
+    trailingSlash: config.trailingSlash,
   }
   const publicPage = new URL(entry.publicPath, config.siteUrl || localOrigin)
   const mounted = isMountedPath(destination, config)

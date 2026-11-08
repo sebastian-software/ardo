@@ -72,6 +72,17 @@ function entry({
   }
 }
 
+function siteConfig(trailingSlash: boolean | undefined, extra = {}) {
+  return resolveConfig(
+    { title: "Docs", base: "/docs/", siteUrl: "https://example.com", trailingSlash, ...extra },
+    "/tmp"
+  )
+}
+
+function sources(assets: Array<{ fileName: string; source: string }>) {
+  return Object.fromEntries(assets.map((asset) => [asset.fileName, asset.source]))
+}
+
 describe("llms-text", () => {
   it.each(["", "https://example.com"])(
     "projects JSX-wrapped links before resolving them with siteUrl=%j",
@@ -551,6 +562,112 @@ describe("llms-text", () => {
     )
     expect(assets.find((asset) => asset.fileName === "llms-full.txt")?.source).toContain(
       "First paragraph.\n\nSecond paragraph.\n\n```txt\nalpha\n\n\nomega\n```\n\nLast."
+    )
+  })
+
+  describe("trailingSlash", () => {
+    const pages = [
+      entry({ frontmatter: { title: "Home" }, routePath: "/" }),
+      entry({
+        content: "[x](/guide/intro) [r](/) [f](/f.pdf)",
+        frontmatter: { title: "Intro" },
+        routePath: "/guide/intro",
+      }),
+      entry({ frontmatter: { title: "Other" }, routePath: "/guide/other" }),
+    ]
+    // Page URLs: slash for true only. Body links: slash for true and unset.
+    const cases = [
+      { trailingSlash: true, page: "/", body: "/" },
+      { trailingSlash: false, page: "", body: "" },
+      { trailingSlash: undefined, page: "", body: "/" },
+    ]
+
+    it.each(cases)(
+      "spells llms.txt HTML page links per trailingSlash=$trailingSlash when pages are off",
+      ({ trailingSlash, page }) => {
+        const text = generateLlmsTxt(
+          pages,
+          siteConfig(trailingSlash, { seo: { llms: { pages: false } } })
+        )
+        expect(text).toContain("- [Home](https://example.com/docs/)")
+        expect(text).toContain(`- [Intro](https://example.com/docs/guide/intro${page})`)
+        expect(text).toContain(`- [Other](https://example.com/docs/guide/other${page})`)
+      }
+    )
+
+    it.each(cases)(
+      "keeps llms.txt Markdown links whatever trailingSlash=$trailingSlash is",
+      ({ trailingSlash }) => {
+        const text = generateLlmsTxt(pages, siteConfig(trailingSlash))
+        expect(text).toContain("(https://example.com/docs/index.md)")
+        expect(text).toContain("(https://example.com/docs/guide/intro.md)")
+      }
+    )
+
+    it.each(cases)(
+      "spells llms-full Source lines per trailingSlash=$trailingSlash",
+      ({ trailingSlash, page }) => {
+        const text = generateLlmsFullTxt(pages, siteConfig(trailingSlash))
+        expect([...text.matchAll(/^Source: .+$/gmu)].map((match) => match[0])).toStrictEqual([
+          "Source: https://example.com/docs/",
+          `Source: https://example.com/docs/guide/intro${page}`,
+          `Source: https://example.com/docs/guide/other${page}`,
+        ])
+      }
+    )
+
+    it.each(cases)(
+      "keeps page file names and spells their Source lines per trailingSlash=$trailingSlash",
+      ({ trailingSlash, page }) => {
+        const assets = createLlmsTextAssets(pages, siteConfig(trailingSlash))
+        const files = assets.filter((asset) => asset.fileName.endsWith(".md"))
+        expect(files.map((asset) => asset.fileName)).toStrictEqual([
+          "index.md",
+          "guide/intro.md",
+          "guide/other.md",
+        ])
+        expect(files.map((asset) => /^Source: .+$/mu.exec(asset.source)?.[0])).toStrictEqual([
+          "Source: https://example.com/docs/",
+          `Source: https://example.com/docs/guide/intro${page}`,
+          `Source: https://example.com/docs/guide/other${page}`,
+        ])
+      }
+    )
+
+    it.each(cases)(
+      "spells body links in full text and page files per trailingSlash=$trailingSlash",
+      ({ trailingSlash, body }) => {
+        const assets = createLlmsTextAssets(pages, siteConfig(trailingSlash))
+        const expected = `[x](<https://example.com/docs/guide/intro${body}>) [r](<https://example.com/docs/>) [f](<https://example.com/docs/f.pdf>)`
+        expect(sources(assets)["llms-full.txt"]).toContain(expected)
+        expect(sources(assets)["guide/intro.md"]).toContain(expected)
+      }
+    )
+
+    it.each(cases)(
+      "spells versioned Source lines per trailingSlash=$trailingSlash",
+      ({ trailingSlash, page }) => {
+        const versioned = siteConfig(trailingSlash, {
+          versioning: { current: "v6", versions: [{ id: "v6", path: "/v6/" }] },
+        })
+        const assets = createLlmsTextAssets(
+          [
+            entry({ frontmatter: { title: "Home" }, publicPath: "/docs/v6/", routePath: "/" }),
+            entry({
+              frontmatter: { title: "Intro" },
+              publicPath: "/docs/v6/guide/intro",
+              routePath: "/guide/intro",
+            }),
+          ],
+          versioned
+        )
+        const text = sources(assets)["v6/llms-full.txt"]
+        expect([...text.matchAll(/^Source: .+$/gmu)].map((match) => match[0])).toStrictEqual([
+          "Source: https://example.com/docs/v6/",
+          `Source: https://example.com/docs/v6/guide/intro${page}`,
+        ])
+        expect(sources(assets)["v6/llms.txt"]).toContain("(https://example.com/docs/v6/index.md)")
+      }
     )
   })
 })

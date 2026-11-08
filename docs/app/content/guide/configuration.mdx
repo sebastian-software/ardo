@@ -447,8 +447,9 @@ Use frontmatter `redirectFrom` when a redirect belongs to one page instead of th
 Chooses one spelling for every page URL Ardo generates: `true` ends page URLs with a slash, such
 as `/guide/`, and `false` drops it, such as `/guide`. The setting applies to sitemap entries,
 canonical and `og:url` links, locale alternate links, internal links, redirect targets, the URLs
-of the publication, its posts and tag archives, and the links in feeds. The site root, the
-deployment `base`, keeps its slash.
+of the publication, its posts and tag archives, the links in feeds, and the page links in
+`llms.txt`, `llms-full.txt`, and the per-page Markdown files. Links to the Markdown files
+themselves keep their form. The site root, the deployment `base`, keeps its slash.
 
 ```ts
 defineArdoConfig({

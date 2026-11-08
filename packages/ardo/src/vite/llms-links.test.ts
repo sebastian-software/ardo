@@ -93,4 +93,55 @@ describe("LLM content hyperlinks", () => {
       )
     ).toBe("[next](</docs/v6/de/guide/next/>) [here](</docs/v6/de/guide/setup#details>)")
   })
+
+  it.each([
+    { trailingSlash: true, slash: "/" },
+    { trailingSlash: false, slash: "" },
+    { trailingSlash: undefined, slash: "/" },
+  ])("spells known page links per trailingSlash=$trailingSlash", ({ trailingSlash, slash }) => {
+    const spelled = resolveConfig(
+      { title: "Docs", siteUrl: "https://example.com", base: "/docs/", trailingSlash },
+      "/tmp"
+    )
+    expect(
+      resolveLlmsContentLinks(
+        "[x](/guide/intro) [r](/) [f](/f.pdf)",
+        {
+          publicPath: "/docs/guide/page",
+          routePath: "/guide/page",
+          routePaths: new Set(["/guide/intro"]),
+        },
+        spelled
+      )
+    ).toBe(
+      `[x](<https://example.com/docs/guide/intro${slash}>) [r](<https://example.com/docs/>) [f](<https://example.com/docs/f.pdf>)`
+    )
+  })
+
+  it.each([
+    { trailingSlash: true, slash: "/" },
+    { trailingSlash: false, slash: "" },
+    { trailingSlash: undefined, slash: "/" },
+  ])(
+    "keeps anchors and queries on spelled links per trailingSlash=$trailingSlash",
+    ({ trailingSlash, slash }) => {
+      const spelled = resolveConfig(
+        { title: "Docs", siteUrl: "https://example.com", base: "/docs/", trailingSlash },
+        "/tmp"
+      )
+      expect(
+        resolveLlmsContentLinks(
+          "[a](/guide/intro#x) [q](/guide/intro?q=1) [b](/guide/intro?q=1#x)",
+          {
+            publicPath: "/docs/guide/page",
+            routePath: "/guide/page",
+            routePaths: new Set(["/guide/intro"]),
+          },
+          spelled
+        )
+      ).toBe(
+        `[a](<https://example.com/docs/guide/intro${slash}#x>) [q](<https://example.com/docs/guide/intro${slash}?q=1>) [b](<https://example.com/docs/guide/intro${slash}?q=1#x>)`
+      )
+    }
+  )
 })

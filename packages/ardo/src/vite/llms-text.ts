@@ -2,6 +2,7 @@ import type { LlmsConfig, ResolvedConfig } from "../config/types"
 import type { RouteManifestEntry } from "./route-manifest"
 
 import { getCurrentVersion } from "../config/versioning"
+import { spellPagePath } from "../runtime/trailing-slash"
 import { resolveSectionLabel } from "../ui/section-kinds"
 import { shiftHeadings } from "./llms-headings"
 import { createLlmsBodyRenderer, toPageMarkdownFileName, toPageMarkdownPath } from "./llms-pages"
@@ -41,10 +42,9 @@ export function generateLlmsTxt(
   const lines = createHeaderLines(llmsConfig, config)
   // With per-page files, each link names the page's Markdown instead of its HTML route.
   const linkUrl = (entry: RouteManifestEntry) =>
-    toAbsolutePublicUrl(
-      llmsConfig.pages ? toPageMarkdownPath(entry.publicPath) : entry.publicPath,
-      config
-    )
+    llmsConfig.pages
+      ? toAbsolutePublicUrl(toPageMarkdownPath(entry.publicPath), config)
+      : toAbsolutePageUrl(entry.publicPath, config)
 
   appendDocsSections(lines, links, linkUrl)
   appendFullDocSection(lines, llmsConfig, config)
@@ -66,7 +66,7 @@ export function generateLlmsFullTxt(entries: RouteManifestEntry[], config: Resol
     if (description != null) {
       lines.push(description, "")
     }
-    lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
+    lines.push(`Source: ${toAbsolutePageUrl(entry.publicPath, config)}`, "")
     if (content.trim() !== "") {
       // The page title is the `##` above, so the page's own headings move one level down.
       lines.push(shiftHeadings(content, 1), "")
@@ -144,7 +144,7 @@ function createLlmsPageAssets(
     if (description != null) {
       lines.push(description, "")
     }
-    lines.push(`Source: ${toAbsolutePublicUrl(entry.publicPath, config)}`, "")
+    lines.push(`Source: ${toAbsolutePageUrl(entry.publicPath, config)}`, "")
     const content = renderBody(entry, title)
     if (content.trim() !== "") {
       lines.push(content, "")
@@ -318,6 +318,14 @@ function toAbsoluteUrl(routePath: string, config: ResolvedConfig) {
   }
 
   return `${config.siteUrl.replace(/\/$/u, "")}${basePath}`
+}
+
+/** The page's HTML URL, spelled by the site's `trailingSlash` setting like the sitemap. */
+function toAbsolutePageUrl(publicPath: string, config: ResolvedConfig) {
+  return toAbsolutePublicUrl(
+    spellPagePath(publicPath, config.trailingSlash, config.deploymentBase),
+    config
+  )
 }
 
 function toAbsolutePublicUrl(publicPath: string, config: ResolvedConfig) {
