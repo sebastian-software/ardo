@@ -7,7 +7,7 @@ import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
 import { spellPagePath } from "../runtime/trailing-slash"
 import path from "node:path"
-import { getGitFileTimestamps } from "./git-utils"
+import { getGitFileTimestamps, sourceHistoryDirectory } from "./git-utils"
 import { normalizePath } from "./path-utils"
 
 export { generateSitemap } from "./sitemap"
@@ -127,7 +127,10 @@ export function createBuildOutputAssets(
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
   if (config.seo.sitemap !== false) {
-    const commits = llms.routesDir == null ? undefined : getGitFileTimestamps(llms.routesDir)
+    const commits =
+      llms.routesDir == null
+        ? undefined
+        : getGitFileTimestamps(sourceHistoryDirectory(llms.routesDir, config))
     const commitTime = (filePath: string) =>
       llms.routesDir == null
         ? undefined

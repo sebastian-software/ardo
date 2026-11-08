@@ -62,7 +62,9 @@ export async function loadVirtualModule(
       // A pinned buildTime keeps the footer on the moment the publication used.
       buildTime: state.resolvedConfig.buildTime ?? new Date().toISOString(),
       // A configured hash, "" included, wins and skips the Git command.
-      buildHash: state.resolvedConfig.buildHash ?? detectGitHash(state.resolvedConfig.root),
+      buildHash:
+        state.resolvedConfig.buildHash ??
+        detectGitHash(state.resolvedConfig.sourceRoot ?? state.resolvedConfig.root),
     }
     return `export default ${JSON.stringify(clientConfig)}`
   }

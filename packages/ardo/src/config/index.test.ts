@@ -328,6 +328,29 @@ describe("resolveConfig", () => {
     expect("buildHash" in resolved).toBe(false)
   })
 
+  it("resolves sourceRoot against the project root and leaves it absent otherwise", () => {
+    const staged = "/repo/apps/site/.variant-build/en"
+    expect(resolveConfig({ title: "Test", sourceRoot: "../.." }, staged).sourceRoot).toBe(
+      "/repo/apps/site"
+    )
+    expect(
+      resolveConfig({ title: "Test", sourceRoot: "/repo/apps/site/" }, staged).sourceRoot
+    ).toBe("/repo/apps/site")
+    expect("sourceRoot" in resolveConfig({ title: "Test" }, "/project")).toBe(false)
+  })
+
+  it.each([
+    ["empty", ""],
+    ["number", 1],
+  ])(
+    "rejects a sourceRoot that is not a path (%s) in the aggregated error",
+    (_name, sourceRoot) => {
+      expect(() =>
+        resolveConfig({ title: "Test", sourceRoot: sourceRoot as string }, "/project")
+      ).toThrow("[ardo] Invalid config:\n- sourceRoot must be a non-empty directory path.")
+    }
+  )
+
   it.each([
     ["number", 123],
     ["null", null],

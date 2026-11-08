@@ -17,6 +17,7 @@ import { ardoCodeBlockPlugin } from "./codeblock-plugin"
 import { createCollectionContentSources } from "./collections"
 import { createContentSourcePlugin } from "./content-sources-plugin"
 import { reportFrontmatterDiagnostics } from "./frontmatter-diagnostics"
+import { assertSourceRoot } from "./git-utils"
 import { reportLocalizedRouteDiagnostics } from "./i18n-routes"
 import { createIconsPlugin } from "./icons"
 import { runArdoLifecyclePhase } from "./lifecycle"
@@ -188,6 +189,7 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
         deploymentBaseOverride: state.deploymentBase,
         buildTime: state.buildTime,
       })
+      assertSourceRoot(state.resolvedConfig)
     },
     resolveId(id) {
       return resolveVirtualModuleId(id)

@@ -34,6 +34,7 @@ const optionNames = {
   project: true,
   buildTime: true,
   buildHash: true,
+  sourceRoot: true,
 } satisfies Record<keyof ArdoPluginOptions, true>
 
 /** JavaScript configs and computed exports need the same spelling checks as TS literals. */

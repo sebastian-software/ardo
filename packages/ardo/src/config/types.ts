@@ -228,6 +228,16 @@ export type ArdoConfig = {
    * absent when neither exists.
    */
   buildHash?: string
+  /**
+   * The project directory that this build's project mirrors, for a build that runs from a copy,
+   * such as one staged copy per language. Ardo then reads Git history from the original files:
+   * a route's last-updated date and sitemap `lastmod` use the last commit of the file at the same
+   * path under `sourceRoot`, and the detected `buildHash` is that repository's commit. A file the
+   * source does not have or Git does not track keeps the copy's file time, as without the option.
+   * Relative paths resolve against the project root. Opt-in: without it, Ardo reads the history
+   * of the project itself as before.
+   */
+  sourceRoot?: string
 }
 
 export type MetadataConfig = {
@@ -497,11 +507,14 @@ export type ResolvedConfig = {
   buildHash?: string
   /** The configured `trailingSlash`; absent when the site keeps Ardo's earlier mixed spelling. */
   trailingSlash?: boolean
+  /** The configured `sourceRoot` as an absolute path; absent when the site did not set it. */
+  sourceRoot?: string
 } & Required<
   Omit<
     ArdoConfig,
     | "buildHash"
     | "buildTime"
+    | "sourceRoot"
     | "trailingSlash"
     | "navigation"
     | "openapi"

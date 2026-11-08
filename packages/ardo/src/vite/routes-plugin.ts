@@ -6,7 +6,7 @@ import type { ResolvedConfig } from "../config/types"
 import { resolveRoutePublicPath } from "../shared/route-links"
 
 import { findArdoPackageRoot } from "./managed-runtime"
-import { getGitFileTimestamps } from "./git-utils"
+import { getGitFileTimestamps, sourceHistoryDirectory } from "./git-utils"
 import { isPathInsideDirectory, normalizePath, resolveRoutesDir } from "./path-utils"
 import { type RouteInfo, scanRoutesSync } from "./routes-core"
 
@@ -122,7 +122,8 @@ export function createRoutesModule({
   config?: ResolvedConfig
   routes?: readonly RouteInfo[]
 }) {
-  const timestamps = getGitFileTimestamps(routesDir)
+  // Keys are relative to the routes directory, which a staged copy shares with its source.
+  const timestamps = getGitFileTimestamps(sourceHistoryDirectory(routesDir, config))
   const publicPaths = new Map<string, string>()
   const entries = sortRoutes(routes).map((route) => {
     const relativePath = normalizePath(path.relative(routesDir, route.filePath))

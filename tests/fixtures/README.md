@@ -13,7 +13,8 @@ consumer suite installs Basic and the native API overlay outside the workspace.
 - `github-pages/`: subpath links, assets, prerendering, and flattened static output.
 - `sitemap/`: TSX route exclusions that preserve pages and sibling sitemap entries.
 - `custom-shell/`: a document shell from `ArdoHead`, `ArdoOutlet`, and `ArdoScripts` only, with
-  Markdown pages and a publication; browser tests serve a temporary copy.
+  Markdown pages and a publication whose index and tag modules give the root page data; browser
+  tests serve a temporary copy, and the staged-build test copies it from a Git repository.
 - `runtime/`: a standalone internal app for shared-runtime hydration, bundled SSR,
   stylesheet ownership, and bare layouts with custom chrome.
 
