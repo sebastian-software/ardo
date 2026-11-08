@@ -130,6 +130,7 @@ export default defineConfig({
           dark: "github-dark",
         },
         lineNumbers: false,
+        mermaid: true,
         toc: {
           level: [2, 3],
         },

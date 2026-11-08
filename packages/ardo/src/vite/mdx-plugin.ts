@@ -5,7 +5,7 @@ import { transformWithOxc } from "vite"
 import type { ArdoConfig } from "../config/types"
 import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
-import { compileMdxRouteModule } from "./mdx-compile"
+import { compileMdxRouteModuleWithCode } from "./mdx-compile"
 import type { PublicationPostBinding } from "./publication-routes"
 
 type CompileInput = {
@@ -101,7 +101,7 @@ async function compileRouteModule({
   source,
   sourceName,
 }: CompileInput) {
-  const module = compileMdxRouteModule({
+  const module = await compileMdxRouteModuleWithCode({
     format,
     id: sourceName,
     markdownConfig,

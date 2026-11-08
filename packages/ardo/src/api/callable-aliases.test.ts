@@ -222,16 +222,17 @@ describe("callable declaration aliases", () => {
       new URL("../../node_modules/ferromark/index.d.mts", import.meta.url)
     )
     const result = await extractDeclarations([entry])
-    const renderer = result.items.find((item) => item.name === "JsxCodeRenderer")
+    const renderer = result.items.find((item) => item.name === "CodeBlockRenderer")
     expect(renderer).toMatchObject({
       kind: "type",
       signatures: [
         {
-          returnType: "string | null | undefined",
+          returnType: "string | { html: string } | null | undefined",
           parameters: [
             { name: "code", type: "string", optional: false },
             { name: "language", type: "string | null", optional: true },
             { name: "meta", type: "string | null", optional: true },
+            { name: "block", type: "CodeBlockLocation", optional: true },
           ],
         },
       ],

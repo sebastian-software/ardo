@@ -14,15 +14,15 @@ export type FerrikiHighlightOptions = {
   meta?: string
 }
 
-type FerrikiTheme = { dark: ThemeInput; light: ThemeInput } | ThemeInput
+export type FerrikiTheme = { dark: ThemeInput; light: ThemeInput } | ThemeInput
 
-const defaultTheme = { light: "github-light-default", dark: "github-dark-default" }
+export const defaultTheme = { light: "github-light-default", dark: "github-dark-default" }
 const highlighterPromises = new Map<string, Promise<Highlighter>>()
 const failedLanguageWarnings = new Set<string>()
 
 /**
  * Compatibility HTML renderer exported from ardo/vite. Native Markdown and
- * literal TSX fences use JsxCompiler instead. The highlighter is cached by theme and
+ * literal TSX fences use code hooks instead. The highlighter is cached by theme and
  * loads language assets only when a document first uses that language.
  */
 export async function highlightCode(
@@ -71,7 +71,7 @@ function renderHtml(input: {
   }
 }
 
-async function loadLanguage(
+export async function loadLanguage(
   highlighter: Highlighter,
   language: string,
   sourcePath?: string
@@ -89,7 +89,7 @@ async function loadLanguage(
   }
 }
 
-async function getHighlighter(theme: FerrikiTheme | undefined): Promise<Highlighter> {
+export async function getHighlighter(theme: FerrikiTheme | undefined): Promise<Highlighter> {
   const cacheKey = themeKey(theme)
   let highlighterPromise = highlighterPromises.get(cacheKey)
   if (highlighterPromise == null) {
@@ -134,11 +134,11 @@ function themeKey(theme: FerrikiTheme | undefined): string {
   return JSON.stringify(normalized)
 }
 
-function isThemePair(value: FerrikiTheme): value is { light: ThemeInput; dark: ThemeInput } {
+export function isThemePair(value: FerrikiTheme): value is { light: ThemeInput; dark: ThemeInput } {
   return isRecord(value) && "light" in value && "dark" in value
 }
 
-function warnHighlightFailure(error: unknown, language: string, sourcePath?: string): void {
+export function warnHighlightFailure(error: unknown, language: string, sourcePath?: string): void {
   const key = `${sourcePath ?? ""}\u0000${language}`
   if (failedLanguageWarnings.has(key)) return
   failedLanguageWarnings.add(key)

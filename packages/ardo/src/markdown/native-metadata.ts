@@ -10,7 +10,7 @@ import { parse as parseYaml } from "yaml"
 
 import type { MarkdownConfig } from "../config/types"
 
-import { getJsxCompiler } from "./jsx-compiler"
+import { getCodeCompiler } from "./code-compiler"
 
 export type NativeMarkdownFormat = "md" | "mdx"
 
@@ -156,7 +156,7 @@ export function prepareNativeMarkdown(
     output: _output,
     ...preparationOptions
   } = getNativeMarkdownCompileOptions(markdownConfig, { format })
-  const prepared = getJsxCompiler(markdownConfig).prepare(source, {
+  const prepared = getCodeCompiler(markdownConfig).prepare(source, {
     ...preparationOptions,
     ...(markdownConfig.trackReferences == null
       ? {}

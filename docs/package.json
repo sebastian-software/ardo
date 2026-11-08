@@ -24,13 +24,14 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@ferrigura/core": "^0.4.0",
     "@palamedes/cli": "^2.0.0",
     "@palamedes/core-node": "^2.0.0",
     "@palamedes/vite-plugin": "^2.0.0",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vanilla-extract/css": "catalog:",
-    "ferromark": "^3.7.0",
+    "ferromark": "^4.0.0",
     "oxc-parser": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
