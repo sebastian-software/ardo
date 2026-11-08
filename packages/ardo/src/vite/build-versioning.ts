@@ -2,6 +2,7 @@ import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
 import { getCurrentVersion } from "../config/versioning"
+import { spellPagePath } from "../runtime/trailing-slash"
 import { buildPublicPath } from "./route-identity"
 import type { RouteManifestEntry } from "./route-manifest"
 
@@ -74,12 +75,18 @@ export function getVersioningRedirects(
           }),
         }
       : null
+  // Every target is a page, so it ends at the page's canonical spelling and needs no second hop.
   return [
     getRootVersionRedirect(config),
     getVersionRootLocaleRedirect(config),
     siteLocale,
     ...getDocumentationRootRedirects(config, entries),
-  ].filter((redirect): redirect is { from: string; to: string } => redirect != null)
+  ]
+    .filter((redirect): redirect is { from: string; to: string } => redirect != null)
+    .map(({ from, to }) => ({
+      from,
+      to: spellPagePath(to, config.trailingSlash, config.deploymentBase),
+    }))
 }
 
 /** A version root enters its documentation, rather than a historical marketing home. */

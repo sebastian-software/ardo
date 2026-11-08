@@ -10,6 +10,7 @@ import { resolveConfig } from "../config"
 import { resolveArdoHref } from "../runtime/page-context"
 import { spellPagePath, spellPageUrl } from "../runtime/trailing-slash"
 import { collectRedirects, generateSitemap } from "./build-outputs"
+import { getVersioningRedirects } from "./build-versioning"
 import { getTrailingSlashRedirect } from "./dev-render"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { createPageMetadata } from "./page-metadata"
@@ -122,6 +123,63 @@ describe("one site-wide spelling", () => {
         (candidate) => candidate.from === "/guide/intro-old"
       )
       expect(redirect?.to).toBe(target)
+    }
+  )
+})
+
+const localized = (trailingSlash?: boolean) =>
+  resolveConfig(
+    {
+      title: "Docs",
+      siteUrl: "https://example.com",
+      i18n: { defaultLocale: "de", locales: [{ id: "de" }, { id: "en" }] },
+      ...(trailingSlash === undefined ? {} : { trailingSlash }),
+    },
+    "/site"
+  )
+
+const versioned = (trailingSlash?: boolean) =>
+  resolveConfig(
+    {
+      title: "Docs",
+      siteUrl: "https://example.com",
+      base: "/project/",
+      versioning: { current: "v2", versions: [{ id: "v2", path: "/v2/" }], directories: ["guide"] },
+      ...(trailingSlash === undefined ? {} : { trailingSlash }),
+    },
+    "/site"
+  )
+
+const legacyVersioned = (trailingSlash?: boolean) =>
+  resolveConfig(
+    {
+      title: "Docs",
+      versioning: { current: "v2", versions: [{ id: "v2", path: "/v2/" }] },
+      ...(trailingSlash === undefined ? {} : { trailingSlash }),
+    },
+    "/site"
+  )
+
+describe("generated root redirects", () => {
+  it.each([
+    { trailingSlash: false, locale: "/de", docs: "/project/v2/guide/intro", root: "/v2" },
+    { trailingSlash: true, locale: "/de/", docs: "/project/v2/guide/intro/", root: "/v2/" },
+    { trailingSlash: undefined, locale: "/de/", docs: "/project/v2/guide/intro/", root: "/v2/" },
+  ] as const)(
+    "trailingSlash $trailingSlash spells the locale and version root targets",
+    ({ trailingSlash, locale, docs, root }) => {
+      expect(getVersioningRedirects(localized(trailingSlash))).toContainEqual({
+        from: "/",
+        to: locale,
+      })
+      const config = versioned(trailingSlash)
+      const redirects = collectRedirects([entry(config, "/guide/intro")], config)
+      expect(redirects).toContainEqual({ from: "/project/v2/", to: docs })
+      // Legacy versioning sends the site root to the current version's root page.
+      expect(getVersioningRedirects(legacyVersioned(trailingSlash))).toContainEqual({
+        from: "/",
+        to: root,
+      })
     }
   )
 })
