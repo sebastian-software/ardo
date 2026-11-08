@@ -63,8 +63,10 @@ const budgets = {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
-    budget: 2_700_000,
-    baseline: "≈2.0 MB (2026-10, four route trees, catalogs, and search indexes)",
+    // 2026-11: raised from 2.7 MB to 2.85 MB for the 80 API reference pages of the publication
+    // module types. Moving the page loaders out of the entry did not shrink this total.
+    budget: 2_850_000,
+    baseline: "≈2.78 MB (2026-11, four route trees, catalogs, and search indexes)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
