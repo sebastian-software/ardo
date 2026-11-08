@@ -1,7 +1,9 @@
 import { type ReactNode, StrictMode, useMemo } from "react"
 
 import type { ArdoConfig } from "../config/types"
-import type { ArdoResolvedPage, ArdoRootModule, ArdoRouteEntry } from "./routing"
+import type { ArdoResolvedPage, ArdoRootModule } from "./routing"
+
+import { createRouteHrefs, getRouteLinks } from "../shared/route-links"
 
 import { ArdoConfigProvider } from "./hooks"
 import { ArdoPageProvider } from "./page"
@@ -34,40 +36,24 @@ export function ArdoPageTree({ config, page, root }: ArdoAppProps) {
 /**
  * The React root both sides render. The server renders it on its own, so ids
  * from `useId` match what the client hydrates.
+ *
+ * `paths` holds the logical path of every route, from
+ * `virtual:ardo/client-routes`. Both sides derive the link data from it with
+ * the same function, so rendered `href`s match during hydration.
  */
 export function ArdoApp({
   config,
   page,
+  paths,
   root,
-  routes,
-}: ArdoAppProps & { routes: ArdoRouteEntry[] }) {
-  const paths = useMemo(
-    () => new Set(routes.map((route) => route.logicalPath ?? route.path)),
-    [routes]
+}: ArdoAppProps & { paths: readonly string[] }) {
+  const routePaths = useMemo(() => getRouteLinks(paths, config).paths, [paths, config])
+  const hrefs = useMemo(
+    () => createRouteHrefs(paths, config, page.data.path),
+    [paths, config, page.data.path]
   )
-  const hrefs = useMemo(() => {
-    const result = new Map(
-      routes.flatMap((route) =>
-        route.publicPath == null ? [] : [[route.logicalPath ?? route.path, route.publicPath]]
-      )
-    )
-    const i18n = config?.i18n
-    if (i18n != null && i18n !== false && result.size > 0) {
-      const locale =
-        i18n.locales.find((entry) => page.data.path.split("/")[1] === entry.id)?.id ??
-        i18n.defaultLocale
-      for (const route of routes) {
-        if (route.publicPath == null) continue
-        const logical = route.logicalPath ?? route.path
-        const publicPath = route.publicPath
-        if (logical === `/${locale}` || logical.startsWith(`/${locale}/`))
-          result.set(logical.slice(locale.length + 1) || "/", publicPath)
-      }
-    }
-    return result
-  }, [routes, config, page.data.path])
   return (
-    <ArdoRoutePathsContext value={paths}>
+    <ArdoRoutePathsContext value={routePaths}>
       <ArdoRouteHrefsContext value={hrefs}>
         <StrictMode>
           <ArdoPageTree config={config} page={page} root={root} />

@@ -29,10 +29,19 @@ export type ArdoRouteEntry = {
   load: () => Promise<ArdoRouteModule>
 }
 
+/** The parts of a route that rendering a page needs. The client knows only these. */
+export type ArdoPageRoute = Pick<ArdoRouteEntry, "id" | "load"> &
+  Partial<Pick<ArdoRouteEntry, "logicalPath" | "source">>
+
+/** Lazy page module imports keyed by route id, from `virtual:ardo/page-loaders`. */
+export type ArdoPageLoaders = Record<string, () => Promise<ArdoRouteModule>>
+
 /** Serializable description of a rendered page, shared by server and client. */
 export type ArdoPageData = {
   base: string
   error?: { status: number; message?: string }
+  /** URL of the page's own module chunk in a build, the same URL as its `modulepreload`. */
+  module?: string
   path: string
   routeId?: string
   source?: ArdoPage["source"]
@@ -65,7 +74,7 @@ export async function resolvePage(input: {
   base: string
   path: string
   root: ArdoRootModule
-  route: ArdoRouteEntry | undefined
+  route: ArdoPageRoute | undefined
   error?: ArdoPageData["error"]
   source?: ArdoPage["source"]
   /** `<title>` for pages whose module and root set none, usually the site title. */
@@ -97,6 +106,58 @@ export async function resolvePage(input: {
     error,
     meta: withDefaultTitle(root.meta?.() ?? [], input.siteTitle),
   }
+}
+
+/**
+ * Load the module of the page the server rendered. A build names the page's
+ * own chunk, which the document already preloads, so the page loads in one
+ * request. Without that URL, as in development, the loader table is imported
+ * and the page loads through it.
+ */
+export async function loadPageModule(
+  page: { module?: unknown; routeId: string },
+  options: {
+    /** URL the module URL resolves against, like the `modulepreload` link: `document.baseURI`. */
+    baseURI: string
+    /** Receives `vite:preloadError` when the page chunk fails to load: the window, `globalThis`. */
+    events: EventTarget
+    importModule: (url: string) => Promise<ArdoRouteModule>
+    importLoaders: () => Promise<ArdoPageLoaders>
+  }
+): Promise<ArdoRouteModule> {
+  if (typeof page.module === "string" && page.module !== "") {
+    const url = new URL(page.module, options.baseURI).href
+    try {
+      return await options.importModule(url)
+    } catch (error) {
+      return reportPreloadError(error, options.events)
+    }
+  }
+  const loaders = await options.importLoaders()
+  const load = Object.hasOwn(loaders, page.routeId) ? loaders[page.routeId] : undefined
+  if (load == null) {
+    throw new Error(`[ardo] The client has no page module for route "${page.routeId}".`)
+  }
+  return load()
+}
+
+/**
+ * Report a failed page chunk import the way Vite's preload helper reports the
+ * dynamic imports it wraps, which the direct import of the page URL bypasses: a
+ * cancelable `vite:preloadError` event whose `payload` is the error. A site can
+ * prevent it to recover from a deployment that replaced the chunk, usually by
+ * reloading the page. Then hydration stops and waits for that; otherwise the
+ * error is rethrown.
+ */
+async function reportPreloadError(error: unknown, events: EventTarget): Promise<never> {
+  const event = Object.assign(new Event("vite:preloadError", { cancelable: true }), {
+    payload: error,
+  })
+  events.dispatchEvent(event)
+  if (!event.defaultPrevented) throw error
+  return new Promise<never>(() => {
+    // The listener took over; the page never renders from this import.
+  })
 }
 
 /** Every page gets a `<title>`: the site title unless the page or root set one. */

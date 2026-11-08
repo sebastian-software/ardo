@@ -3,7 +3,7 @@ import type { Plugin, ViteDevServer } from "vite"
 import { existsSync, statSync } from "node:fs"
 import path from "node:path"
 import type { ResolvedConfig } from "../config/types"
-import { createCurrentRouteIdentity } from "./route-identity"
+import { resolveRoutePublicPath } from "../shared/route-links"
 
 import { findArdoPackageRoot } from "./managed-runtime"
 import { getGitFileTimestamps } from "./git-utils"
@@ -16,11 +16,17 @@ export type ArdoRoutesPluginOptions = {
 }
 
 export const VIRTUAL_ROUTES_ID = "virtual:ardo/routes"
+/** The root module and every logical route path: what the client entry needs for links. */
+export const VIRTUAL_CLIENT_ROUTES_ID = "virtual:ardo/client-routes"
+/** Route id to page module loader, imported lazily when a page names no module URL. */
+export const VIRTUAL_PAGE_LOADERS_ID = "virtual:ardo/page-loaders"
 export const VIRTUAL_ENTRY_CLIENT_ID = "virtual:ardo/entry-client"
 export const VIRTUAL_ENTRY_SERVER_ID = "virtual:ardo/entry-server"
 
 const RESOLVED = {
   [VIRTUAL_ROUTES_ID]: `\0${VIRTUAL_ROUTES_ID}`,
+  [VIRTUAL_CLIENT_ROUTES_ID]: `\0${VIRTUAL_CLIENT_ROUTES_ID}`,
+  [VIRTUAL_PAGE_LOADERS_ID]: `\0${VIRTUAL_PAGE_LOADERS_ID}`,
   [VIRTUAL_ENTRY_CLIENT_ID]: `\0${VIRTUAL_ENTRY_CLIENT_ID}`,
   [VIRTUAL_ENTRY_SERVER_ID]: `\0${VIRTUAL_ENTRY_SERVER_ID}`,
 } as const
@@ -30,6 +36,9 @@ type VirtualId = keyof typeof RESOLVED
 /**
  * Provide the route table and Ardo's client and server entries as virtual
  * modules. Every file in the routes directory becomes a lazily loaded page.
+ * The server renders from the full route table. The client entry carries only
+ * the logical paths and loads the page module the server names; the loader
+ * table is a separate, lazily imported chunk for pages without that URL.
  */
 export function ardoRoutesPlugin(
   options: ArdoRoutesPluginOptions = {},
@@ -37,6 +46,7 @@ export function ardoRoutesPlugin(
 ): Plugin {
   let root = process.cwd()
   let routesDir = resolveRoutesDir(root, options.routesDir)
+  const scan = createRouteScan(() => routesDir)
 
   return {
     name: "ardo:routes",
@@ -45,6 +55,7 @@ export function ardoRoutesPlugin(
     configResolved(config) {
       root = config.root
       routesDir = resolveRoutesDir(root, options.routesDir)
+      scan.reset()
     },
 
     resolveId(id) {
@@ -53,7 +64,21 @@ export function ardoRoutesPlugin(
 
     load(id) {
       if (id === RESOLVED[VIRTUAL_ROUTES_ID]) {
-        return createRoutesModule({ root, routesDir, config: state?.resolvedConfig })
+        const routes = scan.read(this.environment?.name, id)
+        return createRoutesModule({ root, routesDir, config: state?.resolvedConfig, routes })
+      }
+      if (id === RESOLVED[VIRTUAL_CLIENT_ROUTES_ID]) {
+        return createClientRoutesModule({
+          routesDir,
+          routes: scan.read(this.environment?.name, id),
+        })
+      }
+      if (id === RESOLVED[VIRTUAL_PAGE_LOADERS_ID]) {
+        return createPageLoadersModule({
+          root,
+          routesDir,
+          routes: scan.read(this.environment?.name, id),
+        })
       }
       if (id === RESOLVED[VIRTUAL_ENTRY_CLIENT_ID]) {
         return `import ${JSON.stringify(resolveArdoEntry("client"))}\n`
@@ -74,7 +99,7 @@ export const renderPage = (path, options) => withRenderContext({ path, render: (
       server.watcher.add(routesDir)
       const handleChange = (changedPath: string) => {
         if (isRouteFile(changedPath, routesDir) || isRootFile(changedPath, routesDir))
-          invalidateRoutes(server)
+          invalidateRoutes(server, scan)
       }
       server.watcher.on("add", handleChange)
       server.watcher.on("unlink", handleChange)
@@ -82,24 +107,22 @@ export const renderPage = (path, options) => withRenderContext({ path, render: (
   }
 }
 
-/** Generate the route table module for the routes in `routesDir`. */
+/**
+ * Generate the full route table module for the routes in `routesDir`, which only the server
+ * entry imports. `routes` is a scan of that directory; without it the directory is scanned.
+ */
 export function createRoutesModule({
   root,
   routesDir,
   config,
+  routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir }),
 }: {
   root: string
   routesDir: string
   config?: ResolvedConfig
+  routes?: readonly RouteInfo[]
 }) {
-  const routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir })
   const timestamps = getGitFileTimestamps(routesDir)
-  const rootFile = rootFilePath(routesDir)
-  // Without app/root.tsx the site is `<ArdoRoot />`, which is a complete site.
-  // Only such sites import it here, so a custom root never bundles it.
-  const rootImport = existsSync(rootFile)
-    ? `import * as rootModule from ${JSON.stringify(normalizePath(rootFile))}`
-    : 'import { ArdoRoot } from "ardo/ui"\nconst rootModule = { default: ArdoRoot }'
   const publicPaths = new Map<string, string>()
   const entries = sortRoutes(routes).map((route) => {
     const relativePath = normalizePath(path.relative(routesDir, route.filePath))
@@ -109,16 +132,11 @@ export function createRoutesModule({
     }
     let mountedPath = route.path
     let identityFields = ""
-    if (config?.versioning !== false && config?.versioning.directories != null) {
-      const segments = route.path.split("/").filter(Boolean)
-      const localeId =
-        config.i18n === false
-          ? undefined
-          : config.i18n.locales.find((locale) => locale.id === segments[0])?.id
-      const logicalPath = localeId == null ? route.path : `/${segments.slice(1).join("/")}`
-      const identity = createCurrentRouteIdentity(logicalPath, config, { localeId })
-      mountedPath = `/${identity.publicPath.slice(config.base.length)}`.replace(/\/$/u, "") || "/"
-      identityFields = `logicalPath: ${JSON.stringify(route.path)}, publicPath: ${JSON.stringify(identity.publicPath)}, `
+    // The browser derives the same public path from the logical path for links.
+    const publicPath = resolveRoutePublicPath(route.path, config)
+    if (config != null && publicPath != null) {
+      mountedPath = `/${publicPath.slice(config.base.length)}`.replace(/\/$/u, "") || "/"
+      identityFields = `logicalPath: ${JSON.stringify(route.path)}, publicPath: ${JSON.stringify(publicPath)}, `
     }
     const collision = publicPaths.get(mountedPath)
     if (collision != null)
@@ -128,10 +146,59 @@ export function createRoutesModule({
     publicPaths.set(mountedPath, route.filePath)
     return `  { id: ${JSON.stringify(toRouteId(root, route))}, path: ${JSON.stringify(mountedPath)}, ${identityFields}load: () => import(${JSON.stringify(normalizePath(route.filePath))}), source: ${JSON.stringify(source)} },`
   })
-  // The root module's CSS comes first, so a cascade-layer order it declares,
-  // such as Tailwind's, also places Ardo's `ardo` layer. Unlayered site CSS
-  // beats that layer whatever the order.
-  return `${rootImport}\nimport "ardo/ui/styles.css"\nexport { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
+  return `${createRootPrelude(routesDir)}export { rootModule }\nexport const routes = [\n${entries.join("\n")}\n]\n`
+}
+
+/**
+ * Generate the client's route module: the root module and the logical path of
+ * every route, in route table order. Links derive their public addresses from
+ * these paths on both render sides, so the server imports them from here too.
+ */
+export function createClientRoutesModule({
+  routesDir,
+  routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir }),
+}: {
+  routesDir: string
+  routes?: readonly RouteInfo[]
+}): string {
+  const paths = sortRoutes(routes).map((route) => route.path)
+  return `${createRootPrelude(routesDir)}export { rootModule }\nexport const paths = ${JSON.stringify(paths)}\n`
+}
+
+/**
+ * Generate the map from route id to a lazy import of its page. Each import
+ * keeps the page a dynamic entry of the client build, with its own chunk.
+ */
+export function createPageLoadersModule({
+  root,
+  routesDir,
+  routes = scanRoutesSync({ dir: routesDir, rootDir: routesDir }),
+}: {
+  root: string
+  routesDir: string
+  routes?: readonly RouteInfo[]
+}): string {
+  const loaders = sortRoutes(routes).map(
+    (route) =>
+      `  ${JSON.stringify(toRouteId(root, route))}: () => import(${JSON.stringify(normalizePath(route.filePath))}),`
+  )
+  return `export default {\n${loaders.join("\n")}\n}\n`
+}
+
+/**
+ * Import the root module and Ardo's stylesheet, in that order. The root
+ * module's CSS comes first, so a cascade-layer order it declares, such as
+ * Tailwind's, also places Ardo's `ardo` layer. Unlayered site CSS beats that
+ * layer whatever the order.
+ */
+function createRootPrelude(routesDir: string): string {
+  const rootFile = rootFilePath(routesDir)
+  // Without app/root.tsx the site is `<ArdoRoot />`, which is a complete site.
+  // Only such sites import it here, so a custom root never bundles it.
+  const rootImport = existsSync(rootFile)
+    ? `import * as rootModule from ${JSON.stringify(normalizePath(rootFile))}`
+    : 'import { ArdoRoot } from "ardo/ui"\nconst rootModule = { default: ArdoRoot }'
+  return `${rootImport}\nimport "ardo/ui/styles.css"\n`
 }
 
 /** Route id: the route file relative to the project root, as Vite's manifest keys it. */
@@ -150,7 +217,7 @@ export function resolveArdoEntry(name: "client" | "server"): string {
   return path.join(findArdoPackageRoot(), "dist/entries", `${name}.js`)
 }
 
-function sortRoutes(routes: RouteInfo[]): RouteInfo[] {
+function sortRoutes(routes: readonly RouteInfo[]): RouteInfo[] {
   return [...routes].sort((left, right) => left.path.localeCompare(right.path))
 }
 
@@ -177,10 +244,49 @@ function isRootFile(changedPath: string, routesDir: string): boolean {
   return normalizePath(changedPath) === normalizePath(rootFilePath(routesDir))
 }
 
-function invalidateRoutes(server: ViteDevServer): void {
+/** The modules generated from the routes directory, in every environment. */
+const ROUTE_MODULE_IDS = [
+  RESOLVED[VIRTUAL_ROUTES_ID],
+  RESOLVED[VIRTUAL_CLIENT_ROUTES_ID],
+  RESOLVED[VIRTUAL_PAGE_LOADERS_ID],
+]
+
+/**
+ * One scan of the routes directory, shared by the three route modules, so a server route
+ * table, client paths and page loaders built from one scan always list the same routes. A new
+ * scan starts when the routes are invalidated, or when an environment loads a route module it
+ * already loaded from the current scan: the module graph invalidated it, as other Ardo plugins
+ * do after regenerating route files.
+ */
+function createRouteScan(routesDir: () => string): {
+  read: (environment: string | undefined, id: string) => readonly RouteInfo[]
+  reset: () => void
+} {
+  let routes: readonly RouteInfo[] | undefined
+  const served = new Set<string>()
+  const reset = () => {
+    routes = undefined
+    served.clear()
+  }
+  return {
+    read(environment, id) {
+      const key = `${environment ?? ""} ${id}`
+      if (served.has(key)) reset()
+      served.add(key)
+      routes ??= scanRoutesSync({ dir: routesDir(), rootDir: routesDir() })
+      return routes
+    },
+    reset,
+  }
+}
+
+function invalidateRoutes(server: ViteDevServer, scan: { reset: () => void }): void {
+  scan.reset()
   for (const environment of Object.values(server.environments)) {
-    const module = environment.moduleGraph.getModuleById(RESOLVED[VIRTUAL_ROUTES_ID])
-    if (module != null) environment.moduleGraph.invalidateModule(module)
+    for (const id of ROUTE_MODULE_IDS) {
+      const module = environment.moduleGraph.getModuleById(id)
+      if (module != null) environment.moduleGraph.invalidateModule(module)
+    }
   }
   server.ws.send({ type: "full-reload" })
 }

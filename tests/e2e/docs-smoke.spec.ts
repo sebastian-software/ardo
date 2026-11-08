@@ -31,6 +31,37 @@ test("versioned agent onboarding is available in HTML and machine-readable docum
   await expect(page.getByRole("heading", { level: 2, name: "The Basic Example" })).toBeVisible()
 })
 
+test("a built page hydrates from its own preloaded chunk without the loader table", async ({
+  page,
+  request,
+}) => {
+  const requests: string[] = []
+  page.on("request", (request) => requests.push(new URL(request.url()).pathname))
+  await page.emulateMedia({ colorScheme: "light" })
+  await page.goto(gettingStartedPath)
+
+  const data = await page.locator("#ardo-app").getAttribute("data-ardo-page")
+  const pageModule = (JSON.parse(data ?? "{}") as { module?: string }).module ?? ""
+  expect(pageModule).toMatch(/^\/assets\/.+\.js$/u)
+  await expect(page.locator(`link[rel="modulepreload"][href="${pageModule}"]`)).toHaveCount(1)
+  // The theme toggle responds only once the page has hydrated.
+  await page.getByRole("button", { name: "Switch to light theme", exact: true }).click()
+  await page.getByRole("button", { name: "Switch to dark theme", exact: true }).click()
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect.poll(() => requests.filter((pathname) => pathname === pageModule)).toHaveLength(1)
+
+  // The served entry names exactly one loader chunk, which exists but was never requested.
+  const entry = (await page.locator('script[type="module"][src]').getAttribute("src")) ?? ""
+  expect(entry).toMatch(/^\/assets\/entry-client-[^/]+\.js$/u)
+  const entrySource = await (await request.get(entry)).text()
+  const loaderChunks = new Set(entrySource.match(/page-loaders-[\w-]+\.js/gu))
+  expect(loaderChunks.size).toBe(1)
+  const loaderChunk = `/assets/${[...loaderChunks][0] ?? ""}`
+  expect((await request.get(loaderChunk)).ok()).toBe(true)
+  expect(requests).toContain(entry)
+  expect(requests).not.toContain(loaderChunk)
+})
+
 test("built docs persist the selected theme and navigate search by keyboard", async ({ page }) => {
   const consoleErrors: string[] = []
   page.on("console", (message) => {

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { ArdoActiveLink, ArdoLink, ArdoPageProvider } from "./page"
 import { resolveArdoHref, useArdoPath } from "./page-context"
+import { getRouteLinks } from "../shared/route-links"
 import { ArdoRoutePathsContext } from "./route-paths"
 
 describe("resolveArdoHref", () => {
@@ -68,6 +69,21 @@ describe("page context and links", () => {
         </ArdoRoutePathsContext>
       )
     ).toBe('<a href="/docs/guide/release-6.0/">Release</a>')
+  })
+
+  it("recognizes dotted pages from the derived logical paths, also percent-encoded", () => {
+    const { paths } = getRouteLinks(["/guide/release-6.0", "/guide/café-6.0"], undefined)
+    expect(
+      render(
+        <ArdoRoutePathsContext value={paths}>
+          <ArdoLink to="/guide/release-6.0">Release</ArdoLink>
+          <ArdoLink to="/guide/caf%C3%A9-6.0">Café</ArdoLink>
+          <ArdoLink to="/guide/notes-6.0">Notes</ArdoLink>
+        </ArdoRoutePathsContext>
+      )
+    ).toBe(
+      '<a href="/docs/guide/release-6.0/">Release</a><a href="/docs/guide/caf%C3%A9-6.0/">Café</a><a href="/docs/guide/notes-6.0">Notes</a>'
+    )
   })
 
   it("exposes the current path and prefixes internal links", () => {

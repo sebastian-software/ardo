@@ -1,9 +1,15 @@
 import { describe, expect, it } from "vitest"
 
 import { resolveConfig } from "../config"
+import * as shared from "../shared/route-identity"
 import { buildPublicPath, createCurrentRouteIdentity, createRouteIdentity } from "./route-identity"
 
 describe("route identity", () => {
+  it("re-exports the browser-safe implementation for build code", () => {
+    expect(createCurrentRouteIdentity).toBe(shared.createCurrentRouteIdentity)
+    expect(buildPublicPath).toBe(shared.buildPublicPath)
+  })
+
   it("normalizes route paths separately from public paths", () => {
     expect(
       createRouteIdentity({

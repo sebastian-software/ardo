@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { prerender } from "react-dom/static"
+import { paths } from "virtual:ardo/client-routes"
 import virtualConfig from "virtual:ardo/config"
 import { rootModule, routes } from "virtual:ardo/routes"
 
@@ -13,6 +14,7 @@ import { resolveNavigationHead } from "../runtime/navigation"
 import {
   ARDO_APP_ELEMENT_ID,
   ARDO_PAGE_DATA_ATTRIBUTE,
+  type ArdoPageData,
   type ArdoRootModule,
   isDynamicRoute,
   matchRoute,
@@ -20,11 +22,18 @@ import {
 } from "../runtime/routing"
 import { ArdoRootLayout } from "../ui/Layout"
 
+/** The full route table, which only the server entry carries; the client gets its logical paths. */
 export { routes }
 
 export type ArdoRenderAssets = {
   entry: string
   modulePreloads: string[]
+  /**
+   * URL of the page's own module chunk, also one of `modulePreloads`. The
+   * client imports it directly; without it, the client loads the page through
+   * the lazily imported loader table.
+   */
+  page?: string
   stylesheets: string[]
 }
 
@@ -77,7 +86,8 @@ export async function renderPage(
         : `${route.publicPath.replace(/\/$/u, "").slice(0, -page.data.path.length)}/`,
   })
   const { body, icons } = await renderWithIcons(
-    <ArdoApp config={config} page={page} root={root} routes={routes} />
+    // The client derives its links from the same logical paths.
+    <ArdoApp config={config} page={page} paths={paths} root={root} />
   )
   const shell = await renderToHtml(
     <ArdoDocumentProvider
@@ -96,7 +106,7 @@ export async function renderPage(
         <div
           id={ARDO_APP_ELEMENT_ID}
           style={{ display: "contents" }}
-          {...{ [ARDO_PAGE_DATA_ATTRIBUTE]: JSON.stringify(page.data) }}
+          {...{ [ARDO_PAGE_DATA_ATTRIBUTE]: serializePageData(page.data, assets) }}
         />
       </Layout>
     </ArdoDocumentProvider>
@@ -107,6 +117,11 @@ export async function renderPage(
     routeId: page.data.routeId,
     status: page.error == null ? 200 : (page.data.error?.status ?? 500),
   }
+}
+
+/** Page data for the client, with the URL of the page's own chunk when the build has one. */
+function serializePageData(data: ArdoPageData, assets: ArdoRenderAssets): string {
+  return JSON.stringify(assets.page == null ? data : { ...data, module: assets.page })
 }
 
 /** Render to a complete HTML string, waiting for every suspended component. */

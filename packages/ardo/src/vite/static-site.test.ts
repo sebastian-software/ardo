@@ -38,9 +38,29 @@ describe("createAssetResolver", () => {
     expect(assets("app/routes/guide.mdx")).toStrictEqual({
       entry: "/v6/assets/entry-client.js",
       modulePreloads: ["/v6/assets/shared.js", "/v6/assets/guide.js", "/v6/assets/doc.js"],
+      page: "/v6/assets/guide.js",
       stylesheets: ["/v6/assets/entry-client.css", "/v6/assets/guide.css", "/v6/assets/doc.css"],
     })
     expect(assets(undefined).stylesheets).toStrictEqual(["/v6/assets/entry-client.css"])
+    expect(assets(undefined)).not.toHaveProperty("page")
+  })
+
+  it("names a page chunk only for a dynamic-entry record", () => {
+    const assets = createAssetResolver(
+      {
+        ...manifest,
+        "app/routes/static.tsx": { file: "assets/static.js", imports: ["_shared.js"] },
+      },
+      "./"
+    )
+
+    expect(assets("app/routes/guide.mdx").page).toBe("./assets/guide.js")
+    // A route without its own dynamic-entry chunk is loaded through the loader table.
+    expect(assets("app/routes/static.tsx")).not.toHaveProperty("page")
+    expect(assets("app/routes/missing.mdx")).not.toHaveProperty("page")
+    // The entry record is not a page, even though a route id could name it.
+    expect(assets("virtual:ardo/entry-client")).not.toHaveProperty("page")
+    expect(assets(undefined)).not.toHaveProperty("page")
   })
 
   it("rejects a client build without an entry", () => {
