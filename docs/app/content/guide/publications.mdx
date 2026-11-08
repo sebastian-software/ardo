@@ -398,6 +398,33 @@ Only the generated publication routes import these modules. The post frame is pa
 pages and not of documentation or other pages. With `i18n`, Ardo still adds the locale alternate
 links of every page, and a canonical link when the returned metadata has none.
 
+### Page data for the root
+
+The index and the tag archives have no frontmatter of their own. Their modules can export
+`frontmatter` to give the root page data, such as a link to the same page in another language.
+Ardo calls it when it renders the page, like `meta`, with `{ publication }` for the index and
+`{ publication, tag, label, posts }` for each tag archive. The root reads the result with
+`useArdoPage().frontmatter`, on the server and during hydration, as it reads a post's fields.
+Without the export, these pages have no frontmatter.
+
+```tsx
+// app/blog/BlogTag.tsx
+import type { PublicationTagFrontmatterArgs } from "ardo/config"
+
+export function frontmatter({ tag }: PublicationTagFrontmatterArgs) {
+  return { counterpart: `https://de.example.com/blog/tags/${tag.key}/` }
+}
+```
+
+```tsx
+// app/root.tsx
+const counterpart = useArdoPage().frontmatter?.counterpart
+```
+
+Ardo writes no page data into the bundle. Each archive's route holds its own tag and posts and
+passes them to the function. Anything the module imports, such as a list of translated tags,
+ships with the module to every archive.
+
 ## Custom layouts and AT metadata
 
 Import the publication data from `virtual:ardo/publication` to reuse it elsewhere. The

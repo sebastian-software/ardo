@@ -441,8 +441,10 @@ and source-directory prefix in the pattern. Edit links remain optional.
 
 Last-updated dates use each file's latest Git commit. Fetch the full history in CI
 (for example, `fetch-depth: 0` with `actions/checkout`); source archives and files
-without history fall back to filesystem modification times. Dates use the site's
-language and UTC unless a different time zone is supplied in `formatOptions`.
+without history fall back to filesystem modification times. A build from a copy of the
+project reads the original's history with [`sourceRoot`](/en/guide/configuration#sourceroot).
+Dates use the site's language and UTC unless a different time zone is supplied in
+`formatOptions`.
 Generated API pages disable edit links and file dates. Materialized content
 disables them by default; its frontmatter mapping can opt in when a meaningful
 source pattern is configured.

@@ -231,6 +231,7 @@ sitemap inclusion; set the page's robots metadata separately when it should be
 Each entry's `lastmod` is the page's last change: a post's `updatedAt` or `publishedAt`, else the
 page file's last Git commit, else its file time. With [`buildTime`](#buildtime), no entry is
 later than that moment.
+With [`sourceRoot`](#sourceroot), the commit is that of the original file.
 
 ### seo.robots
 
@@ -735,6 +736,35 @@ defineArdoConfig({
 ```
 
 On `pull_request` events, `GITHUB_SHA` is the merge commit, not the head commit.
+
+### sourceRoot
+
+- **Type:** `string`
+- **Default:** none; Ardo reads the history of the project itself
+
+Names the project that this build's files are a copy of. Use it when a build runs from a staged
+copy that Git does not track, for example one copy per language. Ardo then reads Git history from
+the original files: a page's last-updated date and its sitemap `lastmod` use the last commit of the
+file at the same path under `sourceRoot`, and the detected [`buildHash`](#buildhash) is that
+repository's commit. Every copy of the project gets the same dates. A relative path resolves
+against the project root.
+
+A file that the source does not have, or that Git does not track there, keeps the copy's file time,
+as without the option. Such a time changes with every copy, and with it the client entry. With
+`buildTime` set and every page file tracked, two builds of the same copy produce the same files.
+A path that is not a directory fails the build with
+`[ardo] sourceRoot must name an existing directory: <path>`.
+
+Ardo reads no environment variable for it. Map one yourself, so that a build in the project itself
+is unaffected:
+
+```ts
+defineArdoConfig({
+  title: "My Docs",
+  // Set by the script that stages the copy, for example SOURCE_ROOT=../.. for .variant-build/en/.
+  sourceRoot: process.env.SOURCE_ROOT || undefined,
+})
+```
 
 ---
 

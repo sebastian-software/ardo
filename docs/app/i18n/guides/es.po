@@ -1023,6 +1023,11 @@ msgid "<0>Default:</0> none"
 msgstr "<0>Predeterminado:</0> ninguno"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> none; Ardo reads the history of the project itself"
+msgstr ""
+"<0>Predeterminado:</0> ninguno; Ardo lee el historial del propio proyecto"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> none; each build uses the current time"
 msgstr "<0>Predeterminado:</0> ninguno; cada build usa la hora actual"
 
@@ -1442,6 +1447,20 @@ msgid ""
 msgstr ""
 "Una declaración exportada por varias entradas pertenece a la primera. La "
 "<0>referencia de Ardo</0> lo usa para <1/>, <2/> y <3/>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A file that the source does not have, or that Git does not track there, keeps "
+"the copy's file time, as without the option. Such a time changes with every "
+"copy, and with it the client entry. With <0/> set and every page file tracked,"
+" two builds of the same copy produce the same files. A path that is not a "
+"directory fails the build with <1/>."
+msgstr ""
+"Un archivo que la fuente no tiene, o que Git no sigue allí, conserva la fecha"
+" de archivo de la copia, como sin la opción. Esa fecha cambia con cada copia,"
+" y con ella la entrada del cliente. Con <0/> definido y todos los archivos de "
+"página versionados, dos builds de la misma copia producen los mismos "
+"archivos. Una ruta que no es un directorio hace fallar el build con <1/>."
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
@@ -2443,6 +2462,14 @@ msgstr ""
 "Ardo aporta estilos base de tipografía, títulos, enlaces, listas y código. "
 "El reset Preflight entraría en conflicto con esa apariencia."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Ardo reads no environment variable for it. Map one yourself, so that a build "
+"in the project itself is unaffected:"
+msgstr ""
+"Ardo no lee ninguna variable de entorno para ello. Asigna una tú mismo, para "
+"que un build en el propio proyecto no se vea afectado:"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "Ardo reads your declarations through the native API of TypeScript 7.1, which "
@@ -2652,6 +2679,17 @@ msgstr ""
 "como generado. Edita la fuente original, nunca la ruta generada. El plugin no "
 "elimina directorios de destino escritos a mano que contengan archivos. Usa un "
 "prefijo específico, como <1/>."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo writes no page data into the bundle. Each archive's route holds its own "
+"tag and posts and passes them to the function. Anything the module imports, "
+"such as a list of translated tags, ships with the module to every archive."
+msgstr ""
+"Ardo no escribe datos de página en el bundle. La ruta de cada archivo de "
+"etiqueta contiene su propia etiqueta y sus entradas y las pasa a la función. "
+"Todo lo que el módulo importa, como una lista de etiquetas traducidas, se "
+"entrega con el módulo a cada archivo de etiqueta."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
@@ -4029,15 +4067,28 @@ msgstr "Descargas y exportaciones"
 msgid "Drop this into any <0/> file — it works immediately:"
 msgstr "Funciona directamente en cualquier <0/>:"
 
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+#~ "page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+#~ " later than that moment."
+#~ msgstr ""
+#~ "El <0/> de cada entrada es el último cambio de la página: <1/> o <2/> de una"
+#~ " entrada, si no el último commit de Git del archivo de la página, si no su "
+#~ "fecha de archivo. Con <3><4/></3>, ninguna entrada es posterior a ese momento."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
 "page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
-" later than that moment."
+" later than that moment. With <5><6/></5>, the commit is that of the original "
+"file."
 msgstr ""
 "El <0/> de cada entrada es el último cambio de la página: <1/> o <2/> de una"
 " entrada, si no el último commit de Git del archivo de la página, si no su "
 "fecha de archivo. Con <3><4/></3>, ninguna entrada es posterior a ese momento."
+" Con <5><6/></5>, el commit es el del archivo original."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -5721,17 +5772,37 @@ msgstr "Lenguajes"
 msgid ""
 "Last-updated dates use each file's latest Git commit. Fetch the full history "
 "in CI (for example, <0/> with <1/>); source archives and files without history"
-" fall back to filesystem modification times. Dates use the site's language and"
-" UTC unless a different time zone is supplied in <2/>. Generated API pages "
-"disable edit links and file dates. Materialized content disables them by "
-"default; its frontmatter mapping can opt in when a meaningful source pattern "
-"is configured."
+" fall back to filesystem modification times. A build from a copy of the "
+"project reads the original's history with <2><3/></2>. Dates use the site's "
+"language and UTC unless a different time zone is supplied in <4/>. Generated "
+"API pages disable edit links and file dates. Materialized content disables "
+"them by default; its frontmatter mapping can opt in when a meaningful source "
+"pattern is configured."
 msgstr ""
 "Las fechas proceden del último commit Git. Descarga todo el historial en CI "
-"(<0/> con <1/>). Sin historial, se usa la fecha del archivo. El formato sigue "
-"el idioma activo y UTC salvo otra zona en <2/>. Las API generadas desactivan "
-"enlaces y fechas; los contenidos materializados también, salvo activación "
-"explícita en el frontmatter con un patrón fuente adecuado."
+"(<0/> con <1/>). Sin historial, se usa la fecha del archivo. Un build desde "
+"una copia del proyecto lee el historial del original con <2><3/></2>. El "
+"formato sigue el idioma activo y UTC salvo otra zona en <4/>. Las API "
+"generadas desactivan enlaces y fechas; los contenidos materializados también,"
+" salvo activación explícita en el frontmatter con un patrón fuente "
+"adecuado."
+
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Last-updated dates use each file's latest Git commit. Fetch the full history "
+#~ "in CI (for example, <0/> with <1/>); source archives and files without history"
+#~ " fall back to filesystem modification times. Dates use the site's language and"
+#~ " UTC unless a different time zone is supplied in <2/>. Generated API pages "
+#~ "disable edit links and file dates. Materialized content disables them by "
+#~ "default; its frontmatter mapping can opt in when a meaningful source pattern "
+#~ "is configured."
+#~ msgstr ""
+#~ "Las fechas proceden del último commit Git. Descarga todo el historial en CI "
+#~ "(<0/> con <1/>). Sin historial, se usa la fecha del archivo. El formato sigue "
+#~ "el idioma activo y UTC salvo otra zona en <2/>. Las API generadas desactivan "
+#~ "enlaces y fechas; los contenidos materializados también, salvo activación "
+#~ "explícita en el frontmatter con un patrón fuente adecuado."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "lastUpdated"
@@ -6142,6 +6213,25 @@ msgstr ""
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Multiple packages"
 msgstr "Varios paquetes"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Names the project that this build's files are a copy of. Use it when a build "
+"runs from a staged copy that Git does not track, for example one copy per "
+"language. Ardo then reads Git history from the original files: a page's "
+"last-updated date and its sitemap <0/> use the last commit of the file at the "
+"same path under <1/>, and the detected <2><3/></2> is that repository's "
+"commit. Every copy of the project gets the same dates. A relative path "
+"resolves against the project root."
+msgstr ""
+"Indica el proyecto del que son copia los archivos de este build. Úsalo cuando"
+" un build se ejecuta desde una copia preparada que Git no sigue, por ejemplo "
+"una copia por idioma. Ardo lee entonces el historial de Git de los archivos "
+"originales: la fecha de última actualización de una página y su <0/> en el "
+"sitemap usan el último commit del archivo en la misma ruta bajo <1/>, y el "
+"<2><3/></2> detectado es el commit de ese repositorio. Todas las copias del "
+"proyecto obtienen las mismas fechas. Una ruta relativa se resuelve respecto a "
+"la raíz del proyecto."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Narrow screens"
@@ -6621,6 +6711,10 @@ msgstr "Acciones de página"
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Page and Content Width"
 msgstr "Ancho de página y de contenido"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Page data for the root"
+msgstr "Datos de página para la raíz"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Page feedback widget"
@@ -7982,6 +8076,10 @@ msgstr "Fuentes y configuración"
 msgid "Source repository"
 msgstr "Código fuente"
 
+#: docs/app/content/guide/configuration.mdx
+msgid "sourceRoot"
+msgstr "sourceRoot"
+
 #: docs/app/content/guide/components.mdx
 msgid "Speed and quick actions"
 msgstr "Velocidad y acciones rápidas"
@@ -8666,6 +8764,23 @@ msgstr ""
 "accesibles sin anunciarse como contenido actual duplicado. En GitHub Pages, la"
 " redirección raíz es un <0/> estático. Configura fuera de Ardo las "
 "redirecciones HTTP si tu CDN o proveedor las admite."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The index and the tag archives have no frontmatter of their own. Their modules"
+" can export <0/> to give the root page data, such as a link to the same page "
+"in another language. Ardo calls it when it renders the page, like <1/>, with "
+"<2/> for the index and <3/> for each tag archive. The root reads the result "
+"with <4/>, on the server and during hydration, as it reads a post's fields. "
+"Without the export, these pages have no frontmatter."
+msgstr ""
+"El índice y los archivos de etiquetas no tienen frontmatter propio. Sus "
+"módulos pueden exportar <0/> para dar a la raíz datos de página, como un "
+"enlace a la misma página en otro idioma. Ardo la llama al renderizar la "
+"página, como <1/>, con <2/> para el índice y <3/> para cada archivo de "
+"etiqueta. La raíz lee el resultado con <4/>, en el servidor y durante la "
+"hidratación, igual que lee los campos de una entrada. Sin la exportación, "
+"estas páginas no tienen frontmatter."
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid "The initial static reference includes:"
