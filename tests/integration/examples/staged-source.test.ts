@@ -26,17 +26,16 @@ function lastmod(output: Output, loc: string): string | undefined {
   return new RegExp(`<loc>${loc}</loc>\\s*<lastmod>([^<]+)</lastmod>`, "u").exec(sitemap)?.[1]
 }
 
-/** The route table's `lastUpdated` of a route file, from the client chunk that holds the table. */
+/** The `lastUpdated` the server sent with a route file's page, from its `data-ardo-page` data. */
 function lastUpdated(output: Output, relativePath: string): number | undefined {
-  // The minifier writes the table's strings as template literals.
-  const pattern = new RegExp(
-    `relativePath"?:["\`]${relativePath.replaceAll(".", "\\.")}["\`],"?lastUpdated"?:([\\d.e+]+)`,
-    "u"
-  )
   for (const [file, content] of output) {
-    if (!file.endsWith(".js")) continue
-    const match = pattern.exec(String(content))
-    if (match != null) return Number(match[1])
+    if (!file.endsWith(".html")) continue
+    const attribute = /data-ardo-page="([^"]*)"/u.exec(String(content))?.[1]
+    if (attribute == null) continue
+    const data = JSON.parse(
+      attribute.replaceAll("&quot;", '"').replaceAll("&#x27;", "'").replaceAll("&amp;", "&")
+    ) as { source?: { relativePath?: string; lastUpdated?: number } }
+    if (data.source?.relativePath === relativePath) return data.source.lastUpdated
   }
   return undefined
 }
