@@ -33,7 +33,10 @@ type ServerEntry = {
 const MANIFEST_FILE = ".vite/manifest.json"
 const RENDER_CONCURRENCY = 8
 
-/** Map a route to the client entry, stylesheets, and chunks its page needs. */
+/**
+ * Map a route to the client entry, stylesheets, and chunks its page needs. When the build emits
+ * the page as its own dynamic-entry chunk, the result also names it as `page`.
+ */
 export function createAssetResolver(
   manifest: Record<string, ManifestChunk>,
   base: string
@@ -48,11 +51,17 @@ export function createAssetResolver(
 
   return (routeId) => {
     const page = collectChunks(manifest, routeId == null ? [] : [routeId], shared.visited)
+    // Only a dynamic entry's chunk is the page's own, with its original export
+    // names. Any other route is loaded through the client's loader table.
+    const pageChunk = routeId == null ? undefined : manifest[routeId]
     return {
       entry: url(entryChunk.file),
       modulePreloads: [...shared.files, ...page.files]
         .filter((file) => file !== entryChunk.file)
         .map((file) => url(file)),
+      ...(pageChunk?.isDynamicEntry === true && pageChunk.file !== entryChunk.file
+        ? { page: url(pageChunk.file) }
+        : {}),
       stylesheets: [...shared.css, ...page.css].map((file) => url(file)),
     }
   }

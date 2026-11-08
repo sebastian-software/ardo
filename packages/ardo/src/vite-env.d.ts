@@ -44,8 +44,25 @@ declare module "virtual:ardo/routes" {
 
   /** `app/root.tsx`. */
   export const rootModule: ArdoRootModule
-  /** Every page route, loaded lazily so each page gets its own chunk. */
+  /** Every page route, loaded lazily so each page gets its own chunk. Server-side only; the client entry imports `virtual:ardo/client-routes`. */
   export const routes: ArdoRouteEntry[]
+}
+
+declare module "virtual:ardo/client-routes" {
+  import type { ArdoRootModule } from "./runtime/routing"
+
+  /** `app/root.tsx`. */
+  export const rootModule: ArdoRootModule
+  /** The logical path of every route, in route table order; the client's link data. */
+  export const paths: readonly string[]
+}
+
+declare module "virtual:ardo/page-loaders" {
+  import type { ArdoPageLoaders } from "./runtime/routing"
+
+  /** Lazy page imports keyed by route id; the client imports this only without a page URL. */
+  const loaders: ArdoPageLoaders
+  export default loaders
 }
 
 declare module "virtual:ardo/search-loaders" {

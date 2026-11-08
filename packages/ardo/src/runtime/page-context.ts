@@ -39,7 +39,7 @@ export type ArdoPage = {
   handle?: unknown
   /** Path of the page without the base path, starting with a slash. */
   path: string
-  /** Source identity and modification time supplied by the route table. */
+  /** Source identity and modification time from the route table, sent to the client in the page data. */
   source?: { relativePath: string; lastUpdated: number }
 }
 
@@ -60,7 +60,7 @@ export function useArdoHref(to: string): string {
   return useArdoHrefResolver()(to)
 }
 
-/** Bind link resolution to the current page and generated route table. */
+/** Bind link resolution to the current page and the generated route paths. */
 export function useArdoHrefResolver(): (to: string) => string {
   const page = use(ArdoPageContext)
   const routePaths = use(ArdoRoutePathsContext)

@@ -53,8 +53,9 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
               rolldownOptions: {
                 input: VIRTUAL_ENTRY_CLIENT_ID,
                 // React gets its own chunk. The entry also carries the site config,
-                // build time, and route table, so it changes with every build;
-                // returning readers keep React cached until its version changes.
+                // build time, and the logical path of every route, so it changes
+                // with every build; returning readers keep React cached until its
+                // version changes. Page loaders live in their own lazy chunk.
                 output: { codeSplitting: { groups: [{ name: "react", test: REACT_MODULES }] } },
               },
             },

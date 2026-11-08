@@ -31,19 +31,23 @@ const clientDir = path.join(repoRoot, "docs", "build", "client")
 const budgets = {
   entryClientGzip: {
     // React has its own chunk, so it stays cached across deploys. The entry
-    // carries Ardo's UI shell, the site config, and the route table, and
-    // changes with every build. React DOM back in the entry would fail this.
+    // carries Ardo's UI shell, the site config, and the logical path of every
+    // route, and changes with every build. Page loaders live in a lazily
+    // imported chunk, so a new page adds only its path, a few bytes. React DOM
+    // or the route table back in the entry would fail this.
+    // 2026-11: lowered from 50 KB to 12 KB when the route table left the entry.
     label: "entry-client gzip",
-    budget: 50_000,
-    baseline: "≈25 KB (2026-10, React in its own chunk)",
+    budget: 12_000,
+    baseline: "≈9.5 KB (2026-11, logical paths only; was ≈45 KB with the route table)",
   },
   pageEagerJsGzip: {
     // What one visitor downloads to open a page: React, the entry, the shared UI chunks,
     // and that page's own content chunk. New pages don't move it; a library that lands in
     // a shared chunk, or one page that grows very large, does. Keep this one tight.
+    // 2026-11: lowered from 225 KB by the ≈36 KB the entry lost with the route table.
     label: "largest page eager JS gzip",
-    budget: 225_000,
-    baseline: "≈207 KB largest page, ≈187 KB median (2026-11, de/guide/layout-and-navigation)",
+    budget: 189_000,
+    baseline: "≈168 KB largest page, ≈149 KB median (2026-11, de/guide/layout-and-navigation)",
   },
   eagerJsGzip: {
     // Largest union of HTML-referenced JS for one locale. Catalogs are

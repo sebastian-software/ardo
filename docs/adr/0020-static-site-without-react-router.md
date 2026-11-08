@@ -35,6 +35,11 @@ Ardo 6 builds static sites with Vite alone and ships no client router.
   then renders every route to HTML in a `buildApp` step and checks the output's internal links.
 - Each page loads the shared client entry and its own route chunk. The client entry hydrates the
   document, so components in Markdown and TSX stay interactive.
+- The client entry holds no route table, only the logical path of every route. The page data the
+  server writes into the document names the URL of the page's own chunk, the same URL as its
+  `modulepreload` link, and the client imports that chunk directly. Without that URL, as in
+  development, the client imports a lazy `virtual:ardo/page-loaders` chunk and loads the page
+  through it. A new page therefore adds only its path to the entry.
 - The output directory mirrors the deployed URL space: assets and pages sit under the base path,
   site-wide files such as `robots.txt` and `versions.json` sit at the deployment root. The
   GitHub Pages flattening and the versioned asset move disappear.
