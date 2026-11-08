@@ -7,8 +7,11 @@ import { ArdoErrorBoundary } from "../ui/ErrorBoundary"
 /** Exports Ardo reads from a route module. */
 export type ArdoRouteModule = {
   default?: ComponentType
-  /** A Markdown route's frontmatter, which Ardo's compiler exports. */
-  frontmatter?: Record<string, unknown>
+  /**
+   * A Markdown route's frontmatter, which Ardo's compiler exports. A function is called when the
+   * page renders, like `meta`; generated publication routes compute their page data this way.
+   */
+  frontmatter?: (() => Record<string, unknown>) | Record<string, unknown>
   handle?: unknown
   meta?: () => ArdoMetaDescriptor[]
 }
@@ -89,6 +92,8 @@ export async function resolvePage(input: {
     if (module.default == null) {
       throw new Error(`[ardo] Route "${route.id}" must export a default page component.`)
     }
+    const frontmatter =
+      typeof module.frontmatter === "function" ? module.frontmatter() : module.frontmatter
     return {
       component: module.default,
       data: {
@@ -98,7 +103,7 @@ export async function resolvePage(input: {
         source: input.source ?? route.source,
       },
       handle: module.handle,
-      ...(isRecord(module.frontmatter) ? { frontmatter: module.frontmatter } : {}),
+      ...(isRecord(frontmatter) ? { frontmatter } : {}),
       source: input.source ?? route.source,
       meta: withDefaultTitle((module.meta ?? root.meta)?.() ?? [], input.siteTitle),
     }

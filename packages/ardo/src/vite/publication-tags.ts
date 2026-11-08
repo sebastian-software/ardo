@@ -5,6 +5,7 @@ import { canonicalUrl, publicationUrl, type PublicationContext } from "./publica
 import type { PublicationComponents } from "./publication-options"
 import {
   feedDiscoveryMeta,
+  frontmatterExport,
   latestPostDate,
   routePrelude,
   tagProps,
@@ -105,6 +106,7 @@ export function createTagRoute(input: {
       ? "  return defaults"
       : "  return site.meta == null ? defaults : site.meta({ publication, tag, label: tagLabel, posts, defaults })",
     "}",
+    ...frontmatterExport(modules.tag, "{ publication, tag, label: label(tag.key), posts }"),
     "export default function Tag() {",
     modules.tag == null
       ? `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} tag={tag} /></ArdoPublicationTags>`

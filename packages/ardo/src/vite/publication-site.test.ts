@@ -83,6 +83,11 @@ describe("publication route modules", () => {
     )
     expect(index).toContain("<View publication={publication} />")
     expect(index).not.toContain("ArdoPostList")
+    // The module's optional page data becomes the route's frontmatter, computed while it renders.
+    expect(index).toContain("const siteFrontmatter = site.frontmatter")
+    expect(index).toContain(
+      "export const frontmatter = siteFrontmatter == null ? undefined : () => siteFrontmatter({ publication })"
+    )
   })
 
   it("keeps Ardo's overview and metadata without a module", async () => {
@@ -93,6 +98,7 @@ describe("publication route modules", () => {
     expect(index).toContain("const View = ArdoPostList")
     expect(index).toContain("  return defaults\n")
     expect(index).not.toContain("site.meta")
+    expect(index).not.toContain("frontmatter")
   })
 
   it("mounts the site's post module in the post route and hands it Ardo's metadata", async () => {
@@ -318,6 +324,7 @@ describe("tag archives", () => {
       'const tag = Object.freeze({"key":"design","path":"/news/tags/design","url":"https://example.test/project/news/tags/design/"})'
     )
     expect(design).toContain("<View publication={publication} tag={tag} />")
+    expect(design).not.toContain("frontmatter")
     expect(design).toContain('label={label} archive={"/news/tags/"}')
     // The default canonical matches the sitemap entry, as a post's does, whatever the URL policy.
     expect(design).toContain(
@@ -347,6 +354,11 @@ describe("tag archives", () => {
     expect(design).toContain("site.meta({ publication, tag, label: tagLabel, posts, defaults })")
     expect(design).toContain(
       "<View publication={publication} tag={tag} label={label(tag.key)} posts={posts} />"
+    )
+    // Page data for the root comes from this tag, its label, and its posts when the page renders.
+    expect(design).toContain("const siteFrontmatter = site.frontmatter")
+    expect(design).toContain(
+      "export const frontmatter = siteFrontmatter == null ? undefined : () => siteFrontmatter({ publication, tag, label: label(tag.key), posts })"
     )
     const route = routeAt(result.routes, "app/routes/news/first/index.md")
     expect(route.post).toMatchObject({

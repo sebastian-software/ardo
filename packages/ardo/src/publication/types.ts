@@ -142,10 +142,29 @@ export type PublicationTagMetaArgs = {
   defaults: ArdoMetaDescriptor[]
 }
 
+/**
+ * What the `frontmatter` export of an index or tag module receives: the route's data, frozen and
+ * shared with the page, as for `meta`.
+ */
+export type PublicationIndexFrontmatterArgs = { publication: Publication }
+export type PublicationTagFrontmatterArgs = {
+  publication: Publication
+  tag: PublicationTag
+  /** The tag's display label: the site's `tagLabel`, or the key. */
+  label: string
+  posts: readonly Post[]
+}
+
 /** Exports of `publication.components.index`. */
 export type PublicationIndexModule = {
   default: ComponentType<PublicationIndexProps>
   meta?: (args: PublicationIndexMetaArgs) => ArdoMetaDescriptor[]
+  /**
+   * Page data that the root reads with `useArdoPage().frontmatter`, as it reads a post's
+   * frontmatter. Ardo calls it when it renders the route, on the server and when the page
+   * hydrates, like `meta`. Without it, the page has no frontmatter.
+   */
+  frontmatter?: (args: PublicationIndexFrontmatterArgs) => Record<string, unknown>
 }
 /** Exports of `publication.components.post`, which frames each post's content. */
 export type PublicationPostModule = {
@@ -156,6 +175,12 @@ export type PublicationPostModule = {
 export type PublicationTagModule = {
   default: ComponentType<PublicationTagProps>
   meta?: (args: PublicationTagMetaArgs) => ArdoMetaDescriptor[]
+  /**
+   * Page data for this tag's archive that the root reads with `useArdoPage().frontmatter`. Ardo
+   * calls it with each archive's own tag, label, and posts when it renders that archive, like
+   * `meta`, so every tag can get its own values.
+   */
+  frontmatter?: (args: PublicationTagFrontmatterArgs) => Record<string, unknown>
 }
 
 /** Metadata authored in a post's YAML frontmatter. IDs are assigned once. */

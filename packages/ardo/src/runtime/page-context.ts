@@ -47,8 +47,9 @@ export type ArdoPage = {
   handle?: unknown
   /**
    * The route module's `frontmatter` export: a Markdown page's frontmatter, including fields Ardo
-   * does not read, such as a site's own `counterpart`. It comes from the page's own route chunk,
-   * so the root can read it on the server and during hydration.
+   * does not read, such as a site's own `counterpart`. On a generated publication index or tag
+   * archive, it is what the site module's `frontmatter` export returns for that page. It comes
+   * from the page's own route chunk, so the root can read it on the server and during hydration.
    */
   frontmatter?: Readonly<Record<string, unknown>>
   /** Path of the page without the base path, starting with a slash. */

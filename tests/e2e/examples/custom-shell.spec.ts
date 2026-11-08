@@ -35,3 +35,18 @@ for (const [name, pathname, text] of [
     expect(errors).toEqual([])
   })
 }
+
+// The index and tag modules compute the root's page data while the page renders, on both sides.
+for (const [pathname, href] of [
+  ["/news/", "https://de.example.test/journal?posts=2"],
+  ["/news/tags/design/", "https://de.example.test/journal/schlagworte/design?posts=1"],
+  ["/news/tags/process/", "https://de.example.test/journal/schlagworte/process?posts=1"],
+] as const) {
+  test(`hydrates the root's page data on ${pathname}`, async ({ page }) => {
+    const errors = collectErrors(page)
+    await page.goto(pathname)
+    await page.waitForLoadState("networkidle")
+    await expect(page.locator("a[data-counterpart]")).toHaveAttribute("href", href)
+    expect(errors).toEqual([])
+  })
+}

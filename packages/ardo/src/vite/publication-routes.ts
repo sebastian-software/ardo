@@ -129,6 +129,7 @@ export function createPublicationIndex(
       ? "  return defaults"
       : "  return site.meta == null ? defaults : site.meta({ publication, defaults })",
     "}",
+    ...frontmatterExport(modules.index, "{ publication }"),
     "export default function News() {",
     `  return <ArdoPublicationTags${tagProps(context)}><View publication={publication} /></ArdoPublicationTags>`,
     "}",
@@ -175,6 +176,20 @@ export function routePrelude(input: {
       ? "const label = (key: string) => key"
       : "const label: PublicationTagLabel = tagLabel",
     'export const handle = { layout: "bare" }',
+  ]
+}
+
+/**
+ * The route's `frontmatter` export from the site module's optional one. Ardo calls it when it
+ * renders the page, as it calls `meta`, so the value is computed from this route's own data on the
+ * server and during hydration and is never serialized into a chunk. Without a site module, the
+ * route has no such export.
+ */
+export function frontmatterExport(view: string | undefined, args: string): string[] {
+  if (view == null) return []
+  return [
+    "const siteFrontmatter = site.frontmatter",
+    `export const frontmatter = siteFrontmatter == null ? undefined : () => siteFrontmatter(${args})`,
   ]
 }
 

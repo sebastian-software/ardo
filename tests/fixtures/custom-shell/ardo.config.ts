@@ -8,6 +8,8 @@ export default defineArdoConfig({
     from: "posts",
     name: "Journal",
     tags: true,
+    // The root reads the page data these modules export, like a post's frontmatter.
+    components: { index: "app/blog/Overview.tsx", tag: "app/blog/Tag.tsx" },
     authors: { alex: { name: "Alex Morgan" } },
   },
 })
