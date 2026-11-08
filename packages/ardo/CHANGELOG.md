@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.4.1](https://github.com/sebastian-software/ardo/compare/ardo-v6.4.0...ardo-v6.4.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* spell generated root redirect targets with the trailingSlash setting ([#511](https://github.com/sebastian-software/ardo/issues/511)) ([b220e89](https://github.com/sebastian-software/ardo/commit/b220e890937ee3b3b3df8390761d38fe6f69ca23))
+
 ## [6.4.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.3.0...ardo-v6.4.0) (2026-11-08)
 
 
