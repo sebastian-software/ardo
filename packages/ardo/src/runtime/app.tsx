@@ -8,7 +8,11 @@ import { createRouteHrefs, getRouteLinks } from "../shared/route-links"
 import { ArdoConfigProvider } from "./hooks"
 import { ArdoPageProvider } from "./page"
 import { isArdoNotFound } from "./page-context"
-import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
+import {
+  ArdoRouteHrefsContext,
+  ArdoRoutePathsContext,
+  ArdoTrailingSlashContext,
+} from "./route-paths"
 
 /**
  * The part of the page that hydrates: the root component around the page. A
@@ -23,6 +27,7 @@ export function ArdoPageTree({ config, page, root }: ArdoAppProps) {
       base={page.data.base}
       component={page.component}
       error={page.error}
+      frontmatter={page.frontmatter}
       handle={page.handle}
       path={page.data.path}
       source={page.source}
@@ -55,9 +60,11 @@ export function ArdoApp({
   return (
     <ArdoRoutePathsContext value={routePaths}>
       <ArdoRouteHrefsContext value={hrefs}>
-        <StrictMode>
-          <ArdoPageTree config={config} page={page} root={root} />
-        </StrictMode>
+        <ArdoTrailingSlashContext value={config?.trailingSlash}>
+          <StrictMode>
+            <ArdoPageTree config={config} page={page} root={root} />
+          </StrictMode>
+        </ArdoTrailingSlashContext>
       </ArdoRouteHrefsContext>
     </ArdoRoutePathsContext>
   )

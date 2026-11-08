@@ -5,19 +5,30 @@ import path from "node:path"
 
 /**
  * Serve the static output the way static hosts do: `/guide` answers with
- * `guide/index.html`, and unknown paths get the nearest `404.html`.
+ * `guide/index.html`, and unknown paths get the nearest `404.html`. With a `trailingSlash`
+ * setting, the other spelling of a page redirects to the configured one, as a configured host
+ * would.
  */
-export function configureStaticPreview(server: PreviewServer): () => void {
+export function configureStaticPreview(server: PreviewServer, trailingSlash?: boolean): () => void {
   const outDir = path.resolve(server.config.root, server.config.build.outDir)
   const base = server.config.base
 
-  server.middlewares.use((request, _response, next) => {
+  server.middlewares.use((request, response, next) => {
     const pathname = getRelativePath(request, base)
-    if (pathname != null && pathname !== "" && !pathname.endsWith("/")) {
-      if (isFile(path.join(outDir, pathname, "index.html"))) {
-        const url = new URL(request.url ?? "/", "http://ardo.invalid")
-        request.url = `${url.pathname}/${url.search}`
+    const page = pathname?.replace(/\/+$/u, "") ?? ""
+    if (page !== "" && isFile(path.join(outDir, page, "index.html"))) {
+      const url = new URL(request.url ?? "/", "http://ardo.invalid")
+      const slashed = url.pathname.endsWith("/")
+      if (trailingSlash != null && slashed !== trailingSlash) {
+        response.statusCode = 301
+        response.setHeader(
+          "Location",
+          `${url.pathname.replace(/\/+$/u, "")}${trailingSlash ? "/" : ""}${url.search}`
+        )
+        response.end()
+        return
       }
+      if (!slashed) request.url = `${url.pathname}/${url.search}`
     }
     next()
   })

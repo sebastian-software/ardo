@@ -65,7 +65,11 @@ function linkReplacement(
 
 function portableLink(destination: string, context: LinkContext): string {
   if (/^[#?]/u.test(destination)) return new URL(destination, context.post.url).href
-  const logical = resolveArdoHref(destination, { base: "/", path: context.post.path })
+  const logical = resolveArdoHref(destination, {
+    base: "/",
+    path: context.post.path,
+    trailingSlash: context.config.trailingSlash,
+  })
   const suffixIndex = logical.search(/[?#]/u)
   const pathname = suffixIndex < 0 ? logical : logical.slice(0, suffixIndex)
   const suffix = suffixIndex < 0 ? "" : logical.slice(suffixIndex)

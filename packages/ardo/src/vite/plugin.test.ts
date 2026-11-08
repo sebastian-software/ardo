@@ -491,4 +491,21 @@ describe("ardoPlugin buildHash", () => {
     expect(code).toContain('"buildHash":"abc1234"')
     expect(detectGitHash).toHaveBeenCalledWith("/project")
   })
+
+  it("detects the git hash of the sourceRoot that a staged copy mirrors", async () => {
+    const sourceRoot = fs.realpathSync(os.tmpdir())
+    const code = await loadClientConfig({ title: "Docs", sourceRoot })
+
+    expect(code).toContain('"buildHash":"abc1234"')
+    expect(detectGitHash).toHaveBeenCalledWith(sourceRoot)
+    expect(code).not.toContain(sourceRoot)
+  })
+
+  it("rejects a sourceRoot that names no directory", () => {
+    const plugin = getMainPlugin({ title: "Docs", sourceRoot: "missing-source" })
+    plugin.config({ root: "/project" }, BUILD)
+    expect(() =>
+      plugin.configResolved({ base: "/", build: { ssr: false }, root: "/project" })
+    ).toThrow("[ardo] sourceRoot must name an existing directory: /project/missing-source")
+  })
 })

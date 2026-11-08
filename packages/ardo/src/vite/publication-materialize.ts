@@ -3,6 +3,9 @@ import path from "node:path"
 import type { ResolvedConfig } from "../config/types"
 import type { Publication, PublicationConfig } from "../publication/types"
 import { preparePublication, type PreparedPublication } from "./publication"
+import { validateTagLocales } from "./publication-tags"
+import type { PublicationPostBinding, PublicationRoute } from "./publication-routes"
+import { normalizePath } from "./path-utils"
 
 export const PUBLICATION_ID = "virtual:ardo/publication"
 export const RESOLVED_PUBLICATION_ID = `\0${PUBLICATION_ID}`
@@ -13,6 +16,8 @@ export type PublicationBuilder = {
   prepared: PreparedPublication[]
   publications: Record<string, Publication>
   sources: Map<string, string>
+  /** Generated post routes by normalized file path, with the modules they mount. */
+  posts: Map<string, PublicationPostBinding>
   queue: Promise<void>
 }
 
@@ -22,13 +27,16 @@ export async function refreshPublication(builder: PublicationBuilder): Promise<v
   const locales =
     config.i18n === false ? [undefined] : config.i18n.locales.map((locale) => locale.id)
   const prepared = await prepareAll(builder, { config, locales })
+  if (builder.options.tags === true)
+    validateTagLocales(prepared.map((entry, index) => ({ locale: locales[index], entry })))
   const directories = locales.map((locale) =>
     path.resolve(builder.site.routesDir, locale ?? "", builder.options.to ?? "news")
   )
   await validateDirectories(directories, path.resolve(config.root, builder.options.from))
-  const sources = await writeRoutes(directories, prepared)
+  const { sources, posts } = await writeRoutes(directories, prepared)
   builder.prepared = prepared
   builder.sources = sources
+  builder.posts = posts
   builder.publications = Object.fromEntries(
     prepared.map((entry, index) => [locales[index] ?? "default", entry.publication])
   )
@@ -73,8 +81,9 @@ async function validateDirectories(directories: string[], source: string): Promi
 async function writeRoutes(
   directories: string[],
   prepared: PreparedPublication[]
-): Promise<Map<string, string>> {
+): Promise<{ sources: Map<string, string>; posts: Map<string, PublicationPostBinding> }> {
   const sources = new Map<string, string>()
+  const posts = new Map<string, PublicationPostBinding>()
   for (const directory of directories) {
     await fs.rm(directory, { recursive: true, force: true })
     await fs.mkdir(directory, { recursive: true })
@@ -83,11 +92,20 @@ async function writeRoutes(
   for (const publication of prepared) {
     for (const route of publication.routes) {
       await fs.mkdir(path.dirname(route.filePath), { recursive: true })
-      await fs.writeFile(route.filePath, route.content)
+      await writeRoute(route)
       if (route.sourceFile != null) sources.set(route.filePath, route.sourceFile)
+      if (route.post != null) posts.set(normalizePath(route.filePath), route.post)
     }
   }
-  return sources
+  return { sources, posts }
+}
+
+/** Write a route and give it the date of its content, so a rewrite does not look like an edit. */
+async function writeRoute(route: PublicationRoute): Promise<void> {
+  await fs.writeFile(route.filePath, route.content)
+  if (route.lastmod == null) return
+  const date = new Date(route.lastmod)
+  await fs.utimes(route.filePath, date, date)
 }
 
 export function isInside(file: string, directory: string): boolean {

@@ -40,22 +40,11 @@ import { isLintRuleId, lintRuleIds } from "./lint-rules"
 import { validateNavigationConfig } from "./navigation"
 import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
+import { resolveSourceRoot, validateSourceRootConfig } from "./source-root"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
-export type {
-  AuthorProfile,
-  ImageComposition,
-  ImageCore,
-  ImageFrame,
-  ImagePreset,
-  Post,
-  PostFrontmatter,
-  PostImage,
-  PostImageInput,
-  Publication,
-  PublicationConfig,
-} from "../publication/types"
+export type * from "../publication/public-types"
 
 export type {
   AgentSkillsConfig,
@@ -133,6 +122,8 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
     // buildTime and buildHash are present only when configured; otherwise Ardo uses the clock and Git.
     ...resolveBuildMetadata(config),
+    ...trailingSlashSetting(config),
+    ...resolveSourceRoot(config, root),
     srcDir,
     outDir: config.outDir ?? "build",
     lang: config.lang ?? "en",
@@ -158,13 +149,21 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
   }
 }
 
+/** Without a spelling, Ardo keeps its earlier mixed output. */
+function trailingSlashSetting(config: ArdoConfig): Pick<ResolvedConfig, "trailingSlash"> {
+  return config.trailingSlash === undefined ? {} : { trailingSlash: config.trailingSlash }
+}
+
 function validateConfig(config: ArdoConfig): void {
   const errors: string[] = []
   if ("typedoc" in config)
     errors.push("The typedoc option was removed. Configure api in ardo() instead.")
 
   validateBaseAndSiteUrl(config, errors)
+  if (config.trailingSlash !== undefined && typeof config.trailingSlash !== "boolean")
+    errors.push("trailingSlash must be a boolean.")
   validateBuildMetadataConfig(config, errors)
+  validateSourceRootConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)
   validateOpenApiConfig(config, errors)

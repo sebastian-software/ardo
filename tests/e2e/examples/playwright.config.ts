@@ -17,6 +17,13 @@ const sites = [
     port: usePreview ? 4177 : 4176,
     testMatch: "runtime-counter.spec.ts",
   },
+  {
+    // An overlay without its own dependencies; the launcher serves a temporary copy.
+    name: "custom-shell",
+    fixture: "custom-shell",
+    port: usePreview ? 4179 : 4178,
+    testMatch: "custom-shell.spec.ts",
+  },
 ]
 
 export default defineConfig({
@@ -32,8 +39,11 @@ export default defineConfig({
     use: { ...devices["Desktop Chrome"], baseURL: `http://127.0.0.1:${site.port}` },
   })),
   webServer: sites.map((site) => ({
-    command: `${usePreview ? "pnpm --config.verifyDepsBeforeRun=false exec ardo build && " : ""}pnpm --config.verifyDepsBeforeRun=false exec ardo ${usePreview ? "preview" : "dev"} --host 127.0.0.1 --port ${site.port} --strictPort`,
-    cwd: path.join(repositoryRoot, site.directory),
+    command:
+      "fixture" in site
+        ? `node tests/e2e/examples/serve-fixture.ts ${site.fixture} ${usePreview ? "preview" : "dev"} ${site.port}`
+        : `${usePreview ? "pnpm --config.verifyDepsBeforeRun=false exec ardo build && " : ""}pnpm --config.verifyDepsBeforeRun=false exec ardo ${usePreview ? "preview" : "dev"} --host 127.0.0.1 --port ${site.port} --strictPort`,
+    cwd: "fixture" in site ? repositoryRoot : path.join(repositoryRoot, site.directory),
     url: `http://127.0.0.1:${site.port}`,
     reuseExistingServer: !isCi,
     timeout: 180_000,

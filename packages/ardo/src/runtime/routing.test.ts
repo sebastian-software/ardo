@@ -110,6 +110,30 @@ describe("resolvePage", () => {
     expect(page.error).toStrictEqual({ status: 404, message: "No page at /missing" })
     expect(page.meta).toStrictEqual([{ title: "Docs" }])
   })
+
+  it("calls a route's frontmatter function when it renders the page, as it calls meta", async () => {
+    const frontmatter = vi.fn(() => ({ counterpart: "/de/news/tags/design/" }))
+    const page = await resolvePage({
+      base: "/",
+      path: route.path,
+      root: {},
+      route: { ...route, load: async () => ({ default: Page, frontmatter }) },
+    })
+
+    expect(page.frontmatter).toStrictEqual({ counterpart: "/de/news/tags/design/" })
+    expect(frontmatter).toHaveBeenCalledOnce()
+  })
+
+  it("gives a page whose route exports no frontmatter value none", async () => {
+    const page = await resolvePage({
+      base: "/",
+      path: route.path,
+      root: {},
+      route: { ...route, load: async () => ({ default: Page, frontmatter: undefined }) },
+    })
+
+    expect("frontmatter" in page).toBe(false)
+  })
 })
 
 describe("client page loading", () => {

@@ -1,10 +1,18 @@
 import { type ComponentType, createContext, use } from "react"
 
-import { ArdoRouteHrefsContext, ArdoRoutePathsContext } from "./route-paths"
+import {
+  ArdoRouteHrefsContext,
+  ArdoRoutePathsContext,
+  ArdoTrailingSlashContext,
+} from "./route-paths"
+import { spellPagePath } from "./trailing-slash"
 
 /**
  * One `<meta>`, `<title>`, `<link>`, or JSON-LD `<script>` description, as returned by a `meta`
  * export. `"script:ld+json"` is serialized into a `<script type="application/ld+json">`.
+ *
+ * Undefined `tagName` attributes are omitted. Allowing them lets TypeScript accept an inferred
+ * list that mixes `{ title }` with `link` descriptors, which it widens with `title?: undefined`.
  */
 export type ArdoMetaDescriptor =
   | { charSet: string }
@@ -12,8 +20,8 @@ export type ArdoMetaDescriptor =
   | { name: string; content: string }
   | { property: string; content: string }
   | { httpEquiv: string; content: string }
-  | { tagName: "link"; [attribute: string]: string }
-  | { tagName: "meta"; [attribute: string]: string }
+  | { tagName: "link"; [attribute: string]: string | undefined }
+  | { tagName: "meta"; [attribute: string]: string | undefined }
   | { "script:ld+json": Record<string, unknown> }
 
 /** Signature of the optional `meta` export of a route module or `app/root.tsx`. */
@@ -37,6 +45,13 @@ export type ArdoPage = {
   error?: ArdoPageError
   /** The route module's `handle` export. */
   handle?: unknown
+  /**
+   * The route module's `frontmatter` export: a Markdown page's frontmatter, including fields Ardo
+   * does not read, such as a site's own `counterpart`. On a generated publication index or tag
+   * archive, it is what the site module's `frontmatter` export returns for that page. It comes
+   * from the page's own route chunk, so the root can read it on the server and during hydration.
+   */
+  frontmatter?: Readonly<Record<string, unknown>>
   /** Path of the page without the base path, starting with a slash. */
   path: string
   /** Source identity and modification time from the route table, sent to the client in the page data. */
@@ -65,7 +80,8 @@ export function useArdoHrefResolver(): (to: string) => string {
   const page = use(ArdoPageContext)
   const routePaths = use(ArdoRoutePathsContext)
   const hrefs = use(ArdoRouteHrefsContext)
-  return (to) => resolveArdoHref(to, { ...page, routeHrefs: hrefs }, routePaths)
+  const trailingSlash = use(ArdoTrailingSlashContext)
+  return (to) => resolveArdoHref(to, { ...page, routeHrefs: hrefs, trailingSlash }, routePaths)
 }
 
 /** Whether `to` names the current page, or with `end: false` one of its ancestors. */
@@ -87,11 +103,18 @@ export function navigateTo(href: string): void {
 
 /**
  * Resolve a link target to the URL an `<a>` needs. Pages live in folders, so
- * page links end with a slash and reach the page without a host redirect.
+ * page links end with a slash and reach the page without a host redirect, unless the site sets
+ * `trailingSlash: false`.
  */
 export function resolveArdoHref(
   to: string,
-  page: { base: string; path: string; routeHrefs?: ReadonlyMap<string, string> },
+  page: {
+    base: string
+    path: string
+    routeHrefs?: ReadonlyMap<string, string>
+    /** The site's `trailingSlash` setting. */
+    trailingSlash?: boolean
+  },
   routePaths?: ReadonlySet<string>
 ): string {
   if (to === "" || isExternal(to) || to.startsWith("#") || to.startsWith("?")) return to
@@ -102,13 +125,17 @@ export function resolveArdoHref(
   const base = normalizeBase(page.base)
   const pathname =
     target === "/" ? base : `${base.slice(0, -1)}${withPageSlash(target, routePaths)}`
-  return pathname + to.slice(firstIndexOf(to, ["?", "#"]))
+  const spelled =
+    page.trailingSlash === false && pathname !== base && pathname.endsWith("/")
+      ? spellPagePath(pathname, false, base)
+      : pathname
+  return spelled + to.slice(firstIndexOf(to, ["?", "#"]))
 }
 
 function resolveMappedHref(
   to: string,
   target: string,
-  page: { base: string; routeHrefs?: ReadonlyMap<string, string> }
+  page: { base: string; routeHrefs?: ReadonlyMap<string, string>; trailingSlash?: boolean }
 ): string | undefined {
   const routeHrefs = page.routeHrefs
   if (routeHrefs != null && routeHrefs.size > 0) {
@@ -125,7 +152,7 @@ function resolveMappedHref(
       publicPath = [...routeHrefs.values()].find((href) => href.replace(/\/+$/u, "") === key)
     if (publicPath != null)
       return (
-        (publicPath.endsWith("/") ? publicPath : `${publicPath}/`) +
+        spellPagePath(publicPath, page.trailingSlash ?? true, normalizeBase(page.base)) +
         to.slice(firstIndexOf(to, ["?", "#"]))
       )
     if (page.base !== "/" && (target.startsWith(page.base) || target === page.base.slice(0, -1)))

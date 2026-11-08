@@ -109,6 +109,31 @@ msgstr ""
 "<0/> und <1/> sind jetzt Grau und gedämpftes Blau statt des gesättigten "
 "Blaus aus Ardo 5."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"<0/> and <1/> redirect the other spelling of a page to the configured one, and"
+" keep the query string. The dev server answers with 302, so browsers do not "
+"cache it, and preview with 301, as a host would. The static output cannot do "
+"this itself, because one <2/> file serves both <3/> and <4/>. Configure the "
+"production host to redirect the same way. With <5/>, hosts that redirect a "
+"directory without slash, such as GitHub Pages, already match. With <6/>, the "
+"host must serve <7/> at <8/> and redirect <9/> there, for example with <10/> "
+"on Vercel. GitHub Pages always redirects <11/> to <12/>, so use <13/> there or"
+" leave the setting unset. Until the host redirects, both addresses show the "
+"page, and its canonical link names the configured one."
+msgstr ""
+"<0/> und <1/> leiten die andere Schreibweise einer Seite auf die konfigurierte"
+" um und behalten den Query-String. Der Dev-Server antwortet mit 302, damit "
+"Browser die Weiterleitung nicht speichern, die Vorschau mit 301, wie ein Host."
+" Die statische Ausgabe kann das nicht selbst, weil eine Datei <2/> sowohl <3/>"
+" als auch <4/> ausliefert. Richte den Produktions-Host so ein, dass er genauso"
+" umleitet. Mit <5/> passen Hosts, die ein Verzeichnis ohne Schrägstrich "
+"umleiten, etwa GitHub Pages, bereits. Mit <6/> muss der Host <7/> unter <8/> "
+"ausliefern und <9/> dorthin umleiten, auf Vercel zum Beispiel mit <10/>. "
+"GitHub Pages leitet <11/> immer auf <12/> um; verwende dort <13/> oder lass "
+"die Einstellung weg. Bis der Host umleitet, zeigen beide Adressen die Seite, "
+"und ihr Canonical-Link nennt die konfigurierte."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "<0/> and <1/> take imported files. Vite gives them fingerprinted URLs, so "
@@ -1016,6 +1041,10 @@ msgid "<0>Default:</0> none"
 msgstr "<0>Standard:</0> keiner"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> none; Ardo reads the history of the project itself"
+msgstr "<0>Standard:</0> keiner; Ardo liest die Historie des Projekts selbst"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "<0>Default:</0> none; each build uses the current time"
 msgstr "<0>Standard:</0> keiner; jeder Build verwendet die aktuelle Zeit"
 
@@ -1033,6 +1062,10 @@ msgid ""
 msgstr ""
 "<0>Standard:</0> der kurze Git-Commit-Hash, sonst keiner, wenn Git nicht "
 "verfügbar ist"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "<0>Default:</0> unset"
+msgstr "<0>Standard:</0> nicht gesetzt"
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -1442,6 +1475,21 @@ msgstr ""
 "Wird eine Deklaration mehrfach exportiert, gehört sie zum ersten "
 "Einstiegspunkt. Ardos <0>API-Referenz</0> nutzt dies für <1/>, <2/> und <3/>."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A file that the source does not have, or that Git does not track there, keeps "
+"the copy's file time, as without the option. Such a time changes with every "
+"copy, and with it the client entry. With <0/> set and every page file tracked,"
+" two builds of the same copy produce the same files. A path that is not a "
+"directory fails the build with <1/>."
+msgstr ""
+"Eine Datei, die es in der Quelle nicht gibt oder die Git dort nicht verfolgt, "
+"behält die Dateizeit der Kopie, wie ohne die Option. Diese Zeit ändert sich "
+"mit jeder Kopie und mit ihr der Client-Einstieg. Ist <0/> gesetzt und jede "
+"Seitendatei versioniert, erzeugen zwei Builds derselben Kopie dieselben "
+"Dateien. Ein Pfad, der kein Verzeichnis ist, lässt den Build mit <1/> "
+"fehlschlagen."
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "A function name that starts with an uppercase letter is a React component. Its"
@@ -1526,6 +1574,25 @@ msgstr ""
 "An der Domainwurzel ist kein Basispfad nötig. Setze <0/> in <1/> nur bei "
 "Auslieferung unter einem Unterpfad."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"A root without <0/> renders the page with <1/> from <2/>. Markdown and MDX "
+"pages and <3>publications</3> work there too. Ordinary Markdown pages render "
+"in a plain content container, without the outline, sidebar, and previous and "
+"next links of the documentation frame, which need <4/>. Posts keep their "
+"frame. The root can read the current page's frontmatter, including fields Ardo"
+" does not know, with <5/>. The value comes from that page's own route chunk, "
+"on the server and during hydration:"
+msgstr ""
+"Ein Root ohne <0/> rendert die Seite mit <1/> aus <2/>. Markdown- und "
+"MDX-Seiten und <3>Publikationen</3> funktionieren dort ebenfalls. Gewöhnliche"
+" Markdown-Seiten erscheinen in einem schlichten Inhaltscontainer, ohne "
+"Gliederung, Seitenleiste und Vor- und Zurück-Links des Dokumentationsrahmens,"
+" die <4/> brauchen. Beiträge behalten ihren Rahmen. Der Root liest das "
+"Frontmatter der aktuellen Seite, auch Felder, die Ardo nicht kennt, mit <5/>. "
+"Der Wert stammt aus dem eigenen Routen-Chunk der Seite, auf dem Server und bei"
+" der Hydration:"
+
 #: docs/app/content/guide/components.mdx
 msgid "A route can use frontmatter to override its title and sidebar position."
 msgstr "Frontmatter kann Titel und Position in der Seitenleiste überschreiben."
@@ -1540,6 +1607,14 @@ msgstr ""
 "vollständige Rendern einer Seite bereitzustellen. Dieses Modul landet nur im "
 "Server-Bundle. Metadatenauflösung und wartende React-Komponenten laufen im "
 "selben Kontext:"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A site with its own design can render the generated pages with its own route "
+"modules. Paths are relative to the project root:"
+msgstr ""
+"Eine Website mit eigenem Design kann die generierten Seiten mit eigenen "
+"Routenmodulen rendern. Pfade sind relativ zum Projektstamm:"
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -1578,6 +1653,17 @@ msgstr ""
 "zusätzlichen oberen Abstand. Eine fixierte Kopfzeile liegt außerhalb des "
 "Flusses; reserviere ihre Höhe einmal mit <0/> in der Website-Hülle. Für "
 "eine MDX-Route mit eigenem Layout exportierst du:"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A tag key is the tag's identity in URLs, the sitemap, and feeds, so it stays "
+"the same in every language. To show a readable or translated label instead, "
+"set <0/> to a module whose default export maps a key to its label:"
+msgstr ""
+"Ein Tag-Schlüssel ist die Identität des Tags in URLs, der Sitemap und Feeds "
+"und bleibt deshalb in jeder Sprache gleich. Um stattdessen eine lesbare oder "
+"übersetzte Bezeichnung zu zeigen, setze <0/> auf ein Modul, dessen "
+"Default-Export einen Schlüssel auf seine Bezeichnung abbildet:"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -1829,6 +1915,23 @@ msgstr ""
 msgid "An edit link built from the site settings and the current page:"
 msgstr "Bearbeitungslink aus Website-Einstellungen und aktueller Seite:"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"An entry ID contains only the post ID by default. When several sites or "
+"publications share post IDs, for example a translated post on two "
+"single-language sites, set <0/>. The ID then includes the publication's host "
+"and path, so feed readers keep both entries. Readers treat entries with new "
+"IDs as new posts, so choose the option before the first release, or accept one"
+" round of repeated entries."
+msgstr ""
+"Eine Eintrags-ID enthält standardmäßig nur die Beitrags-ID. Wenn mehrere "
+"Websites oder Publikationen Beitrags-IDs teilen, etwa bei einem übersetzten "
+"Beitrag auf zwei einsprachigen Websites, setze <0/>. Die ID enthält dann Host"
+" und Pfad der Publikation, sodass Feedreader beide Einträge behalten. "
+"Feedreader behandeln Einträge mit neuen IDs als neue Beiträge. Wähle die "
+"Option daher vor der ersten Veröffentlichung oder nimm einmalig wiederholte "
+"Einträge in Kauf."
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -2062,6 +2165,17 @@ msgstr ""
 "SSR-Abhängigkeiten in der Entwicklung automatisch, damit auch CommonJS im "
 "selben Modulgraphen läuft."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo calls the function while it renders a page, inside the <0>server render "
+"context</0>, so it can use the site's translations. With Palamedes, give each "
+"key a message, so that <1/> finds it:"
+msgstr ""
+"Ardo ruft die Funktion beim Rendern einer Seite auf, innerhalb des "
+"<0>Server-Render-Kontexts</0>, sodass sie die Übersetzungen der Website "
+"nutzen kann. Gib mit Palamedes jedem Schlüssel eine Nachricht, damit <1/> sie"
+" findet:"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "Ardo can turn a local OpenAPI 3.0 or 3.1 specification into static MDX "
@@ -2104,17 +2218,33 @@ msgstr ""
 "soll davon nicht betroffen sein. Behandle eine leere Variable als nicht "
 "gesetzt, denn <5/> ergibt <6/> und würde 1970 fixieren."
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "Ardo generates <0/> and <1/>, including the full portable article, authors, "
+#~ "tags, and absolute image URLs. The index links both feeds and includes feed "
+#~ "discovery metadata. Stable post IDs remain the feed identity when a URL "
+#~ "changes."
+#~ msgstr ""
+#~ "Ardo generiert <0/> und <1/> mit dem vollständigen portablen Artikel, "
+#~ "Autoren, Tags und absoluten Bild-URLs. Der Index verlinkt beide Feeds und "
+#~ "enthält Metadaten zur Feed-Erkennung. Stabile Beitrags-IDs bleiben auch bei "
+#~ "einer URL-Änderung die Identität im Feed."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "Ardo generates <0/> and <1/>, including the full portable article, authors, "
 "tags, and absolute image URLs. The index links both feeds and includes feed "
 "discovery metadata. Stable post IDs remain the feed identity when a URL "
-"changes."
+"changes. Both feeds declare the publication's locale, or the site's <2/>. Set "
+"<3/> on a single-language site, because it otherwise defaults to <4/>."
 msgstr ""
 "Ardo generiert <0/> und <1/> mit dem vollständigen portablen Artikel, "
 "Autoren, Tags und absoluten Bild-URLs. Der Index verlinkt beide Feeds und "
 "enthält Metadaten zur Feed-Erkennung. Stabile Beitrags-IDs bleiben auch bei "
-"einer URL-Änderung die Identität im Feed."
+"einer URL-Änderung die Identität im Feed. Beide Feeds nennen die Sprache der"
+" Publikation: ihre Sprach-ID oder das <2/> der Website. Setze <3/> auf einer "
+"einsprachigen Website, denn sonst gilt <4/>."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -2381,6 +2511,14 @@ msgstr ""
 "Codeblöcke mit. Tailwinds Preflight-Reset würde damit kollidieren und das "
 "Standardbild verändern."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Ardo reads no environment variable for it. Map one yourself, so that a build "
+"in the project itself is unaffected:"
+msgstr ""
+"Ardo liest dafür keine Umgebungsvariable. Bilde selbst eine ab, damit ein "
+"Build im Projekt selbst unverändert bleibt:"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "Ardo reads your declarations through the native API of TypeScript 7.1, which "
@@ -2600,6 +2738,17 @@ msgstr ""
 "es als generiert. Bearbeite die Originalquelle, niemals die daraus erzeugte "
 "Route. Das Plugin löscht kein nicht leeres, von Hand angelegtes "
 "Zielverzeichnis. Verwende deshalb einen eigenen Präfix wie <1/>."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Ardo writes no page data into the bundle. Each archive's route holds its own "
+"tag and posts and passes them to the function. Anything the module imports, "
+"such as a list of translated tags, ships with the module to every archive."
+msgstr ""
+"Ardo schreibt keine Seitendaten ins Bundle. Die Route jedes Archivs enthält "
+"ihren eigenen Tag und ihre Beiträge und übergibt sie der Funktion. Was das "
+"Modul importiert, etwa eine Liste übersetzter Tags, wird mit dem Modul an "
+"jedes Archiv ausgeliefert."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
@@ -3335,6 +3484,22 @@ msgstr ""
 "Wähle VitePress, wenn dein Team Vue nutzt oder keine React-Komponenten "
 "wiederverwenden muss."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Chooses one spelling for every page URL Ardo generates: <0/> ends page URLs "
+"with a slash, such as <1/>, and <2/> drops it, such as <3/>. The setting "
+"applies to sitemap entries, canonical and <4/> links, locale alternate links, "
+"internal links, redirect targets, the URLs of the publication, its posts and "
+"tag archives, and the links in feeds. The site root, the deployment <5/>, "
+"keeps its slash."
+msgstr ""
+"Legt eine Schreibweise für jede Seiten-URL fest, die Ardo erzeugt: <0/> "
+"beendet Seiten-URLs mit einem Schrägstrich, etwa <1/>, und <2/> lässt ihn "
+"weg, etwa <3/>. Die Einstellung gilt für Sitemap-Einträge, Canonical- und "
+"<4/>-Links, Sprachalternativen, interne Links, Weiterleitungsziele, die URLs "
+"der Publikation, ihrer Beiträge und Tag-Archive sowie die Links in Feeds. Der"
+" Website-Stamm, die Deployment-<5/>, behält seinen Schrägstrich."
+
 #: docs/app/content/guide/theming.mdx
 msgid "Classes"
 msgstr "Klassen"
@@ -3757,6 +3922,10 @@ msgstr ""
 "Eigene Layouts können <0/> als Select, <1/> mit Beschriftung und <2/> als "
 "Hinweis einsetzen. Unter zwei Versionen zeigen sie nichts."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Custom post fields"
+msgstr "Eigene Beitragsfelder"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
 msgstr "Markdown-Komponenten anpassen"
@@ -3974,6 +4143,29 @@ msgstr "Downloads und Exporte"
 msgid "Drop this into any <0/> file — it works immediately:"
 msgstr "Das funktioniert direkt in jeder <0/>-Datei:"
 
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+#~ "page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+#~ " later than that moment."
+#~ msgstr ""
+#~ "Das <0/> jedes Eintrags ist die letzte Änderung der Seite: <1/> oder <2/> "
+#~ "eines Beitrags, sonst der letzte Git-Commit der Seitendatei, sonst ihre "
+#~ "Dateizeit. Mit <3><4/></3> liegt kein Eintrag nach diesem Zeitpunkt."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Each entry's <0/> is the page's last change: a post's <1/> or <2/>, else the "
+"page file's last Git commit, else its file time. With <3><4/></3>, no entry is"
+" later than that moment. With <5><6/></5>, the commit is that of the original "
+"file."
+msgstr ""
+"Das <0/> jedes Eintrags ist die letzte Änderung der Seite: <1/> oder <2/> "
+"eines Beitrags, sonst der letzte Git-Commit der Seitendatei, sonst ihre "
+"Dateizeit. Mit <3><4/></3> liegt kein Eintrag nach diesem Zeitpunkt. Mit "
+"<5><6/></5> ist es der Commit der Originaldatei."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Each Markdown and MDX page also gets its own file at its URL with <0/> "
@@ -3991,14 +4183,47 @@ msgstr ""
 "„Als Markdown ansehen“. Mit <5/> verlinkt der Index weiterhin auf "
 "HTML-Seiten, die Einzeldateien entfallen, und die Links verschwinden."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Each module default-exports a React component. <0/> receives <1/>, <2/> "
+"receives <3/> and wraps the rendered article in place of <4/>, and <5/> "
+"receives <6/>. A module can also export <7/>. Ardo calls it when it renders "
+"the route, like the <8/> export of any route, with the route's data and <9/>, "
+"the descriptors Ardo would render without it. The returned list replaces the "
+"defaults, including the canonical link, Open Graph, Twitter, and JSON-LD tags,"
+" so spread <10/> to keep them. Without a <11/> export, Ardo's metadata "
+"applies."
+msgstr ""
+"Jedes Modul exportiert standardmäßig eine React-Komponente. <0/> erhält "
+"<1/>, <2/> erhält <3/> und umschließt den gerenderten Artikel anstelle von "
+"<4/>, und <5/> erhält <6/>. Ein Modul kann außerdem <7/> exportieren. Ardo "
+"ruft es beim Rendern der Route auf, wie den <8/>-Export jeder Route, mit den "
+"Daten der Route und <9/>, den Deskriptoren, die Ardo ohne den Export rendern "
+"würde. Die zurückgegebene Liste ersetzt die Standardwerte einschließlich "
+"Canonical-Link, Open-Graph-, Twitter- und JSON-LD-Tags; verteile <10/> in die "
+"Liste, um sie zu behalten. Ohne <11/>-Export gelten Ardos Metadaten."
+
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/deployment.mdx
+#~ msgid ""
+#~ "Each page is a directory with an <0/>. Ardo emits internal page links with a "
+#~ "trailing slash, such as <1/>, so static hosts serve them without a redirect."
+#~ msgstr ""
+#~ "Jede Seite liegt in einem Verzeichnis mit einer <0/>. Interne Seitenlinks "
+#~ "erhalten einen abschließenden Schrägstrich, etwa <1/>, damit statische "
+#~ "Hoster sie ohne Weiterleitung ausliefern."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "Each page is a directory with an <0/>. Ardo emits internal page links with a "
-"trailing slash, such as <1/>, so static hosts serve them without a redirect."
+"trailing slash, such as <1/>, so static hosts serve them without a redirect. "
+"With <2><3/></2>, links end without the slash, and the host must serve each "
+"page at that address."
 msgstr ""
 "Jede Seite liegt in einem Verzeichnis mit einer <0/>. Interne Seitenlinks "
 "erhalten einen abschließenden Schrägstrich, etwa <1/>, damit statische "
-"Hoster sie ohne Weiterleitung ausliefern."
+"Hoster sie ohne Weiterleitung ausliefern. Mit <2><3/></2> enden Links ohne "
+"Schrägstrich, und der Host muss jede Seite unter dieser Adresse ausliefern."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -4628,6 +4853,21 @@ msgstr "Im Wurzelverzeichnis des Repositorys:"
 #: docs/app/content/guide/markdown.mdx
 msgid "Frontmatter"
 msgstr "Frontmatter"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Frontmatter fields that Ardo does not read reach the post as <0/>, for example"
+" <1/>. The post module receives them in its props and <2/>; check each value's"
+" type before use. They stay on the post's own page: the posts of listings and "
+"of <3/> have an empty <4/>, so one post's fields do not ship with every other "
+"page. The root reads the same fields with <5/>."
+msgstr ""
+"Frontmatter-Felder, die Ardo nicht liest, erreichen den Beitrag als <0/>, zum "
+"Beispiel <1/>. Das Beitragsmodul erhält sie in seinen Props und in <2/>; "
+"prüfe den Typ jedes Werts vor der Verwendung. Sie bleiben auf der eigenen "
+"Seite des Beitrags: Die Beiträge von Listen und von <3/> haben ein leeres "
+"<4/>, damit die Felder eines Beitrags nicht mit jeder anderen Seite "
+"ausgeliefert werden. Der Root liest dieselben Felder mit <5/>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
@@ -5265,20 +5505,40 @@ msgstr ""
 "Importiere Dateien und übergib sie an <0/>. Vites Fingerprints bringen neue "
 "Logos beim nächsten Deployment zu den Lesern:"
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "Import the publication data from <0/> to reuse it elsewhere. The default "
+#~ "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
+#~ "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
+#~ "from <7/>. The source of post content remains MDX; the public data export "
+#~ "contains metadata and prepared image descriptors."
+#~ msgstr ""
+#~ "Importiere die Publikationsdaten aus <0/>, um sie an anderer Stelle zu "
+#~ "verwenden. Der Standardexport ist die Publikation der Standardsprache; <1/> "
+#~ "ordnet Sprach-IDs (oder <2/> ohne Lokalisierung) ihren Daten zu. <3/>, <4/>, "
+#~ "<5/> und <6/> sind über <7/> verfügbar. Der Quelltext der Beiträge bleibt "
+#~ "MDX; der öffentliche Datenexport enthält Metadaten und vorbereitete "
+#~ "Bildbeschreibungen."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "Import the publication data from <0/> to reuse it elsewhere. The default "
 "export is the default locale's publication; <1/> maps locale IDs (or <2/> "
 "without localization) to their data. <3/>, <4/>, <5/>, and <6/> are available "
 "from <7/>. The source of post content remains MDX; the public data export "
-"contains metadata and prepared image descriptors."
+"contains metadata and prepared image descriptors. With tag archives, <8/> "
+"lists each tag's key, path, and URL; pass one as <9/> to <10/> to list only "
+"its posts."
 msgstr ""
 "Importiere die Publikationsdaten aus <0/>, um sie an anderer Stelle zu "
 "verwenden. Der Standardexport ist die Publikation der Standardsprache; <1/> "
 "ordnet Sprach-IDs (oder <2/> ohne Lokalisierung) ihren Daten zu. <3/>, <4/>, "
 "<5/> und <6/> sind über <7/> verfügbar. Der Quelltext der Beiträge bleibt "
 "MDX; der öffentliche Datenexport enthält Metadaten und vorbereitete "
-"Bildbeschreibungen."
+"Bildbeschreibungen. Mit Tag-Archiven listet <8/> Schlüssel, Pfad und URL "
+"jedes Tags; übergib eines davon als <9/> an <10/>, um nur dessen Beiträge "
+"aufzulisten."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -5606,17 +5866,37 @@ msgstr "Sprachen"
 msgid ""
 "Last-updated dates use each file's latest Git commit. Fetch the full history "
 "in CI (for example, <0/> with <1/>); source archives and files without history"
-" fall back to filesystem modification times. Dates use the site's language and"
-" UTC unless a different time zone is supplied in <2/>. Generated API pages "
-"disable edit links and file dates. Materialized content disables them by "
-"default; its frontmatter mapping can opt in when a meaningful source pattern "
-"is configured."
+" fall back to filesystem modification times. A build from a copy of the "
+"project reads the original's history with <2><3/></2>. Dates use the site's "
+"language and UTC unless a different time zone is supplied in <4/>. Generated "
+"API pages disable edit links and file dates. Materialized content disables "
+"them by default; its frontmatter mapping can opt in when a meaningful source "
+"pattern is configured."
 msgstr ""
 "Änderungsdaten stammen aus dem letzten Git-Commit. Lade in CI die ganze "
-"Historie (<0/> bei <1/>). Ohne Historie gilt die Dateizeit. Daten nutzen "
-"aktive Sprache und UTC, sofern <2/> keine andere Zeitzone setzt. Generierte "
-"APIs deaktivieren Links und Dateidaten; materialisierte Inhalte ebenfalls, "
-"außer eine Frontmatter-Abbildung aktiviert sie mit passendem Quellmuster."
+"Historie (<0/> bei <1/>). Ohne Historie gilt die Dateizeit. Ein Build aus "
+"einer Kopie des Projekts liest mit <2><3/></2> die Historie des Originals. "
+"Daten nutzen aktive Sprache und UTC, sofern <4/> keine andere Zeitzone setzt. "
+"Generierte APIs deaktivieren Links und Dateidaten; materialisierte Inhalte "
+"ebenfalls, außer eine Frontmatter-Abbildung aktiviert sie mit passendem "
+"Quellmuster."
+
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "Last-updated dates use each file's latest Git commit. Fetch the full history "
+#~ "in CI (for example, <0/> with <1/>); source archives and files without history"
+#~ " fall back to filesystem modification times. Dates use the site's language and"
+#~ " UTC unless a different time zone is supplied in <2/>. Generated API pages "
+#~ "disable edit links and file dates. Materialized content disables them by "
+#~ "default; its frontmatter mapping can opt in when a meaningful source pattern "
+#~ "is configured."
+#~ msgstr ""
+#~ "Änderungsdaten stammen aus dem letzten Git-Commit. Lade in CI die ganze "
+#~ "Historie (<0/> bei <1/>). Ohne Historie gilt die Dateizeit. Daten nutzen "
+#~ "aktive Sprache und UTC, sofern <2/> keine andere Zeitzone setzt. Generierte "
+#~ "APIs deaktivieren Links und Dateidaten; materialisierte Inhalte ebenfalls, "
+#~ "außer eine Frontmatter-Abbildung aktiviert sie mit passendem Quellmuster."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "lastUpdated"
@@ -6033,6 +6313,25 @@ msgstr ""
 msgid "Multiple packages"
 msgstr "Mehrere Pakete"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Names the project that this build's files are a copy of. Use it when a build "
+"runs from a staged copy that Git does not track, for example one copy per "
+"language. Ardo then reads Git history from the original files: a page's "
+"last-updated date and its sitemap <0/> use the last commit of the file at the "
+"same path under <1/>, and the detected <2><3/></2> is that repository's "
+"commit. Every copy of the project gets the same dates. A relative path "
+"resolves against the project root."
+msgstr ""
+"Nennt das Projekt, von dem die Dateien dieses Builds eine Kopie sind. Nutze "
+"es, wenn ein Build aus einer bereitgestellten Kopie läuft, die Git nicht "
+"verfolgt, zum Beispiel aus einer Kopie pro Sprache. Ardo liest die "
+"Git-Historie dann aus den Originaldateien: Das Änderungsdatum einer Seite und"
+" ihr <0/> in der Sitemap nutzen den letzten Commit der Datei am selben Pfad "
+"unter <1/>, und der erkannte <2><3/></2> ist der Commit dieses Repositorys. "
+"Jede Kopie des Projekts erhält dieselben Daten. Ein relativer Pfad wird gegen"
+" das Projektverzeichnis aufgelöst."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Narrow screens"
 msgstr "Schmale Bildschirme"
@@ -6351,6 +6650,19 @@ msgstr ""
 "Komponenten und englische Überschriften-IDs bleiben Teil der Struktur; "
 "übersetzt werden Fließtext, Beschriftungen und Frontmatter."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Only the generated publication routes import these modules. The post frame is "
+"part of post pages and not of documentation or other pages. With <0/>, Ardo "
+"still adds the locale alternate links of every page, and a canonical link when"
+" the returned metadata has none."
+msgstr ""
+"Nur die generierten Publikationsrouten importieren diese Module. Der "
+"Beitragsrahmen gehört zu Beitragsseiten und nicht zur Dokumentation oder zu "
+"anderen Seiten. Mit <0/> ergänzt Ardo weiterhin die Sprachalternativen jeder "
+"Seite und einen Canonical-Link, wenn die zurückgegebenen Metadaten keinen "
+"enthalten."
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Open a <0>GitHub Discussion</0> for questions"
 msgstr "Stelle Fragen in <0>GitHub Discussions</0>."
@@ -6454,6 +6766,10 @@ msgstr "Ausgabeformate"
 msgid "Override default UI chrome strings."
 msgstr "Standardtexte der Oberfläche ersetzen."
 
+#: docs/app/content/guide/publications.mdx
+msgid "Own presentation and metadata"
+msgstr "Eigene Darstellung und Metadaten"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Ownership"
 msgstr "Kontrolle"
@@ -6493,6 +6809,10 @@ msgstr "Seitenaktionen"
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Page and Content Width"
 msgstr "Seiten- und Inhaltsbreite"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Page data for the root"
+msgstr "Seitendaten für den Root"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Page feedback widget"
@@ -7584,6 +7904,25 @@ msgstr ""
 "dieses fixierten Zeitpunkts statt der aktuellen Zeit, welche geplanten "
 "Beiträge sichtbar sind. Entwürfe bleiben in jedem Fall verborgen."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Set <0/> to generate a page for each tag at <1/>. The sitemap lists these "
+"pages. Tag keys must be lowercase slugs with hyphens, such as <2/>. The build "
+"fails when a key does not match, when a post lists a key twice, or when a post"
+" path falls under <3/>. Feeds keep the key as category. With archives, the "
+"tags on a post link to their archive. Without archives, tags can be any text. "
+"With <4/>, every locale needs the same tag keys, because each localized page "
+"must exist in every locale."
+msgstr ""
+"Setze <0/>, um für jedes Tag eine Seite unter <1/> zu generieren. Die Sitemap"
+" führt diese Seiten auf. Tag-Schlüssel müssen kleingeschriebene Slugs mit "
+"Bindestrichen sein, etwa <2/>. Der Build schlägt fehl, wenn ein Schlüssel "
+"nicht passt, ein Beitrag einen Schlüssel doppelt nennt oder ein Beitragspfad "
+"unter <3/> liegt. Feeds behalten den Schlüssel als Kategorie. Mit Archiven "
+"verlinken die Tags eines Beitrags auf ihr Archiv. Ohne Archive sind Tags "
+"beliebiger Text. Mit <4/> braucht jede Sprache dieselben Tag-Schlüssel, weil "
+"jede lokalisierte Seite in jeder Sprache existieren muss."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Set <0/> to hide the outline of this page. Which heading levels the outline "
@@ -7847,6 +8186,10 @@ msgstr "Quellcode und Konfiguration"
 msgid "Source repository"
 msgstr "Quellcode"
 
+#: docs/app/content/guide/configuration.mdx
+msgid "sourceRoot"
+msgstr "sourceRoot"
+
 #: docs/app/content/guide/components.mdx
 msgid "Speed and quick actions"
 msgstr "Geschwindigkeit und schnelle Aktionen"
@@ -8060,6 +8403,14 @@ msgstr "Tabs"
 msgid "Tabs example"
 msgstr "Tab-Beispiel"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Tag archives"
+msgstr "Tag-Archive"
+
+#: docs/app/content/guide/publications.mdx
+msgid "Tag labels"
+msgstr "Tag-Bezeichnungen"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid "tag-based grouping;"
 msgstr "Gruppierung nach Tags;"
@@ -8134,6 +8485,33 @@ msgstr ""
 "<0/> akzeptiert dieselben Ardo-Optionen wie das Vite-Plugin. Ergänze <1/> nur"
 " für weitere Plugins oder Vite-Einstellungen; die CLI bindet Ardos Plugins "
 "automatisch ein."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The <0/> function runs during rendering, so it can translate like <1/> does. "
+"The module types <2/>, <3/>, and <4/> from <5/> describe the exports. When an "
+"export does not match its type, the generated route fails the site's type "
+"check. Every page and module shares the publication data, so Ardo freezes it, "
+"and its lists are read-only: sort a copy, such as <6/>. <7/> is a new list for"
+" every call. The defaults of the index, posts, and tag archives all end with "
+"the publication's Atom and RSS discovery links. With a post module, the build "
+"fails when a post exports its own <8/>, because that would drop the canonical,"
+" Open Graph, and feed links of the post; vary the metadata in the module's "
+"<9/> instead. Without a post module, a post's own <10/> replaces Ardo's "
+"metadata, as on any page."
+msgstr ""
+"Die Funktion <0/> läuft beim Rendern und kann deshalb wie <1/> übersetzen. "
+"Die Modultypen <2/>, <3/> und <4/> aus <5/> beschreiben die Exporte. Passt ein"
+" Export nicht zu seinem Typ, schlägt die Typprüfung der Website in der "
+"generierten Route fehl. Alle Seiten und Module teilen die Publikationsdaten, "
+"deshalb friert Ardo sie ein, und ihre Listen sind schreibgeschützt: Sortiere "
+"eine Kopie, etwa <6/>. <7/> ist bei jedem Aufruf eine neue Liste. Die "
+"Standardwerte von Index, Beiträgen und Tag-Archiven enden alle mit den Atom- "
+"und RSS-Discovery-Links der Publikation. Mit einem Beitragsmodul schlägt der "
+"Build fehl, wenn ein Beitrag ein eigenes <8/> exportiert, weil das die "
+"Canonical-, Open-Graph- und Feed-Links des Beitrags verwerfen würde; variiere"
+" die Metadaten stattdessen im <9/> des Moduls. Ohne Beitragsmodul ersetzt ein "
+"eigenes <10/> eines Beitrags Ardos Metadaten, wie auf jeder Seite."
 
 #: docs/app/content/guide/theming.mdx
 msgid "The <0/> object provides tokens for:"
@@ -8383,6 +8761,14 @@ msgid "The current page path without the base path."
 msgstr "Seitenpfad ohne Basispfad."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The current page: path, base path, route <0/>, and the <1/> of a Markdown or "
+"MDX route."
+msgstr ""
+"Die aktuelle Seite: Pfad, Basispfad, Routen-<0/> und das <1/> einer Markdown- "
+"oder MDX-Route."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "The current page's table of contents, or an empty list."
 msgstr "Inhaltsverzeichnis oder leere Liste."
 
@@ -8500,9 +8886,40 @@ msgstr ""
 "statische <0/>. Unterstützt dein CDN oder Hoster HTTP-Weiterleitungen, "
 "konfiguriere diese außerhalb von Ardo."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The index and the tag archives have no frontmatter of their own. Their modules"
+" can export <0/> to give the root page data, such as a link to the same page "
+"in another language. Ardo calls it when it renders the page, like <1/>, with "
+"<2/> for the index and <3/> for each tag archive. The root reads the result "
+"with <4/>, on the server and during hydration, as it reads a post's fields. "
+"Without the export, these pages have no frontmatter."
+msgstr ""
+"Der Index und die Tag-Archive haben kein eigenes Frontmatter. Ihre Module "
+"können <0/> exportieren, um dem Root Seitendaten zu geben, etwa einen Link "
+"auf dieselbe Seite in einer anderen Sprache. Ardo ruft die Funktion beim "
+"Rendern der Seite auf, wie <1/>, mit <2/> für den Index und <3/> für jedes "
+"Tag-Archiv. Der Root liest das Ergebnis mit <4/>, auf dem Server und während "
+"der Hydration, so wie er die Felder eines Beitrags liest. Ohne den Export "
+"haben diese Seiten kein Frontmatter."
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid "The initial static reference includes:"
 msgstr "Die statische Referenz enthält zunächst:"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The label appears in the heading and default title of the tag archive and in "
+"the tag list of a post. Your own components receive it as <0/> or read it with"
+" <1/> from <2/>. Only the generated publication pages import the module. Feeds"
+" keep the key, because Ardo builds them without an active locale. Without "
+"<3/>, pages show the key."
+msgstr ""
+"Die Bezeichnung erscheint in der Überschrift und im Standardtitel des "
+"Tag-Archivs sowie in der Tag-Liste eines Beitrags. Eigene Komponenten erhalten"
+" sie als <0/> oder lesen sie mit <1/> aus <2/>. Nur die generierten "
+"Publikationsseiten importieren das Modul. Feeds behalten den Schlüssel, weil "
+"Ardo sie ohne aktive Sprache baut. Ohne <3/> zeigen Seiten den Schlüssel."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -8694,15 +9111,37 @@ msgstr ""
 msgid "The UI is small; the harder part is deciding where feedback data goes."
 msgstr "Kleine Oberfläche; schwieriger ist das Ziel der Feedbackdaten."
 
+#~ #@ obsolete-since: 2026-11-07
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
+#~ "independently of the source filename. Custom paths must remain inside the "
+#~ "publication subtree."
+#~ msgstr ""
+#~ "Die URL lautet <0/>. Ein verschachteltes <1/> wird zu <2/>. Setze <3/>, um "
+#~ "eine Adresse unabhängig vom Quelldateinamen zu wählen. Eigene Pfade müssen "
+#~ "innerhalb des Publikations-Unterbaums bleiben."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The URL is <0/>. A nested <1/> becomes <2/>. Set <3/> to choose an address "
 "independently of the source filename. Custom paths must remain inside the "
-"publication subtree."
+"publication subtree. The site-wide <4><5/></4> setting decides whether these "
+"URLs end with a slash. It spells the <6/> of the publication, its posts, and "
+"its tag archives, their canonical links, the sitemap, and the feed links "
+"alike. Without the setting, publication URLs keep the slash, while sitemap "
+"entries and the default canonical links of posts and tag archives do not, as "
+"in earlier versions."
 msgstr ""
 "Die URL lautet <0/>. Ein verschachteltes <1/> wird zu <2/>. Setze <3/>, um "
 "eine Adresse unabhängig vom Quelldateinamen zu wählen. Eigene Pfade müssen "
-"innerhalb des Publikations-Unterbaums bleiben."
+"innerhalb des Publikations-Unterbaums bleiben. Die websiteweite Einstellung "
+"<4><5/></4> entscheidet, ob diese URLs mit einem Schrägstrich enden. Sie "
+"schreibt <6/> der Publikation, ihrer Beiträge und Tag-Archive, deren "
+"Canonical-Links, die Sitemap und die Feed-Links einheitlich. Ohne die "
+"Einstellung behalten Publikations-URLs den Schrägstrich, während "
+"Sitemap-Einträge und die Standard-Canonical-Links von Beiträgen und "
+"Tag-Archiven ihn nicht haben, wie in früheren Versionen."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
@@ -9059,6 +9498,10 @@ msgstr "Tooltip"
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tracking issue"
 msgstr "Issue"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "trailingSlash"
+msgstr "trailingSlash"
 
 #: docs/app/content/guide/components.mdx
 msgid "Translations and localization"
@@ -10039,6 +10482,17 @@ msgstr ""
 "<1>4:3</1>. Jede Familie enthält mehrere Auflösungen; der Browser wählt "
 "über <2/> und <3/> eine aus. Ardo erhält die Quelldateien und skaliert nicht"
 " hoch."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Without the setting, Ardo keeps the output of earlier versions: sitemap "
+"entries and default canonical links end without the slash, internal links and "
+"publication URLs with it, and dev and preview serve both spellings."
+msgstr ""
+"Ohne die Einstellung behält Ardo die Ausgabe früherer Versionen bei: "
+"Sitemap-Einträge und Standard-Canonical-Links enden ohne Schrägstrich, "
+"interne Links und Publikations-URLs mit ihm, und Dev-Server und Vorschau "
+"liefern beide Schreibweisen aus."
 
 #: docs/app/content/guide/components.mdx
 msgid ""

@@ -171,6 +171,17 @@ export type ArdoConfig = {
   navigation?: NavigationConfig
   /** Static redirect generation */
   redirects?: RedirectConfig[]
+  /**
+   * Whether page URLs end with a slash (`/guide/`) or not (`/guide`). Applies to sitemap entries,
+   * canonical and alternate links, internal links, and publication, post, tag, and feed URLs.
+   * The dev server and `ardo preview` redirect the other spelling of a page to it; production
+   * hosts must be configured to do the same (see the configuration guide). The site root keeps
+   * its slash.
+   *
+   * Unset, Ardo keeps its earlier output: sitemap entries and default canonical links without
+   * the slash, internal links and publication URLs with it, and both spellings are served.
+   */
+  trailingSlash?: boolean
   /** Build-time validation policy for content metadata. */
   validation?: ContentValidationConfig
   /**
@@ -217,6 +228,16 @@ export type ArdoConfig = {
    * absent when neither exists.
    */
   buildHash?: string
+  /**
+   * The project directory that this build's project mirrors, for a build that runs from a copy,
+   * such as one staged copy per language. Ardo then reads Git history from the original files:
+   * a route's last-updated date and sitemap `lastmod` use the last commit of the file at the same
+   * path under `sourceRoot`, and the detected `buildHash` is that repository's commit. A file the
+   * source does not have or Git does not track keeps the copy's file time, as without the option.
+   * Relative paths resolve against the project root. Opt-in: without it, Ardo reads the history
+   * of the project itself as before.
+   */
+  sourceRoot?: string
 }
 
 export type MetadataConfig = {
@@ -484,11 +505,17 @@ export type ResolvedConfig = {
    * `buildHash`; the client config falls back to the detected Git hash when it is absent.
    */
   buildHash?: string
+  /** The configured `trailingSlash`; absent when the site keeps Ardo's earlier mixed spelling. */
+  trailingSlash?: boolean
+  /** The configured `sourceRoot` as an absolute path; absent when the site did not set it. */
+  sourceRoot?: string
 } & Required<
   Omit<
     ArdoConfig,
     | "buildHash"
     | "buildTime"
+    | "sourceRoot"
+    | "trailingSlash"
     | "navigation"
     | "openapi"
     | "project"

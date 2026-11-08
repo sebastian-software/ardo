@@ -5,6 +5,10 @@ import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./bui
 import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
 import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
+import { spellPagePath } from "../runtime/trailing-slash"
+import path from "node:path"
+import { getGitFileTimestamps, sourceHistoryDirectory } from "./git-utils"
+import { normalizePath } from "./path-utils"
 
 export { generateSitemap } from "./sitemap"
 
@@ -52,6 +56,9 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
   const redirects = [...config.redirects]
   redirects.push(...getVersioningRedirects(config, entries))
 
+  // Generated redirects end at the page's canonical spelling, so they need no second hop.
+  const target = (publicPath: string) =>
+    spellPagePath(publicPath, config.trailingSlash, config.deploymentBase)
   for (const entry of entries) {
     if (
       config.i18n !== false &&
@@ -62,13 +69,13 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
     ) {
       redirects.push({
         from: createCurrentRouteIdentity(entry.routePath, { ...config, i18n: false }).publicPath,
-        to: entry.publicPath,
+        to: target(entry.publicPath),
       })
     }
     for (const from of entry.metadata.redirectFrom ?? []) {
       // Keep `from` as the authored static source path; `to` uses the canonical
       // public route because generated HTML and provider redirects share this contract.
-      redirects.push({ from, to: entry.publicPath })
+      redirects.push({ from, to: target(entry.publicPath) })
     }
   }
 
@@ -113,11 +120,25 @@ export function generateVercelRedirects(redirects: Array<{ from: string; to: str
 export function createBuildOutputAssets(
   entries: RouteManifestEntry[],
   config: ResolvedConfig,
-  llms: LlmsTextOptions = {}
+  llms: LlmsTextOptions & {
+    /** With it, sitemap dates of pages without post dates come from their last Git commit. */
+    routesDir?: string
+  } = {}
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
   if (config.seo.sitemap !== false) {
-    assets.push({ fileName: "sitemap.xml", source: generateSitemap(entries, config) })
+    const commits =
+      llms.routesDir == null
+        ? undefined
+        : getGitFileTimestamps(sourceHistoryDirectory(llms.routesDir, config))
+    const commitTime = (filePath: string) =>
+      llms.routesDir == null
+        ? undefined
+        : commits?.get(normalizePath(path.relative(llms.routesDir, filePath)))
+    assets.push({
+      fileName: "sitemap.xml",
+      source: generateSitemap(entries, config, commitTime),
+    })
   }
 
   if (config.seo.robots !== false) {

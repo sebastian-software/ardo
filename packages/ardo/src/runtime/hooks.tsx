@@ -46,18 +46,21 @@ export function useArdoSidebar(): SidebarItem[] {
 
 /**
  * Title, frontmatter, outline, and source path of the current Markdown or MDX page. `undefined`
- * outside page content.
+ * outside page content. Works without `ArdoProvider`, so a custom shell can render Markdown.
  */
 export function useArdoPageData(): PageData | undefined {
-  const { currentPage } = useArdoContext()
-  return currentPage
+  const page = use(ArdoPageDataContext)
+  const context = use(ArdoContext)
+  return page ?? context?.currentPage
 }
 
 /** The outline of the current page, or an empty list. */
 export function useArdoTOC(): TOCItem[] {
-  const { currentPage } = useArdoContext()
-  return currentPage?.toc ?? []
+  return useArdoPageData()?.toc ?? []
 }
+
+/** The current Markdown page, independent of `ArdoProvider`. */
+const ArdoPageDataContext = createContext<PageData | undefined>(undefined)
 
 type ArdoProviderProps = {
   config: ArdoConfig
@@ -143,8 +146,9 @@ export function ArdoPageDataProvider({
     [parent, pageData]
   )
 
-  if (!value) return <>{children}</>
-  return <ArdoContext value={value}>{children}</ArdoContext>
+  const content = <ArdoPageDataContext value={pageData}>{children}</ArdoPageDataContext>
+  if (!value) return content
+  return <ArdoContext value={value}>{content}</ArdoContext>
 }
 
 // =============================================================================

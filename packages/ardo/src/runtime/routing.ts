@@ -7,6 +7,11 @@ import { ArdoErrorBoundary } from "../ui/ErrorBoundary"
 /** Exports Ardo reads from a route module. */
 export type ArdoRouteModule = {
   default?: ComponentType
+  /**
+   * A Markdown route's frontmatter, which Ardo's compiler exports. A function is called when the
+   * page renders, like `meta`; generated publication routes compute their page data this way.
+   */
+  frontmatter?: (() => Record<string, unknown>) | Record<string, unknown>
   handle?: unknown
   meta?: () => ArdoMetaDescriptor[]
 }
@@ -51,6 +56,7 @@ export type ArdoResolvedPage = {
   component: ComponentType
   data: ArdoPageData
   error?: ArdoPageError
+  frontmatter?: ArdoPage["frontmatter"]
   handle?: unknown
   source?: ArdoPage["source"]
   meta: ArdoMetaDescriptor[]
@@ -86,6 +92,8 @@ export async function resolvePage(input: {
     if (module.default == null) {
       throw new Error(`[ardo] Route "${route.id}" must export a default page component.`)
     }
+    const frontmatter =
+      typeof module.frontmatter === "function" ? module.frontmatter() : module.frontmatter
     return {
       component: module.default,
       data: {
@@ -95,6 +103,7 @@ export async function resolvePage(input: {
         source: input.source ?? route.source,
       },
       handle: module.handle,
+      ...(isRecord(frontmatter) ? { frontmatter } : {}),
       source: input.source ?? route.source,
       meta: withDefaultTitle((module.meta ?? root.meta)?.() ?? [], input.siteTitle),
     }
@@ -166,8 +175,12 @@ function withDefaultTitle(
   siteTitle: string | undefined
 ): ArdoMetaDescriptor[] {
   if (siteTitle == null || siteTitle === "") return meta
-  if (meta.some((descriptor) => "title" in descriptor)) return meta
+  if (meta.some((descriptor) => "title" in descriptor && !("tagName" in descriptor))) return meta
   return [...meta, { title: siteTitle }]
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === "object" && !Array.isArray(value)
 }
 
 function matchesPattern(pattern: string, pathname: string): boolean {

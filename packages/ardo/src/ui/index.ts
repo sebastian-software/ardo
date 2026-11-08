@@ -14,6 +14,8 @@ export { ArdoBareContent } from "./BareContent"
 export { ArdoImage, type ArdoImageProps } from "./PostImage"
 export { ArdoPost, ArdoPostList, type ArdoPostProps, type ArdoPostListProps } from "./Posts"
 export { ArdoPostNavigation, type ArdoPostNavigationProps } from "./PostNavigation"
+export { ArdoPublicationTags } from "./publication-tags"
+export { useArdoPublicationTags, type ArdoPublicationTagsValue } from "./publication-tags-context"
 export { ardoImagePresets } from "../publication/presets"
 export type {
   AuthorProfile,
@@ -26,7 +28,20 @@ export type {
   PostImage,
   PostImageInput,
   Publication,
+  PublicationComponentsConfig,
   PublicationConfig,
+  PublicationFeedsConfig,
+  PublicationIndexMetaArgs,
+  PublicationIndexModule,
+  PublicationIndexProps,
+  PublicationPostMetaArgs,
+  PublicationPostModule,
+  PublicationPostProps,
+  PublicationTag,
+  PublicationTagLabel,
+  PublicationTagMetaArgs,
+  PublicationTagModule,
+  PublicationTagProps,
 } from "../publication/types"
 // UI components
 export {

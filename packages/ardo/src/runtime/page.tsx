@@ -21,6 +21,7 @@ export function ArdoPageProvider({
   path = "/",
   component,
   error,
+  frontmatter,
   handle,
   source,
 }: ArdoPageProviderProps) {
@@ -29,11 +30,12 @@ export function ArdoPageProvider({
       base: normalizeBase(base),
       component,
       error,
+      frontmatter,
       handle,
       path: normalizePath(path),
       source,
     }),
-    [base, component, error, handle, path, source]
+    [base, component, error, frontmatter, handle, path, source]
   )
   return <ArdoPageContext value={value}>{children}</ArdoPageContext>
 }

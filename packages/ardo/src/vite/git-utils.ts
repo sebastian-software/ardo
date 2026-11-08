@@ -2,6 +2,8 @@ import { execFileSync, execSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
+import type { ResolvedConfig } from "../config/types"
+
 /**
  * Finds the package root by looking for package.json in parent directories.
  * Returns the path relative to cwd, or undefined if not found.
@@ -31,7 +33,35 @@ export function detectGitHash(cwd: string): string | undefined {
   return runGitCommand(cwd, "git rev-parse --short HEAD")
 }
 
-/** Read commit dates only for currently tracked files; generated routes use file times. */
+/** A misspelled `sourceRoot` would silently date every page by the copy; name it instead. */
+export function assertSourceRoot({ sourceRoot }: Pick<ResolvedConfig, "sourceRoot">): void {
+  if (
+    sourceRoot != null &&
+    fs.statSync(sourceRoot, { throwIfNoEntry: false })?.isDirectory() !== true
+  )
+    throw new Error(`[ardo] sourceRoot must name an existing directory: ${sourceRoot}`)
+}
+
+/**
+ * The directory whose Git history describes `directory`. With `sourceRoot`, a directory inside the
+ * project maps to the same relative path under the project that this build's copy mirrors.
+ * Without it, or for a directory outside the project, it is `directory` itself.
+ */
+export function sourceHistoryDirectory(
+  directory: string,
+  config: Pick<ResolvedConfig, "root" | "sourceRoot"> | undefined
+): string {
+  if (config?.sourceRoot == null) return directory
+  const relative = path.relative(config.root, directory)
+  if (relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
+    return directory
+  return path.join(config.sourceRoot, relative)
+}
+
+/**
+ * Read commit dates only for tracked files that exist, keyed by their path relative to
+ * `directory`; generated routes, and files the directory lacks, use file times.
+ */
 export function getGitFileTimestamps(directory: string): Map<string, number> {
   const timestamps = new Map<string, number>()
   try {
@@ -41,7 +71,10 @@ export function getGitFileTimestamps(directory: string): Map<string, number> {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "ignore"],
         maxBuffer: 16 * 1024 * 1024,
-      }).split("\0")
+      })
+        .split("\0")
+        // A staged copy can still have a file that the source deleted without a commit.
+        .filter((file) => file !== "" && fs.existsSync(path.join(directory, file)))
     )
     const history = execFileSync(
       "git",

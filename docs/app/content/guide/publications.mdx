@@ -66,6 +66,11 @@ The article starts here. Use ordinary Markdown, or MDX components when the story
 The URL is `/news/a-readable-update/`. A nested `posts/design/typography.mdx` becomes
 `/news/design/typography/`. Set `path: /news/a-permanent-address` to choose an address
 independently of the source filename. Custom paths must remain inside the publication subtree.
+The site-wide [`trailingSlash`](./configuration#trailingslash) setting decides whether these
+URLs end with a slash. It spells the `url` of the publication, its posts, and its tag archives,
+their canonical links, the sitemap, and the feed links alike. Without the setting, publication
+URLs keep the slash, while sitemap entries and the default canonical links of posts and tag
+archives do not, as in earlier versions.
 
 Assign `id` once and preserve it when renaming the file, title, or URL. To create a UUID, run:
 
@@ -182,7 +187,15 @@ one breakpoint policy fits every image.
 
 Ardo generates `/news/atom.xml` and `/news/rss.xml`, including the full portable article,
 authors, tags, and absolute image URLs. The index links both feeds and includes feed
-discovery metadata. Stable post IDs remain the feed identity when a URL changes.
+discovery metadata. Stable post IDs remain the feed identity when a URL changes. Both feeds
+declare the publication's locale, or the site's `lang`. Set `lang` on a single-language
+site, because it otherwise defaults to `en`.
+
+An entry ID contains only the post ID by default. When several sites or publications share
+post IDs, for example a translated post on two single-language sites, set
+`feeds: { entryIds: "publication" }`. The ID then includes the publication's host and path,
+so feed readers keep both entries. Readers treat entries with new IDs as new posts, so choose
+the option before the first release, or accept one round of repeated entries.
 
 Ordinary Markdown exports directly. When MDX contains components, expressions, module
 statements, or HTML that the static projection would omit, supply the complete portable
@@ -233,13 +246,194 @@ With strict localization enabled, organize posts under `posts/<locale>/`. Ardo g
 validation still applies; this feature does not introduce translation fallbacks.
 Pass translated UI labels through `ArdoRoot`'s `labels.publication`.
 
+## Tag archives
+
+Set `tags: true` to generate a page for each tag at `/news/tags/<key>`. The sitemap lists
+these pages. Tag keys must be lowercase slugs with hyphens, such as `release-notes`. The build
+fails when a key does not match, when a post lists a key twice, or when a post path falls
+under `/news/tags`. Feeds keep the key as category. With archives, the tags on a post link to
+their archive. Without archives, tags can be any text. With `i18n`, every locale needs the same
+tag keys, because each localized page must exist in every locale.
+
+### Tag labels
+
+A tag key is the tag's identity in URLs, the sitemap, and feeds, so it stays the same in every
+language. To show a readable or translated label instead, set `tagLabel` to a module whose
+default export maps a key to its label:
+
+```ts
+publication: {
+  // from, authors, ...
+  tags: true,
+  tagLabel: "app/blog/tag-label.ts",
+}
+```
+
+Ardo calls the function while it renders a page, inside the
+[server render context](./internationalization#server-render-context), so it can use the site's
+translations. With Palamedes, give each
+key a message, so that `i18n:extract` finds it:
+
+```ts
+// app/blog/tag-label.ts
+import { t } from "@palamedes/core/macro"
+import type { PublicationTagLabel } from "ardo/config"
+
+const tagLabel: PublicationTagLabel = (key) => {
+  switch (key) {
+    case "design":
+      return t`Design`
+    case "release-notes":
+      return t`Release notes`
+    default:
+      return key
+  }
+}
+
+export default tagLabel
+```
+
+The label appears in the heading and default title of the tag archive and in the tag list of a
+post. Your own components receive it as `label` or read it with `useArdoPublicationTags()` from
+`ardo/ui`. Only the generated publication pages import the module. Feeds keep the key, because
+Ardo builds them without an active locale. Without `tagLabel`, pages show the key.
+
+## Own presentation and metadata
+
+A site with its own design can render the generated pages with its own route modules. Paths are
+relative to the project root:
+
+```ts
+publication: {
+  // from, authors, ...
+  tags: true,
+  components: {
+    index: "app/blog/BlogIndex.tsx",
+    post: "app/blog/BlogPost.tsx",
+    tag: "app/blog/BlogTag.tsx",
+  },
+}
+```
+
+Each module default-exports a React component. `index` receives `{ publication }`, `post`
+receives `{ post, children }` and wraps the rendered article in place of `ArdoPost`, and `tag`
+receives `{ publication, tag, label, posts }`. A module can also export `meta`. Ardo calls it
+when it renders the route, like the `meta` export of any route, with the route's data and
+`defaults`, the descriptors Ardo would render without it. The returned list replaces the
+defaults, including the canonical link, Open Graph, Twitter, and JSON-LD tags, so spread
+`defaults` to keep them. Without a `meta` export, Ardo's metadata applies.
+
+```tsx
+// app/blog/BlogPost.tsx
+import type { PublicationPostMetaArgs, PublicationPostProps } from "ardo/config"
+import type { ArdoMetaDescriptor } from "ardo/runtime"
+
+export default function BlogPost({ post, children }: PublicationPostProps) {
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      {children}
+    </article>
+  )
+}
+
+// Link descriptors can have a `title` attribute; keep them.
+const notTitle = (descriptor: ArdoMetaDescriptor) =>
+  "tagName" in descriptor || !("title" in descriptor)
+
+export function meta({ post, publication, defaults }: PublicationPostMetaArgs) {
+  return [{ title: `${post.title} – ${publication.name}` }, ...defaults.filter(notTitle)]
+}
+```
+
+```tsx
+// app/blog/BlogTag.tsx
+import { t } from "@palamedes/core/macro"
+import type { PublicationTagMetaArgs, PublicationTagProps } from "ardo/config"
+import type { ArdoMetaDescriptor } from "ardo/runtime"
+
+export default function BlogTag({ label, posts }: PublicationTagProps) {
+  return (
+    <main>
+      <h1>{label}</h1>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>
+            <a href={post.url}>{post.title}</a>
+          </li>
+        ))}
+      </ul>
+    </main>
+  )
+}
+
+const notTitle = (descriptor: ArdoMetaDescriptor) =>
+  "tagName" in descriptor || !("title" in descriptor)
+
+export function meta({ label, defaults }: PublicationTagMetaArgs) {
+  return [{ title: t`Posts about ${label}` }, ...defaults.filter(notTitle)]
+}
+```
+
+The `meta` function runs during rendering, so it can translate like `label` does. The module
+types `PublicationIndexModule`, `PublicationPostModule`, and `PublicationTagModule` from
+`ardo/config` describe the exports. When an export does not match its type, the generated
+route fails the site's type check. Every page and module shares the publication data, so Ardo
+freezes it, and its lists are read-only: sort a copy, such as `[...publication.posts].sort(…)`.
+`defaults` is a new list for every call. The defaults of the index, posts, and tag archives all
+end with the publication's Atom and RSS discovery links. With a post module, the build fails when
+a post exports its own `meta`, because that would drop the canonical, Open Graph, and feed links
+of the post; vary the metadata in the module's `meta` instead. Without a post module, a post's
+own `meta` replaces Ardo's metadata, as on any page.
+
+### Custom post fields
+
+Frontmatter fields that Ardo does not read reach the post as `post.data`, for example
+`nextStep: /contact`. The post module receives them in its props and `meta`; check each value's
+type before use. They stay on the post's own page: the posts of listings and of
+`virtual:ardo/publication` have an empty `data`, so one post's fields do not ship with every
+other page. The root reads the same fields with `useArdoPage().frontmatter`.
+
+Only the generated publication routes import these modules. The post frame is part of post
+pages and not of documentation or other pages. With `i18n`, Ardo still adds the locale alternate
+links of every page, and a canonical link when the returned metadata has none.
+
+### Page data for the root
+
+The index and the tag archives have no frontmatter of their own. Their modules can export
+`frontmatter` to give the root page data, such as a link to the same page in another language.
+Ardo calls it when it renders the page, like `meta`, with `{ publication }` for the index and
+`{ publication, tag, label, posts }` for each tag archive. The root reads the result with
+`useArdoPage().frontmatter`, on the server and during hydration, as it reads a post's fields.
+Without the export, these pages have no frontmatter.
+
+```tsx
+// app/blog/BlogTag.tsx
+import type { PublicationTagFrontmatterArgs } from "ardo/config"
+
+export function frontmatter({ tag }: PublicationTagFrontmatterArgs) {
+  return { counterpart: `https://de.example.com/blog/tags/${tag.key}/` }
+}
+```
+
+```tsx
+// app/root.tsx
+const counterpart = useArdoPage().frontmatter?.counterpart
+```
+
+Ardo writes no page data into the bundle. Each archive's route holds its own tag and posts and
+passes them to the function. Anything the module imports, such as a list of translated tags,
+ships with the module to every archive.
+
 ## Custom layouts and AT metadata
 
 Import the publication data from `virtual:ardo/publication` to reuse it elsewhere. The
 default export is the default locale's publication; `publications` maps locale IDs (or `default`
 without localization) to their data. `ArdoPostList`, `ArdoPost`, `ArdoImage`, and
 `ardoImagePresets` are available from `ardo/ui`. The source of post content remains MDX;
-the public data export contains metadata and prepared image descriptors.
+the public data export contains metadata and prepared image descriptors. With tag archives,
+`publication.tags` lists each tag's key, path, and URL; pass one as `tag` to `ArdoPostList` to
+list only its posts.
 
 Use `ArdoPostNavigation` from `ardo/ui` for compact article navigation. Pass the current
 locale's publication to it through `ArdoHeader`'s `mobileMenuContent` prop to populate a

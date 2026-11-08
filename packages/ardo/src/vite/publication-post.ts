@@ -1,13 +1,20 @@
 import fs from "node:fs/promises"
 import type { Post } from "../publication/types"
 import { prepareNativeMarkdown } from "../markdown/native-metadata"
-import type { PublicationContext } from "./publication-context"
+import { publicationUrl, type PublicationContext } from "./publication-context"
 import { parsePostMetadata, type PostMetadata } from "./post-metadata"
 import { preparePostAuthors, preparePostImages } from "./publication-images"
 import { createPortablePostBody } from "./publication-feeds"
-import { createPostRoute } from "./publication-routes"
+import type { PostRouteInput } from "./publication-routes"
+import { knownFrontmatterFields } from "./page-frontmatter-fields"
 
-export async function preparePublicationPost(sourceFile: string, context: PublicationContext) {
+export type PreparedPost = { post: Post; html: string; route: PostRouteInput }
+
+/** The route is generated with the others, which share the resolved site modules. */
+export async function preparePublicationPost(
+  sourceFile: string,
+  context: PublicationContext
+): Promise<PreparedPost | undefined> {
   try {
     const source = await fs.readFile(sourceFile, "utf8")
     const format = sourceFile.endsWith(".mdx") ? "mdx" : "md"
@@ -19,7 +26,7 @@ export async function preparePublicationPost(sourceFile: string, context: Public
     if (metadata.draft || new Date(metadata.publishedAt) > (context.now ?? new Date())) return
     const authors = await preparePostAuthors(metadata.authorKeys, context)
     const images = await preparePostImages({ data, prepared, sourceFile, context })
-    const post = createPost(metadata, { authors, ...images }, context)
+    const post = createPost(metadata, { authors, ...images, data: siteFields(data) }, context)
     return {
       post,
       html: createPortablePostBody({
@@ -29,15 +36,7 @@ export async function preparePublicationPost(sourceFile: string, context: Public
         post,
         config: context.config,
       }),
-      route: createPostRoute({
-        data,
-        source,
-        sourceFile,
-        prepared,
-        post,
-        routePath: metadata.routePath,
-        context,
-      }),
+      route: { data, source, sourceFile, prepared, post, routePath: metadata.routePath, context },
     }
   } catch (error) {
     throw new Error(
@@ -47,9 +46,16 @@ export async function preparePublicationPost(sourceFile: string, context: Public
   }
 }
 
+/** Authored frontmatter fields that Ardo does not read, which the site may use. */
+function siteFields(data: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(data).filter(([key]) => !knownFrontmatterFields.has(key) && !key.startsWith("_"))
+  )
+}
+
 function createPost(
   metadata: PostMetadata,
-  rendering: Pick<Post, "authors" | "images" | "coverImage">,
+  rendering: Pick<Post, "authors" | "images" | "coverImage" | "data">,
   context: PublicationContext
 ): Post {
   const route =
@@ -63,7 +69,7 @@ function createPost(
     tags: metadata.tags,
     ...rendering,
     path: route,
-    url: new URL(`${context.config.deploymentBase}${route.slice(1)}/`, context.config.siteUrl).href,
+    url: publicationUrl(route, context),
     publicationPath: context.publication.path,
     publicationName: context.publication.name,
     atomUrl: context.publication.atomUrl,

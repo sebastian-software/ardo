@@ -50,15 +50,16 @@ export function ArdoScripts() {
 }
 
 function MetaTag({ descriptor }: { descriptor: ArdoMetaDescriptor }) {
+  // A `link` or `meta` descriptor can carry a `title` attribute, such as a feed link.
+  if ("tagName" in descriptor) {
+    const { tagName, ...attributes } = descriptor
+    return tagName === "link" ? <link {...attributes} /> : <meta {...attributes} />
+  }
   if ("title" in descriptor) return <title>{descriptor.title}</title>
   if ("script:ld+json" in descriptor) {
     return <JsonScript type="application/ld+json" value={descriptor["script:ld+json"]} />
   }
   if ("charSet" in descriptor) return <meta charSet={descriptor.charSet} />
-  if ("tagName" in descriptor) {
-    const { tagName, ...attributes } = descriptor
-    return tagName === "link" ? <link {...attributes} /> : <meta {...attributes} />
-  }
   return <meta {...descriptor} />
 }
 

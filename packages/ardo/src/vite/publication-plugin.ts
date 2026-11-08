@@ -3,6 +3,9 @@ import type { Plugin, ResolvedConfig as ViteConfig } from "vite"
 import type { ResolvedConfig } from "../config/types"
 import type { PublicationConfig } from "../publication/types"
 import { configurePublicationDev } from "./publication-dev"
+import { normalizePath } from "./path-utils"
+import { publicationModuleCode } from "./publication-module"
+import type { PublicationPostBinding } from "./publication-routes"
 import { isGeneratedPublicationFile } from "./publication-dev-cache"
 import {
   isInside,
@@ -12,19 +15,27 @@ import {
   type PublicationBuilder,
 } from "./publication-materialize"
 
+/** What the publication shares with the rest of the Ardo plugin. */
+export type PublicationSite = {
+  resolvedConfig?: ResolvedConfig
+  routesDir: string
+  /** The binding of a generated post route, or undefined for any other file. */
+  publicationPost?: (file: string) => PublicationPostBinding | undefined
+}
+
 /** Own generated routes and assets; canonical content retains its original import provenance. */
-export function createPublicationPlugin(
-  options: PublicationConfig,
-  site: { resolvedConfig?: ResolvedConfig; routesDir: string }
-): Plugin {
+export function createPublicationPlugin(options: PublicationConfig, site: PublicationSite): Plugin {
   const builder: PublicationBuilder = {
     options,
     site,
     prepared: [],
     publications: {},
     sources: new Map(),
+    posts: new Map(),
     queue: Promise.resolve(),
   }
+  // The Markdown compiler and metadata transform mount each post's frame from this binding.
+  site.publicationPost = (file) => builder.posts.get(normalizePath(file))
   return {
     name: "ardo:publication",
     enforce: "pre",
@@ -52,7 +63,7 @@ export function createPublicationPlugin(
       const config = site.resolvedConfig
       const locale =
         config?.i18n === false || config?.i18n == null ? "default" : config.i18n.defaultLocale
-      return `export const publications = ${JSON.stringify(builder.publications)}; export default publications[${JSON.stringify(locale)}];`
+      return publicationModuleCode(builder.publications, locale)
     },
     generateBundle() {
       if (this.environment.name !== "client") return

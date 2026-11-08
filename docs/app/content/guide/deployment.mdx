@@ -25,7 +25,7 @@ build/client/
 └── llms.txt
 ```
 
-- Each page is a directory with an `index.html`. Ardo emits internal page links with a trailing slash, such as `/guide/getting-started/`, so static hosts serve them without a redirect.
+- Each page is a directory with an `index.html`. Ardo emits internal page links with a trailing slash, such as `/guide/getting-started/`, so static hosts serve them without a redirect. With [`trailingSlash: false`](./configuration#trailingslash), links end without the slash, and the host must serve each page at that address.
 - `404.html` is the not-found page. GitHub Pages, Netlify, Cloudflare Pages, and most other static hosts pick it up automatically.
 - The build checks every internal link and anchor in the generated HTML before it finishes. See [`linkCheck`](/en/guide/configuration#linkcheck) to make broken links fail the build.
 - There is no client-side router. Every link loads the next prerendered document, which then hydrates, so the host only needs to serve files.

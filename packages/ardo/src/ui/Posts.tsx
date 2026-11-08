@@ -1,18 +1,32 @@
 import type { ReactNode } from "react"
-import type { AuthorProfile, ImagePreset, Post, Publication } from "../publication/types"
+import type {
+  AuthorProfile,
+  ImagePreset,
+  Post,
+  Publication,
+  PublicationTag,
+} from "../publication/types"
 import { useArdoConfig, useArdoLabels } from "../runtime/hooks"
 import { useArdoPath } from "../runtime/page-context"
 import { ArdoLink } from "../runtime/page"
 import { ardoContent } from "./content.css"
 import { ArdoImage } from "./PostImage"
+import { taggedPosts } from "../publication/tags"
+import { useArdoPublicationTags } from "./publication-tags-context"
 import * as styles from "./Posts.css"
 
 export type ArdoPostProps = { post: Post; children: ReactNode }
-export type ArdoPostListProps = { publication: Publication; imagePreset?: ImagePreset }
+export type ArdoPostListProps = {
+  publication: Publication
+  imagePreset?: ImagePreset
+  /** List only this tag's posts, as on a generated tag archive. */
+  tag?: PublicationTag
+}
 
 export function ArdoPost({ post, children }: ArdoPostProps) {
   const lang = usePostLocale()
   const labels = useArdoLabels().publication
+  const tags = useArdoPublicationTags()
   return (
     <article className={`ardo-post ${styles.article}`}>
       <header className={styles.heading}>
@@ -37,7 +51,15 @@ export function ArdoPost({ post, children }: ArdoPostProps) {
         {post.tags.length > 0 && (
           <ul className={styles.tags} aria-label={labels.tags}>
             {post.tags.map((tag) => (
-              <li key={tag}>{tag}</li>
+              <li key={tag}>
+                {tags.path == null ? (
+                  tags.label(tag)
+                ) : (
+                  <ArdoLink to={tags.path(tag)} rel="tag">
+                    {tags.label(tag)}
+                  </ArdoLink>
+                )}
+              </li>
             ))}
           </ul>
         )}
@@ -53,21 +75,36 @@ export function ArdoPost({ post, children }: ArdoPostProps) {
 }
 
 /** A chronological editorial list. Its data already excludes drafts and scheduled posts. */
-export function ArdoPostList({ publication, imagePreset }: ArdoPostListProps) {
+export function ArdoPostList({ publication, imagePreset, tag }: ArdoPostListProps) {
   const lang = usePostLocale()
   const labels = useArdoLabels().publication
+  const tags = useArdoPublicationTags()
+  const posts = tag == null ? publication.posts : taggedPosts(publication.posts, tag)
   return (
     <section className={`ardo-post-list ${styles.publication}`}>
       <header className={styles.publicationHeader}>
-        <h1 className={styles.title}>{publication.name}</h1>
-        {publication.description && <p className={styles.description}>{publication.description}</p>}
+        {tag == null ? (
+          <>
+            <h1 className={styles.title}>{publication.name}</h1>
+            {publication.description && (
+              <p className={styles.description}>{publication.description}</p>
+            )}
+          </>
+        ) : (
+          <>
+            <ArdoLink to={publication.path} className={styles.back}>
+              {publication.name}
+            </ArdoLink>
+            <h1 className={styles.title}>{tags.label(tag.key)}</h1>
+          </>
+        )}
         <FeedLinks atom={publication.atomUrl} rss={publication.rssUrl} />
       </header>
-      {publication.posts.length === 0 ? (
+      {posts.length === 0 ? (
         <p>{labels.noPosts}</p>
       ) : (
         <ol className={styles.list}>
-          {publication.posts.map((post) => (
+          {posts.map((post) => (
             <li key={post.id} className={styles.listItem}>
               <article className={styles.preview}>
                 {post.coverImage && (
@@ -118,7 +155,13 @@ function PostDate({ value, lang }: { value: string; lang: string }) {
   )
 }
 
-function Byline({ authors, compact = false }: { authors: AuthorProfile[]; compact?: boolean }) {
+function Byline({
+  authors,
+  compact = false,
+}: {
+  authors: readonly AuthorProfile[]
+  compact?: boolean
+}) {
   const labels = useArdoLabels().publication
   return (
     <ul className={styles.authors} aria-label={labels.authors}>

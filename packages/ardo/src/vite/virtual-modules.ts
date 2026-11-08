@@ -57,10 +57,14 @@ export async function loadVirtualModule(
       agentDiscoveryUrl: state.resolvedConfig.agentDiscoveryUrl,
       // The server render turns this into view transition styles and speculation rules.
       navigation: state.resolvedConfig.navigation,
+      // Page links, canonical, and alternate links follow it; absent keeps the earlier spelling.
+      trailingSlash: state.resolvedConfig.trailingSlash,
       // A pinned buildTime keeps the footer on the moment the publication used.
       buildTime: state.resolvedConfig.buildTime ?? new Date().toISOString(),
       // A configured hash, "" included, wins and skips the Git command.
-      buildHash: state.resolvedConfig.buildHash ?? detectGitHash(state.resolvedConfig.root),
+      buildHash:
+        state.resolvedConfig.buildHash ??
+        detectGitHash(state.resolvedConfig.sourceRoot ?? state.resolvedConfig.root),
     }
     return `export default ${JSON.stringify(clientConfig)}`
   }

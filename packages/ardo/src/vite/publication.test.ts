@@ -223,6 +223,7 @@ async function builder(buildTime?: string) {
     prepared: [],
     publications: {},
     sources: new Map(),
+    posts: new Map(),
     queue: Promise.resolve(),
   }
   const ids = () => state.publications.default.posts.map((post) => post.id).sort()
