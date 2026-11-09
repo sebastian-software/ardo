@@ -21,6 +21,7 @@ Rules for adoption:
 3. **Ardo owns the styling.** Wrappers style Base UI parts through `className` with Vanilla Extract and the theme contract (per ADR 0004). State-based styling uses Base UI data attributes (`data-open`, `data-starting-style`, ...) and CSS variables (`--accordion-panel-height`, ...) instead of JS-driven styles.
 4. **SSR/static-first defaults.** Ardo is a static site generator: collapsed content must be present in prerendered HTML for SEO and find-in-page. Wrappers default to `keepMounted`/`hiddenUntilFound`-style rendering where the primitive supports it.
 5. **Selective migration, one implementation path.** Existing components are migrated when touched, starting with Accordion. Simple native controls (e.g. a plain button or checkbox) stay local when a primitive adds no meaningful behavior. The goal is one default implementation path, not a second permanent component stack.
+6. **A focused library where Base UI has no primitive.** When Base UI has nothing for a component's core interaction, a small library with no dependencies of its own may provide it, under rules 2–4. `CompareSlider` uses [react-compare-slider](https://github.com/nerdyman/react-compare-slider) (added 2026-11-09): Base UI's Slider has no compare clip and no handle-only dragging on touch screens, which keeps a swipe over the comparison scrolling the page.
 
 ## Consequences
 

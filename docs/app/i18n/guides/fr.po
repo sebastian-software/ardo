@@ -355,18 +355,18 @@ msgstr "<0/> connaît les icônes <1/>, <2/>, <3/>, <4/>, <5/> et <6/>."
 msgid ""
 "<0/> lays two views of the same size over each other and splits them with a "
 "divider, such as a screenshot before and after a change or one diagram from "
-"two renderers. Drag the divider, tap where it should go, or focus it and press"
-" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
-" shows the divider at its start position, and it moves once the page has "
-"loaded."
+"two renderers. Drag the handle, or click where the divider should go. On a "
+"touch screen, only the handle moves the divider, so a swipe elsewhere on the "
+"comparison scrolls the page. The prerendered page shows the divider at its "
+"start position, and it moves once the page has loaded."
 msgstr ""
 "<0/> superpose deux vues de même taille et les sépare par un séparateur, "
 "par exemple une capture d'écran avant et après une modification, ou un même"
-" diagramme issu de deux moteurs de rendu. Faites glisser le séparateur, "
-"touchez l'endroit voulu, ou donnez-lui le focus et utilisez les touches "
-"fléchées. Un balayage vertical fait toujours défiler la page. La page "
-"prérendue affiche le séparateur à sa position de départ ; il se déplace "
-"une fois la page chargée."
+" diagramme issu de deux moteurs de rendu. Faites glisser la poignée, ou "
+"cliquez là où le séparateur doit aller. Sur un écran tactile, seule la "
+"poignée déplace le séparateur : un balayage ailleurs fait défiler la page."
+" La page prérendue affiche le séparateur à sa position de départ ; il se "
+"déplace une fois la page chargée."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -1541,18 +1541,6 @@ msgstr ""
 "workspace via un paquet installé, pas par des chemins sources voisins ou des "
 "alias. La génération API peut lire des projets TypeScript configurés "
 "séparément."
-
-#: docs/app/content/guide/components.mdx
-msgid ""
-"A native range input covers both views and moves the divider, so the "
-"comparison works with the pointer, touch, and keyboard, and screen readers "
-"announce how much of each side shows. Because the input lies on top, links and"
-" buttons inside the views cannot be clicked."
-msgstr ""
-"Un champ de plage natif recouvre les deux vues et déplace le séparateur : la"
-" comparaison fonctionne à la souris, au toucher et au clavier, et les "
-"lecteurs d'écran annoncent la part visible de chaque côté. Comme ce champ "
-"est au-dessus, les liens et boutons des vues ne sont pas cliquables."
 
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
@@ -5196,12 +5184,11 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
-"Give both views the same size. The second view sets the height, and images, "
-"SVGs, and videos placed directly in a view fill its width."
+"Give both views the same size. Images, SVGs, and videos placed directly in a "
+"view fill its width."
 msgstr ""
-"Donnez la même taille aux deux vues. La seconde vue fixe la hauteur, et les "
-"images, SVG et vidéos placés directement dans une vue en occupent toute la "
-"largeur."
+"Donnez la même taille aux deux vues. Les images, SVG et vidéos placés "
+"directement dans une vue en occupent toute la largeur."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
@@ -9044,6 +9031,19 @@ msgstr ""
 "GitHub Pages, la redirection racine est une <0/> statique. Configurez hors "
 "d’Ardo les redirections HTTP si votre CDN ou hébergeur les prend en charge."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The handle is a slider for keyboards and screen readers. The arrow keys move "
+"it in small steps, Page Up and Page Down in larger ones, and Home and End to "
+"either edge. Screen readers announce how much of each side shows. The "
+"component is built on <0>react-compare-slider</0>."
+msgstr ""
+"Pour le clavier et les lecteurs d'écran, la poignée est un curseur. Les "
+"touches fléchées la déplacent par petits pas, Page précédente et Page "
+"suivante par pas plus grands, et Début et Fin jusqu'à chaque bord. Les "
+"lecteurs d'écran annoncent la part visible de chaque côté. Le composant "
+"repose sur <0>react-compare-slider</0>."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The index and the tag archives have no frontmatter of their own. Their modules"
@@ -9329,8 +9329,8 @@ msgid "The view left of the divider. Required."
 msgstr "La vue à gauche du séparateur. Obligatoire."
 
 #: docs/app/content/guide/components.mdx
-msgid "The view right of the divider. It sets the height. Required."
-msgstr "La vue à droite du séparateur. Elle fixe la hauteur. Obligatoire."
+msgid "The view right of the divider. Required."
+msgstr "La vue à droite du séparateur. Obligatoire."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

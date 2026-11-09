@@ -350,17 +350,18 @@ msgstr "<0/> incluye los iconos <1/>, <2/>, <3/>, <4/>, <5/> y <6/>."
 msgid ""
 "<0/> lays two views of the same size over each other and splits them with a "
 "divider, such as a screenshot before and after a change or one diagram from "
-"two renderers. Drag the divider, tap where it should go, or focus it and press"
-" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
-" shows the divider at its start position, and it moves once the page has "
-"loaded."
+"two renderers. Drag the handle, or click where the divider should go. On a "
+"touch screen, only the handle moves the divider, so a swipe elsewhere on the "
+"comparison scrolls the page. The prerendered page shows the divider at its "
+"start position, and it moves once the page has loaded."
 msgstr ""
 "<0/> superpone dos vistas del mismo tamaño y las separa con un divisor, por "
 "ejemplo una captura de pantalla antes y después de un cambio, o un mismo "
-"diagrama de dos renderizadores. Arrastra el divisor, toca donde debe ir, o "
-"enfócalo y usa las teclas de flecha. Un deslizamiento vertical sigue "
-"desplazando la página. La página prerenderizada muestra el divisor en su "
-"posición inicial; se mueve en cuanto la página ha cargado."
+"diagrama de dos renderizadores. Arrastra el tirador o haz clic donde debe ir "
+"el divisor. En una pantalla táctil, solo el tirador mueve el divisor, así "
+"que un deslizamiento en otra parte desplaza la página. La página "
+"prerenderizada muestra el divisor en su posición inicial; se mueve en cuanto "
+"la página ha cargado."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -1522,18 +1523,6 @@ msgstr ""
 "workspace mediante un paquete instalado, no desde fuentes vecinas ni alias. La"
 " generación de la API puede leer proyectos TypeScript configurados por "
 "separado."
-
-#: docs/app/content/guide/components.mdx
-msgid ""
-"A native range input covers both views and moves the divider, so the "
-"comparison works with the pointer, touch, and keyboard, and screen readers "
-"announce how much of each side shows. Because the input lies on top, links and"
-" buttons inside the views cannot be clicked."
-msgstr ""
-"Un control de rango nativo cubre ambas vistas y mueve el divisor, así que la "
-"comparación funciona con el puntero, el tacto y el teclado, y los lectores de"
-" pantalla anuncian cuánto se ve de cada lado. Como el control está encima, "
-"los enlaces y botones dentro de las vistas no se pueden pulsar."
 
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
@@ -5133,12 +5122,11 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
-"Give both views the same size. The second view sets the height, and images, "
-"SVGs, and videos placed directly in a view fill its width."
+"Give both views the same size. Images, SVGs, and videos placed directly in a "
+"view fill its width."
 msgstr ""
-"Da a ambas vistas el mismo tamaño. La segunda vista fija la altura, y las "
-"imágenes, SVG y vídeos colocados directamente en una vista ocupan todo su "
-"ancho."
+"Da a ambas vistas el mismo tamaño. Las imágenes, SVG y vídeos colocados "
+"directamente en una vista ocupan todo su ancho."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
@@ -8950,6 +8938,19 @@ msgstr ""
 " redirección raíz es un <0/> estático. Configura fuera de Ardo las "
 "redirecciones HTTP si tu CDN o proveedor las admite."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The handle is a slider for keyboards and screen readers. The arrow keys move "
+"it in small steps, Page Up and Page Down in larger ones, and Home and End to "
+"either edge. Screen readers announce how much of each side shows. The "
+"component is built on <0>react-compare-slider</0>."
+msgstr ""
+"Para el teclado y los lectores de pantalla, el tirador es un deslizador. Las "
+"teclas de flecha lo mueven en pasos pequeños, Re Pág y Av Pág en pasos "
+"mayores, e Inicio y Fin hasta cada borde. Los lectores de pantalla anuncian "
+"cuánto se ve de cada lado. El componente está basado en "
+"<0>react-compare-slider</0>."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The index and the tag archives have no frontmatter of their own. Their modules"
@@ -9232,8 +9233,8 @@ msgid "The view left of the divider. Required."
 msgstr "La vista a la izquierda del divisor. Obligatorio."
 
 #: docs/app/content/guide/components.mdx
-msgid "The view right of the divider. It sets the height. Required."
-msgstr "La vista a la derecha del divisor. Fija la altura. Obligatorio."
+msgid "The view right of the divider. Required."
+msgstr "La vista a la derecha del divisor. Obligatorio."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

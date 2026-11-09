@@ -359,9 +359,9 @@ Use `FileTree` to show a project layout. Write the tree as a nested list, with a
 
 ## Compare Sliders
 
-`CompareSlider` lays two views of the same size over each other and splits them with a divider, such as a screenshot before and after a change or one diagram from two renderers. Drag the divider, tap where it should go, or focus it and press the arrow keys. A vertical swipe still scrolls the page. The prerendered page shows the divider at its start position, and it moves once the page has loaded.
+`CompareSlider` lays two views of the same size over each other and splits them with a divider, such as a screenshot before and after a change or one diagram from two renderers. Drag the handle, or click where the divider should go. On a touch screen, only the handle moves the divider, so a swipe elsewhere on the comparison scrolls the page. The prerendered page shows the divider at its start position, and it moves once the page has loaded.
 
-A native range input covers both views and moves the divider, so the comparison works with the pointer, touch, and keyboard, and screen readers announce how much of each side shows. Because the input lies on top, links and buttons inside the views cannot be clicked.
+The handle is a slider for keyboards and screen readers. The arrow keys move it in small steps, Page Up and Page Down in larger ones, and Home and End to either edge. Screen readers announce how much of each side shows. The component is built on [react-compare-slider](https://github.com/nerdyman/react-compare-slider).
 
 <GalleryPreview id="gallery-compare-slider" label="Compare slider example" framed={false}>
   <GalleryCompareSlider />
@@ -379,14 +379,14 @@ The example compares this site's hero illustration in the light and dark themes.
 />
 ```
 
-Give both views the same size. The second view sets the height, and images, SVGs, and videos placed directly in a view fill its width.
+Give both views the same size. Images, SVGs, and videos placed directly in a view fill its width.
 
 | Component       | Prop          | Type        | Purpose                                                                                 |
 | --------------- | ------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `CompareSlider` | `label`       | `string`    | What the views show. Names the slider for screen readers. Required.                     |
 | `CompareSlider` | `first`       | `ReactNode` | The view left of the divider. Required.                                                 |
 | `CompareSlider` | `firstLabel`  | `string`    | Name of the first view, shown above it. Required.                                       |
-| `CompareSlider` | `second`      | `ReactNode` | The view right of the divider. It sets the height. Required.                            |
+| `CompareSlider` | `second`      | `ReactNode` | The view right of the divider. Required.                                                |
 | `CompareSlider` | `secondLabel` | `string`    | Name of the second view, shown above it. Required.                                      |
 | `CompareSlider` | `initial`     | `number`    | Start position of the divider, in percent of the width from the left. Defaults to `50`. |
 | `CompareSlider` | `className`   | `string`    | Additional CSS class.                                                                   |

@@ -40,6 +40,8 @@ const managedBrowserIncludes = [
   "ardo > @base-ui/react/accordion",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",
   "ardo > minisearch",
+  "ardo > react-compare-slider/components",
+  "ardo > react-compare-slider/hooks",
 ] as const
 
 const browserDependencyNames = new Set([
@@ -47,6 +49,7 @@ const browserDependencyNames = new Set([
   "@base-ui/react",
   "@vanilla-extract/recipes",
   "minisearch",
+  "react-compare-slider",
 ])
 
 const managedSsrIncludes = [
@@ -59,6 +62,8 @@ const managedSsrIncludes = [
   "ardo > @base-ui/react/accordion",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",
   "ardo > minisearch",
+  "ardo > react-compare-slider/components",
+  "ardo > react-compare-slider/hooks",
 ] as const
 
 /** Resolve framework-owned runtime imports from Ardo's package graph. */

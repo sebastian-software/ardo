@@ -358,17 +358,17 @@ msgstr "<0/> kennt Icons für <1/>, <2/>, <3/>, <4/>, <5/> und <6/>."
 msgid ""
 "<0/> lays two views of the same size over each other and splits them with a "
 "divider, such as a screenshot before and after a change or one diagram from "
-"two renderers. Drag the divider, tap where it should go, or focus it and press"
-" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
-" shows the divider at its start position, and it moves once the page has "
-"loaded."
+"two renderers. Drag the handle, or click where the divider should go. On a "
+"touch screen, only the handle moves the divider, so a swipe elsewhere on the "
+"comparison scrolls the page. The prerendered page shows the divider at its "
+"start position, and it moves once the page has loaded."
 msgstr ""
 "<0/> legt zwei gleich große Ansichten übereinander und teilt sie mit einem "
 "Trenner, etwa einen Screenshot vor und nach einer Änderung oder ein Diagramm "
-"aus zwei Renderern. Zieh den Trenner, tippe an die gewünschte Stelle oder "
-"fokussiere ihn und nutze die Pfeiltasten. Eine senkrechte Wischgeste scrollt "
-"weiterhin die Seite. Die vorgerenderte Seite zeigt den Trenner an seiner "
-"Startposition; er bewegt sich, sobald die Seite geladen ist."
+"aus zwei Renderern. Zieh den Griff oder klicke dorthin, wo der Trenner hin "
+"soll. Auf einem Touchscreen bewegt nur der Griff den Trenner, eine Wischgeste "
+"an anderer Stelle scrollt also die Seite. Die vorgerenderte Seite zeigt den "
+"Trenner an seiner Startposition; er bewegt sich, sobald die Seite geladen ist."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -1552,18 +1552,6 @@ msgstr ""
 "installierte Paketabhängigkeit, nicht über benachbarte Quellpfade oder "
 "Aliasse. Die API-Generierung kann separat konfigurierte TypeScript-Projekte "
 "lesen."
-
-#: docs/app/content/guide/components.mdx
-msgid ""
-"A native range input covers both views and moves the divider, so the "
-"comparison works with the pointer, touch, and keyboard, and screen readers "
-"announce how much of each side shows. Because the input lies on top, links and"
-" buttons inside the views cannot be clicked."
-msgstr ""
-"Ein natives Range-Input liegt über beiden Ansichten und bewegt den Trenner. "
-"So funktioniert der Vergleich mit Maus, Touch und Tastatur, und Screenreader "
-"sagen an, wie viel von jeder Seite zu sehen ist. Weil das Input obenauf liegt,"
-" lassen sich Links und Buttons in den Ansichten nicht anklicken."
 
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
@@ -5221,11 +5209,11 @@ msgstr ""
 
 #: docs/app/content/guide/components.mdx
 msgid ""
-"Give both views the same size. The second view sets the height, and images, "
-"SVGs, and videos placed directly in a view fill its width."
+"Give both views the same size. Images, SVGs, and videos placed directly in a "
+"view fill its width."
 msgstr ""
-"Gib beiden Ansichten dieselbe Größe. Die zweite Ansicht bestimmt die Höhe, "
-"und Bilder, SVGs und Videos direkt in einer Ansicht füllen ihre Breite."
+"Gib beiden Ansichten dieselbe Größe. Bilder, SVGs und Videos direkt in einer"
+" Ansicht füllen ihre Breite."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
@@ -9066,6 +9054,19 @@ msgstr ""
 "statische <0/>. Unterstützt dein CDN oder Hoster HTTP-Weiterleitungen, "
 "konfiguriere diese außerhalb von Ardo."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The handle is a slider for keyboards and screen readers. The arrow keys move "
+"it in small steps, Page Up and Page Down in larger ones, and Home and End to "
+"either edge. Screen readers announce how much of each side shows. The "
+"component is built on <0>react-compare-slider</0>."
+msgstr ""
+"Für Tastatur und Screenreader ist der Griff ein Schieberegler. Die "
+"Pfeiltasten bewegen ihn in kleinen Schritten, Bild auf und Bild ab in "
+"größeren, Pos1 und Ende an den jeweiligen Rand. Screenreader sagen an, wie "
+"viel von jeder Seite zu sehen ist. Die Komponente baut auf "
+"<0>react-compare-slider</0> auf."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The index and the tag archives have no frontmatter of their own. Their modules"
@@ -9349,8 +9350,8 @@ msgid "The view left of the divider. Required."
 msgstr "Die Ansicht links vom Trenner. Pflichtangabe."
 
 #: docs/app/content/guide/components.mdx
-msgid "The view right of the divider. It sets the height. Required."
-msgstr "Die Ansicht rechts vom Trenner. Sie bestimmt die Höhe. Pflichtangabe."
+msgid "The view right of the divider. Required."
+msgstr "Die Ansicht rechts vom Trenner. Pflichtangabe."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""

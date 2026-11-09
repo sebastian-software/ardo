@@ -3,14 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it, vi } from "vitest"
 
 vi.mock("./CompareSlider.css", () => ({
-  positionProperty: "--ardo-compare-slider-position",
   root: "root",
   tags: "tags",
   stage: "stage",
   layer: "layer",
-  firstLayer: "first-layer",
-  divider: "divider",
-  input: "input",
+  handleRoot: "handle-root",
+  handleStyle: { "--rcs-handle-color": "var(--ardo-color-brand)" },
+  handleButtonStyle: { backgroundColor: "var(--ardo-color-bg)" },
+  handleLinesStyle: { boxShadow: "none" },
 }))
 
 import { ArdoSiteConfigProvider } from "../../runtime/hooks"
@@ -26,30 +26,38 @@ const sides = {
 }
 
 describe("ArdoCompareSlider", () => {
-  it("stacks the second view under the clipped first view and names the slider", () => {
+  it("renders both views in react-compare-slider's items and names the handle", () => {
     const view = renderToStaticMarkup(<ArdoCompareSlider {...sides} />)
 
-    expect(view).toContain('style="--ardo-compare-slider-position:50%"')
     expect(view).toContain('dir="ltr"')
-    expect(view.indexOf('src="/after.png"')).toBeLessThan(view.indexOf('src="/before.png"'))
-    expect(view).toContain('<div class="layer first-layer"><img src="/before.png"')
-    expect(view).toContain('type="range"')
-    expect(view).toContain('min="0"')
-    expect(view).toContain('max="100"')
-    expect(view).toContain('value="50"')
+    expect(view).toContain('data-rcs="root"')
+    expect(view).toContain("--rcs-raw-position:50%")
+    expect(view).toMatch(/data-rcs-item="itemOne"[^>]*><img src="\/before.png"/u)
+    expect(view).toMatch(/data-rcs-item="itemTwo"[^>]*><img src="\/after.png"/u)
+    expect(view).toContain('role="slider"')
+    expect(view).toContain('aria-valuemin="0"')
+    expect(view).toContain('aria-valuemax="100"')
+    expect(view).toContain('aria-valuenow="50"')
     expect(view).toContain(
       'aria-label="Sign-in page: Before left of the divider, After right of it"'
     )
     expect(view).toContain('aria-valuetext="Before 50%, After 50%"')
+    expect(view).not.toContain("Click and drag")
   })
 
-  it("shows the side names as decorative tags and hides the divider from screen readers", () => {
+  it("colors the handle with the theme tokens", () => {
+    const view = renderToStaticMarkup(<ArdoCompareSlider {...sides} />)
+
+    expect(view).toContain("--rcs-handle-color:var(--ardo-color-brand)")
+    expect(view).toContain("background-color:var(--ardo-color-bg)")
+  })
+
+  it("shows the side names as decorative tags", () => {
     const view = renderToStaticMarkup(<ArdoCompareSlider {...sides} />)
 
     expect(view).toContain(
       '<div class="tags" aria-hidden="true"><span>← Before</span><span>After →</span></div>'
     )
-    expect(view).toContain('<div class="divider" aria-hidden="true"></div>')
   })
 
   it.each([
@@ -61,8 +69,8 @@ describe("ArdoCompareSlider", () => {
   ])("starts the divider at %s as %s percent", (initial, expected) => {
     const view = renderToStaticMarkup(<ArdoCompareSlider {...sides} initial={initial} />)
 
-    expect(view).toContain(`style="--ardo-compare-slider-position:${expected}%"`)
-    expect(view).toContain(`value="${expected}"`)
+    expect(view).toContain(`--rcs-raw-position:${expected}%`)
+    expect(view).toContain(`aria-valuenow="${expected}"`)
     expect(view).toContain(`aria-valuetext="Before ${expected}%, After ${100 - Number(expected)}%"`)
   })
 
