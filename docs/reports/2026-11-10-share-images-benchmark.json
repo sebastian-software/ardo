@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-10",
+  "node": "v24.22.2",
+  "platform": "darwin 27.0.0 arm64",
+  "cpu": "Apple M1 Ultra",
+  "logicalCpus": 20,
+  "memoryBytes": 68719476736,
+  "routes": 100,
+  "locales": ["en", "de", "fr", "es", "ja"],
+  "rounds": 3,
+  "warmupsPerMode": 1,
+  "fontFamily": "Noto Sans SC",
+  "fonts": [
+    {
+      "file": "ardo471-noto.ttf",
+      "bytes": 17772300,
+      "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da"
+    }
+  ],
+  "markdownSourceSha256": "7fccf34b9bb10718cf00d2be417397fca6d8e0c4e280a5afe2c38dbf91713c05",
+  "lockSha256": "6d07459ced47beab712f485da15affb298000cdcc93244408df7ad4639c8489b",
+  "scriptSha256": "d303130e419b2e25e5d16c38bd3a23220b6898da78554297381f2e24d41534b7",
+  "sourceTreeSha256": "d0408fad5923029ddbc228b68b0db6d8bf12ae88b0a8f611dc854248ecb45f67",
+  "trackedSourcePatchSha256": "2272f2dc2b9eb71ad5a619b11e9e9a66747136c5d6e4319d4eb8ca3b336dec3f",
+  "samples": {
+    "disabled": [
+      {
+        "elapsedMs": 1960.5884160000005,
+        "generatedImages": 0,
+        "imageBytes": 0
+      },
+      {
+        "elapsedMs": 1939.8323750000054,
+        "generatedImages": 0,
+        "imageBytes": 0
+      },
+      {
+        "elapsedMs": 1894.2670839999992,
+        "generatedImages": 0,
+        "imageBytes": 0
+      }
+    ],
+    "enabled": [
+      {
+        "elapsedMs": 12196.670084,
+        "generatedImages": 100,
+        "imageBytes": 2913667
+      },
+      {
+        "elapsedMs": 12330.787750000003,
+        "generatedImages": 100,
+        "imageBytes": 2913667
+      },
+      {
+        "elapsedMs": 12207.663916999998,
+        "generatedImages": 100,
+        "imageBytes": 2913667
+      }
+    ]
+  },
+  "medianMs": {
+    "disabled": 1939.8323750000054,
+    "enabled": 12207.663916999998,
+    "added": 10267.831541999993
+  }
+}

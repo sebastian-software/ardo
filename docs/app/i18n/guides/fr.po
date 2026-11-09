@@ -1555,6 +1555,22 @@ msgstr ""
 "Une liste Markdown imbriquée. Les noms peuvent être en gras, et un tiret "
 "cadratin (—) introduit un commentaire."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A page's explicit <0/> skips generation and wins over the generated card. "
+"Otherwise the card replaces <1/>, with width, height, MIME type, and alt "
+"metadata for Open Graph and an image for Twitter. Explicit page <2/> remains "
+"unchanged. PNGs have content-hashed names under the build's assets directory "
+"and follow its deployment base and version path."
+msgstr ""
+"Un <0/> explicite dans une page désactive la génération et reste "
+"prioritaire sur la carte générée. Sinon, la carte remplace <1/>, avec "
+"largeur, hauteur, type MIME et texte alternatif pour Open Graph, ainsi "
+"qu’une image pour Twitter. Un <2/> explicite dans la page reste inchangé. "
+"Les PNG portent des noms dérivés de leur contenu dans le répertoire des "
+"ressources du build et suivent sa base de déploiement et son chemin de "
+"version."
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "A Polished Default Theme"
 msgstr "Un thème par défaut soigné"
@@ -4993,6 +5009,36 @@ msgstr ""
 msgid "General purpose"
 msgstr "Généralistes"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Generate a 1200 × 630 PNG for each Markdown or MDX route during a production "
+"build. Titles use frontmatter, then the first level-one heading, then the file"
+" name. Cards use the page title, section, site name, local logo, and light "
+"palette collected from the rendered <0/> and <1/>. Fonts and templates belong "
+"to build configuration; colors and logos stay in JSX."
+msgstr ""
+"Génère un PNG de 1200 × 630 pour chaque route Markdown ou MDX lors du build"
+" de production. Le titre provient des métadonnées frontmatter, puis du "
+"premier titre de niveau un, puis du nom du fichier. Les cartes utilisent le "
+"titre de la page, la section, le nom du site, le logo local et la palette "
+"claire collectée depuis les composants <0/> et <1/> rendus. Les polices et "
+"les modèles relèvent de la configuration du build ; les couleurs et les "
+"logos restent dans JSX."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generate a 1200 × 630 PNG for each titled Markdown or MDX route during a "
+#~ "production build. Cards use the page title, section, site name, local logo, "
+#~ "and light palette collected from the rendered <0/> and <1/>. Fonts and "
+#~ "templates belong to build configuration; colors and logos stay in JSX."
+#~ msgstr ""
+#~ "Génère un PNG de 1200 × 630 pour chaque route Markdown ou MDX avec un titre"
+#~ " lors du build de production. Les cartes utilisent le titre de la page, la "
+#~ "section, le nom du site, le logo local et la palette claire collectée depuis "
+#~ "les composants <0/> et <1/> rendus. Les polices et les modèles relèvent de "
+#~ "la configuration du build ; les couleurs et les logos restent dans JSX."
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "Generate API reference pages from TypeScript entry points with native "
@@ -5115,6 +5161,19 @@ msgid ""
 msgstr ""
 "Génère une référence statique depuis un fichier local OpenAPI 3.0 ou 3.1, "
 "JSON ou YAML. <0/> vaut <1/> par défaut. Voir <2>Documentation API</2>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Generation is off in development and for TSX routes and 404 pages. Leaving the"
+" option off does no card rendering, font loading, or appearance processing in "
+"the build pipeline. Measure your production build with your own fonts and "
+"route count before enabling it on a large reference."
+msgstr ""
+"La génération est désactivée en développement, pour les routes TSX et "
+"pour les pages 404. Lorsque l’option est désactivée, le pipeline de build "
+"ne rend aucune carte, ne charge aucune police et ne traite aucune donnée "
+"d’apparence. Mesurez votre build de production avec vos propres polices et "
+"votre nombre de routes avant de l’activer sur une référence volumineuse."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Getting Help"
@@ -6814,6 +6873,15 @@ msgstr ""
 "L’option <0/> convertit les blocs <1/> en SVG statique au moment du build "
 "avec le paquet optionnel <2/> ; voir <3>Diagrammes Mermaid</3>."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Opt-in build-time PNG cards for Markdown and MDX, with JSX theme colors, local"
+" fonts, custom templates, and social metadata; see <0>Share images</0>."
+msgstr ""
+"Cartes PNG optionnelles générées au build pour Markdown et MDX, avec "
+"couleurs du thème JSX, polices locales, modèles personnalisés et "
+"métadonnées sociales ; voir <0>Images de partage</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional configuration"
 msgstr "Configuration facultative"
@@ -7589,6 +7657,21 @@ msgstr "Remplace la classe d’en-tête."
 msgid "Replace the default layout class."
 msgstr "Remplace la classe de mise en page."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Replace the SVG template with a build-only function. Its input includes the "
+"localized title, section, locale, path, embedded logo, font family, resolved "
+"colors, and raw theme CSS. Escape text and attribute values before inserting "
+"them. Return a self-contained 1200 × 630 SVG, with embedded images and local "
+"fragment references only."
+msgstr ""
+"Remplacez le modèle SVG par une fonction exécutée uniquement au build. Elle"
+" reçoit le titre localisé, la section, la locale, le chemin, le logo "
+"intégré, la famille de polices, les couleurs résolues et le CSS brut du "
+"thème. Échappez le texte et les valeurs d’attributs avant de les insérer."
+" Renvoyez un SVG autonome de 1200 × 630, avec uniquement des images "
+"intégrées et des références à des fragments locaux."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Replacement"
 msgstr "Remplacement"
@@ -8153,10 +8236,18 @@ msgstr "Réglages et configuration"
 msgid "Setup"
 msgstr "Installation"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Share cards"
+msgstr "Cartes de partage"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid "Shared Page Width"
 #~ msgstr "Largeur de page commune"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "shareImages"
+msgstr "shareImages"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -8466,6 +8557,25 @@ msgstr "Stylesheets et cascade"
 #: docs/app/content/guide/components.mdx
 msgid "Suggested use"
 msgstr "Usage suggéré"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Supply local TTF, OTF, or TTC files with permission to use them. Include every"
+" script your titles need: the four Ardo docs languages use Latin accents, "
+"while Japanese, Chinese, Arabic, and other scripts need matching fonts. Family"
+" names must match those inside the files. Ardo never downloads fonts or scans "
+"system fonts. The default template wraps long titles and truncates after five "
+"lines; image alt metadata keeps the full title."
+msgstr ""
+"Fournissez des fichiers TTF, OTF ou TTC locaux que vous avez le droit "
+"d’utiliser. Couvrez tous les systèmes d’écriture nécessaires aux titres"
+" : les quatre langues de la documentation Ardo utilisent des accents latins, "
+"tandis que le japonais, le chinois, l’arabe et d’autres écritures "
+"nécessitent des polices adaptées. Les noms de famille doivent correspondre "
+"à ceux inscrits dans les fichiers. Ardo ne télécharge aucune police et "
+"n’analyse pas les polices système. Le modèle par défaut répartit les "
+"titres longs sur plusieurs lignes et les tronque après cinq lignes ; le texte"
+" alternatif conserve le titre complet."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Supported"
@@ -9087,6 +9197,22 @@ msgid ""
 msgstr ""
 "La navigation gauche associe rail de sections et panneau. Les props d’<0/> "
 "définissent la section, ses enfants le panneau."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"The light logo is used when JSX provides a light/dark pair. Imported local "
+"SVG, PNG, JPEG, and WebP logos are embedded; remote URLs and React-element "
+"logos are omitted. Builds never fetch remote logos. CSS-variable or computed "
+"color overrides need a custom template. Ordinary concrete light colors and "
+"OKLCH theme recipes work with the default template."
+msgstr ""
+"Le logo clair est utilisé lorsque JSX fournit une paire clair/sombre. Les "
+"logos locaux importés en SVG, PNG, JPEG et WebP sont intégrés ; les URL "
+"distantes et les logos sous forme d’éléments React sont omis. Les builds "
+"ne téléchargent jamais de logos distants. Les substitutions de couleurs avec"
+" variables CSS ou valeurs calculées nécessitent un modèle personnalisé. "
+"Les couleurs claires concrètes et les formules de thème OKLCH fonctionnent "
+"avec le modèle par défaut."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

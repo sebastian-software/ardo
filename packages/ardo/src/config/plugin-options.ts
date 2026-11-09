@@ -21,6 +21,7 @@ const optionNames = {
   markdown: true,
   sidebar: true,
   metadata: true,
+  shareImages: true,
   seo: true,
   linkCheck: true,
   navigation: true,

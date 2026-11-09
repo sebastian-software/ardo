@@ -34,6 +34,8 @@ import type {
   TOCItem,
 } from "./types"
 
+import { validateShareImagesConfig } from "./share-images"
+
 import { resolveBuildMetadata, validateBuildMetadataConfig } from "./build-time"
 import { resolveI18nConfig } from "./i18n"
 import { isLintRuleId, lintRuleIds } from "./lint-rules"
@@ -42,6 +44,8 @@ import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { resolveSourceRoot, validateSourceRootConfig } from "./source-root"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
+
+export type { ShareImagesConfig, ShareImageTemplateData } from "./share-images"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
 export type * from "../publication/public-types"
@@ -142,6 +146,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     },
     sidebar: config.sidebar ?? {},
     metadata: config.metadata ?? {},
+    shareImages: config.shareImages ?? false,
     vite: config.vite,
     project: config.project ?? {},
     root,
@@ -155,14 +160,14 @@ function trailingSlashSetting(config: ArdoConfig): Pick<ResolvedConfig, "trailin
 }
 
 function validateConfig(config: ArdoConfig): void {
-  const errors: string[] = []
-  if ("typedoc" in config)
-    errors.push("The typedoc option was removed. Configure api in ardo() instead.")
+  const errors: string[] =
+    "typedoc" in config ? ["The typedoc option was removed. Configure api in ardo() instead."] : []
 
   validateBaseAndSiteUrl(config, errors)
   if (config.trailingSlash !== undefined && typeof config.trailingSlash !== "boolean")
     errors.push("trailingSlash must be a boolean.")
   validateBuildMetadataConfig(config, errors)
+  validateShareImagesConfig(config.shareImages)
   validateSourceRootConfig(config, errors)
   validateVersioningConfig(config, errors)
   validateI18nConfig(config, errors)

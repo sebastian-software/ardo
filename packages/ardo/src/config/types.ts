@@ -1,3 +1,4 @@
+import type { ShareImagesConfig } from "./share-images"
 import type { LintRuleId } from "./lint-rules"
 import type { MarkdownConfig } from "./markdown"
 import type { PostFrontmatter, PublicationConfig } from "../publication/types"
@@ -137,6 +138,8 @@ export type I18nConfig = {
  * Runtime UI configuration (header, sidebar, footer) is done in JSX.
  */
 export type ArdoConfig = {
+  /** Opt-in build-time PNG share cards for Markdown/MDX routes. */
+  shareImages?: ShareImagesConfig | false
   /** Repository-authored news/blog posts, local author profiles, feeds, and images. */
   publication?: PublicationConfig
   /** Site title (used for default meta tags) */
@@ -505,6 +508,8 @@ export type ResolvedConfig = {
    * `buildHash`; the client config falls back to the detected Git hash when it is absent.
    */
   buildHash?: string
+  /** Build-only share-card settings; absent when disabled. */
+  shareImages?: ShareImagesConfig | false
   /** The configured `trailingSlash`; absent when the site keeps Ardo's earlier mixed spelling. */
   trailingSlash?: boolean
   /** The configured `sourceRoot` as an absolute path; absent when the site did not set it. */
@@ -520,6 +525,7 @@ export type ResolvedConfig = {
     | "openapi"
     | "project"
     | "publication"
+    | "shareImages"
     | "validation"
     | "vite"
   >

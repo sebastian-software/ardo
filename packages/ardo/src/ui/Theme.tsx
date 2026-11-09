@@ -1,3 +1,5 @@
+import { use } from "react"
+import { ArdoAppearanceContext } from "../runtime/appearance"
 import { type ArdoThemeProps, createThemeCss } from "./theme/theme-css"
 
 /**
@@ -13,6 +15,7 @@ import { type ArdoThemeProps, createThemeCss } from "./theme/theme-css"
  */
 export function ArdoTheme(props: ArdoThemeProps) {
   const css = createThemeCss(props)
+  if (import.meta.env.SSR) use(ArdoAppearanceContext)?.({ themeCss: css })
   if (css === undefined) return null
   return <style data-ardo-theme dangerouslySetInnerHTML={{ __html: css }} />
 }

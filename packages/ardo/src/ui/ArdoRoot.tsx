@@ -17,6 +17,7 @@ import {
   type ArdoSiteConfig,
   ArdoSiteConfigProvider,
 } from "../runtime/hooks"
+import { ArdoAppearanceContext } from "../runtime/appearance"
 import { ArdoDocumentIconsContext } from "../runtime/document-context"
 import { ArdoOutlet } from "../runtime/page"
 import { useArdoPage, useArdoPath } from "../runtime/page-context"
@@ -277,8 +278,7 @@ export function ArdoRoot({
   children,
 }: ArdoRootProps) {
   const config = resolveRootConfig(configProp ?? use(ArdoConfigContext))
-  // Server only: the HTML shell renders after the page and links these icons.
-  use(ArdoDocumentIconsContext)?.({ icon, appleTouchIcon })
+  useDocumentAssets({ logo, icon, appleTouchIcon })
   const pathname = useArdoPath()
   const routeChrome = useRouteChrome()
   const chrome = useMemo(() => splitRootChildren(children), [children])
@@ -402,4 +402,18 @@ function enhanceHeader(header: ReactNode, mobileMenuContent: ReactNode): ReactNo
   }
 
   return cloneElement(header, { mobileMenuContent })
+}
+
+/** Server-only values collected while the root renders; no collector exists in the browser. */
+function useDocumentAssets({
+  logo,
+  icon,
+  appleTouchIcon,
+}: Pick<ArdoRootProps, "logo" | "icon" | "appleTouchIcon">): void {
+  use(ArdoDocumentIconsContext)?.({ icon, appleTouchIcon })
+  if (import.meta.env.SSR)
+    use(ArdoAppearanceContext)?.({
+      logo:
+        typeof logo === "string" ? logo : logo != null && "light" in logo ? logo.light : undefined,
+    })
 }

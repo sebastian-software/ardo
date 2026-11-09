@@ -15,6 +15,8 @@ import path from "node:path"
 import { pathToFileURL } from "node:url"
 
 import type { ArdoRenderAssets, ArdoRenderOptions, ArdoRenderResult } from "../entries/server"
+import { readShareImageTitles } from "./share-image-title"
+import type { ShareImagesConfig } from "../config/share-images"
 import type { DocumentationVersioningConfig, LinkCheckConfig } from "../config/types"
 
 type ManifestChunk = {
@@ -107,13 +109,19 @@ export function toHtmlFile(pagePath: string): string {
  * Render every static route of the built site into HTML files. Assets move
  * below the base path first, so the output mirrors the deployed URL space.
  */
-export async function prerenderSite(options: {
+export type PrerenderSiteOptions = {
   base: string
   clientDir: string
   deploymentBase: string
   logger: Logger
   serverEntry: string
-}): Promise<number> {
+  shareImages?: ShareImagesConfig | false
+  root?: string
+  siteUrl?: string
+  siteTitle?: string
+}
+
+export async function prerenderSite(options: PrerenderSiteOptions): Promise<number> {
   const { base, clientDir, logger } = options
   const manifestPath = path.join(clientDir, MANIFEST_FILE)
   // Vite writes this file in the documented manifest shape.
@@ -123,12 +131,15 @@ export async function prerenderSite(options: {
   const pageDir = resolvePageDirectory(clientDir, base, options.deploymentBase)
   moveAssets(clientDir, pageDir)
 
-  // The server build is plain ESM that Vite just wrote.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-  const server = (await import(pathToFileURL(options.serverEntry).href)) as ServerEntry
+  const { server, shareImage } = await loadPrerenderResources(options)
   const paths = server.getStaticPaths()
   const write = async (pagePath: string, notFound = false) => {
-    const result = await server.renderPage(pagePath, { assets, base, notFound })
+    const result = await server.renderPage(pagePath, {
+      assets,
+      base,
+      notFound,
+      ...(shareImage == null ? {} : { shareImage }),
+    })
     if (!notFound && (result.status < 200 || result.status >= 300)) {
       throw new Error(
         `[ardo] Could not prerender "${pagePath}": renderer returned HTTP ${result.status}.`
@@ -200,4 +211,23 @@ function moveAssets(clientDir: string, pageDir: string): void {
     cpSync(source, target, { recursive: true })
     rmSync(source, { recursive: true, force: true })
   } else renameSync(source, target)
+}
+
+async function loadPrerenderResources(options: PrerenderSiteOptions) {
+  // The server build is plain ESM that Vite just wrote.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const server = (await import(pathToFileURL(options.serverEntry).href)) as ServerEntry
+  if (!options.shareImages) return { server, shareImage: undefined }
+  const shareImages = await import("./share-images")
+  const shareImage = shareImages.createShareImageRenderer({
+    config: options.shareImages,
+    titles: readShareImageTitles(options.clientDir),
+    root: options.root ?? process.cwd(),
+    clientDir: options.clientDir,
+    base: options.base,
+    deploymentBase: options.deploymentBase,
+    siteUrl: options.siteUrl ?? "",
+    siteTitle: options.siteTitle ?? "Ardo",
+  })
+  return { server, shareImage }
 }

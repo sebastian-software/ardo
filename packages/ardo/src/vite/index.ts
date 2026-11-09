@@ -18,5 +18,8 @@ export { createArdoProjectViteConfig } from "./project-config"
 
 export { generateSearchIndex, type SearchDoc } from "./search-index"
 
+export { defaultShareImage, escapeShareImageText } from "./share-image-template"
+export type { ShareImagesConfig, ShareImageTemplateData } from "../config/share-images"
+
 // Vite Plugin
 export { defineConfig, type Plugin, type UserConfig } from "vite"

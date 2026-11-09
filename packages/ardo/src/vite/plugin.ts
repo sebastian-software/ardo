@@ -4,7 +4,7 @@ import { mergeConfig, type Plugin, type UserConfig } from "vite"
 
 import type { ArdoConfig, ProjectMeta, ResolvedConfig } from "../config/types"
 import type { CollectionsConfig } from "./collections"
-import type { ArdoPluginOptions, SiteConfigOptions } from "./plugin-options"
+import type { ArdoPluginOptions, MainPluginOptions, SiteConfigOptions } from "./plugin-options"
 
 import { reportPinnedBuildTime, resolvePinnedBuildTime } from "../config/build-time"
 import { resolveConfig } from "../config/index"
@@ -33,30 +33,23 @@ import { readProjectMeta } from "./project-meta"
 import { defineProjectStateReader } from "./project-state"
 import { createRouteManifestOptions, scanRouteManifest } from "./route-manifest"
 import { ardoRoutesPlugin } from "./routes-plugin"
-import { createStaticSitePlugin } from "./static-site-plugin"
+import { createShareImageTitleAsset } from "./share-image-title"
+import { createStaticSitePlugin, type StaticSiteState } from "./static-site-plugin"
 import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 
-type PluginState = Pick<PublicationSite, "publicationPost"> & {
-  /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
-  buildTime?: string
-  collections?: CollectionsConfig
-  /** Vite's command: `build` for a production build, `serve` for the dev server. */
-  command?: "build" | "serve"
-  deploymentBase?: string
-  outDir?: string
-  previewBase?: string
-  /** Generated API and OpenAPI folders, which `llms.txt` links by their index. */
-  referenceDirs: string[]
-  resolvedConfig?: ResolvedConfig
-  routesDir: string
-}
-
-type MainPluginOptions = {
-  siteConfig: SiteConfigOptions
-  routesDirOption: string | undefined
-}
+type PluginState = StaticSiteState &
+  Pick<PublicationSite, "publicationPost"> & {
+    /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
+    buildTime?: string
+    collections?: CollectionsConfig
+    /** Vite's command: `build` for a production build, `serve` for the dev server. */
+    command?: "build" | "serve"
+    previewBase?: string
+    /** Generated API and OpenAPI folders, which `llms.txt` links by their index. */
+    referenceDirs: string[]
+  }
 
 export type { ArdoPluginOptions } from "./plugin-options"
 
@@ -214,6 +207,9 @@ function createMainPlugin(state: PluginState, options: MainPluginOptions): Plugi
       const manifest = await runArdoLifecyclePhase("metadata:scan", async () =>
         scanRouteManifest(state.routesDir, createRouteManifestOptions(resolvedConfig))
       )
+      if (resolvedConfig.shareImages) {
+        this.emitFile(createShareImageTitleAsset(manifest, resolvedConfig.root))
+      }
       reportLocalizedRouteDiagnostics(this, manifest, resolvedConfig)
       reportFrontmatterDiagnostics(this, manifest, resolvedConfig)
       await runArdoLifecyclePhase("outputs:emit", () => {

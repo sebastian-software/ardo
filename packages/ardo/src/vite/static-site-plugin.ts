@@ -1,4 +1,9 @@
-import type { Plugin, PreviewServer, ResolvedConfig as ViteResolvedConfig } from "vite"
+import type {
+  Plugin,
+  PreviewServer,
+  ViteDevServer,
+  ResolvedConfig as ViteResolvedConfig,
+} from "vite"
 
 import { constants } from "node:fs"
 import { access, stat } from "node:fs/promises"
@@ -91,6 +96,10 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
           deploymentBase: state.deploymentBase ?? viteConfig.base,
           logger: viteConfig.logger,
           serverEntry: path.join(serverDir, "index.js"),
+          shareImages: config?.shareImages,
+          root: viteConfig.root,
+          siteUrl: config?.siteUrl,
+          siteTitle: config?.title,
         })
         if (config != null) {
           await checkSiteLinks({
@@ -109,23 +118,7 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
       return configureStaticPreview(server, state.resolvedConfig?.trailingSlash)
     },
     configureServer(server) {
-      // Runs after Vite's own middleware, so modules and public files win.
-      return () => {
-        const config = state.resolvedConfig
-        server.middlewares.use((request, response, next) => {
-          const pathname = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid")
-            .pathname
-          void getDevVersionRedirect(pathname, config, state.routesDir)
-            .then((redirect) => {
-              if (redirect == null) return next()
-              response.statusCode = 302
-              response.setHeader("Location", redirect.to)
-              response.end()
-            })
-            .catch(next)
-        })
-        server.middlewares.use(createDevRenderMiddleware(server, state.routesDir, config))
-      }
+      return configureStaticDevServer(server, state)
     },
   }
 }
@@ -183,5 +176,25 @@ async function isReadableFile(file: string): Promise<boolean> {
     return true
   } catch {
     return false
+  }
+}
+
+function configureStaticDevServer(server: ViteDevServer, state: StaticSiteState) {
+  // Runs after Vite's own middleware, so modules and public files win.
+  return () => {
+    const config = state.resolvedConfig
+    server.middlewares.use((request, response, next) => {
+      const pathname = new URL(request.originalUrl ?? request.url ?? "/", "http://ardo.invalid")
+        .pathname
+      void getDevVersionRedirect(pathname, config, state.routesDir)
+        .then((redirect) => {
+          if (redirect == null) return next()
+          response.statusCode = 302
+          response.setHeader("Location", redirect.to)
+          response.end()
+        })
+        .catch(next)
+    })
+    server.middlewares.use(createDevRenderMiddleware(server, state.routesDir, config))
   }
 }

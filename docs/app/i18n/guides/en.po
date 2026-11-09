@@ -1565,6 +1565,20 @@ msgstr ""
 "A nested Markdown list. Names may use bold, and an em dash (—) starts a "
 "comment."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A page's explicit <0/> skips generation and wins over the generated card. "
+"Otherwise the card replaces <1/>, with width, height, MIME type, and alt "
+"metadata for Open Graph and an image for Twitter. Explicit page <2/> remains "
+"unchanged. PNGs have content-hashed names under the build's assets directory "
+"and follow its deployment base and version path."
+msgstr ""
+"A page's explicit <0/> skips generation and wins over the generated card. "
+"Otherwise the card replaces <1/>, with width, height, MIME type, and alt "
+"metadata for Open Graph and an image for Twitter. Explicit page <2/> remains "
+"unchanged. PNGs have content-hashed names under the build's assets directory "
+"and follow its deployment base and version path."
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "A Polished Default Theme"
 msgstr "A Polished Default Theme"
@@ -5012,6 +5026,33 @@ msgstr ""
 msgid "General purpose"
 msgstr "General purpose"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Generate a 1200 × 630 PNG for each Markdown or MDX route during a production "
+"build. Titles use frontmatter, then the first level-one heading, then the file"
+" name. Cards use the page title, section, site name, local logo, and light "
+"palette collected from the rendered <0/> and <1/>. Fonts and templates belong "
+"to build configuration; colors and logos stay in JSX."
+msgstr ""
+"Generate a 1200 × 630 PNG for each Markdown or MDX route during a production "
+"build. Titles use frontmatter, then the first level-one heading, then the file"
+" name. Cards use the page title, section, site name, local logo, and light "
+"palette collected from the rendered <0/> and <1/>. Fonts and templates belong "
+"to build configuration; colors and logos stay in JSX."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generate a 1200 × 630 PNG for each titled Markdown or MDX route during a "
+#~ "production build. Cards use the page title, section, site name, local logo, "
+#~ "and light palette collected from the rendered <0/> and <1/>. Fonts and "
+#~ "templates belong to build configuration; colors and logos stay in JSX."
+#~ msgstr ""
+#~ "Generate a 1200 × 630 PNG for each titled Markdown or MDX route during a "
+#~ "production build. Cards use the page title, section, site name, local logo, "
+#~ "and light palette collected from the rendered <0/> and <1/>. Fonts and "
+#~ "templates belong to build configuration; colors and logos stay in JSX."
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""
 "Generate API reference pages from TypeScript entry points with native "
@@ -5132,6 +5173,18 @@ msgstr ""
 "Generates static reference pages from a local OpenAPI 3.0 or 3.1 file in JSON "
 "or YAML. <0/> defaults to <1/>. <2>API Documentation</2> covers the generated "
 "pages."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Generation is off in development and for TSX routes and 404 pages. Leaving the"
+" option off does no card rendering, font loading, or appearance processing in "
+"the build pipeline. Measure your production build with your own fonts and "
+"route count before enabling it on a large reference."
+msgstr ""
+"Generation is off in development and for TSX routes and 404 pages. Leaving the"
+" option off does no card rendering, font loading, or appearance processing in "
+"the build pipeline. Measure your production build with your own fonts and "
+"route count before enabling it on a large reference."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Getting Help"
@@ -6840,6 +6893,14 @@ msgstr ""
 "Opt-in <0/> renders <1/> fences to static SVG at build time with the optional "
 "<2/> package; see <3>Mermaid Diagrams</3>."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Opt-in build-time PNG cards for Markdown and MDX, with JSX theme colors, local"
+" fonts, custom templates, and social metadata; see <0>Share images</0>."
+msgstr ""
+"Opt-in build-time PNG cards for Markdown and MDX, with JSX theme colors, local"
+" fonts, custom templates, and social metadata; see <0>Share images</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional configuration"
 msgstr "Optional configuration"
@@ -7616,6 +7677,20 @@ msgstr "Replace the default header class."
 msgid "Replace the default layout class."
 msgstr "Replace the default layout class."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Replace the SVG template with a build-only function. Its input includes the "
+"localized title, section, locale, path, embedded logo, font family, resolved "
+"colors, and raw theme CSS. Escape text and attribute values before inserting "
+"them. Return a self-contained 1200 × 630 SVG, with embedded images and local "
+"fragment references only."
+msgstr ""
+"Replace the SVG template with a build-only function. Its input includes the "
+"localized title, section, locale, path, embedded logo, font family, resolved "
+"colors, and raw theme CSS. Escape text and attribute values before inserting "
+"them. Return a self-contained 1200 × 630 SVG, with embedded images and local "
+"fragment references only."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Replacement"
 msgstr "Replacement"
@@ -8178,10 +8253,18 @@ msgstr "Settings and configuration"
 msgid "Setup"
 msgstr "Setup"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Share cards"
+msgstr "Share cards"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid "Shared Page Width"
 #~ msgstr "Shared Page Width"
+
+#: docs/app/content/guide/configuration.mdx
+msgid "shareImages"
+msgstr "shareImages"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -8491,6 +8574,22 @@ msgstr "Stylesheet ownership and cascade"
 #: docs/app/content/guide/components.mdx
 msgid "Suggested use"
 msgstr "Suggested use"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Supply local TTF, OTF, or TTC files with permission to use them. Include every"
+" script your titles need: the four Ardo docs languages use Latin accents, "
+"while Japanese, Chinese, Arabic, and other scripts need matching fonts. Family"
+" names must match those inside the files. Ardo never downloads fonts or scans "
+"system fonts. The default template wraps long titles and truncates after five "
+"lines; image alt metadata keeps the full title."
+msgstr ""
+"Supply local TTF, OTF, or TTC files with permission to use them. Include every"
+" script your titles need: the four Ardo docs languages use Latin accents, "
+"while Japanese, Chinese, Arabic, and other scripts need matching fonts. Family"
+" names must match those inside the files. Ardo never downloads fonts or scans "
+"system fonts. The default template wraps long titles and truncates after five "
+"lines; image alt metadata keeps the full title."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Supported"
@@ -9109,6 +9208,20 @@ msgid ""
 msgstr ""
 "The left navigation is always a rail plus a panel. Define both with <0/>: the "
 "section props create the rail item, and the section children create the panel."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"The light logo is used when JSX provides a light/dark pair. Imported local "
+"SVG, PNG, JPEG, and WebP logos are embedded; remote URLs and React-element "
+"logos are omitted. Builds never fetch remote logos. CSS-variable or computed "
+"color overrides need a custom template. Ordinary concrete light colors and "
+"OKLCH theme recipes work with the default template."
+msgstr ""
+"The light logo is used when JSX provides a light/dark pair. Imported local "
+"SVG, PNG, JPEG, and WebP logos are embedded; remote URLs and React-element "
+"logos are omitted. Builds never fetch remote logos. CSS-variable or computed "
+"color overrides need a custom template. Ordinary concrete light colors and "
+"OKLCH theme recipes work with the default template."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

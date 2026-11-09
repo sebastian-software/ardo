@@ -7,6 +7,8 @@ import { rootModule, routes } from "virtual:ardo/routes"
 
 import type { ResolvedConfig } from "../config/types"
 
+import { ArdoAppearanceContext, type ArdoAppearance } from "../runtime/appearance"
+import type { ArdoMetaDescriptor } from "../runtime/page-context"
 import { ArdoApp } from "../runtime/app"
 import { ArdoDocumentProvider } from "../runtime/document"
 import { type ArdoDocumentIcons, ArdoDocumentIconsContext } from "../runtime/document-context"
@@ -43,6 +45,17 @@ export type ArdoRenderOptions = {
   base: string
   /** Render the not-found page instead of looking up a route. */
   notFound?: boolean
+  /** Build-only callback; absent in development and for sites that leave share cards off. */
+  shareImage?: (input: {
+    routeId?: string
+    frontmatter?: Record<string, unknown>
+    path: string
+    publicPath: string
+    section: string
+    locale: string
+    appearance: ArdoAppearance
+    meta: ArdoMetaDescriptor[]
+  }) => Promise<ArdoMetaDescriptor[] | undefined>
 }
 
 export type ArdoRenderResult = { html: string; routeId?: string; status: number }
@@ -86,10 +99,21 @@ export async function renderPage(
         ? options.base
         : `${route.publicPath.replace(/\/$/u, "").slice(0, -page.data.path.length)}/`,
   })
-  const { body, icons } = await renderWithIcons(
-    // The client derives its links from the same logical paths.
-    <ArdoApp config={config} page={page} paths={paths} root={root} />
-  )
+  const { body, icons } = await renderApp({
+    element: <ArdoApp config={config} page={page} paths={paths} root={root} />,
+    page,
+    shareImage: options.shareImage,
+    publicPath: spellPagePath(
+      route?.publicPath ?? `${options.base}${page.data.path.replace(/^\//u, "")}`,
+      config.trailingSlash,
+      config.deploymentBase
+    ),
+    locale: locale ?? config.lang,
+    section:
+      (locale == null ? page.data.path : page.data.path.slice(locale.length + 1))
+        .split("/")
+        .find((part) => part !== "") ?? "",
+  })
   const shell = await renderToHtml(
     <ArdoDocumentProvider
       value={{
@@ -185,16 +209,52 @@ function applyLocaleMetadata(
   return locale
 }
 
-async function renderWithIcons(element: ReactNode) {
+async function renderWithIcons(element: ReactNode, collectAppearance: boolean) {
   let icons: ArdoDocumentIcons = {}
+  let appearance: ArdoAppearance = {}
   const body = await renderToHtml(
     <ArdoDocumentIconsContext
       value={(value) => {
         icons = value
       }}
     >
-      {element}
+      <ArdoAppearanceContext
+        value={
+          collectAppearance
+            ? (value) => {
+                appearance = { ...appearance, ...value }
+              }
+            : null
+        }
+      >
+        {element}
+      </ArdoAppearanceContext>
     </ArdoDocumentIconsContext>
   )
+  return { body, icons, appearance }
+}
+
+async function renderApp(input: {
+  element: ReactNode
+  page: Awaited<ReturnType<typeof resolvePage>>
+  shareImage: ArdoRenderOptions["shareImage"]
+  publicPath: string
+  locale: string
+  section: string
+}) {
+  const { body, icons, appearance } = await renderWithIcons(input.element, input.shareImage != null)
+  if (input.page.error == null && input.shareImage != null) {
+    input.page.meta =
+      (await input.shareImage({
+        routeId: input.page.data.routeId,
+        frontmatter: input.page.frontmatter,
+        path: input.page.data.path,
+        publicPath: input.publicPath,
+        section: input.section,
+        locale: input.locale,
+        appearance,
+        meta: input.page.meta,
+      })) ?? input.page.meta
+  }
   return { body, icons }
 }

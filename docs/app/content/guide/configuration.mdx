@@ -153,6 +153,52 @@ defineArdoConfig({
 })
 ```
 
+### shareImages
+
+- **Type:** `false | ShareImagesConfig`
+- **Default:** `false`
+
+Generate a 1200 × 630 PNG for each Markdown or MDX route during a production build. Titles use frontmatter, then the first level-one heading, then the file name. Cards use the page title, section, site name, local logo, and light palette collected from the rendered `ArdoRoot` and `ArdoTheme`. Fonts and templates belong to build configuration; colors and logos stay in JSX.
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  siteUrl: "https://example.com",
+  shareImages: {
+    fonts: ["app/assets/fonts/MySans-Regular.ttf", "app/assets/fonts/MyCJK-Regular.otf"],
+    fontFamily: "My Sans, My CJK",
+  },
+})
+```
+
+Supply local TTF, OTF, or TTC files with permission to use them. Include every script your titles need: the four Ardo docs languages use Latin accents, while Japanese, Chinese, Arabic, and other scripts need matching fonts. Family names must match those inside the files. Ardo never downloads fonts or scans system fonts. The default template wraps long titles and truncates after five lines; image alt metadata keeps the full title.
+
+A page's explicit `ogImage` skips generation and wins over the generated card. Otherwise the card replaces `metadata.image`, with width, height, MIME type, and alt metadata for Open Graph and an image for Twitter. Explicit page `twitterImage` remains unchanged. PNGs have content-hashed names under the build's assets directory and follow its deployment base and version path.
+
+The light logo is used when JSX provides a light/dark pair. Imported local SVG, PNG, JPEG, and WebP logos are embedded; remote URLs and React-element logos are omitted. Builds never fetch remote logos. CSS-variable or computed color overrides need a custom template. Ordinary concrete light colors and OKLCH theme recipes work with the default template.
+
+Replace the SVG template with a build-only function. Its input includes the localized title, section, locale, path, embedded logo, font family, resolved colors, and raw theme CSS. Escape text and attribute values before inserting them. Return a self-contained 1200 × 630 SVG, with embedded images and local fragment references only.
+
+```ts
+import { escapeShareImageText } from "ardo/vite"
+import type { ShareImagesConfig } from "ardo/config"
+
+const shareImages: ShareImagesConfig = {
+  fonts: ["app/assets/fonts/MySans-Regular.ttf"],
+  fontFamily: "My Sans",
+  render: ({ title, width, height, fontFamily }) => `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+      <rect width="100%" height="100%" fill="#f9f8f4" />
+      <text x="72" y="300" font-size="56" fill="#17231f"
+        font-family="${escapeShareImageText(fontFamily)}">${escapeShareImageText(title)}</text>
+    </svg>`,
+}
+```
+
+Generation is off in development and for TSX routes and 404 pages. Leaving the option off does no card rendering, font loading, or appearance processing in the build pipeline. Measure your production build with your own fonts and route count before enabling it on a large reference.
+
 ### seo.llms
 
 - **Type:** `boolean | { indexFileName?: string; fullFileName?: string; includeFull?: boolean; pages?: boolean; title?: string; description?: string }`

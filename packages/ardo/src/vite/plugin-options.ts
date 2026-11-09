@@ -36,3 +36,8 @@ export type ArdoPluginOptions = {
    */
   routesDir?: string
 } & Partial<ArdoConfig>
+
+export type MainPluginOptions = {
+  siteConfig: SiteConfigOptions
+  routesDirOption: string | undefined
+}
