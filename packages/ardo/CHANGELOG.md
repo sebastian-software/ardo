@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.4.1...ardo-v6.5.0) (2026-11-09)
+
+
+### Features
+
+* render Mermaid diagrams to static SVG ([#510](https://github.com/sebastian-software/ardo/issues/510)) ([8f465ed](https://github.com/sebastian-software/ardo/commit/8f465ede49749504ffab7fa7235eb4775fc46207)), closes [#472](https://github.com/sebastian-software/ardo/issues/472)
+
+
+### Bug Fixes
+
+* follow Ardo's theme in Mermaid diagrams through color-scheme ([#515](https://github.com/sebastian-software/ardo/issues/515)) ([9539c8f](https://github.com/sebastian-software/ardo/commit/9539c8fb0d87aae8f23823d8828b92152ef9aa9e))
+
 ## [6.4.1](https://github.com/sebastian-software/ardo/compare/ardo-v6.4.0...ardo-v6.4.1) (2026-11-08)
 
 
