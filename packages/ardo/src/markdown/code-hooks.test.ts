@@ -1,7 +1,7 @@
 import { toHtmlWithCodeRenderer } from "ferromark"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { getArdoCodeHooks, scopeDarkRules } from "./code-hooks"
+import { getArdoCodeHooks } from "./code-hooks"
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -31,11 +31,11 @@ describe("Ardo code hooks", () => {
     expect(html).toContain("flowchart LR")
   })
 
-  it("follows Ardo's dark and light classes and keeps the system fallback", async () => {
+  it("writes diagram colors that follow the page's color-scheme", async () => {
     const html = await render("```mermaid\nflowchart LR\n  A --> B\n```\n", true)
 
-    expect(html).toContain(":root.dark #fm-mermaid-0{")
-    expect(html).toContain("@media (prefers-color-scheme: dark){:root:not(.light) #fm-mermaid-0{")
+    expect(html).toContain("light-dark(")
+    expect(html).not.toContain("prefers-color-scheme")
   })
 
   it("keeps an invalid diagram as code and names its file and line", async () => {
@@ -61,25 +61,5 @@ describe("Ardo code hooks", () => {
 
     expect(html).toContain("--shiki-light")
     expect(html).toContain("<svg")
-  })
-})
-
-describe("scopeDarkRules", () => {
-  it("scopes every dark rule to Ardo's classes", () => {
-    const svg =
-      "<svg><style>#d{--c:#000;}@media (prefers-color-scheme: dark){#d{--c:#fff;}#d .a,#d .b{fill:red;}}#d .x{fill:var(--c);}</style></svg>"
-
-    expect(scopeDarkRules(svg)).toBe(
-      "<svg><style>#d{--c:#000;}" +
-        ":root.dark #d{--c:#fff;}:root.dark #d .a,:root.dark #d .b{fill:red;}" +
-        "@media (prefers-color-scheme: dark){:root:not(.light) #d{--c:#fff;}:root:not(.light) #d .a,:root:not(.light) #d .b{fill:red;}}" +
-        "#d .x{fill:var(--c);}</style></svg>"
-    )
-  })
-
-  it("leaves SVG without dark rules unchanged", () => {
-    const svg = "<svg><style>#d{fill:red;}</style></svg>"
-
-    expect(scopeDarkRules(svg)).toBe(svg)
   })
 })

@@ -63,19 +63,18 @@ export async function getArdoCodeHooks(
     },
   }
   if (mermaid === false) return hooks
-  const diagrams = createDiagramCodeRenderer(
-    followArdoColorMode(await getDiagramRenderer(mermaid)),
-    {
-      colorScheme: "auto",
-      onRenderError(error, { start }) {
-        const at = start == null ? "" : `:${lineAt(input.source, start)}`
-        console.warn(
-          `[ardo] Could not render Mermaid diagram${input.sourcePath == null ? "" : ` in ${input.sourcePath}${at}`}; keeping it as code.`,
-          error
-        )
-      },
-    }
-  )
+  // `auto` writes `light-dark()` colors, which follow the `color-scheme` that
+  // Ardo's theme sets on the root element.
+  const diagrams = createDiagramCodeRenderer(await getDiagramRenderer(mermaid), {
+    colorScheme: "auto",
+    onRenderError(error, { start }) {
+      const at = start == null ? "" : `:${lineAt(input.source, start)}`
+      console.warn(
+        `[ardo] Could not render Mermaid diagram${input.sourcePath == null ? "" : ` in ${input.sourcePath}${at}`}; keeping it as code.`,
+        error
+      )
+    },
+  })
   return composeCodeHooks(diagrams, hooks)
 }
 
@@ -112,53 +111,6 @@ async function getDiagramRenderer(
     diagramRenderers.set(key, renderer)
   }
   return renderer
-}
-
-const darkMediaRule = "@media (prefers-color-scheme: dark){"
-
-/**
- * Ferrigura switches diagram colors with `prefers-color-scheme`, while Ardo's
- * theme toggle sets `dark` or `light` on the root element. Scope the dark
- * rules to `.dark`, and keep the media query for pages without the class.
- */
-function followArdoColorMode(renderer: DiagramRenderer): DiagramRenderer {
-  return {
-    render: (text, options) => scopeDarkRules(renderer.render(text, options)),
-  }
-}
-
-export function scopeDarkRules(svg: string): string {
-  const start = svg.indexOf(darkMediaRule)
-  if (start === -1) return svg
-  const bodyStart = start + darkMediaRule.length
-  const end = closingBrace(svg, bodyStart)
-  if (end === -1) return svg
-  const body = svg.slice(bodyStart, end)
-  const classRules = prefixSelectors(body, ":root.dark")
-  const mediaRules = prefixSelectors(body, ":root:not(.light)")
-  const rest = scopeDarkRules(svg.slice(end + 1))
-  return `${svg.slice(0, start)}${classRules}${darkMediaRule}${mediaRules}}${rest}`
-}
-
-/** Index of the brace that closes the block opened just before `from`, or -1. */
-function closingBrace(text: string, from: number): number {
-  let depth = 1
-  for (let index = from; index < text.length; index++) {
-    if (text[index] === "{") depth++
-    else if (text[index] === "}" && --depth === 0) return index
-  }
-  return -1
-}
-
-/** Prefix every selector of a flat rule list, such as `#id{…}#id .edge{…}`. */
-function prefixSelectors(rules: string, prefix: string): string {
-  return rules.replaceAll(/(^|\})([^{}]+)\{/gu, (_match, close: string, selectors: string) => {
-    const prefixed = selectors
-      .split(",")
-      .map((selector) => `${prefix} ${selector.trim()}`)
-      .join(",")
-    return `${close}${prefixed}{`
-  })
 }
 
 /** One-based line of a UTF-8 byte offset. */

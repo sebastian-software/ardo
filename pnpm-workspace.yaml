@@ -70,6 +70,14 @@ minimumReleaseAgeExclude:
   - "@palamedes/vite-plugin@2.0.0"
   - "@sebastian-software/app-tracking@0.7.0"
   - "@vitejs/plugin-react@6.2.1"
+  - "@ferrigura/core@0.6.0"
+  - "@ferrigura/darwin-arm64@0.6.0"
+  - "@ferrigura/linux-arm64-gnu@0.6.0"
+  - "@ferrigura/linux-arm64-musl@0.6.0"
+  - "@ferrigura/linux-x64-gnu@0.6.0"
+  - "@ferrigura/linux-x64-musl@0.6.0"
+  - "@ferrigura/win32-arm64-msvc@0.6.0"
+  - "@ferrigura/win32-x64-msvc@0.6.0"
 
 onlyBuiltDependencies:
   - esbuild
