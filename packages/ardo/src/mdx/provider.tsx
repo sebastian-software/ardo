@@ -9,6 +9,7 @@ import { ArdoBadge } from "../ui/components/Badge"
 import { ArdoBanner } from "../ui/components/Banner"
 import { ArdoCard, ArdoCardGroup } from "../ui/components/Card"
 import { ArdoCodeBlock, ArdoCodeGroup } from "../ui/components/CodeBlock"
+import { ArdoCompareSlider } from "../ui/components/CompareSlider"
 import { ArdoDanger, ArdoInfo, ArdoNote, ArdoTip, ArdoWarning } from "../ui/components/Container"
 import { ArdoContentTable } from "../ui/components/ContentTable"
 import { ArdoEmbed } from "../ui/components/Embed"
@@ -99,6 +100,7 @@ export function useMDXComponents(): ArdoMDXComponents {
     TabPanels: ArdoTabPanels,
     CodeBlock: ArdoCodeBlock,
     CodeGroup: ArdoCodeGroup,
+    CompareSlider: ArdoCompareSlider,
     Embed: ArdoEmbed,
     FileTree: ArdoFileTree,
     PackageManagers: ArdoPackageManagers,

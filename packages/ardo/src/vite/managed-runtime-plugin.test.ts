@@ -93,6 +93,8 @@ describe("Ardo managed runtime resolution", () => {
         "ardo > @base-ui/react/accordion",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
+        "ardo > react-compare-slider/components",
+        "ardo > react-compare-slider/hooks",
       ])
     )
     expect(server.config.optimizeDeps.exclude).toStrictEqual(["other-package", "ardo"])
@@ -107,6 +109,8 @@ describe("Ardo managed runtime resolution", () => {
         "ardo > @base-ui/react/accordion",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
+        "ardo > react-compare-slider/components",
+        "ardo > react-compare-slider/hooks",
       ])
     )
     expect(server.config.environments.ssr.optimizeDeps.exclude).toContain("ardo")

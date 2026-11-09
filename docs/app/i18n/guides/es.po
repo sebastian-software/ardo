@@ -346,6 +346,23 @@ msgstr ""
 msgid "<0/> knows the <1/>, <2/>, <3/>, <4/>, <5/>, and <6/> icons."
 msgstr "<0/> incluye los iconos <1/>, <2/>, <3/>, <4/>, <5/> y <6/>."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> lays two views of the same size over each other and splits them with a "
+"divider, such as a screenshot before and after a change or one diagram from "
+"two renderers. Drag the handle, or click where the divider should go. On a "
+"touch screen, only the handle moves the divider, so a swipe elsewhere on the "
+"comparison scrolls the page. The prerendered page shows the divider at its "
+"start position, and it moves once the page has loaded."
+msgstr ""
+"<0/> superpone dos vistas del mismo tamaño y las separa con un divisor, por "
+"ejemplo una captura de pantalla antes y después de un cambio, o un mismo "
+"diagrama de dos renderizadores. Arrastra el tirador o haz clic donde debe ir "
+"el divisor. En una pantalla táctil, solo el tirador mueve el divisor, así "
+"que un deslizamiento en otra parte desplaza la página. La página "
+"prerenderizada muestra el divisor en su posición inicial; se mueve en cuanto "
+"la página ha cargado."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/> now exports a selected set of Streamline Core Line components instead of "
@@ -2561,18 +2578,37 @@ msgstr "Ardo necesita Node.js 22.22.0 o posterior. Comprueba tu versión:"
 msgid ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
 "cards, tabs, accordions, steps, code blocks, package manager commands, file "
-"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
-"light and dark mode and works with the keyboard. The examples below run in the"
-" real layout of this site, so switch the theme in the header or resize the "
-"window to see them in context."
+"trees, compare sliders, embeds, icons, and landing-page blocks. Each one "
+"follows the theme in light and dark mode and works with the keyboard. The "
+"examples below run in the real layout of this site, so switch the theme in the"
+" header or resize the window to see them in context."
 msgstr ""
 "Ardo incluye los componentes que más necesitan las páginas de "
 "documentación: avisos, insignias, tarjetas, pestañas, acordeones, pasos, "
 "bloques de código, comandos de gestores de paquetes, árboles de archivos, "
-"incrustaciones, iconos y bloques de páginas de inicio. Cada uno sigue el tema"
-" en modo claro y oscuro y funciona con el teclado. Los ejemplos de abajo se "
-"muestran en el diseño real de este sitio; cambia el tema en el encabezado o "
-"ajusta el tamaño de la ventana para verlos en contexto."
+"deslizadores de comparación, incrustaciones, iconos y bloques de páginas de "
+"inicio. Cada uno sigue el tema en modo claro y oscuro y funciona con el "
+"teclado. Los ejemplos de abajo se muestran en el diseño real de este sitio; "
+"cambia el tema en el encabezado o ajusta el tamaño de la ventana para verlos "
+"en contexto."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, package manager commands, file "
+#~ "trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+#~ "light and dark mode and works with the keyboard. The examples below run in the"
+#~ " real layout of this site, so switch the theme in the header or resize the "
+#~ "window to see them in context."
+#~ msgstr ""
+#~ "Ardo incluye los componentes que más necesitan las páginas de "
+#~ "documentación: avisos, insignias, tarjetas, pestañas, acordeones, pasos, "
+#~ "bloques de código, comandos de gestores de paquetes, árboles de archivos, "
+#~ "incrustaciones, iconos y bloques de páginas de inicio. Cada uno sigue el tema"
+#~ " en modo claro y oscuro y funciona con el teclado. Los ejemplos de abajo se "
+#~ "muestran en el diseño real de este sitio; cambia el tema en el encabezado o "
+#~ "ajusta el tamaño de la ventana para verlos en contexto."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3597,6 +3633,14 @@ msgstr "Tareas habituales"
 #: docs/app/content/guide/components.mdx
 msgid "Community, feedback, and discussion"
 msgstr "Comunidad, opiniones y debate"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare slider example"
+msgstr "Ejemplo de deslizador de comparación"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare Sliders"
+msgstr "Deslizadores de comparación"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
@@ -5076,6 +5120,14 @@ msgstr ""
 "cambiar a una carpeta principal nueva, conserva la última carpeta generada de"
 " la versión anterior y cópiala al artefacto Pages durante el despliegue."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Give both views the same size. Images, SVGs, and videos placed directly in a "
+"view fill its width."
+msgstr ""
+"Da a ambas vistas el mismo tamaño. Las imágenes, SVG y vídeos colocados "
+"directamente en una vista ocupan todo su ancho."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
 msgstr "Agrupar páginas"
@@ -6291,6 +6343,14 @@ msgstr ""
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Multiple packages"
 msgstr "Varios paquetes"
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the first view, shown above it. Required."
+msgstr "Nombre de la primera vista, mostrado encima. Obligatorio."
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the second view, shown above it. Required."
+msgstr "Nombre de la segunda vista, mostrado encima. Obligatorio."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -8202,6 +8262,14 @@ msgstr ""
 msgid "Starlight"
 msgstr "Starlight"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Start position of the divider, in percent of the width from the left. Defaults"
+" to <0/>."
+msgstr ""
+"Posición inicial del divisor, en porcentaje del ancho desde la izquierda. Por"
+" defecto <0/>."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Start the development server:"
 msgstr "Arranca el servidor de desarrollo:"
@@ -8816,6 +8884,14 @@ msgstr ""
 "aplicación vecina. Las <0>instrucciones para agentes</0> explican este "
 "límite."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The example compares this site's hero illustration in the light and dark "
+"themes."
+msgstr ""
+"El ejemplo compara la ilustración de portada de este sitio en los temas claro"
+" y oscuro."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "The example pins pnpm explicitly. Match the version used to create your "
@@ -8861,6 +8937,19 @@ msgstr ""
 "accesibles sin anunciarse como contenido actual duplicado. En GitHub Pages, la"
 " redirección raíz es un <0/> estático. Configura fuera de Ardo las "
 "redirecciones HTTP si tu CDN o proveedor las admite."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The handle is a slider for keyboards and screen readers. The arrow keys move "
+"it in small steps, Page Up and Page Down in larger ones, and Home and End to "
+"either edge. Screen readers announce how much of each side shows. The "
+"component is built on <0>react-compare-slider</0>."
+msgstr ""
+"Para el teclado y los lectores de pantalla, el tirador es un deslizador. Las "
+"teclas de flecha lo mueven en pasos pequeños, Re Pág y Av Pág en pasos "
+"mayores, e Inicio y Fin hasta cada borde. Los lectores de pantalla anuncian "
+"cuánto se ve de cada lado. El componente está basado en "
+"<0>react-compare-slider</0>."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -9138,6 +9227,14 @@ msgstr ""
 " tanto, de cada página y del bundle del cliente. Ardo no lee ninguna variable"
 " de entorno. Para usar una, asígnala tú mismo. <1/> es importante, porque "
 "una variable vacía desactivaría el hash en lugar de recurrir a Git."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view left of the divider. Required."
+msgstr "La vista a la izquierda del divisor. Obligatorio."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view right of the divider. Required."
+msgstr "La vista a la derecha del divisor. Obligatorio."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -9471,6 +9568,11 @@ msgstr "Issue"
 #: docs/app/content/guide/configuration.mdx
 msgid "trailingSlash"
 msgstr "trailingSlash"
+
+#: docs/app/content/guide/components.mdx
+msgid "Translate the slider's spoken name and value through <0/>'s <1/>."
+msgstr ""
+"Traduce el nombre y el valor anunciados del deslizador mediante <1/> de <0/>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Translations and localization"
@@ -10151,6 +10253,12 @@ msgstr "Integración en la compilación"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "What the pages show"
 msgstr "Contenido de las páginas"
+
+#: docs/app/content/guide/components.mdx
+msgid "What the views show. Names the slider for screen readers. Required."
+msgstr ""
+"Lo que muestran las vistas. Da nombre al deslizador para los lectores de "
+"pantalla. Obligatorio."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What You Get"

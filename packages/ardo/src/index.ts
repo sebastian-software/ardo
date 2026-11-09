@@ -84,6 +84,7 @@ export {
   ArdoCodeBlock,
   ArdoBanner,
   ArdoCodeGroup,
+  ArdoCompareSlider,
   ArdoContainer,
   ArdoContent,
   ArdoCopyButton,
@@ -120,7 +121,7 @@ export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./ui"
 export type { ArdoCodeBlockProps, ArdoCodeGroupProps } from "./ui"
 export type { ArdoStepsProps } from "./ui"
 export type { ArdoBannerProps, ArdoBannerVariant } from "./ui"
-export type { ArdoEmbedProps, ArdoFileTreeProps } from "./ui"
+export type { ArdoCompareSliderProps, ArdoEmbedProps, ArdoFileTreeProps } from "./ui"
 export type { ArdoPackageManagersProps } from "./ui"
 export type {
   ArdoContainerProps,

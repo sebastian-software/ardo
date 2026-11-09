@@ -37,6 +37,12 @@ export function translatedLabels(): ArdoLabels {
     banner: {
       dismiss: t`Dismiss banner`,
     },
+    compareSlider: {
+      name: (label, first, second) =>
+        t`${label}: ${first} left of the divider, ${second} right of it`,
+      value: ({ first, firstPercent, second, secondPercent }) =>
+        t`${first} ${firstPercent}%, ${second} ${secondPercent}%`,
+    },
     fileTree: {
       label: t`File tree`,
       folder: t`Folder`,

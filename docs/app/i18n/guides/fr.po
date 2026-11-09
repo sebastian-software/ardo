@@ -351,6 +351,23 @@ msgstr ""
 msgid "<0/> knows the <1/>, <2/>, <3/>, <4/>, <5/>, and <6/> icons."
 msgstr "<0/> connaît les icônes <1/>, <2/>, <3/>, <4/>, <5/> et <6/>."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> lays two views of the same size over each other and splits them with a "
+"divider, such as a screenshot before and after a change or one diagram from "
+"two renderers. Drag the handle, or click where the divider should go. On a "
+"touch screen, only the handle moves the divider, so a swipe elsewhere on the "
+"comparison scrolls the page. The prerendered page shows the divider at its "
+"start position, and it moves once the page has loaded."
+msgstr ""
+"<0/> superpose deux vues de même taille et les sépare par un séparateur, "
+"par exemple une capture d'écran avant et après une modification, ou un même"
+" diagramme issu de deux moteurs de rendu. Faites glisser la poignée, ou "
+"cliquez là où le séparateur doit aller. Sur un écran tactile, seule la "
+"poignée déplace le séparateur : un balayage ailleurs fait défiler la page."
+" La page prérendue affiche le séparateur à sa position de départ ; il se "
+"déplace une fois la page chargée."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/> now exports a selected set of Streamline Core Line components instead of "
@@ -2589,18 +2606,37 @@ msgstr ""
 msgid ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
 "cards, tabs, accordions, steps, code blocks, package manager commands, file "
-"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
-"light and dark mode and works with the keyboard. The examples below run in the"
-" real layout of this site, so switch the theme in the header or resize the "
-"window to see them in context."
+"trees, compare sliders, embeds, icons, and landing-page blocks. Each one "
+"follows the theme in light and dark mode and works with the keyboard. The "
+"examples below run in the real layout of this site, so switch the theme in the"
+" header or resize the window to see them in context."
 msgstr ""
 "Ardo fournit les composants dont les pages de documentation ont le plus besoin"
 " : encadrés, badges, cartes, onglets, accordéons, étapes, blocs de code, "
-"commandes de gestionnaires de paquets, arborescences de fichiers, "
-"intégrations, icônes et blocs de page d'accueil. Chacun suit le thème en "
-"mode clair et sombre et fonctionne au clavier. Les exemples ci-dessous "
-"s'affichent dans la mise en page réelle de ce site ; changez le thème dans "
-"l'en-tête ou redimensionnez la fenêtre pour les voir en contexte."
+"commandes de gestionnaires de paquets, arborescences de fichiers, curseurs de "
+"comparaison, intégrations, icônes et blocs de page d'accueil. Chacun suit le"
+" thème en mode clair et sombre et fonctionne au clavier. Les exemples "
+"ci-dessous s'affichent dans la mise en page réelle de ce site ; changez le "
+"thème dans l'en-tête ou redimensionnez la fenêtre pour les voir en "
+"contexte."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, package manager commands, file "
+#~ "trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+#~ "light and dark mode and works with the keyboard. The examples below run in the"
+#~ " real layout of this site, so switch the theme in the header or resize the "
+#~ "window to see them in context."
+#~ msgstr ""
+#~ "Ardo fournit les composants dont les pages de documentation ont le plus besoin"
+#~ " : encadrés, badges, cartes, onglets, accordéons, étapes, blocs de code, "
+#~ "commandes de gestionnaires de paquets, arborescences de fichiers, "
+#~ "intégrations, icônes et blocs de page d'accueil. Chacun suit le thème en "
+#~ "mode clair et sombre et fonctionne au clavier. Les exemples ci-dessous "
+#~ "s'affichent dans la mise en page réelle de ce site ; changez le thème dans "
+#~ "l'en-tête ou redimensionnez la fenêtre pour les voir en contexte."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3634,6 +3670,14 @@ msgstr "Tâches courantes"
 #: docs/app/content/guide/components.mdx
 msgid "Community, feedback, and discussion"
 msgstr "Communauté, retours et discussions"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare slider example"
+msgstr "Exemple de curseur de comparaison"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare Sliders"
+msgstr "Curseurs de comparaison"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
@@ -5138,6 +5182,14 @@ msgstr ""
 "changer de dossier majeur, conservez le dernier dossier généré de la "
 "version précédente et copiez-le dans l’artefact Pages au déploiement."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Give both views the same size. Images, SVGs, and videos placed directly in a "
+"view fill its width."
+msgstr ""
+"Donnez la même taille aux deux vues. Les images, SVG et vidéos placés "
+"directement dans une vue en occupent toute la largeur."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
 msgstr "Regrouper les pages"
@@ -6365,6 +6417,14 @@ msgstr ""
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Multiple packages"
 msgstr "Plusieurs paquets"
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the first view, shown above it. Required."
+msgstr "Nom de la première vue, affiché au-dessus. Obligatoire."
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the second view, shown above it. Required."
+msgstr "Nom de la seconde vue, affiché au-dessus. Obligatoire."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -8286,6 +8346,14 @@ msgstr ""
 msgid "Starlight"
 msgstr "Starlight"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Start position of the divider, in percent of the width from the left. Defaults"
+" to <0/>."
+msgstr ""
+"Position de départ du séparateur, en pourcentage de la largeur depuis la "
+"gauche. Par défaut <0/>."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Start the development server:"
 msgstr "Lancez le serveur de développement :"
@@ -8908,6 +8976,14 @@ msgstr ""
 "application voisine. Les <0>instructions pour les agents</0> expliquent cette "
 "frontière."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The example compares this site's hero illustration in the light and dark "
+"themes."
+msgstr ""
+"L'exemple compare l'illustration d'accueil de ce site en thème clair et en "
+"thème sombre."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "The example pins pnpm explicitly. Match the version used to create your "
@@ -8954,6 +9030,19 @@ msgstr ""
 "restent accessibles sans être annoncés comme contenu actuel dupliqué. Sur "
 "GitHub Pages, la redirection racine est une <0/> statique. Configurez hors "
 "d’Ardo les redirections HTTP si votre CDN ou hébergeur les prend en charge."
+
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The handle is a slider for keyboards and screen readers. The arrow keys move "
+"it in small steps, Page Up and Page Down in larger ones, and Home and End to "
+"either edge. Screen readers announce how much of each side shows. The "
+"component is built on <0>react-compare-slider</0>."
+msgstr ""
+"Pour le clavier et les lecteurs d'écran, la poignée est un curseur. Les "
+"touches fléchées la déplacent par petits pas, Page précédente et Page "
+"suivante par pas plus grands, et Début et Fin jusqu'à chaque bord. Les "
+"lecteurs d'écran annoncent la part visible de chaque côté. Le composant "
+"repose sur <0>react-compare-slider</0>."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -9234,6 +9323,14 @@ msgstr ""
 "variable d’environnement. Pour en utiliser une, associez-la vous-même. <1/>"
 " est important, car une variable vide désactiverait sinon le hash au lieu de "
 "revenir à Git."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view left of the divider. Required."
+msgstr "La vue à gauche du séparateur. Obligatoire."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view right of the divider. Required."
+msgstr "La vue à droite du séparateur. Obligatoire."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -9571,6 +9668,10 @@ msgstr "Ticket"
 #: docs/app/content/guide/configuration.mdx
 msgid "trailingSlash"
 msgstr "trailingSlash"
+
+#: docs/app/content/guide/components.mdx
+msgid "Translate the slider's spoken name and value through <0/>'s <1/>."
+msgstr "Traduisez le nom et la valeur annoncés du curseur via <1/> de <0/>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Translations and localization"
@@ -10260,6 +10361,12 @@ msgstr "Intégration au build"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "What the pages show"
 msgstr "Contenu des pages"
+
+#: docs/app/content/guide/components.mdx
+msgid "What the views show. Names the slider for screen readers. Required."
+msgstr ""
+"Ce que montrent les vues. Nomme le curseur pour les lecteurs d'écran. "
+"Obligatoire."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What You Get"

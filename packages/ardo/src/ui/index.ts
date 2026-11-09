@@ -53,6 +53,7 @@ export {
   ArdoCardGroup,
   ArdoCodeBlock,
   ArdoCodeGroup,
+  ArdoCompareSlider,
   ArdoContainer,
   ArdoCopyButton,
   ArdoDanger,
@@ -92,6 +93,7 @@ export type {
 export type { ArdoHeroAction, ArdoHeroImage, ArdoHeroProps } from "./components"
 
 export type { ArdoBannerProps, ArdoBannerVariant } from "./components"
+export type { ArdoCompareSliderProps } from "./components"
 export type { ArdoEmbedProps } from "./components"
 export type { ArdoFeatureCardProps, ArdoFeaturesProps } from "./components"
 export type { ArdoFileTreeProps } from "./components"
@@ -142,7 +144,12 @@ export type { ArdoHeaderActionsProps, ArdoHeaderProps, ArdoSocialLinkProps } fro
 export type { ArdoHeaderSearchMode } from "./header-search-mode"
 export { ArdoHomePage } from "./HomePage"
 export type { ArdoHomePageProps } from "./HomePage"
-export type { ArdoContainerLabels, ArdoLabels, ArdoLabelsInput } from "./labels"
+export type {
+  ArdoCompareSliderShare,
+  ArdoContainerLabels,
+  ArdoLabels,
+  ArdoLabelsInput,
+} from "./labels"
 // Layout components
 export { ArdoLayout, ArdoRootLayout } from "./Layout"
 

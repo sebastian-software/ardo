@@ -124,6 +124,7 @@
     "minisearch": "^7.2.0",
     "oxc-transform-react": "^0.156.0",
     "react": "catalog:",
+    "react-compare-slider": "^4.0.0",
     "react-dom": "catalog:",
     "read-package-up": "^12.0.0",
     "sharp": "^0.35.5",

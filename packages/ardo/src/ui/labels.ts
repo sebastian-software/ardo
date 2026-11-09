@@ -6,6 +6,14 @@ export type ArdoContainerLabels = {
   note: string
 }
 
+/** How much of each side of a compare slider shows, for its spoken value. */
+export type ArdoCompareSliderShare = {
+  first: string
+  firstPercent: number
+  second: string
+  secondPercent: number
+}
+
 export type ArdoLabels = {
   page: {
     edit: string
@@ -39,6 +47,15 @@ export type ArdoLabels = {
   banner: {
     /** Accessible name of the close button on a dismissible page banner. */
     dismiss: string
+  }
+  compareSlider: {
+    /**
+     * Accessible name of the slider, from the comparison's label and the names of the two sides,
+     * such as "Class diagram: Ferrigura left of the divider, Mermaid right of it".
+     */
+    name: (label: string, first: string, second: string) => string
+    /** Spoken value of the slider: how much of each side shows, in percent. */
+    value: (shown: ArdoCompareSliderShare) => string
   }
   fileTree: {
     /** Accessible name of the file tree list. */
@@ -123,6 +140,7 @@ export type ArdoLabelsInput = {
   breadcrumb?: Partial<ArdoLabels["breadcrumb"]>
   container?: Partial<ArdoContainerLabels>
   banner?: Partial<ArdoLabels["banner"]>
+  compareSlider?: Partial<ArdoLabels["compareSlider"]>
   fileTree?: Partial<ArdoLabels["fileTree"]>
   copyButton?: Partial<ArdoLabels["copyButton"]>
   footer?: Partial<ArdoLabels["footer"]>
@@ -170,6 +188,11 @@ export const defaultArdoLabels: ArdoLabels = {
   },
   banner: {
     dismiss: "Dismiss banner",
+  },
+  compareSlider: {
+    name: (label, first, second) => `${label}: ${first} left of the divider, ${second} right of it`,
+    value: ({ first, firstPercent, second, secondPercent }) =>
+      `${first} ${firstPercent}%, ${second} ${secondPercent}%`,
   },
   fileTree: {
     label: "File tree",
@@ -251,6 +274,7 @@ export function resolveArdoLabels(input: ArdoLabelsInput | undefined): ArdoLabel
     breadcrumb: { ...defaultArdoLabels.breadcrumb, ...input.breadcrumb },
     container: { ...defaultArdoLabels.container, ...input.container },
     banner: { ...defaultArdoLabels.banner, ...input.banner },
+    compareSlider: { ...defaultArdoLabels.compareSlider, ...input.compareSlider },
     fileTree: { ...defaultArdoLabels.fileTree, ...input.fileTree },
     copyButton: { ...defaultArdoLabels.copyButton, ...input.copyButton },
     footer: { ...defaultArdoLabels.footer, ...input.footer },
