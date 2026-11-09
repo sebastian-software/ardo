@@ -128,6 +128,46 @@ test("gallery code groups switch files and copy the active snippet", async ({ pa
   await expect(home).toBeHidden()
 })
 
+test("gallery compare slider moves the divider by keyboard and pointer", async ({ page }) => {
+  const compare = page.locator("#gallery-compare-slider")
+  const slider = compare.getByRole("slider", {
+    name: "Hero illustration: Light left of the divider, Dark right of it",
+    exact: true,
+  })
+  const root = compare.locator("[dir=ltr]").first()
+  const firstLayer = compare.getByRole("img", { name: "Hero illustration in the light theme" })
+  const readPosition = () =>
+    root.evaluate((element) => element.style.getPropertyValue("--ardo-compare-slider-position"))
+  // The image sits in a themed panel inside the clipped first layer.
+  const firstLayerClip = () =>
+    firstLayer.evaluate((image) => getComputedStyle(image.parentElement!.parentElement!).clipPath)
+
+  await expect(slider).toHaveValue("50")
+  await expect(slider).toHaveAttribute("aria-valuetext", "Light 50%, Dark 50%")
+  await expect(firstLayer).toBeVisible()
+  expect(await firstLayerClip()).toBe("inset(0px 50% 0px 0px)")
+
+  await slider.focus()
+  await slider.press("ArrowRight")
+  await slider.press("ArrowRight")
+  await expect(slider).toHaveValue("52")
+  await expect(slider).toHaveAttribute("aria-valuetext", "Light 52%, Dark 48%")
+  expect(await readPosition()).toBe("52%")
+
+  await slider.press("Home")
+  await expect(slider).toHaveValue("0")
+  expect(await readPosition()).toBe("0%")
+  expect(await firstLayerClip()).toBe("inset(0px 100% 0px 0px)")
+
+  const box = await slider.boundingBox()
+  if (!box) throw new Error("Expected the compare slider to be laid out")
+  await page.mouse.click(box.x + box.width * 0.75, box.y + box.height / 2)
+  const clicked = Number(await slider.inputValue())
+  expect(clicked).toBeGreaterThanOrEqual(70)
+  expect(clicked).toBeLessThanOrEqual(80)
+  expect(await readPosition()).toBe(`${clicked}%`)
+})
+
 test("hero images follow the selected theme and the system preference", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" })
   await page.evaluate(() => localStorage.setItem("ardo-theme", "light"))

@@ -356,6 +356,22 @@ msgstr ""
 msgid "<0/> knows the <1/>, <2/>, <3/>, <4/>, <5/>, and <6/> icons."
 msgstr "<0/> knows the <1/>, <2/>, <3/>, <4/>, <5/>, and <6/> icons."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> lays two views of the same size over each other and splits them with a "
+"divider, such as a screenshot before and after a change or one diagram from "
+"two renderers. Drag the divider, tap where it should go, or focus it and press"
+" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
+" shows the divider at its start position, and it moves once the page has "
+"loaded."
+msgstr ""
+"<0/> lays two views of the same size over each other and splits them with a "
+"divider, such as a screenshot before and after a change or one diagram from "
+"two renderers. Drag the divider, tap where it should go, or focus it and press"
+" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
+" shows the divider at its start position, and it moves once the page has "
+"loaded."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/> now exports a selected set of Streamline Core Line components instead of "
@@ -1536,6 +1552,18 @@ msgstr ""
 "source paths or aliases. API generation can read separately configured "
 "TypeScript projects."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"A native range input covers both views and moves the divider, so the "
+"comparison works with the pointer, touch, and keyboard, and screen readers "
+"announce how much of each side shows. Because the input lies on top, links and"
+" buttons inside the views cannot be clicked."
+msgstr ""
+"A native range input covers both views and moves the divider, so the "
+"comparison works with the pointer, touch, and keyboard, and screen readers "
+"announce how much of each side shows. Because the input lies on top, links and"
+" buttons inside the views cannot be clicked."
+
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
 #~ msgid "A nested Markdown list. Names may use bold and a <0/> comment."
@@ -2600,17 +2628,34 @@ msgstr "Ardo requires Node.js 22.22.0 or higher. Check your version:"
 msgid ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
 "cards, tabs, accordions, steps, code blocks, package manager commands, file "
-"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
-"light and dark mode and works with the keyboard. The examples below run in the"
-" real layout of this site, so switch the theme in the header or resize the "
-"window to see them in context."
+"trees, compare sliders, embeds, icons, and landing-page blocks. Each one "
+"follows the theme in light and dark mode and works with the keyboard. The "
+"examples below run in the real layout of this site, so switch the theme in the"
+" header or resize the window to see them in context."
 msgstr ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
 "cards, tabs, accordions, steps, code blocks, package manager commands, file "
-"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
-"light and dark mode and works with the keyboard. The examples below run in the"
-" real layout of this site, so switch the theme in the header or resize the "
-"window to see them in context."
+"trees, compare sliders, embeds, icons, and landing-page blocks. Each one "
+"follows the theme in light and dark mode and works with the keyboard. The "
+"examples below run in the real layout of this site, so switch the theme in the"
+" header or resize the window to see them in context."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, package manager commands, file "
+#~ "trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+#~ "light and dark mode and works with the keyboard. The examples below run in the"
+#~ " real layout of this site, so switch the theme in the header or resize the "
+#~ "window to see them in context."
+#~ msgstr ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, package manager commands, file "
+#~ "trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+#~ "light and dark mode and works with the keyboard. The examples below run in the"
+#~ " real layout of this site, so switch the theme in the header or resize the "
+#~ "window to see them in context."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3650,6 +3695,14 @@ msgstr "Common Tasks"
 #: docs/app/content/guide/components.mdx
 msgid "Community, feedback, and discussion"
 msgstr "Community, feedback, and discussion"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare slider example"
+msgstr "Compare slider example"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare Sliders"
+msgstr "Compare Sliders"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
@@ -5158,6 +5211,14 @@ msgstr ""
 "generated folder for the previous major version and copy it into the Pages "
 "artifact during deployment."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Give both views the same size. The second view sets the height, and images, "
+"SVGs, and videos placed directly in a view fill its width."
+msgstr ""
+"Give both views the same size. The second view sets the height, and images, "
+"SVGs, and videos placed directly in a view fill its width."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
 msgstr "Group Pages"
@@ -6401,6 +6462,14 @@ msgstr ""
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Multiple packages"
 msgstr "Multiple packages"
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the first view, shown above it. Required."
+msgstr "Name of the first view, shown above it. Required."
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the second view, shown above it. Required."
+msgstr "Name of the second view, shown above it. Required."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -8313,6 +8382,14 @@ msgstr ""
 msgid "Starlight"
 msgstr "Starlight"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Start position of the divider, in percent of the width from the left. Defaults"
+" to <0/>."
+msgstr ""
+"Start position of the divider, in percent of the width from the left. Defaults"
+" to <0/>."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Start the development server:"
 msgstr "Start the development server:"
@@ -8933,6 +9010,14 @@ msgstr ""
 "sibling application source. The <0>Agent Instructions</0> explain that "
 "boundary."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The example compares this site's hero illustration in the light and dark "
+"themes."
+msgstr ""
+"The example compares this site's hero illustration in the light and dark "
+"themes."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "The example pins pnpm explicitly. Match the version used to create your "
@@ -9256,6 +9341,14 @@ msgstr ""
 " therefore of every page and the client bundle. Ardo reads no environment "
 "variable. To use one, map it yourself. <1/> matters, because an empty variable"
 " would otherwise switch the hash off instead of falling back to Git."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view left of the divider. Required."
+msgstr "The view left of the divider. Required."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view right of the divider. It sets the height. Required."
+msgstr "The view right of the divider. It sets the height. Required."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -9599,6 +9692,10 @@ msgstr "Tracking issue"
 #: docs/app/content/guide/configuration.mdx
 msgid "trailingSlash"
 msgstr "trailingSlash"
+
+#: docs/app/content/guide/components.mdx
+msgid "Translate the slider's spoken name and value through <0/>'s <1/>."
+msgstr "Translate the slider's spoken name and value through <0/>'s <1/>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Translations and localization"
@@ -10282,6 +10379,10 @@ msgstr "What Participates"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "What the pages show"
 msgstr "What the pages show"
+
+#: docs/app/content/guide/components.mdx
+msgid "What the views show. Names the slider for screen readers. Required."
+msgstr "What the views show. Names the slider for screen readers. Required."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What You Get"

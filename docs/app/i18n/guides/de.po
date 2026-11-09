@@ -354,6 +354,22 @@ msgstr ""
 msgid "<0/> knows the <1/>, <2/>, <3/>, <4/>, <5/>, and <6/> icons."
 msgstr "<0/> kennt Icons für <1/>, <2/>, <3/>, <4/>, <5/> und <6/>."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"<0/> lays two views of the same size over each other and splits them with a "
+"divider, such as a screenshot before and after a change or one diagram from "
+"two renderers. Drag the divider, tap where it should go, or focus it and press"
+" the arrow keys. A vertical swipe still scrolls the page. The prerendered page"
+" shows the divider at its start position, and it moves once the page has "
+"loaded."
+msgstr ""
+"<0/> legt zwei gleich große Ansichten übereinander und teilt sie mit einem "
+"Trenner, etwa einen Screenshot vor und nach einer Änderung oder ein Diagramm "
+"aus zwei Renderern. Zieh den Trenner, tippe an die gewünschte Stelle oder "
+"fokussiere ihn und nutze die Pfeiltasten. Eine senkrechte Wischgeste scrollt "
+"weiterhin die Seite. Die vorgerenderte Seite zeigt den Trenner an seiner "
+"Startposition; er bewegt sich, sobald die Seite geladen ist."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/> now exports a selected set of Streamline Core Line components instead of "
@@ -1537,6 +1553,18 @@ msgstr ""
 "Aliasse. Die API-Generierung kann separat konfigurierte TypeScript-Projekte "
 "lesen."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"A native range input covers both views and moves the divider, so the "
+"comparison works with the pointer, touch, and keyboard, and screen readers "
+"announce how much of each side shows. Because the input lies on top, links and"
+" buttons inside the views cannot be clicked."
+msgstr ""
+"Ein natives Range-Input liegt über beiden Ansichten und bewegt den Trenner. "
+"So funktioniert der Vergleich mit Maus, Touch und Tastatur, und Screenreader "
+"sagen an, wie viel von jeder Seite zu sehen ist. Weil das Input obenauf liegt,"
+" lassen sich Links und Buttons in den Ansichten nicht anklicken."
+
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
 #~ msgid "A nested Markdown list. Names may use bold and a <0/> comment."
@@ -2613,18 +2641,36 @@ msgstr "Ardo benötigt Node.js ab 22.22.0. Prüfe deine Version:"
 msgid ""
 "Ardo ships the components documentation pages need most: callouts, badges, "
 "cards, tabs, accordions, steps, code blocks, package manager commands, file "
-"trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
-"light and dark mode and works with the keyboard. The examples below run in the"
-" real layout of this site, so switch the theme in the header or resize the "
-"window to see them in context."
+"trees, compare sliders, embeds, icons, and landing-page blocks. Each one "
+"follows the theme in light and dark mode and works with the keyboard. The "
+"examples below run in the real layout of this site, so switch the theme in the"
+" header or resize the window to see them in context."
 msgstr ""
 "Ardo bringt die Komponenten mit, die Dokumentationsseiten am häufigsten "
 "brauchen: Hinweisboxen, Badges, Karten, Tabs, Akkordeons, Schritte, "
-"Codeblöcke, Paketmanager-Befehle, Dateibäume, Einbettungen, Icons und "
-"Blöcke für Landingpages. Jede folgt dem Theme im hellen und dunklen Modus "
-"und ist per Tastatur bedienbar. Die Beispiele unten laufen im echten Layout "
-"dieser Seite. Wechsle das Theme im Header oder ändere die Fenstergröße, um "
-"sie im Kontext zu sehen."
+"Codeblöcke, Paketmanager-Befehle, Dateibäume, Vergleichsregler, "
+"Einbettungen, Icons und Blöcke für Landingpages. Jede folgt dem Theme im "
+"hellen und dunklen Modus und ist per Tastatur bedienbar. Die Beispiele unten "
+"laufen im echten Layout dieser Seite. Wechsle das Theme im Header oder ändere"
+" die Fenstergröße, um sie im Kontext zu sehen."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/components.mdx
+#~ msgid ""
+#~ "Ardo ships the components documentation pages need most: callouts, badges, "
+#~ "cards, tabs, accordions, steps, code blocks, package manager commands, file "
+#~ "trees, embeds, icons, and landing-page blocks. Each one follows the theme in "
+#~ "light and dark mode and works with the keyboard. The examples below run in the"
+#~ " real layout of this site, so switch the theme in the header or resize the "
+#~ "window to see them in context."
+#~ msgstr ""
+#~ "Ardo bringt die Komponenten mit, die Dokumentationsseiten am häufigsten "
+#~ "brauchen: Hinweisboxen, Badges, Karten, Tabs, Akkordeons, Schritte, "
+#~ "Codeblöcke, Paketmanager-Befehle, Dateibäume, Einbettungen, Icons und "
+#~ "Blöcke für Landingpages. Jede folgt dem Theme im hellen und dunklen Modus "
+#~ "und ist per Tastatur bedienbar. Die Beispiele unten laufen im echten Layout "
+#~ "dieser Seite. Wechsle das Theme im Header oder ändere die Fenstergröße, um "
+#~ "sie im Kontext zu sehen."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3665,6 +3711,14 @@ msgstr "Häufige Aufgaben"
 #: docs/app/content/guide/components.mdx
 msgid "Community, feedback, and discussion"
 msgstr "Community, Feedback und Diskussion"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare slider example"
+msgstr "Beispiel für einen Vergleichsregler"
+
+#: docs/app/content/guide/components.mdx
+msgid "Compare Sliders"
+msgstr "Vergleichsregler"
 
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
@@ -5165,6 +5219,14 @@ msgstr ""
 "erzeugten Ordner der vorherigen Hauptversion und kopiere ihn beim Deployment "
 "in das Pages-Artefakt."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Give both views the same size. The second view sets the height, and images, "
+"SVGs, and videos placed directly in a view fill its width."
+msgstr ""
+"Gib beiden Ansichten dieselbe Größe. Die zweite Ansicht bestimmt die Höhe, "
+"und Bilder, SVGs und Videos direkt in einer Ansicht füllen ihre Breite."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Group Pages"
 msgstr "Seiten gruppieren"
@@ -6388,6 +6450,14 @@ msgstr ""
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Multiple packages"
 msgstr "Mehrere Pakete"
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the first view, shown above it. Required."
+msgstr "Name der ersten Ansicht, darüber angezeigt. Pflichtangabe."
+
+#: docs/app/content/guide/components.mdx
+msgid "Name of the second view, shown above it. Required."
+msgstr "Name der zweiten Ansicht, darüber angezeigt. Pflichtangabe."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -8310,6 +8380,13 @@ msgstr ""
 msgid "Starlight"
 msgstr "Starlight"
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"Start position of the divider, in percent of the width from the left. Defaults"
+" to <0/>."
+msgstr ""
+"Startposition des Trenners in Prozent der Breite von links. Standard ist <0/>."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Start the development server:"
 msgstr "Starte den Entwicklungsserver:"
@@ -8931,6 +9008,14 @@ msgstr ""
 " Anwendungsquellcode zu importieren. Die <0>Anleitung für Agenten</0> "
 "erklärt diese Grenze."
 
+#: docs/app/content/guide/components.mdx
+msgid ""
+"The example compares this site's hero illustration in the light and dark "
+"themes."
+msgstr ""
+"Das Beispiel vergleicht die Hero-Illustration dieser Seite im hellen und im "
+"dunklen Theme."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "The example pins pnpm explicitly. Match the version used to create your "
@@ -9258,6 +9343,14 @@ msgstr ""
 "keine Umgebungsvariable. Willst du eine verwenden, ordne sie selbst zu. <1/> "
 "ist wichtig, denn eine leere Variable würde den Hash sonst abschalten, statt "
 "auf Git zurückzufallen."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view left of the divider. Required."
+msgstr "Die Ansicht links vom Trenner. Pflichtangabe."
+
+#: docs/app/content/guide/components.mdx
+msgid "The view right of the divider. It sets the height. Required."
+msgstr "Die Ansicht rechts vom Trenner. Sie bestimmt die Höhe. Pflichtangabe."
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
@@ -9601,6 +9694,11 @@ msgstr "Issue"
 #: docs/app/content/guide/configuration.mdx
 msgid "trailingSlash"
 msgstr "trailingSlash"
+
+#: docs/app/content/guide/components.mdx
+msgid "Translate the slider's spoken name and value through <0/>'s <1/>."
+msgstr ""
+"Übersetze den gesprochenen Namen und Wert des Reglers über <1/> von <0/>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Translations and localization"
@@ -10291,6 +10389,11 @@ msgstr "Einbindung in den Build"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "What the pages show"
 msgstr "Inhalt der Referenzseiten"
+
+#: docs/app/content/guide/components.mdx
+msgid "What the views show. Names the slider for screen readers. Required."
+msgstr ""
+"Was die Ansichten zeigen. Benennt den Regler für Screenreader. Pflichtangabe."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What You Get"

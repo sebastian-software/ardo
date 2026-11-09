@@ -18,6 +18,8 @@ export type {
   ArdoTipProps,
   ArdoWarningProps,
 } from "./Container"
+export { ArdoCompareSlider } from "./CompareSlider"
+export type { ArdoCompareSliderProps } from "./CompareSlider"
 export { ArdoCopyButton } from "./CopyButton"
 export { ArdoEmbed } from "./Embed"
 export type { ArdoEmbedProps } from "./Embed"

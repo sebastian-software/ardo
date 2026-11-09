@@ -58,3 +58,30 @@ export const iconName = style({
 })
 
 globalStyle(`${iconGrid} > li`, { margin: 0 })
+
+// The compare slider example shows the hero illustration on the page color of each theme.
+const comparePanel = style({
+  display: "flex",
+  justifyContent: "center",
+  padding: `${vars.space.lg} ${vars.space.md}`,
+})
+
+export const compareLight = style([
+  comparePanel,
+  { background: `oklch(0.985 0.004 ${vars.hue.neutral})` },
+])
+
+export const compareDark = style([
+  comparePanel,
+  { background: `oklch(0.17 0.012 ${vars.hue.neutral})` },
+])
+
+globalStyle(`${comparePanel} > img`, {
+  display: "block",
+  width: "min(100%, 320px)",
+  height: "auto",
+  margin: 0,
+  border: 0,
+  borderRadius: 0,
+  boxShadow: "none",
+})

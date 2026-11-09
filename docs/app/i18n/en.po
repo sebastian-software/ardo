@@ -39,6 +39,14 @@ msgid "{downloads} downloads last month"
 msgstr "{downloads} downloads last month"
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "{first} {firstPercent}%, {second} {secondPercent}%"
+msgstr "{first} {firstPercent}%, {second} {secondPercent}%"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "{label}: {first} left of the divider, {second} right of it"
+msgstr "{label}: {first} left of the divider, {second} right of it"
+
+#: docs/app/i18n/labels.ts#translatedLabels
 msgid "{title} navigation menu"
 msgstr "{title} navigation menu"
 
@@ -314,6 +322,10 @@ msgstr "Copying failed. Open the Markdown version instead."
 msgid "DANGER"
 msgstr "DANGER"
 
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Dark"
+msgstr "Dark"
+
 #: docs/app/i18n/messages.ts
 msgid "dark mode included, for fellow night owls"
 msgstr "dark mode included, for fellow night owls"
@@ -411,6 +423,18 @@ msgstr "Guide"
 msgid "Guides, TypeScript API reference, and your components. In one place."
 msgstr "Guides, TypeScript API reference, and your components. In one place."
 
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration"
+msgstr "Hero illustration"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration in the dark theme"
+msgstr "Hero illustration in the dark theme"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration in the light theme"
+msgstr "Hero illustration in the light theme"
+
 #: docs/app/i18n/messages.ts
 msgid "highlighted at build time"
 msgstr "highlighted at build time"
@@ -470,6 +494,10 @@ msgstr "Latest release"
 #: docs/app/i18n/messages.ts
 msgid "Let your agent do the setup."
 msgstr "Let your agent do the setup."
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Light"
+msgstr "Light"
 
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Links"

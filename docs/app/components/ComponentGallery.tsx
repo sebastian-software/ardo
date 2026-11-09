@@ -3,7 +3,7 @@ import type { ReactNode } from "ardo/react"
 import { useArdoLocale } from "ardo/runtime"
 import heroLight from "../assets/hero-light.svg"
 import heroDark from "../assets/hero-dark.svg"
-import { ArdoHero, ArdoIcon, getRegisteredIconNames } from "ardo/ui"
+import { ArdoCompareSlider, ArdoHero, ArdoIcon, getRegisteredIconNames } from "ardo/ui"
 
 import * as styles from "./component-gallery.css"
 
@@ -58,6 +58,37 @@ export function GalleryHero({ text, tagline }: { text: string; tagline: string }
           theme: "alt",
         },
       ]}
+    />
+  )
+}
+
+/** The hero illustration in both themes; the image text stays in the message catalogs. */
+export function GalleryCompareSlider() {
+  return (
+    <ArdoCompareSlider
+      label={t`Hero illustration`}
+      first={
+        <div className={styles.compareLight}>
+          <img
+            src={heroLight}
+            alt={t`Hero illustration in the light theme`}
+            width={320}
+            height={224}
+          />
+        </div>
+      }
+      firstLabel={t`Light`}
+      second={
+        <div className={styles.compareDark}>
+          <img
+            src={heroDark}
+            alt={t`Hero illustration in the dark theme`}
+            width={320}
+            height={224}
+          />
+        </div>
+      }
+      secondLabel={t`Dark`}
     />
   )
 }

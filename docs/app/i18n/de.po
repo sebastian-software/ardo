@@ -39,6 +39,14 @@ msgid "{downloads} downloads last month"
 msgstr "{downloads} Downloads im letzten Monat"
 
 #: docs/app/i18n/labels.ts#translatedLabels
+msgid "{first} {firstPercent}%, {second} {secondPercent}%"
+msgstr "{first} {firstPercent} %, {second} {secondPercent} %"
+
+#: docs/app/i18n/labels.ts#translatedLabels
+msgid "{label}: {first} left of the divider, {second} right of it"
+msgstr "{label}: {first} links vom Trenner, {second} rechts davon"
+
+#: docs/app/i18n/labels.ts#translatedLabels
 msgid "{title} navigation menu"
 msgstr "Navigationsmenü: {title}"
 
@@ -319,6 +327,10 @@ msgstr "Kopieren fehlgeschlagen. Öffne stattdessen die Markdown-Version."
 msgid "DANGER"
 msgstr "GEFAHR"
 
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Dark"
+msgstr "Dunkel"
+
 #: docs/app/i18n/messages.ts
 msgid "dark mode included, for fellow night owls"
 msgstr "Dunkelmodus inklusive, für andere Nachteulen"
@@ -417,6 +429,18 @@ msgid "Guides, TypeScript API reference, and your components. In one place."
 msgstr ""
 "Anleitungen, TypeScript-API-Referenz und deine Komponenten. An einem Ort."
 
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration"
+msgstr "Hero-Illustration"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration in the dark theme"
+msgstr "Hero-Illustration im dunklen Theme"
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Hero illustration in the light theme"
+msgstr "Hero-Illustration im hellen Theme"
+
 #: docs/app/i18n/messages.ts
 msgid "highlighted at build time"
 msgstr "beim Build hervorgehoben"
@@ -477,6 +501,10 @@ msgstr "Neueste Version"
 #: docs/app/i18n/messages.ts
 msgid "Let your agent do the setup."
 msgstr "Lass deinen Agenten das Setup übernehmen."
+
+#: docs/app/components/ComponentGallery.tsx#GalleryCompareSlider
+msgid "Light"
+msgstr "Hell"
 
 #: docs/app/i18n/labels.ts#translatedLabels
 msgid "Links"
