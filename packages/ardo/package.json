@@ -131,7 +131,7 @@
     "yaml": "^2.9.1"
   },
   "peerDependencies": {
-    "@ferrigura/core": "^0.4.0",
+    "@ferrigura/core": "^0.6.0",
     "oxc-parser": "^0.155.0 || ^0.156.0",
     "typescript": ">=6.0.0 || ^7.1.0-dev.20261011.1"
   },
@@ -147,7 +147,7 @@
     }
   },
   "devDependencies": {
-    "@ferrigura/core": "^0.4.0",
+    "@ferrigura/core": "^0.6.0",
     "@jridgewell/sourcemap-codec": "^1.6.0",
     "@svgr/cli": "^8.1.0",
     "@testing-library/react": "catalog:",

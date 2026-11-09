@@ -79,7 +79,7 @@ describe("prepared route compilation", () => {
 })
 
 describe("Mermaid diagrams in the route module", () => {
-  it("emits the diagram as JSX with its colors scoped to Ardo's color mode", async () => {
+  it("emits the diagram as JSX with colors that follow the page's color-scheme", async () => {
     const { code } = await compileMdxRouteModuleWithCode({
       format: "md",
       id: "diagram.md",
@@ -88,7 +88,7 @@ describe("Mermaid diagrams in the route module", () => {
     })
 
     expect(code).toContain('<svg xmlns="http://www.w3.org/2000/svg" id="fm-mermaid-8"')
-    expect(code).toContain(":root.dark #fm-mermaid-8{")
+    expect(code).toContain("light-dark(")
     expect(code).not.toContain("_components.CodeBlock")
   })
 })
