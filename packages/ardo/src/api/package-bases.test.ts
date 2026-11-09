@@ -254,7 +254,7 @@ describe("package declaration bases", () => {
     const markdown = result.items.find((item) => item.name === "MarkdownConfig")
     expect(result.diagnostics).toStrictEqual([])
     expect(markdown?.propertiesComplete).toBe(true)
-    expect(markdown?.properties).toHaveLength(33)
+    expect(markdown?.properties).toHaveLength(34)
     expect(markdown?.properties.find((item) => item.name === "footnotes")).toMatchObject({
       type: "boolean",
       optional: true,

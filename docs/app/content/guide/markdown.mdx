@@ -178,6 +178,38 @@ def greet(name):
 
 </CodeGroup>
 
+## Mermaid Diagrams
+
+Ardo renders `mermaid` fences to static SVG during the build, so diagrams need no client-side JavaScript. Turn it on in `ardo.config.ts` and install the optional renderer next to Ardo:
+
+```bash
+pnpm add @ferrigura/core
+```
+
+```typescript title="ardo.config.ts"
+export default defineArdoConfig({
+  markdown: { mermaid: true },
+})
+```
+
+Then write a diagram as a fenced block:
+
+````md
+```mermaid
+flowchart LR
+  Write[Write Markdown] --> Build[Ardo build]
+  Build --> Page[Static HTML with SVG]
+```
+````
+
+```mermaid
+flowchart LR
+  Write[Write Markdown] --> Build[Ardo build]
+  Build --> Page[Static HTML with SVG]
+```
+
+Diagrams follow the light and dark color mode. An invalid diagram stays a code block, and the build prints a warning with its file and line. Markdown files and `llms-full.txt` keep the original fence as text. See [`markdown.mermaid`](/en/guide/configuration#markdown-mermaid) for renderer options.
+
 ## Callouts
 
 Plain Markdown, no imports: Ardo recognizes GitHub's alert syntax and maps each type to the matching callout.

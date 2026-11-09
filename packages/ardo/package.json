@@ -120,7 +120,7 @@
     "@vanilla-extract/vite-plugin": "catalog:",
     "@vitejs/plugin-react": "^6.2.1",
     "ferrolink": "^0.2.1",
-    "ferromark": "^3.7.0",
+    "ferromark": "^4.0.0",
     "minisearch": "^7.2.0",
     "oxc-transform-react": "^0.156.0",
     "react": "catalog:",
@@ -131,10 +131,14 @@
     "yaml": "^2.9.1"
   },
   "peerDependencies": {
+    "@ferrigura/core": "^0.4.0",
     "oxc-parser": "^0.155.0 || ^0.156.0",
     "typescript": ">=6.0.0 || ^7.1.0-dev.20261011.1"
   },
   "peerDependenciesMeta": {
+    "@ferrigura/core": {
+      "optional": true
+    },
     "oxc-parser": {
       "optional": true
     },
@@ -143,6 +147,7 @@
     }
   },
   "devDependencies": {
+    "@ferrigura/core": "^0.4.0",
     "@jridgewell/sourcemap-codec": "^1.6.0",
     "@svgr/cli": "^8.1.0",
     "@testing-library/react": "catalog:",

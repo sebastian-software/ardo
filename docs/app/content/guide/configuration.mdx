@@ -924,6 +924,19 @@ markdown: {
 
 Show line numbers in code blocks.
 
+### markdown.mermaid
+
+- **Type:** `boolean | { config?: Record<string, unknown> }`
+- **Default:** `false`
+
+Render `mermaid` fences as static SVG with the optional `@ferrigura/core` package, which you install next to Ardo. `config` is passed to Ferrigura's renderer as Mermaid configuration. See [Mermaid Diagrams](/en/guide/markdown#mermaid-diagrams).
+
+```ts
+markdown: {
+  mermaid: { config: { flowchart: { curve: "basis" } } },
+}
+```
+
 ### markdown.anchor
 
 - **Type:** `boolean`

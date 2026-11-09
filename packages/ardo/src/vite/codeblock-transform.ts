@@ -1,18 +1,30 @@
+import type { CodeHooks } from "ferromark"
+
 import type { MarkdownConfig } from "../config/types"
 
-import { getJsxCompiler } from "../markdown/jsx-compiler"
+import { getArdoCodeHooks } from "../markdown/code-hooks"
+import { getCodeCompiler } from "../markdown/code-compiler"
 import { outdent, scanArdoCodeBlocks, type ScannedCodeBlock } from "./codeblock-scan"
 
-// eslint-disable-next-line @typescript-eslint/require-await -- Preserve the async prepass API with a synchronous native renderer.
 export async function transformArdoCodeBlocks(
   source: string,
   markdownConfig?: MarkdownConfig,
   options: { sourcePath?: string } = {}
 ): Promise<string> {
+  const blocks = scanArdoCodeBlocks(source)
+  if (blocks.length === 0) return source
+  const codeHooks = await getArdoCodeHooks(markdownConfig, {
+    languages: blocks.map((block) => {
+      const props = readProps(block.props)
+      return props == null ? undefined : (extractPropValue(props, "language") ?? undefined)
+    }),
+    source,
+    sourcePath: options.sourcePath,
+  })
   let result = source
   let offset = 0
-  for (const block of scanArdoCodeBlocks(source)) {
-    const replacement = createReplacement(block, markdownConfig, options)
+  for (const block of blocks) {
+    const replacement = createReplacement(block, markdownConfig, { ...options, codeHooks })
     if (replacement == null) continue
     result = result.slice(0, block.start + offset) + replacement + result.slice(block.end + offset)
     offset += replacement.length - block.fullMatch.length
@@ -23,7 +35,7 @@ export async function transformArdoCodeBlocks(
 function createReplacement(
   block: ScannedCodeBlock,
   markdownConfig: MarkdownConfig | undefined,
-  options: { sourcePath?: string }
+  options: { codeHooks: CodeHooks; sourcePath?: string }
 ): null | string {
   const props = readProps(block.props)
   if (props == null || props.has("__html") || props.has("children")) return null
@@ -31,7 +43,10 @@ function createReplacement(
   const meta = readMeta(props)
   if (input == null || meta == null) return null
   try {
-    const rendered = getJsxCompiler(markdownConfig).renderCodeBlock({ ...input, meta })
+    const rendered = getCodeCompiler(markdownConfig).renderCodeBlock(
+      { ...input, meta },
+      options.codeHooks
+    )
     // Defaults go before authored props so explicit title/label values win.
     const defaults = JSON.stringify({
       code: input.code,

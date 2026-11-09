@@ -1103,9 +1103,10 @@ msgstr ""
 "<0>Every page has a title.</0> Pages whose module and root set no <1/> meta "
 "get the site title from <2/>."
 
-#: docs/app/content/guide/releases/index.mdx
-msgid "<0>ferromark#531</0>"
-msgstr "<0>ferromark#531</0>"
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/releases/index.mdx
+#~ msgid "<0>ferromark#531</0>"
+#~ msgstr "<0>ferromark#531</0>"
 
 #: docs/app/content/guide/deployment.mdx
 msgid "<0>Framework preset:</0> Other"
@@ -2539,6 +2540,16 @@ msgstr ""
 "Ardo releases the framework, UI, and runtime as one package. This page keeps "
 "product claims grounded: what is ready to use today, what still evolves, and "
 "what is planned. The <0>changelog</0> lists every release."
+
+#: docs/app/content/guide/markdown.mdx
+msgid ""
+"Ardo renders <0/> fences to static SVG during the build, so diagrams need no "
+"client-side JavaScript. Turn it on in <1/> and install the optional renderer "
+"next to Ardo:"
+msgstr ""
+"Ardo renders <0/> fences to static SVG during the build, so diagrams need no "
+"client-side JavaScript. Turn it on in <1/> and install the optional renderer "
+"next to Ardo:"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -4062,6 +4073,18 @@ msgstr "Development and delivery"
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Development Issues"
 msgstr "Development Issues"
+
+#: docs/app/content/guide/markdown.mdx
+msgid ""
+"Diagrams follow the light and dark color mode. An invalid diagram stays a code"
+" block, and the build prints a warning with its file and line. Markdown files "
+"and <0/> keep the original fence as text. See <1><2/></1> for renderer "
+"options."
+msgstr ""
+"Diagrams follow the light and dark color mode. An invalid diagram stays a code"
+" block, and the build prints a warning with its file and line. Markdown files "
+"and <0/> keep the original fence as text. See <1><2/></1> for renderer "
+"options."
 
 #: docs/app/content/guide/components.mdx
 msgid "Directories and content collections"
@@ -6200,6 +6223,10 @@ msgid "markdown.lineNumbers"
 msgstr "markdown.lineNumbers"
 
 #: docs/app/content/guide/configuration.mdx
+msgid "markdown.mermaid"
+msgstr "markdown.mermaid"
+
+#: docs/app/content/guide/configuration.mdx
 msgid "markdown.passes"
 msgstr "markdown.passes"
 
@@ -6242,6 +6269,10 @@ msgstr "Mature OSS docs"
 #: docs/app/content/guide/releases/index.mdx
 msgid "Mermaid diagrams"
 msgstr "Mermaid diagrams"
+
+#: docs/app/content/guide/markdown.mdx
+msgid "Mermaid Diagrams"
+msgstr "Mermaid Diagrams"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "metadata"
@@ -6743,6 +6774,14 @@ msgstr "openapi"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "OpenAPI Specs"
 msgstr "OpenAPI Specs"
+
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Opt-in <0/> renders <1/> fences to static SVG at build time with the optional "
+"<2/> package; see <3>Mermaid Diagrams</3>."
+msgstr ""
+"Opt-in <0/> renders <1/> fences to static SVG at build time with the optional "
+"<2/> package; see <3>Mermaid Diagrams</3>."
 
 #: docs/app/content/guide/components.mdx
 msgid "Optional configuration"
@@ -7457,6 +7496,16 @@ msgstr "Removed. The <0/> plugin generates the route table."
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Removed. Use <0/> from <1/>."
 msgstr "Removed. Use <0/> from <1/>."
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Render <0/> fences as static SVG with the optional <1/> package, which you "
+"install next to Ardo. <2/> is passed to Ferrigura's renderer as Mermaid "
+"configuration. See <3>Mermaid Diagrams</3>."
+msgstr ""
+"Render <0/> fences as static SVG with the optional <1/> package, which you "
+"install next to Ardo. <2/> is passed to Ferrigura's renderer as Mermaid "
+"configuration. See <3>Mermaid Diagrams</3>."
 
 #: docs/app/content/guide/markdown.mdx
 msgid "Renders as:"
@@ -8328,13 +8377,14 @@ msgstr "Static output"
 msgid "Static site build"
 msgstr "Static site build"
 
-#: docs/app/content/guide/releases/index.mdx
-msgid ""
-"Static SVG rendering at compile time. Until then, <0/> fences render as code "
-"blocks."
-msgstr ""
-"Static SVG rendering at compile time. Until then, <0/> fences render as code "
-"blocks."
+#~ #@ obsolete-since: 2026-11-08
+#~ #: docs/app/content/guide/releases/index.mdx
+#~ msgid ""
+#~ "Static SVG rendering at compile time. Until then, <0/> fences render as code "
+#~ "blocks."
+#~ msgstr ""
+#~ "Static SVG rendering at compile time. Until then, <0/> fences render as code "
+#~ "blocks."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Step 1: Configure the Base Path"
@@ -9254,6 +9304,10 @@ msgstr ""
 "Then use <0/> in MDX. Registering an existing name overrides its built-in "
 "component. For icons from another library, declare that library as a direct "
 "dependency and import its components in your registration module."
+
+#: docs/app/content/guide/markdown.mdx
+msgid "Then write a diagram as a fenced block:"
+msgstr "Then write a diagram as a fenced block:"
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""

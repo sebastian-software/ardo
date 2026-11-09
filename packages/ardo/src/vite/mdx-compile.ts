@@ -1,4 +1,4 @@
-import type { JsxModuleMap, JsxModuleResult } from "ferromark"
+import type { CodeHooks, JsxModuleMap, JsxModuleResult } from "ferromark"
 
 import type { ArdoConfig, PageFrontmatter } from "../config/types"
 
@@ -8,6 +8,7 @@ import {
   type NativeMarkdownMetadata,
   prepareNativeMarkdown,
 } from "../markdown/native-metadata"
+import { getArdoCodeHooks } from "../markdown/code-hooks"
 import { buildToc } from "../markdown/toc"
 import { parsePageFrontmatterMetadata } from "./page-metadata"
 import type { PublicationPostBinding } from "./publication-routes"
@@ -42,7 +43,24 @@ const routeBindings = [
  * layout, component resolution, and the source map. Appended imports are
  * hoisted, so `result.map` stays valid for the whole module.
  */
-export function compileMdxRouteModule(input: {
+export function compileMdxRouteModule(input: MdxRouteInput): { code: string; map: JsxModuleMap } {
+  return renderMdxRouteModule(input, prepareMdxRoute(input))
+}
+
+/** Compile a route with highlighting and, when configured, Mermaid diagrams. */
+export async function compileMdxRouteModuleWithCode(
+  input: MdxRouteInput
+): Promise<{ code: string; map: JsxModuleMap }> {
+  const route = prepareMdxRoute(input)
+  const codeHooks = await getArdoCodeHooks(input.markdownConfig, {
+    languages: route.prepared.metadata.codeBlocks.map((block) => block.language),
+    source: input.source,
+    sourcePath: input.id,
+  })
+  return renderMdxRouteModule(input, route, codeHooks)
+}
+
+type MdxRouteInput = {
   format: NativeMarkdownFormat
   id: string
   markdownConfig: ArdoConfig["markdown"]
@@ -51,21 +69,29 @@ export function compileMdxRouteModule(input: {
   /** Set for a generated publication post: the frame and modules the route mounts. */
   publicationPost?: PublicationPostBinding
   source: string
-}): { code: string; map: JsxModuleMap } {
-  const { prepared, frontmatter, renderOptions } = prepareNativeMarkdown(
-    input.source,
-    input.format,
-    input.markdownConfig
-  )
+}
+
+function prepareMdxRoute(input: MdxRouteInput) {
+  return prepareNativeMarkdown(input.source, input.format, input.markdownConfig)
+}
+
+function renderMdxRouteModule(
+  input: MdxRouteInput,
+  { prepared, frontmatter, renderOptions }: ReturnType<typeof prepareMdxRoute>,
+  codeHooks?: CodeHooks
+): { code: string; map: JsxModuleMap } {
   const { componentPrefix: _componentPrefix, ...moduleOptions } = renderOptions
-  const result = prepared.renderModule({
-    ...moduleOptions,
-    codeBlockComponent: "_components.CodeBlock",
-    providerImportSource: "ardo/mdx-provider",
-    filename: input.id,
-    defaultExport: false,
-    reservedBindings: routeBindings,
-  })
+  const result = prepared.renderModule(
+    {
+      ...moduleOptions,
+      codeBlockComponent: "_components.CodeBlock",
+      providerImportSource: "ardo/mdx-provider",
+      filename: input.id,
+      defaultExport: false,
+      reservedBindings: routeBindings,
+    },
+    codeHooks
+  )
   const metadata = createNativeMarkdownMetadata(input.source, frontmatter, result)
   return {
     code:

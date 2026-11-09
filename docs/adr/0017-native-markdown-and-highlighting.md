@@ -4,6 +4,8 @@
 
 Accepted, 2026-10-01.
 
+Updated: 2026-11-08
+
 ## Context
 
 Ardo's Markdown and MDX paths use separate unified pipelines, and highlighting
@@ -19,14 +21,23 @@ front matter, and an authoritative heading outline. Ardo owns React provider
 bindings, layout selection, page context, and route metadata. Vite's Oxc JSX
 transform compiles the resulting module while retaining its original file ID.
 
-Ferromark's reusable native `JsxCompiler` owns Ferriki and highlights Markdown
-fences as part of JSX rendering. It loads and caches theme and grammar assets
-on first use. Ardo configures the theme, line numbers, and generic codeblock
-component; the component receives highlighted JSX children and original code
-for copying. Literal `ArdoCodeBlock` usages in TSX use the same native fence renderer
-through a cached compiler. The direct Ferriki dependency remains for the public
-HTML-returning `highlightCode` compatibility helper and the configuration
-`ThemeInput` type. The public `__html` component input remains supported. Existing title, label, highlighted-line, line-number, and component
+Ardo injects Ferriki into Ferromark's native `CodeCompiler` through
+Ferromark's code hooks. Before each render, Ardo loads the theme and the
+grammars of the document's fence languages; Ferriki highlights lines and
+Ferromark keeps titles, line annotations, and the generic codeblock component.
+Unknown languages stay plain code and report a warning. The component receives
+highlighted JSX children and original code for copying. Literal `ArdoCodeBlock`
+usages in TSX use the same hooks through a cached compiler. Ferriki is a direct
+dependency for these hooks, the public HTML-returning `highlightCode`
+compatibility helper, and the configuration `ThemeInput` type.
+
+With the opt-in `markdown.mermaid` option, Ferrigura renders `mermaid` fences to
+static SVG through the same hook mechanism. `@ferrigura/core` is an optional
+peer dependency, loaded only when the option is on, so sites without diagrams
+do not install it. Ardo scopes the SVG's dark colors to its `dark` and `light`
+root classes and keeps `prefers-color-scheme` as the fallback without them.
+Invalid diagrams stay code and report a warning with file and line. Markdown
+and LLM exports keep the original fence as readable text. The public `__html` component input remains supported. Existing title, label, highlighted-line, line-number, and component
 override behavior remains part of the content contract.
 
 Configuration exposes the supported ordered native Ferromark passes. The
@@ -43,7 +54,8 @@ uses a populated Ferriki cache and disabled remote downloads.
 ## Consequences
 
 This is a breaking configuration/API change and requires an Ardo major release.
-The new Ferromark JSX API must ship before Ardo's dependent release. Local
+The new Ferromark JSX API must ship before Ardo's dependent release; the
+code hooks require Ferromark 4. Local
 verification uses packaged source builds of the coordinated changes; it does
 not imply publication or cross-platform binary validation.
 

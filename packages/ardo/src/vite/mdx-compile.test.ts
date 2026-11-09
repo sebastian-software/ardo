@@ -1,10 +1,10 @@
-import { JsxCompiler } from "ferromark"
+import { CodeCompiler } from "ferromark"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { MarkdownConfig } from "../config/types"
 
 import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
-import { compileMdxRouteModule } from "./mdx-compile"
+import { compileMdxRouteModule, compileMdxRouteModuleWithCode } from "./mdx-compile"
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -44,8 +44,8 @@ describe("page Markdown link in the route module", () => {
 
 describe("prepared route compilation", () => {
   it("prepares once and derives the TOC from the final module heading plan", () => {
-    const prepare = vi.spyOn(JsxCompiler.prototype, "prepare")
-    const compile = vi.spyOn(JsxCompiler.prototype, "compile")
+    const prepare = vi.spyOn(CodeCompiler.prototype, "prepare")
+    const compile = vi.spyOn(CodeCompiler.prototype, "compile")
     const source = "---\ntitle: Café\n---\n\n# Café\n\n## Café\n\n## Café\n\nText[^1]\n\n[^1]: Note"
     const markdownConfig: MarkdownConfig = {
       headingOffset: 1,
@@ -75,5 +75,20 @@ describe("prepared route compilation", () => {
     expect(changed).toContain('"title":"After"')
     expect(changed).toContain('"id":"after"')
     expect(changed).not.toContain('"before"')
+  })
+})
+
+describe("Mermaid diagrams in the route module", () => {
+  it("emits the diagram as JSX with its colors scoped to Ardo's color mode", async () => {
+    const { code } = await compileMdxRouteModuleWithCode({
+      format: "md",
+      id: "diagram.md",
+      markdownConfig: { mermaid: true },
+      source: "# Flow\n\n```mermaid\nflowchart LR\n  A --> B\n```\n",
+    })
+
+    expect(code).toContain('<svg xmlns="http://www.w3.org/2000/svg" id="fm-mermaid-8"')
+    expect(code).toContain(":root.dark #fm-mermaid-8{")
+    expect(code).not.toContain("_components.CodeBlock")
   })
 })

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 
-import { JsxCompiler } from "ferromark"
+import { CodeCompiler } from "ferromark"
+
+import { getArdoCodeHooks } from "../markdown/code-hooks"
 import { runInNewContext } from "node:vm"
 import { createElement, isValidElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
@@ -45,10 +47,13 @@ describe("native TSX code blocks", () => {
       const transformed = await transformArdoCodeBlocks(source)
       expect(transformed).not.toContain("__html=")
       const view = renderToStaticMarkup(await evaluateJsx(transformed))
-      const compiler = new JsxCompiler()
-      const { body } = compiler.compile(`\`\`\`${language} ${meta}\n${code}\`\`\``, {
-        codeBlockComponent: "ArdoCodeBlock",
-      })
+      const compiler = new CodeCompiler()
+      const hooks = await getArdoCodeHooks({}, { languages: [language], source })
+      const { body } = compiler.compile(
+        `\`\`\`${language} ${meta}\n${code}\`\`\``,
+        { codeBlockComponent: "ArdoCodeBlock" },
+        hooks
+      )
       const fence = codeElement(renderToStaticMarkup(await evaluateJsx(body)))
       const tsx = codeElement(view)
       expect(tsx.outerHTML).toBe(fence.outerHTML)
@@ -99,7 +104,7 @@ describe("native TSX code blocks", () => {
   })
 
   it("leaves authored input intact and names the source when native rendering fails", async () => {
-    vi.spyOn(JsxCompiler.prototype, "renderCodeBlock").mockImplementation(() => {
+    vi.spyOn(CodeCompiler.prototype, "renderCodeBlock").mockImplementation(() => {
       throw new Error("asset failure")
     })
     const warn = vi.spyOn(console, "warn").mockReturnValue(undefined)

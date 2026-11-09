@@ -1,5 +1,5 @@
 import { decode } from "@jridgewell/sourcemap-codec"
-import { JsxCompiler } from "ferromark"
+import { CodeCompiler } from "ferromark"
 import fs from "node:fs/promises"
 import path from "node:path"
 import { type ComponentType, createElement, type ReactNode } from "react"
@@ -75,7 +75,7 @@ describe("createMdxPlugin", () => {
     expect(view).toContain("content")
   })
 
-  it("renders Mermaid fences as code blocks and uses provider overrides", async () => {
+  it("keeps Mermaid fences as code blocks without markdown.mermaid and uses provider overrides", async () => {
     const { default: route } = await loadRoute(
       '```mermaid\ngraph TD\n  A --> B\n```\n\n```ts title="source.ts"\nconst answer = 42\n```'
     )
@@ -363,7 +363,7 @@ const layoutModule =
 
 describe("compiled route cache", () => {
   it("compiles a route once for every plugin instance and request variant", async () => {
-    const prepare = vi.spyOn(JsxCompiler.prototype, "prepare")
+    const prepare = vi.spyOn(CodeCompiler.prototype, "prepare")
     const id = path.join(tempDirectory, "cached.mdx")
     const first = await transformRoute(createMdxPlugin(undefined), "# Cached", id)
     const variant = await transformRoute(
