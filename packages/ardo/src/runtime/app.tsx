@@ -16,8 +16,8 @@ import {
 
 /**
  * The part of the page that hydrates: the root component around the page. A
- * missing page renders inside the root like any other page. A render error
- * replaces the root, so a broken site chrome cannot hide the error.
+ * missing page renders inside the root like any other page. An explicit non-404 error
+ * replaces the root. Client exceptions use independent native recovery instead.
  */
 export function ArdoPageTree({ config, page, root }: ArdoAppProps) {
   const keepsRoot = page.error == null || isArdoNotFound(page.error)

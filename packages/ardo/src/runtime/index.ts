@@ -46,3 +46,9 @@ export type ArdoServerRenderContext = {
   path: string
   render: () => Promise<ArdoRenderResult>
 }
+
+export type {
+  ArdoClientRecovery,
+  ArdoClientRecoveryContext,
+  ArdoClientRecoveryOptions,
+} from "./client-recovery"

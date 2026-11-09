@@ -38,7 +38,7 @@ const budgets = {
     // 2026-11: lowered from 50 KB to 12 KB when the route table left the entry.
     label: "entry-client gzip",
     budget: 12_000,
-    baseline: "≈9.5 KB (2026-11, logical paths only; was ≈45 KB with the route table)",
+    baseline: "11,944 B (2026-11, independent client recovery; 10,490 B before recovery)",
   },
   pageEagerJsGzip: {
     // What one visitor downloads to open a page: React, the entry, the shared UI chunks,
@@ -65,15 +65,18 @@ const budgets = {
     label: "total client JS gzip",
     // 2026-11: raised from 2.7 MB to 2.85 MB for the 80 API reference pages of the publication
     // module types. Moving the page loaders out of the entry did not shrink this total.
-    budget: 2_850_000,
-    baseline: "≈2.78 MB (2026-11, four route trees, catalogs, and search indexes)",
+    // Client recovery adds 12 generated API pages and four translated guide sections.
+    // Measured against the same main revision: 2,823,032 B -> 2,856,100 B (+33,068 B).
+    budget: 2_900_000,
+    baseline: "2,856,100 B (2026-11, client recovery API and four-locale guides)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
     // 2026-11: raised from 100 KB to 115 KB because the gallery and two in-flight PRs add docs text.
-    budget: 115_000,
-    baseline: "≈99 KB per locale (2026-11, emitted client search data; was ≈81 KB in 2026-10)",
+    // Recovery reference/guide text: largest locale 114,381 B -> 115,731 B (+1,350 B).
+    budget: 118_000,
+    baseline: "115,731 B (2026-11, largest locale with client recovery docs)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",
