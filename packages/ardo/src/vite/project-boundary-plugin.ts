@@ -14,17 +14,20 @@ import {
 import { ProjectPackages } from "./project-packages"
 import { normalizePath } from "./path-utils"
 import { workspaceStyleWatchFiles } from "./vanilla-extract-plugin"
+import { isPublicAssetUrl } from "./public-asset-url"
 
 type ProjectBoundaryOptions = { ardoRoot?: string; managedRuntime?: boolean }
 
 /** Apply the docs package boundary to development and production module graphs. */
 export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOptions = {}): Plugin {
   let packages: ProjectPackages
+  let publicDir = ""
   const optionalPrefix = "\0ardo:missing-optional:"
   return {
     name: "ardo:project-boundary",
     enforce: "pre",
     configResolved(config) {
+      publicDir = config.command === "serve" ? config.publicDir : ""
       packages = new ProjectPackages(config.root, {
         ardoRoot:
           pluginOptions.ardoRoot ??
@@ -51,7 +54,12 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
         return optionalPrefix + id
       }
       const resolved = await this.resolve(id, importer, { ...resolveOptions, skipSelf: true })
-      if (resolved != null && isVirtualId(resolved.id)) return resolved
+      if (
+        resolved != null &&
+        (isVirtualId(resolved.id) ||
+          (boundaryImporter == null && isPublicAssetUrl(id, resolved.id, publicDir)))
+      )
+        return resolved
       if (resolved != null) {
         const resolvedSourcePath =
           managedSourcePath(

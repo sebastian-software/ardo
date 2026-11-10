@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 const appRequire = createRequire(path.join(basicDirectory, "package.json"))
 const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
 const { ardo } = await import(pathToFileURL(ardoRequire.resolve("./dist/vite/index.js")).href)
-const { build, createServer } = ardoRequire("vite")
+const { build, createServer, createLogger } = ardoRequire("vite")
 
 let parent: string
 let root: string
@@ -48,6 +48,38 @@ beforeEach(() => {
 afterEach(() => rmSync(parent, { recursive: true, force: true }))
 
 describe("Ardo documentation import boundary", () => {
+  it("keeps serving when a generated PDF is added to a configured public directory", async () => {
+    const publicDir = path.join(root, "static-assets")
+    mkdirSync(path.join(publicDir, "pdfs"), { recursive: true })
+    writeFileSync(path.join(root, "entry.mjs"), "export const value = 1;")
+    const logger = createLogger("silent")
+    logger.error = vi.fn()
+    const server = await createServer({
+      ...config(),
+      publicDir,
+      customLogger: logger,
+      server: { host: "127.0.0.1", port: 0, watch: null },
+    })
+    try {
+      await server.listen()
+      const pdf = path.join(publicDir, "pdfs/generated.pdf")
+      writeFileSync(pdf, "%PDF-1.4\n%%EOF\n")
+      server.watcher.emit("add", pdf)
+      const base = server.resolvedUrls.local[0]
+      await vi.waitFor(async () => {
+        expect((await fetch(new URL("/pdfs/generated.pdf", base))).status).toBe(200)
+      })
+      await expect(
+        server.environments.client.moduleGraph.getModuleByUrl("/pdfs/generated.pdf")
+      ).resolves.toBeUndefined()
+      expect((await fetch(new URL("/entry.mjs", base))).status).toBe(200)
+      expect(server.httpServer.listening).toBe(true)
+      expect(logger.error).not.toHaveBeenCalled()
+    } finally {
+      await server.close()
+    }
+  })
+
   it("rejects root-only imports that Vite would otherwise bundle", async () => {
     writePackage("node_modules/dependency", { name: "dependency" })
     writeFileSync(path.join(root, "entry.mjs"), 'export { value } from "dependency";')

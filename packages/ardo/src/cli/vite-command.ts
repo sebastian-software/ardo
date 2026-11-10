@@ -214,7 +214,11 @@ export function createProjectConfigLogger(
   const logger = createLogger(options.logLevel, { allowClearScreen: options.clearScreen })
   const logError = logger.error.bind(logger)
   logger.error = (message, errorOptions) => {
-    if (message.includes(`failed to load config from ${wrapperPath}`)) return
+    if (
+      typeof message === "string" &&
+      message.includes(`failed to load config from ${wrapperPath}`)
+    )
+      return
     logError(message, errorOptions)
   }
   return logger
