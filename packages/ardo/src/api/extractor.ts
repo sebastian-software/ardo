@@ -11,6 +11,7 @@ import type {
 import { resolveCallables } from "./callables"
 import { isInternal } from "./comments"
 import { DeclarationReader } from "./declaration-project"
+import { resolveLiteralChoices } from "./literal-choices"
 import { TypeProperties } from "./properties"
 import { readSignature } from "./signatures"
 import { annotationOf, formatType, parameterType } from "./source"
@@ -86,7 +87,14 @@ class DeclarationExtractor {
       )
       return undefined
     }
-    const properties = await this.itemProperties({ ...resolved, records }, context, kind)
+    const literalChoices =
+      record.node.type === "TSTypeAliasDeclaration"
+        ? await resolveLiteralChoices({ ...context, node: record.node.typeAnnotation }, this.reader)
+        : undefined
+    const properties =
+      literalChoices == null
+        ? await this.itemProperties({ ...resolved, records }, context, kind)
+        : { items: [], complete: true }
     return {
       name,
       kind,
@@ -99,6 +107,7 @@ class DeclarationExtractor {
       signatures,
       properties: properties.items,
       propertiesComplete: properties.complete,
+      ...(literalChoices == null ? {} : { literalChoices }),
       source: {
         file: resolved.module.file,
         line: resolved.module.source.slice(0, record.node.start).split("\n").length,
