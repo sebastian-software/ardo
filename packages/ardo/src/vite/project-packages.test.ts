@@ -135,6 +135,53 @@ describe("documentation package ownership", () => {
     )
   })
 
+  it("allows generated transitive workspace styles only from style source modules", () => {
+    const components = writePackage("packages/components", {
+      name: "components",
+      dependencies: { tokens: "workspace:*" },
+    })
+    const tokens = writePackage("packages/tokens", { name: "tokens" })
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    mkdirSync(path.join(root, "node_modules"))
+    mkdirSync(path.join(components, "node_modules"))
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    symlinkSync(tokens, path.join(components, "node_modules/tokens"), "dir")
+    const importer = path.join(root, "app.css.ts")
+    const stylesheet = path.join(tokens, "theme.css.ts")
+    writeFileSync(importer, "export const styles = {};")
+    writeFileSync(stylesheet, "export const theme = {};")
+    const generated = `${stylesheet}.vanilla.css?source=encoded-css`
+    const packages = new ProjectPackages(root)
+    expect(() => packages.checkFile(generated, { importer })).not.toThrow()
+    expect(() =>
+      packages.checkFile(stylesheet, { importer, styleWatchFiles: [stylesheet] })
+    ).not.toThrow()
+    expect(() =>
+      packages.checkFile(path.join(tokens, "index.js"), {
+        importer,
+        styleWatchFiles: [path.join(tokens, "index.js")],
+      })
+    ).toThrow(/Undeclared application dependency "tokens"/u)
+    for (const file of [
+      stylesheet,
+      path.join(tokens, "index.js"),
+      path.join(tokens, "missing.css.ts.vanilla.css"),
+    ]) {
+      expect(() => packages.checkFile(file, { importer })).toThrow(
+        /Undeclared application dependency "tokens"/u
+      )
+    }
+    expect(() => packages.checkFile(generated, { importer: path.join(root, "index.js") })).toThrow(
+      /Undeclared application dependency "tokens"/u
+    )
+    const outside = writePackage("outside", { name: "outside" })
+    writeFileSync(path.join(outside, "theme.css.ts"), "export const theme = {};")
+    symlinkSync(path.join(outside, "theme.css.ts"), path.join(tokens, "escape.css.ts"))
+    expect(() =>
+      packages.checkFile(path.join(tokens, "escape.css.ts.vanilla.css"), { importer })
+    ).toThrow(/Undeclared application dependency "tokens"/u)
+  })
+
   it("rejects a workspace source symlink escaping its installed package", () => {
     const components = writePackage("packages/components", { name: "components" })
     const outside = writePackage("packages/other", { name: "other" })

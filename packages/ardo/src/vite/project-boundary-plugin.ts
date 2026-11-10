@@ -13,6 +13,7 @@ import {
 } from "./managed-runtime"
 import { ProjectPackages } from "./project-packages"
 import { normalizePath } from "./path-utils"
+import { workspaceStyleWatchFiles } from "./vanilla-extract-plugin"
 
 type ProjectBoundaryOptions = { ardoRoot?: string; managedRuntime?: boolean }
 
@@ -61,6 +62,9 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
           importer: boundaryImporter,
           managedName,
           managedSourcePath: resolvedSourcePath,
+          styleWatchFiles: workspaceStyleWatchFiles(
+            boundaryImporter == null ? undefined : this.getModuleInfo(boundaryImporter)?.meta
+          ),
         })
       } else if (boundaryImporter == null && !id.startsWith("/")) {
         packages.checkImport(id, boundaryImporter)

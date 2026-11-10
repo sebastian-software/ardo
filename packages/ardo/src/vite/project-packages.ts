@@ -1,6 +1,5 @@
 import { existsSync, readFileSync, realpathSync } from "node:fs"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
 
 import {
   findArdoDependencyPackageRoot,
@@ -16,23 +15,15 @@ import {
   type Manifest,
   type PackageOwner,
 } from "./project-package-manifest"
+import { isGeneratedWorkspaceStyleImport } from "./workspace-styles"
+import {
+  absoluteFilePath,
+  type FileCheckOptions,
+  type FileOwnershipCheck,
+  type ManagedFileCheck,
+} from "./project-package-checks"
 
 type ProjectPackagesOptions = { ardoRoot?: string; managedRuntime?: boolean }
-type FileCheckOptions = { importer?: string; managedName?: string; managedSourcePath?: string }
-type ManagedFileCheck = {
-  canonical: string
-  fileKey: string
-  name: string
-  sourcePath: string | undefined
-}
-type FileOwnershipCheck = {
-  file: string
-  fileKey: string
-  importer: string | undefined
-  origin: PackageOwner
-  resolvedSourcePath: string | undefined
-  target: PackageOwner | undefined
-}
 
 /** Check each resolved import against declared, locally installed package ownership. */
 export class ProjectPackages {
@@ -83,7 +74,7 @@ export class ProjectPackages {
   }
 
   checkFile(id: string, options: FileCheckOptions = {}): void {
-    const { importer, managedName, managedSourcePath } = options
+    const { importer, managedName, managedSourcePath, styleWatchFiles } = options
     const file = absoluteFilePath(id)
     if (file == null) return
     const fileKey = path.resolve(file)
@@ -105,7 +96,15 @@ export class ProjectPackages {
       })
       return
     }
-    this.checkFileOwnership({ file, fileKey, importer, origin, resolvedSourcePath, target })
+    this.checkFileOwnership({
+      file,
+      fileKey,
+      importer,
+      origin,
+      resolvedSourcePath,
+      target,
+      styleWatchFiles,
+    })
   }
 
   private checkFileOwnership({
@@ -115,6 +114,7 @@ export class ProjectPackages {
     origin,
     resolvedSourcePath,
     target,
+    styleWatchFiles,
   }: FileOwnershipCheck): void {
     if (
       this.isFrameworkOrProjectFile({
@@ -126,7 +126,16 @@ export class ProjectPackages {
     )
       return
 
-    if (this.isOwnedPackageFile(target, origin, importer)) {
+    if (
+      this.isOwnedPackageFile(target, origin, importer) ||
+      (target != null &&
+        this.workspacePackages.has(target.root) &&
+        isGeneratedWorkspaceStyleImport(file, {
+          importer,
+          packageRoot: target.root,
+          watchedFiles: styleWatchFiles,
+        }))
+    ) {
       this.recordResolvedSource(fileKey, resolvedSourcePath)
       if (target != null) this.resolvedPackages.add(target.root)
       return
@@ -281,13 +290,9 @@ export class ProjectPackages {
 
   private isManagedRuntimePackageRoot(root: string): boolean {
     if (!this.managesRuntime) return false
-    return this.managedRuntimePackageRootNames().some(
+    return getManagedRuntimePackageNames().some(
       (name) => this.managedRuntimePackageRoot(name) === root
     )
-  }
-
-  private managedRuntimePackageRootNames(): string[] {
-    return [...getManagedRuntimePackageNames()]
   }
 
   private installedPackage(owner: PackageOwner, name: string): string | undefined {
@@ -325,10 +330,4 @@ export class ProjectPackages {
     this.canonicalPaths.set(file, canonical)
     return canonical
   }
-}
-
-function absoluteFilePath(id: string): string | undefined {
-  const cleanId = id.split("?", 1)[0]
-  const file = cleanId.startsWith("file:") ? fileURLToPath(cleanId) : cleanId
-  return path.isAbsolute(file) ? file : undefined
 }

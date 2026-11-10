@@ -1,4 +1,3 @@
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import react from "@vitejs/plugin-react"
 import { mergeConfig, type Plugin, type UserConfig } from "vite"
 
@@ -39,6 +38,7 @@ import { createStaticSitePlugin } from "./static-site-plugin"
 import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
+import { createVanillaExtractPlugins } from "./vanilla-extract-plugin"
 
 type PluginState = Pick<PublicationSite, "publicationPost" | "imageSession"> & {
   /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
@@ -129,7 +129,7 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
       }),
     }))
   )
-  plugins.push(...vanillaExtractPlugin({ identifiers: "short" }), ...createReactPlugins())
+  plugins.push(...createVanillaExtractPlugins(), ...createReactPlugins())
 
   return plugins
 }
