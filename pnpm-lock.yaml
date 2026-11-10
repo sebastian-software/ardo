@@ -356,7 +356,7 @@ importers:
         version: 2.6.2
       '@sebastian-software/app-tracking':
         specifier: ^0.7.0
-        version: 0.7.0
+        version: 0.7.1
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -2566,8 +2566,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sebastian-software/app-tracking@0.7.0':
-    resolution: {integrity: sha512-fYpTo5raktANsmTJ2VYkTdWSrC9FsAfkOdLzL0MESwMT5eHoZmimIYiqpZh2FWIohfx19B8C+FgNR64u1/K40g==}
+  '@sebastian-software/app-tracking@0.7.1':
+    resolution: {integrity: sha512-bjContXr9AJJA+4lIO+FMWz8RwFj3RpinJrERYa6Xx2qxtyA7M/uG1Lzaf8gScwGzHrJMaEZc+W1yKtKX+UY7w==}
     engines: {node: ^22.0.0 || ^24.0.0 || ^26.0.0}
 
   '@sindresorhus/base62@1.0.0':
@@ -7508,7 +7508,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.64.12':
     optional: true
 
-  '@sebastian-software/app-tracking@0.7.0': {}
+  '@sebastian-software/app-tracking@0.7.1': {}
 
   '@sindresorhus/base62@1.0.0': {}
 
