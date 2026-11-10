@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.6.0...ardo-v6.7.0) (2026-11-10)
+
+
+### Features
+
+* support shared workspace sources in Ardo projects ([#534](https://github.com/sebastian-software/ardo/issues/534)) ([7357972](https://github.com/sebastian-software/ardo/commit/73579720268b6f5b527a727fc119f9df2afe2858))
+
+
+### Bug Fixes
+
+* update oxc-parser to 0.157.0 ([#520](https://github.com/sebastian-software/ardo/issues/520)) ([4f1b208](https://github.com/sebastian-software/ardo/commit/4f1b208df630ff017aab8024f3a1ec355cfcbf1a))
+* update oxlint and use TypeError for invalid inputs ([#522](https://github.com/sebastian-software/ardo/issues/522)) ([81ba998](https://github.com/sebastian-software/ardo/commit/81ba99893fd2e6317f26b1401caaf52b7f5a50e0))
+
 ## [6.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.5.0...ardo-v6.6.0) (2026-11-10)
 
 
