@@ -1,5 +1,21 @@
 # Changelog
 
+## [6.6.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.5.0...ardo-v6.6.0) (2026-11-10)
+
+
+### Features
+
+* add a compare slider component ([#514](https://github.com/sebastian-software/ardo/issues/514)) ([1edc90f](https://github.com/sebastian-software/ardo/commit/1edc90f476d3c158101a4135889fbfc5b04ddabe))
+* recover from client loading and render failures ([#525](https://github.com/sebastian-software/ardo/issues/525)) ([ea5e7e8](https://github.com/sebastian-software/ardo/commit/ea5e7e858138a055d1298077f77295e7bec6ca15))
+* share image providers across posts and pages ([#528](https://github.com/sebastian-software/ardo/issues/528)) ([190f221](https://github.com/sebastian-software/ardo/commit/190f2219c1a4a0b6b720b9ee88a1d5d2855b8218))
+* warn about GPS data in provider originals ([#529](https://github.com/sebastian-software/ardo/issues/529)) ([15c6f31](https://github.com/sebastian-software/ardo/commit/15c6f315d469c852c5f0fd677f8b3fb6d75700b5)), closes [#504](https://github.com/sebastian-software/ardo/issues/504)
+
+
+### Bug Fixes
+
+* expose literal choices in indexed API aliases ([#531](https://github.com/sebastian-software/ardo/issues/531)) ([0b89761](https://github.com/sebastian-software/ardo/commit/0b89761494e44bfad9715771be83bb7a718684bf))
+* require Ferrolink 0.2.2 for static link checks ([#532](https://github.com/sebastian-software/ardo/issues/532)) ([62c5e97](https://github.com/sebastian-software/ardo/commit/62c5e97ecd7ece082625ea9d5121ed88a7ce66d6))
+
 ## [6.5.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.4.1...ardo-v6.5.0) (2026-11-09)
 
 
