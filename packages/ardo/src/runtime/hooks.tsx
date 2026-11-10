@@ -112,6 +112,7 @@ export { ArdoConfigContext }
 type ArdoPageDataProviderProps = {
   frontmatter: PageData["frontmatter"]
   markdownPath?: string
+  images?: PageData["images"]
   toc: TOCItem[]
   children: ReactNode
 }
@@ -123,6 +124,7 @@ type ArdoPageDataProviderProps = {
 export function ArdoPageDataProvider({
   frontmatter,
   markdownPath,
+  images,
   toc,
   children,
 }: ArdoPageDataProviderProps) {
@@ -138,8 +140,9 @@ export function ArdoPageDataProvider({
       relativePath: source?.relativePath ?? "",
       lastUpdated: source?.lastUpdated,
       markdownPath,
+      ...(images == null ? {} : { images }),
     }),
-    [frontmatter, markdownPath, toc, source]
+    [frontmatter, markdownPath, images, toc, source]
   )
   const value = useMemo(
     () => (parent ? { ...parent, currentPage: pageData } : null),

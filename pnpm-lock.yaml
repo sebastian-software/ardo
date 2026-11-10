@@ -278,14 +278,14 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@palamedes/core':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.2.0
+        version: 2.2.0
       '@palamedes/react':
-        specifier: ^2.0.0
-        version: 2.0.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^2.2.0
+        version: 2.2.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@palamedes/runtime':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.2.0
+        version: 2.2.0
       ardo:
         specifier: workspace:*
         version: link:../packages/ardo
@@ -300,14 +300,14 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@palamedes/cli':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.2.0
+        version: 2.2.0
       '@palamedes/core-node':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.2.0
+        version: 2.2.0
       '@palamedes/vite-plugin':
-        specifier: ^2.0.0
-        version: 2.0.0(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: ^2.2.0
+        version: 2.2.0(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -356,7 +356,7 @@ importers:
         version: 2.6.2
       '@sebastian-software/app-tracking':
         specifier: ^0.7.0
-        version: 0.7.0
+        version: 0.7.1
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -379,8 +379,8 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(oxc-transform-react@0.156.0)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferrolink:
-        specifier: ^0.2.1
-        version: 0.2.1(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: ^0.2.2
+        version: 0.2.2(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferromark:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1304,54 +1304,54 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ferrolink/darwin-arm64@0.2.1':
-    resolution: {integrity: sha512-A/6k9TM0UQ0eJpdERYEm08JJF7AirJoSo/vrIk370s9s2A24Dq7AzzVCSqTre14Rs5Cham17CGLfYVKbEKfz1A==}
+  '@ferrolink/darwin-arm64@0.2.2':
+    resolution: {integrity: sha512-prKzB/z2FTxblbJBuxwJykJE+TB+rPNHeBru/TkFZYzkVl+0cwZQssU90k9uNaBbRkGOVlEg26N3LPf+N4aExA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferrolink/darwin-x64@0.2.1':
-    resolution: {integrity: sha512-KbfdFcsjdWSzzMuuchQdJHrTl3FFVSeA9xYxqWqhjpIARRDmoU0uFjj5z6QIS0YBgbzPCGH19P8ofhXXnfkwDg==}
+  '@ferrolink/darwin-x64@0.2.2':
+    resolution: {integrity: sha512-DJ0v/I0gnNLnOp9LUbpJHuHOTAupqAvk8N5CvD8xIdqNn7fXxqpQMeOSapgRZjVkqLmpd+Rysq6e36WrV5XKEA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [darwin]
 
-  '@ferrolink/linux-arm64-gnu@0.2.1':
-    resolution: {integrity: sha512-P0kUNyIM/IWIqDJ1qp2eZy+7WwuXhoGaP+yOimIhhLbnZoZgYBUzYZ1stusy4+rZbyRsTC7f1QRQDUtqcIJ5QA==}
+  '@ferrolink/linux-arm64-gnu@0.2.2':
+    resolution: {integrity: sha512-UmaeXQPPkzgU2nIY5sm3he0wY+4adybppt4SXfIxnDXwd85OApOKV3/dk75rLEa7VoK/O1W6jd/qvRZ1u0XUZg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrolink/linux-arm64-musl@0.2.1':
-    resolution: {integrity: sha512-YR0BlgYh1oRU2igtGOSeW+2Vk/2KxJ4IqPpKtlPuPeWRENJo0xOUiYhBeeMu1lUbRK8pcYmgGaFp32uXy1MA7w==}
+  '@ferrolink/linux-arm64-musl@0.2.2':
+    resolution: {integrity: sha512-B2G96um+5RyoJoplrMpOb47KSoJyPrYOip2zy16KMf2roqnzwAXYfMX9B7Vo4FreZyc0SVhnSugsgzAQvaBOLw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferrolink/linux-x64-gnu@0.2.1':
-    resolution: {integrity: sha512-Vxy6wc2SLUp+wXwhr4B1RdYDW+4UzPF9z73ngE8vEYEdt1pHgc6ZftZNsfL5GaT2p8D1GIfOPQ0hmQYNsOblTg==}
+  '@ferrolink/linux-x64-gnu@0.2.2':
+    resolution: {integrity: sha512-BszIuNbJqmSNLCzTeNPs0Tbl4W5OU95xcPp0VdB7M7D1UnjbKe3ceW4+DilOOH9heM8jzpKN0FYmH/Bq5YZH+g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrolink/linux-x64-musl@0.2.1':
-    resolution: {integrity: sha512-P59AjGdgzw5P3oe8FM2LeASiyWWpxuDSxbeqQWQYg6YqGum+JR4ONIIgpqupPmI+9EYix75FIJ4JI33v+7VB/Q==}
+  '@ferrolink/linux-x64-musl@0.2.2':
+    resolution: {integrity: sha512-+6Sn0N6TFbV7pJAzSSa80mzCLV3sgNBx+JODjgx6rvWGqcUXGDxvz95LRRe7RIK0kGIHAJJRbY6wocAzY7GV2A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferrolink/win32-arm64-msvc@0.2.1':
-    resolution: {integrity: sha512-A91X0dLS+TCvaXh992izUs+BBYmeBvL0gurpH56zY73eaFX0EnP5QUJ4LL4bBBCYguR16eUaNOr/FMaEBrDrPA==}
+  '@ferrolink/win32-arm64-msvc@0.2.2':
+    resolution: {integrity: sha512-QI0Lrgev3fN5gXYlxsgCArTZzMDytSmhS5VTpGNAzhlVWzh//AaeZCUx6Rtngc9fjuJfqK4jwhrNQ6kEj0QgWQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [win32]
 
-  '@ferrolink/win32-x64-msvc@0.2.1':
-    resolution: {integrity: sha512-XhpXMJWYrH7mDbA9OJcDI8fyUM938Tc9DJQxBfvY8FigvABUXRiayKaEFMAd4i+qBZ2J8vV+f538fdwKB54/lA==}
+  '@ferrolink/win32-x64-msvc@0.2.2':
+    resolution: {integrity: sha512-gt/u0aQ8xOvudWYPhQWrXpdbXxpFTcW1bMtqalYCvmEZ4NgeOeKEmE2pHQEG66Eg+OESH7bRb/LeWYM0F/p7vg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
@@ -2115,120 +2115,120 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@palamedes/cli-darwin-arm64@2.0.0':
-    resolution: {integrity: sha512-l5TcbmNAYZSiji16SrgQXV5zIde486f5rVymefJkO04uLm/sw0WZcwkcWSsuEh3wobtrJ/lltSQtV1wVqYeDiQ==}
+  '@palamedes/cli-darwin-arm64@2.2.0':
+    resolution: {integrity: sha512-DeaaWfbf7MoAyyDobu7yDv5zxyMuJT1KAo+P0b4Tzt2zY+EjEll/lzLvjVVSiEcE0RIrcLKS5rmSOzT7LDGdVA==}
     cpu: [arm64]
     os: [darwin]
     hasBin: true
 
-  '@palamedes/cli-linux-arm64-gnu@2.0.0':
-    resolution: {integrity: sha512-xsiw0pXqZmvRq2ZTZZSJ9cv+7zDFuqjiRQQKNLOvDhlWjG75q3sOjOSfi9tRuG/kIxh7zR74btrtu2imhBcyqg==}
+  '@palamedes/cli-linux-arm64-gnu@2.2.0':
+    resolution: {integrity: sha512-UC7daLiJhCtt/KeYBCNNuNesL1faHmfTz2DIoecUwiazg4waJNvWCyjj88eqaTxPLWVnNIjsYdUSmCHYlqx+dg==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
     hasBin: true
 
-  '@palamedes/cli-linux-arm64-musl@2.0.0':
-    resolution: {integrity: sha512-37kdiRBGBQ81R6HjN6UcmYMEWccegkQb5uKuWGFFX4JgoWokFS8Vnn0k1oMMLepgewfEGhRZ66/fKxXBWs1O4w==}
+  '@palamedes/cli-linux-arm64-musl@2.2.0':
+    resolution: {integrity: sha512-ReGYUXKUvaoSeuHhdfAm9S+riaYZcxYAOFppuKVfUnVkWBkuigioOIRQSZeeu4HFXYur6GVpLKpOQ3zE2+tfUg==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@palamedes/cli-linux-x64-gnu@2.0.0':
-    resolution: {integrity: sha512-UWIq3IzvJtuEXNQFDqc54UFPcgsBH0Px1y05UqByAAyX4mxO8wF5/MrjL1/AS9kN1TFIsLzbYU2LdscNKIEaUA==}
+  '@palamedes/cli-linux-x64-gnu@2.2.0':
+    resolution: {integrity: sha512-/99Z4xwYa/qpqIcuUPZjvfLNt/zCCYkhWKPSSFV3gHjTGzNnD3UohPTqOIL6+2xLLPhg3ogdnanLTOgT0KVZ8Q==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
     hasBin: true
 
-  '@palamedes/cli-linux-x64-musl@2.0.0':
-    resolution: {integrity: sha512-6FQMSrJ2yp0TR4yjxvO+M3YtuzBdHg7d/+bHedPx30yUnuYxhnnr9TllXDsCnFOKLXsNlM4a839uBX2BQJygyA==}
+  '@palamedes/cli-linux-x64-musl@2.2.0':
+    resolution: {integrity: sha512-S2WRZh96VOefXfO8BZdTFDJ6+XRkl1kmZgJCVSHVT0runMXQBGzndrac2aHoecQ/70y+ADFJjxkW2rTRWpfp3A==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@palamedes/cli-win32-x64-msvc@2.0.0':
-    resolution: {integrity: sha512-pNvGfPK0xfVxAr6mzTdJ2GnFFM9OmSv+E2Xr1rrNGJxpRTy3JkILDdMphOOxaP5UhqVQesTN/qMKe26YW81k5A==}
+  '@palamedes/cli-win32-x64-msvc@2.2.0':
+    resolution: {integrity: sha512-zRk5Jm2L2w81QklwTCMfHu4/0xU7eX2sV0ga8VDR/SF0dVxjUl2fKyrZ7ucBkqm6iobfVWDPGXWE2xFIbKCBtA==}
     cpu: [x64]
     os: [win32]
     hasBin: true
 
-  '@palamedes/cli@2.0.0':
-    resolution: {integrity: sha512-F+1aI59X0wIZ2DpgP4zqbV0hQLQVnMX+8V8ocxHwsCPgDXGROKKHiXmeFnQ+iDv/MgyJPZ66WOg5r5KTN4ujUQ==}
+  '@palamedes/cli@2.2.0':
+    resolution: {integrity: sha512-g/LZIV/0HbgR/n0BGdtsHOlNTbxH3iCFeoWboMK8j2JWVLNTz2TT9V3b7XroMaPkKKyRxkx7ThcxSXhWNaMJAA==}
     engines: {node: '>=24.3.0'}
     hasBin: true
 
-  '@palamedes/config@2.0.0':
-    resolution: {integrity: sha512-j8TyhD6YUeI8Pfdeq8RIkqaQPGTg6/4kdkjKeR6ekRy+SaSRmMpQBF1/qojFPq05E1CjbziobpoWpIfuzECBZg==}
+  '@palamedes/config@2.2.0':
+    resolution: {integrity: sha512-0t46YRnaiVCEijmZLmq8lmZ8Bp/P3FLUWk82fkmCJV1aywxQMRCT/AzGqU671v3NKyoNgU/VGf4yFhinBqBeaw==}
     engines: {node: '>=24.3.0'}
 
-  '@palamedes/core-node-darwin-arm64@2.0.0':
-    resolution: {integrity: sha512-wXghWc7kTIlA31FLkXuxCtzZctj+ss19eC8xU/M+EDQ5aEMtpqZqOKEeL08cvHLcY9UVSay2vCBjswiGrDg1yA==}
+  '@palamedes/core-node-darwin-arm64@2.2.0':
+    resolution: {integrity: sha512-ytVIMCDOFggmYXyahM1j9d8naXi9VI4tw+pIfhcsdcGoZKFjbzhnG5NdsLy5gNMfkwvdNqCgKQmXRpRrLog55Q==}
     engines: {node: '>=24.3.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@palamedes/core-node-linux-arm64-gnu@2.0.0':
-    resolution: {integrity: sha512-rI4cp0hMPCQNHRz4Akt9ClIiDydENqD8wpOKC3jQTdqff4cPh9SXB0q3hhF5utgW7DY7fWT+HNYTQlJrsVL1tw==}
+  '@palamedes/core-node-linux-arm64-gnu@2.2.0':
+    resolution: {integrity: sha512-lhZXQAQuF/G8r1GlSeVqurGZ3M3Tc7AIOKB5P1ysM4oFDyF1Keo/taiVGJ45bI7lANkNaUzMAiRsufvFGdcm6Q==}
     engines: {node: '>=24.3.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@palamedes/core-node-linux-arm64-musl@2.0.0':
-    resolution: {integrity: sha512-TicXB33DxQCd1CSBoYedSstw7vhbirCS8WArfGmLht5AK/qz6Lmt1Fu7b3k40scJ9MH63rqdAQq+Em5B6YxUfg==}
+  '@palamedes/core-node-linux-arm64-musl@2.2.0':
+    resolution: {integrity: sha512-NxwIWjX24oHa3I/BIo9j5Fq+ppNZmevHB+Q65zyLVS2iDVzj9at1rDChCWV9sejiM1HGQiVuAEYCRq9Y+fdl1Q==}
     engines: {node: '>=24.3.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@palamedes/core-node-linux-x64-gnu@2.0.0':
-    resolution: {integrity: sha512-CU11KKh65cAoMkEdKK5v49DosjWLTEd3r2FpiIfz5xBnh6v9SEt4kmyct2ktCvB8nFJoAEFN45Ji7T9kI2Z6RQ==}
+  '@palamedes/core-node-linux-x64-gnu@2.2.0':
+    resolution: {integrity: sha512-Zm9j5Fe4Enuc4vM6K2+4/RIj31sU/TAHksW/sSpPJZ+F91HGZ5YXLC7mj1y8YPH6qJ+UNxc7W0MS1niCrvcgmA==}
     engines: {node: '>=24.3.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@palamedes/core-node-linux-x64-musl@2.0.0':
-    resolution: {integrity: sha512-a9KagLen8tI59nXyA0k5ZgQvVu6oDdT7qTvqaql7KULcgX+A72p4K2mXp3167fSp0NtVQAnGkCZg4LrRhgZBRA==}
+  '@palamedes/core-node-linux-x64-musl@2.2.0':
+    resolution: {integrity: sha512-nB4F89nkdWj4OCJ/CyTlIGdQbUYmV212v5LyZG5Vbp1lyiVvEF9MhTDhUXuOk6wL1PBqfvQrvOjME0VhJ497Bw==}
     engines: {node: '>=24.3.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@palamedes/core-node-win32-x64-msvc@2.0.0':
-    resolution: {integrity: sha512-AP7V0mSkXIwB63A6l4JeHwcInaCV1fBq9djZPDTVMXiane8Zz1rNh3oleys8mUu02reAOs8LtBF31P+dPTXc9Q==}
+  '@palamedes/core-node-win32-x64-msvc@2.2.0':
+    resolution: {integrity: sha512-WcjC/Xl2RVBqpg8LvVHv4XPMNajq1nmku1wdi78O0sKCS6rMuostSS1T0D7jRCsRrbXnvmiAVKM8kBQc4pqSPg==}
     engines: {node: '>=24.3.0'}
     cpu: [x64]
     os: [win32]
 
-  '@palamedes/core-node@2.0.0':
-    resolution: {integrity: sha512-pt0UJ26ZlY+K4A1/PGvnhcbY6qyxdPSeev355u3DB6Y+VaOMaFHfF3h5dOrWYT243lCIrCKqqEUk5BjIgLqrtg==}
+  '@palamedes/core-node@2.2.0':
+    resolution: {integrity: sha512-mWdX+5FmHDnq73zVyrTCV4HX50Z8Lioa4IZDlKizIOsKQhQuZHjH6wPcJfiTlf893Ugq/wp9S/TQfsoTo6ZyJQ==}
     engines: {node: '>=24.3.0'}
 
-  '@palamedes/core@2.0.0':
-    resolution: {integrity: sha512-jwyc85zdLJfYI6PiTTLuPUWf0hRrAR9hoKoFR3YPDrV8H+WaA3u1/+4eA9Y9uI9d4iASlIFQTHmuLa43tb13Tg==}
+  '@palamedes/core@2.2.0':
+    resolution: {integrity: sha512-/etOnJprO8u3dibi/KY3yt0M0Pnfa5cexY/vY9fn9V6yM4hsocad/EKomCwt6+KxAXh5e+sqaV+/f2Kr4mp5Tg==}
     engines: {node: '>=24.3.0'}
 
-  '@palamedes/react@2.0.0':
-    resolution: {integrity: sha512-FdkOEfpcLIHFvsy1qHsVnL4TBQSuI36JRRY5DPT89xm6LpCaIr5YBfWljZ8kS4zhcXuTK+PhEkwZCyHM3wRu+w==}
+  '@palamedes/react@2.2.0':
+    resolution: {integrity: sha512-r0oB63UL90GpWCi1tQ2C6kXovxP98Zaz/VBge1X+ENSPOgsy9cFnu8FYe1ggfpi6vHmOCoi7XocoH0Zs9KlUGg==}
     engines: {node: '>=24.3.0'}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
 
-  '@palamedes/runtime@2.0.0':
-    resolution: {integrity: sha512-t2hAyU/DXAoHBzd06byLA+WM4hwBF05h8lpHzOF+gQ/5de7Cw66gDeubWJwHIZze/ZNdOGngTQAsqEWJyWo55w==}
+  '@palamedes/runtime@2.2.0':
+    resolution: {integrity: sha512-ONhVZaoW/9UmPMNm2R+VAH73QVPop+QGNol+M7sHlqErJw9JSNxswwzHwJ+T2LVoQc4IG+LSNOzxWxng9pSXdw==}
     engines: {node: '>=24.3.0'}
 
-  '@palamedes/transform@2.0.0':
-    resolution: {integrity: sha512-btKQYnkpAcZotMB+hSqs/V3ky8SJjSizgvYZBRujdp0Osl8UCz5ArRDMsyiVdZp+7sNclIGxio9Y91H0okKVfw==}
+  '@palamedes/transform@2.2.0':
+    resolution: {integrity: sha512-uod+Jhd87NtzRfY7feRZGMRMZED7reznNpZh8X3P3sMWgcdnQ1vRIb/7tOJvuqPg3T0BzkivLDKGYxB8dSQWoA==}
     engines: {node: '>=24.3.0'}
 
-  '@palamedes/vite-plugin@2.0.0':
-    resolution: {integrity: sha512-bU3WvYczGqiKqWmUtjJPEr0JvhlmZl4eWJ1K2DiDoLoIYlPIMN4OXuEoXeKowaED+tb5uiNJ/MoNmpAV2ZANEg==}
+  '@palamedes/vite-plugin@2.2.0':
+    resolution: {integrity: sha512-GzJ+jrr2n4uOAWdMR4FEMdUae4wogVq5a9wtXxQtzZGZBNtuEvxsoARHusX71L6mTPSO9RsbzfYjCY4B+Y6LQw==}
     engines: {node: '>=24.3.0'}
     peerDependencies:
       vite: ^8.3.5
@@ -2566,8 +2566,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sebastian-software/app-tracking@0.7.0':
-    resolution: {integrity: sha512-fYpTo5raktANsmTJ2VYkTdWSrC9FsAfkOdLzL0MESwMT5eHoZmimIYiqpZh2FWIohfx19B8C+FgNR64u1/K40g==}
+  '@sebastian-software/app-tracking@0.7.1':
+    resolution: {integrity: sha512-bjContXr9AJJA+4lIO+FMWz8RwFj3RpinJrERYa6Xx2qxtyA7M/uG1Lzaf8gScwGzHrJMaEZc+W1yKtKX+UY7w==}
     engines: {node: ^22.0.0 || ^24.0.0 || ^26.0.0}
 
   '@sindresorhus/base62@1.0.0':
@@ -4056,8 +4056,8 @@ packages:
       picomatch:
         optional: true
 
-  ferrolink@0.2.1:
-    resolution: {integrity: sha512-sJqZxSv/61bqnWqU2dG4emm3k40Kb0JXLT+WKuoQXGhsnknqqV5FeW12BioOLvNKosTBnmdY24ImqTAqsRP+KQ==}
+  ferrolink@0.2.2:
+    resolution: {integrity: sha512-uu1x32qA72oLh99MkgEeaxetyWyvosW9/9UOEYQLUC13fZst9sOiqNIRtKY60LENvCYgLr51jBuOXoDpmyCl3Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       vite: ^8.3.5
@@ -6724,28 +6724,28 @@ snapshots:
   '@ferriki/win32-x64-msvc@1.3.0':
     optional: true
 
-  '@ferrolink/darwin-arm64@0.2.1':
+  '@ferrolink/darwin-arm64@0.2.2':
     optional: true
 
-  '@ferrolink/darwin-x64@0.2.1':
+  '@ferrolink/darwin-x64@0.2.2':
     optional: true
 
-  '@ferrolink/linux-arm64-gnu@0.2.1':
+  '@ferrolink/linux-arm64-gnu@0.2.2':
     optional: true
 
-  '@ferrolink/linux-arm64-musl@0.2.1':
+  '@ferrolink/linux-arm64-musl@0.2.2':
     optional: true
 
-  '@ferrolink/linux-x64-gnu@0.2.1':
+  '@ferrolink/linux-x64-gnu@0.2.2':
     optional: true
 
-  '@ferrolink/linux-x64-musl@0.2.1':
+  '@ferrolink/linux-x64-musl@0.2.2':
     optional: true
 
-  '@ferrolink/win32-arm64-msvc@0.2.1':
+  '@ferrolink/win32-arm64-msvc@0.2.2':
     optional: true
 
-  '@ferrolink/win32-x64-msvc@0.2.1':
+  '@ferrolink/win32-x64-msvc@0.2.2':
     optional: true
 
   '@floating-ui/core@1.8.0':
@@ -7234,92 +7234,92 @@ snapshots:
   '@oxlint/binding-win32-x64-msvc@1.90.0':
     optional: true
 
-  '@palamedes/cli-darwin-arm64@2.0.0':
+  '@palamedes/cli-darwin-arm64@2.2.0':
     optional: true
 
-  '@palamedes/cli-linux-arm64-gnu@2.0.0':
+  '@palamedes/cli-linux-arm64-gnu@2.2.0':
     optional: true
 
-  '@palamedes/cli-linux-arm64-musl@2.0.0':
+  '@palamedes/cli-linux-arm64-musl@2.2.0':
     optional: true
 
-  '@palamedes/cli-linux-x64-gnu@2.0.0':
+  '@palamedes/cli-linux-x64-gnu@2.2.0':
     optional: true
 
-  '@palamedes/cli-linux-x64-musl@2.0.0':
+  '@palamedes/cli-linux-x64-musl@2.2.0':
     optional: true
 
-  '@palamedes/cli-win32-x64-msvc@2.0.0':
+  '@palamedes/cli-win32-x64-msvc@2.2.0':
     optional: true
 
-  '@palamedes/cli@2.0.0':
+  '@palamedes/cli@2.2.0':
     optionalDependencies:
-      '@palamedes/cli-darwin-arm64': 2.0.0
-      '@palamedes/cli-linux-arm64-gnu': 2.0.0
-      '@palamedes/cli-linux-arm64-musl': 2.0.0
-      '@palamedes/cli-linux-x64-gnu': 2.0.0
-      '@palamedes/cli-linux-x64-musl': 2.0.0
-      '@palamedes/cli-win32-x64-msvc': 2.0.0
+      '@palamedes/cli-darwin-arm64': 2.2.0
+      '@palamedes/cli-linux-arm64-gnu': 2.2.0
+      '@palamedes/cli-linux-arm64-musl': 2.2.0
+      '@palamedes/cli-linux-x64-gnu': 2.2.0
+      '@palamedes/cli-linux-x64-musl': 2.2.0
+      '@palamedes/cli-win32-x64-msvc': 2.2.0
 
-  '@palamedes/config@2.0.0':
+  '@palamedes/config@2.2.0':
     dependencies:
       jiti: 2.7.0
       picomatch: 4.0.7
       smol-toml: 1.9.1
       yaml: 2.9.1
 
-  '@palamedes/core-node-darwin-arm64@2.0.0':
+  '@palamedes/core-node-darwin-arm64@2.2.0':
     optional: true
 
-  '@palamedes/core-node-linux-arm64-gnu@2.0.0':
+  '@palamedes/core-node-linux-arm64-gnu@2.2.0':
     optional: true
 
-  '@palamedes/core-node-linux-arm64-musl@2.0.0':
+  '@palamedes/core-node-linux-arm64-musl@2.2.0':
     optional: true
 
-  '@palamedes/core-node-linux-x64-gnu@2.0.0':
+  '@palamedes/core-node-linux-x64-gnu@2.2.0':
     optional: true
 
-  '@palamedes/core-node-linux-x64-musl@2.0.0':
+  '@palamedes/core-node-linux-x64-musl@2.2.0':
     optional: true
 
-  '@palamedes/core-node-win32-x64-msvc@2.0.0':
+  '@palamedes/core-node-win32-x64-msvc@2.2.0':
     optional: true
 
-  '@palamedes/core-node@2.0.0':
+  '@palamedes/core-node@2.2.0':
     optionalDependencies:
-      '@palamedes/core-node-darwin-arm64': 2.0.0
-      '@palamedes/core-node-linux-arm64-gnu': 2.0.0
-      '@palamedes/core-node-linux-arm64-musl': 2.0.0
-      '@palamedes/core-node-linux-x64-gnu': 2.0.0
-      '@palamedes/core-node-linux-x64-musl': 2.0.0
-      '@palamedes/core-node-win32-x64-msvc': 2.0.0
+      '@palamedes/core-node-darwin-arm64': 2.2.0
+      '@palamedes/core-node-linux-arm64-gnu': 2.2.0
+      '@palamedes/core-node-linux-arm64-musl': 2.2.0
+      '@palamedes/core-node-linux-x64-gnu': 2.2.0
+      '@palamedes/core-node-linux-x64-musl': 2.2.0
+      '@palamedes/core-node-win32-x64-msvc': 2.2.0
 
-  '@palamedes/core@2.0.0': {}
+  '@palamedes/core@2.2.0': {}
 
-  '@palamedes/react@2.0.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@palamedes/react@2.2.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@palamedes/core': 2.0.0
-      '@palamedes/runtime': 2.0.0
+      '@palamedes/core': 2.2.0
+      '@palamedes/runtime': 2.2.0
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  '@palamedes/runtime@2.0.0':
+  '@palamedes/runtime@2.2.0':
     dependencies:
-      '@palamedes/core': 2.0.0
+      '@palamedes/core': 2.2.0
 
-  '@palamedes/transform@2.0.0':
+  '@palamedes/transform@2.2.0':
     dependencies:
-      '@palamedes/core-node': 2.0.0
-      '@palamedes/runtime': 2.0.0
+      '@palamedes/core-node': 2.2.0
+      '@palamedes/runtime': 2.2.0
 
-  '@palamedes/vite-plugin@2.0.0(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))':
+  '@palamedes/vite-plugin@2.2.0(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
-      '@palamedes/config': 2.0.0
-      '@palamedes/core': 2.0.0
-      '@palamedes/core-node': 2.0.0
-      '@palamedes/runtime': 2.0.0
-      '@palamedes/transform': 2.0.0
+      '@palamedes/config': 2.2.0
+      '@palamedes/core': 2.2.0
+      '@palamedes/core-node': 2.2.0
+      '@palamedes/runtime': 2.2.0
+      '@palamedes/transform': 2.2.0
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
   '@pkgjs/parseargs@0.11.0':
@@ -7508,7 +7508,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.64.12':
     optional: true
 
-  '@sebastian-software/app-tracking@0.7.0': {}
+  '@sebastian-software/app-tracking@0.7.1': {}
 
   '@sindresorhus/base62@1.0.0': {}
 
@@ -9160,16 +9160,16 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.7
 
-  ferrolink@0.2.1(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
+  ferrolink@0.2.2(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     optionalDependencies:
-      '@ferrolink/darwin-arm64': 0.2.1
-      '@ferrolink/darwin-x64': 0.2.1
-      '@ferrolink/linux-arm64-gnu': 0.2.1
-      '@ferrolink/linux-arm64-musl': 0.2.1
-      '@ferrolink/linux-x64-gnu': 0.2.1
-      '@ferrolink/linux-x64-musl': 0.2.1
-      '@ferrolink/win32-arm64-msvc': 0.2.1
-      '@ferrolink/win32-x64-msvc': 0.2.1
+      '@ferrolink/darwin-arm64': 0.2.2
+      '@ferrolink/darwin-x64': 0.2.2
+      '@ferrolink/linux-arm64-gnu': 0.2.2
+      '@ferrolink/linux-arm64-musl': 0.2.2
+      '@ferrolink/linux-x64-gnu': 0.2.2
+      '@ferrolink/linux-x64-musl': 0.2.2
+      '@ferrolink/win32-arm64-msvc': 0.2.2
+      '@ferrolink/win32-x64-msvc': 0.2.2
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
   ferromark-darwin-arm64@4.0.0:

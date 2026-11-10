@@ -111,6 +111,8 @@ export type ApiDeclaration = {
   signatures: ApiSignature[]
   properties: ApiProperty[]
   propertiesComplete: boolean
+  /** Literal alternatives of a supported const-tuple numeric-index alias. */
+  literalChoices?: string[]
   source: { file: string; line: number }
 }
 

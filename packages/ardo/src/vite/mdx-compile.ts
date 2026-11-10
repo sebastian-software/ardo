@@ -1,5 +1,6 @@
 import type { CodeHooks, JsxModuleMap, JsxModuleResult } from "ferromark"
 
+import type { PostImage } from "../images/types"
 import type { ArdoConfig, PageFrontmatter } from "../config/types"
 
 import {
@@ -57,10 +58,16 @@ export async function compileMdxRouteModuleWithCode(
     source: input.source,
     sourcePath: input.id,
   })
-  return renderMdxRouteModule(input, route, codeHooks)
+  const images = await input.prepareImages?.(route)
+  return renderMdxRouteModule(input, route, { codeHooks, images })
 }
 
+export type PrepareRouteImages = (
+  route: ReturnType<typeof prepareMdxRoute>
+) => Promise<Record<string, PostImage>>
+
 type MdxRouteInput = {
+  prepareImages?: PrepareRouteImages
   format: NativeMarkdownFormat
   id: string
   markdownConfig: ArdoConfig["markdown"]
@@ -72,13 +79,19 @@ type MdxRouteInput = {
 }
 
 function prepareMdxRoute(input: MdxRouteInput) {
-  return prepareNativeMarkdown(input.source, input.format, input.markdownConfig)
+  return prepareNativeMarkdown(
+    input.source,
+    input.format,
+    input.prepareImages == null
+      ? input.markdownConfig
+      : { ...input.markdownConfig, trackReferences: true }
+  )
 }
 
 function renderMdxRouteModule(
   input: MdxRouteInput,
   { prepared, frontmatter, renderOptions }: ReturnType<typeof prepareMdxRoute>,
-  codeHooks?: CodeHooks
+  { codeHooks, images }: { codeHooks?: CodeHooks; images?: Record<string, PostImage> } = {}
 ): { code: string; map: JsxModuleMap } {
   const { componentPrefix: _componentPrefix, ...moduleOptions } = renderOptions
   const result = prepared.renderModule(
@@ -88,7 +101,8 @@ function renderMdxRouteModule(
       providerImportSource: "ardo/mdx-provider",
       filename: input.id,
       defaultExport: false,
-      reservedBindings: routeBindings,
+      reservedBindings:
+        input.prepareImages == null ? routeBindings : [...routeBindings, "_ardoImages"],
     },
     codeHooks
   )
@@ -102,6 +116,7 @@ function renderMdxRouteModule(
         pageMarkdownPath: input.pageMarkdownPath,
         publicationPost: input.publicationPost,
         result,
+        images,
       }),
     map: result.map,
   }
@@ -113,6 +128,7 @@ function createRouteCode(input: {
   pageMarkdownPath: string | undefined
   publicationPost: PublicationPostBinding | undefined
   result: JsxModuleResult
+  images?: Record<string, PostImage>
 }): string {
   const scope: AuthoredScope = {
     bindings: new Set(input.result.bindings),
@@ -142,12 +158,15 @@ function createRouteCode(input: {
     ...(post == null ? [] : createPostFrameCode(post)),
     `const _ardoFrontmatter = ${frontmatter};`,
     ...(post == null ? [] : ["_ardoFreeze(_ardoFrontmatter._ardoPost);"]),
+    ...(input.images == null || Object.keys(input.images).length === 0
+      ? []
+      : [`const _ardoImages = ${JSON.stringify(input.images)};`]),
     `const _ardoToc = ${JSON.stringify(toc)};`,
     ...createDataExport("frontmatter", "_ardoFrontmatter", scope),
     ...createDataExport("toc", "_ardoToc", scope),
     ...createHandleExport(input.metadata.frontmatter, scope),
     `function _ardoRoute(props = {}) {`,
-    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}>${content}</_ArdoPageDataProvider>;`,
+    `  return <_ArdoPageDataProvider frontmatter={_ardoFrontmatter} toc={_ardoToc}${markdownPath}${input.images == null || Object.keys(input.images).length === 0 ? "" : " images={_ardoImages}"}>${content}</_ArdoPageDataProvider>;`,
     `}`,
     `export default _ardoRoute;`,
   ]

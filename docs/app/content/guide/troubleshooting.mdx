@@ -58,11 +58,13 @@ package. Dependencies may use their own declared transitive dependencies.
 Normal pnpm links to packages in its virtual store are supported; the store location does not
 change package ownership.
 
-Keep custom components inside the docs project, for example in `app/components/`. Relative imports,
-Vite aliases, and symlinks to component source in sibling workspace packages fail in development
-and builds. Workspace package links to component source also fail. Install a published package
-when you need a packaged component library. Ardo's own workspace link is supported for framework
-development, using its built `dist` files.
+Keep custom components inside the docs project, for example in `app/components/`, or in a declared,
+locally installed workspace package. A dependency such as `"components": "workspace:*"` may export
+TypeScript, TSX, CSS, and other Vite-supported source directly. Its own dependencies must be declared
+in that package and installed in its own `node_modules`; ancestor installations are not inherited.
+Ardo follows transitive workspace links and Vite watches imported source for development updates.
+Relative imports, aliases, and source symlinks cannot grant access to an undeclared sibling package.
+Ardo's own workspace link continues to use its built `dist` files.
 
 Ardo bundles the application's dependencies for SSR, including its React runtime.
 Components and the server renderer use that same bundled runtime. There is no per-component

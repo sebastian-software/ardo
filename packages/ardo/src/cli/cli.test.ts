@@ -179,6 +179,22 @@ describe("Ardo CLI", () => {
     expect(errors[0]).toContain("Unknown configuration option")
   })
 
+  it("preserves Vite logging of Error objects from filesystem watcher failures", () => {
+    const output = vi.spyOn(console, "error").mockImplementation(vi.fn())
+    const failure = new Error("filesystem watcher failed")
+    try {
+      const logger = createProjectConfigLogger("/project/node_modules/.ardo/vite.config.mjs", {
+        clearScreen: false,
+      })
+      // Vite passes watcher failures directly despite Logger.error's string type.
+      expect(() => Reflect.apply(logger.error, logger, [failure, { error: failure }])).not.toThrow()
+      expect(output).toHaveBeenCalledWith(failure)
+      expect(logger.hasErrorLogged(failure)).toBe(true)
+    } finally {
+      output.mockRestore()
+    }
+  })
+
   it("prints help and version without resolving a framework command", async () => {
     let help = ""
     let version = ""

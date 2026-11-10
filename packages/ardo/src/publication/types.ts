@@ -1,46 +1,18 @@
 import type { ComponentType, ReactNode } from "react"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
 
-/** A square around the core subject. x/y are normalized center coordinates;
- * size is a fraction of the oriented source's shorter side. */
-export type ImageCore = { x: number; y: number; size: number }
+import type { ImagesConfig, PostImage, PostImageInput, ImagePreset } from "../images/types"
 
-/** Desired frame, with normalized top-left coordinates and dimensions. */
-export type ImageFrame = { x: number; y: number; width: number; height: number }
-export type ImageComposition = "original" | "16:10" | "4:3"
-
-export type ImagePreset = {
-  /** The fallback composition. Unframed images always retain their composition. */
-  fallback: ImageComposition
-  sizes: string
-  sources?: Array<{ media: string; composition: ImageComposition; sizes?: string }>
-}
-
-export type PostImageInput = {
-  src: string
-  alt: string
-  caption?: string
-  core?: ImageCore
-  frame?: ImageFrame
-  /** Desired margin per side, as a fraction of the resulting frame. Default: 0.15. */
-  margin?: number
-  preset?: string
-}
-
-export type ImageRendition = { src: string; width: number; height: number }
-export type ImageCropFamily = {
-  composition: ImageComposition
-  /** AVIF resolutions, or the unchanged SVG/animated/remote source. */
-  renditions: ImageRendition[]
-}
-export type PostImage = {
-  alt: string
-  caption?: string
-  preset: ImagePreset
-  families: ImageCropFamily[]
-  /** One JPEG in the default composition, at most 1280px wide, for fallback and exports. */
-  fallback?: ImageRendition
-}
+export type {
+  ImageCore,
+  ImageFrame,
+  ImageComposition,
+  ImagePreset,
+  PostImageInput,
+  ImageRendition,
+  ImageCropFamily,
+  PostImage,
+} from "../images/types"
 
 export type AuthorProfile = {
   /** Registry key, supplied in resolved publication data. */
@@ -62,7 +34,8 @@ export type PublicationConfig = {
   name?: string
   description?: string
   authors: Record<string, AuthorProfile>
-  images?: { widths?: number[]; presets?: Record<string, ImagePreset> }
+  /** Compatibility alias for the top-level images configuration. */
+  images?: ImagesConfig
   /**
    * Generate one archive page per tag at `/<to>/tags/<key>`. Tag keys must be lowercase,
    * hyphenated slugs. Default: false.

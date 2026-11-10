@@ -15,6 +15,9 @@ consumer suite installs Basic and the native API overlay outside the workspace.
 - `custom-shell/`: a document shell from `ArdoHead`, `ArdoOutlet`, and `ArdoScripts` only, with
   Markdown pages and a publication whose index and tag modules give the root page data; browser
   tests serve a temporary copy, and the staged-build test copies it from a Git repository.
+- `image-metadata/`: a small JPEG with GPS EXIF data for the provider metadata warning.
+- `client-recovery/`: English/German client module, metadata, hydration, and rendering failures,
+  with default and custom roots. The fixture replaces Basic's route tree.
 - `runtime/`: a standalone internal app for shared-runtime hydration, bundled SSR,
   stylesheet ownership, and bare layouts with custom chrome.
 
@@ -29,6 +32,7 @@ pnpm build
 pnpm test:integration
 pnpm test:e2e:examples
 ARDO_EXAMPLE_BROWSER_SERVER=preview pnpm test:e2e:examples
+pnpm test:e2e:recovery
 ```
 
 Install Chromium with `pnpm exec playwright install chromium` if it is not

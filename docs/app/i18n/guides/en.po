@@ -156,15 +156,28 @@ msgstr "<0/> and the config types."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
-"the header and sidebar stay. For a render error, it replaces the root, so "
-"broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
-"<3/>."
+"<0/> can export <1/> to present missing pages inside the root, keeping the "
+"header and sidebar. Without the export, Ardo uses <2/> from <3/>. This export "
+"is a page component, not a React exception boundary. Static module, metadata, "
+"and rendering errors still fail the build."
 msgstr ""
-"<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
-"the header and sidebar stay. For a render error, it replaces the root, so "
-"broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
-"<3/>."
+"<0/> can export <1/> to present missing pages inside the root, keeping the "
+"header and sidebar. Without the export, Ardo uses <2/> from <3/>. This export "
+"is a page component, not a React exception boundary. Static module, metadata, "
+"and rendering errors still fail the build."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
+#~ "the header and sidebar stay. For a render error, it replaces the root, so "
+#~ "broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
+#~ "<3/>."
+#~ msgstr ""
+#~ "<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
+#~ "the header and sidebar stay. For a render error, it replaces the root, so "
+#~ "broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
+#~ "<3/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -802,11 +815,22 @@ msgstr "<0/>: A stable key, such as <1/>. Required when <2/> is <3/>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
-"<0/>: renders inside the root for a missing page and replaces the root for a "
-"render error. Ardo uses <1/> when you omit it."
+"<0/>: presents missing pages inside the root. It is not a React exception "
+"boundary; static rendering failures fail the build. See <1>Client Recovery</1>"
+" for loading, hydration, and client rendering failures."
 msgstr ""
-"<0/>: renders inside the root for a missing page and replaces the root for a "
-"render error. Ardo uses <1/> when you omit it."
+"<0/>: presents missing pages inside the root. It is not a React exception "
+"boundary; static rendering failures fail the build. See <1>Client Recovery</1>"
+" for loading, hydration, and client rendering failures."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/releases/upgrade-to-v6.mdx
+#~ msgid ""
+#~ "<0/>: renders inside the root for a missing page and replaces the root for a "
+#~ "render error. Ardo uses <1/> when you omit it."
+#~ msgstr ""
+#~ "<0/>: renders inside the root for a missing page and replaces the root for a "
+#~ "render error. Ardo uses <1/> when you omit it."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "<0/>: Required. The text of the banner."
@@ -1580,19 +1604,20 @@ msgstr ""
 "A GitHub Pages project site lives under the repository name, for example <0/>."
 " Set that path as <1/> in <2/>:"
 
-#: docs/app/content/guide/agent-instructions.mdx
-msgid ""
-"A monorepo changes API inputs, not the documentation application's runtime "
-"boundary. Declare and install the docs package's dependencies locally. Import "
-"workspace components through an installed packaged dependency, not sibling "
-"source paths or aliases. API generation can read separately configured "
-"TypeScript projects."
-msgstr ""
-"A monorepo changes API inputs, not the documentation application's runtime "
-"boundary. Declare and install the docs package's dependencies locally. Import "
-"workspace components through an installed packaged dependency, not sibling "
-"source paths or aliases. API generation can read separately configured "
-"TypeScript projects."
+#~ #@ obsolete-since: 2026-11-10
+#~ #: docs/app/content/guide/agent-instructions.mdx
+#~ msgid ""
+#~ "A monorepo changes API inputs, not the documentation application's runtime "
+#~ "boundary. Declare and install the docs package's dependencies locally. Import "
+#~ "workspace components through an installed packaged dependency, not sibling "
+#~ "source paths or aliases. API generation can read separately configured "
+#~ "TypeScript projects."
+#~ msgstr ""
+#~ "A monorepo changes API inputs, not the documentation application's runtime "
+#~ "boundary. Declare and install the docs package's dependencies locally. Import "
+#~ "workspace components through an installed packaged dependency, not sibling "
+#~ "source paths or aliases. API generation can read separately configured "
+#~ "TypeScript projects."
 
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
@@ -2259,6 +2284,24 @@ msgstr ""
 "reference pages. The generated pages use the ordinary route, sidebar, search, "
 "sitemap, link-check, and LLM-output pipeline, so an API reference behaves like"
 " the rest of the documentation."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Ardo catches failures while reading page data, loading a route module, or "
+"evaluating its metadata before hydration. It keeps the static page and adds "
+"native reload and home controls; links in the server HTML still work, while "
+"React interactions are unavailable. Fatal hydration errors and later uncaught "
+"React rendering errors replace the failed tree with an independent recovery "
+"view, even when the custom root is broken. Recoverable hydration mismatches "
+"remain React's responsibility and do not trigger this view."
+msgstr ""
+"Ardo catches failures while reading page data, loading a route module, or "
+"evaluating its metadata before hydration. It keeps the static page and adds "
+"native reload and home controls; links in the server HTML still work, while "
+"React interactions are unavailable. Fatal hydration errors and later uncaught "
+"React rendering errors replace the failed tree with an independent recovery "
+"view, even when the custom root is broken. Recoverable hydration mismatches "
+"remain React's responsibility and do not trigger this view."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -3294,6 +3337,22 @@ msgstr ""
 "development server automatically. Restart <0/> after adding or removing either"
 " file."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Both hooks must be synchronous, deterministic, and free of network or upload "
+"side effects. Ardo emits each original once per output path, preserving its "
+"bytes. The source hook receives the complete SHA-256 hash, canonical "
+"extension, oriented dimensions, original EXIF orientation, and deployment "
+"base. Use the full hash in the filename; your deployment uploads the emitted "
+"originals."
+msgstr ""
+"Both hooks must be synchronous, deterministic, and free of network or upload "
+"side effects. Ardo emits each original once per output path, preserving its "
+"bytes. The source hook receives the complete SHA-256 hash, canonical "
+"extension, oriented dimensions, original EXIF orientation, and deployment "
+"base. Use the full hash in the filename; your deployment uploads the emitted "
+"originals."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Both widths are theme tokens, so a site can change them without replacing the "
@@ -3769,6 +3828,14 @@ msgstr ""
 msgid "Classes"
 msgstr "Classes"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Client recovery"
+msgstr "Client recovery"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Client Recovery"
+msgstr "Client Recovery"
+
 #: docs/app/content/guide/components.mdx
 msgid "Cloud hosting and managed services"
 msgstr "Cloud hosting and managed services"
@@ -3974,6 +4041,14 @@ msgstr ""
 #: docs/app/content/guide/deployment.mdx
 msgid "Configure Ardo's versioning in <0/>:"
 msgstr "Configure Ardo's versioning in <0/>:"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Configure local image preparation and optional delivery providers with "
+"top-level <0/>. See <1>Images</1> for the API and the compatible <2/> alias."
+msgstr ""
+"Configure local image preparation and optional delivery providers with "
+"top-level <0/>. See <1>Images</1> for the API and the compatible <2/> alias."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid "Configure locales in <0/> or the <1/> Vite plugin:"
@@ -4216,6 +4291,18 @@ msgid "Custom post fields"
 msgstr "Custom post fields"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Customize copy and a CSS class with a <0/> export in <1/>. This callback "
+"returns plain strings, runs only on failure, and must not call React hooks. "
+"Its context includes <2/>, <3/>, and <4/>. The recovery view does not render "
+"the site's root or error page."
+msgstr ""
+"Customize copy and a CSS class with a <0/> export in <1/>. This callback "
+"returns plain strings, runs only on failure, and must not call React hooks. "
+"Its context includes <2/>, <3/>, and <4/>. The recovery view does not render "
+"the site's root or error page."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
 msgstr "Customize the Markdown Component Set"
 
@@ -4230,6 +4317,22 @@ msgstr "Data & config"
 #: docs/app/content/guide/components.mdx
 msgid "Data storage and persistence"
 msgstr "Data storage and persistence"
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
+"Declare and install the docs package's dependencies locally. Workspace "
+"dependencies such as <0/> may export source directly, including transitive "
+"workspace packages. Each workspace package must declare and locally install "
+"its own dependencies. Ardo still owns the shared React, React DOM, and Vite "
+"runtime; paths and aliases cannot expose undeclared sibling source. API "
+"generation can read separately configured TypeScript projects."
+msgstr ""
+"Declare and install the docs package's dependencies locally. Workspace "
+"dependencies such as <0/> may export source directly, including transitive "
+"workspace packages. Each workspace package must declare and locally install "
+"its own dependencies. Ardo still owns the shared React, React DOM, and Vite "
+"runtime; paths and aliases cannot expose undeclared sibling source. API "
+"generation can read separately configured TypeScript projects."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -4274,6 +4377,10 @@ msgstr "Delete the removed files"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete these files. Ardo now provides what they did:"
 msgstr "Delete these files. Ardo now provides what they did:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Delivery providers"
+msgstr "Delivery providers"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Depends on React framework"
@@ -5143,6 +5250,14 @@ msgstr ""
 "directories, as shown in <0>Multiple packages</0>. The docs application keeps "
 "the same setup and package boundary."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"For shared configuration and optional URL delivery, see <0>Images</0>. The "
+"defaults below apply when no provider is configured."
+msgstr ""
+"For shared configuration and optional URL delivery, see <0>Images</0>. The "
+"defaults below apply when no provider is configured."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "For stable major-version URLs, build the current docs into a version folder "
@@ -5701,6 +5816,26 @@ msgstr ""
 "If the <0/> prop is dynamic (from a variable), build-time highlighting is "
 "skipped and the code renders as plain text."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"If the bootstrap script or one of its static dependencies never loads or fails"
+" during module evaluation, the recovery code cannot run: the static HTML and "
+"native links remain the fallback. The existing cancelable <0/> event still "
+"lets a site take over a page-chunk failure; calling <1/> leaves recovery to "
+"that listener. This contract does not catch arbitrary async callbacks, "
+"event-handler exceptions, or errors already handled by a site's own React "
+"boundary. Use a released Ardo version containing this capability before "
+"relying on it in a consumer site."
+msgstr ""
+"If the bootstrap script or one of its static dependencies never loads or fails"
+" during module evaluation, the recovery code cannot run: the static HTML and "
+"native links remain the fallback. The existing cancelable <0/> event still "
+"lets a site take over a page-chunk failure; calling <1/> leaves recovery to "
+"that listener. This contract does not catch arbitrary async callbacks, "
+"event-handler exceptions, or errors already handled by a site's own React "
+"boundary. Use a released Ardo version containing this capability before "
+"relying on it in a consumer site."
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
 "If the root URL itself returns 404 during local development, add <0/> or <1/>."
@@ -5752,6 +5887,10 @@ msgstr ""
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "If your issue isn't listed here:"
 msgstr "If your issue isn't listed here:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Images"
+msgstr "Images"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Images Not Loading"
@@ -5961,6 +6100,16 @@ msgstr ""
 "initial build. Development errors retain the last successful pages and appear "
 "in the Vite overlay; fixing them resumes generation."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Independent localized reload/home controls for loading, fatal hydration, and "
+"uncaught client rendering failures; see <0>Client Recovery</0> and "
+"<1>#498</1>."
+msgstr ""
+"Independent localized reload/home controls for loading, fatal hydration, and "
+"uncaught client rendering failures; see <0>Client Recovery</0> and "
+"<1>#498</1>."
+
 #: docs/app/content/guide/components.mdx
 msgid "index.mdx"
 msgstr "index.mdx"
@@ -6127,19 +6276,42 @@ msgstr "Keep authored introductory content outside the generated directory."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
-"Keep custom components inside the docs project, for example in <0/>. Relative "
-"imports, Vite aliases, and symlinks to component source in sibling workspace "
-"packages fail in development and builds. Workspace package links to component "
-"source also fail. Install a published package when you need a packaged "
-"component library. Ardo's own workspace link is supported for framework "
-"development, using its built <1/> files."
+"Keep custom components inside the docs project, for example in <0/>, or in a "
+"declared, locally installed workspace package. A dependency such as <1/> may "
+"export TypeScript, TSX, CSS, and other Vite-supported source directly. Its own"
+" dependencies must be declared in that package and installed in its own <2/>; "
+"ancestor installations are not inherited. Ardo follows transitive workspace "
+"links and Vite watches imported source for development updates. Relative "
+"imports, aliases, and source symlinks cannot grant access to an undeclared "
+"sibling package. Ardo's own workspace link continues to use its built <3/> "
+"files."
 msgstr ""
-"Keep custom components inside the docs project, for example in <0/>. Relative "
-"imports, Vite aliases, and symlinks to component source in sibling workspace "
-"packages fail in development and builds. Workspace package links to component "
-"source also fail. Install a published package when you need a packaged "
-"component library. Ardo's own workspace link is supported for framework "
-"development, using its built <1/> files."
+"Keep custom components inside the docs project, for example in <0/>, or in a "
+"declared, locally installed workspace package. A dependency such as <1/> may "
+"export TypeScript, TSX, CSS, and other Vite-supported source directly. Its own"
+" dependencies must be declared in that package and installed in its own <2/>; "
+"ancestor installations are not inherited. Ardo follows transitive workspace "
+"links and Vite watches imported source for development updates. Relative "
+"imports, aliases, and source symlinks cannot grant access to an undeclared "
+"sibling package. Ardo's own workspace link continues to use its built <3/> "
+"files."
+
+#~ #@ obsolete-since: 2026-11-10
+#~ #: docs/app/content/guide/troubleshooting.mdx
+#~ msgid ""
+#~ "Keep custom components inside the docs project, for example in <0/>. Relative "
+#~ "imports, Vite aliases, and symlinks to component source in sibling workspace "
+#~ "packages fail in development and builds. Workspace package links to component "
+#~ "source also fail. Install a published package when you need a packaged "
+#~ "component library. Ardo's own workspace link is supported for framework "
+#~ "development, using its built <1/> files."
+#~ msgstr ""
+#~ "Keep custom components inside the docs project, for example in <0/>. Relative "
+#~ "imports, Vite aliases, and symlinks to component source in sibling workspace "
+#~ "packages fail in development and builds. Workspace package links to component "
+#~ "source also fail. Install a published package when you need a packaged "
+#~ "component library. Ardo's own workspace link is supported for framework "
+#~ "development, using its built <1/> files."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7148,6 +7320,14 @@ msgstr "Optional deployment details"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Optional internal or external destination. Makes the card clickable."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Optional rendered icon size."
@@ -7179,6 +7359,30 @@ msgstr ""
 " module statements, or HTML that the static projection would omit, supply the "
 "complete portable article as Markdown in <0/>. The build reports missing "
 "replacements."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Original filenames must be relative image paths without dot segments. "
+"Collisions with other images, bundled assets, or public files fail the build. "
+"SVG and animated images emit unchanged originals without requesting raster "
+"renditions; framing remains unsupported. External HTTP images remain unchanged"
+" and are never downloaded."
+msgstr ""
+"Original filenames must be relative image paths without dot segments. "
+"Collisions with other images, bundled assets, or public files fail the build. "
+"SVG and animated images emit unchanged originals without requesting raster "
+"renditions; framing remains unsupported. External HTTP images remain unchanged"
+" and are never downloaded."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Originals are published with their EXIF and XMP metadata, including any "
+"location. The build warns about each original that contains GPS data. Strip "
+"the metadata before committing images that should keep their location private."
+msgstr ""
+"Originals are published with their EXIF and XMP metadata, including any "
+"location. The build warns about each original that contains GPS data. Strip "
+"the metadata before committing images that should keep their location private."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Other Providers"
@@ -7496,6 +7700,14 @@ msgstr ""
 "Prepare an Ardo project for the 4.0 release and the stable major-version URL "
 "contract."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Prepare local images in Markdown and MDX, or deliver Ardo's compositions "
+"through an image provider."
+msgstr ""
+"Prepare local images in Markdown and MDX, or deliver Ardo's compositions "
+"through an image provider."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Prerendering is always on. Base path settings live in Ardo config."
 msgstr "Prerendering is always on. Base path settings live in Ardo config."
@@ -7590,6 +7802,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "publication"
 msgstr "publication"
+
+#: docs/app/content/guide/images.mdx
+msgid "Publication compatibility"
+msgstr "Publication compatibility"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -7788,6 +8004,20 @@ msgstr "Reason"
 msgid "Recipes"
 msgstr "Recipes"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Recovery uses the document language and includes English, German, French, and "
+"Spanish copy without loading a translation catalog. Other languages fall back "
+"to an explicitly English region. It focuses the recovery heading and never "
+"displays the exception or stack trace. Reload only happens when the reader "
+"activates the button."
+msgstr ""
+"Recovery uses the document language and includes English, German, French, and "
+"Spanish copy without loading a translation catalog. Other languages fall back "
+"to an explicitly English region. It focuses the recovery heading and never "
+"displays the exception or stack trace. Reload only happens when the reader "
+"activates the button."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid "redirectFrom"
 msgstr "redirectFrom"
@@ -7819,6 +8049,18 @@ msgid ""
 msgstr ""
 "Relative canonical and image values are made absolute with <0/>; without <1/>,"
 " relative URL tags are omitted."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Relative paths resolve beside the original Markdown file; paths starting with "
+"<0/> resolve inside <1/>. Add framing and preset overrides in the page's <2/> "
+"frontmatter map, keyed by the image path. See <3>publication images</3> for "
+"the shared framing model and presets."
+msgstr ""
+"Relative paths resolve beside the original Markdown file; paths starting with "
+"<0/> resolve inside <1/>. Add framing and preset overrides in the page's <2/> "
+"frontmatter map, keyed by the image path. See <3>publication images</3> for "
+"the shared framing model and presets."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Releases"
@@ -8487,6 +8729,16 @@ msgstr "Set the same basename in <0/>:"
 msgid "Set to <0/> to hide the theme toggle. Defaults to <1/>."
 msgstr "Set to <0/> to hide the theme toggle. Defaults to <1/>."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Set top-level <0/> in <1/> to prepare local Markdown images and the <2/> MDX "
+"component. Existing documentation keeps its normal image URLs when this option"
+" is absent. Publications always prepare their images."
+msgstr ""
+"Set top-level <0/> in <1/> to prepare local Markdown images and the <2/> MDX "
+"component. Existing documentation keeps its normal image URLs when this option"
+" is absent. Publications always prepare their images."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Set up a documentation site with an assistant or follow the manual steps."
@@ -8523,10 +8775,26 @@ msgstr "Settings and configuration"
 msgid "Setup"
 msgstr "Setup"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Shared image delivery"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid "Shared Page Width"
 #~ msgstr "Shared Page Width"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Sharp remains the default: responsive AVIF files and one JPEG fallback. A "
+"provider replaces raster encoding with URLs while Ardo still owns crop "
+"planning, presets, HTML, feeds, and social metadata. Development uses local "
+"Sharp output so unpublished originals remain viewable."
+msgstr ""
+"Sharp remains the default: responsive AVIF files and one JPEG fallback. A "
+"provider replaces raster encoding with URLs while Ardo still owns crop "
+"planning, presets, HTML, feeds, and social metadata. Development uses local "
+"Sharp output so unpublished originals remain viewable."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -9375,6 +9643,26 @@ msgstr ""
 "sibling application source. The <0>Agent Instructions</0> explain that "
 "boundary."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"The endpoint must apply EXIF orientation before the exact integer pixel crop "
+"and then resize to the requested dimensions. Ardo does not detect faces. The "
+"returned MIME type must match the response and stay consistent within one crop"
+" family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require"
+" JPEG or PNG for feeds and social images. URLs must be normalized absolute "
+"HTTP(S) URLs without embedded credentials, or root-relative paths that already"
+" include the deployment base. They must not end in a comma, because that would"
+" break <0/>."
+msgstr ""
+"The endpoint must apply EXIF orientation before the exact integer pixel crop "
+"and then resize to the requested dimensions. Ardo does not detect faces. The "
+"returned MIME type must match the response and stay consistent within one crop"
+" family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require"
+" JPEG or PNG for feeds and social images. URLs must be normalized absolute "
+"HTTP(S) URLs without embedded credentials, or root-relative paths that already"
+" include the deployment base. They must not end in a comma, because that would"
+" break <0/>."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "The example compares this site's hero illustration in the light and dark "
@@ -9402,6 +9690,20 @@ msgstr ""
 "The existing <0/> variable sets the sticky offsets and anchor spacing. Put its"
 " value on <1/> through a <2/> export so Ardo and the site header share it, "
 "then update it at the breakpoint where a mobile header grows:"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The export also accepts a plain object. Supported fields are <0/>, <1/>, <2/>,"
+" <3/>, <4/>, and <5/>. The native view has its own basic styling; a custom "
+"class must not depend on rendering the normal chrome. If the callback or a "
+"catalog it reads throws, Ardo uses its built-in copy. The default home "
+"destination preserves the page base and configured locale."
+msgstr ""
+"The export also accepts a plain object. Supported fields are <0/>, <1/>, <2/>,"
+" <3/>, <4/>, and <5/>. The native view has its own basic styling; a custom "
+"class must not depend on rendering the normal chrome. If the callback or a "
+"catalog it reads throws, Ardo uses its built-in copy. The default home "
+"destination preserves the page base and configured locale."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid ""
@@ -10065,6 +10367,20 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tooltip component"
 msgstr "Tooltip component"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Top-level <0/> applies to covers, body images, author portraits, and opted-in "
+"documentation. Portraits retain their 96 and 192 pixel widths. Existing <1/> "
+"remains a compatible alias for publication settings. Top-level values take "
+"precedence field by field; named presets merge, and an explicitly supplied "
+"top-level preset wins."
+msgstr ""
+"Top-level <0/> applies to covers, body images, author portraits, and opted-in "
+"documentation. Portraits retain their 96 and 192 pixel widths. Existing <1/> "
+"remains a compatible alias for publication settings. Top-level values take "
+"precedence field by field; named presets merge, and an explicitly supplied "
+"top-level preset wins."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tracking issue"

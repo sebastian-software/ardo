@@ -1,4 +1,3 @@
-import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import react from "@vitejs/plugin-react"
 import { mergeConfig, type Plugin, type UserConfig } from "vite"
 
@@ -24,6 +23,8 @@ import { runArdoLifecyclePhase } from "./lifecycle"
 import { findArdoPackageRoot } from "./managed-runtime"
 import { createRuntimeBoundaryPlugins } from "./managed-runtime-plugin"
 import { transformMarkdownMeta } from "./markdown-meta"
+import { createImageSession, createImagesPlugin } from "./image-session"
+import { pageImagesContext } from "./page-images"
 import { createMdxPlugin } from "./mdx-plugin"
 import { createOpenApiPlugin } from "./openapi-plugin"
 import { resolvePageMarkdownPath } from "./page-markdown"
@@ -37,8 +38,9 @@ import { createStaticSitePlugin } from "./static-site-plugin"
 import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./versioning"
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
+import { createVanillaExtractPlugins } from "./vanilla-extract-plugin"
 
-type PluginState = Pick<PublicationSite, "publicationPost"> & {
+type PluginState = Pick<PublicationSite, "publicationPost" | "imageSession"> & {
   /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
   buildTime?: string
   collections?: CollectionsConfig
@@ -73,7 +75,10 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ...siteConfig
   } = validateArdoOptionNames(options)
   const buildTime = resolvePinnedBuildTime(siteConfig.buildTime)
+  const imageSession = createImageSession()
+  const contentSources = [...(content ?? []), ...createCollectionContentSources(collections)]
   const state: PluginState = {
+    imageSession,
     ...(buildTime === undefined ? {} : { buildTime }),
     collections,
     outDir: siteConfig.outDir,
@@ -83,23 +88,19 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
     ],
     routesDir: resolveRoutesDir(process.cwd(), routesDirOption),
   }
-  const mainPluginOptions: MainPluginOptions = {
-    siteConfig: { ...siteConfig, ...(openapi == null ? {} : { openapi }) },
-    routesDirOption,
-  }
   const plugins: Plugin[] = [
-    createMainPlugin(state, mainPluginOptions),
+    createMainPlugin(state, {
+      siteConfig: { ...siteConfig, ...(openapi == null ? {} : { openapi }) },
+      routesDirOption,
+    }),
+    createImagesPlugin(imageSession, () => state.resolvedConfig?.deploymentBase),
     ...(publication == null ? [] : [createPublicationPlugin(publication, state)]),
     createStaticSitePlugin(state),
     ...createRuntimeBoundaryPlugins(),
   ]
   if (openapi != null) plugins.unshift(createOpenApiPlugin(openapi, routesDirOption))
   plugins.push(...createIconsPlugin(icons, state))
-  addContentSourcePlugin(
-    plugins,
-    [...(content ?? []), ...createCollectionContentSources(collections)],
-    routesDirOption
-  )
+  addContentSourcePlugin(plugins, contentSources, routesDirOption)
   plugins.push(
     ardoRoutesPlugin(
       { routesDir: routesDirOption, ...(routes === false || routes == null ? {} : routes) },
@@ -118,9 +119,17 @@ export function ardoPlugin(options: ArdoPluginOptions = {}): Plugin[] {
         routesDir: state.routesDir,
       }),
       publicationPost: state.publicationPost?.(filePath),
+      ...pageImagesContext({
+        state,
+        file: filePath,
+        options: siteConfig.images,
+        legacy: publication?.images,
+        session: imageSession,
+        content: contentSources,
+      }),
     }))
   )
-  plugins.push(...vanillaExtractPlugin({ identifiers: "short" }), ...createReactPlugins())
+  plugins.push(...createVanillaExtractPlugins(), ...createReactPlugins())
 
   return plugins
 }
@@ -287,7 +296,7 @@ function createMainConfig(
     console.log(message)
   }
 
-  return mergeArdoViteConfig(siteConfig.vite, config)
+  return siteConfig.vite == null ? config : mergeConfig(config, siteConfig.vite as UserConfig)
 }
 
 function resolveArdoConfig({
@@ -324,15 +333,4 @@ function resolveArdoConfig({
     },
     root
   )
-}
-
-function mergeArdoViteConfig(
-  viteConfig: Record<string, unknown> | undefined,
-  ardoConfig: UserConfig
-): UserConfig {
-  if (viteConfig == null) {
-    return ardoConfig
-  }
-
-  return mergeConfig(ardoConfig, viteConfig as UserConfig)
 }

@@ -32,6 +32,7 @@ These capabilities are available in the current package line.
 | Native API reference    | Configured with `api` in `ardo.config.ts` for TypeScript library APIs.                                                                                                                                    |
 | Content collections     | Schema-validated local Markdown and MDX materialized as routes and typed static records for custom React views.                                                                                           |
 | News and publications   | Repository-authored Markdown and MDX posts with shared authors, responsive AVIF images with a single JPEG fallback, and full-content Atom/RSS feeds; see [News and publications](/en/guide/publications). |
+| Shared image delivery   | Optional providers and shared local image preparation for publications and opted-in Markdown/MDX; see [Images](/en/guide/images).                                                                         |
 | Social metadata         | Generated canonical, Open Graph, and Twitter metadata for Markdown routes.                                                                                                                                |
 | SEO build outputs       | Sitemap, robots output, LLM text artifacts, link checking, and static redirects.                                                                                                                          |
 | Theme hue overrides     | Brand, accent, and neutral hues retint the default color ramp from the `ArdoRoot` theme prop or CSS.                                                                                                      |
@@ -41,14 +42,15 @@ These capabilities are available in the current package line.
 
 These areas work, but the API or maintenance story may still evolve.
 
-| Area                  | Notes                                                                                                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Native compiler SDK   | Pinned to a TypeScript 7.1 nightly; compiler compatibility and API stability require care.                                                                                                           |
-| Theme token overrides | CSS variables and Vanilla Extract tokens are public, but the broader theming API and build-time customization story may still change.                                                                |
-| Major docs versioning | Supports static major-version folders, root HTML redirects, `versions.json`, a version switcher at the end of the sidebar, and a banner on older versions.                                           |
-| Static i18n           | Complete locale route trees, localized search and UI labels, alternate-language links, and build-time rejection of missing translations; see [Internationalization](/en/guide/internationalization). |
-| Static OpenAPI        | Generates local OpenAPI 3.0/3.1 JSON or YAML reference pages; an interactive playground remains out of scope.                                                                                        |
-| Mermaid diagrams      | Opt-in `markdown.mermaid` renders `mermaid` fences to static SVG at build time with the optional `@ferrigura/core` package; see [Mermaid Diagrams](/en/guide/markdown#mermaid-diagrams).             |
+| Area                  | Notes                                                                                                                                                                                                                                                      |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native compiler SDK   | Pinned to a TypeScript 7.1 nightly; compiler compatibility and API stability require care.                                                                                                                                                                 |
+| Theme token overrides | CSS variables and Vanilla Extract tokens are public, but the broader theming API and build-time customization story may still change.                                                                                                                      |
+| Major docs versioning | Supports static major-version folders, root HTML redirects, `versions.json`, a version switcher at the end of the sidebar, and a banner on older versions.                                                                                                 |
+| Static i18n           | Complete locale route trees, localized search and UI labels, alternate-language links, and build-time rejection of missing translations; see [Internationalization](/en/guide/internationalization).                                                       |
+| Static OpenAPI        | Generates local OpenAPI 3.0/3.1 JSON or YAML reference pages; an interactive playground remains out of scope.                                                                                                                                              |
+| Mermaid diagrams      | Opt-in `markdown.mermaid` renders `mermaid` fences to static SVG at build time with the optional `@ferrigura/core` package; see [Mermaid Diagrams](/en/guide/markdown#mermaid-diagrams).                                                                   |
+| Client recovery       | Independent localized reload/home controls for loading, fatal hydration, and uncaught client rendering failures; see [Client Recovery](/en/guide/layout-and-navigation#client-recovery) and [#498](https://github.com/sebastian-software/ardo/issues/498). |
 
 ## Planned
 

@@ -19,7 +19,7 @@ const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
 const { ardo } = await import(pathToFileURL(ardoRequire.resolve("./dist/vite/index.js")).href)
 const { build } = ardoRequire("vite")
 
-it("keeps app, Ardo UI, widgets, and SSR on Ardo's React despite consumer and ancestor copies", async () => {
+it("keeps app, Ardo UI, workspace widgets, and SSR on Ardo's React despite other copies", async () => {
   const parent = mkdtempSync(path.join(os.tmpdir(), "ardo-ssr-resolution-"))
   const consumer = path.join(parent, "worktree")
   const ardoRoot = realpathSync(path.join(repositoryRoot, "packages/ardo"))
@@ -46,6 +46,7 @@ it("keeps app, Ardo UI, widgets, and SSR on Ardo's React despite consumer and an
           ardo: "workspace:*",
           "ancestor-widget": "1",
           "docs-widget": "1",
+          "workspace-widget": "workspace:*",
         },
       })
     )
@@ -83,6 +84,22 @@ export function Widget({ context, className }) {
     writeFileSync(path.join(ancestorWidget, "index.js"), widgetSource)
     symlinkSync(ancestorWidget, path.join(consumerModules, "ancestor-widget"), "dir")
 
+    const workspaceWidget = path.join(parent, "packages/workspace-widget")
+    mkdirSync(path.join(workspaceWidget, "node_modules"), { recursive: true })
+    writeFileSync(
+      path.join(workspaceWidget, "package.json"),
+      JSON.stringify({
+        name: "workspace-widget",
+        type: "module",
+        exports: "./index.js",
+        peerDependencies: { react: "20" },
+      })
+    )
+    writeFileSync(path.join(workspaceWidget, "index.js"), widgetSource)
+    // Even a conflicting workspace-local runtime cannot create a second React.
+    cpSync(reactPackage, path.join(workspaceWidget, "node_modules/react"), { recursive: true })
+    symlinkSync(workspaceWidget, path.join(consumerModules, "workspace-widget"), "dir")
+
     writeFileSync(
       path.join(consumer, "entry.mjs"),
       `import { createContext, createElement } from "ardo/react";
@@ -90,6 +107,7 @@ import { renderToStaticMarkup } from "ardo/react-dom/server";
 import { ArdoFeatureCard, ArdoThemeToggle } from "ardo/ui";
 import { Widget as ConsumerWidget } from "docs-widget";
 import { Widget as AncestorWidget } from "ancestor-widget";
+import { Widget as WorkspaceWidget } from "workspace-widget";
 
 const Context = createContext("outside");
 
@@ -103,7 +121,8 @@ export const Component = () =>
       createElement(ArdoFeatureCard, { title: "Ardo UI" }, "Framework component"),
       createElement(ArdoThemeToggle),
       createElement(ConsumerWidget, { context: Context, className: "docs-widget" }),
-      createElement(AncestorWidget, { context: Context, className: "ancestor-widget" })
+      createElement(AncestorWidget, { context: Context, className: "ancestor-widget" }),
+      createElement(WorkspaceWidget, { context: Context, className: "workspace-widget" })
     )
   );
 
@@ -150,6 +169,7 @@ export const html = renderToStaticMarkup(createElement(Component));
     expect(output.html).toContain("shared-runtime")
     expect(output.html).toContain("docs-widget")
     expect(output.html).toContain("ancestor-widget")
+    expect(output.html).toContain("workspace-widget")
     expect(output.html).toContain('aria-label="Toggle theme"')
     expect(output.html).toContain("Ardo UI")
   } finally {

@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from "react"
 
 import type { ArdoMetaDescriptor, ArdoPage, ArdoPageError } from "./page-context"
+import type { ArdoClientRecovery } from "./client-recovery"
 
 import { ArdoErrorBoundary } from "../ui/ErrorBoundary"
 
@@ -18,6 +19,8 @@ export type ArdoRouteModule = {
 
 /** Exports Ardo reads from `app/root.tsx`. */
 export type ArdoRootModule = ArdoRouteModule & {
+  /** Independent native client recovery copy/presentation; not a React error boundary. */
+  clientRecovery?: ArdoClientRecovery
   ErrorBoundary?: ComponentType
   Layout?: ComponentType<{ children: ReactNode }>
 }

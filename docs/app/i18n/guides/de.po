@@ -152,14 +152,28 @@ msgstr "<0/> und Konfigurationstypen."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
-"the header and sidebar stay. For a render error, it replaces the root, so "
-"broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
-"<3/>."
+"<0/> can export <1/> to present missing pages inside the root, keeping the "
+"header and sidebar. Without the export, Ardo uses <2/> from <3/>. This export "
+"is a page component, not a React exception boundary. Static module, metadata, "
+"and rendering errors still fail the build."
 msgstr ""
-"<0/> kann <1/> exportieren. Fehlende Seiten erscheinen damit innerhalb der "
-"Root samt Navigation. Renderfehler ersetzen die Root, damit defektes Layout "
-"den Fehler nicht versteckt. Ohne Export gilt <2/> aus <3/>."
+"<0/> kann <1/> exportieren, um fehlende Seiten innerhalb der Root-Komponente "
+"mit Kopfzeile und Seitenleiste anzuzeigen. Ohne diesen Export verwendet Ardo "
+"<2/> aus <3/>. Dieser Export ist eine Seitenkomponente und keine "
+"React-Fehlergrenze. Fehler beim statischen Laden von Modulen, bei Metadaten "
+"und beim Rendern lassen den Build weiterhin fehlschlagen."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
+#~ "the header and sidebar stay. For a render error, it replaces the root, so "
+#~ "broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
+#~ "<3/>."
+#~ msgstr ""
+#~ "<0/> kann <1/> exportieren. Fehlende Seiten erscheinen damit innerhalb der "
+#~ "Root samt Navigation. Renderfehler ersetzen die Root, damit defektes Layout "
+#~ "den Fehler nicht versteckt. Ohne Export gilt <2/> aus <3/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -803,11 +817,23 @@ msgstr ""
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
-"<0/>: renders inside the root for a missing page and replaces the root for a "
-"render error. Ardo uses <1/> when you omit it."
+"<0/>: presents missing pages inside the root. It is not a React exception "
+"boundary; static rendering failures fail the build. See <1>Client Recovery</1>"
+" for loading, hydration, and client rendering failures."
 msgstr ""
-"<0/>: bei fehlenden Seiten innerhalb der Root, bei Renderfehlern anstelle der "
-"Root. Standard ist <1/>."
+"<0/>: zeigt fehlende Seiten innerhalb der Root-Komponente an. Es ist keine "
+"React-Fehlergrenze; statische Renderfehler lassen den Build fehlschlagen. "
+"Informationen zu Lade-, Hydrations- und clientseitigen Renderfehlern stehen "
+"unter <1>Client-Wiederherstellung</1>."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/releases/upgrade-to-v6.mdx
+#~ msgid ""
+#~ "<0/>: renders inside the root for a missing page and replaces the root for a "
+#~ "render error. Ardo uses <1/> when you omit it."
+#~ msgstr ""
+#~ "<0/>: bei fehlenden Seiten innerhalb der Root, bei Renderfehlern anstelle der "
+#~ "Root. Standard ist <1/>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "<0/>: Required. The text of the banner."
@@ -1584,20 +1610,21 @@ msgstr ""
 "Eine GitHub-Pages-Projektwebsite liegt unter dem Repository-Namen, zum "
 "Beispiel <0/>. Setze diesen Pfad als <1/> in <2/>:"
 
-#: docs/app/content/guide/agent-instructions.mdx
-msgid ""
-"A monorepo changes API inputs, not the documentation application's runtime "
-"boundary. Declare and install the docs package's dependencies locally. Import "
-"workspace components through an installed packaged dependency, not sibling "
-"source paths or aliases. API generation can read separately configured "
-"TypeScript projects."
-msgstr ""
-"Ein Monorepo ändert die API-Eingaben, nicht die Laufzeitgrenze der "
-"Dokumentationsanwendung. Deklariere und installiere die Abhängigkeiten im "
-"Dokumentationspaket selbst. Importiere Workspace-Komponenten über eine "
-"installierte Paketabhängigkeit, nicht über benachbarte Quellpfade oder "
-"Aliasse. Die API-Generierung kann separat konfigurierte TypeScript-Projekte "
-"lesen."
+#~ #@ obsolete-since: 2026-11-10
+#~ #: docs/app/content/guide/agent-instructions.mdx
+#~ msgid ""
+#~ "A monorepo changes API inputs, not the documentation application's runtime "
+#~ "boundary. Declare and install the docs package's dependencies locally. Import "
+#~ "workspace components through an installed packaged dependency, not sibling "
+#~ "source paths or aliases. API generation can read separately configured "
+#~ "TypeScript projects."
+#~ msgstr ""
+#~ "Ein Monorepo ändert die API-Eingaben, nicht die Laufzeitgrenze der "
+#~ "Dokumentationsanwendung. Deklariere und installiere die Abhängigkeiten im "
+#~ "Dokumentationspaket selbst. Importiere Workspace-Komponenten über eine "
+#~ "installierte Paketabhängigkeit, nicht über benachbarte Quellpfade oder "
+#~ "Aliasse. Die API-Generierung kann separat konfigurierte TypeScript-Projekte "
+#~ "lesen."
 
 #~ #@ obsolete-since: 2026-11-03
 #~ #: docs/app/content/guide/components.mdx
@@ -2277,6 +2304,26 @@ msgstr ""
 "Ardo wandelt lokale OpenAPI-3.0- oder -3.1-Spezifikationen in statische "
 "MDX-Referenzen um. Die Seiten nutzen dieselben Routen, Seitenleisten, Suche, "
 "Sitemap, Linkprüfung und LLM-Ausgaben wie die übrige Dokumentation."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Ardo catches failures while reading page data, loading a route module, or "
+"evaluating its metadata before hydration. It keeps the static page and adds "
+"native reload and home controls; links in the server HTML still work, while "
+"React interactions are unavailable. Fatal hydration errors and later uncaught "
+"React rendering errors replace the failed tree with an independent recovery "
+"view, even when the custom root is broken. Recoverable hydration mismatches "
+"remain React's responsibility and do not trigger this view."
+msgstr ""
+"Ardo fängt Fehler beim Lesen der Seitendaten, beim Laden eines Routenmoduls "
+"und beim Auswerten seiner Metadaten vor der Hydration ab. Die statische Seite "
+"bleibt erhalten und erhält native Schaltflächen zum Neuladen sowie einen "
+"Link zur Startseite; Links im Server-HTML funktionieren weiterhin, "
+"React-Interaktionen sind jedoch nicht verfügbar. Fatale Hydrationsfehler und "
+"spätere unbehandelte React-Renderfehler ersetzen den fehlerhaften Baum durch "
+"eine unabhängige Wiederherstellungsansicht, selbst wenn die eigene "
+"Root-Komponente defekt ist. Behebbare Hydrationsabweichungen bleiben React "
+"überlassen und lösen diese Ansicht nicht aus."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -3317,6 +3364,23 @@ msgstr ""
 " den Entwicklungsserver neu. Nach dem Anlegen oder Entfernen einer Datei musst"
 " du <0/> neu starten."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Both hooks must be synchronous, deterministic, and free of network or upload "
+"side effects. Ardo emits each original once per output path, preserving its "
+"bytes. The source hook receives the complete SHA-256 hash, canonical "
+"extension, oriented dimensions, original EXIF orientation, and deployment "
+"base. Use the full hash in the filename; your deployment uploads the emitted "
+"originals."
+msgstr ""
+"Beide Hooks müssen synchron und deterministisch arbeiten und dürfen weder "
+"Netzwerkanfragen noch Uploads ausführen. Ardo gibt jedes Original einmal je "
+"Ausgabepfad bytegetreu aus. Der Source-Hook erhält den vollständigen "
+"SHA-256-Hash, die kanonische Dateiendung, die ausgerichteten Abmessungen, die "
+"ursprüngliche EXIF-Ausrichtung und die Deployment-Basis. Verwende den "
+"vollständigen Hash im Dateinamen; dein Deployment lädt die ausgegebenen "
+"Originale hoch."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Both widths are theme tokens, so a site can change them without replacing the "
@@ -3792,6 +3856,14 @@ msgstr ""
 msgid "Classes"
 msgstr "Klassen"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Client recovery"
+msgstr "Client-Wiederherstellung"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Client Recovery"
+msgstr "Client-Wiederherstellung"
+
 #: docs/app/content/guide/components.mdx
 msgid "Cloud hosting and managed services"
 msgstr "Cloud-Hosting und verwaltete Dienste"
@@ -3999,6 +4071,15 @@ msgstr ""
 #: docs/app/content/guide/deployment.mdx
 msgid "Configure Ardo's versioning in <0/>:"
 msgstr "Konfiguriere Ardos Versionierung in <0/>:"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Configure local image preparation and optional delivery providers with "
+"top-level <0/>. See <1>Images</1> for the API and the compatible <2/> alias."
+msgstr ""
+"Konfiguriere die lokale Bildverarbeitung und optionale Auslieferungsprovider "
+"über <0/> auf oberster Ebene. Unter <1>Bilder</1> findest du die API und den "
+"kompatiblen Alias <2/>."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid "Configure locales in <0/> or the <1/> Vite plugin:"
@@ -4243,6 +4324,19 @@ msgid "Custom post fields"
 msgstr "Eigene Beitragsfelder"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Customize copy and a CSS class with a <0/> export in <1/>. This callback "
+"returns plain strings, runs only on failure, and must not call React hooks. "
+"Its context includes <2/>, <3/>, and <4/>. The recovery view does not render "
+"the site's root or error page."
+msgstr ""
+"Texte und eine CSS-Klasse lassen sich über einen <0/>-Export in <1/> "
+"anpassen. Dieser Callback liefert einfache Zeichenketten, läuft nur im "
+"Fehlerfall und darf keine React-Hooks aufrufen. Sein Kontext enthält <2/>, "
+"<3/> und <4/>. Die Wiederherstellungsansicht rendert weder die Root-Komponente"
+" noch die Fehlerseite der Website."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
 msgstr "Markdown-Komponenten anpassen"
 
@@ -4257,6 +4351,23 @@ msgstr "Daten und Konfiguration"
 #: docs/app/content/guide/components.mdx
 msgid "Data storage and persistence"
 msgstr "Datenspeicherung und Persistenz"
+
+#: docs/app/content/guide/agent-instructions.mdx
+msgid ""
+"Declare and install the docs package's dependencies locally. Workspace "
+"dependencies such as <0/> may export source directly, including transitive "
+"workspace packages. Each workspace package must declare and locally install "
+"its own dependencies. Ardo still owns the shared React, React DOM, and Vite "
+"runtime; paths and aliases cannot expose undeclared sibling source. API "
+"generation can read separately configured TypeScript projects."
+msgstr ""
+"Deklariere und installiere die Abhängigkeiten des Dokumentationspakets lokal."
+" Workspace-Abhängigkeiten wie <0/> dürfen Quellcode direkt exportieren, auch"
+" über transitive Workspace-Pakete. Jedes Workspace-Paket muss seine eigenen "
+"Abhängigkeiten deklarieren und lokal installieren. Ardo verwaltet weiterhin "
+"die gemeinsame React-, React-DOM- und Vite-Laufzeit; Pfade und Aliasse dürfen"
+" keinen nicht deklarierten benachbarten Quellcode zugänglich machen. Die "
+"API-Generierung kann separat konfigurierte TypeScript-Projekte lesen."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -4298,6 +4409,10 @@ msgstr "Entfallene Dateien löschen"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete these files. Ardo now provides what they did:"
 msgstr "Lösche diese Dateien; ihre Aufgaben übernimmt Ardo:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Delivery providers"
+msgstr "Auslieferungsprovider"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Depends on React framework"
@@ -5158,6 +5273,15 @@ msgstr ""
 "Ausgabeverzeichnissen wie unter <0>Mehrere Pakete</0>. Setup und Paketgrenze "
 "der Dokumentationsanwendung bleiben gleich."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"For shared configuration and optional URL delivery, see <0>Images</0>. The "
+"defaults below apply when no provider is configured."
+msgstr ""
+"Gemeinsame Einstellungen und optionale Auslieferung über URLs beschreibt "
+"<0>Bilder</0>. Die folgenden Standardwerte gelten ohne konfigurierten "
+"Provider."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "For stable major-version URLs, build the current docs into a version folder "
@@ -5720,6 +5844,28 @@ msgstr ""
 "Ist <0/> dynamisch, entfällt die Build-Hervorhebung und der Code erscheint "
 "als Klartext."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"If the bootstrap script or one of its static dependencies never loads or fails"
+" during module evaluation, the recovery code cannot run: the static HTML and "
+"native links remain the fallback. The existing cancelable <0/> event still "
+"lets a site take over a page-chunk failure; calling <1/> leaves recovery to "
+"that listener. This contract does not catch arbitrary async callbacks, "
+"event-handler exceptions, or errors already handled by a site's own React "
+"boundary. Use a released Ardo version containing this capability before "
+"relying on it in a consumer site."
+msgstr ""
+"Wenn das Bootstrap-Skript oder eine seiner statischen Abhängigkeiten nicht "
+"geladen wird oder bei der Modulauswertung fehlschlägt, kann der "
+"Wiederherstellungscode nicht laufen: Statisches HTML und native Links bleiben "
+"die Rückfallebene. Über das vorhandene abbrechbare <0/>-Ereignis kann die "
+"Website weiterhin einen Fehler beim Laden eines Seiten-Chunks selbst "
+"behandeln; nach <1/> übernimmt dieser Listener die Wiederherstellung. Dieser "
+"Vertrag fängt keine beliebigen asynchronen Callbacks, "
+"Ereignisbehandlungsfehler oder bereits von einer eigenen React-Fehlergrenze "
+"behandelten Fehler ab. Nutze eine veröffentlichte Ardo-Version mit dieser "
+"Funktion, bevor sich eine nutzende Website darauf verlässt."
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
 "If the root URL itself returns 404 during local development, add <0/> or <1/>."
@@ -5771,6 +5917,10 @@ msgstr ""
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "If your issue isn't listed here:"
 msgstr "Ist dein Problem hier nicht aufgeführt:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Images"
+msgstr "Bilder"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Images Not Loading"
@@ -5971,6 +6121,16 @@ msgstr ""
 " Build. In Entwicklung bleiben die letzten gültigen Seiten erhalten; Fehler "
 "erscheinen im Vite-Overlay. Nach der Korrektur läuft die Generierung weiter."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Independent localized reload/home controls for loading, fatal hydration, and "
+"uncaught client rendering failures; see <0>Client Recovery</0> and "
+"<1>#498</1>."
+msgstr ""
+"Unabhängige lokalisierte Bedienelemente zum Neuladen und zur Startseite bei "
+"Ladefehlern, fatalen Hydrationsfehlern und unbehandelten clientseitigen "
+"Renderfehlern; siehe <0>Client-Wiederherstellung</0> und <1>#498</1>."
+
 #: docs/app/content/guide/components.mdx
 msgid "index.mdx"
 msgstr "index.mdx"
@@ -6136,19 +6296,43 @@ msgstr "Halte verfasste Einleitungen außerhalb des generierten Verzeichnisses."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
-"Keep custom components inside the docs project, for example in <0/>. Relative "
-"imports, Vite aliases, and symlinks to component source in sibling workspace "
-"packages fail in development and builds. Workspace package links to component "
-"source also fail. Install a published package when you need a packaged "
-"component library. Ardo's own workspace link is supported for framework "
-"development, using its built <1/> files."
+"Keep custom components inside the docs project, for example in <0/>, or in a "
+"declared, locally installed workspace package. A dependency such as <1/> may "
+"export TypeScript, TSX, CSS, and other Vite-supported source directly. Its own"
+" dependencies must be declared in that package and installed in its own <2/>; "
+"ancestor installations are not inherited. Ardo follows transitive workspace "
+"links and Vite watches imported source for development updates. Relative "
+"imports, aliases, and source symlinks cannot grant access to an undeclared "
+"sibling package. Ardo's own workspace link continues to use its built <3/> "
+"files."
 msgstr ""
-"Halte eigene Komponenten im Dokumentationsprojekt, etwa unter <0/>. Relative "
-"Importe, Vite-Aliasse und Symlinks zu benachbartem Workspace-Quellcode "
-"scheitern in Entwicklung und Build, ebenso Paketlinks auf solchen "
-"Komponentenquellcode. Installiere eine veröffentlichte Komponentenbibliothek."
-" Ardos eigener Workspace-Link wird zur Framework-Entwicklung über die "
-"gebauten <1/>-Dateien unterstützt."
+"Halte eigene Komponenten im Dokumentationsprojekt, etwa unter <0/>, oder in "
+"einem deklarierten, lokal installierten Workspace-Paket. Eine Abhängigkeit "
+"wie <1/> darf TypeScript, TSX, CSS und andere von Vite unterstützte Quellen "
+"direkt exportieren. Ihre eigenen Abhängigkeiten müssen in diesem Paket "
+"deklariert und in dessen eigenem <2/> installiert sein; Installationen in "
+"übergeordneten Verzeichnissen werden nicht geerbt. Ardo folgt transitiven "
+"Workspace-Links, und Vite überwacht importierte Quellen für Aktualisierungen"
+" während der Entwicklung. Relative Importe, Aliasse und Quellcode-Symlinks "
+"gewähren keinen Zugriff auf ein nicht deklariertes Nachbarpaket. Ardos "
+"eigener Workspace-Link verwendet weiterhin seine gebauten <3/>-Dateien."
+
+#~ #@ obsolete-since: 2026-11-10
+#~ #: docs/app/content/guide/troubleshooting.mdx
+#~ msgid ""
+#~ "Keep custom components inside the docs project, for example in <0/>. Relative "
+#~ "imports, Vite aliases, and symlinks to component source in sibling workspace "
+#~ "packages fail in development and builds. Workspace package links to component "
+#~ "source also fail. Install a published package when you need a packaged "
+#~ "component library. Ardo's own workspace link is supported for framework "
+#~ "development, using its built <1/> files."
+#~ msgstr ""
+#~ "Halte eigene Komponenten im Dokumentationsprojekt, etwa unter <0/>. Relative "
+#~ "Importe, Vite-Aliasse und Symlinks zu benachbartem Workspace-Quellcode "
+#~ "scheitern in Entwicklung und Build, ebenso Paketlinks auf solchen "
+#~ "Komponentenquellcode. Installiere eine veröffentlichte Komponentenbibliothek."
+#~ " Ardos eigener Workspace-Link wird zur Framework-Entwicklung über die "
+#~ "gebauten <1/>-Dateien unterstützt."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -7151,6 +7335,14 @@ msgstr "Optionale Deployment-Details"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Optionales internes oder externes Ziel. Macht die Karte klickbar."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Optionale Provider und gemeinsame lokale Bildverarbeitung für Publikationen "
+"und dafür aktiviertes Markdown/MDX; siehe <0>Bilder</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Optionale Darstellungsgröße."
@@ -7182,6 +7374,32 @@ msgstr ""
 "Ausdrücke, Modulanweisungen oder HTML, die bei der statischen Projektion "
 "entfallen würden, gib den vollständigen portablen Artikel als Markdown in "
 "<0/> an. Der Build meldet fehlende Ersatzinhalte."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Original filenames must be relative image paths without dot segments. "
+"Collisions with other images, bundled assets, or public files fail the build. "
+"SVG and animated images emit unchanged originals without requesting raster "
+"renditions; framing remains unsupported. External HTTP images remain unchanged"
+" and are never downloaded."
+msgstr ""
+"Dateinamen der Originale müssen relative Bildpfade ohne Punktsegmente sein. "
+"Kollisionen mit anderen Bildern, gebündelten Assets oder öffentlichen "
+"Dateien lassen den Build fehlschlagen. SVG und animierte Bilder werden "
+"unverändert ohne Rastervarianten ausgegeben; Bildausschnitte bleiben dafür "
+"ausgeschlossen. Externe HTTP-Bilder bleiben unverändert und werden nie "
+"heruntergeladen."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Originals are published with their EXIF and XMP metadata, including any "
+"location. The build warns about each original that contains GPS data. Strip "
+"the metadata before committing images that should keep their location private."
+msgstr ""
+"Originale werden mit ihren EXIF- und XMP-Metadaten veröffentlicht, "
+"einschließlich eines Standorts. Der Build warnt bei jedem Original mit "
+"GPS-Daten. Entferne die Metadaten vor dem Commit, wenn der Standort eines "
+"Bildes privat bleiben soll."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Other Providers"
@@ -7499,6 +7717,14 @@ msgstr ""
 "Ein Ardo-Projekt auf Version 4.0 und stabile URLs pro Hauptversion "
 "vorbereiten."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Prepare local images in Markdown and MDX, or deliver Ardo's compositions "
+"through an image provider."
+msgstr ""
+"Bereite lokale Bilder in Markdown und MDX auf oder liefere Ardos "
+"Bildkompositionen über einen Bildprovider aus."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Prerendering is always on. Base path settings live in Ardo config."
 msgstr "Prerendering immer aktiv; Basispfad in Ardo-Konfiguration."
@@ -7592,6 +7818,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "publication"
 msgstr "publication"
+
+#: docs/app/content/guide/images.mdx
+msgid "Publication compatibility"
+msgstr "Kompatibilität mit Publikationen"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -7794,6 +8024,21 @@ msgstr "Grund"
 msgid "Recipes"
 msgstr "Rezepte"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Recovery uses the document language and includes English, German, French, and "
+"Spanish copy without loading a translation catalog. Other languages fall back "
+"to an explicitly English region. It focuses the recovery heading and never "
+"displays the exception or stack trace. Reload only happens when the reader "
+"activates the button."
+msgstr ""
+"Die Wiederherstellung verwendet die Dokumentsprache und enthält englische, "
+"deutsche, französische und spanische Texte, ohne einen Übersetzungskatalog "
+"zu laden. Andere Sprachen erhalten einen ausdrücklich englisch markierten "
+"Bereich. Die Überschrift erhält den Fokus; Ausnahme und Stacktrace werden "
+"niemals angezeigt. Die Seite wird nur neu geladen, wenn der Leser die "
+"Schaltfläche aktiviert."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid "redirectFrom"
 msgstr "redirectFrom"
@@ -7825,6 +8070,19 @@ msgid ""
 msgstr ""
 "Relative Canonical- und Bildwerte werden mit <0/> absolut. Ohne <1/> entfallen"
 " relative URL-Tags."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Relative paths resolve beside the original Markdown file; paths starting with "
+"<0/> resolve inside <1/>. Add framing and preset overrides in the page's <2/> "
+"frontmatter map, keyed by the image path. See <3>publication images</3> for "
+"the shared framing model and presets."
+msgstr ""
+"Relative Pfade beziehen sich auf die ursprüngliche Markdown-Datei; Pfade mit "
+"<0/> am Anfang auf <1/>. Ergänze Bildausschnitte und abweichende Presets in "
+"der Frontmatter-Zuordnung <2/> der Seite, mit dem Bildpfad als Schlüssel. Das"
+" gemeinsame Ausschnittmodell und die Presets stehen unter "
+"<3>Publikationsbilder</3>."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Releases"
@@ -8500,6 +8758,17 @@ msgstr "Setze denselben Basispfad in <0/>:"
 msgid "Set to <0/> to hide the theme toggle. Defaults to <1/>."
 msgstr "<0/> blendet den Themewechsel aus. Standard: <1/>."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Set top-level <0/> in <1/> to prepare local Markdown images and the <2/> MDX "
+"component. Existing documentation keeps its normal image URLs when this option"
+" is absent. Publications always prepare their images."
+msgstr ""
+"Setze <0/> auf oberster Ebene in <1/>, um lokale Markdown-Bilder und die "
+"MDX-Komponente <2/> aufzubereiten. Ohne diese Option behalten bestehende "
+"Dokumentationen ihre normalen Bild-URLs. Publikationen bereiten ihre Bilder "
+"immer auf."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Set up a documentation site with an assistant or follow the manual steps."
@@ -8535,10 +8804,27 @@ msgstr "Einstellungen und Konfiguration"
 msgid "Setup"
 msgstr "Einrichtung"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Gemeinsame Bildauslieferung"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid "Shared Page Width"
 #~ msgstr "Gemeinsame Seitenbreite"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Sharp remains the default: responsive AVIF files and one JPEG fallback. A "
+"provider replaces raster encoding with URLs while Ardo still owns crop "
+"planning, presets, HTML, feeds, and social metadata. Development uses local "
+"Sharp output so unpublished originals remain viewable."
+msgstr ""
+"Sharp bleibt der Standard: responsive AVIF-Dateien und ein JPEG-Fallback. Ein "
+"Provider ersetzt die Rasterkodierung durch URLs; Ardo verantwortet weiterhin "
+"Ausschnitte, Presets, HTML, Feeds und Social-Metadaten. Im Entwicklungsmodus "
+"nutzt Ardo lokale Sharp-Dateien, damit unveröffentlichte Originale sichtbar "
+"bleiben."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -9388,6 +9674,27 @@ msgstr ""
 " Anwendungsquellcode zu importieren. Die <0>Anleitung für Agenten</0> "
 "erklärt diese Grenze."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"The endpoint must apply EXIF orientation before the exact integer pixel crop "
+"and then resize to the requested dimensions. Ardo does not detect faces. The "
+"returned MIME type must match the response and stay consistent within one crop"
+" family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require"
+" JPEG or PNG for feeds and social images. URLs must be normalized absolute "
+"HTTP(S) URLs without embedded credentials, or root-relative paths that already"
+" include the deployment base. They must not end in a comma, because that would"
+" break <0/>."
+msgstr ""
+"Der Endpunkt muss die EXIF-Ausrichtung vor dem exakten Ausschnitt in "
+"ganzzahligen Pixelkoordinaten anwenden und danach auf die angeforderten "
+"Abmessungen skalieren. Ardo erkennt keine Gesichter. Der zurückgegebene "
+"MIME-Typ muss der Antwort entsprechen und innerhalb einer Ausschnittfamilie "
+"gleich bleiben. Varianten erlauben AVIF, WebP, JPEG oder PNG; Fallbacks "
+"benötigen JPEG oder PNG für Feeds und Social-Bilder. URLs müssen "
+"normalisierte absolute HTTP(S)-URLs ohne eingebettete Zugangsdaten sein oder "
+"root-relative Pfade, die die Deployment-Basis bereits enthalten. Sie dürfen "
+"nicht auf ein Komma enden, weil das <0/> bricht."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "The example compares this site's hero illustration in the light and dark "
@@ -9416,6 +9723,22 @@ msgstr ""
 "<0/> bestimmt Haftpositionen und Ankerabstände. Setze die Variable über <2/>"
 " auf <1/>, damit beide Layouts sie teilen. Passe sie am Breakpoint einer "
 "höheren mobilen Kopfzeile an:"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The export also accepts a plain object. Supported fields are <0/>, <1/>, <2/>,"
+" <3/>, <4/>, and <5/>. The native view has its own basic styling; a custom "
+"class must not depend on rendering the normal chrome. If the callback or a "
+"catalog it reads throws, Ardo uses its built-in copy. The default home "
+"destination preserves the page base and configured locale."
+msgstr ""
+"Der Export akzeptiert auch ein einfaches Objekt. Unterstützte Felder sind "
+"<0/>, <1/>, <2/>, <3/>, <4/> und <5/>. Die native Ansicht hat eine eigene "
+"grundlegende Gestaltung; eine eigene Klasse darf nicht vom Rendern der "
+"normalen Oberfläche abhängen. Wenn der Callback oder ein verwendeter Katalog"
+" einen Fehler auslöst, nutzt Ardo seine integrierten Texte. Das Standardziel "
+"des Startseiten-Links behält Basispfad und konfigurierte Sprache der Seite "
+"bei."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid ""
@@ -10083,6 +10406,21 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tooltip component"
 msgstr "Tooltip"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Top-level <0/> applies to covers, body images, author portraits, and opted-in "
+"documentation. Portraits retain their 96 and 192 pixel widths. Existing <1/> "
+"remains a compatible alias for publication settings. Top-level values take "
+"precedence field by field; named presets merge, and an explicitly supplied "
+"top-level preset wins."
+msgstr ""
+"<0/> auf oberster Ebene gilt für Titelbilder, Inhaltsbilder, Autorenporträts"
+" und dafür aktivierte Dokumentation. Porträts behalten die Breiten 96 und "
+"192 Pixel. Das bestehende <1/> bleibt als kompatibler Alias für "
+"Publikationseinstellungen erhalten. Werte auf oberster Ebene haben feldweise "
+"Vorrang; benannte Presets werden zusammengeführt, wobei ein explizites Preset"
+" auf oberster Ebene gewinnt."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tracking issue"
