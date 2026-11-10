@@ -222,6 +222,23 @@ describe("GPS metadata in originals", () => {
     expect(hasGpsMetadata({ xmp: Buffer.from('dc:title="GPS"') })).toBe(false)
     expect(
       hasGpsMetadata({
+        xmp: Buffer.from(
+          '<d xmlns:位置="http://ns.adobe.com/exif/1.0/" 位置:GPSLatitude="48,8N"/>'
+        ),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="http://ns.adobe.com/exif/1.0&#x2f;" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<GPSLatitude xmlns="http://ns.adobe.com/exif/1.0&#47;">48</GPSLatitude>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
         xmp: Buffer.from('<d xmlns:g="http://ns.adobe.com/exif/1.0/" g:GPSLatitude="48,8N"/>'),
       })
     ).toBe(true)
