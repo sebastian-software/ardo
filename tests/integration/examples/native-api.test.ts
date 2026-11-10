@@ -68,7 +68,7 @@ describe("native-api fixture build", () => {
     const markdownDir = path.join(__dirname, "app", "routes", "api-reference")
     const htmlDir = path.join(__dirname, "build", "client", "api-reference")
     const pages = collectFiles(markdownDir, ".md")
-    expect(pages).toHaveLength(12)
+    expect(pages).toHaveLength(14)
     for (const page of pages) {
       expect(fs.readFileSync(page, "utf8"), page).not.toContain("Additional members may be defined")
       const route = path.relative(markdownDir, page).replace(/\.md$/u, "")
@@ -92,6 +92,33 @@ describe("native-api fixture build", () => {
     expect(reader).toContain("Reads a single document.")
     expect(reader).toContain("Reads several documents in order.")
     expect(reader).toContain("The document sources")
+  })
+
+  it("renders all const-tuple choices from checked declarations and links their public pages", () => {
+    const markdown = path.join(__dirname, "app/routes/api-reference")
+    const html = path.join(__dirname, "build/client/api-reference")
+    const index = fs.readFileSync(path.join(html, "index.html"), "utf8")
+    for (const [alias, values] of [
+      ["configlevel", ["essential", "recommended", "strict"]],
+      ["scopedconfig", ["react", "node", "vitest", "jest", "scripts", "config", "declarations"]],
+    ] as const) {
+      const generated = fs.readFileSync(path.join(markdown, "types", `${alias}.md`), "utf8")
+      const rendered = fs.readFileSync(path.join(html, "types", alias, "index.html"), "utf8")
+      const renderedCode = Array.from(
+        rendered.matchAll(/<pre\b[^>]*>[\s\S]*?<\/pre>/gu),
+        (match) => match[0]
+      ).join("\n")
+      expect(generated).toContain("## Values")
+      for (const value of values) {
+        expect(generated).toContain(JSON.stringify(value))
+        expect(renderedCode).toContain(value)
+      }
+      expect(rendered).toContain("Values")
+      expect(rendered).not.toContain("Additional members may be defined")
+      expect(index).toContain(`/api-reference/types/${alias}`)
+    }
+    expect(fs.existsSync(path.join(html, "variables/config-levels"))).toBe(false)
+    expect(fs.existsSync(path.join(html, "variables/scoped-configs"))).toBe(false)
   })
 
   it("renders inherited component options and their documentation", () => {

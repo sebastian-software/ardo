@@ -179,3 +179,10 @@ export interface RenderResult {
 export function DocumentationPanel(props: DocumentationOptions): string {
   return props.sections.join(", ")
 }
+
+const CONFIG_LEVELS = ["essential", "recommended", "strict"] as const
+
+/** Configuration level selected by the caller. */
+export type ConfigLevel = (typeof CONFIG_LEVELS)[number]
+
+export type { ScopedConfig } from "./scoped.js"

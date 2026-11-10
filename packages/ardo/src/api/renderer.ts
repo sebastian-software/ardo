@@ -143,6 +143,8 @@ function renderDeclaration(item: ApiDeclaration, links: Links): string[] {
     codeBlock(withImport(item, displayCode(item.signature))),
     "",
   ]
+  if (item.literalChoices != null)
+    lines.push("## Values", "", codeBlock(item.literalChoices.join(" | ") || "never"), "")
   appendCallSignatures(lines, item, links)
   const properties = item.properties.filter((property) => property.kind === "property")
   if (properties.length > 0)
