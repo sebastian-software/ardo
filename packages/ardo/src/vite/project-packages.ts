@@ -9,16 +9,14 @@ import {
   getManagedRuntimePackageNames,
 } from "./managed-runtime"
 import { isPathInsideDirectory } from "./path-utils"
+import {
+  dependencyNames,
+  importedPackageName,
+  isOptional,
+  type Manifest,
+  type PackageOwner,
+} from "./project-package-manifest"
 
-type Manifest = {
-  name?: string
-  dependencies?: Record<string, string>
-  devDependencies?: Record<string, string>
-  optionalDependencies?: Record<string, string>
-  peerDependencies?: Record<string, string>
-  peerDependenciesMeta?: Record<string, { optional?: boolean }>
-}
-type PackageOwner = { root: string; manifest: Manifest }
 type ProjectPackagesOptions = { ardoRoot?: string; managedRuntime?: boolean }
 type FileCheckOptions = { importer?: string; managedName?: string; managedSourcePath?: string }
 type ManagedFileCheck = {
@@ -36,16 +34,7 @@ type FileOwnershipCheck = {
   target: PackageOwner | undefined
 }
 
-function importedPackageName(id: string): string | undefined {
-  if (/^(?:[./#\0]|[\w-]+:)/u.test(id)) return undefined
-  const specifier = id.split(/[?#]/u, 1)[0] ?? id
-  return specifier
-    .split("/")
-    .slice(0, specifier.startsWith("@") ? 2 : 1)
-    .join("/")
-}
-
-/** Check each resolved import against local installations without walking the dependency graph. */
+/** Check each resolved import against declared, locally installed package ownership. */
 export class ProjectPackages {
   readonly root: string
   private readonly project: PackageOwner
@@ -57,6 +46,7 @@ export class ProjectPackages {
   private readonly resolvedModuleSources = new Map<string, string>()
   private readonly canonicalPaths = new Map<string, string>()
   private readonly installedPackages = new Map<string, string>()
+  private readonly workspacePackages = new Map<string, PackageOwner>()
 
   constructor(root: string, options: ProjectPackagesOptions = {}) {
     this.root = realpathSync(root)
@@ -65,6 +55,12 @@ export class ProjectPackages {
       options.ardoRoot ?? path.join(this.root, "node_modules/ardo")
     )
     this.managesRuntime = options.managedRuntime === true
+    this.discoverWorkspacePackages()
+  }
+
+  /** Source roots reached through the project's installed dependency graph. */
+  get workspaceRoots(): string[] {
+    return [...this.workspacePackages.keys()]
   }
 
   checkImport(id: string, importer: string | undefined): boolean {
@@ -141,7 +137,7 @@ export class ProjectPackages {
       )
     }
     throw new Error(
-      `[ardo] Import outside the documentation package: ${file}. Keep component source inside ${this.root}, or install a packaged dependency there.`
+      `[ardo] Import outside the documentation package: ${file}. Keep component source inside ${this.root}, or declare and locally install its package.`
     )
   }
 
@@ -227,12 +223,40 @@ export class ProjectPackages {
       )
       if (name != null) return this.owner(path.join(file.slice(0, index), "node_modules", name))
     }
+    // Match the most specific installed source package, never an arbitrary
+    // ancestor package.json or a sibling reached only through a path alias.
+    const workspace = [...this.workspacePackages.values()]
+      .filter((owner) => isPathInsideDirectory(file, owner.root))
+      .sort((left, right) => right.root.length - left.root.length)[0]
+    if (workspace != null) return workspace
     if (isPathInsideDirectory(file, this.root)) return this.project
-    // Only Ardo's published files may cross a workspace source boundary.
+    // Ardo's own workspace installation still exposes only its published files.
     if (isPathInsideDirectory(file, path.join(this.frameworkRoot, "dist"))) {
       return this.owner(this.frameworkRoot)
     }
     return undefined
+  }
+
+  private discoverWorkspacePackages(): void {
+    const pending = [this.project]
+    const visited = new Set<string>()
+    for (let owner = pending.pop(); owner != null; owner = pending.pop()) {
+      if (visited.has(owner.root)) continue
+      visited.add(owner.root)
+      for (const name of dependencyNames(owner, this.root)) {
+        if (this.managesRuntime && getManagedRuntimePackageName(name) != null) continue
+        const installed = this.installedPackage(owner, name)
+        if (installed == null) continue
+        const root = this.canonicalPath(installed)
+        // Ardo's own workspace installation still exposes only its built dist.
+        if (root === this.root || root === this.frameworkRoot) continue
+        const dependency = this.owner(root)
+        if (!root.includes(`${path.sep}node_modules${path.sep}`)) {
+          this.workspacePackages.set(root, dependency)
+        }
+        pending.push(dependency)
+      }
+    }
   }
 
   private owner(root: string): PackageOwner {
@@ -272,7 +296,7 @@ export class ProjectPackages {
     if (cached != null) return cached
     const local = path.join(this.root, "node_modules", name)
     const candidates = [path.join(owner.root, "node_modules", name)]
-    if (owner.root !== this.root) {
+    if (owner.root !== this.root && !this.workspacePackages.has(owner.root)) {
       const marker = `${path.sep}node_modules${path.sep}`
       const index = owner.root.lastIndexOf(marker)
       if (index !== -1) candidates.push(path.join(owner.root.slice(0, index), "node_modules", name))
@@ -307,20 +331,4 @@ function absoluteFilePath(id: string): string | undefined {
   const cleanId = id.split("?", 1)[0]
   const file = cleanId.startsWith("file:") ? fileURLToPath(cleanId) : cleanId
   return path.isAbsolute(file) ? file : undefined
-}
-
-function dependencyNames(owner: PackageOwner, projectRoot: string): string[] {
-  return Object.keys({
-    ...owner.manifest.dependencies,
-    ...owner.manifest.peerDependencies,
-    ...owner.manifest.optionalDependencies,
-    ...(owner.root === projectRoot ? owner.manifest.devDependencies : {}),
-  })
-}
-
-function isOptional(manifest: Manifest, name: string): boolean {
-  return (
-    manifest.optionalDependencies?.[name] != null ||
-    manifest.peerDependenciesMeta?.[name]?.optional === true
-  )
 }

@@ -73,19 +73,79 @@ describe("documentation package ownership", () => {
     }).toThrow(/not installed/u)
   })
 
-  it("rejects workspace source links and source symlinks inside the project", () => {
+  it("rejects undeclared workspace source links and source symlinks inside the project", () => {
     const outside = writePackage("components", { name: "components" })
     symlinkSync(outside, path.join(root, "components"), "dir")
     const packages = new ProjectPackages(root)
     expect(() => {
       packages.checkFile(path.join(root, "components/index.js"))
     }).toThrow(/Import outside the documentation package/u)
+  })
+
+  it("allows declared local workspace source and its own declared dependencies", () => {
+    const components = writePackage("packages/components", {
+      name: "components",
+      dependencies: { tokens: "workspace:*", dependency: "1" },
+    })
+    const tokens = writePackage("packages/tokens", {
+      name: "tokens",
+      dependencies: { components: "workspace:*" },
+    })
+    const dependency = writePackage("packages/components/node_modules/dependency", {
+      name: "dependency",
+    })
     writePackage("docs", { dependencies: { components: "workspace:*" } })
     mkdirSync(path.join(root, "node_modules"))
-    symlinkSync(outside, path.join(root, "node_modules/components"), "dir")
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    symlinkSync(tokens, path.join(components, "node_modules/tokens"), "dir")
+    mkdirSync(path.join(tokens, "node_modules"))
+    symlinkSync(components, path.join(tokens, "node_modules/components"), "dir")
+    const packages = new ProjectPackages(root)
+    expect(packages.workspaceRoots).toHaveLength(2)
+    const importer = path.join(components, "index.js")
     expect(() => {
-      new ProjectPackages(root).checkFile(path.join(root, "node_modules/components/index.js"), {
-        importer: path.join(root, "entry.js"),
+      packages.checkImport("components", path.join(root, "entry.js"))
+      packages.checkFile(importer, { importer: path.join(root, "entry.js") })
+      packages.checkImport("tokens", importer)
+      packages.checkFile(path.join(tokens, "index.js"), { importer })
+      packages.checkImport("dependency", importer)
+      packages.checkFile(path.join(dependency, "index.js"), { importer })
+      packages.checkFile(path.join(tokens, "index.js"))
+    }).not.toThrow()
+    expect(() => packages.checkImport("tokens", path.join(root, "entry.js"))).toThrow(
+      /Undeclared dependency "tokens"/u
+    )
+    expect(() => {
+      packages.checkFile(path.join(tokens, "index.js"), { importer: path.join(root, "entry.js") })
+    }).toThrow(/Undeclared application dependency "tokens"/u)
+  })
+
+  it("does not inherit ancestor dependencies from a workspace package", () => {
+    const components = writePackage("packages/components", {
+      name: "components",
+      dependencies: { dependency: "1" },
+    })
+    writePackage("packages/node_modules/dependency", { name: "dependency" })
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    mkdirSync(path.join(root, "node_modules"))
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    const packages = new ProjectPackages(root)
+    expect(() => packages.checkImport("dependency", path.join(components, "index.js"))).toThrow(
+      /not installed.*components\/node_modules/u
+    )
+  })
+
+  it("rejects a workspace source symlink escaping its installed package", () => {
+    const components = writePackage("packages/components", { name: "components" })
+    const outside = writePackage("packages/other", { name: "other" })
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    mkdirSync(path.join(root, "node_modules"))
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    symlinkSync(outside, path.join(components, "other"), "dir")
+    const packages = new ProjectPackages(root)
+    expect(() => {
+      packages.checkFile(path.join(components, "other/index.js"), {
+        importer: path.join(components, "index.js"),
       })
     }).toThrow(/Import outside the documentation package/u)
   })
@@ -142,6 +202,30 @@ describe("documentation package ownership", () => {
     expect(() => {
       packages.checkFile(path.join(appReact, "index.js"))
     }).toThrow(/Managed runtime package "react" resolved outside Ardo's own installation/u)
+  })
+
+  it("rejects a workspace package's competing managed runtime when imported by path", () => {
+    const ardo = writePackage("framework", { name: "ardo", dependencies: { react: "19" } })
+    const managedReact = writePackage("framework/node_modules/react", { name: "react" })
+    const components = writePackage("packages/components", {
+      name: "components",
+      peerDependencies: { react: "20" },
+    })
+    const workspaceReact = writePackage("packages/components/node_modules/react", {
+      name: "react",
+    })
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    mkdirSync(path.join(root, "node_modules"))
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    const packages = new ProjectPackages(root, { ardoRoot: ardo, managedRuntime: true })
+    const importer = path.join(components, "index.js")
+    expect(() => packages.checkImport("react", importer)).not.toThrow()
+    expect(() =>
+      packages.checkFile(path.join(managedReact, "index.js"), { importer })
+    ).not.toThrow()
+    expect(() => packages.checkFile(path.join(workspaceReact, "index.js"), { importer })).toThrow(
+      /Managed runtime package "react" resolved outside Ardo's own installation/u
+    )
   })
 
   it("rechecks optimizer cache IDs against the source validated at resolution", () => {

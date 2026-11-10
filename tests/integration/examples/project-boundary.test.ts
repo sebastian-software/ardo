@@ -1,10 +1,10 @@
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
 import { createRequire } from "node:module"
 import os from "node:os"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 import { basicDirectory } from "./project"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 const appRequire = createRequire(path.join(basicDirectory, "package.json"))
 const ardoRequire = createRequire(appRequire.resolve("ardo/package.json"))
@@ -112,6 +112,87 @@ describe("Ardo documentation import boundary", () => {
     await expect(
       build({ ...config(), resolve: { alias: { component: path.join(outside, "index.js") } } })
     ).rejects.toThrow(/Import outside the documentation package/u)
+  })
+
+  it("builds declared direct and transitive workspace TypeScript sources and watches edits", async () => {
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    const components = writePackage("packages/components", {
+      name: "components",
+      exports: "./index.ts",
+      dependencies: { tokens: "workspace:*", "cjs-dependency": "1" },
+    })
+    const tokens = writePackage("packages/tokens", { name: "tokens", exports: "./index.ts" })
+    const tokenSource = path.join(tokens, "index.ts")
+    writeFileSync(
+      path.join(components, "index.ts"),
+      'import dependency from "cjs-dependency"; export const offset: number = dependency.offset; export { value } from "tokens";'
+    )
+    writeFileSync(tokenSource, "export const value: number = 42;")
+    mkdirSync(path.join(root, "node_modules"))
+    writePackage(
+      "packages/components/node_modules/cjs-dependency",
+      { name: "cjs-dependency", type: "commonjs" },
+      "module.exports = { offset: 1 };"
+    )
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    symlinkSync(tokens, path.join(components, "node_modules/tokens"), "dir")
+    writeFileSync(path.join(root, "entry.mjs"), 'export { value, offset } from "components";')
+    await build(config())
+    const result = await import(pathToFileURL(path.join(root, "build/entry.js")).href)
+    expect(result.value).toBe(42)
+    expect(result.offset).toBe(1)
+
+    const server = await createServer({
+      ...config(),
+      server: {
+        middlewareMode: true,
+        fs: { strict: true, allow: [realpathSync(root)] },
+        watch: { usePolling: true, interval: 20 },
+      },
+    })
+    try {
+      const canonicalTokens = realpathSync(tokens)
+      expect(server.config.server.fs.allow).toContain(realpathSync(components))
+      expect(server.config.server.fs.allow).toContain(canonicalTokens)
+      expect(server.config.server.fs.allow).not.toContain(realpathSync(parent))
+      await server.transformRequest("/entry.mjs")
+      const transformedComponent = await server.transformRequest(
+        `/@fs${realpathSync(components)}/index.ts`
+      )
+      expect(transformedComponent?.code).toContain(`${canonicalTokens}/index.ts`)
+      expect(transformedComponent?.code).toContain("/.vite/deps/cjs-dependency.js")
+      const url = `/@fs${canonicalTokens}/index.ts`
+      expect((await server.transformRequest(url))?.code).toContain("42")
+      await vi.waitFor(() => {
+        expect(server.watcher.getWatched()[canonicalTokens]).toContain("index.ts")
+      })
+      writeFileSync(tokenSource, "export const value: number = 43;")
+      await vi.waitFor(async () => {
+        expect((await server.transformRequest(url))?.code).toContain("43")
+      })
+    } finally {
+      await server.close()
+    }
+  })
+
+  it("rejects undeclared and ancestor imports made by installed workspace sources", async () => {
+    writePackage("docs", { dependencies: { components: "workspace:*" } })
+    const components = writePackage("packages/components", { name: "components" })
+    writePackage("packages/node_modules/dependency", { name: "dependency" })
+    mkdirSync(path.join(root, "node_modules"))
+    symlinkSync(components, path.join(root, "node_modules/components"), "dir")
+    writeFileSync(path.join(root, "entry.mjs"), 'export { value } from "components";')
+    writeFileSync(path.join(components, "index.js"), 'export { value } from "dependency";')
+    await expect(build(config())).rejects.toThrow(/Undeclared dependency "dependency"/u)
+    writePackage(
+      "packages/components",
+      {
+        name: "components",
+        dependencies: { dependency: "1" },
+      },
+      'export { value } from "dependency";'
+    )
+    await expect(build(config())).rejects.toThrow(/not installed.*components\/node_modules/u)
   })
 
   it("does not borrow an optional dependency when an unused feature references it", async () => {

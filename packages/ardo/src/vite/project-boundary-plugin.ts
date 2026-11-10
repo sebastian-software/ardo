@@ -12,6 +12,7 @@ import {
   MANAGED_RUNTIME_SOURCE_META_KEY,
 } from "./managed-runtime"
 import { ProjectPackages } from "./project-packages"
+import { normalizePath } from "./path-utils"
 
 type ProjectBoundaryOptions = { ardoRoot?: string; managedRuntime?: boolean }
 
@@ -29,6 +30,10 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
           (pluginOptions.managedRuntime ? findArdoPackageRoot() : undefined),
         managedRuntime: pluginOptions.managedRuntime,
       })
+      // Linked source packages use Vite's regular transform, dependency scan,
+      // and file watcher. Grant only their declared installation roots rather
+      // than the whole monorepo; imports still pass the ownership check below.
+      config.server.fs.allow.push(...packages.workspaceRoots.map(normalizePath))
     },
     async resolveId(id, importer, resolveOptions) {
       if (resolveOptions.custom?.[MANAGED_RUNTIME_RESOLUTION_KEY] === true) return
