@@ -220,6 +220,21 @@ describe("GPS metadata in originals", () => {
     expect(hasGpsMetadata({ exif: exifBlock("II", 0x88_25).subarray(0, 12) })).toBe(false)
     expect(hasGpsMetadata({ xmp: Buffer.from('exif:GPSLatitude="48,8N"') })).toBe(true)
     expect(hasGpsMetadata({ xmp: Buffer.from('dc:title="GPS"') })).toBe(false)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="http://ns.adobe.com/exif/1.0/" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<GPSLatitude xmlns="http://ns.adobe.com/exif/1.0/">48,8N</GPSLatitude>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="urn:other" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(false)
   })
   it("marks only the original that publishes a location", async () => {
     const context = await input()

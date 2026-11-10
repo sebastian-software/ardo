@@ -2,13 +2,22 @@ import type { Metadata } from "sharp"
 
 const TIFF_HEADER_OFFSET = 6
 const GPS_IFD_POINTER = 0x88_25
+const XMP_EXIF_NAMESPACE = "http://ns.adobe.com/exif/1.0/"
 
 /** Whether an original would publish a location when it is emitted unchanged. */
 export function hasGpsMetadata({ exif, xmp }: Pick<Metadata, "exif" | "xmp">): boolean {
-  return (
-    (exif != null && exifHasGpsIfd(exif)) ||
-    (xmp != null && /\bexif:GPS[A-Z]/u.test(xmp.toString("latin1")))
-  )
+  return (exif != null && exifHasGpsIfd(exif)) || (xmp != null && xmpHasGpsProperty(xmp))
+}
+
+/** XMP prefixes are arbitrary, so a GPS property counts under any prefix bound to the namespace. */
+function xmpHasGpsProperty(xmp: Buffer): boolean {
+  const packet = xmp.toString("latin1")
+  const exifPrefixes = new Set(["exif"])
+  for (const binding of packet.matchAll(/\bxmlns(?::([\w.-]+))?\s*=\s*["']([^"']*)["']/gu))
+    if (binding[2] === XMP_EXIF_NAMESPACE) exifPrefixes.add(binding[1] ?? "")
+  for (const property of packet.matchAll(/(?:^|[\s<])(?:([\w.-]+):)?GPS[A-Z]/gu))
+    if (exifPrefixes.has(property[1] ?? "")) return true
+  return false
 }
 
 /** Looks for the GPS IFD pointer in IFD0 of the EXIF block, whose TIFF header follows `Exif\0\0`. */
