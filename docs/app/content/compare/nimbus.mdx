@@ -1,0 +1,57 @@
+---
+title: Ardo vs Nimbus
+description: Compare React and Astro documentation workflows, UI ownership, API references, agent services, and migration paths.
+sidebar: false
+prev: false
+next: false
+---
+
+# Ardo vs Nimbus
+
+Ardo and Nimbus keep documentation in your repository and publish static HTML plus Markdown for agents. The main choices are the component model, who maintains the UI files, and the kind of API reference you need.
+
+Checked **November 10, 2026** against released **Ardo 6.5.0**, **Nimbus 0.19.4**, and the **Nimbus scaffolder 0.8.3**. Nimbus sources below are pinned to its [0.19.4 release commit](https://github.com/cloudflare/nimbus/tree/980cee6da75f81982552b68a3607c0a19ee11987), not unreleased main. Ardo's baseline is its [6.5.0 tag](https://github.com/sebastian-software/ardo/tree/ardo-v6.5.0).
+
+## Which Workflow Fits?
+
+Choose Ardo when your documentation and examples should share one React component model, the API comes from TypeScript, and you prefer upgrading packaged UI. Custom React roots and layouts remain available.
+
+Choose Nimbus when owning the layout, component, and style files is central to your workflow, or you need its more extensive OpenAPI reference and optional server-side agent services. Its [project structure](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/project-structure.mdx) separates the files you own from the framework dependency; updates do not simply overwrite your site.
+
+## Feature Comparison
+
+| Area               | Ardo 6.5.0                                                                                          | Nimbus 0.19.4                                                                                                                                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page model         | React pages and MDX, prerendered and hydrated; ordinary document navigation.                        | Astro pages and MDX. Interactive framework components use [Astro islands](https://docs.astro.build/en/concepts/islands/).                                                                                                                      |
+| UI ownership       | UI ships in the package; compose or replace it with React.                                          | Scaffolded layouts, components, and styles live in [your repository](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/project-structure.mdx).                                      |
+| API reference      | Native TypeScript reference plus a static local OpenAPI generator.                                  | [OpenAPI 3.x](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/api-reference/index.mdx), with dedicated operations, schemas, API versions, and reference UI.                       |
+| Languages          | Complete static locale trees; this site's four languages use Palamedes catalogs.                    | Nimbus exposes a site-wide document locale; language routing and translation belong to the [Astro project](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/packages/nimbus-docs/src/types.ts).              |
+| Versioning         | Static major-version snapshots; guide/API directories can be versioned independently of site pages. | Separate content collections and paths for [earlier docs versions](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/navigation/versioning.mdx); API versions have their own model. |
+| Search             | Built-in MiniSearch with generated indexes.                                                         | Static [Pagefind search](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/navigation/search.mdx), or a project-supplied provider.                                                  |
+| Agent files        | Per-page Markdown, llms.txt, llms-full.txt, and optional Agent Skills discovery.                    | [Markdown and llms.txt](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/ai/publish-markdown.mdx), with optional agent services.                                                   |
+| MCP                | No framework-provided runtime MCP endpoint.                                                         | Optional [remote MCP](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/ai/remote-mcp.mdx): list_pages and get_page; requires a server adapter and SDK.                             |
+| Check and lint     | Build-free ardo check, authoring ardo lint, and build-time internal-link checks.                    | [nimbus-docs check and lint](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/cli.mdx), including fixes and upgrade checks.                                                        |
+| Recipes            | ardo add prints version-matched recipes; it writes no files.                                        | [add](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/cli.mdx) copies component source; features hand recipes to an agent.                                                        |
+| Browser JavaScript | React hydration and interactive UI; no client router.                                               | Astro's islands plus chosen components and scripts; payload depends on that composition.                                                                                                                                                       |
+| Hosting            | Static files on any static host.                                                                    | [Static by default](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/deploy/other-hosts.mdx); request rendering and remote MCP need a server adapter.                              |
+
+Ardo's [API guide](/en/guide/api-documentation), [configuration](/en/guide/configuration), [internationalization](/en/guide/internationalization), and [agent instructions](/en/guide/agent-instructions) describe the Ardo side of this table. Nimbus is pre-1.0; check its release notes before assuming a later minor release behaves identically.
+
+## Coming from Nimbus
+
+| Nimbus project                         | Ardo equivalent or migration work                                                                                                               |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| src/content/docs/                      | Move prose into app/routes/, with locale and guide directories when configured. Preserve old URLs with explicit redirects.                      |
+| title, description, sidebar.order      | Keep title and description; map sidebar.order to order. Review other [frontmatter](/en/guide/frontmatter) fields individually.                  |
+| mode: custom                           | Use layout: bare for a page without the docs frame.                                                                                             |
+| src/components.ts and Astro components | Review each component and its props; port Astro code to React or use Ardo's MDX components. There is no automatic component conversion.         |
+| astro.config.ts and nimbus()           | Use ardo.config.ts for framework options and app/root.tsx for UI composition; keep custom Vite plugins in vite.config.ts.                       |
+| OpenAPI references                     | Start with Ardo's local openapi configuration. Nimbus API versions, schema views, and interactive reference controls are not a drop-in mapping. |
+
+Audit drafts, hidden pages, and publishing rules before moving content; Nimbus flags do not automatically preserve their meaning in Ardo. Follow the [setup instructions](/en/guide/agent-instructions) and verify the published route set, links, and examples in a production preview.
+
+## Gaps and Current Work
+
+Nimbus also supports [Git content sources](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/content-sources/git.mdx) and [partial builds](https://github.com/cloudflare/nimbus/blob/980cee6da75f81982552b68a3607c0a19ee11987/apps/www/src/content/docs/publish/partial-builds.mdx). Ardo's corresponding proposals remain [#473](https://github.com/sebastian-software/ardo/issues/473) and [#474](https://github.com/sebastian-software/ardo/issues/474). A CI checkout plus local content mapping is available today.
+
+Ardo's authoring components, check/lint commands, static Mermaid rendering, and recipes are already implemented: [#469](https://github.com/sebastian-software/ardo/issues/469), [#470](https://github.com/sebastian-software/ardo/issues/470), [#472](https://github.com/sebastian-software/ardo/issues/472), and [#475](https://github.com/sebastian-software/ardo/issues/475). Automatic page share images are tracked in [#471](https://github.com/sebastian-software/ardo/issues/471); they are not part of the released 6.5.0 baseline used here.

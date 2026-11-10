@@ -4,6 +4,9 @@ import "./runtime"
 
 // Literal source messages let Palamedes extract and compile the shared UI copy.
 const messages: Record<string, () => string> = {
+  "Repo-owned Astro layouts and components, with optional agent services. Ardo ships its React UI in a package.":
+    () =>
+      t`Repo-owned Astro layouts and components, with optional agent services. Ardo ships its React UI in a package.`,
   ". Median warm run, including highlighting.": () => t`. Median warm run, including highlighting.`,
   ". Median source-to-Markdown run, fresh compiler session.": () =>
     t`. Median source-to-Markdown run, fresh compiler session.`,

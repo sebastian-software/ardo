@@ -17,3 +17,4 @@ catalogs:
   - path: app/i18n/guides/{locale}
     include:
       - app/content/guide
+      - app/content/compare

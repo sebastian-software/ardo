@@ -79,7 +79,8 @@ Maybe not if:
 - you need hosted editing and analytics (a hosted platform does that).
 
 See [how Ardo compares](https://ardo-docs.dev/v6/guide/what-is-ardo#how-ardo-compares) to
-Docusaurus, Starlight, VitePress, Nextra, Fumadocs, and Mintlify.
+Docusaurus, Starlight, VitePress, Nextra, Fumadocs, and Mintlify. For another repo-native approach,
+read [Ardo vs Nimbus](https://ardo-docs.dev/en/compare/nimbus).
 
 ## Under the hood
 

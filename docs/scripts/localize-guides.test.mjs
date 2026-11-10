@@ -6,7 +6,7 @@ import path from "node:path"
 import { analyzeMdxNative, compileCatalogModule } from "@palamedes/core-node"
 import { createI18n } from "@palamedes/core"
 import { prepareDocument } from "ferromark"
-import { generateGuides, localizeGuide, mdxOptions } from "./localize-guides.mjs"
+import { contentSections, generateGuides, localizeGuide, mdxOptions } from "./localize-guides.mjs"
 
 const options = {
   format: "mdx",
@@ -126,16 +126,18 @@ import { Thing } from "./types"
   }
 })
 
-test("all generated guide routes retain source code, links, and heading identities", async () => {
+test("all generated content routes retain source code, links, and heading identities", async () => {
   await generateGuides()
-  const root = new URL("../app/content/guide/", import.meta.url)
-  const files = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".mdx"))
+  const root = new URL("../app/content/", import.meta.url)
+  const files = (await readdir(root, { recursive: true })).filter(
+    (file) => file.endsWith(".mdx") && contentSections.includes(file.split(path.sep)[0])
+  )
   assert.ok(files.length > 0)
   for (const file of files) {
     const source = prepareDocument(await readFile(new URL(file, root), "utf8"), options)
     for (const locale of ["en", "de", "fr", "es"]) {
       const localized = prepareDocument(
-        await readFile(new URL(`../app/routes/${locale}/guide/${file}`, import.meta.url), "utf8"),
+        await readFile(new URL(`../app/routes/${locale}/${file}`, import.meta.url), "utf8"),
         options
       )
       assert.deepEqual(
