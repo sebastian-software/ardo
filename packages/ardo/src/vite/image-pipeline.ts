@@ -16,7 +16,12 @@ import { calculateImageCrop, type CropRectangle } from "./image-framing"
 
 export { calculateImageCrop } from "./image-framing"
 
-export type ImageAsset = { fileName: string; source: Buffer }
+export type ImageAsset = {
+  fileName: string
+  source: Buffer
+  /** The source image, when this unchanged original would publish its GPS location. */
+  gpsSource?: string
+}
 export type ImageInput = {
   image: PostImageInput
   sourceFile: string

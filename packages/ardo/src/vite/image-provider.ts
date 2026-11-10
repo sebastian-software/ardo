@@ -3,6 +3,7 @@ import path from "node:path"
 import type { Metadata } from "sharp"
 import type { ImageCropFamily, ImageProvider, PostImage } from "../images/types"
 import type { ImageInput, ImageAsset, ImagePlan } from "./image-pipeline"
+import { hasGpsMetadata } from "./image-metadata"
 
 type Source = ReturnType<ImageProvider["source"]>
 const sources = new WeakMap<Map<string, ImageAsset>, WeakMap<ImageProvider, Map<string, Source>>>()
@@ -99,6 +100,7 @@ function originalSource(
     width,
     height,
     orientation: metadata.orientation ?? 1,
+    base: context.base,
   })
   if (result == null || typeof result.fileName !== "string" || !validFileName(result.fileName))
     throw new Error(
@@ -108,7 +110,11 @@ function originalSource(
   const existing = context.assets.get(result.fileName)
   if (existing != null && !existing.source.equals(source))
     throw new Error("Image provider.source fileName collides with another image.")
-  context.assets.set(result.fileName, { fileName: result.fileName, source })
+  context.assets.set(result.fileName, {
+    fileName: result.fileName,
+    source,
+    ...(hasGpsMetadata(metadata) ? { gpsSource: path.relative(context.root, input.file) } : {}),
+  })
   const resolved = { fileName: result.fileName, url }
   cache.set(sha256, resolved)
   return resolved
@@ -138,20 +144,26 @@ function validFileName(name: string): boolean {
   )
 }
 function publicUrl(value: unknown): string {
-  if (typeof value === "string") {
+  // A trailing comma or an unnormalized space would end the URL early in a `srcset` candidate.
+  if (typeof value === "string" && !value.endsWith(",")) {
+    // A single leading slash stays on this site; `//` and `/\` would name another host.
+    if (/^\/(?![/\\])[^\t\n\f\r ]*$/u.test(value)) return value
     try {
       const url = new URL(value)
       if (
         (url.protocol === "https:" || url.protocol === "http:") &&
         url.username === "" &&
-        url.password === ""
+        url.password === "" &&
+        url.href === value
       )
         return value
     } catch {
       /* Report the contract, never a possibly credential-bearing value. */
     }
   }
-  throw new Error("Image provider URLs must be absolute HTTP(S) URLs without credentials.")
+  throw new Error(
+    "Image provider URLs must be normalized absolute HTTP(S) URLs without credentials, or root-relative paths."
+  )
 }
 function providerRendition({
   provider,

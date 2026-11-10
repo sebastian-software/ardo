@@ -14,6 +14,7 @@ export function createImagesPlugin(
   let publicDir = ""
   let copyPublicDir = false
   let projectRoot = ""
+  const warned = new Set<string>()
   return {
     configResolved(config) {
       projectRoot = config.root
@@ -35,6 +36,7 @@ export function createImagesPlugin(
           }
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
         }
+        warnAboutGpsOriginals(session.assets, warned)
       },
     },
     writeBundle: {
@@ -67,6 +69,17 @@ export function createImagesPlugin(
         response.end(asset.source)
       })
     },
+  }
+}
+
+/** Reported from the client output: one build resolves its configuration several times. */
+function warnAboutGpsOriginals(assets: Map<string, ImageAsset>, warned: Set<string>): void {
+  for (const { gpsSource } of assets.values()) {
+    if (gpsSource == null || warned.has(gpsSource)) continue
+    warned.add(gpsSource)
+    console.warn(
+      `[ardo] Image ${gpsSource} contains GPS metadata, and image providers publish the original unchanged. Strip the metadata before committing to keep the location private.`
+    )
   }
 }
 

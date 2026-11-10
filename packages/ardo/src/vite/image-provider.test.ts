@@ -3,8 +3,9 @@ import os from "node:os"
 import path from "node:path"
 import { createHash } from "node:crypto"
 import sharp from "sharp"
-import { afterEach, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import type { ImageProvider } from "../images/types"
+import { hasGpsMetadata } from "./image-metadata"
 import { preparePostImage, type ImageAsset } from "./post-images"
 
 const roots: string[] = []
@@ -153,10 +154,132 @@ it("rejects unsafe or relative URLs without including credentials in its errors"
   expect(message).toContain("without credentials")
   expect(message).not.toContain("password")
   expect(context.assets.size).toBe(0)
-  delivery.source.mockReturnValue({ fileName: "images/photo.png", url: "/photo.png" })
+  delivery.source.mockReturnValue({ fileName: "images/photo.png", url: "photo.png" })
   await expect(preparePostImage({ ...context, config: { provider: delivery } })).rejects.toThrow(
     "absolute HTTP"
   )
+})
+it.each([
+  ["protocol-relative", "//cdn.example.test/photo.png"],
+  ["backslash host", "/\\cdn.example.test/photo.png"],
+  ["space in a path", "/images/my photo.png"],
+  ["unnormalized host", "https://CDN.example.test/photo.png"],
+  ["raw space", "https://cdn.example.test/my photo.png"],
+  ["trailing comma", "https://cdn.example.test/photo.png,"],
+])("rejects a provider URL that would break srcset or leave the site: %s", async (_label, url) => {
+  const context = await input()
+  const delivery = provider()
+  delivery.source.mockReturnValue({ fileName: "images/photo.png", url })
+  await expect(preparePostImage({ ...context, config: { provider: delivery } })).rejects.toThrow(
+    "Image provider URLs must be"
+  )
+})
+it("passes the deployment base and keeps a root-relative provider URL", async () => {
+  const context = await input()
+  const delivery = provider()
+  delivery.source.mockImplementation(({ sha256, extension }) => ({
+    fileName: `images/${sha256}.${extension}`,
+    url: `/project/images/${sha256}.${extension}`,
+  }))
+  delivery.url.mockImplementation(({ source, width }) => ({
+    url: `${source}?width=${width}`,
+    type: "image/jpeg",
+  }))
+  const image = await preparePostImage({ ...context, config: { provider: delivery } })
+  expect(delivery.source).toHaveBeenCalledWith(expect.objectContaining({ base: "/project/" }))
+  expect(image.fallback?.src).toMatch(/^\/project\/images\/[\da-f]{64}\.png\?width=\d+$/u)
+})
+const png = () => sharp({ create: { width: 8, height: 8, channels: 3, background: "red" } }).png()
+function exifBlock(order: "II" | "MM", tag: number): Buffer {
+  const le = order === "II"
+  const block = Buffer.alloc(32)
+  block.write("Exif", 0, "latin1")
+  block.write(order, 6, "latin1")
+  const offset = (position: number, value: number) =>
+    le ? block.writeUInt32LE(value, position) : block.writeUInt32BE(value, position)
+  const short = (position: number, value: number) =>
+    le ? block.writeUInt16LE(value, position) : block.writeUInt16BE(value, position)
+  short(8, 42)
+  offset(10, 8)
+  short(14, 1)
+  short(16, tag)
+  return block
+}
+describe("GPS metadata in originals", () => {
+  it("finds the GPS pointer in sharp's EXIF output", async () => {
+    const tagged = await png()
+      .withExif({ IFD3: { GPSLatitudeRef: "N", GPSLatitude: "48/1 8/1 0/1" } })
+      .toBuffer()
+    expect(hasGpsMetadata(await sharp(tagged).metadata())).toBe(true)
+    expect(hasGpsMetadata(await sharp(await png().toBuffer()).metadata())).toBe(false)
+  })
+  it("reads both byte orders, XMP, and tolerates truncated EXIF", () => {
+    expect(hasGpsMetadata({ exif: exifBlock("II", 0x88_25) })).toBe(true)
+    expect(hasGpsMetadata({ exif: exifBlock("MM", 0x88_25) })).toBe(true)
+    expect(hasGpsMetadata({ exif: exifBlock("II", 0x01_10) })).toBe(false)
+    expect(hasGpsMetadata({ exif: exifBlock("II", 0x88_25).subarray(0, 12) })).toBe(false)
+    expect(hasGpsMetadata({ xmp: Buffer.from('exif:GPSLatitude="48,8N"') })).toBe(true)
+    expect(hasGpsMetadata({ xmp: Buffer.from('dc:title="GPS"') })).toBe(false)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from(
+          '<d xmlns:位置="http://ns.adobe.com/exif/1.0/" 位置:GPSLatitude="48,8N"/>'
+        ),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="http://ns.adobe.com/exif/1.0&#x2f;" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<GPSLatitude xmlns="http://ns.adobe.com/exif/1.0&#47;">48</GPSLatitude>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="http://ns.adobe.com/exif/1.0/" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<GPSLatitude xmlns="http://ns.adobe.com/exif/1.0/">48,8N</GPSLatitude>'),
+      })
+    ).toBe(true)
+    expect(
+      hasGpsMetadata({
+        xmp: Buffer.from('<d xmlns:g="urn:other" g:GPSLatitude="48,8N"/>'),
+      })
+    ).toBe(false)
+  })
+  it.each(["g ", "g﻿"])("treats %j as one XML prefix", (prefix) => {
+    const binding = `xmlns:${prefix}="http://ns.adobe.com/exif/1.0/"`
+    const attribute = `<d ${binding} ${prefix}:GPSLatitude="48,8N"/>`
+    const element = `<d ${binding}><${prefix}:GPSLatitude>48,8N</${prefix}:GPSLatitude></d>`
+    expect(hasGpsMetadata({ xmp: Buffer.from(attribute) })).toBe(true)
+    expect(hasGpsMetadata({ xmp: Buffer.from(element) })).toBe(true)
+  })
+  it("marks only the original that publishes a location", async () => {
+    const context = await input()
+    const tagged = await sharp(context.source)
+      .jpeg()
+      .withExif({ IFD3: { GPSLatitudeRef: "N", GPSLatitude: "48/1 8/1 0/1" } })
+      .toBuffer()
+    await fs.writeFile(path.join(context.root, "located.jpg"), tagged)
+    const delivery = provider()
+    const config = { provider: delivery }
+    await preparePostImage({ ...context, config })
+    await preparePostImage({
+      ...context,
+      config,
+      image: { src: "./located.jpg", alt: "A place" },
+    })
+    expect([...context.assets.values()].map((asset) => asset.gpsSource)).toStrictEqual([
+      undefined,
+      "located.jpg",
+    ])
+  })
 })
 
 function inconsistentUrl({

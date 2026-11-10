@@ -1,9 +1,9 @@
-import { execFileSync } from "node:child_process"
+import { execFileSync, spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import fs from "node:fs"
 import path from "node:path"
 import { afterEach, expect, it } from "vitest"
-import { createTestProject } from "./project"
+import { createTestProject, fixturesDirectory } from "./project"
 import { assertDevSSR } from "./dev-server"
 
 const directories: string[] = []
@@ -91,6 +91,25 @@ it("uses one emitted full-hash original for a cover, body, avatar and ordinary M
     expect(feed).toContain("kind=fallback")
     expect(feed).not.toContain("kind=rendition")
   }
+})
+it("warns once per build about the original that contains GPS data", () => {
+  const directory = project(true)
+  fs.copyFileSync(
+    path.join(fixturesDirectory, "image-metadata/located.jpg"),
+    path.join(directory, "posts/located.jpg")
+  )
+  fs.writeFileSync(
+    path.join(directory, "app/routes/located.md"),
+    "---\ntitle: Located\n---\n\n![A located scene](../../posts/located.jpg)\n"
+  )
+  const { status, stdout, stderr } = spawnSync(
+    "pnpm",
+    ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"],
+    { cwd: directory, encoding: "utf8", timeout: 120_000 }
+  )
+  expect(status).toBe(0)
+  const warnings = `${stdout}${stderr}`.match(/Image \S+ contains GPS metadata/gu)
+  expect(warnings).toEqual(["Image posts/located.jpg contains GPS metadata"])
 })
 it("keeps opted-in Markdown and publication images local in development", async () => {
   const directory = project(true)
