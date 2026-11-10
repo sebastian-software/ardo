@@ -54,6 +54,15 @@ describe("real share-card CLI build", () => {
         path.join(folder, "twitter.md"),
         `---\ntitle: Twitter\ntwitterImage: https://example.test/twitter.png\n---\n\nTwitter\n`
       )
+      for (const [name, title] of [
+        ["import-rule", "The @import rule"],
+        ["url-css", "Using url() in CSS"],
+      ]) {
+        fs.writeFileSync(
+          path.join(folder, `${name}.md`),
+          `---\ntitle: ${title}\n---\n\n# ${title}\n`
+        )
+      }
       fs.writeFileSync(path.join(folder, "plain.md"), "# Plain *heading*\n\nNo YAML is needed.\n")
       fs.writeFileSync(
         path.join(folder, "route-name.mdx"),
@@ -100,6 +109,12 @@ describe("real share-card CLI build", () => {
       expect(
         fs.readFileSync(path.join(client, `v6/${locale}/guide/route-name/index.html`), "utf8")
       ).toContain('property="og:image:alt" content="Route Name"')
+      expect(
+        fs.readFileSync(path.join(client, `v6/${locale}/guide/import-rule/index.html`), "utf8")
+      ).toContain('property="og:image:alt" content="The @import rule"')
+      expect(
+        fs.readFileSync(path.join(client, `v6/${locale}/guide/url-css/index.html`), "utf8")
+      ).toContain('property="og:image:alt" content="Using url() in CSS"')
       urls.push(image)
     }
     expect(new Set(urls).size).toBe(5)

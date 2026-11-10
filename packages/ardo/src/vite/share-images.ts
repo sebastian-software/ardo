@@ -6,6 +6,7 @@ import type { ArdoRenderOptions } from "../entries/server"
 import type { ShareImagesConfig } from "../config/share-images"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
 import { shareImageColors } from "./share-image-colors"
+import { assertSelfContained } from "./share-image-resources"
 import { shareImageTitle } from "./share-image-title"
 import { defaultShareImage } from "./share-image-template"
 
@@ -152,32 +153,6 @@ async function embeddedLogo(url: string, options: RendererOptions): Promise<stri
   const contents = await readFile(file)
   if (mime === "image/svg+xml") assertSelfContained(contents.toString("utf8"))
   return `data:${mime};base64,${contents.toString("base64")}`
-}
-
-function assertSelfContained(svg: string): void {
-  if (typeof svg !== "string" || /<!DOCTYPE|@import/iu.test(svg))
-    throw new Error("[ardo] Share image templates must be self-contained SVG.")
-  const resources = [
-    ...[...svg.matchAll(/(?:href)\s*=\s*(["'])(.*?)\1/giu)].map((match) => match[2]),
-    ...[...svg.matchAll(/url\(\s*(?:(["'])(.*?)\1|([^'"()]*?))\s*\)/giu)].map(
-      (match) => match[2] ?? match[3]
-    ),
-  ]
-  if (
-    resources.some(
-      (resource) =>
-        !resource
-          .trim()
-          .replaceAll(/&(?:quot|apos);/gu, "")
-          .startsWith("data:") &&
-        !resource
-          .trim()
-          .replaceAll(/&(?:quot|apos);/gu, "")
-          .startsWith("#")
-    )
-  ) {
-    throw new Error("[ardo] Share image templates must be self-contained SVG with embedded images.")
-  }
 }
 
 function renderPng(
