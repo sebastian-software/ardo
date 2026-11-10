@@ -778,15 +778,55 @@ export default function Root() {
 
 ## Error Pages
 
-`root.tsx` can export `ErrorBoundary`. For a missing page, Ardo renders it inside the root, so the
-header and sidebar stay. For a render error, it replaces the root, so broken chrome cannot hide the
-error. Without the export, Ardo uses `ArdoErrorBoundary` from `ardo/ui`.
+`root.tsx` can export `ErrorBoundary` to present missing pages inside the root, keeping the header
+and sidebar. Without the export, Ardo uses `ArdoErrorBoundary` from `ardo/ui`. This export is a page
+component, not a React exception boundary. Static module, metadata, and rendering errors still fail
+the build.
 
 ```tsx
 import { ArdoErrorBoundary } from "ardo/ui"
 
 export const ErrorBoundary = ArdoErrorBoundary
 ```
+
+## Client Recovery
+
+Ardo catches failures while reading page data, loading a route module, or evaluating its metadata
+before hydration. It keeps the static page and adds native reload and home controls; links in the
+server HTML still work, while React interactions are unavailable. Fatal hydration errors and later
+uncaught React rendering errors replace the failed tree with an independent recovery view, even
+when the custom root is broken. Recoverable hydration mismatches remain React's responsibility and
+do not trigger this view.
+
+Recovery uses the document language and includes English, German, French, and Spanish copy without
+loading a translation catalog. Other languages fall back to an explicitly English region. It focuses
+the recovery heading and never displays the exception or stack trace. Reload only happens when the
+reader activates the button.
+
+Customize copy and a CSS class with a `clientRecovery` export in `app/root.tsx`. This callback returns
+plain strings, runs only on failure, and must not call React hooks. Its context includes `lang`,
+`homeHref`, and `preserveContent`. The recovery view does not render the site's root or error page.
+
+```tsx
+import type { ArdoClientRecovery } from "ardo/runtime"
+
+export const clientRecovery: ArdoClientRecovery = ({ lang }) => ({
+  title: lang === "de" ? "Bitte lade die Seite neu" : "Please reload this page",
+  className: "site-recovery",
+})
+```
+
+The export also accepts a plain object. Supported fields are `title`, `description`, `reloadLabel`,
+`homeLabel`, `homeHref`, and `className`. The native view has its own basic styling; a custom class
+must not depend on rendering the normal chrome. If the callback or a catalog it reads throws, Ardo
+uses its built-in copy. The default home destination preserves the page base and configured locale.
+
+If the bootstrap script or one of its static dependencies never loads or fails during module
+evaluation, the recovery code cannot run: the static HTML and native links remain the fallback.
+The existing cancelable `vite:preloadError` event still lets a site take over a page-chunk failure;
+calling `preventDefault()` leaves recovery to that listener. This contract does not catch arbitrary
+async callbacks, event-handler exceptions, or errors already handled by a site's own React boundary.
+Use a released Ardo version containing this capability before relying on it in a consumer site.
 
 ## RootLayout Color Scheme
 

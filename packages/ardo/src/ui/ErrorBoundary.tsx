@@ -39,7 +39,7 @@ const defaults = {
 } as const
 
 /**
- * Themed error/404 page. Ardo renders it for missing pages and render errors;
+ * Themed error/404 page. Ardo renders it for missing pages and explicit error pages;
  * export a different `ErrorBoundary` from `app/root.tsx` to replace it.
  *
  * @example
