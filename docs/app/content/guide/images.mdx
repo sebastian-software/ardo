@@ -46,11 +46,13 @@ const provider: ImageProvider = {
 // images: { provider }
 ```
 
-Both hooks must be synchronous, deterministic, and free of network or upload side effects. Ardo emits each original once per output path, preserving its bytes. The source hook receives the complete SHA-256 hash, canonical extension, oriented dimensions, and original EXIF orientation. Use the full hash in the filename; your deployment uploads the emitted originals.
+Both hooks must be synchronous, deterministic, and free of network or upload side effects. Ardo emits each original once per output path, preserving its bytes. The source hook receives the complete SHA-256 hash, canonical extension, oriented dimensions, original EXIF orientation, and deployment base. Use the full hash in the filename; your deployment uploads the emitted originals.
 
-The endpoint must apply EXIF orientation before the exact integer pixel crop and then resize to the requested dimensions. Ardo does not detect faces. The returned MIME type must match the response and stay consistent within one crop family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require JPEG or PNG for feeds and social images. All URLs must be absolute HTTP(S) URLs without embedded credentials.
+The endpoint must apply EXIF orientation before the exact integer pixel crop and then resize to the requested dimensions. Ardo does not detect faces. The returned MIME type must match the response and stay consistent within one crop family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require JPEG or PNG for feeds and social images. URLs must be normalized absolute HTTP(S) URLs without embedded credentials, or root-relative paths that already include the deployment base. They must not end in a comma, because that would break `srcset`.
 
 Original filenames must be relative image paths without dot segments. Collisions with other images, bundled assets, or public files fail the build. SVG and animated images emit unchanged originals without requesting raster renditions; framing remains unsupported. External HTTP images remain unchanged and are never downloaded.
+
+Originals are published with their EXIF and XMP metadata, including any location. The build warns about each original that contains GPS data. Strip the metadata before committing images that should keep their location private.
 
 ## Publication compatibility
 

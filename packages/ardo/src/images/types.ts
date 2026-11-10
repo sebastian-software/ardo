@@ -58,6 +58,8 @@ export type ImageProvider = {
     height: number
     /** EXIF orientation of the original bytes. Apply it before the crop. */
     orientation: number
+    /** Deployment base Ardo uses for its own URLs; root-relative provider URLs must include it. */
+    base: string
   }) => { fileName: string; url: string }
   url: (input: {
     source: string
