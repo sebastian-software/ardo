@@ -35,18 +35,29 @@ export function createWorkspaceStylesProject() {
   })
   const tokens = writePackage("packages/tokens", {
     name: "tokens",
-    exports: "./index.css.ts",
+    exports: { ".": "./index.ts", "./theme.css": "./theme.css.ts" },
     dependencies: { "@vanilla-extract/css": "1" },
   })
   symlinkSync(framework, path.join(root, "node_modules/ardo"), "dir")
   symlinkSync(components, path.join(root, "node_modules/components"), "dir")
   symlinkSync(tokens, path.join(components, "node_modules/tokens"), "dir")
   writeFileSync(
-    path.join(tokens, "index.css.ts"),
-    'import { createGlobalTheme } from "@vanilla-extract/css"; export const vars = createGlobalTheme(":root", { color: "rgb(23, 45, 67)" });'
+    path.join(tokens, "theme.css.ts"),
+    'import { createGlobalTheme } from "@vanilla-extract/css"; import { palette } from "./index"; export const vars = createGlobalTheme(":root", palette);'
   )
-  writeFileSync(path.join(tokens, "index.ts"), "export const value = 42;")
-  writeFileSync(path.join(components, "index.css.ts"), 'export { vars } from "tokens";')
+  writeFileSync(
+    path.join(tokens, "index.ts"),
+    'export { palette } from "./palette"; export const value = 42;'
+  )
+  writeFileSync(
+    path.join(tokens, "palette.ts"),
+    'import { rgb } from "./helpers"; export const palette = { color: rgb(23, 45, 67) };'
+  )
+  writeFileSync(
+    path.join(tokens, "helpers.ts"),
+    "export const rgb = (red: number, green: number, blue: number) => `rgb(${red}, ${green}, ${blue})`;"
+  )
+  writeFileSync(path.join(components, "index.css.ts"), 'export { vars } from "tokens/theme.css";')
   writeFileSync(
     path.join(root, "app.css.ts"),
     'import { globalStyle } from "@vanilla-extract/css"; import { vars } from "components"; globalStyle("#counter", { color: vars.color });'

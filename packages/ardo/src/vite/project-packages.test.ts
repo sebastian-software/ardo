@@ -156,10 +156,12 @@ describe("documentation package ownership", () => {
     expect(() =>
       packages.checkFile(stylesheet, { importer, styleWatchFiles: [stylesheet] })
     ).not.toThrow()
+    const helper = path.join(tokens, "index.js")
+    expect(() => packages.checkFile(helper, { importer, styleWatchFiles: [helper] })).not.toThrow()
     expect(() =>
-      packages.checkFile(path.join(tokens, "index.js"), {
-        importer,
-        styleWatchFiles: [path.join(tokens, "index.js")],
+      packages.checkFile(helper, {
+        importer: path.join(root, "index.js"),
+        styleWatchFiles: [helper],
       })
     ).toThrow(/Undeclared application dependency "tokens"/u)
     for (const file of [
