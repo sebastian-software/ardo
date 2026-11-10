@@ -1,3 +1,4 @@
+import type { ImageSession } from "./image-session"
 import fs from "node:fs/promises"
 import path from "node:path"
 import type { ResolvedConfig } from "../config/types"
@@ -12,7 +13,12 @@ export const RESOLVED_PUBLICATION_ID = `\0${PUBLICATION_ID}`
 const MARKER = ".ardo-publication"
 export type PublicationBuilder = {
   options: PublicationConfig
-  site: { resolvedConfig?: ResolvedConfig; routesDir: string }
+  site: {
+    resolvedConfig?: ResolvedConfig
+    routesDir: string
+    imageSession?: ImageSession
+    command?: "build" | "serve"
+  }
   prepared: PreparedPublication[]
   publications: Record<string, Publication>
   sources: Map<string, string>
@@ -53,8 +59,15 @@ async function prepareAll(
   for (const localeId of input.locales)
     result.push(
       await preparePublication({
-        options: builder.options,
-        config: input.config,
+        options:
+          builder.site.command === "serve"
+            ? { ...builder.options, images: { ...builder.options.images, provider: undefined } }
+            : builder.options,
+        config:
+          builder.site.command === "serve" && input.config.images != null
+            ? { ...input.config, images: { ...input.config.images, provider: undefined } }
+            : input.config,
+        imageSession: builder.site.imageSession,
         routesDir: builder.site.routesDir,
         localeId,
         now,

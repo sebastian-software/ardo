@@ -63,12 +63,12 @@ function resolveContentSources(input: {
 }): ResolvedContentSourceMapping[] {
   return input.sources.map((source) => {
     const sourcePath = path.resolve(input.root, source.from)
-    const targetPath = resolveTargetDirectory(input.routesDir, source.to)
+    const targetPath = resolveContentSourceTarget(input.routesDir, source.to)
     return { ...source, sourcePath, targetPath }
   })
 }
 
-function resolveTargetDirectory(routesDir: string, to: string): string {
+export function resolveContentSourceTarget(routesDir: string, to: string): string {
   const normalizedTo = to.replaceAll("\\", "/").replace(/^\/+/u, "")
   const targetPath = path.resolve(routesDir, normalizedTo)
   const relativePath = path.relative(routesDir, targetPath)

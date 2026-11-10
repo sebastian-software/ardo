@@ -1,8 +1,10 @@
 import path from "node:path"
+import { resolveImagesConfig } from "../config/images"
+import type { ImageSession } from "./image-session"
 import type { ResolvedConfig } from "../config/types"
 import type { Publication, PublicationConfig } from "../publication/types"
 import { isVersionedRoute } from "../config/versioning"
-import { ardoImagePresets } from "../publication/presets"
+import { ardoImagePresets } from "../images/presets"
 import type { ImageAsset } from "./post-images"
 import { validatePublicationOptions } from "./publication-options"
 import { spellPagePath } from "../runtime/trailing-slash"
@@ -13,6 +15,7 @@ export type PublicationInput = {
   routesDir: string
   now?: Date
   localeId?: string
+  imageSession?: ImageSession
 }
 export type PublicationContext = PublicationInput & {
   prefix: string
@@ -26,7 +29,9 @@ export type PublicationContext = PublicationInput & {
 }
 
 export function createPublicationContext(input: PublicationInput): PublicationContext {
-  const { options, config } = input
+  const config = input.config
+  const images = resolveImagesConfig(config.images, input.options.images)
+  const options = images === undefined ? input.options : { ...input.options, images }
   if (!config.siteUrl)
     throw new Error("[ardo] publication requires siteUrl for stable article and feed URLs.")
   if (typeof options.from !== "string" || options.from.trim() === "")
@@ -53,12 +58,13 @@ export function createPublicationContext(input: PublicationInput): PublicationCo
   }
   return {
     ...input,
+    options,
     prefix,
     localizedPrefix,
     publication,
     sourceDir: path.resolve(config.root, options.from, input.localeId ?? ""),
-    assets: new Map(),
-    dependencies: new Set(),
+    assets: input.imageSession?.assets ?? new Map(),
+    dependencies: input.imageSession?.dependencies ?? new Set(),
     seenIds: new Set(),
     seenPaths: new Set(),
   }

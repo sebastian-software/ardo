@@ -23,8 +23,9 @@ export function ArdoImage({
   decoding = "async",
   ...props
 }: ArdoImageProps) {
-  const post = useArdoPageData()?.frontmatter._ardoPost as Post | undefined
-  const resolved = image ?? (typeof src === "string" ? post?.images[src] : undefined)
+  const page = useArdoPageData()
+  const post = page?.frontmatter._ardoPost as Post | undefined
+  const resolved = image ?? pageImage(src, post?.images, page?.images)
   if (resolved == null)
     return <img {...props} src={src} alt={alt} loading={loading} decoding={decoding} />
   const presentation = preset ?? resolved.preset
@@ -48,14 +49,17 @@ export function ArdoImage({
           family={family(source.composition)}
           media={source.media}
           sizes={source.sizes ?? presentation.sizes}
-          type={resolved.fallback == null ? undefined : "image/avif"}
+          type={
+            family(source.composition).type ??
+            (resolved.fallback == null ? undefined : "image/avif")
+          }
         />
       ))}
       {resolved.fallback != null && (
         <PictureSource
           family={fallback}
           sizes={props.sizes ?? presentation.sizes}
-          type="image/avif"
+          type={fallback.type ?? "image/avif"}
         />
       )}
       <img
@@ -109,4 +113,13 @@ function lastRendition(renditions: ImageRendition[]): ImageRendition {
   const result = renditions.at(-1)
   if (result == null) throw new Error("[ardo] A responsive image needs at least one rendition.")
   return result
+}
+
+function pageImage(
+  src: unknown,
+  post?: Record<string, PostImage>,
+  page?: Record<string, PostImage>
+) {
+  if (typeof src !== "string") return
+  return post?.[src] ?? page?.[src]
 }

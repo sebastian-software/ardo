@@ -1,3 +1,4 @@
+import type { ImagesConfig, PostImage } from "../images/types"
 import type { LintRuleId } from "./lint-rules"
 import type { MarkdownConfig } from "./markdown"
 import type { PostFrontmatter, PublicationConfig } from "../publication/types"
@@ -137,6 +138,8 @@ export type I18nConfig = {
  * Runtime UI configuration (header, sidebar, footer) is done in JSX.
  */
 export type ArdoConfig = {
+  /** Shared local image processing; configuring it opts Markdown/MDX pages in. */
+  images?: ImagesConfig
   /** Repository-authored news/blog posts, local author profiles, feeds, and images. */
   publication?: PublicationConfig
   /** Site title (used for default meta tags) */
@@ -466,6 +469,8 @@ export type PageData = {
   relativePath: string
   /** URL of the page's Markdown file, when the build writes one; the page actions link to it. */
   markdownPath?: string
+  /** Prepared responsive images of an opted-in Markdown page. */
+  images?: Record<string, PostImage>
 }
 
 // =============================================================================
@@ -481,6 +486,7 @@ export type ResolvedConfig = {
    * base because they are written beside the version folders.
    */
   deploymentBase: string
+  images?: ImagesConfig
   project: ProjectMeta
   vite?: Record<string, unknown>
   root: string
@@ -520,6 +526,7 @@ export type ResolvedConfig = {
     | "openapi"
     | "project"
     | "publication"
+    | "images"
     | "validation"
     | "vite"
   >

@@ -63,17 +63,17 @@ const budgets = {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
-    // 2026-11: raised from 2.7 MB to 2.85 MB for the 80 API reference pages of the publication
-    // module types. Moving the page loaders out of the entry did not shrink this total.
-    budget: 2_850_000,
-    baseline: "≈2.78 MB (2026-11, four route trees, catalogs, and search indexes)",
+    // 2026-11: shared image API references and four translated Images guides add
+    // 54,567 B of aggregate route content; the visitor entry grows by only 90 B.
+    budget: 2_900_000,
+    baseline: "2,877,599 B (2026-11, shared image API and four-locale Images guide; +54,567 B)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
-    // 2026-11: raised from 100 KB to 115 KB because the gallery and two in-flight PRs add docs text.
-    budget: 115_000,
-    baseline: "≈99 KB per locale (2026-11, emitted client search data; was ≈81 KB in 2026-10)",
+    // 2026-11: image API references and the new guide add 1,804 B to the largest locale.
+    budget: 118_000,
+    baseline: "116,185 B (2026-11, image API reference and Images guide; +1,804 B)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",

@@ -16,7 +16,7 @@ export { ArdoPost, ArdoPostList, type ArdoPostProps, type ArdoPostListProps } fr
 export { ArdoPostNavigation, type ArdoPostNavigationProps } from "./PostNavigation"
 export { ArdoPublicationTags } from "./publication-tags"
 export { useArdoPublicationTags, type ArdoPublicationTagsValue } from "./publication-tags-context"
-export { ardoImagePresets } from "../publication/presets"
+export { ardoImagePresets } from "../images/presets"
 export type {
   AuthorProfile,
   ImageComposition,
