@@ -7,6 +7,7 @@ const optionNames = {
   content: true,
   collections: true,
   publication: true,
+  images: true,
   icons: true,
   routesDir: true,
   title: true,

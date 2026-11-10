@@ -5,10 +5,11 @@ import { transformWithOxc } from "vite"
 import type { ArdoConfig } from "../config/types"
 import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
-import { compileMdxRouteModuleWithCode } from "./mdx-compile"
+import { type PrepareRouteImages, compileMdxRouteModuleWithCode } from "./mdx-compile"
 import type { PublicationPostBinding } from "./publication-routes"
 
 type CompileInput = {
+  prepareImages?: PrepareRouteImages
   format: NativeMarkdownFormat
   markdownConfig: ArdoConfig["markdown"]
   /** The page's Markdown file URL, when the build writes one for this route. */
@@ -23,6 +24,8 @@ type CompileInput = {
 export type RouteContext = {
   pageMarkdownPath?: string
   publicationPost?: PublicationPostBinding
+  prepareImages?: PrepareRouteImages
+  imageDependencies?: Set<string>
 }
 
 type CompiledRouteModule = Awaited<ReturnType<typeof compileRouteModule>>
@@ -56,6 +59,7 @@ export function createMdxPlugin(
       const sourceName = id.split("?", 1)[0] ?? id
       const context = route?.(sourceName)
       const compiled = await compileRouteModuleCached(configKey, {
+        prepareImages: context?.prepareImages,
         format,
         markdownConfig,
         pageMarkdownPath: context?.pageMarkdownPath,
@@ -63,6 +67,7 @@ export function createMdxPlugin(
         source,
         sourceName,
       })
+      for (const dependency of context?.imageDependencies ?? []) this.addWatchFile(dependency)
       return { code: compiled.code, map: compiled.map }
     },
   }
@@ -72,6 +77,7 @@ async function compileRouteModuleCached(
   configKey: string,
   input: CompileInput
 ): Promise<CompiledRouteModule> {
+  if (input.prepareImages != null) return compileRouteModule(input)
   // The Markdown file URL depends on site settings, not only on the source, so it is part of the key.
   const key = [
     configKey,
@@ -94,6 +100,7 @@ async function compileRouteModuleCached(
 }
 
 async function compileRouteModule({
+  prepareImages,
   format,
   markdownConfig,
   pageMarkdownPath,
@@ -104,6 +111,7 @@ async function compileRouteModule({
   const module = await compileMdxRouteModuleWithCode({
     format,
     id: sourceName,
+    prepareImages,
     markdownConfig,
     pageMarkdownPath,
     publicationPost,
