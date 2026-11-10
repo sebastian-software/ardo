@@ -149,14 +149,28 @@ msgstr "<0/> y tipos de configuración."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
-"<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
-"the header and sidebar stay. For a render error, it replaces the root, so "
-"broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
-"<3/>."
+"<0/> can export <1/> to present missing pages inside the root, keeping the "
+"header and sidebar. Without the export, Ardo uses <2/> from <3/>. This export "
+"is a page component, not a React exception boundary. Static module, metadata, "
+"and rendering errors still fail the build."
 msgstr ""
-"<0/> puede exportar <1/>. Una página ausente aparece dentro de la raíz con "
-"navegación; un error de render reemplaza la raíz para seguir visible. Sin "
-"export, Ardo usa <2/> de <3/>."
+"<0/> puede exportar <1/> para mostrar las páginas no encontradas dentro del "
+"componente raíz, conservando la cabecera y la barra lateral. Sin esta "
+"exportación, Ardo usa <2/> de <3/>. Esta exportación es un componente de "
+"página, no un límite de errores de React. Los errores estáticos de carga de"
+" módulos, metadatos y renderizado siguen haciendo fallar el build."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/layout-and-navigation.mdx
+#~ msgid ""
+#~ "<0/> can export <1/>. For a missing page, Ardo renders it inside the root, so "
+#~ "the header and sidebar stay. For a render error, it replaces the root, so "
+#~ "broken chrome cannot hide the error. Without the export, Ardo uses <2/> from "
+#~ "<3/>."
+#~ msgstr ""
+#~ "<0/> puede exportar <1/>. Una página ausente aparece dentro de la raíz con "
+#~ "navegación; un error de render reemplaza la raíz para seguir visible. Sin "
+#~ "export, Ardo usa <2/> de <3/>."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -788,11 +802,23 @@ msgstr "<0/>: una clave estable, como <1/>. Obligatoria cuando <2/> es <3/>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
-"<0/>: renders inside the root for a missing page and replaces the root for a "
-"render error. Ardo uses <1/> when you omit it."
+"<0/>: presents missing pages inside the root. It is not a React exception "
+"boundary; static rendering failures fail the build. See <1>Client Recovery</1>"
+" for loading, hydration, and client rendering failures."
 msgstr ""
-"<0/>: dentro de la raíz para páginas ausentes, en su lugar para errores de "
-"render. Predeterminado: <1/>."
+"<0/>: muestra las páginas no encontradas dentro del componente raíz. No es "
+"un límite de errores de React; los errores de renderizado estático hacen "
+"fallar el build. Consulta <1>Recuperación del cliente</1> para los errores de"
+" carga, hidratación y renderizado del cliente."
+
+#~ #@ obsolete-since: 2026-11-09
+#~ #: docs/app/content/guide/releases/upgrade-to-v6.mdx
+#~ msgid ""
+#~ "<0/>: renders inside the root for a missing page and replaces the root for a "
+#~ "render error. Ardo uses <1/> when you omit it."
+#~ msgstr ""
+#~ "<0/>: dentro de la raíz para páginas ausentes, en su lugar para errores de "
+#~ "render. Predeterminado: <1/>."
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "<0/>: Required. The text of the banner."
@@ -2167,6 +2193,26 @@ msgstr ""
 "Ardo convierte una especificación OpenAPI 3.0 o 3.1 local en páginas MDX "
 "estáticas. Usan las mismas rutas, barras laterales, búsqueda, sitemap, "
 "comprobaciones y exportaciones LLM que el resto del sitio."
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Ardo catches failures while reading page data, loading a route module, or "
+"evaluating its metadata before hydration. It keeps the static page and adds "
+"native reload and home controls; links in the server HTML still work, while "
+"React interactions are unavailable. Fatal hydration errors and later uncaught "
+"React rendering errors replace the failed tree with an independent recovery "
+"view, even when the custom root is broken. Recoverable hydration mismatches "
+"remain React's responsibility and do not trigger this view."
+msgstr ""
+"Ardo captura los errores al leer los datos de página, cargar un módulo de "
+"ruta o evaluar sus metadatos antes de la hidratación. Conserva la página "
+"estática y añade controles nativos para recargar y volver al inicio; los "
+"enlaces del HTML del servidor siguen funcionando, pero las interacciones de "
+"React no están disponibles. Los errores fatales de hidratación y los errores"
+" de renderizado de React no capturados sustituyen el árbol defectuoso por una"
+" vista de recuperación independiente, incluso si falla el componente raíz "
+"personalizado. React sigue gestionando las diferencias de hidratación "
+"recuperables, que no activan esta vista."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -3545,6 +3591,14 @@ msgstr ""
 msgid "Classes"
 msgstr "Clases"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Client recovery"
+msgstr "Recuperación del cliente"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid "Client Recovery"
+msgstr "Recuperación del cliente"
+
 #: docs/app/content/guide/components.mdx
 msgid "Cloud hosting and managed services"
 msgstr "Alojamiento cloud y servicios gestionados"
@@ -3976,6 +4030,19 @@ msgstr ""
 #: docs/app/content/guide/publications.mdx
 msgid "Custom post fields"
 msgstr "Campos propios de las entradas"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Customize copy and a CSS class with a <0/> export in <1/>. This callback "
+"returns plain strings, runs only on failure, and must not call React hooks. "
+"Its context includes <2/>, <3/>, and <4/>. The recovery view does not render "
+"the site's root or error page."
+msgstr ""
+"Personaliza los textos y una clase CSS mediante una exportación <0/> en <1/>."
+" Este callback devuelve cadenas simples, solo se ejecuta si hay un error y no "
+"debe llamar a hooks de React. Su contexto incluye <2/>, <3/> y <4/>. La vista "
+"de recuperación no renderiza el componente raíz ni la página de error del "
+"sitio."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Customize the Markdown Component Set"
@@ -5438,6 +5505,27 @@ msgstr ""
 "Si <0/> es dinámico, se omite el resaltado del build y el código aparece "
 "como texto plano."
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"If the bootstrap script or one of its static dependencies never loads or fails"
+" during module evaluation, the recovery code cannot run: the static HTML and "
+"native links remain the fallback. The existing cancelable <0/> event still "
+"lets a site take over a page-chunk failure; calling <1/> leaves recovery to "
+"that listener. This contract does not catch arbitrary async callbacks, "
+"event-handler exceptions, or errors already handled by a site's own React "
+"boundary. Use a released Ardo version containing this capability before "
+"relying on it in a consumer site."
+msgstr ""
+"Si el script de arranque o una de sus dependencias estáticas no se carga o "
+"falla al evaluar el módulo, el código de recuperación no puede ejecutarse: "
+"el HTML estático y los enlaces nativos siguen siendo la alternativa. El "
+"evento cancelable <0/> existente permite al sitio gestionar un error de carga "
+"de un fragmento de página; llamar a <1/> deja la recuperación a ese "
+"listener. Este contrato no captura callbacks asíncronos arbitrarios, "
+"excepciones de manejadores de eventos ni errores ya gestionados por un límite"
+" de errores de React del sitio. Usa una versión publicada de Ardo que "
+"contenga esta función antes de depender de ella en un sitio consumidor."
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
 "If the root URL itself returns 404 during local development, add <0/> or <1/>."
@@ -5691,6 +5779,16 @@ msgstr ""
 "configuración ni escribir en disco. Los errores iniciales detienen la "
 "compilación. En desarrollo se conservan las últimas páginas válidas y los "
 "errores aparecen en el overlay; la generación continúa al corregirlos."
+
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Independent localized reload/home controls for loading, fatal hydration, and "
+"uncaught client rendering failures; see <0>Client Recovery</0> and "
+"<1>#498</1>."
+msgstr ""
+"Controles independientes y localizados para recargar y volver al inicio ante "
+"errores de carga, hidratación fatal y renderizado del cliente no capturados; "
+"consulta <0>Recuperación del cliente</0> y <1>#498</1>."
 
 #: docs/app/content/guide/components.mdx
 msgid "index.mdx"
@@ -7439,6 +7537,20 @@ msgstr ""
 msgid "Reason"
 msgstr "Motivo"
 
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"Recovery uses the document language and includes English, German, French, and "
+"Spanish copy without loading a translation catalog. Other languages fall back "
+"to an explicitly English region. It focuses the recovery heading and never "
+"displays the exception or stack trace. Reload only happens when the reader "
+"activates the button."
+msgstr ""
+"La recuperación usa el idioma del documento e incluye textos en inglés, "
+"alemán, francés y español sin cargar un catálogo de traducción. Los "
+"demás idiomas recurren a una región marcada explícitamente en inglés. El "
+"título recibe el foco y nunca se muestran la excepción ni la traza de pila. "
+"La página solo se recarga cuando el lector activa el botón."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid "redirectFrom"
 msgstr "redirectFrom"
@@ -9042,6 +9154,21 @@ msgid ""
 msgstr ""
 "<0/> ajusta posiciones y espacio de anclas. Defínela en <1/> mediante <2/> "
 "para compartirla con la cabecera y adáptala al breakpoint móvil:"
+
+#: docs/app/content/guide/layout-and-navigation.mdx
+msgid ""
+"The export also accepts a plain object. Supported fields are <0/>, <1/>, <2/>,"
+" <3/>, <4/>, and <5/>. The native view has its own basic styling; a custom "
+"class must not depend on rendering the normal chrome. If the callback or a "
+"catalog it reads throws, Ardo uses its built-in copy. The default home "
+"destination preserves the page base and configured locale."
+msgstr ""
+"La exportación también acepta un objeto simple. Los campos admitidos son "
+"<0/>, <1/>, <2/>, <3/>, <4/> y <5/>. La vista nativa tiene sus propios estilos"
+" básicos; una clase personalizada no debe depender del renderizado de la "
+"interfaz habitual. Si el callback o un catálogo que consulta lanza un error, "
+"Ardo usa sus textos integrados. El destino de inicio predeterminado conserva "
+"la ruta base y el idioma configurado de la página."
 
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid ""

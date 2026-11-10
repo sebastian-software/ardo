@@ -49,7 +49,7 @@ The default export stays the root component. `<ArdoRoot>` now reads the site con
 
 - `meta`: typed as `ArdoMetaFunction` from `ardo/runtime`. It takes no arguments and returns the same descriptor objects as before, such as `{ title: "My Docs" }`. Drop it when it only set the site title: pages without a `title` get the title from `ardo.config.ts`.
 - `Layout`: the HTML shell. It now renders on the server only. Ardo uses `ArdoRootLayout` from `ardo/ui` when you omit it, so most projects delete their `Layout` export.
-- `ErrorBoundary`: renders inside the root for a missing page and replaces the root for a render error. Ardo uses `ArdoErrorBoundary` when you omit it.
+- `ErrorBoundary`: presents missing pages inside the root. It is not a React exception boundary; static rendering failures fail the build. See [Client Recovery](/en/guide/layout-and-navigation#client-recovery) for loading, hydration, and client rendering failures.
 
 Before:
 

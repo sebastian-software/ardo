@@ -16,8 +16,13 @@ function copySource(source: string, destination: string): void {
 }
 
 /** Apply a feature-specific overlay to the same source that readers copy. */
-export function copyProjectSource(destination: string, fixture?: string): void {
+export function copyProjectSource(
+  destination: string,
+  fixture?: string,
+  options: { replaceRoutes?: boolean } = {}
+): void {
   copySource(basicDirectory, destination)
+  if (options.replaceRoutes) fs.rmSync(path.join(destination, "app/routes"), { recursive: true })
   if (fixture == null) return
   const baseManifest = JSON.parse(fs.readFileSync(path.join(destination, "package.json"), "utf8"))
   const source = path.join(fixturesDirectory, fixture)
@@ -42,9 +47,9 @@ export function copyProjectSource(destination: string, fixture?: string): void {
 }
 
 /** Use the workspace's installed dependencies without borrowing ancestor packages. */
-export function createTestProject(fixture?: string): string {
+export function createTestProject(fixture?: string, options?: { replaceRoutes?: boolean }): string {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), `ardo-${fixture ?? "basic"}-`))
-  copyProjectSource(directory, fixture)
+  copyProjectSource(directory, fixture, options)
   const dependencyRoot =
     fixture != null && fs.existsSync(path.join(fixturesDirectory, fixture, "package.json"))
       ? path.join(fixturesDirectory, fixture)
