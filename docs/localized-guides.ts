@@ -1,12 +1,15 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { isRunnableDevEnvironment, type Plugin } from "vite"
-import { generateGuides } from "./scripts/localize-guides.mjs"
+import { contentSections, generateGuides } from "./scripts/localize-guides.mjs"
 
 /** Materialize PO-backed routes before Ardo scans metadata, search, and LLM exports. */
 export function localizedGuides(): Plugin {
   const root = fileURLToPath(new URL(".", import.meta.url))
-  const inputs = [path.join(root, "app/content/guide"), path.join(root, "app/i18n/guides")]
+  const inputs = [
+    ...contentSections.map((section) => path.join(root, "app/content", section)),
+    path.join(root, "app/i18n/guides"),
+  ]
   const routes = `${path.join(root, "app/routes")}${path.sep}`
   const generatedModule = (module: { file?: string | null; id?: string | null }) =>
     module.file?.startsWith(routes) || module.id?.startsWith("\0virtual:ardo/")
@@ -20,7 +23,9 @@ export function localizedGuides(): Plugin {
       // would let Vite reload midway through the same multilingual batch.
       return {
         server: {
-          watch: { ignored: [/[/\\]app[/\\]routes[/\\](?:en|de|fr|es)[/\\]guide(?:[/\\]|$)/u] },
+          watch: {
+            ignored: [/[/\\]app[/\\]routes[/\\](?:en|de|fr|es)[/\\](?:guide|compare)(?:[/\\]|$)/u],
+          },
         },
       }
     },

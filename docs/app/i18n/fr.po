@@ -738,6 +738,14 @@ msgstr "Recharger la recherche"
 
 #: docs/app/i18n/messages.ts
 msgid ""
+"Repo-owned Astro layouts and components, with optional agent services. Ardo "
+"ships its React UI in a package."
+msgstr ""
+"Layouts et composants Astro dans votre dépôt, avec des services optionnels "
+"pour agents. Ardo fournit son interface React dans un paquet."
+
+#: docs/app/i18n/messages.ts
+msgid ""
 "Rust engines compile your Markdown and color every code block, TypeScript 7 "
 "reads your types, and Vite bundles the rest. Search index, sitemap and "
 "llms.txt come out of the same oven."

@@ -1,10 +1,11 @@
 import assert from "node:assert/strict"
+import path from "node:path"
 import { readFile, readdir } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import { analyzeMdxNative } from "@palamedes/core-node"
 import { transformWithOxc } from "vite"
 
-import { mdxOptions as options } from "./localize-guides.mjs"
+import { contentSections, mdxOptions as options } from "./localize-guides.mjs"
 
 async function check(source, filename) {
   const result = analyzeMdxNative(source, filename, options)
@@ -28,9 +29,11 @@ assert.deepEqual(
   ["Fence regression", "Native MDX extraction", "Read the <0>guide</0>"]
 )
 
-const root = new URL("../app/content/guide/", import.meta.url)
-const files = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".mdx"))
-assert.ok(files.length > 0, "Expected authored English MDX guides")
+const root = new URL("../app/content/", import.meta.url)
+const files = (await readdir(root, { recursive: true })).filter(
+  (file) => file.endsWith(".mdx") && contentSections.includes(file.split(path.sep)[0])
+)
+assert.ok(files.length > 0, "Expected authored English MDX content")
 let messages = 0
 for (const file of files) {
   const filename = new URL(file, root)
@@ -38,5 +41,5 @@ for (const file of files) {
   messages += result.messages.length
 }
 console.log(
-  `Native Palamedes MDX: ${files.length} guides, ${messages} translation units, no diagnostics.`
+  `Native Palamedes MDX: ${files.length} pages, ${messages} translation units, no diagnostics.`
 )

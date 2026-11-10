@@ -51,12 +51,12 @@ export default function Root() {
   const locale = getI18n().locale
   const labels = translatedLabels()
   const pathname = useArdoPath()
-  const article = pathname.replace(new RegExp(`^/${locale}/guide/?`), "").replace(/\/$/, "")
-  const guide = pathname.startsWith(`/${locale}/guide`)
+  const content = /^\/[^/]+\/(guide|compare)(?:\/(.*))?$/u.exec(pathname)
+  const article = content?.[2]?.replace(/\/$/u, "") ?? ""
   const reference = pathname.startsWith(`/${locale}/api-reference`)
   const news = pathname === `/${locale}/news` || pathname.startsWith(`/${locale}/news/`)
-  const editPattern = guide
-    ? `https://github.com/sebastian-software/ardo/edit/main/docs/app/content/guide/${article === "releases" ? "releases/index" : article}.mdx`
+  const editPattern = content
+    ? `https://github.com/sebastian-software/ardo/edit/main/docs/app/content/${content[1]}/${content[1] === "guide" && article === "releases" ? "releases/index" : article}.mdx`
     : "https://github.com/sebastian-software/ardo/edit/main/docs/app/routes/:path"
   return (
     <ArdoRoot

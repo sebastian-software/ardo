@@ -72,8 +72,10 @@ const budgets = {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
     // 2026-11: raised from 100 KB to 115 KB because the gallery and two in-flight PRs add docs text.
-    budget: 115_000,
-    baseline: "≈99 KB per locale (2026-11, emitted client search data; was ≈81 KB in 2026-10)",
+    // The four-language Nimbus comparison adds 2,213 B to the largest locale search index.
+    // Same main baseline: 114,381 B -> 116,594 B; visitor entry/page caps stay unchanged.
+    budget: 118_000,
+    baseline: "116,594 B (2026-11-10, four-language Nimbus comparison and migration table)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",

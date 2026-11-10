@@ -11,13 +11,15 @@ import { parseSync } from "oxc-parser"
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml"
 
 export const locales = ["en", "de", "fr", "es"]
+/** Authored sections materialized through the same PO-backed native pipeline. */
+export const contentSections = ["guide", "compare"]
 export const mdxOptions = {
   framework: "react",
   frontMatterFields: ["title", "description"],
   translatableAttributes: ["alt", "title", "aria-label", "label", "text", "tagline", "linkText"],
 }
 const docs = fileURLToPath(new URL("../", import.meta.url))
-const sourceDirectory = path.join(docs, "app/content/guide")
+const sourceDirectory = path.join(docs, "app/content")
 const routesDirectory = path.join(docs, "app/routes")
 
 function parse(code, filename = "guide.jsx") {
@@ -390,19 +392,24 @@ export function localizeGuide(source, { filename, destination, locale, i18n }) {
       return statement
     })
     .join("\n\n")
-  return `---\n${stringifyYaml(frontmatter).trim()}\n---\n\n{/* Generated from app/content/guide and PO catalogs. Edit the source, not this route. */}\n\n${esm}\n\n${body.trim()}\n`
+  return `---\n${stringifyYaml(frontmatter).trim()}\n---\n\n{/* Generated from app/content and PO catalogs. Edit the source, not this route. */}\n\n${esm}\n\n${body.trim()}\n`
 }
 
 export async function generateGuides() {
   const files = (await readdir(sourceDirectory, { recursive: true }))
-    .filter((file) => file.endsWith(".mdx"))
+    .filter((file) => file.endsWith(".mdx") && contentSections.includes(file.split(path.sep)[0]))
     .sort()
   const config = {
     rootDir: docs,
     locales,
     sourceLocale: "en",
     mdx: mdxOptions,
-    catalogs: [{ path: "app/i18n/guides/{locale}", include: ["app/content/guide"] }],
+    catalogs: [
+      {
+        path: "app/i18n/guides/{locale}",
+        include: contentSections.map((section) => `app/content/${section}`),
+      },
+    ],
   }
   const output = []
   const timestamps = new Map()
@@ -432,7 +439,7 @@ export async function generateGuides() {
     )
     const i18n = createI18n({ locale, timeZone: "UTC" })
     i18n.load(locale, messages)
-    const directory = path.join(routesDirectory, locale, "guide")
+    const directory = path.join(routesDirectory, locale)
     for (const file of files) {
       const filename = path.join(sourceDirectory, file),
         destination = path.join(directory, file)
@@ -459,10 +466,13 @@ export async function generateGuides() {
   // Validate all locales before publishing any changed route, including in development.
   const expected = new Set(files)
   for (const locale of locales) {
-    const directory = path.join(routesDirectory, locale, "guide")
-    await mkdir(directory, { recursive: true })
-    for (const stale of await readdir(directory, { recursive: true }))
-      if (stale.endsWith(".mdx") && !expected.has(stale)) await rm(path.join(directory, stale))
+    for (const section of contentSections) {
+      const directory = path.join(routesDirectory, locale, section)
+      await mkdir(directory, { recursive: true })
+      for (const stale of await readdir(directory, { recursive: true }))
+        if (stale.endsWith(".mdx") && !expected.has(path.join(section, stale)))
+          await rm(path.join(directory, stale))
+    }
   }
   for (const { destination, generated, timestamp } of output) {
     let previous
@@ -480,7 +490,7 @@ export async function generateGuides() {
       await utimes(destination, timestamp / 1000, timestamp / 1000)
   }
   console.log(
-    `Localized ${files.length} MDX sources into ${files.length * locales.length} generated guide routes.`
+    `Localized ${files.length} MDX sources into ${files.length * locales.length} generated content routes.`
   )
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)

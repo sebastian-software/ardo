@@ -964,6 +964,12 @@ msgstr ""
 "<0>Una columna de lectura limitada dentro de una sección que puede llenar la "
 "pantalla.</0>"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "<0>add</0> copies component source; features hand recipes to an agent."
+msgstr ""
+"<0>add</0> copia el código de los componentes; las funciones entregan recetas"
+" a un agente."
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "<0>API Documentation</0>"
 msgstr "<0>Documentación de la API</0>"
@@ -1181,6 +1187,10 @@ msgstr ""
 msgid "<0>Logo and favicon</0>: imported files, so Vite fingerprints them."
 msgstr "<0>Logotipo y favicon:</0> archivos importados con huellas de Vite."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "<0>Markdown and llms.txt</0>, with optional agent services."
+msgstr "<0>Markdown y llms.txt</0>, con servicios opcionales para agentes."
+
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
 "<0>Migrate from TypeDoc</0>: native API documentation replaces the <1/> "
@@ -1217,6 +1227,27 @@ msgstr ""
 "<0>Nextra</0> combina MDX con rutas Next.js, enlaces e imágenes optimizados, "
 "búsqueda, i18n y los modos de renderizado de Next."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "<0>nimbus-docs check and lint</0>, including fixes and upgrade checks."
+msgstr ""
+"<0>nimbus-docs check y lint</0>, con correcciones y comprobaciones de "
+"actualizaciones."
+
+#: docs/app/content/guide/what-is-ardo.mdx
+msgid ""
+"<0>Nimbus</0> also keeps docs in your repository and serves people and agents."
+" It gives you scaffolded Astro UI files and a deep OpenAPI reference; Ardo "
+"uses React pages and packaged UI, with native TypeScript API documentation. "
+"The dedicated comparison covers ownership, agent services, hosting, and "
+"migration work."
+msgstr ""
+"<0>Nimbus</0> también conserva la documentación en tu repositorio para "
+"personas y agentes. Ofrece archivos de interfaz Astro y una referencia OpenAPI"
+" detallada; Ardo usa páginas React y una interfaz distribuida en un paquete, "
+"con documentación de API TypeScript nativa. El comparativo aborda la "
+"propiedad del código, los servicios para agentes, el alojamiento y la "
+"migración."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0>No GitHub remote detection.</0> Ardo 5 used the repository name from a "
@@ -1235,6 +1266,14 @@ msgstr "<0>Node.js</0> 22.22.0 o posterior"
 #: docs/app/content/guide/components.mdx
 msgid "<0>npm</0>"
 msgstr "<0>npm</0>"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"<0>OpenAPI 3.x</0>, with dedicated operations, schemas, API versions, and "
+"reference UI."
+msgstr ""
+"<0>OpenAPI 3.x</0>, con operaciones, esquemas, versiones de API e interfaz de "
+"referencia específicos."
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "<0>OpenAPI specs</0>"
@@ -1282,6 +1321,14 @@ msgstr ""
 "<0>Starlight</0> es un framework Astro rápido, accesible y cuidado, "
 "especialmente útil para mucho contenido con poca interactividad de "
 "aplicación."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"<0>Static by default</0>; request rendering and remote MCP need a server "
+"adapter."
+msgstr ""
+"<0>Estático por defecto</0>; el renderizado bajo demanda y MCP remoto "
+"necesitan un adaptador de servidor."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "<0>Status:</0> Ignored"
@@ -1812,6 +1859,10 @@ msgstr ""
 msgid "After:"
 msgstr "Después:"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Agent files"
+msgstr "Archivos para agentes"
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Agent Instructions"
 msgstr "Instrucciones para agentes"
@@ -1950,6 +2001,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "API Documentation"
 msgstr "Documentación de la API"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "API reference"
+msgstr "Referencia de API"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "API reference for one TypeScript project"
@@ -2102,6 +2157,14 @@ msgstr ""
 "favicons son imports con huellas de Vite. Un <7/> antiguo produce un error con"
 " enlace a esta guía."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Ardo 6.5.0"
+msgstr "Ardo 6.5.0"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "ardo add prints version-matched recipes; it writes no files."
+msgstr "ardo add muestra recetas de la misma versión, sin escribir archivos."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Ardo also renders <0/> as the visible lede under the page title. If the first "
@@ -2111,6 +2174,17 @@ msgstr ""
 "Ardo también muestra <0/> como introducción bajo el título. Si el primer "
 "párrafo tiene el mismo texto normalizado, omite la introducción para evitar "
 "repetir la frase."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Ardo and Nimbus keep documentation in your repository and publish static HTML "
+"plus Markdown for agents. The main choices are the component model, who "
+"maintains the UI files, and the kind of API reference you need."
+msgstr ""
+"Ardo y Nimbus conservan la documentación en tu repositorio y publican HTML "
+"estático y Markdown para agentes. La elección depende del modelo de "
+"componentes, de quién mantiene los archivos de interfaz y del tipo de "
+"referencia de API que necesitas."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -2197,6 +2271,10 @@ msgstr ""
 " para <2/>. Los shells de desarrollo pueden definir <3/> de forma implícita, "
 "y <4/> no debería verse afectado. Trata una variable vacía como no definida,"
 " porque <5/> es <6/> y fijaría 1970."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Ardo equivalent or migration work"
+msgstr "Equivalente en Ardo o trabajo de migración"
 
 #~ #@ obsolete-since: 2026-11-07
 #~ #: docs/app/content/guide/publications.mdx
@@ -2705,6 +2783,10 @@ msgstr ""
 "navegación, búsqueda, sitemap, redirecciones o salidas LLM. Activa el modo "
 "estricto para que los errores hagan fallar la CI:"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Ardo vs Nimbus"
+msgstr "Ardo vs Nimbus"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "Ardo works without a configuration file. Add <0/> for site metadata, "
@@ -2765,6 +2847,32 @@ msgstr ""
 #: docs/app/content/guide/components.mdx
 msgid "ardo.config.ts"
 msgstr "ardo.config.ts"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Ardo's <0>API guide</0>, <1>configuration</1>, <2>internationalization</2>, "
+"and <3>agent instructions</3> describe the Ardo side of this table. Nimbus is "
+"pre-1.0; check its release notes before assuming a later minor release behaves"
+" identically."
+msgstr ""
+"La <0>guía de API</0>, la <1>configuración</1>, la "
+"<2>internacionalización</2> y las <3>instrucciones para agentes</3> de Ardo "
+"explican su parte de la tabla. Nimbus aún no ha llegado a la versión 1.0; "
+"consulta sus notas antes de suponer que una versión menor posterior se "
+"comporta igual."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Ardo's authoring components, check/lint commands, static Mermaid rendering, "
+"and recipes are already implemented: <0>#469</0>, <1>#470</1>, <2>#472</2>, "
+"and <3>#475</3>. Automatic page share images are tracked in <4>#471</4>; they "
+"are not part of the released 6.5.0 baseline used here."
+msgstr ""
+"Los componentes de autoría, los comandos check/lint, el renderizado estático"
+" de Mermaid y las recetas de Ardo ya están implementados: <0>#469</0>, "
+"<1>#470</1>, <2>#472</2> y <3>#475</3>. Las imágenes de vista previa "
+"automáticas se siguen en <4>#471</4>; no forman parte de la versión "
+"publicada 6.5.0 usada aquí."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Ardo's built-in client entry, which hydrates every page."
@@ -2873,6 +2981,7 @@ msgstr ""
 msgid "ArdoRoot"
 msgstr "ArdoRoot"
 
+#: docs/app/content/compare/nimbus.mdx
 #: docs/app/content/guide/releases/index.mdx
 msgid "Area"
 msgstr "Área"
@@ -2907,9 +3016,42 @@ msgstr ""
 msgid "Astro"
 msgstr "Astro"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Astro pages and MDX. Interactive framework components use <0>Astro "
+"islands</0>."
+msgstr ""
+"Páginas Astro y MDX. Los componentes interactivos de frameworks usan <0>islas"
+" Astro</0>."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "astro.config.ts and nimbus()"
+msgstr "astro.config.ts y nimbus()"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Astro's islands plus chosen components and scripts; payload depends on that "
+"composition."
+msgstr ""
+"Islas Astro con los componentes y scripts elegidos; el volumen transferido "
+"depende de esa composición."
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Astro/Vite"
 msgstr "Astro/Vite"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Audit drafts, hidden pages, and publishing rules before moving content; Nimbus"
+" flags do not automatically preserve their meaning in Ardo. Follow the "
+"<0>setup instructions</0> and verify the published route set, links, and "
+"examples in a production preview."
+msgstr ""
+"Revisa los borradores, las páginas ocultas y las reglas de publicación antes"
+" de mover el contenido; los indicadores de Nimbus no conservan "
+"automáticamente su significado en Ardo. Sigue las <0>instrucciones de "
+"instalación</0> y verifica las rutas publicadas, los enlaces y los ejemplos "
+"en una vista previa de producción."
 
 #: docs/app/content/guide/components.mdx
 msgid "Authentication and access control"
@@ -3143,6 +3285,10 @@ msgstr ""
 "Los tonos de marca, acento y neutros recolorean la paleta predeterminada "
 "mediante la prop de tema de <0/> o CSS."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Browser JavaScript"
+msgstr "JavaScript en el navegador"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
 "Browser-native MathML may keep this lightweight if the markdown pipeline "
@@ -3189,6 +3335,14 @@ msgstr ""
 "features. <3>Componentes</3> muestra sus props y <4>Primeros pasos</4> incluye"
 " una ruta completa."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Build-free ardo check, authoring ardo lint, and build-time internal-link "
+"checks."
+msgstr ""
+"ardo check sin build, ardo lint para contenidos y comprobaciones de enlaces "
+"internos durante el build."
+
 #: docs/app/content/guide/releases/index.mdx
 msgid ""
 "Build-time Ferriki highlighting for Markdown code fences and static <0/> "
@@ -3227,6 +3381,10 @@ msgstr ""
 "defecto: <1/>), más los márgenes horizontales. Usa <2/> en tus propias "
 "secciones de ancho completo para mantener esa alineación. Su opción <3/> "
 "crea una columna de lectura."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Built-in MiniSearch with generated indexes."
+msgstr "MiniSearch integrado con índices generados."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
@@ -3320,6 +3478,10 @@ msgstr "Cambiar logotipo y favicon"
 msgid "Changelogs and revision history"
 msgstr "Registros de cambios"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Check and lint"
+msgstr "Comprobación y lint"
+
 #: docs/app/content/guide/getting-started.mdx
 msgid "Check and Lint"
 msgstr "Comprobar y lint"
@@ -3368,6 +3530,19 @@ msgstr ""
 "despliegue. Ardo necesita Node.js 22.22.0 o posterior y una plataforma nativa "
 "compatible con las dependencias opcionales activadas."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Checked <0>November 10, 2026</0> against released <1>Ardo 6.5.0</1>, <2>Nimbus"
+" 0.19.4</2>, and the <3>Nimbus scaffolder 0.8.3</3>. Nimbus sources below are "
+"pinned to its <4>0.19.4 release commit</4>, not unreleased main. Ardo's "
+"baseline is its <5>6.5.0 tag</5>."
+msgstr ""
+"Verificado el <0>10 de noviembre de 2026</0> con las versiones publicadas "
+"<1>Ardo 6.5.0</1>, <2>Nimbus 0.19.4</2> y el <3>generador de proyectos Nimbus "
+"0.8.3</3>. Las fuentes de Nimbus están fijadas al <4>commit de publicación "
+"de 0.19.4</4>, sin usar main no publicado. La base de Ardo es su <5>etiqueta "
+"6.5.0</5>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Checklists and setup requirements"
 msgstr "Listas y requisitos"
@@ -3411,6 +3586,17 @@ msgstr ""
 msgid "Choose an Icon"
 msgstr "Elegir un icono"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Choose Ardo when your documentation and examples should share one React "
+"component model, the API comes from TypeScript, and you prefer upgrading "
+"packaged UI. Custom React roots and layouts remain available."
+msgstr ""
+"Elige Ardo si la documentación y los ejemplos deben compartir un modelo de "
+"componentes React, la API procede de TypeScript y prefieres actualizar una "
+"interfaz distribuida en un paquete. Sigues pudiendo crear componentes raíz y "
+"diseños React propios."
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
 "Choose Docusaurus if maturity, plugin coverage, and versioned docs matter more"
@@ -3439,6 +3625,20 @@ msgstr ""
 msgid "Choose Nextra if your docs should be a first-class Next.js app."
 msgstr ""
 "Elige Nextra si tu documentación debe ser una aplicación Next.js completa."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Choose Nimbus when owning the layout, component, and style files is central to"
+" your workflow, or you need its more extensive OpenAPI reference and optional "
+"server-side agent services. Its <0>project structure</0> separates the files "
+"you own from the framework dependency; updates do not simply overwrite your "
+"site."
+msgstr ""
+"Elige Nimbus si controlar los archivos de diseño, componentes y estilos es "
+"esencial para tu trabajo, o si necesitas su referencia OpenAPI más completa y"
+" sus servicios opcionales para agentes en el servidor. Su <0>estructura de "
+"proyecto</0> separa tus archivos de la dependencia del framework; las "
+"actualizaciones no sobrescriben sin más tu sitio."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -3622,6 +3822,10 @@ msgstr "Colores, logotipo y favicon"
 msgid "Combine documentation and live React examples in one route."
 msgstr "Combina documentación y ejemplos React en una ruta."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Coming from Nimbus"
+msgstr "Migrar desde Nimbus"
+
 #: docs/app/content/guide/components.mdx
 msgid "Command-line tools and shell examples"
 msgstr "Herramientas CLI y ejemplos shell"
@@ -3633,6 +3837,15 @@ msgstr "Tareas habituales"
 #: docs/app/content/guide/components.mdx
 msgid "Community, feedback, and discussion"
 msgstr "Comunidad, opiniones y debate"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Compare React and Astro documentation workflows, UI ownership, API references,"
+" agent services, and migration paths."
+msgstr ""
+"Compara los flujos de documentación de React y Astro, la propiedad de la "
+"interfaz, las referencias de API, los servicios para agentes y las "
+"migraciones."
 
 #: docs/app/content/guide/components.mdx
 msgid "Compare slider example"
@@ -3650,6 +3863,14 @@ msgid ""
 msgstr ""
 "Árboles completos, búsqueda e interfaz localizadas, enlaces alternativos y "
 "rechazo de traducciones ausentes: <0>Internacionalización</0>."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Complete static locale trees; this site's four languages use Palamedes "
+"catalogs."
+msgstr ""
+"Árboles estáticos completos por idioma; los cuatro idiomas de este sitio "
+"usan catálogos Palamedes."
 
 #: docs/app/content/guide/components.mdx
 msgid "Completed steps and successful results"
@@ -4564,6 +4785,10 @@ msgstr "Favicon importado SVG o PNG. Predeterminado: búho."
 msgid "Feature"
 msgstr "Función"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Feature Comparison"
+msgstr "Comparación de funciones"
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
 "Ferriki downloads standard language and theme assets on first use. For offline"
@@ -4931,6 +5156,10 @@ msgstr ""
 "Las funciones, hooks y tipos muestran su firma o definición. Los nombres de "
 "tipos en tablas enlazan a sus páginas. Se muestran las descripciones JSDoc, "
 "<0/>, <1/>, <2/>, <3/> y <4/>."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Gaps and Current Work"
+msgstr "Carencias y trabajo en curso"
 
 #: docs/app/content/guide/markdown.mdx
 msgid "General purpose"
@@ -5316,6 +5545,10 @@ msgstr "Plataforma alojada"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Hosted SaaS"
 msgstr "SaaS alojado"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Hosting"
+msgstr "Alojamiento"
 
 #: docs/app/content/guide/agent-instructions.mdx
 msgid "Hosting and base path"
@@ -5854,6 +6087,14 @@ msgstr ""
 "Conserva la especificación en el repositorio e indica su ruta relativa en "
 "<0/>. Añade <1/> a la configuración existente:"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Keep title and description; map sidebar.order to order. Review other "
+"<0>frontmatter</0> fields individually."
+msgstr ""
+"Conserva title y description; cambia sidebar.order por order. Revisa los "
+"demás campos de <0>frontmatter</0> individualmente."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "Keep using the three commands. Do not call <0/> or <1/>; those CLIs are gone "
@@ -5886,6 +6127,7 @@ msgstr "Etiqueta del índice."
 msgid "lang"
 msgstr "lang"
 
+#: docs/app/content/compare/nimbus.mdx
 #: docs/app/content/guide/markdown.mdx
 msgid "Languages"
 msgstr "Lenguajes"
@@ -6215,6 +6457,10 @@ msgstr "Notación matemática"
 msgid "Mature OSS docs"
 msgstr "Documentación OSS madura"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "MCP"
+msgstr "MCP"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Mermaid diagrams"
 msgstr "Diagramas Mermaid"
@@ -6262,6 +6508,10 @@ msgstr "Raíz mínima"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Mintlify"
 msgstr "Mintlify"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "mode: custom"
+msgstr "mode: custom"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid ""
@@ -6315,6 +6565,14 @@ msgid ""
 msgstr ""
 "Pasa de React Router al build estático, elimina sus archivos y adopta las API"
 " de enlaces y páginas de Ardo."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Move prose into app/routes/, with locale and guide directories when "
+"configured. Preserve old URLs with explicit redirects."
+msgstr ""
+"Mueve los textos a app/routes/, con directorios de idioma y guide si están "
+"configurados. Conserva las URL antiguas mediante redirecciones explícitas."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -6416,6 +6674,10 @@ msgstr "Sintaxis Markdown nativa"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Native TypeScript + OXC"
 msgstr "TypeScript nativo y OXC"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Native TypeScript reference plus a static local OpenAPI generator."
+msgstr "Referencia TypeScript nativa y generador estático de OpenAPI local."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "navigation"
@@ -6561,8 +6823,44 @@ msgid "Nice to Have"
 msgstr "Mejoras posibles"
 
 #: docs/app/content/guide/what-is-ardo.mdx
+msgid "Nimbus"
+msgstr "Nimbus"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Nimbus 0.19.4"
+msgstr "Nimbus 0.19.4"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Nimbus also supports <0>Git content sources</0> and <1>partial builds</1>. "
+"Ardo's corresponding proposals remain <2>#473</2> and <3>#474</3>. A CI "
+"checkout plus local content mapping is available today."
+msgstr ""
+"Nimbus también admite <0>fuentes de contenido Git</0> y <1>builds "
+"parciales</1>. Las propuestas correspondientes para Ardo siguen siendo "
+"<2>#473</2> y <3>#474</3>. Ya puedes hacer un checkout en CI y mapear el "
+"contenido local."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Nimbus exposes a site-wide document locale; language routing and translation "
+"belong to the <0>Astro project</0>."
+msgstr ""
+"Nimbus expone un idioma de documento para todo el sitio; las rutas por idioma "
+"y las traducciones corresponden al <0>proyecto Astro</0>."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Nimbus project"
+msgstr "Proyecto Nimbus"
+
+#: docs/app/content/guide/what-is-ardo.mdx
 msgid "No"
 msgstr "No"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "No framework-provided runtime MCP endpoint."
+msgstr ""
+"Sin endpoint MCP en tiempo de ejecución proporcionado por el framework."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
@@ -6725,6 +7023,10 @@ msgstr "proyectos abiertos que quieren páginas estáticas sin plataforma;"
 msgid "openapi"
 msgstr "openapi"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "OpenAPI references"
+msgstr "Referencias OpenAPI"
+
 #: docs/app/content/guide/api-documentation.mdx
 msgid "OpenAPI Specs"
 msgstr "Especificaciones OpenAPI"
@@ -6736,6 +7038,14 @@ msgid ""
 msgstr ""
 "La opción <0/> convierte los bloques <1/> en SVG estático durante el build "
 "con el paquete opcional <2/>; consulta <3>Diagramas Mermaid</3>."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Optional <0>remote MCP</0>: list_pages and get_page; requires a server adapter"
+" and SDK."
+msgstr ""
+"<0>MCP remoto</0> opcional: list_pages y get_page; necesita adaptador de "
+"servidor y SDK."
 
 #: docs/app/content/guide/components.mdx
 msgid "Optional configuration"
@@ -6870,6 +7180,10 @@ msgstr "Opiniones por página"
 msgid "Page Filenames"
 msgstr "Nombres de archivos de página"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Page model"
+msgstr "Modelo de página"
+
 #: docs/app/content/guide/theming.mdx
 msgid "Page outline"
 msgstr "Índice"
@@ -6985,6 +7299,14 @@ msgid ""
 msgstr ""
 "La configuración por página usa el frontmatter de MDX. Consulta "
 "<0>Frontmatter</0> para ver todas las opciones."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Per-page Markdown, llms.txt, llms-full.txt, and optional Agent Skills "
+"discovery."
+msgstr ""
+"Markdown por página, llms.txt, llms-full.txt y descubrimiento opcional de "
+"Agent Skills."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Performance"
@@ -7300,6 +7622,17 @@ msgstr "Reutilizar React"
 msgid "React DOM APIs, with <0/>, <1/>, and <2/> subpaths."
 msgstr "API React DOM con las subrutas <0/>, <1/> y <2/>."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "React hydration and interactive UI; no client router."
+msgstr "Hidratación React e interfaz interactiva; sin router de cliente."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"React pages and MDX, prerendered and hydrated; ordinary document navigation."
+msgstr ""
+"Páginas React y MDX, prerenderizadas e hidratadas; navegación normal entre "
+"documentos."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "React providers, runtime hooks, <0/>, <1/>, <2/>, <3/>, <4/>, and sidebar "
@@ -7363,6 +7696,10 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid "Reason"
 msgstr "Motivo"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Recipes"
+msgstr "Recetas"
 
 #: docs/app/content/guide/frontmatter.mdx
 msgid "redirectFrom"
@@ -7574,6 +7911,14 @@ msgstr "Fragmentos reutilizables"
 msgid "Reuse Search and Mobile Navigation"
 msgstr "Reutilizar búsqueda y navegación móvil"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Review each component and its props; port Astro code to React or use Ardo's "
+"MDX components. There is no automatic component conversion."
+msgstr ""
+"Revisa cada componente y sus props; porta el código Astro a React o usa los "
+"componentes MDX de Ardo. No hay conversión automática de componentes."
+
 #: docs/app/content/guide/components.mdx
 msgid "Review the deployment base path before publishing a versioned site."
 msgstr "Revisa la ruta base antes de publicar un sitio versionado."
@@ -7722,6 +8067,12 @@ msgstr ""
 msgid "Saturation"
 msgstr "Saturación"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Scaffolded layouts, components, and styles live in <0>your repository</0>."
+msgstr ""
+"Los diseños, componentes y estilos generados están en <0>tu repositorio</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Scheduled maintenance on Saturday from 08:00 to 10:00 UTC. <0>Read the banner "
@@ -7745,6 +8096,7 @@ msgstr ""
 msgid "Screenshots and visual assets"
 msgstr "Capturas e imágenes"
 
+#: docs/app/content/compare/nimbus.mdx
 #: docs/app/content/guide/releases/index.mdx
 msgid "Search"
 msgstr "Búsqueda"
@@ -7861,6 +8213,14 @@ msgstr "seo.robots"
 #: docs/app/content/guide/configuration.mdx
 msgid "seo.sitemap"
 msgstr "seo.sitemap"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Separate content collections and paths for <0>earlier docs versions</0>; API "
+"versions have their own model."
+msgstr ""
+"Colecciones y rutas separadas para <0>versiones anteriores de la "
+"documentación</0>; las versiones de API tienen su propio modelo."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
@@ -8240,6 +8600,14 @@ msgstr "sourceRoot"
 msgid "Speed and quick actions"
 msgstr "Velocidad y acciones rápidas"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "src/components.ts and Astro components"
+msgstr "src/components.ts y componentes Astro"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "src/content/docs/"
+msgstr "src/content/docs/"
+
 #: docs/app/content/guide/theming.mdx
 msgid "Stable override hooks"
 msgstr "Selectores estables"
@@ -8294,6 +8662,15 @@ msgstr ""
 "disponible, indica qué comportamiento queda sin verificar. Usa <2/> para "
 "entornos de pnpm no interactivos."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Start with Ardo's local openapi configuration. Nimbus API versions, schema "
+"views, and interactive reference controls are not a drop-in mapping."
+msgstr ""
+"Empieza con la configuración openapi local de Ardo. Las versiones de API, las"
+" vistas de esquemas y los controles interactivos de referencia de Nimbus no se"
+" trasladan directamente."
+
 #: docs/app/content/guide/agent-instructions.mdx
 msgid ""
 "State the example revision, files to add or change, validation commands, and "
@@ -8303,6 +8680,11 @@ msgstr ""
 "Antes de editar, indica la revisión del ejemplo, los archivos que añadirás "
 "o cambiarás, los comandos de validación y las decisiones pendientes. Sigue "
 "las instrucciones del repositorio y el alcance solicitado."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Static <0>Pagefind search</0>, or a project-supplied provider."
+msgstr ""
+"<0>Búsqueda Pagefind</0> estática o un proveedor definido por el proyecto."
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Static by Design"
@@ -8316,6 +8698,10 @@ msgstr ""
 "Los sitios estáticos integran proveedores directamente; Ardo no necesita "
 "guardar eventos."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "Static files on any static host."
+msgstr "Archivos estáticos en cualquier alojamiento estático."
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Static i18n"
 msgstr "i18n estático"
@@ -8323,6 +8709,14 @@ msgstr "i18n estático"
 #: docs/app/content/guide/internationalization.mdx
 msgid "Static Language Routes"
 msgstr "Rutas estáticas por idioma"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Static major-version snapshots; guide/API directories can be versioned "
+"independently of site pages."
+msgstr ""
+"Instantáneas estáticas por versión principal; los directorios de guías/API"
+" pueden versionarse independientemente de las páginas del sitio."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Static OpenAPI"
@@ -9524,6 +9918,10 @@ msgstr "title"
 msgid "Title"
 msgstr "Título"
 
+#: docs/app/content/compare/nimbus.mdx
+msgid "title, description, sidebar.order"
+msgstr "title, description, sidebar.order"
+
 #: docs/app/content/guide/configuration.mdx
 msgid "titleSeparator"
 msgstr "titleSeparator"
@@ -9684,6 +10082,14 @@ msgstr "Configuración de la interfaz"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "UI model"
 msgstr "Modelo UI"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "UI ownership"
+msgstr "Propiedad de la interfaz"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "UI ships in the package; compose or replace it with React."
+msgstr "La interfaz viene en el paquete; compónla o sustitúyela con React."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid "UI, Search, and Metadata"
@@ -9972,6 +10378,14 @@ msgstr ""
 "Adapta el import relativo a la profundidad de la ruta. Una página de <0/> "
 "suele importar <1/>."
 
+#: docs/app/content/compare/nimbus.mdx
+msgid ""
+"Use ardo.config.ts for framework options and app/root.tsx for UI composition; "
+"keep custom Vite plugins in vite.config.ts."
+msgstr ""
+"Usa ardo.config.ts para las opciones del framework y app/root.tsx para "
+"componer la interfaz; conserva los plugins Vite propios en vite.config.ts."
+
 #: docs/app/content/guide/content-sources.mdx
 msgid ""
 "Use content sources when the Markdown you want to publish already belongs "
@@ -10004,6 +10418,10 @@ msgstr "Usar en React"
 #: docs/app/content/guide/configuration.mdx
 msgid "Use it for"
 msgstr "Uso"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Use layout: bare for a page without the docs frame."
+msgstr "Usa layout: bare para una página sin el marco de documentación."
 
 #: docs/app/content/guide/components.mdx
 msgid ""
@@ -10145,6 +10563,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "versioning"
 msgstr "versioning"
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Versioning"
+msgstr "Control de versiones"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Versioning and Browser Support"
@@ -10434,6 +10856,10 @@ msgstr "Indica si se muestra el enlace para editar la página."
 #: docs/app/content/guide/frontmatter.mdx
 msgid "Whether to show the last updated time."
 msgstr "Indica si se muestra la fecha de la última actualización."
+
+#: docs/app/content/compare/nimbus.mdx
+msgid "Which Workflow Fits?"
+msgstr "¿Qué flujo de trabajo encaja?"
 
 #: docs/app/content/guide/theming.mdx
 msgid "Why no Preflight?"

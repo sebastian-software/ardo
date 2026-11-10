@@ -6,6 +6,10 @@ import { NoteLabel } from "./NoteLabel"
 
 const NEIGHBORS = [
   [
+    "Nimbus",
+    "Repo-owned Astro layouts and components, with optional agent services. Ardo ships its React UI in a package.",
+  ],
+  [
     "Docusaurus",
     "React and MDX too, on a newer foundation: Vite and native engines, with plain HTML pages.",
   ],
@@ -35,12 +39,25 @@ export function WhereArdoFits() {
       <NoteLabel>{text("where Ardo fits")}</NoteLabel>
       <h2 className={styles.h2}>{text("Know one of these? Then you almost know Ardo.")}</h2>
       <ul className={styles.compareGrid}>
-        {NEIGHBORS.map(([name, text]) => (
-          <li key={name} className={styles.compareRow}>
-            <span className={styles.compareName}>{name}</span>
-            <span className={styles.muted}>{textCopy(text)}</span>
-          </li>
-        ))}
+        {NEIGHBORS.map(([name, text]) => {
+          const content = (
+            <>
+              <span className={styles.compareName}>{name}</span>
+              <span className={styles.muted}>{textCopy(text)}</span>
+            </>
+          )
+          return (
+            <li key={name} className={name === "Nimbus" ? undefined : styles.compareRow}>
+              {name === "Nimbus" ? (
+                <ArdoLink className={styles.compareRow} to={localizedPath("/compare/nimbus")}>
+                  {content}
+                </ArdoLink>
+              ) : (
+                content
+              )}
+            </li>
+          )
+        })}
       </ul>
       <p className={styles.moreLink}>
         <ArdoLink to={localizedPath("/guide/what-is-ardo#how-ardo-compares")}>
