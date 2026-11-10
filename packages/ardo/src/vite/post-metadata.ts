@@ -94,7 +94,7 @@ function requiredString(data: Record<string, unknown>, field: string): string {
 }
 export function optionalString(value: unknown, field: string): string | undefined {
   if (value == null) return undefined
-  if (typeof value !== "string") throw new Error(`${field} must be a string.`)
+  if (typeof value !== "string") throw new TypeError(`${field} must be a string.`)
   return value
 }
 export function stringArray(value: unknown, field: string): string[] {
@@ -108,7 +108,7 @@ export function stringArray(value: unknown, field: string): string[] {
 export function record(value: unknown, field: string): Record<string, unknown> {
   if (value == null) return {}
   if (typeof value !== "object" || Array.isArray(value))
-    throw new Error(`${field} must be a mapping.`)
+    throw new TypeError(`${field} must be a mapping.`)
   return value as Record<string, unknown>
 }
 function readDate(value: unknown, field: string): string {
@@ -119,7 +119,7 @@ function readDate(value: unknown, field: string): string {
 export function readCoverImage(value: unknown): PostImageInput {
   const image = record(value, "coverImage")
   if (typeof image.src !== "string" || typeof image.alt !== "string")
-    throw new Error("coverImage requires src and alt.")
+    throw new TypeError("coverImage requires src and alt.")
   return image as PostImageInput
 }
 function validatePostPath(value: string, prefix: string): void {

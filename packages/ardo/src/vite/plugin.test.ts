@@ -143,7 +143,7 @@ describe("ardoPlugin", () => {
       (entry) => entry.name === "ardo:static-site"
     )
     const hook = plugin?.config
-    if (typeof hook !== "function") throw new Error("Static site plugin not found")
+    if (typeof hook !== "function") throw new TypeError("Static site plugin not found")
 
     const config = Reflect.apply(hook, {}, [
       { root: "/project" },
