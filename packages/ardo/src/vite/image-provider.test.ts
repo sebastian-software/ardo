@@ -253,6 +253,13 @@ describe("GPS metadata in originals", () => {
       })
     ).toBe(false)
   })
+  it.each(["g ", "g﻿"])("treats %j as one XML prefix", (prefix) => {
+    const binding = `xmlns:${prefix}="http://ns.adobe.com/exif/1.0/"`
+    const attribute = `<d ${binding} ${prefix}:GPSLatitude="48,8N"/>`
+    const element = `<d ${binding}><${prefix}:GPSLatitude>48,8N</${prefix}:GPSLatitude></d>`
+    expect(hasGpsMetadata({ xmp: Buffer.from(attribute) })).toBe(true)
+    expect(hasGpsMetadata({ xmp: Buffer.from(element) })).toBe(true)
+  })
   it("marks only the original that publishes a location", async () => {
     const context = await input()
     const tagged = await sharp(context.source)

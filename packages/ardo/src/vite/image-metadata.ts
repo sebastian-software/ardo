@@ -3,8 +3,10 @@ import type { Metadata } from "sharp"
 const TIFF_HEADER_OFFSET = 6
 const GPS_IFD_POINTER = 0x88_25
 const XMP_EXIF_NAMESPACE = "http://ns.adobe.com/exif/1.0/"
-const XMP_NAMESPACE_BINDING = /\bxmlns(?::([^\s:=<>"'/]+))?\s*=\s*(?:"([^"]*)"|'([^']*)')/gu
-const XMP_GPS_PROPERTY = /(?:^|[\s<])(?:([^\s:=<>"'/]+):)?GPS[A-Z]/gu
+// XML whitespace only: `\s` also matches U+1680 and U+FEFF, which are valid in XML names.
+const XMP_NAMESPACE_BINDING =
+  /\bxmlns(?::([^ \t\r\n:=<>"'/]+))?[ \t\r\n]*=[ \t\r\n]*(?:"([^"]*)"|'([^']*)')/gu
+const XMP_GPS_PROPERTY = /(?:^|[ \t\r\n<])(?:([^ \t\r\n:=<>"'/]+):)?GPS[A-Z]/gu
 
 /** Whether an original would publish a location when it is emitted unchanged. */
 export function hasGpsMetadata({ exif, xmp }: Pick<Metadata, "exif" | "xmp">): boolean {
