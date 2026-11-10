@@ -6890,6 +6890,14 @@ msgstr "Optional deployment details"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Optional internal or external destination. Makes the card clickable."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Optional rendered icon size."
@@ -8263,6 +8271,10 @@ msgstr "Settings and configuration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Setup"
+
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Shared image delivery"
 
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx

@@ -6883,6 +6883,14 @@ msgstr "Optionale Deployment-Details"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Optionales internes oder externes Ziel. Macht die Karte klickbar."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Optionale Provider und gemeinsame lokale Bildverarbeitung für Publikationen "
+"und dafür aktiviertes Markdown/MDX; siehe <0>Bilder</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Optionale Darstellungsgröße."
@@ -8267,6 +8275,10 @@ msgstr "Einstellungen und Konfiguration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Einrichtung"
+
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Gemeinsame Bildauslieferung"
 
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx

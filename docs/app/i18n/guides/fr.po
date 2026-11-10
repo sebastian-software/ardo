@@ -6867,6 +6867,14 @@ msgstr "Détails de déploiement facultatifs"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Destination interne ou externe facultative. Rend la carte cliquable."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Fournisseurs facultatifs et traitement local commun pour les publications et "
+"les pages Markdown/MDX activées ; voir <0>Images</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Taille d’affichage facultative."
@@ -8244,6 +8252,10 @@ msgstr "Réglages et configuration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Installation"
+
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Diffusion d’images commune"
 
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
