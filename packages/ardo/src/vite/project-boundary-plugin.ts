@@ -12,23 +12,32 @@ import {
   MANAGED_RUNTIME_SOURCE_META_KEY,
 } from "./managed-runtime"
 import { ProjectPackages } from "./project-packages"
+import { normalizePath } from "./path-utils"
+import { workspaceStyleWatchFiles } from "./vanilla-extract-plugin"
+import { isPublicAssetUrl } from "./public-asset-url"
 
 type ProjectBoundaryOptions = { ardoRoot?: string; managedRuntime?: boolean }
 
 /** Apply the docs package boundary to development and production module graphs. */
 export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOptions = {}): Plugin {
   let packages: ProjectPackages
+  let publicDir = ""
   const optionalPrefix = "\0ardo:missing-optional:"
   return {
     name: "ardo:project-boundary",
     enforce: "pre",
     configResolved(config) {
+      publicDir = config.command === "serve" ? config.publicDir : ""
       packages = new ProjectPackages(config.root, {
         ardoRoot:
           pluginOptions.ardoRoot ??
           (pluginOptions.managedRuntime ? findArdoPackageRoot() : undefined),
         managedRuntime: pluginOptions.managedRuntime,
       })
+      // Linked source packages use Vite's regular transform, dependency scan,
+      // and file watcher. Grant only their declared installation roots rather
+      // than the whole monorepo; imports still pass the ownership check below.
+      config.server.fs.allow.push(...packages.workspaceRoots.map(normalizePath))
     },
     async resolveId(id, importer, resolveOptions) {
       if (resolveOptions.custom?.[MANAGED_RUNTIME_RESOLUTION_KEY] === true) return
@@ -45,7 +54,12 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
         return optionalPrefix + id
       }
       const resolved = await this.resolve(id, importer, { ...resolveOptions, skipSelf: true })
-      if (resolved != null && isVirtualId(resolved.id)) return resolved
+      if (
+        resolved != null &&
+        (isVirtualId(resolved.id) ||
+          (boundaryImporter == null && isPublicAssetUrl(id, resolved.id, publicDir)))
+      )
+        return resolved
       if (resolved != null) {
         const resolvedSourcePath =
           managedSourcePath(
@@ -56,6 +70,9 @@ export function createProjectBoundaryPlugin(pluginOptions: ProjectBoundaryOption
           importer: boundaryImporter,
           managedName,
           managedSourcePath: resolvedSourcePath,
+          styleWatchFiles: workspaceStyleWatchFiles(
+            boundaryImporter == null ? undefined : this.getModuleInfo(boundaryImporter)?.meta
+          ),
         })
       } else if (boundaryImporter == null && !id.startsWith("/")) {
         packages.checkImport(id, boundaryImporter)
