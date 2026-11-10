@@ -379,8 +379,8 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(oxc-transform-react@0.156.0)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferrolink:
-        specifier: ^0.2.1
-        version: 0.2.1(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: ^0.2.2
+        version: 0.2.2(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       ferromark:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1304,54 +1304,54 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ferrolink/darwin-arm64@0.2.1':
-    resolution: {integrity: sha512-A/6k9TM0UQ0eJpdERYEm08JJF7AirJoSo/vrIk370s9s2A24Dq7AzzVCSqTre14Rs5Cham17CGLfYVKbEKfz1A==}
+  '@ferrolink/darwin-arm64@0.2.2':
+    resolution: {integrity: sha512-prKzB/z2FTxblbJBuxwJykJE+TB+rPNHeBru/TkFZYzkVl+0cwZQssU90k9uNaBbRkGOVlEg26N3LPf+N4aExA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferrolink/darwin-x64@0.2.1':
-    resolution: {integrity: sha512-KbfdFcsjdWSzzMuuchQdJHrTl3FFVSeA9xYxqWqhjpIARRDmoU0uFjj5z6QIS0YBgbzPCGH19P8ofhXXnfkwDg==}
+  '@ferrolink/darwin-x64@0.2.2':
+    resolution: {integrity: sha512-DJ0v/I0gnNLnOp9LUbpJHuHOTAupqAvk8N5CvD8xIdqNn7fXxqpQMeOSapgRZjVkqLmpd+Rysq6e36WrV5XKEA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [darwin]
 
-  '@ferrolink/linux-arm64-gnu@0.2.1':
-    resolution: {integrity: sha512-P0kUNyIM/IWIqDJ1qp2eZy+7WwuXhoGaP+yOimIhhLbnZoZgYBUzYZ1stusy4+rZbyRsTC7f1QRQDUtqcIJ5QA==}
+  '@ferrolink/linux-arm64-gnu@0.2.2':
+    resolution: {integrity: sha512-UmaeXQPPkzgU2nIY5sm3he0wY+4adybppt4SXfIxnDXwd85OApOKV3/dk75rLEa7VoK/O1W6jd/qvRZ1u0XUZg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrolink/linux-arm64-musl@0.2.1':
-    resolution: {integrity: sha512-YR0BlgYh1oRU2igtGOSeW+2Vk/2KxJ4IqPpKtlPuPeWRENJo0xOUiYhBeeMu1lUbRK8pcYmgGaFp32uXy1MA7w==}
+  '@ferrolink/linux-arm64-musl@0.2.2':
+    resolution: {integrity: sha512-B2G96um+5RyoJoplrMpOb47KSoJyPrYOip2zy16KMf2roqnzwAXYfMX9B7Vo4FreZyc0SVhnSugsgzAQvaBOLw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferrolink/linux-x64-gnu@0.2.1':
-    resolution: {integrity: sha512-Vxy6wc2SLUp+wXwhr4B1RdYDW+4UzPF9z73ngE8vEYEdt1pHgc6ZftZNsfL5GaT2p8D1GIfOPQ0hmQYNsOblTg==}
+  '@ferrolink/linux-x64-gnu@0.2.2':
+    resolution: {integrity: sha512-BszIuNbJqmSNLCzTeNPs0Tbl4W5OU95xcPp0VdB7M7D1UnjbKe3ceW4+DilOOH9heM8jzpKN0FYmH/Bq5YZH+g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrolink/linux-x64-musl@0.2.1':
-    resolution: {integrity: sha512-P59AjGdgzw5P3oe8FM2LeASiyWWpxuDSxbeqQWQYg6YqGum+JR4ONIIgpqupPmI+9EYix75FIJ4JI33v+7VB/Q==}
+  '@ferrolink/linux-x64-musl@0.2.2':
+    resolution: {integrity: sha512-+6Sn0N6TFbV7pJAzSSa80mzCLV3sgNBx+JODjgx6rvWGqcUXGDxvz95LRRe7RIK0kGIHAJJRbY6wocAzY7GV2A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferrolink/win32-arm64-msvc@0.2.1':
-    resolution: {integrity: sha512-A91X0dLS+TCvaXh992izUs+BBYmeBvL0gurpH56zY73eaFX0EnP5QUJ4LL4bBBCYguR16eUaNOr/FMaEBrDrPA==}
+  '@ferrolink/win32-arm64-msvc@0.2.2':
+    resolution: {integrity: sha512-QI0Lrgev3fN5gXYlxsgCArTZzMDytSmhS5VTpGNAzhlVWzh//AaeZCUx6Rtngc9fjuJfqK4jwhrNQ6kEj0QgWQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [win32]
 
-  '@ferrolink/win32-x64-msvc@0.2.1':
-    resolution: {integrity: sha512-XhpXMJWYrH7mDbA9OJcDI8fyUM938Tc9DJQxBfvY8FigvABUXRiayKaEFMAd4i+qBZ2J8vV+f538fdwKB54/lA==}
+  '@ferrolink/win32-x64-msvc@0.2.2':
+    resolution: {integrity: sha512-gt/u0aQ8xOvudWYPhQWrXpdbXxpFTcW1bMtqalYCvmEZ4NgeOeKEmE2pHQEG66Eg+OESH7bRb/LeWYM0F/p7vg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
@@ -4056,8 +4056,8 @@ packages:
       picomatch:
         optional: true
 
-  ferrolink@0.2.1:
-    resolution: {integrity: sha512-sJqZxSv/61bqnWqU2dG4emm3k40Kb0JXLT+WKuoQXGhsnknqqV5FeW12BioOLvNKosTBnmdY24ImqTAqsRP+KQ==}
+  ferrolink@0.2.2:
+    resolution: {integrity: sha512-uu1x32qA72oLh99MkgEeaxetyWyvosW9/9UOEYQLUC13fZst9sOiqNIRtKY60LENvCYgLr51jBuOXoDpmyCl3Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       vite: ^8.3.5
@@ -6724,28 +6724,28 @@ snapshots:
   '@ferriki/win32-x64-msvc@1.3.0':
     optional: true
 
-  '@ferrolink/darwin-arm64@0.2.1':
+  '@ferrolink/darwin-arm64@0.2.2':
     optional: true
 
-  '@ferrolink/darwin-x64@0.2.1':
+  '@ferrolink/darwin-x64@0.2.2':
     optional: true
 
-  '@ferrolink/linux-arm64-gnu@0.2.1':
+  '@ferrolink/linux-arm64-gnu@0.2.2':
     optional: true
 
-  '@ferrolink/linux-arm64-musl@0.2.1':
+  '@ferrolink/linux-arm64-musl@0.2.2':
     optional: true
 
-  '@ferrolink/linux-x64-gnu@0.2.1':
+  '@ferrolink/linux-x64-gnu@0.2.2':
     optional: true
 
-  '@ferrolink/linux-x64-musl@0.2.1':
+  '@ferrolink/linux-x64-musl@0.2.2':
     optional: true
 
-  '@ferrolink/win32-arm64-msvc@0.2.1':
+  '@ferrolink/win32-arm64-msvc@0.2.2':
     optional: true
 
-  '@ferrolink/win32-x64-msvc@0.2.1':
+  '@ferrolink/win32-x64-msvc@0.2.2':
     optional: true
 
   '@floating-ui/core@1.8.0':
@@ -9160,16 +9160,16 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.7
 
-  ferrolink@0.2.1(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
+  ferrolink@0.2.2(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     optionalDependencies:
-      '@ferrolink/darwin-arm64': 0.2.1
-      '@ferrolink/darwin-x64': 0.2.1
-      '@ferrolink/linux-arm64-gnu': 0.2.1
-      '@ferrolink/linux-arm64-musl': 0.2.1
-      '@ferrolink/linux-x64-gnu': 0.2.1
-      '@ferrolink/linux-x64-musl': 0.2.1
-      '@ferrolink/win32-arm64-msvc': 0.2.1
-      '@ferrolink/win32-x64-msvc': 0.2.1
+      '@ferrolink/darwin-arm64': 0.2.2
+      '@ferrolink/darwin-x64': 0.2.2
+      '@ferrolink/linux-arm64-gnu': 0.2.2
+      '@ferrolink/linux-arm64-musl': 0.2.2
+      '@ferrolink/linux-x64-gnu': 0.2.2
+      '@ferrolink/linux-x64-musl': 0.2.2
+      '@ferrolink/win32-arm64-msvc': 0.2.2
+      '@ferrolink/win32-x64-msvc': 0.2.2
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
 
   ferromark-darwin-arm64@4.0.0:
