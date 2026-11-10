@@ -1,0 +1,57 @@
+---
+title: Images
+description: Prepare local images in Markdown and MDX, or deliver Ardo's compositions through an image provider.
+order: 46
+---
+
+Set top-level `images` in `ardo.config.ts` to prepare local Markdown images and the `Image` MDX component. Existing documentation keeps its normal image URLs when this option is absent. Publications always prepare their images.
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Example project",
+  images: { widths: [384, 640, 960, 1280, 1920] },
+})
+```
+
+Relative paths resolve beside the original Markdown file; paths starting with `/` resolve inside `public`. Add framing and preset overrides in the page's `images` frontmatter map, keyed by the image path. See [publication images](./publications#local-images-and-framing) for the shared framing model and presets.
+
+## Delivery providers
+
+Sharp remains the default: responsive AVIF files and one JPEG fallback. A provider replaces raster encoding with URLs while Ardo still owns crop planning, presets, HTML, feeds, and social metadata. Development uses local Sharp output so unpublished originals remain viewable.
+
+```ts
+import type { ImageProvider } from "ardo/config"
+
+const provider: ImageProvider = {
+  source({ sha256, extension }) {
+    return {
+      fileName: `images/${sha256}.${extension}`,
+      url: `https://images.example.com/${sha256}.${extension}`,
+    }
+  },
+  url({ source, crop, width, height, kind }) {
+    // Adapt these parameters to your own image endpoint.
+    const url = new URL(source)
+    url.searchParams.set("crop", [crop.left, crop.top, crop.width, crop.height].join(","))
+    url.searchParams.set("width", String(width))
+    url.searchParams.set("height", String(height))
+    url.searchParams.set("format", kind === "fallback" ? "jpeg" : "webp")
+    return { url: url.href, type: kind === "fallback" ? "image/jpeg" : "image/webp" }
+  },
+}
+
+// In defineArdoConfig:
+// images: { provider }
+```
+
+Both hooks must be synchronous, deterministic, and free of network or upload side effects. Ardo emits each original once per output path, preserving its bytes. The source hook receives the complete SHA-256 hash, canonical extension, oriented dimensions, and original EXIF orientation. Use the full hash in the filename; your deployment uploads the emitted originals.
+
+The endpoint must apply EXIF orientation before the exact integer pixel crop and then resize to the requested dimensions. Ardo does not detect faces. The returned MIME type must match the response and stay consistent within one crop family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require JPEG or PNG for feeds and social images. All URLs must be absolute HTTP(S) URLs without embedded credentials.
+
+Original filenames must be relative image paths without dot segments. Collisions with other images, bundled assets, or public files fail the build. SVG and animated images emit unchanged originals without requesting raster renditions; framing remains unsupported. External HTTP images remain unchanged and are never downloaded.
+
+## Publication compatibility
+
+Top-level `images` applies to covers, body images, author portraits, and opted-in documentation. Portraits retain their 96 and 192 pixel widths. Existing `publication.images` remains a compatible alias for publication settings. Top-level values take precedence field by field; named presets merge, and an explicitly supplied top-level preset wins.

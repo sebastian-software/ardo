@@ -1,9 +1,9 @@
 import path from "node:path"
 import type { PreparedJsxDocument } from "ferromark"
-import type { AuthorProfile, PostImage, PostImageInput } from "../publication/types"
-import { prepareNativeMarkdown } from "../markdown/native-metadata"
+import type { AuthorProfile, PostImage } from "../publication/types"
+import { collectImageInputs } from "./image-references"
 import type { PublicationContext } from "./publication-context"
-import { record, readCoverImage } from "./post-metadata"
+import { readCoverImage } from "./post-metadata"
 import { preparePostImage } from "./post-images"
 
 export async function preparePostAuthors(
@@ -36,7 +36,7 @@ async function prepareAvatar(
     sourceFile: path.join(context.config.root, "_author"),
     root: context.config.root,
     base: context.config.deploymentBase,
-    config: { widths: [96, 192] },
+    config: { widths: [96, 192], provider: context.options.images?.provider },
     jpegFallback: false,
     assets: context.assets,
     dependencies: context.dependencies,
@@ -64,43 +64,11 @@ export async function preparePostImages(
     assets: context.assets,
     dependencies: context.dependencies,
   }
-  for (const [src, image] of collectImages(input))
+  for (const [src, image] of collectImageInputs({ ...input, markdown: context.config.markdown }))
     images[src] = await preparePostImage({ ...options, image })
   const coverImage =
     data.coverImage == null
       ? undefined
       : await preparePostImage({ ...options, image: readCoverImage(data.coverImage) })
   return { images, coverImage }
-}
-
-function collectImages({ data, prepared, context }: ImageInput): Map<string, PostImageInput> {
-  const metadata = record(data.images, "images")
-  const portable = typeof data.feedContent === "string" ? data.feedContent : ""
-  const references = [
-    ...prepared.collectReferences(),
-    ...prepareNativeMarkdown(portable, "md", {
-      ...context.config.markdown,
-      trackReferences: true,
-    }).prepared.collectReferences(),
-  ]
-  const images = new Map<string, PostImageInput>()
-  for (const reference of references) {
-    if (
-      reference.kind !== "image" &&
-      !(
-        reference.kind === "mdxAttribute" &&
-        reference.attribute === "src" &&
-        reference.element === "Image"
-      )
-    )
-      continue
-    images.set(reference.destination, {
-      src: reference.destination,
-      alt: reference.text ?? "",
-      ...record(metadata[reference.destination], `images.${reference.destination}`),
-    } as PostImageInput)
-  }
-  for (const [src, descriptor] of Object.entries(metadata))
-    images.set(src, { src, alt: "", ...record(descriptor, `images.${src}`) } as PostImageInput)
-  return images
 }

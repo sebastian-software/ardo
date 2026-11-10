@@ -1,3 +1,4 @@
+import type { ImageSession } from "./image-session"
 import path from "node:path"
 import type { Plugin, ResolvedConfig as ViteConfig } from "vite"
 import type { ResolvedConfig } from "../config/types"
@@ -19,6 +20,8 @@ import {
 export type PublicationSite = {
   resolvedConfig?: ResolvedConfig
   routesDir: string
+  imageSession?: ImageSession
+  command?: "build" | "serve"
   /** The binding of a generated post route, or undefined for any other file. */
   publicationPost?: (file: string) => PublicationPostBinding | undefined
 }
@@ -69,7 +72,10 @@ export function createPublicationPlugin(options: PublicationConfig, site: Public
       if (this.environment.name !== "client") return
       const emitted = new Set<string>()
       for (const publication of builder.prepared) {
-        for (const asset of [...publication.assets.values(), ...publication.feeds]) {
+        for (const asset of [
+          ...(site.imageSession == null ? publication.assets.values() : []),
+          ...publication.feeds,
+        ]) {
           if (emitted.has(asset.fileName)) continue
           emitted.add(asset.fileName)
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })

@@ -34,6 +34,8 @@ import type {
   TOCItem,
 } from "./types"
 
+import { validateImagesConfig } from "./images"
+
 import { resolveBuildMetadata, validateBuildMetadataConfig } from "./build-time"
 import { resolveI18nConfig } from "./i18n"
 import { isLintRuleId, lintRuleIds } from "./lint-rules"
@@ -42,6 +44,8 @@ import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { resolveSourceRoot, validateSourceRootConfig } from "./source-root"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
+
+export type * from "../images/public-types"
 
 export { type ArdoProjectConfigExport, defineArdoConfig } from "./project"
 export type * from "../publication/public-types"
@@ -119,6 +123,7 @@ export function resolveConfig(config: ArdoConfig, root: string): ResolvedConfig 
     base: resolveVersionedBase(deploymentBase, versioning),
     deploymentBase: normalizedBase,
     siteUrl,
+    ...(config.images === undefined ? {} : { images: config.images }),
     ...(agentDiscoveryUrl === undefined ? {} : { agentDiscoveryUrl }),
     // buildTime and buildHash are present only when configured; otherwise Ardo uses the clock and Git.
     ...resolveBuildMetadata(config),
@@ -179,6 +184,7 @@ function validateConfig(config: ArdoConfig): void {
 }
 
 function validateBaseAndSiteUrl(config: ArdoConfig, errors: string[]): void {
+  validateImagesConfig(config.images)
   if (config.base !== undefined && !isValidBasePath(config.base))
     errors.push('base must start and end with "/" (for example "/docs/").')
   if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl))

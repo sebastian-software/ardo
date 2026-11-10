@@ -3161,6 +3161,21 @@ msgstr ""
 "existentes reinician el servidor automáticamente. Tras añadir o eliminar un "
 "archivo, reinicia <0/>."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Both hooks must be synchronous, deterministic, and free of network or upload "
+"side effects. Ardo emits each original once per output path, preserving its "
+"bytes. The source hook receives the complete SHA-256 hash, canonical "
+"extension, oriented dimensions, and original EXIF orientation. Use the full "
+"hash in the filename; your deployment uploads the emitted originals."
+msgstr ""
+"Ambos hooks deben ser síncronos, deterministas y no realizar solicitudes de "
+"red ni cargas. Ardo emite cada original una vez por ruta de salida, "
+"conservando sus bytes. El hook source recibe el SHA-256 completo, la "
+"extensión canónica, las dimensiones orientadas y la orientación EXIF "
+"original. Usa el hash completo en el nombre; tu despliegue sube los originales"
+" emitidos."
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""
 "Both widths are theme tokens, so a site can change them without replacing the "
@@ -3769,6 +3784,15 @@ msgstr ""
 msgid "Configure Ardo's versioning in <0/>:"
 msgstr "Configura las versiones de Ardo en <0/>:"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Configure local image preparation and optional delivery providers with "
+"top-level <0/>. See <1>Images</1> for the API and the compatible <2/> alias."
+msgstr ""
+"Configura el procesamiento local de imágenes y los proveedores de entrega "
+"opcionales con <0/> en el nivel superior. Consulta <1>Imágenes</1> para ver "
+"la API y el alias compatible <2/>."
+
 #: docs/app/content/guide/internationalization.mdx
 msgid "Configure locales in <0/> or the <1/> Vite plugin:"
 msgstr "Configura los idiomas en <0/> o en el plugin Vite <1/>:"
@@ -4076,6 +4100,10 @@ msgstr "Eliminar los archivos retirados"
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete these files. Ardo now provides what they did:"
 msgstr "Elimina estos archivos; Ardo asume sus funciones:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Delivery providers"
+msgstr "Proveedores de entrega"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Depends on React framework"
@@ -4920,6 +4948,15 @@ msgstr ""
 "como en <0>Varios paquetes</0>. Se conservan la instalación y el límite de "
 "la aplicación."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"For shared configuration and optional URL delivery, see <0>Images</0>. The "
+"defaults below apply when no provider is configured."
+msgstr ""
+"Consulta <0>Imágenes</0> para la configuración compartida y la entrega "
+"opcional mediante URL. Los valores predeterminados siguientes se aplican sin "
+"un proveedor configurado."
+
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "For stable major-version URLs, build the current docs into a version folder "
@@ -5540,6 +5577,10 @@ msgstr ""
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "If your issue isn't listed here:"
 msgstr "Si tu problema no aparece aquí:"
+
+#: docs/app/content/guide/images.mdx
+msgid "Images"
+msgstr "Imágenes"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Images Not Loading"
@@ -6847,6 +6888,14 @@ msgstr "Detalles opcionales de despliegue"
 msgid "Optional internal or external destination. Makes the card clickable."
 msgstr "Destino interno o externo opcional. Hace clicable la tarjeta."
 
+#: docs/app/content/guide/releases/index.mdx
+msgid ""
+"Optional providers and shared local image preparation for publications and "
+"opted-in Markdown/MDX; see <0>Images</0>."
+msgstr ""
+"Proveedores opcionales y procesamiento local compartido para publicaciones y "
+"páginas Markdown/MDX activadas; consulta <0>Imágenes</0>."
+
 #: docs/app/content/guide/components.mdx
 msgid "Optional rendered icon size."
 msgstr "Tamaño de visualización opcional."
@@ -6878,6 +6927,20 @@ msgstr ""
 "expresiones, sentencias de módulo o HTML que la proyección estática "
 "omitiría, proporciona el artículo portátil completo como Markdown en <0/>. "
 "El build informa de las representaciones que faltan."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Original filenames must be relative image paths without dot segments. "
+"Collisions with other images, bundled assets, or public files fail the build. "
+"SVG and animated images emit unchanged originals without requesting raster "
+"renditions; framing remains unsupported. External HTTP images remain unchanged"
+" and are never downloaded."
+msgstr ""
+"Los nombres de los originales deben ser rutas de imagen relativas sin "
+"segmentos de punto. Las colisiones con otras imágenes, recursos empaquetados "
+"o archivos públicos hacen fallar el build. Los SVG y las imágenes animadas "
+"se emiten sin cambios ni variantes ráster; no admiten encuadre. Las imágenes"
+" HTTP externas no cambian y nunca se descargan."
 
 #: docs/app/content/guide/deployment.mdx
 msgid "Other Providers"
@@ -7181,6 +7244,14 @@ msgstr ""
 "Prepara un proyecto Ardo para la versión 4.0 y las URL estables por versión "
 "principal."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Prepare local images in Markdown and MDX, or deliver Ardo's compositions "
+"through an image provider."
+msgstr ""
+"Prepara imágenes locales en Markdown y MDX o entrega las composiciones de "
+"Ardo mediante un proveedor de imágenes."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Prerendering is always on. Base path settings live in Ardo config."
 msgstr "Prerrenderizado siempre activo; base en la configuración Ardo."
@@ -7274,6 +7345,10 @@ msgstr ""
 #: docs/app/content/guide/configuration.mdx
 msgid "publication"
 msgstr "publication"
+
+#: docs/app/content/guide/images.mdx
+msgid "Publication compatibility"
+msgstr "Compatibilidad con publicaciones"
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -7507,6 +7582,19 @@ msgid ""
 msgstr ""
 "<0/> convierte en absolutas las URL relativas canónicas y de imágenes. Sin "
 "<1/>, esas etiquetas relativas se omiten."
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Relative paths resolve beside the original Markdown file; paths starting with "
+"<0/> resolve inside <1/>. Add framing and preset overrides in the page's <2/> "
+"frontmatter map, keyed by the image path. See <3>publication images</3> for "
+"the shared framing model and presets."
+msgstr ""
+"Las rutas relativas parten del archivo Markdown original; las que empiezan por"
+" <0/> se resuelven dentro de <1/>. Añade encuadres y ajustes de presets en el"
+" mapa <2/> del frontmatter, usando la ruta de la imagen como clave. Consulta "
+"<3>imágenes de publicaciones</3> para el modelo de encuadre y los presets "
+"compartidos."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Releases"
@@ -8147,6 +8235,17 @@ msgstr "Define la misma ruta base en <0/>:"
 msgid "Set to <0/> to hide the theme toggle. Defaults to <1/>."
 msgstr "<0/> oculta el selector de tema. Predeterminado: <1/>."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Set top-level <0/> in <1/> to prepare local Markdown images and the <2/> MDX "
+"component. Existing documentation keeps its normal image URLs when this option"
+" is absent. Publications always prepare their images."
+msgstr ""
+"Define <0/> en el nivel superior de <1/> para procesar imágenes Markdown "
+"locales y el componente MDX <2/>. Sin esta opción, la documentación "
+"existente conserva sus URL habituales. Las publicaciones siempre procesan sus "
+"imágenes."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "Set up a documentation site with an assistant or follow the manual steps."
@@ -8182,10 +8281,27 @@ msgstr "Ajustes y configuración"
 msgid "Setup"
 msgstr "Instalación"
 
+#: docs/app/content/guide/releases/index.mdx
+msgid "Shared image delivery"
+msgstr "Entrega de imágenes compartida"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid "Shared Page Width"
 #~ msgstr "Anchura de página común"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Sharp remains the default: responsive AVIF files and one JPEG fallback. A "
+"provider replaces raster encoding with URLs while Ardo still owns crop "
+"planning, presets, HTML, feeds, and social metadata. Development uses local "
+"Sharp output so unpublished originals remain viewable."
+msgstr ""
+"Sharp sigue siendo la opción predeterminada: archivos AVIF adaptables y un "
+"JPEG de respaldo. Un proveedor sustituye la codificación ráster por URL; "
+"Ardo conserva los recortes, presets, HTML, feeds y metadatos sociales. En "
+"desarrollo se usa la salida local de Sharp para mostrar los originales aún no"
+" publicados."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -8996,6 +9112,22 @@ msgstr ""
 "aplicación vecina. Las <0>instrucciones para agentes</0> explican este "
 "límite."
 
+#: docs/app/content/guide/images.mdx
+msgid ""
+"The endpoint must apply EXIF orientation before the exact integer pixel crop "
+"and then resize to the requested dimensions. Ardo does not detect faces. The "
+"returned MIME type must match the response and stay consistent within one crop"
+" family. Renditions accept AVIF, WebP, JPEG, or PNG; fallback requests require"
+" JPEG or PNG for feeds and social images. All URLs must be absolute HTTP(S) "
+"URLs without embedded credentials."
+msgstr ""
+"El endpoint debe aplicar la orientación EXIF antes del recorte exacto en "
+"píxeles enteros y después redimensionar a las dimensiones solicitadas. Ardo "
+"no detecta caras. El tipo MIME devuelto debe coincidir con la respuesta y "
+"mantenerse en cada familia de recortes. Las variantes admiten AVIF, WebP, JPEG"
+" o PNG; los respaldos requieren JPEG o PNG para feeds e imágenes sociales. "
+"Todas las URL deben ser HTTP(S) absolutas sin credenciales integradas."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "The example compares this site's hero illustration in the light and dark "
@@ -9687,6 +9819,20 @@ msgstr ""
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tooltip component"
 msgstr "Tooltip"
+
+#: docs/app/content/guide/images.mdx
+msgid ""
+"Top-level <0/> applies to covers, body images, author portraits, and opted-in "
+"documentation. Portraits retain their 96 and 192 pixel widths. Existing <1/> "
+"remains a compatible alias for publication settings. Top-level values take "
+"precedence field by field; named presets merge, and an explicitly supplied "
+"top-level preset wins."
+msgstr ""
+"<0/> en el nivel superior se aplica a portadas, imágenes del contenido, "
+"retratos y documentación activada. Los retratos conservan sus anchuras de 96 "
+"y 192 píxeles. <1/> sigue siendo un alias compatible para publicaciones. Los "
+"valores superiores prevalecen por campo; los presets con nombre se combinan y "
+"un preset superior explícito tiene prioridad."
 
 #: docs/app/content/guide/releases/index.mdx
 msgid "Tracking issue"

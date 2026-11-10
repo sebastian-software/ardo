@@ -35,10 +35,13 @@ const budgets = {
     // route, and changes with every build. Page loaders live in a lazily
     // imported chunk, so a new page adds only its path, a few bytes. React DOM
     // or the route table back in the entry would fail this.
-    // 2026-11: lowered from 50 KB to 12 KB when the route table left the entry.
+    // 2026-11: coordinated recovery/share/comparison/images checkpoint e8f5ccb measures
+    // 12,122 B versus main 10,490 B (+1,632 B, mainly recovery +1,454 B). This is
+    // additive existing code and route metadata, without a new shared dependency.
     label: "entry-client gzip",
-    budget: 12_000,
-    baseline: "11,944 B (2026-11, independent client recovery; 10,490 B before recovery)",
+    budget: 12_500,
+    baseline:
+      "12,122 B (2026-11, coordinated all-four checkpoint e8f5ccb; main 10,490 B, +1,632 B)",
   },
   pageEagerJsGzip: {
     // What one visitor downloads to open a page: React, the entry, the shared UI chunks,
@@ -63,20 +66,21 @@ const budgets = {
     // Everything emitted, including lazily loaded chunks. Deliberately
     // roomy — this only catches runaway output growth.
     label: "total client JS gzip",
-    // 2026-11: raised from 2.7 MB to 2.85 MB for the 80 API reference pages of the publication
-    // module types. Moving the page loaders out of the entry did not shrink this total.
-    // Client recovery adds 12 generated API pages and four translated guide sections.
-    // Measured against the same main revision: 2,823,032 B -> 2,856,100 B (+33,068 B).
-    budget: 2_900_000,
-    baseline: "2,856,100 B (2026-11, client recovery API and four-locale guides)",
+    // 2026-11: coordinated recovery/share/comparison/images checkpoint e8f5ccb adds
+    // generated API references and four-locale guides/comparison content. Aggregate
+    // output grows by 147,130 B; the per-visitor page budget stays unchanged.
+    budget: 3_000_000,
+    baseline:
+      "2,970,162 B (2026-11, coordinated all-four checkpoint e8f5ccb; main 2,823,032 B, +147,130 B)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
-    // 2026-11: raised from 100 KB to 115 KB because the gallery and two in-flight PRs add docs text.
-    // Recovery reference/guide text: largest locale 114,381 B -> 115,731 B (+1,350 B).
-    budget: 118_000,
-    baseline: "115,731 B (2026-11, largest locale with client recovery docs)",
+    // 2026-11: the same coordinated all-four checkpoint adds 7,042 B of generated
+    // API, guide, and comparison text to the largest locale search index.
+    budget: 125_000,
+    baseline:
+      "121,423 B (2026-11, coordinated all-four checkpoint e8f5ccb; main 114,381 B, +7,042 B)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",
