@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest"
-import { showClientRecovery } from "./client-recovery"
+import { afterEach, describe, expect, it, vi } from "vitest"
+import { reportClientRecoveryError, showClientRecovery } from "./client-recovery"
 
 afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
   document.body.replaceChildren()
   document.documentElement.lang = "en"
 })
@@ -80,5 +82,46 @@ describe("independent client recovery", () => {
     })
     expect(container.querySelector("a")?.href).toBe("https://example.test/docs/")
     expect(container.querySelector("button")?.textContent).toBe("Reload page")
+  })
+})
+
+describe("client recovery diagnostics", () => {
+  it("reports the original exception once through the browser hook", () => {
+    const error = new Error("Original failure")
+    const report = vi.fn()
+    const consoleError = vi.spyOn(console, "error").mockImplementation(vi.fn())
+    vi.stubGlobal("reportError", report)
+    reportClientRecoveryError(error)
+    expect(report).toHaveBeenCalledExactlyOnceWith(error)
+    expect(consoleError).not.toHaveBeenCalled()
+  })
+
+  it("uses console diagnostics if the browser hook is absent or throws", () => {
+    const error = new Error("Original failure")
+    const consoleError = vi.spyOn(console, "error").mockImplementation(vi.fn())
+    vi.stubGlobal("reportError", undefined)
+    reportClientRecoveryError(error)
+    expect(consoleError).toHaveBeenCalledExactlyOnceWith(error)
+    consoleError.mockClear()
+    vi.stubGlobal("reportError", () => {
+      throw new Error("Broken reporting hook")
+    })
+    reportClientRecoveryError(error)
+    expect(consoleError).toHaveBeenCalledExactlyOnceWith(error)
+  })
+
+  it("keeps recovery available even if both diagnostic hooks throw", () => {
+    const error = new Error("Original failure")
+    vi.stubGlobal("reportError", () => {
+      throw new Error("Broken reporting hook")
+    })
+    vi.spyOn(console, "error").mockImplementation(() => {
+      throw new Error("Broken console hook")
+    })
+    expect(() => reportClientRecoveryError(error)).not.toThrow()
+    const container = fixture()
+    showClientRecovery({ container, preserveContent: false, homeHref: "/" })
+    expect(container.querySelector("button")?.textContent).toBe("Reload page")
+    expect(container.textContent).not.toContain("Original failure")
   })
 })

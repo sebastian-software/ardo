@@ -152,3 +152,20 @@ function safeHomeHref(custom: string | undefined, fallback: string, base: string
   }
   return "/"
 }
+
+/** Keep the original failure visible to browser diagnostics without depending on its hooks. */
+export function reportClientRecoveryError(error: unknown): void {
+  try {
+    if (typeof globalThis.reportError === "function") {
+      globalThis.reportError(error)
+      return
+    }
+  } catch {
+    // A site's diagnostic hook must not prevent the independent recovery UI.
+  }
+  try {
+    console.error(error)
+  } catch {
+    // Console hooks can fail too; recovery still needs to work.
+  }
+}

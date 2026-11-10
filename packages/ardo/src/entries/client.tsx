@@ -4,7 +4,7 @@ import virtualConfig from "virtual:ardo/config"
 import type { ResolvedConfig } from "../config/types"
 
 import { ArdoApp } from "../runtime/app"
-import { showClientRecovery } from "../runtime/client-recovery"
+import { reportClientRecoveryError, showClientRecovery } from "../runtime/client-recovery"
 import {
   ARDO_APP_ELEMENT_ID,
   ARDO_PAGE_DATA_ATTRIBUTE,
@@ -25,13 +25,19 @@ const pageData = container?.getAttribute(ARDO_PAGE_DATA_ATTRIBUTE)
 // entry knows the logical paths of all routes, not their modules.
 if (container != null && pageData != null) {
   let homeHref = config.base ?? "/"
-  const recover = (preserveContent: boolean) =>
+  let reportedFailure = false
+  const recover = (preserveContent: boolean, error: unknown) => {
+    if (!reportedFailure) {
+      reportedFailure = true
+      reportClientRecoveryError(error)
+    }
     showClientRecovery({
       container,
       preserveContent,
       homeHref,
       customize: root.clientRecovery,
     })
+  }
   let hydrating = false
   try {
     // The server wrote this description of the page it rendered.
@@ -71,13 +77,13 @@ if (container != null && pageData != null) {
     const page = await resolvePage({ ...data, root, route, siteTitle: config.title })
     hydrating = true
     hydrateRoot(container, <ArdoApp config={config} page={page} paths={paths} root={root} />, {
-      onUncaughtError() {
+      onUncaughtError(error) {
         // Let React finish clearing the failed tree before mounting independent native controls.
-        queueMicrotask(() => recover(false))
+        queueMicrotask(() => recover(false, error))
       },
       // React handles recoverable hydration mismatches itself. Do not replace usable content.
     })
-  } catch {
-    recover(!hydrating)
+  } catch (error) {
+    recover(!hydrating, error)
   }
 }
