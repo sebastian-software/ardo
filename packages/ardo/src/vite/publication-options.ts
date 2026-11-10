@@ -45,7 +45,7 @@ export function validatePublicationOptions(options: PublicationConfig): void {
 function readGroup(value: unknown, name: string, keys: readonly string[]): Record<string, unknown> {
   if (value == null) return {}
   if (typeof value !== "object" || Array.isArray(value))
-    throw new Error(`[ardo] publication.${name} must be an object.`)
+    throw new TypeError(`[ardo] publication.${name} must be an object.`)
   const unknown = Object.keys(value).find((key) => !keys.includes(key))
   if (unknown != null)
     throw new Error(

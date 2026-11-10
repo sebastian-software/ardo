@@ -40,7 +40,7 @@ type Raster = { data: Buffer; info: OutputInfo }
 export async function prepareImage(input: ImageInput): Promise<PostImage> {
   const { image } = input
   if (typeof image.src !== "string" || typeof image.alt !== "string")
-    throw new Error(
+    throw new TypeError(
       "Post images require src and alt strings (use an empty alt for decorative images)."
     )
   const preset = readPreset(input)
