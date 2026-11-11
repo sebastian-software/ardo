@@ -5,6 +5,7 @@ import { transformWithOxc } from "vite"
 import type { ArdoConfig } from "../config/types"
 import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
+import { countHighlightFailures } from "../markdown/ferriki"
 import { buildCacheKey, getBuildCache } from "./build-cache"
 import { type PrepareRouteImages, compileMdxRouteModuleWithCode } from "./mdx-compile"
 import type { PublicationPostBinding } from "./publication-routes"
@@ -116,8 +117,10 @@ async function compileRouteModulePersisted(
   const entry = buildCacheKey("compiled-route", key, input.source)
   const cached = cache?.read<CompiledRouteModule>("compiled-route", entry)
   if (cached != null) return cached
+  const failures = countHighlightFailures()
   const compiled = await compileRouteModule(input)
-  cache?.write("compiled-route", entry, compiled)
+  // A plain-text fallback can come from a transient asset download; compile it again next time.
+  if (countHighlightFailures() === failures) cache?.write("compiled-route", entry, compiled)
   return compiled
 }
 

@@ -91,23 +91,31 @@ function markUsed(file: string): void {
 }
 
 /**
- * Delete entries this process did not use from every namespace it used. A complete build reads
- * every current entry, so whatever is left belongs to sources that changed or disappeared.
+ * Delete entries this process did not use, in every namespace. A complete build reads every
+ * current entry, so whatever is left belongs to sources that changed or disappeared; a
+ * namespace the build no longer needs at all is emptied too.
  */
 export function pruneBuildCache(cache: BuildCache | undefined): void {
   if (cache == null) return
-  for (const [directory, entries] of usedEntries) {
-    if (path.dirname(directory) !== cache.directory) continue
-    let files: string[]
-    try {
-      files = fs.readdirSync(directory)
-    } catch {
-      continue
+  for (const namespace of listDirectory(cache.directory)) {
+    const directory = path.join(cache.directory, namespace)
+    const used = usedEntries.get(directory)
+    for (const file of listDirectory(directory)) {
+      if (used?.has(file) === true) continue
+      try {
+        fs.rmSync(path.join(directory, file), { force: true })
+      } catch {
+        // A read-only cache keeps its stale entries; they never match a current key.
+      }
     }
-    for (const file of files) {
-      if (entries.has(file)) continue
-      fs.rmSync(path.join(directory, file), { force: true })
-    }
+  }
+}
+
+function listDirectory(directory: string): string[] {
+  try {
+    return fs.readdirSync(directory)
+  } catch {
+    return []
   }
 }
 

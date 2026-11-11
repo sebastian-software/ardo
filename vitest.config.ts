@@ -23,6 +23,8 @@ export default defineConfig({
     environment: "node",
     fileParallelism: true,
     setupFiles: ["./vitest.setup.ts"],
+    // Unit tests never write a persistent build cache; its own tests turn it on.
+    env: { ARDO_CACHE: "false" },
     include: ["packages/**/*.test.ts", "packages/**/*.test.tsx", "scripts/**/*.test.ts"],
     exclude: ["**/node_modules/**"],
     coverage: {

@@ -1,10 +1,13 @@
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { buildCacheKey, getBuildCache, isJsonValue, pruneBuildCache } from "./build-cache"
 
 const roots: string[] = []
+beforeEach(() => {
+  vi.stubEnv("ARDO_CACHE", "true")
+})
 afterEach(() => {
   vi.unstubAllEnvs()
   for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true })
@@ -68,5 +71,27 @@ describe("persistent build cache", () => {
     pruneBuildCache(cache)
     expect(fs.existsSync(stale)).toBe(false)
     expect(cache.read("prune", "current")).toStrictEqual({ ok: true })
+  })
+
+  it("empties namespaces this build no longer used at all", () => {
+    const root = project()
+    const stale = path.join(root, "node_modules/.cache/ardo/retired/stale.json")
+    fs.mkdirSync(path.dirname(stale), { recursive: true })
+    fs.writeFileSync(stale, "{}")
+    pruneBuildCache(getBuildCache(root))
+    expect(fs.existsSync(stale)).toBe(false)
+  })
+
+  it("keeps a build successful when a stale entry cannot be removed", () => {
+    const root = project()
+    const directory = path.join(root, "node_modules/.cache/ardo/locked")
+    fs.mkdirSync(directory, { recursive: true })
+    fs.writeFileSync(path.join(directory, "stale.json"), "{}")
+    fs.chmodSync(directory, 0o555)
+    try {
+      expect(() => pruneBuildCache(getBuildCache(root))).not.toThrow()
+    } finally {
+      fs.chmodSync(directory, 0o755)
+    }
   })
 })
