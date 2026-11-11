@@ -1512,6 +1512,14 @@ msgstr "6. Create your first pages"
 msgid "A <0/> and matching <1/>."
 msgstr "A <0/> and matching <1/>."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"A <0>publication post</0> uses its cover image when <1/> is not set, and its "
+"<2/> can name a file beside the post, such as <3/>."
+msgstr ""
+"A <0>publication post</0> uses its cover image when <1/> is not set, and its "
+"<2/> can name a file beside the post, such as <3/>."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "A build run inside a shell that sets the variable implicitly, such as a Nix "
@@ -1647,6 +1655,18 @@ msgstr ""
 "<1/>, and optional configuration. <2/> renders a complete site, and Ardo uses "
 "it when <3/> is missing. <4/> may also export <5/>, <6/>, and <7/>; leave out "
 "<8/> unless the project needs a custom HTML shell."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A relative <0/> names a JPEG or PNG beside the post. Ardo publishes it at its "
+"original size and format, without EXIF or other metadata. URLs and "
+"root-relative paths in <1/> stay as written. A post with neither image uses "
+"the site's <2><3/></2>."
+msgstr ""
+"A relative <0/> names a JPEG or PNG beside the post. Ardo publishes it at its "
+"original size and format, without EXIF or other metadata. URLs and "
+"root-relative paths in <1/> stay as written. A post with neither image uses "
+"the site's <2><3/></2>."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -7268,6 +7288,14 @@ msgstr ""
 msgid "Open a <0>GitHub Discussion</0> for questions"
 msgstr "Open a <0>GitHub Discussion</0> for questions"
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Open Graph and Twitter tags use the cover image's JPEG. To share a prepared "
+"image instead, such as a 1200 × 630 card with the title on it, set <0/>:"
+msgstr ""
+"Open Graph and Twitter tags use the cover image's JPEG. To share a prepared "
+"image instead, such as a 1200 × 630 card with the title on it, set <0/>:"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Open source"
 msgstr "Open source"
@@ -8775,6 +8803,10 @@ msgstr "Settings and configuration"
 msgid "Setup"
 msgstr "Setup"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Share images"
+msgstr "Share images"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Shared image delivery"
 msgstr "Shared image delivery"
@@ -9275,17 +9307,30 @@ msgstr ""
 "The <0/> component can be used directly in <1/> route files. Just write the "
 "code as children — no template literals or special escaping needed:"
 
+#~ #@ obsolete-since: 2026-11-11
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "The <0/> element selects AVIF sources by media condition, with resolutions in "
+#~ "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
+#~ " <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
+#~ "directly as AVIF."
+#~ msgstr ""
+#~ "The <0/> element selects AVIF sources by media condition, with resolutions in "
+#~ "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
+#~ " <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
+#~ "directly as AVIF."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The <0/> element selects AVIF sources by media condition, with resolutions in "
 "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
-" <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
-"directly as AVIF."
+" <3/>. Feeds reuse that JPEG, and so does social metadata unless the post sets"
+" <4><5/></4>. Author portraits are served directly as AVIF."
 msgstr ""
 "The <0/> element selects AVIF sources by media condition, with resolutions in "
 "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
-" <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
-"directly as AVIF."
+" <3/>. Feeds reuse that JPEG, and so does social metadata unless the post sets"
+" <4><5/></4>. Author portraits are served directly as AVIF."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

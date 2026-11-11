@@ -57,6 +57,8 @@ export type PostRouteInput = {
   post: Post
   routePath: string
   context: PublicationContext
+  /** The authored `ogImage`, with a file beside the post already published as an asset. */
+  ogImage?: string
 }
 
 export function createPostRoute(
@@ -70,7 +72,9 @@ export function createPostRoute(
       ? source
       : Buffer.concat([bytes.subarray(0, span.start), bytes.subarray(span.end)]).toString()
   const cover = post.coverImage
-  const socialImage = (cover?.fallback ?? cover?.families[0]?.renditions.at(-1))?.src
+  // An authored share image wins; the cover's JPEG export is the fallback.
+  const socialImage =
+    input.ogImage ?? (cover?.fallback ?? cover?.families[0]?.renditions.at(-1))?.src
   // Ardo owns the internal field; an authored value must not leak into the generated route.
   const { feedContent: _feedContent, _ardoPost: _post, ...authored } = data
   const frontmatter = {

@@ -1491,6 +1491,15 @@ msgstr "6. Crear las primeras páginas"
 msgid "A <0/> and matching <1/>."
 msgstr "<0/> y <1/> correspondientes."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"A <0>publication post</0> uses its cover image when <1/> is not set, and its "
+"<2/> can name a file beside the post, such as <3/>."
+msgstr ""
+"Una <0>entrada de publicación</0> usa su imagen de portada cuando <1/> no "
+"está definido, y su <2/> puede indicar un archivo junto a la entrada, como "
+"<3/>."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "A build run inside a shell that sets the variable implicitly, such as a Nix "
@@ -1626,6 +1635,18 @@ msgstr ""
 "configuración opcional. <2/> renderiza un sitio completo, y Ardo lo usa "
 "cuando falta <3/>. <4/> también puede exportar <5/>, <6/> y <7/>; omite <8/> "
 "salvo que necesites un shell HTML propio."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A relative <0/> names a JPEG or PNG beside the post. Ardo publishes it at its "
+"original size and format, without EXIF or other metadata. URLs and "
+"root-relative paths in <1/> stay as written. A post with neither image uses "
+"the site's <2><3/></2>."
+msgstr ""
+"Un <0/> relativo indica un JPEG o PNG junto a la entrada. Ardo lo publica con "
+"su tamaño y formato originales, sin EXIF ni otros metadatos. Las URL y las "
+"rutas relativas a la raíz en <1/> se mantienen tal cual. Una entrada sin "
+"ninguna de las dos imágenes usa el <2><3/></2> del sitio."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -7190,6 +7211,15 @@ msgstr ""
 msgid "Open a <0>GitHub Discussion</0> for questions"
 msgstr "Pregunta en <0>GitHub Discussions</0>."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Open Graph and Twitter tags use the cover image's JPEG. To share a prepared "
+"image instead, such as a 1200 × 630 card with the title on it, set <0/>:"
+msgstr ""
+"Las etiquetas Open Graph y Twitter usan el JPEG de la imagen de portada. Para "
+"compartir en su lugar una imagen preparada, como una tarjeta de 1200 × 630 "
+"con el título, define <0/>:"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Open source"
 msgstr "Código abierto"
@@ -8696,6 +8726,10 @@ msgstr "Ajustes y configuración"
 msgid "Setup"
 msgstr "Instalación"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Share images"
+msgstr "Imágenes para compartir"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Shared image delivery"
 msgstr "Entrega de imágenes compartida"
@@ -9196,17 +9230,31 @@ msgstr ""
 "Usa <0/> directamente en rutas <1/>. Escribe el código como contenido hijo, "
 "sin literales de plantilla ni escapes especiales:"
 
+#~ #@ obsolete-since: 2026-11-11
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "The <0/> element selects AVIF sources by media condition, with resolutions in "
+#~ "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
+#~ " <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
+#~ "directly as AVIF."
+#~ msgstr ""
+#~ "El elemento <0/> selecciona las fuentes AVIF según las condiciones de medios,"
+#~ " con las resoluciones en cada <1/>. Su elemento <2/> usa el único JPEG como "
+#~ "respaldo, sin un <3/> de JPEG. Los feeds y los metadatos sociales reutilizan "
+#~ "ese JPEG. Los retratos de los autores se sirven directamente como AVIF."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The <0/> element selects AVIF sources by media condition, with resolutions in "
 "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
-" <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
-"directly as AVIF."
+" <3/>. Feeds reuse that JPEG, and so does social metadata unless the post sets"
+" <4><5/></4>. Author portraits are served directly as AVIF."
 msgstr ""
 "El elemento <0/> selecciona las fuentes AVIF según las condiciones de medios,"
 " con las resoluciones en cada <1/>. Su elemento <2/> usa el único JPEG como "
-"respaldo, sin un <3/> de JPEG. Los feeds y los metadatos sociales reutilizan "
-"ese JPEG. Los retratos de los autores se sirven directamente como AVIF."
+"respaldo, sin un <3/> de JPEG. Los feeds reutilizan ese JPEG, y también los "
+"metadatos sociales, salvo que la entrada defina <4><5/></4>. Los retratos de "
+"los autores se sirven directamente como AVIF."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
