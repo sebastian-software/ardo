@@ -75,7 +75,7 @@ describe("Ardo managed runtime resolution", () => {
       {
         optimizeDeps: {
           include: ["existing-dependency"],
-          exclude: ["react", "minisearch", "@base-ui/react", "other-package"],
+          exclude: ["react", "minisearch", "react-compare-slider", "other-package"],
         },
       },
       false
@@ -90,7 +90,6 @@ describe("Ardo managed runtime resolution", () => {
         "react-dom",
         "react-dom/client",
         "react-dom/static",
-        "ardo > @base-ui/react/accordion",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
         "ardo > react-compare-slider/components",
@@ -106,7 +105,6 @@ describe("Ardo managed runtime resolution", () => {
         "react-dom",
         "react-dom/server",
         "react-dom/static",
-        "ardo > @base-ui/react/accordion",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
         "ardo > react-compare-slider/components",
@@ -207,7 +205,6 @@ describe("Ardo managed runtime resolution", () => {
             "react/jsx-dev-runtime",
             "react-dom",
             "react-dom/client",
-            "ardo > @base-ui/react/accordion",
             "ardo > @vanilla-extract/recipes/createRuntimeFn",
             "ardo > minisearch",
           ],
@@ -222,7 +219,6 @@ describe("Ardo managed runtime resolution", () => {
                 "react-dom",
                 "react-dom/server",
                 "react-dom/static",
-                "ardo > @base-ui/react/accordion",
                 "ardo > @vanilla-extract/recipes/createRuntimeFn",
                 "ardo > minisearch",
               ],
@@ -242,7 +238,6 @@ describe("Ardo managed runtime resolution", () => {
       "react-dom",
       "react-dom/client",
       "react-dom/static",
-      "ardo > @base-ui/react/accordion",
       "ardo > @vanilla-extract/recipes/createRuntimeFn",
       "ardo > minisearch",
     ]
@@ -253,7 +248,6 @@ describe("Ardo managed runtime resolution", () => {
       "react-dom",
       "react-dom/server",
       "react-dom/static",
-      "ardo > @base-ui/react/accordion",
       "ardo > @vanilla-extract/recipes/createRuntimeFn",
       "ardo > minisearch",
     ]

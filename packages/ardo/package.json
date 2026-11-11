@@ -108,7 +108,6 @@
     "icons:generate": "svgr --out-dir src/ui/icons/sections .icon-sources/sections && svgr --out-dir src/ui/icons/chrome .icon-sources/chrome && svgr --out-dir src/ui/icons/content .icon-sources/content && oxlint --fix src/ui/icons/sections src/ui/icons/chrome src/ui/icons/content && prettier --write src/ui/icons"
   },
   "dependencies": {
-    "@base-ui/react": "^1.9.0",
     "@ferriki/core": "^1.3.0",
     "@resvg/resvg-js": "^2.6.2",
     "@sebastian-software/app-tracking": "^0.7.0",
