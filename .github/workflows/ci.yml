@@ -10,6 +10,11 @@ jobs:
   test:
     name: Test (Node.js ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    # Keep browser/system dependencies available when Ubuntu package mirrors fail.
+    # Match the Playwright version in pnpm-lock.yaml.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --init --shm-size=1gb
     strategy:
       fail-fast: false
       matrix:
@@ -76,10 +81,6 @@ jobs:
       - name: Validate complete GitHub Pages artifact
         if: matrix.node-version == '24'
         run: pnpm docs:prepare-pages
-
-      - name: Install Playwright browsers
-        if: matrix.node-version == '24'
-        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Run browser tests
         if: matrix.node-version == '24'

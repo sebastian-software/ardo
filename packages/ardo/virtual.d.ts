@@ -51,21 +51,23 @@ declare module "virtual:ardo/collections" {
 }
 
 declare module "*.mdx" {
-  import type { ComponentType } from "react"
+  import type { ComponentType } from "ardo/react"
+  import type { ArdoMDXComponents } from "ardo/mdx-provider"
   import type { PageFrontmatter, TOCItem } from "ardo"
 
   export const frontmatter: PageFrontmatter
   export const toc: TOCItem[]
-  const component: ComponentType
+  const component: ComponentType<{ components?: ArdoMDXComponents }>
   export default component
 }
 
 declare module "*.md" {
-  import type { ComponentType } from "react"
+  import type { ComponentType } from "ardo/react"
+  import type { ArdoMDXComponents } from "ardo/mdx-provider"
   import type { PageFrontmatter, TOCItem } from "ardo"
 
   export const frontmatter: PageFrontmatter
   export const toc: TOCItem[]
-  const component: ComponentType
+  const component: ComponentType<{ components?: ArdoMDXComponents }>
   export default component
 }

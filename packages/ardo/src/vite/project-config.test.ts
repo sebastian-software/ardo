@@ -1,5 +1,7 @@
 import type { ConfigEnv, PluginOption, UserConfig, UserConfigExport } from "vite"
 
+import { fileURLToPath } from "node:url"
+import { resolveConfig as resolveViteConfig } from "vite"
 import { describe, expect, it } from "vitest"
 
 import type { ArdoProjectConfigExport } from "../config/project"
@@ -24,6 +26,111 @@ async function ardoOptions(env: ConfigEnv) {
 }
 
 describe("createArdoProjectViteConfig", () => {
+  it.each(["serve", "build"] as const)(
+    "activates plugins from ardo.config during Vite %s configuration exactly once",
+    async (command) => {
+      let calls = 0
+      let viteCalls = 0
+      const config = await createArdoProjectViteConfig(
+        fileURLToPath(new URL("../../../../examples/basic", import.meta.url)),
+        {
+          ardoConfig: async () => ({
+            icons: false,
+            routes: false,
+            vite: {
+              base: "/consumer/",
+              define: { __ARDO_CONFIG__: "true" },
+              resolve: { alias: { "~": "/project/app" } },
+              plugins: [
+                false,
+                [
+                  Promise.resolve({
+                    name: "consumer-config-plugin",
+                    config() {
+                      calls += 1
+                      return { define: { __CONSUMER_PLUGIN__: "true" } }
+                    },
+                  }),
+                ],
+              ],
+            },
+          }),
+          viteConfig: {
+            plugins: [
+              {
+                name: "vite-config-plugin",
+                config() {
+                  viteCalls += 1
+                },
+              },
+            ],
+          },
+        }
+      )({ ...environment, command })
+      expect(config.define?.__ARDO_CONFIG__).toBe("true")
+      expect(config.resolve?.alias).toStrictEqual({ "~": "/project/app" })
+      expect(config.base).toBe("/consumer/")
+      const resolved = await resolveViteConfig(
+        { ...config, configFile: false, logLevel: "silent" },
+        command
+      )
+
+      expect(calls).toBe(1)
+      expect(viteCalls).toBe(1)
+      expect(resolved.define?.__CONSUMER_PLUGIN__).toBe("true")
+      expect(resolved.define?.__ARDO_CONFIG__).toBe("true")
+      expect(
+        resolved.plugins.filter((plugin) => plugin.name === "consumer-config-plugin")
+      ).toHaveLength(1)
+      expect(resolved.plugins.filter(isArdoPlugin)).toHaveLength(1)
+    }
+  )
+
+  it.each(["serve", "build"] as const)(
+    "preserves explicit project overrides above Ardo defaults during Vite %s configuration",
+    async (command) => {
+      const config = await createArdoProjectViteConfig(
+        fileURLToPath(new URL("../../../../examples/basic", import.meta.url)),
+        {
+          ardoConfig: {
+            icons: false,
+            routes: false,
+            vite: {
+              define: { __BUILD_TIME__: '"project-build-time"' },
+              environments: { ssr: { optimizeDeps: { noDiscovery: true } } },
+              optimizeDeps: { exclude: ["consumer-only"] },
+              resolve: { alias: [{ find: "~", replacement: "/project/app" }] },
+              server: { fs: { strict: false } },
+            },
+          },
+          viteConfig: {
+            define: { __BUILD_TIME__: '"vite-build-time"' },
+            environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
+            server: { fs: { strict: true } },
+          },
+        }
+      )({ ...environment, command })
+      expect(config.define?.__BUILD_TIME__).toBe('"project-build-time"')
+      expect(config.environments?.ssr?.optimizeDeps?.noDiscovery).toBe(true)
+      expect(config.server?.fs?.strict).toBe(false)
+
+      const resolved = await resolveViteConfig(
+        { ...config, configFile: false, logLevel: "silent" },
+        command
+      )
+      expect(resolved.define?.__BUILD_TIME__).toBe('"project-build-time"')
+      expect(resolved.environments.ssr.optimizeDeps.noDiscovery).toBe(true)
+      expect(resolved.server.fs.strict).toBe(false)
+      expect(
+        resolved.optimizeDeps.exclude?.filter((name) => name === "consumer-only")
+      ).toHaveLength(1)
+      expect(
+        resolved.optimizeDeps.exclude?.filter((name) => name === "ardo/ui/styles.css")
+      ).toHaveLength(1)
+      expect(resolved.resolve.alias.filter((alias) => alias.find === "~")).toHaveLength(1)
+    }
+  )
+
   it("adds Ardo with default options and preserves the app's Vite config", async () => {
     const appPlugin = { name: "app-plugin" }
     const config = await createArdoProjectViteConfig("/project", {

@@ -7,6 +7,7 @@ import type {
 } from "vite"
 
 import path from "node:path"
+import { mergeConfig } from "vite"
 
 import type { ArdoProjectConfigExport } from "../config/project"
 import type { ArdoPluginOptions } from "./plugin-options"
@@ -58,13 +59,17 @@ export function createArdoProjectViteConfig(
       label: "Ardo config",
       expected: "an Ardo options object or a function returning one",
     })
+    // Vite resolves plugins before config hooks, and nested compilers reload the
+    // original config. Both must see the project's plugins, aliases and defines.
+    const configuredVite = mergeConfig(viteConfig, ardoOptions.vite ?? {})
+    const frameworkOptions = { ...ardoOptions, vite: undefined }
 
     return {
-      ...viteConfig,
-      root: viteConfig.root ?? projectRoot,
+      ...configuredVite,
+      root: configuredVite.root ?? projectRoot,
       plugins: includesArdo
         ? (viteConfig.plugins ?? [])
-        : [...(viteConfig.plugins ?? []), ...ardoPlugin(ardoOptions)],
+        : [...(configuredVite.plugins ?? []), ...ardoPlugin(frameworkOptions)],
     }
   }
 }
