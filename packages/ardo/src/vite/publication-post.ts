@@ -3,7 +3,7 @@ import type { Post } from "../publication/types"
 import { prepareNativeMarkdown } from "../markdown/native-metadata"
 import { publicationUrl, type PublicationContext } from "./publication-context"
 import { parsePostMetadata, type PostMetadata } from "./post-metadata"
-import { preparePostAuthors, preparePostImages } from "./publication-images"
+import { preparePostAuthors, preparePostImages, preparePostOgImage } from "./publication-images"
 import { createPortablePostBody } from "./publication-feeds"
 import type { PostRouteInput } from "./publication-routes"
 import { knownFrontmatterFields } from "./page-frontmatter-fields"
@@ -26,6 +26,7 @@ export async function preparePublicationPost(
     if (metadata.draft || new Date(metadata.publishedAt) > (context.now ?? new Date())) return
     const authors = await preparePostAuthors(metadata.authorKeys, context)
     const images = await preparePostImages({ data, prepared, sourceFile, context })
+    const ogImage = await preparePostOgImage({ data, sourceFile, context })
     const post = createPost(metadata, { authors, ...images, data: siteFields(data) }, context)
     return {
       post,
@@ -36,7 +37,16 @@ export async function preparePublicationPost(
         post,
         config: context.config,
       }),
-      route: { data, source, sourceFile, prepared, post, routePath: metadata.routePath, context },
+      route: {
+        data,
+        source,
+        sourceFile,
+        prepared,
+        post,
+        routePath: metadata.routePath,
+        context,
+        ...(ogImage == null ? {} : { ogImage }),
+      },
     }
   } catch (error) {
     throw new Error(

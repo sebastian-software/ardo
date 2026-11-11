@@ -43,6 +43,14 @@ async function project() {
   return { root, options, config, routesDir, write }
 }
 
+function routeOgImage(
+  routes: Array<{ sourceFile?: string; content: string }>,
+  sourceFile: string
+): string | undefined {
+  const route = routes.find((entry) => entry.sourceFile === sourceFile)
+  return /^ogImage: (.+)$/mu.exec(route?.content ?? "")?.[1]
+}
+
 describe("publication lifecycle and portable output", () => {
   it("emits full Atom/RSS content in chronological order, excluding drafts and scheduled posts everywhere", async () => {
     const p = await project()
@@ -162,6 +170,42 @@ describe("publication lifecycle and portable output", () => {
       width: rendition.width,
       height: rendition.height,
     })
+  })
+
+  it("prefers an authored ogImage to the cover and publishes a colocated one unchanged", async () => {
+    const p = await project()
+    await sharp({ create: { width: 1200, height: 800, channels: 3, background: "#e64136" } })
+      .png()
+      .toFile(path.join(p.root, "posts/photo.png"))
+    await sharp({ create: { width: 1200, height: 630, channels: 3, background: "navy" } })
+      .jpeg()
+      .withExif({ IFD0: { Copyright: "Private" } })
+      .toFile(path.join(p.root, "posts/social.jpg"))
+    const cover = "coverImage:\n  src: ./photo.png\n  alt: A red scene\n"
+    await p.write("cover", cover)
+    await p.write("local", `${cover}ogImage: ./social.jpg\n`)
+    await p.write("remote", `${cover}ogImage: https://cdn.example.test/card.png\n`)
+    const result = await preparePublication(p)
+    const ogImage = (id: string) =>
+      routeOgImage(result.routes, path.join(p.root, `posts/${id}.mdx`))
+    const coverPost = result.publication.posts.find((post) => post.id === "cover")
+    expect(ogImage("cover")).toBe(coverPost?.coverImage?.fallback?.src)
+    expect(ogImage("remote")).toBe("https://cdn.example.test/card.png")
+    const local = ogImage("local")!
+    expect(local).toMatch(/^\/project\/assets\/posts\/[\da-f]{20}\.jpg$/u)
+    const bytes = result.assets.get(local.slice("/project/".length))!.source
+    const metadata = await sharp(bytes).metadata()
+    expect(metadata).toMatchObject({ format: "jpeg", width: 1200, height: 630 })
+    expect(metadata.exif).toBeUndefined()
+  })
+
+  it("rejects a colocated ogImage that social platforms may not accept", async () => {
+    const p = await project()
+    await sharp({ create: { width: 1200, height: 630, channels: 3, background: "navy" } })
+      .webp()
+      .toFile(path.join(p.root, "posts/social.webp"))
+    await p.write("local", "ogImage: ./social.webp\n")
+    await expect(preparePublication(p)).rejects.toThrow("Share images must be JPEG or PNG")
   })
 
   it("rejects versioned publication routes and traversal outside the generated subtree", async () => {

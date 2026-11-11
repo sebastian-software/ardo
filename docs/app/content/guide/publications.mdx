@@ -148,11 +148,27 @@ unframed image. Transparent areas are flattened onto white in the JPEG only.
 
 The `picture` element selects AVIF sources by media condition, with resolutions in each
 `srcset`. Its `img` element uses the single JPEG as a fallback, without a JPEG `srcset`.
-Feeds and social metadata reuse that JPEG. Author portraits are served directly as AVIF.
+Feeds reuse that JPEG, and so does social metadata unless the post sets [`ogImage`](#share-images). Author portraits are served directly as AVIF.
 
 Sharp/libvips handles cropping, resizing, AVIF, and JPEG during build or development preparation.
 No additional codec package or WebAssembly runtime is needed. SVG, animated images, and
 external images keep their existing pass-through behavior.
+
+## Share images
+
+Open Graph and Twitter tags use the cover image's JPEG. To share a prepared image instead,
+such as a 1200 × 630 card with the title on it, set `ogImage`:
+
+```yaml
+coverImage:
+  src: ./landscape.jpg
+  alt: A person standing beside a mountain trail.
+ogImage: ./social.png
+```
+
+A relative `ogImage` names a JPEG or PNG beside the post. Ardo publishes it at its original size
+and format, without EXIF or other metadata. URLs and root-relative paths in `public/` stay as
+written. A post with neither image uses the site's [`metadata.image`](./configuration#metadata).
 
 ## Select a presentation preset
 

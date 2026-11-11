@@ -1510,6 +1510,15 @@ msgstr "6. Créer les premières pages"
 msgid "A <0/> and matching <1/>."
 msgstr "<0/> et <1/> correspondants."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"A <0>publication post</0> uses its cover image when <1/> is not set, and its "
+"<2/> can name a file beside the post, such as <3/>."
+msgstr ""
+"Un <0>article de publication</0> utilise son image de couverture si <1/> n'est"
+" pas défini, et son <2/> peut désigner un fichier à côté de l'article, "
+"comme <3/>."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "A build run inside a shell that sets the variable implicitly, such as a Nix "
@@ -1645,6 +1654,19 @@ msgstr ""
 "facultatif et une configuration facultative. <2/> rend un site complet, et "
 "Ardo l’utilise quand <3/> est absent. <4/> peut aussi exporter <5/>, <6/> et"
 " <7/> ; omettez <8/> sauf besoin d’un shell HTML personnalisé."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"A relative <0/> names a JPEG or PNG beside the post. Ardo publishes it at its "
+"original size and format, without EXIF or other metadata. URLs and "
+"root-relative paths in <1/> stay as written. A post with neither image uses "
+"the site's <2><3/></2>."
+msgstr ""
+"Un <0/> relatif désigne un JPEG ou un PNG à côté de l'article. Ardo le "
+"publie dans sa taille et son format d'origine, sans EXIF ni autres "
+"métadonnées. Les URL et les chemins relatifs à la racine dans <1/> restent "
+"tels quels. Un article sans aucune de ces images utilise le <2><3/></2> du "
+"site."
 
 #: docs/app/content/guide/deployment.mdx
 msgid ""
@@ -7273,6 +7295,15 @@ msgstr ""
 msgid "Open a <0>GitHub Discussion</0> for questions"
 msgstr "Posez vos questions dans <0>GitHub Discussions</0>."
 
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"Open Graph and Twitter tags use the cover image's JPEG. To share a prepared "
+"image instead, such as a 1200 × 630 card with the title on it, set <0/>:"
+msgstr ""
+"Les balises Open Graph et Twitter utilisent le JPEG de l'image de couverture. "
+"Pour partager plutôt une image préparée, comme une carte de 1200 × 630 "
+"portant le titre, définissez <0/>:"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Open source"
 msgstr "Open source"
@@ -8789,6 +8820,10 @@ msgstr "Réglages et configuration"
 msgid "Setup"
 msgstr "Installation"
 
+#: docs/app/content/guide/publications.mdx
+msgid "Share images"
+msgstr "Images de partage"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Shared image delivery"
 msgstr "Diffusion d’images commune"
@@ -9291,18 +9326,32 @@ msgstr ""
 "Utilisez <0/> directement dans les routes <1/>. Écrivez le code comme contenu"
 " enfant, sans littéral de gabarit ni échappement particulier :"
 
+#~ #@ obsolete-since: 2026-11-11
+#~ #: docs/app/content/guide/publications.mdx
+#~ msgid ""
+#~ "The <0/> element selects AVIF sources by media condition, with resolutions in "
+#~ "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
+#~ " <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
+#~ "directly as AVIF."
+#~ msgstr ""
+#~ "L’élément <0/> sélectionne les sources AVIF selon les conditions média, "
+#~ "avec les résolutions dans chaque <1/>. Son élément <2/> utilise l’unique "
+#~ "JPEG comme solution de repli, sans <3/> JPEG. Les flux et les métadonnées "
+#~ "sociales réutilisent ce JPEG. Les portraits des auteurs sont servis "
+#~ "directement en AVIF."
+
 #: docs/app/content/guide/publications.mdx
 msgid ""
 "The <0/> element selects AVIF sources by media condition, with resolutions in "
 "each <1/>. Its <2/> element uses the single JPEG as a fallback, without a JPEG"
-" <3/>. Feeds and social metadata reuse that JPEG. Author portraits are served "
-"directly as AVIF."
+" <3/>. Feeds reuse that JPEG, and so does social metadata unless the post sets"
+" <4><5/></4>. Author portraits are served directly as AVIF."
 msgstr ""
 "L’élément <0/> sélectionne les sources AVIF selon les conditions média, "
 "avec les résolutions dans chaque <1/>. Son élément <2/> utilise l’unique "
-"JPEG comme solution de repli, sans <3/> JPEG. Les flux et les métadonnées "
-"sociales réutilisent ce JPEG. Les portraits des auteurs sont servis "
-"directement en AVIF."
+"JPEG comme solution de repli, sans <3/> JPEG. Les flux réutilisent ce JPEG, "
+"tout comme les métadonnées sociales, sauf si l'article définit <4><5/></4>."
+" Les portraits des auteurs sont servis directement en AVIF."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

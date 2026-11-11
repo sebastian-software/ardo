@@ -64,6 +64,29 @@ export async function prepareImage(input: ImageInput): Promise<PostImage> {
   }
 }
 
+/** A prepared share image keeps its size and format; orientation is applied and metadata dropped. */
+export async function prepareShareImage(
+  input: Pick<ImageInput, "sourceFile" | "root" | "base" | "assets" | "dependencies"> & {
+    src: string
+  }
+): Promise<string> {
+  const file = imageFile({ ...input, image: { src: input.src, alt: "" } })
+  input.dependencies?.add(file)
+  try {
+    const source = await fs.readFile(file)
+    const { format } = await sharp(source).metadata()
+    if (format !== "jpeg" && format !== "png") throw new Error("Share images must be JPEG or PNG.")
+    const image = sharp(source).autoOrient()
+    const output = await (format === "png" ? image.png() : image.jpeg({ quality: 90 })).toBuffer()
+    return storeImage(output, input, format === "png" ? "png" : "jpg")
+  } catch (error) {
+    throw new Error(
+      `[ardo] Image ${file} in ${input.sourceFile}: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
+    )
+  }
+}
+
 function prepareProviderSource(
   input: { source: Buffer; metadata: Metadata; file: string },
   context: ImageContext
@@ -264,7 +287,11 @@ function renditionWidths(configured: number[] | undefined, max: number): number[
   ].sort((a, b) => a - b)
 }
 
-function storeImage(source: Buffer, context: ImageContext, extension: string): string {
+function storeImage(
+  source: Buffer,
+  context: Pick<ImageInput, "assets" | "base">,
+  extension: string
+): string {
   const hash = createHash("sha256").update(source).digest("hex").slice(0, 20)
   const fileName = `assets/posts/${hash}.${extension}`
   context.assets.set(fileName, { fileName, source })

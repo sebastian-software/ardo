@@ -4,7 +4,7 @@ import type { AuthorProfile, PostImage } from "../publication/types"
 import { collectImageInputs } from "./image-references"
 import type { PublicationContext } from "./publication-context"
 import { readCoverImage } from "./post-metadata"
-import { preparePostImage } from "./post-images"
+import { preparePostImage, prepareShareImage } from "./post-images"
 
 export async function preparePostAuthors(
   keys: string[],
@@ -71,4 +71,27 @@ export async function preparePostImages(
       ? undefined
       : await preparePostImage({ ...options, image: readCoverImage(data.coverImage) })
   return { images, coverImage }
+}
+
+/**
+ * An authored `ogImage` beside the post (`./social.png`) is published as a build asset.
+ * URLs and root-relative `public/` paths stay as written.
+ */
+export async function preparePostOgImage(
+  input: Omit<ImageInput, "prepared">
+): Promise<string | undefined> {
+  const { data, context, sourceFile } = input
+  const value = data.ogImage
+  if (value == null) return
+  if (typeof value !== "string" || value.trim() === "")
+    throw new TypeError("ogImage must be a non-empty string.")
+  if (!/^\.\.?\//u.test(value)) return value
+  return prepareShareImage({
+    src: value,
+    sourceFile,
+    root: context.config.root,
+    base: context.config.deploymentBase,
+    assets: context.assets,
+    dependencies: context.dependencies,
+  })
 }
