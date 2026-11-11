@@ -20,3 +20,4 @@ export { generateSearchIndex, type SearchDoc } from "./search-index"
 
 // Vite Plugin
 export { build, createServer, defineConfig, mergeConfig, type Plugin, type UserConfig } from "vite"
+export type { ModuleRunner } from "vite/module-runner"
