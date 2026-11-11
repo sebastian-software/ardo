@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.7.0...ardo-v6.8.0) (2026-11-11)
+
+
+### Features
+
+* let posts share a prepared ogImage instead of the cover ([#538](https://github.com/sebastian-software/ardo/issues/538)) ([d169167](https://github.com/sebastian-software/ardo/commit/d16916733f8521620a63fb374998e0b92a974885))
+
+
+### Bug Fixes
+
+* accept Ferrigura 0.7 for Mermaid diagrams ([#536](https://github.com/sebastian-software/ardo/issues/536)) ([d2912bd](https://github.com/sebastian-software/ardo/commit/d2912bdc2d44e9e11e1f58b3a751db9a4aaa226d))
+* activate project plugins and type Markdown component overrides ([#543](https://github.com/sebastian-software/ardo/issues/543)) ([fa91c76](https://github.com/sebastian-software/ardo/commit/fa91c76a1360726975915fb57da7e8d54cc21b6d))
+* adopt Ferromark 4.1 for Markdown rendering ([#544](https://github.com/sebastian-software/ardo/issues/544)) ([bce575e](https://github.com/sebastian-software/ardo/commit/bce575ecbb7609683b19f9d56752307877e32351))
+
+
+### Performance
+
+* cache per-file build work, cutting warm image-heavy builds from 44 s to 1.3 s ([#542](https://github.com/sebastian-software/ardo/issues/542)) ([228ca57](https://github.com/sebastian-software/ardo/commit/228ca5735a2e9b86ca148ca52d283f7085b424ce))
+* resolve the build config once instead of per environment ([#541](https://github.com/sebastian-software/ardo/issues/541)) ([28c53b4](https://github.com/sebastian-software/ardo/commit/28c53b43ed6fa24510888ef42c3fb552ab9fbb7d)), closes [#540](https://github.com/sebastian-software/ardo/issues/540)
+
 ## [6.7.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.6.0...ardo-v6.7.0) (2026-11-10)
 
 
