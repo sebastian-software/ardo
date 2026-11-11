@@ -24,7 +24,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@ferrigura/core": "^0.6.0",
+    "@ferrigura/core": "^0.7.0",
     "@palamedes/cli": "^2.2.0",
     "@palamedes/core-node": "^2.2.0",
     "@palamedes/vite-plugin": "^2.2.0",
