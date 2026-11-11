@@ -1,6 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
+import { segmentTrack, segmentTrigger } from "./segmented.css"
 import { shikiContainerClassName } from "./code-block-classes"
 import { copyButton } from "./CopyButton.css"
 
@@ -236,33 +237,23 @@ export const codeGroup = style({
   boxShadow: vars.color.codeShadow,
 })
 
-export const codeGroupTabs = style({
-  display: "flex",
-  background: vars.color.bgSoft,
-  borderBottom: `1px solid ${vars.color.codeBorder}`,
-})
-
-export const codeGroupTab = style({
-  padding: `${vars.space.sm} ${vars.space.md}`,
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  fontSize: vars.fontSize.sm,
-  fontFamily: vars.font.mono,
-  color: vars.color.textLighter,
-  borderBottom: "2px solid transparent",
-  marginBottom: "-1px",
-  transition: `all ${vars.transition.fast}`,
-  selectors: {
-    "&:hover": {
-      color: vars.color.text,
-    },
-    "&.active": {
-      color: vars.color.accent,
-      borderBottomColor: vars.color.accent,
-    },
+export const codeGroupTabs = style([
+  segmentTrack,
+  {
+    padding: "6px",
+    background: vars.color.bgSoft,
+    borderBottom: `1px solid ${vars.color.codeBorder}`,
   },
-})
+])
+
+export const codeGroupTab = style([
+  segmentTrigger,
+  {
+    fontFamily: vars.font.mono,
+    fontSize: vars.fontSize.xs,
+    fontWeight: 400,
+  },
+])
 
 export const codeGroupPanels = style({})
 

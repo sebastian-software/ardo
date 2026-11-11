@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
 
@@ -48,7 +48,7 @@ export const card = style({
   minHeight: "100%",
   minWidth: 0,
   overflowWrap: "anywhere",
-  padding: "18px",
+  padding: vars.space.lg,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radius.lg,
   background: vars.color.surfaceCard,
@@ -129,8 +129,13 @@ export const cardTitle = style({
 
 export const cardBody = style({
   display: "block",
-  marginTop: "10px",
+  marginTop: vars.space.sm,
   color: vars.color.textLight,
   fontSize: "14px",
   lineHeight: 1.6,
 })
+
+// Prose margins inside the body would add to the card padding, leaving more
+// space below the text than above it.
+globalStyle(`${cardBody} > :first-child`, { marginTop: 0 })
+globalStyle(`${cardBody} > :last-child`, { marginBottom: 0 })
