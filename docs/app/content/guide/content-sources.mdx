@@ -29,9 +29,37 @@ Mapped Markdown and MDX become ordinary generated routes. They participate in th
 
 Ardo writes mapped files under the selected `to` directory and marks it as generated. Edit the original source, never the materialized route. The plugin refuses to delete a non-empty handwritten target directory, so use a dedicated prefix such as `decisions/`.
 
+## Content From Another Repository
+
+Content sources read local files only. To publish docs that live next to code in another repository, check that repository out inside the project before the build, then map it like any other directory:
+
+```yaml
+# .github/workflows/docs.yml
+steps:
+  - uses: actions/checkout@v7
+  - uses: actions/checkout@v7
+    with:
+      repository: example/engine
+      ref: 4f9c2b7e1d3a8c6b5e0f2a9d7c4b1e8f3a6d5c20 # a full commit keeps builds reproducible
+      path: vendor/engine
+  - run: pnpm install --frozen-lockfile
+  - run: pnpm build
+```
+
+```ts
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "Product Docs",
+  content: [{ from: "vendor/engine/docs", to: "engine" }],
+})
+```
+
+`from` resolves against the project root. For a private repository, pass a token with read access through the checkout action's `token` input. For local development, clone the repository to the same path and add that path to `.gitignore`. A Git submodule at that path works too; check it out in CI with `submodules: true` instead of the second step.
+
 ## Boundaries
 
-Content sources intentionally do not fetch remote URLs, act as a CMS, or transform arbitrary file types. They map local files; [schema-backed collections](#schema-backed-collections) add validation and typed records on top.
+Content sources intentionally do not fetch remote URLs, act as a CMS, or transform arbitrary file types. They map local files; [schema-backed collections](#schema-backed-collections) add validation and typed records on top. For content in another repository, [check it out before the build](#content-from-another-repository).
 
 ## Schema-Backed Collections
 

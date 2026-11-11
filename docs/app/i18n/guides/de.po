@@ -490,6 +490,21 @@ msgstr ""
 "rendern <3/> mit denselben Props, setzen <5/> auf <4/> und übergeben das "
 "Favicon an die HTML-Hülle <6/>:"
 
+#: docs/app/content/guide/content-sources.mdx
+msgid ""
+"<0/> resolves against the project root. For a private repository, pass a token"
+" with read access through the checkout action's <1/> input. For local "
+"development, clone the repository to the same path and add that path to <2/>. "
+"A Git submodule at that path works too; check it out in CI with <3/> instead "
+"of the second step."
+msgstr ""
+"<0/> wird relativ zum Projektverzeichnis aufgelöst. Für ein privates "
+"Repository übergib ein Token mit Lesezugriff über den <1/>-Input der "
+"Checkout-Action. Für die lokale Entwicklung klone das Repository an denselben"
+" Pfad und trage diesen Pfad in <2/> ein. Ein Git-Submodul an diesem Pfad "
+"funktioniert ebenfalls; checke es in CI mit <3/> statt mit dem zweiten Schritt"
+" aus."
+
 #: docs/app/content/guide/components.mdx
 msgid ""
 "<0/> returns the built-in and custom registry keys when you need to validate "
@@ -4171,6 +4186,10 @@ msgstr "Beispiel für einen Inhaltscontainer"
 msgid "Content containers"
 msgstr "Inhaltscontainer"
 
+#: docs/app/content/guide/content-sources.mdx
+msgid "Content From Another Repository"
+msgstr "Inhalte aus einem anderen Repository"
+
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Content Issues"
 msgstr "Inhaltsprobleme"
@@ -4187,16 +4206,41 @@ msgstr ""
 "Content-Quellen ändern keine relativen Links und validieren kein Frontmatter."
 " Nutze <0><1/></0> für Schemas und typisierte Datensätze."
 
+#~ #@ obsolete-since: 2026-11-11
+#~ #: docs/app/content/guide/content-sources.mdx
+#~ msgid ""
+#~ "Content sources intentionally do not fetch remote URLs, act as a CMS, or "
+#~ "transform arbitrary file types. They map local files; <0>schema-backed "
+#~ "collections</0> add validation and typed records on top."
+#~ msgstr ""
+#~ "Inhaltsquellen laden keine entfernten URLs, ersetzen kein CMS und wandeln "
+#~ "keine beliebigen Dateitypen um. Sie ordnen lokale Dateien zu. "
+#~ "<0>Schema-basierte Sammlungen</0> ergänzen Validierung und typisierte "
+#~ "Datensätze."
+
 #: docs/app/content/guide/content-sources.mdx
 msgid ""
 "Content sources intentionally do not fetch remote URLs, act as a CMS, or "
 "transform arbitrary file types. They map local files; <0>schema-backed "
-"collections</0> add validation and typed records on top."
+"collections</0> add validation and typed records on top. For content in "
+"another repository, <1>check it out before the build</1>."
 msgstr ""
 "Inhaltsquellen laden keine entfernten URLs, ersetzen kein CMS und wandeln "
 "keine beliebigen Dateitypen um. Sie ordnen lokale Dateien zu. "
 "<0>Schema-basierte Sammlungen</0> ergänzen Validierung und typisierte "
-"Datensätze."
+"Datensätze. Für Inhalte aus einem anderen Repository <1>checke es vor dem "
+"Build aus</1>."
+
+#: docs/app/content/guide/content-sources.mdx
+msgid ""
+"Content sources read local files only. To publish docs that live next to code "
+"in another repository, check that repository out inside the project before the"
+" build, then map it like any other directory:"
+msgstr ""
+"Inhaltsquellen lesen nur lokale Dateien. Um Dokumentation zu veröffentlichen,"
+" die neben dem Code in einem anderen Repository liegt, checke dieses "
+"Repository vor dem Build im Projekt aus und ordne es dann wie jedes andere "
+"Verzeichnis zu:"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Content-heavy Astro docs"
