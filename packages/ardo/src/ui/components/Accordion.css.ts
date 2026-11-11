@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
 
@@ -128,8 +128,13 @@ export const content = style({
 
 export const contentInner = style({
   minHeight: 0,
-  padding: "0 18px 16px",
+  padding: "16px 18px",
   color: vars.color.textLight,
   fontSize: "14px",
   lineHeight: 1.65,
 })
+
+// Prose margins inside the panel would add to its padding, leaving more space
+// below the text than above it.
+globalStyle(`${contentInner} > :first-child`, { marginTop: 0 })
+globalStyle(`${contentInner} > :last-child`, { marginBottom: 0 })
