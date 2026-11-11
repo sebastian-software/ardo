@@ -86,6 +86,51 @@ describe("createArdoProjectViteConfig", () => {
     }
   )
 
+  it.each(["serve", "build"] as const)(
+    "preserves explicit project overrides above Ardo defaults during Vite %s configuration",
+    async (command) => {
+      const config = await createArdoProjectViteConfig(
+        fileURLToPath(new URL("../../../../examples/basic", import.meta.url)),
+        {
+          ardoConfig: {
+            icons: false,
+            routes: false,
+            vite: {
+              define: { __BUILD_TIME__: '"project-build-time"' },
+              environments: { ssr: { optimizeDeps: { noDiscovery: true } } },
+              optimizeDeps: { exclude: ["consumer-only"] },
+              resolve: { alias: [{ find: "~", replacement: "/project/app" }] },
+              server: { fs: { strict: false } },
+            },
+          },
+          viteConfig: {
+            define: { __BUILD_TIME__: '"vite-build-time"' },
+            environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
+            server: { fs: { strict: true } },
+          },
+        }
+      )({ ...environment, command })
+      expect(config.define?.__BUILD_TIME__).toBe('"project-build-time"')
+      expect(config.environments?.ssr?.optimizeDeps?.noDiscovery).toBe(true)
+      expect(config.server?.fs?.strict).toBe(false)
+
+      const resolved = await resolveViteConfig(
+        { ...config, configFile: false, logLevel: "silent" },
+        command
+      )
+      expect(resolved.define?.__BUILD_TIME__).toBe('"project-build-time"')
+      expect(resolved.environments.ssr.optimizeDeps.noDiscovery).toBe(true)
+      expect(resolved.server.fs.strict).toBe(false)
+      expect(
+        resolved.optimizeDeps.exclude?.filter((name) => name === "consumer-only")
+      ).toHaveLength(1)
+      expect(
+        resolved.optimizeDeps.exclude?.filter((name) => name === "ardo/ui/styles.css")
+      ).toHaveLength(1)
+      expect(resolved.resolve.alias.filter((alias) => alias.find === "~")).toHaveLength(1)
+    }
+  )
+
   it("adds Ardo with default options and preserves the app's Vite config", async () => {
     const appPlugin = { name: "app-plugin" }
     const config = await createArdoProjectViteConfig("/project", {

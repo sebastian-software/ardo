@@ -39,6 +39,7 @@ import { resolveVersionedMainBase, resolveVersionedPreviewBase } from "./version
 import { loadVirtualModule, resolveVirtualModuleId } from "./virtual-modules"
 import { configureVirtualModuleInvalidation } from "./virtual-module-invalidation"
 import { createVanillaExtractPlugins } from "./vanilla-extract-plugin"
+import { createViteDefaults } from "./vite-defaults"
 
 type PluginState = Pick<PublicationSite, "publicationPost" | "imageSession"> & {
   /** The pinned build moment in canonical ISO form; absent when `buildTime` is not configured. */
@@ -266,15 +267,7 @@ function createMainConfig(
   const { command, isPreview, siteConfig, routesDirOption, userConfig } = input
   const root = userConfig.root ?? process.cwd()
   state.routesDir = resolveRoutesDir(root, routesDirOption)
-  const config: UserConfig = {
-    define: { __BUILD_TIME__: JSON.stringify(state.buildTime ?? new Date().toISOString()) },
-    optimizeDeps: { exclude: ["ardo/ui/styles.css"] },
-    // Bundle components and their server renderer in the same dependency graph.
-    server: { fs: { strict: true, allow: [root] } },
-    ssr: { noExternal: true },
-    // Transform CommonJS dependencies before the development SSR module runner loads them.
-    environments: { ssr: { optimizeDeps: { noDiscovery: false } } },
-  }
+  const config = createViteDefaults(userConfig, state.buildTime)
 
   const baseResult = resolveVersionedMainBase({
     command,
