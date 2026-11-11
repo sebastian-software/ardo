@@ -115,7 +115,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vanilla-extract/css": "catalog:",
-    "@vanilla-extract/esbuild-plugin": "^2.3.22",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "catalog:",
     "@vitejs/plugin-react": "^6.2.1",
@@ -126,7 +125,6 @@
     "react": "catalog:",
     "react-compare-slider": "^4.0.0",
     "react-dom": "catalog:",
-    "read-package-up": "^12.0.0",
     "sharp": "^0.35.5",
     "vite": "catalog:",
     "yaml": "^2.9.1"
