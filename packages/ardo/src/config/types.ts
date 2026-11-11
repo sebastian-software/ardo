@@ -202,7 +202,7 @@ export type ArdoConfig = {
   i18n?: false | I18nConfig
   /** Static OpenAPI 3.0/3.1 reference generation. */
   openapi?: OpenApiConfig
-  /** Custom Vite configuration */
+  /** Custom Vite configuration. In ardo.config, plugins join Vite's initial plugin list. */
   vite?: Record<string, unknown>
   /**
    * Project metadata (auto-detected from package.json if not provided).

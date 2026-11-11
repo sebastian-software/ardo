@@ -58,13 +58,19 @@ export function createArdoProjectViteConfig(
       label: "Ardo config",
       expected: "an Ardo options object or a function returning one",
     })
+    const configuredVite: UserConfig = ardoOptions.vite ?? {}
+    const { plugins: projectPlugins = [], ...frameworkVite } = configuredVite
+    // Vite resolves its plugin list before running config hooks. Register these
+    // here; returning them later from Ardo's config hook leaves them inactive.
+    const frameworkOptions =
+      ardoOptions.vite == null ? ardoOptions : { ...ardoOptions, vite: frameworkVite }
 
     return {
       ...viteConfig,
       root: viteConfig.root ?? projectRoot,
       plugins: includesArdo
         ? (viteConfig.plugins ?? [])
-        : [...(viteConfig.plugins ?? []), ...ardoPlugin(ardoOptions)],
+        : [...(viteConfig.plugins ?? []), ...projectPlugins, ...ardoPlugin(frameworkOptions)],
     }
   }
 }
