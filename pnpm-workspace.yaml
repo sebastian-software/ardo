@@ -77,6 +77,14 @@ minimumReleaseAgeExclude:
   - "@ferrigura/linux-x64-musl@0.7.0"
   - "@ferrigura/win32-arm64-msvc@0.7.0"
   - "@ferrigura/win32-x64-msvc@0.7.0"
+  - ferromark-darwin-arm64@4.1.0
+  - ferromark-linux-arm64-gnu@4.1.0
+  - ferromark-linux-arm64-musl@4.1.0
+  - ferromark-linux-x64-gnu@4.1.0
+  - ferromark-linux-x64-musl@4.1.0
+  - ferromark-win32-arm64-msvc@4.1.0
+  - ferromark-win32-x64-msvc@4.1.0
+  - ferromark@4.1.0
 
 onlyBuiltDependencies:
   - esbuild
