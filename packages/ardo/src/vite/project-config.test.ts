@@ -38,7 +38,9 @@ describe("createArdoProjectViteConfig", () => {
             icons: false,
             routes: false,
             vite: {
+              base: "/consumer/",
               define: { __ARDO_CONFIG__: "true" },
+              resolve: { alias: { "~": "/project/app" } },
               plugins: [
                 false,
                 [
@@ -65,6 +67,9 @@ describe("createArdoProjectViteConfig", () => {
           },
         }
       )({ ...environment, command })
+      expect(config.define?.__ARDO_CONFIG__).toBe("true")
+      expect(config.resolve?.alias).toStrictEqual({ "~": "/project/app" })
+      expect(config.base).toBe("/consumer/")
       const resolved = await resolveViteConfig(
         { ...config, configFile: false, logLevel: "silent" },
         command
