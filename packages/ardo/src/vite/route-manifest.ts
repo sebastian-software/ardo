@@ -8,7 +8,8 @@ import type { DocumentationVersioningConfig, MarkdownConfig, ResolvedConfig } fr
 
 import { getDefaultLocaleId } from "../config/i18n"
 import { getCurrentVersion, isVersionedRoute } from "../config/versioning"
-import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
+import { type NativeMarkdownFormat, readNativeMarkdownMetadata } from "../markdown/native-metadata"
+import { buildCacheKey, getBuildCache } from "./build-cache"
 import {
   createPageMetadata,
   type PageFrontmatterMetadata,
@@ -49,15 +50,18 @@ export type RouteManifestOptions = {
   localeId?: string
   versionId?: string
   markdown?: MarkdownConfig
+  /** Project root whose persistent build cache keeps parsed route metadata. */
+  cacheRoot?: string
 }
 
 export function createRouteManifestOptions(
-  config: { markdown?: MarkdownConfig; deploymentBase?: string } & Pick<
+  config: { markdown?: MarkdownConfig; deploymentBase?: string; root?: string } & Pick<
     ResolvedConfig,
     "base" | "i18n" | "versioning"
   >
 ): RouteManifestOptions {
   return {
+    cacheRoot: config.root,
     deploymentBase: config.deploymentBase,
     versioning: config.versioning,
     basePath: config.base,
@@ -122,7 +126,12 @@ export async function createManifestEntry(
   const parsed =
     extension === ".tsx"
       ? { content, frontmatter: {}, headings: [], searchText: undefined }
-      : readNativeMarkdownMetadata(content, extension === ".mdx" ? "mdx" : "md", options.markdown)
+      : readRouteMetadata({
+          filePath,
+          content,
+          format: extension === ".mdx" ? "mdx" : "md",
+          options,
+        })
   const data = toFrontmatterRecord(parsed.frontmatter)
   const stat = await fs.stat(filePath)
   const { identity, localeId, relativePath } = resolveRouteFileIdentity({
@@ -236,4 +245,37 @@ function toRoutePath(relativePath: string, extension: ".md" | ".mdx" | ".tsx") {
   }
 
   return `/${withoutExtension}`.replaceAll(/\$(\w+)/gu, ":$1")
+}
+
+type RouteMetadata = ReturnType<typeof readNativeMarkdownMetadata>
+
+/**
+ * One build scans the routes several times (search, outputs, redirects), and a rebuild sees
+ * mostly unchanged files. Parse each exact source once per process, and once per project while
+ * the persistent cache keeps it.
+ */
+const parsedRoutes = new Map<string, { key: string; metadata: RouteMetadata }>()
+
+function readRouteMetadata({
+  filePath,
+  content,
+  format,
+  options,
+}: {
+  filePath: string
+  content: string
+  format: NativeMarkdownFormat
+  options: RouteManifestOptions
+}): RouteMetadata {
+  const key = buildCacheKey("route-metadata", format, options.markdown ?? null, content)
+  const parsed = parsedRoutes.get(filePath)
+  if (parsed?.key === key) return parsed.metadata
+  const cache = options.cacheRoot == null ? undefined : getBuildCache(options.cacheRoot)
+  let metadata = cache?.read<RouteMetadata>("route-metadata", key)
+  if (metadata == null) {
+    metadata = readNativeMarkdownMetadata(content, format, options.markdown)
+    cache?.write("route-metadata", key, metadata)
+  }
+  parsedRoutes.set(filePath, { key, metadata })
+  return metadata
 }

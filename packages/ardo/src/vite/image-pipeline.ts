@@ -10,6 +10,7 @@ import type {
   PostImageInput,
   ImagesConfig,
 } from "../images/types"
+import { cachedRasterImage } from "./image-cache"
 import { renderProviderImage } from "./image-provider"
 import { ardoImagePresets } from "../images/presets"
 import { calculateImageCrop, type CropRectangle } from "./image-framing"
@@ -55,7 +56,9 @@ export async function prepareImage(input: ImageInput): Promise<PostImage> {
       return prepareProviderSource({ source, metadata, file }, context)
     return metadata.format === "svg" || (metadata.pages ?? 1) > 1
       ? passthroughImage({ source, metadata, file }, context)
-      : await rasterImage(source, context)
+      : await cachedRasterImage(source, context, (assets) =>
+          rasterImage(source, { ...context, assets })
+        )
   } catch (error) {
     throw new Error(
       `[ardo] Image ${file} in ${input.sourceFile}: ${error instanceof Error ? error.message : String(error)}`,
