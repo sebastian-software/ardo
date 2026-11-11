@@ -32,6 +32,25 @@ build/client/
 
 Run `pnpm preview` to serve `build/client/` the way a static host does: `/guide` serves `guide/index.html`, and unknown paths get the nearest `404.html`.
 
+## Build Cache
+
+Ardo keeps the results of per-file build work in `node_modules/.cache/ardo`: the metadata of each Markdown page, compiled Markdown and MDX with highlighted code, and processed images. A rebuild only redoes that work for files that changed. Each entry is named by a hash of the file's content, its options, and the Ardo, Ferromark, Ferriki, Ferrigura, Vite, and Sharp versions, so an edit or an upgrade never reuses a stale result. The output is the same with or without the cache.
+
+A complete build removes entries it no longer used. Set `ARDO_CACHE=false` to build without the cache.
+
+On a CI runner, keep the folder between runs:
+
+```yaml
+- name: Restore Ardo build cache
+  uses: actions/cache@v6
+  with:
+    path: node_modules/.cache/ardo
+    key: ardo-${{ github.ref_name }}-${{ github.sha }}
+    restore-keys: ardo-${{ github.ref_name }}-
+```
+
+Place the step after `pnpm install` and before the build. A new key per commit stores the pruned cache of every run, and `restore-keys` starts from the newest one.
+
 ## GitHub Pages
 
 ### Step 1: Configure the Base Path

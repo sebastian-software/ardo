@@ -384,6 +384,32 @@ describe("compiled route cache", () => {
   })
 })
 
+describe("persistent compiled route cache", () => {
+  it("keeps highlighted routes and recompiles plain-text fallbacks", async () => {
+    vi.stubEnv("ARDO_CACHE", "true")
+    vi.spyOn(console, "warn").mockImplementation(vi.fn())
+    const root = await fs.mkdtemp(path.join(tempDirectory, "cache-root-"))
+    const plugin = createMdxPlugin(undefined)
+    await resolveConfig(plugin, root)
+    const entries = path.join(root, "node_modules/.cache/ardo/compiled-route")
+
+    await transformRoute(plugin, "```js\nconst a = 1\n```", path.join(tempDirectory, "a.md"))
+    expect(await fs.readdir(entries)).toHaveLength(1)
+    await transformRoute(plugin, "```notalanguage\nx\n```", path.join(tempDirectory, "b.md"))
+    expect(await fs.readdir(entries)).toHaveLength(1)
+    vi.unstubAllEnvs()
+  })
+})
+
+async function resolveConfig(plugin: Plugin, root: string): Promise<void> {
+  const hook =
+    typeof plugin.configResolved === "function"
+      ? plugin.configResolved
+      : plugin.configResolved?.handler
+  if (hook == null) throw new Error("The Ferromark plugin has no configResolved hook.")
+  await Reflect.apply(hook, {}, [{ root }])
+}
+
 async function transformRoute(
   plugin: Plugin,
   source: string,

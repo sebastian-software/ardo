@@ -1548,6 +1548,14 @@ msgstr ""
 "Nix-Dev-Shell mit 1980, wird ebenfalls fixiert. Die protokollierte Zeile <0/> "
 "zeigt den Zeitpunkt."
 
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"A complete build removes entries it no longer used. Set <0/> to build without "
+"the cache."
+msgstr ""
+"Ein vollständiger Build entfernt Einträge, die er nicht mehr verwendet hat. "
+"Setze <0/>, um ohne Cache zu bauen."
+
 #: docs/app/content/guide/markdown.mdx
 msgid ""
 "A component you import is used as imported. Every other component comes from "
@@ -2575,6 +2583,24 @@ msgid ""
 "imports:"
 msgstr "Ardo trennt browsersichere Runtime-Imports von Node.js-Build-Imports:"
 
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"Ardo keeps the results of per-file build work in <0/>: the metadata of each "
+"Markdown page, compiled Markdown and MDX with highlighted code, and processed "
+"images. A rebuild only redoes that work for files that changed. Each entry is "
+"named by a hash of the file's content, its options, and the Ardo, Ferromark, "
+"Ferriki, Ferrigura, Vite, and Sharp versions, so an edit or an upgrade never "
+"reuses a stale result. The output is the same with or without the cache."
+msgstr ""
+"Ardo speichert die Ergebnisse der Build-Arbeit pro Datei in <0/>: die "
+"Metadaten jeder Markdown-Seite, kompiliertes Markdown und MDX mit "
+"hervorgehobenem Code sowie verarbeitete Bilder. Ein erneuter Build wiederholt "
+"diese Arbeit nur für geänderte Dateien. Jeder Eintrag ist nach einem Hash "
+"aus dem Inhalt der Datei, ihren Optionen und den Versionen von Ardo, "
+"Ferromark, Ferriki, Ferrigura, Vite und Sharp benannt, sodass eine Änderung "
+"oder ein Upgrade nie ein veraltetes Ergebnis wiederverwendet. Die Ausgabe ist "
+"mit und ohne Cache dieselbe."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Ardo loads <0/> for every site, after the CSS your root module imports. It "
@@ -3462,6 +3488,10 @@ msgstr "Erstelle einen Landingpage-Kopf ohne eigene CSS-Zeilen:"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Build and development"
 msgstr "Build und Entwicklung"
+
+#: docs/app/content/guide/deployment.mdx
+msgid "Build Cache"
+msgstr "Build-Cache"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Build Fails with Memory Error"
@@ -7253,6 +7283,10 @@ msgstr ""
 msgid "On <0/> events, <1/> is the merge commit, not the head commit."
 msgstr "Bei <0/>-Ereignissen ist <1/> der Merge-Commit, nicht der Head-Commit."
 
+#: docs/app/content/guide/deployment.mdx
+msgid "On a CI runner, keep the folder between runs:"
+msgstr "Behalte den Ordner auf einem CI-Runner zwischen den Läufen:"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -7741,6 +7775,15 @@ msgstr ""
 "dieselbe Paketanfrage innerhalb einer Datei im Import- und Require-Modus "
 "verschiedene Deklarationen auf, meldet der Extraktor eine unvollständige "
 "Erweiterung, statt eine womöglich falsche Deklaration zu wählen."
+
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"Place the step after <0/> and before the build. A new key per commit stores "
+"the pruned cache of every run, and <1/> starts from the newest one."
+msgstr ""
+"Platziere den Schritt nach <0/> und vor dem Build. Ein neuer Schlüssel pro "
+"Commit speichert den bereinigten Cache jedes Laufs, und <1/> startet mit dem "
+"neuesten."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Placeholder for the search input."

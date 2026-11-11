@@ -19,6 +19,12 @@ export type FerrikiTheme = { dark: ThemeInput; light: ThemeInput } | ThemeInput
 export const defaultTheme = { light: "github-light-default", dark: "github-dark-default" }
 const highlighterPromises = new Map<string, Promise<Highlighter>>()
 const failedLanguageWarnings = new Set<string>()
+let highlightFailures = 0
+
+/** How often highlighting fell back to plain text in this process, for example on a failed download. */
+export function countHighlightFailures(): number {
+  return highlightFailures
+}
 
 /**
  * Compatibility HTML renderer exported from ardo/vite. Native Markdown and
@@ -139,6 +145,7 @@ export function isThemePair(value: FerrikiTheme): value is { light: ThemeInput; 
 }
 
 export function warnHighlightFailure(error: unknown, language: string, sourcePath?: string): void {
+  highlightFailures += 1
   const key = `${sourcePath ?? ""}\u0000${language}`
   if (failedLanguageWarnings.has(key)) return
   failedLanguageWarnings.add(key)

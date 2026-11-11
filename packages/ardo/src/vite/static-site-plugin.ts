@@ -8,6 +8,7 @@ import type { ResolvedConfig } from "../config/types"
 
 import { getDefaultLocaleId } from "../config/i18n"
 import { getCurrentVersion } from "../config/versioning"
+import { getBuildCache, pruneBuildCache } from "./build-cache"
 import { getVersioningRedirects } from "./build-versioning"
 import { createDevRenderMiddleware } from "./dev-render"
 import { configureStaticPreview } from "./preview-static"
@@ -106,6 +107,8 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
             siteUrl: config.siteUrl,
             versioning: config.versioning,
           })
+          // A complete build used every current entry; drop those of changed or removed sources.
+          pruneBuildCache(getBuildCache(config.root))
         }
       },
     },

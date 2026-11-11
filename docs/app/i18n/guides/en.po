@@ -1544,6 +1544,14 @@ msgstr ""
 "dev shell that sets it to 1980, is pinned too. The logged <0/> line shows the "
 "moment."
 
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"A complete build removes entries it no longer used. Set <0/> to build without "
+"the cache."
+msgstr ""
+"A complete build removes entries it no longer used. Set <0/> to build without "
+"the cache."
+
 #: docs/app/content/guide/markdown.mdx
 msgid ""
 "A component you import is used as imported. Every other component comes from "
@@ -2552,6 +2560,22 @@ msgstr ""
 "Ardo keeps browser-safe runtime imports separate from build-time Node.js "
 "imports:"
 
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"Ardo keeps the results of per-file build work in <0/>: the metadata of each "
+"Markdown page, compiled Markdown and MDX with highlighted code, and processed "
+"images. A rebuild only redoes that work for files that changed. Each entry is "
+"named by a hash of the file's content, its options, and the Ardo, Ferromark, "
+"Ferriki, Ferrigura, Vite, and Sharp versions, so an edit or an upgrade never "
+"reuses a stale result. The output is the same with or without the cache."
+msgstr ""
+"Ardo keeps the results of per-file build work in <0/>: the metadata of each "
+"Markdown page, compiled Markdown and MDX with highlighted code, and processed "
+"images. A rebuild only redoes that work for files that changed. Each entry is "
+"named by a hash of the file's content, its options, and the Ardo, Ferromark, "
+"Ferriki, Ferrigura, Vite, and Sharp versions, so an edit or an upgrade never "
+"reuses a stale result. The output is the same with or without the cache."
+
 #: docs/app/content/guide/theming.mdx
 msgid ""
 "Ardo loads <0/> for every site, after the CSS your root module imports. It "
@@ -3434,6 +3458,10 @@ msgstr "Build a landing page header without writing a single line of CSS:"
 #: docs/app/content/guide/api-documentation.mdx
 msgid "Build and development"
 msgstr "Build and development"
+
+#: docs/app/content/guide/deployment.mdx
+msgid "Build Cache"
+msgstr "Build Cache"
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Build Fails with Memory Error"
@@ -7235,6 +7263,10 @@ msgstr ""
 msgid "On <0/> events, <1/> is the merge commit, not the head commit."
 msgstr "On <0/> events, <1/> is the merge commit, not the head commit."
 
+#: docs/app/content/guide/deployment.mdx
+msgid "On a CI runner, keep the folder between runs:"
+msgstr "On a CI runner, keep the folder between runs:"
+
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
 #~ msgid ""
@@ -7720,6 +7752,14 @@ msgstr ""
 " resolves to different declarations in import and require modes within one "
 "file, the extractor reports incomplete expansion rather than selecting a "
 "potentially incorrect declaration."
+
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"Place the step after <0/> and before the build. A new key per commit stores "
+"the pruned cache of every run, and <1/> starts from the newest one."
+msgstr ""
+"Place the step after <0/> and before the build. A new key per commit stores "
+"the pruned cache of every run, and <1/> starts from the newest one."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Placeholder for the search input."

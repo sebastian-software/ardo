@@ -5,6 +5,8 @@ import { transformWithOxc } from "vite"
 import type { ArdoConfig } from "../config/types"
 import type { NativeMarkdownFormat } from "../markdown/native-metadata"
 
+import { countHighlightFailures } from "../markdown/ferriki"
+import { buildCacheKey, getBuildCache } from "./build-cache"
 import { type PrepareRouteImages, compileMdxRouteModuleWithCode } from "./mdx-compile"
 import type { PublicationPostBinding } from "./publication-routes"
 
@@ -49,16 +51,21 @@ export function createMdxPlugin(
   route?: (filePath: string) => RouteContext
 ): Plugin {
   const configKey = JSON.stringify(markdownConfig ?? null)
+  /** The project root, whose persistent build cache keeps compiled routes. */
+  let cacheRoot: string | undefined
   return {
     enforce: "pre",
     name: "ardo:ferromark",
+    configResolved(config) {
+      cacheRoot = config.root
+    },
     async transform(source, id) {
       const format = getMarkdownFormat(id)
       if (format == null) return
 
       const sourceName = id.split("?", 1)[0] ?? id
       const context = route?.(sourceName)
-      const compiled = await compileRouteModuleCached(configKey, {
+      const compiled = await compileRouteModuleCached(configKey, cacheRoot, {
         prepareImages: context?.prepareImages,
         format,
         markdownConfig,
@@ -75,6 +82,7 @@ export function createMdxPlugin(
 
 async function compileRouteModuleCached(
   configKey: string,
+  cacheRoot: string | undefined,
   input: CompileInput
 ): Promise<CompiledRouteModule> {
   if (input.prepareImages != null) return compileRouteModule(input)
@@ -89,7 +97,7 @@ async function compileRouteModuleCached(
   const cached = compiledRoutes.get(key)
   if (cached?.source === input.source) return cached.result
 
-  const result = compileRouteModule(input)
+  const result = compileRouteModulePersisted(key, cacheRoot, input)
   compiledRoutes.set(key, { result, source: input.source })
   try {
     return await result
@@ -97,6 +105,23 @@ async function compileRouteModuleCached(
     if (compiledRoutes.get(key)?.result === result) compiledRoutes.delete(key)
     throw error
   }
+}
+
+/** A route without local images depends only on its key and source, so a rebuild can reuse it. */
+async function compileRouteModulePersisted(
+  key: string,
+  cacheRoot: string | undefined,
+  input: CompileInput
+): Promise<CompiledRouteModule> {
+  const cache = cacheRoot == null ? undefined : getBuildCache(cacheRoot)
+  const entry = buildCacheKey("compiled-route", key, input.source)
+  const cached = cache?.read<CompiledRouteModule>("compiled-route", entry)
+  if (cached != null) return cached
+  const failures = countHighlightFailures()
+  const compiled = await compileRouteModule(input)
+  // A plain-text fallback can come from a transient asset download; compile it again next time.
+  if (countHighlightFailures() === failures) cache?.write("compiled-route", entry, compiled)
+  return compiled
 }
 
 async function compileRouteModule({
