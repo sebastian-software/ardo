@@ -67,7 +67,8 @@ it("uses one emitted full-hash original for a cover, body, avatar and ordinary M
       timeout: 120_000,
     }
   )
-  expect(String(log).match(/fixture:image-source:/gu)).toHaveLength(3)
+  // One shared config for both environments resolves each original once per build.
+  expect(String(log).match(/fixture:image-source:/gu)).toHaveLength(1)
   const output = path.join(directory, "build/client")
   const original = fs.readFileSync(path.join(directory, "posts/scene.png"))
   const hash = createHash("sha256").update(original).digest("hex")

@@ -1,4 +1,4 @@
-import type { Plugin, PreviewServer, ResolvedConfig as ViteResolvedConfig } from "vite"
+import type { Plugin, PreviewServer, ResolvedConfig as ViteResolvedConfig, UserConfig } from "vite"
 
 import { constants } from "node:fs"
 import { access, stat } from "node:fs/promises"
@@ -24,6 +24,39 @@ export type StaticSiteState = {
   routesDir: string
 }
 
+/** The client and server builds; a project's own output settings take precedence. */
+function staticEnvironments(userConfig: UserConfig, buildDir: string): UserConfig["environments"] {
+  const environments = userConfig.environments
+  return {
+    client: {
+      build: {
+        emptyOutDir:
+          environments?.client?.build?.emptyOutDir ?? userConfig.build?.emptyOutDir ?? true,
+        manifest: true,
+        outDir: path.join(buildDir, "client"),
+        rolldownOptions: {
+          input: VIRTUAL_ENTRY_CLIENT_ID,
+          // React gets its own chunk. The entry also carries the site config,
+          // build time, and the logical path of every route, so it changes
+          // with every build; returning readers keep React cached until its
+          // version changes. Page loaders live in their own lazy chunk.
+          output: { codeSplitting: { groups: [{ name: "react", test: REACT_MODULES }] } },
+        },
+      },
+    },
+    ssr: {
+      build: {
+        emptyOutDir: environments?.ssr?.build?.emptyOutDir ?? userConfig.build?.emptyOutDir ?? true,
+        // A separate SSR config never emits assets; keep that with the shared config.
+        emitAssets:
+          environments?.ssr?.build?.emitAssets ?? userConfig.build?.ssrEmitAssets ?? false,
+        outDir: path.join(buildDir, "server"),
+        rolldownOptions: { input: { index: VIRTUAL_ENTRY_SERVER_ID } },
+      },
+    },
+  }
+}
+
 /**
  * Build the site as static HTML: a client and a server build, then one HTML
  * file per route and a check of every internal link. In development, the same
@@ -36,41 +69,13 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
     name: "ardo:static-site",
     config(userConfig, env) {
       const root = path.resolve(userConfig.root ?? process.cwd())
-      const buildDir = path.resolve(root, state.outDir ?? "build")
       return {
         // Ardo renders pages itself; the preview serves the written HTML files.
         appType: env.isPreview === true ? "mpa" : "custom",
-        builder: {},
-        environments: {
-          client: {
-            build: {
-              emptyOutDir:
-                userConfig.environments?.client?.build?.emptyOutDir ??
-                userConfig.build?.emptyOutDir ??
-                true,
-              manifest: true,
-              outDir: path.join(buildDir, "client"),
-              rolldownOptions: {
-                input: VIRTUAL_ENTRY_CLIENT_ID,
-                // React gets its own chunk. The entry also carries the site config,
-                // build time, and the logical path of every route, so it changes
-                // with every build; returning readers keep React cached until its
-                // version changes. Page loaders live in their own lazy chunk.
-                output: { codeSplitting: { groups: [{ name: "react", test: REACT_MODULES }] } },
-              },
-            },
-          },
-          ssr: {
-            build: {
-              emptyOutDir:
-                userConfig.environments?.ssr?.build?.emptyOutDir ??
-                userConfig.build?.emptyOutDir ??
-                true,
-              outDir: path.join(buildDir, "server"),
-              rolldownOptions: { input: { index: VIRTUAL_ENTRY_SERVER_ID } },
-            },
-          },
-        },
+        // One config for both environments: Vite otherwise resolves it again for each
+        // environment, which repeats every plugin's config work, Ardo's route scan included.
+        builder: { sharedConfigBuild: userConfig.builder?.sharedConfigBuild ?? true },
+        environments: staticEnvironments(userConfig, path.resolve(root, state.outDir ?? "build")),
       }
     },
     configResolved(config) {

@@ -71,7 +71,7 @@ export function createIconsPlugin(
       })
     },
     async generateBundle() {
-      if (config.build.ssr !== false) {
+      if (this.environment.name !== "client") {
         return
       }
 

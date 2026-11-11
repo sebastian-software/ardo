@@ -51,4 +51,19 @@ describe("static build output configuration", () => {
     expect(result.environments?.client?.build?.outDir).toBe("/project/build/client")
     expect(result.environments?.ssr?.build?.outDir).toBe("/project/build/server")
   })
+
+  it("resolves one config for both environments unless the project opts out", () => {
+    expect(staticConfig({}).builder?.sharedConfigBuild).toBe(true)
+    expect(staticConfig({ builder: { sharedConfigBuild: false } }).builder?.sharedConfigBuild).toBe(
+      false
+    )
+  })
+
+  it("keeps SSR asset emission off, as with a separate SSR config", () => {
+    expect(staticConfig({}).environments?.ssr?.build?.emitAssets).toBe(false)
+    expect(
+      staticConfig({ environments: { ssr: { build: { emitAssets: true } } } }).environments?.ssr
+        ?.build?.emitAssets
+    ).toBe(true)
+  })
 })
