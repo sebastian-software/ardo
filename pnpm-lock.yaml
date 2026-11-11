@@ -297,8 +297,8 @@ importers:
         version: 19.3.1(react@19.3.1)
     devDependencies:
       '@ferrigura/core':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
       '@palamedes/cli':
         specifier: ^2.2.0
         version: 2.2.0
@@ -413,8 +413,8 @@ importers:
         version: 2.9.1
     devDependencies:
       '@ferrigura/core':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.7.0
+        version: 0.7.0
       '@jridgewell/sourcemap-codec':
         specifier: ^1.6.0
         version: 1.6.0
@@ -1155,52 +1155,52 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@ferrigura/core@0.6.0':
-    resolution: {integrity: sha512-atPwv5s/z8XXwC6Zprc1GzriBeP87uTdrKDOBAMUI5SVI4pNwRaxS5nIfC/Jt5TJH6kMmu/81FCRc2SDIJpcDA==}
+  '@ferrigura/core@0.7.0':
+    resolution: {integrity: sha512-2eIQON9uOgasJZF70xaWoGcssTJfukpDfSVn+DI25lxSnGjLAVPpZF4qoPxrJ1ReGlc3mXg4v2GTjGQVjLbY+w==}
     engines: {node: '>=22.13.0'}
 
-  '@ferrigura/darwin-arm64@0.6.0':
-    resolution: {integrity: sha512-7IOrQ/typJlMzJqfll7IEqaH1t66KnzaGpcHlShaGwly7elByxCBRBZk0KU1IqcyfwAzunrO498xDTmR/K5x/g==}
+  '@ferrigura/darwin-arm64@0.7.0':
+    resolution: {integrity: sha512-zBYi9WstvVgnFsTuwLdsW/5urYMHt3YnOuEjFadETMj0JFMWz/jROY72QI+LmnwKn0iPkbNVxQOsWuCgbwfF2Q==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@ferrigura/linux-arm64-gnu@0.6.0':
-    resolution: {integrity: sha512-CthuY2Ut8Wq6laiumLgXlO2QJ5gLNBqwMXDNuq7xfI0ppdXYnrt5kC1BSj8xxg/GzSKClZvbZCEFKMbEkQfhQQ==}
+  '@ferrigura/linux-arm64-gnu@0.7.0':
+    resolution: {integrity: sha512-qCCNlG/YOs5EE3uslAlv987jDD4EwxV5VsgVoshq2FlVCASf/hMIEhcXmWF06HtI6vpOggc0G3zIOrGWlswZWg==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrigura/linux-arm64-musl@0.6.0':
-    resolution: {integrity: sha512-bt0NOHYGm1UIahOhlLA1U4ZWKboxDLnoixSeEUo9J20lkKgx73lX7A6N3QWA3Tcehyht0SVZoiBLWHzjiFLbIA==}
+  '@ferrigura/linux-arm64-musl@0.7.0':
+    resolution: {integrity: sha512-gZsA+v3i0uxenw3Zr7AFsRlhPys5nP/+fdglH2IU+Td/BFHvEdQdXpiFlgTeleol4imRRsaphXdII7Fecf5g2Q==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@ferrigura/linux-x64-gnu@0.6.0':
-    resolution: {integrity: sha512-JZm4YZ8HWd0vRcDw/7RZ/+UYMwv2bV2mGJOeDJfGkRphovMeU7qMW6HxRx/POBkkjQSBLZfQ1p+j/rKk+dJuLw==}
+  '@ferrigura/linux-x64-gnu@0.7.0':
+    resolution: {integrity: sha512-J7/CzoE8NbEdGFgr9SStsLzyqzk5oWXtEebMXmnCRJ7alUpZTGohDciyAfu34g5lo6gOrU7D5kzQLChaZZHOdA==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@ferrigura/linux-x64-musl@0.6.0':
-    resolution: {integrity: sha512-rYwWqOQCvRCBivyZsTfmkrnBc0UNv++cp1KXYtS1N4CXJwlZDyJ/QnMzOB8wK4BJM5qcskbuRIU2KHrR0EAB7w==}
+  '@ferrigura/linux-x64-musl@0.7.0':
+    resolution: {integrity: sha512-8jeJgRKdXC6hYWeRFc+Ak1hAFTvoIu8kYJwlt+JaeZfw8WCDDTkyWe1iXpz+fGUbK7aVmHK6UZJvD1QwZ2WidQ==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@ferrigura/win32-arm64-msvc@0.6.0':
-    resolution: {integrity: sha512-cHeH7lvZ7wOMdP1HubKFJF0x2Fb9iUmC+ZLWRRfsyHzI3FzAYdEobrq3j77vqh+UB+noi8l+DycRGUSv68FIkw==}
+  '@ferrigura/win32-arm64-msvc@0.7.0':
+    resolution: {integrity: sha512-lfTSRlUAVdDsx4p1ZefevgTtFXKWVKyohNL27068Q+rO47+MyiEgUCqCa7J+Lp2AdoVVosa8wj0iyoreZP89gQ==}
     engines: {node: '>=22.13.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@ferrigura/win32-x64-msvc@0.6.0':
-    resolution: {integrity: sha512-NBUqRfaxA5zRsjQeRdhJL9rnEeMqDdipK7uHzYGNlW6PPynk8nVxOnygWBWuu7IKwxW0Wtf97u37dE5P1yt0Qg==}
+  '@ferrigura/win32-x64-msvc@0.7.0':
+    resolution: {integrity: sha512-NvQgJTiJ7GEHQs68B7DLcRQqeFKJ7hYdLcq9R8yLVeSJQ4sejqaBV476pBtSpNdGpD7NxDNBcjNXoQYis45CyA==}
     engines: {node: '>=22.13.0'}
     cpu: [x64]
     os: [win32]
@@ -6695,35 +6695,35 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@ferrigura/core@0.6.0':
+  '@ferrigura/core@0.7.0':
     optionalDependencies:
-      '@ferrigura/darwin-arm64': 0.6.0
-      '@ferrigura/linux-arm64-gnu': 0.6.0
-      '@ferrigura/linux-arm64-musl': 0.6.0
-      '@ferrigura/linux-x64-gnu': 0.6.0
-      '@ferrigura/linux-x64-musl': 0.6.0
-      '@ferrigura/win32-arm64-msvc': 0.6.0
-      '@ferrigura/win32-x64-msvc': 0.6.0
+      '@ferrigura/darwin-arm64': 0.7.0
+      '@ferrigura/linux-arm64-gnu': 0.7.0
+      '@ferrigura/linux-arm64-musl': 0.7.0
+      '@ferrigura/linux-x64-gnu': 0.7.0
+      '@ferrigura/linux-x64-musl': 0.7.0
+      '@ferrigura/win32-arm64-msvc': 0.7.0
+      '@ferrigura/win32-x64-msvc': 0.7.0
 
-  '@ferrigura/darwin-arm64@0.6.0':
+  '@ferrigura/darwin-arm64@0.7.0':
     optional: true
 
-  '@ferrigura/linux-arm64-gnu@0.6.0':
+  '@ferrigura/linux-arm64-gnu@0.7.0':
     optional: true
 
-  '@ferrigura/linux-arm64-musl@0.6.0':
+  '@ferrigura/linux-arm64-musl@0.7.0':
     optional: true
 
-  '@ferrigura/linux-x64-gnu@0.6.0':
+  '@ferrigura/linux-x64-gnu@0.7.0':
     optional: true
 
-  '@ferrigura/linux-x64-musl@0.6.0':
+  '@ferrigura/linux-x64-musl@0.7.0':
     optional: true
 
-  '@ferrigura/win32-arm64-msvc@0.6.0':
+  '@ferrigura/win32-arm64-msvc@0.7.0':
     optional: true
 
-  '@ferrigura/win32-x64-msvc@0.6.0':
+  '@ferrigura/win32-x64-msvc@0.7.0':
     optional: true
 
   '@ferriki/core@1.3.0':
