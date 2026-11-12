@@ -1544,13 +1544,14 @@ msgstr ""
 "dev shell that sets it to 1980, is pinned too. The logged <0/> line shows the "
 "moment."
 
-#: docs/app/content/guide/deployment.mdx
-msgid ""
-"A complete build removes entries it no longer used. Set <0/> to build without "
-"the cache."
-msgstr ""
-"A complete build removes entries it no longer used. Set <0/> to build without "
-"the cache."
+#~ #@ obsolete-since: 2026-11-12
+#~ #: docs/app/content/guide/deployment.mdx
+#~ msgid ""
+#~ "A complete build removes entries it no longer used. Set <0/> to build without "
+#~ "the cache."
+#~ msgstr ""
+#~ "A complete build removes entries it no longer used. Set <0/> to build without "
+#~ "the cache."
 
 #: docs/app/content/guide/markdown.mdx
 msgid ""
@@ -2049,6 +2050,20 @@ msgstr ""
 "and path, so feed readers keep both entries. Readers treat entries with new "
 "IDs as new posts, so choose the option before the first release, or accept one"
 " round of repeated entries."
+
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"An image entry depends only on what changes the encoded files: the image "
+"bytes, its framing (<0/>, <1/>, <2/>), the preset, the configured widths, and "
+"the base path. Alt text, captions, and the page that references the image are "
+"not part of it, so the language versions of a post share one set of "
+"renditions."
+msgstr ""
+"An image entry depends only on what changes the encoded files: the image "
+"bytes, its framing (<0/>, <1/>, <2/>), the preset, the configured widths, and "
+"the base path. Alt text, captions, and the page that references the image are "
+"not part of it, so the language versions of a post share one set of "
+"renditions."
 
 #~ #@ obsolete-since: 2026-11-02
 #~ #: docs/app/content/guide/layout-and-navigation.mdx
@@ -7756,10 +7771,19 @@ msgstr ""
 #: docs/app/content/guide/deployment.mdx
 msgid ""
 "Place the step after <0/> and before the build. A new key per commit stores "
-"the pruned cache of every run, and <1/> starts from the newest one."
+"the cache of every run, and <1/> starts from the newest one."
 msgstr ""
 "Place the step after <0/> and before the build. A new key per commit stores "
-"the pruned cache of every run, and <1/> starts from the newest one."
+"the cache of every run, and <1/> starts from the newest one."
+
+#~ #@ obsolete-since: 2026-11-12
+#~ #: docs/app/content/guide/deployment.mdx
+#~ msgid ""
+#~ "Place the step after <0/> and before the build. A new key per commit stores "
+#~ "the pruned cache of every run, and <1/> starts from the newest one."
+#~ msgstr ""
+#~ "Place the step after <0/> and before the build. A new key per commit stores "
+#~ "the pruned cache of every run, and <1/> starts from the newest one."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Placeholder for the search input."
@@ -8883,6 +8907,18 @@ msgstr "Settings and configuration"
 #: docs/app/content/guide/theming.mdx
 msgid "Setup"
 msgstr "Setup"
+
+#: docs/app/content/guide/deployment.mdx
+msgid ""
+"Several builds can share one cache, for example one <0/> per language variant "
+"in the same project. Each build renews the entries it reads, and removes only "
+"entries that no build has used for seven days. Set <1/> to build without the "
+"cache."
+msgstr ""
+"Several builds can share one cache, for example one <0/> per language variant "
+"in the same project. Each build renews the entries it reads, and removes only "
+"entries that no build has used for seven days. Set <1/> to build without the "
+"cache."
 
 #: docs/app/content/guide/publications.mdx
 msgid "Share images"
