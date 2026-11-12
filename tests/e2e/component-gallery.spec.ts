@@ -343,3 +343,25 @@ test("cards wrap long titles and descriptions within narrow columns", async ({ p
     }
   }
 })
+
+test("tabs, code groups, and cards keep compact, balanced spacing", async ({ page }) => {
+  // One-line MDX labels arrive wrapped in a paragraph (ferromark#621); its
+  // margins must not stretch the triggers.
+  const triggerHeights = await page
+    .locator("#gallery-tabs [role=tab], #gallery-package-managers button")
+    .evaluateAll((triggers) => triggers.map((trigger) => trigger.getBoundingClientRect().height))
+  expect(triggerHeights.length).toBeGreaterThan(0)
+  for (const height of triggerHeights) expect(height).toBeLessThan(40)
+
+  const card = page
+    .getByRole("link")
+    .filter({ has: page.locator("h3") })
+    .first()
+  const textMargins = await card.evaluate((element) => {
+    const text = element.querySelector("p")
+    if (!text) throw new Error("Expected the gallery's linked card body")
+    const style = getComputedStyle(text)
+    return [style.marginTop, style.marginBottom]
+  })
+  expect(textMargins).toStrictEqual(["0px", "0px"])
+})
