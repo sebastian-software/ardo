@@ -1,4 +1,4 @@
-import type { Alias, AliasOptions, Plugin, ResolverFunction, UserConfig } from "vite"
+import type { Alias, AliasOptions, Plugin, UserConfig } from "vite"
 
 import { realpathSync } from "node:fs"
 import path from "node:path"
@@ -27,13 +27,17 @@ export function createRuntimeBoundaryPlugins(): Plugin[] {
   ]
 }
 
+// Vite resolves optimizeDeps.include with resolve.alias and its own resolver
+// only; plugin resolveId hooks do not run there. The nested "ardo > react" form
+// makes Vite resolve the specifier from Ardo's installation with the
+// environment's export conditions.
 const managedBrowserIncludes = [
-  "react",
-  "react/jsx-runtime",
-  "react/jsx-dev-runtime",
-  "react-dom",
-  "react-dom/client",
-  "react-dom/static",
+  "ardo > react",
+  "ardo > react/jsx-runtime",
+  "ardo > react/jsx-dev-runtime",
+  "ardo > react-dom",
+  "ardo > react-dom/client",
+  "ardo > react-dom/static",
   // Vite's first optimizer scan sees the generated router entry before Ardo's
   // UI chunks. Include Ardo's direct browser graph in the same pass so those
   // later imports cannot invalidate the React entry before hydration starts.
@@ -51,12 +55,12 @@ const browserDependencyNames = new Set([
 ])
 
 const managedSsrIncludes = [
-  "react",
-  "react/jsx-runtime",
-  "react/jsx-dev-runtime",
-  "react-dom",
-  "react-dom/server",
-  "react-dom/static",
+  "ardo > react",
+  "ardo > react/jsx-runtime",
+  "ardo > react/jsx-dev-runtime",
+  "ardo > react-dom",
+  "ardo > react-dom/server",
+  "ardo > react-dom/static",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",
   "ardo > minisearch",
   "ardo > react-compare-slider/components",
@@ -74,7 +78,7 @@ export function createManagedRuntimePlugin(options: ManagedRuntimePluginOptions 
     }
     return packageRoots.get(name)
   }
-  const aliases = getManagedRuntimeAliases(resolutionImporter, getPackageRoot)
+  const aliases = getManagedRuntimeAliases()
   const managedNames = new Set<string>(getManagedRuntimePackageNames())
 
   return {
@@ -83,20 +87,15 @@ export function createManagedRuntimePlugin(options: ManagedRuntimePluginOptions 
     config: {
       order: "post",
       handler(config) {
-        // Vite resolves optimizeDeps.include using resolve.alias, without
-        // running normal resolveId hooks. Claim managed specifiers before caller
-        // aliases so they cannot redirect the shared runtime outside Ardo.
+        // Vite's alias plugin runs before every resolveId hook and also inside
+        // the optimizer's include resolver. Claim managed specifiers before
+        // caller aliases so they cannot redirect the shared runtime outside Ardo.
         const existingAliases = normalizeAliases(config.resolve?.alias)
         const otherAliases = existingAliases.filter(
           (alias) =>
             !aliases.some(
               (managedAlias) =>
-                alias.find === managedAlias.find &&
-                alias.replacement === managedAlias.replacement &&
-                // Vite 8's optimizer only honors aliases for optimizeDeps.include;
-                // normal resolveId hooks cannot provide these managed aliases.
-                // eslint-disable-next-line @typescript-eslint/no-deprecated -- Needed for safe identity checks when Vite reapplies config hooks.
-                alias.customResolver === managedAlias.customResolver
+                alias.find === managedAlias.find && alias.replacement === managedAlias.replacement
             )
         )
         const resolve = config.resolve ?? {}
@@ -190,7 +189,7 @@ function withManagedIncludes(options: {
   packagesToExclude: readonly string[]
 }): NonNullable<UserConfig["optimizeDeps"]> {
   const { optimizeDeps, includesToAdd, frameworkPackageNames, packagesToExclude } = options
-  const includes = optimizeDeps?.include ?? []
+  const includes = (optimizeDeps?.include ?? []).map((id) => toManagedInclude(id))
   const excludes =
     optimizeDeps?.exclude?.filter(
       (id) => !frameworkPackageNames.has(packageNameFromOptimizerId(id))
@@ -200,6 +199,12 @@ function withManagedIncludes(options: {
     include: [...new Set([...includes, ...includesToAdd])],
     exclude: [...new Set([...excludes, ...packagesToExclude])],
   }
+}
+
+/** Point a caller's plain managed include at Ardo's installation as well. */
+function toManagedInclude(id: string): string {
+  if (id.includes(">") || getManagedRuntimePackageName(id) == null) return id
+  return `ardo > ${id}`
 }
 
 function packageNameFromOptimizerId(id: string): string {
@@ -226,68 +231,11 @@ function isAliasArray(aliases: AliasOptions): aliases is readonly Alias[] {
   return Array.isArray(aliases)
 }
 
-function getManagedRuntimeAliases(
-  resolutionImporter: string,
-  getPackageRoot: PackageRootResolver
-): Alias[] {
-  const aliases: Alias[] = []
-  for (const name of getManagedRuntimePackageNames()) {
-    const customResolver = async function (
-      this: ThisParameterType<ResolverFunction>,
-      ...[id, _importer, resolveOptions]: Parameters<ResolverFunction>
-    ): Promise<Awaited<ReturnType<ResolverFunction>>> {
-      if (resolveOptions.custom?.[MANAGED_RUNTIME_RESOLUTION_KEY] === true) return null
-
-      const packageRoot = getPackageRoot(name)
-      if (packageRoot == null) {
-        throw new Error(
-          `[ardo] Managed runtime package "${name}" must be installed as a direct Ardo dependency.`
-        )
-      }
-
-      // The optimizer's include resolver only sees resolve.alias. Delegate to
-      // Vite's own resolver with Ardo as the importer so its browser, development,
-      // and SSR export conditions stay intact.
-      const resolved = await this.resolve(id, resolutionImporter, {
-        ...resolveOptions,
-        skipSelf: true,
-        custom: {
-          ...resolveOptions.custom,
-          [MANAGED_RUNTIME_RESOLUTION_KEY]: true,
-        },
-      })
-      if (resolved == null || resolved.external === true) {
-        throw new Error(
-          `[ardo] Could not resolve managed runtime import "${id}" from Ardo's installation.`
-        )
-      }
-
-      const sourcePath =
-        findOptimizedDependencySource(resolved.id, this.environment) ?? canonicalPath(resolved.id)
-      if (sourcePath == null || !isPathInsideDirectory(sourcePath, packageRoot)) {
-        throw new Error(
-          `[ardo] Managed runtime import "${id}" resolved outside Ardo's "${name}" installation.`
-        )
-      }
-      return {
-        ...resolved,
-        ...(isOptimizerScan(resolveOptions) ? { id: sourcePath } : {}),
-        meta: {
-          ...resolved.meta,
-          [MANAGED_RUNTIME_SOURCE_META_KEY]: { name, sourcePath },
-        },
-      }
-    }
-    // @rollup/plugin-alias awaits custom resolvers at runtime, though Vite's public type is sync.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Vite's alias package awaits this resolver.
-    const resolver = customResolver as unknown as ResolverFunction
-    aliases.push({
-      find: name,
-      replacement: name,
-      customResolver: resolver,
-    })
-  }
-  return aliases
+function getManagedRuntimeAliases(): Alias[] {
+  // An identity alias changes nothing itself. Vite applies the first matching
+  // alias only, so listing these first keeps caller aliases away from managed
+  // specifiers and leaves the import to the resolveId hook above.
+  return getManagedRuntimePackageNames().map((name) => ({ find: name, replacement: name }))
 }
 
 function canonicalPath(id: string): string | undefined {
