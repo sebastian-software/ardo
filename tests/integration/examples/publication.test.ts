@@ -11,6 +11,19 @@ afterEach(() => {
     fs.rmSync(directory, { recursive: true, force: true })
 })
 
+/** The JSON-LD blocks of a page. The server escapes `<` in them, which JSON parsing undoes. */
+function jsonLdBlocks(html: string): Array<Record<string, unknown>> {
+  return [
+    ...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gu),
+  ].map((match) => JSON.parse(match[1]) as Record<string, unknown>)
+}
+
+/** A `<meta>` or `<link>` tag's attribute, whatever the attribute order. */
+function tagAttribute(html: string, tag: RegExp, attribute: string): string | undefined {
+  const found = tag.exec(html)?.[0]
+  return found == null ? undefined : new RegExp(`${attribute}="([^"]*)"`, "u").exec(found)?.[1]
+}
+
 it("builds a complete publication beside versioned documentation under a deployment base", () => {
   const directory = fs.realpathSync(createTestProject("publication"))
   directories.push(directory)
@@ -53,6 +66,28 @@ it("builds a complete publication beside versioned documentation under a deploym
   expect(post).not.toContain('aria-label="Documentation version"')
   expect(post).toMatch(/<img[^>]+src="\/project\/assets\/posts\/[^"]+\.jpg"/u)
   expect(post).toMatch(/og:image[^>]+\.jpg/u)
+  // The post's structured data: one BlogPosting built from the same facts as the page.
+  const blocks = jsonLdBlocks(post)
+  expect(blocks).toHaveLength(1)
+  expect(post.match(/application\/ld\+json/gu)).toHaveLength(1)
+  expect(post).not.toContain("TechArticle")
+  const posting = blocks[0] as Record<string, unknown> & { author: Array<Record<string, unknown>> }
+  expect(posting["@type"]).toBe("BlogPosting")
+  expect(posting.headline).toBe("Designing for a clearer reading experience")
+  expect(posting.inLanguage).toBe("en")
+  // Without trailingSlash the canonical omits the slash that the post's own URL has.
+  const canonical = tagAttribute(post, /<link[^>]+rel="canonical"[^>]*>/u, "href")
+  expect(canonical).toBe("https://example.test/project/news/reading")
+  expect(posting.mainEntityOfPage).toBe(canonical)
+  expect(posting.author).toStrictEqual([
+    { "@type": "Person", name: "Alex Morgan" },
+    { "@type": "Person", name: "Sam Rivera", url: "https://people.example.test/sam" },
+  ])
+  const ogImage = tagAttribute(post, /<meta[^>]+property="og:image"[^>]*>/u, "content")
+  expect(ogImage).toMatch(/^https:\/\/example\.test\/project\/assets\/posts\/.+\.jpg$/u)
+  expect(posting.image).toBe(ogImage)
+  expect(posting).not.toHaveProperty("dateModified")
+  expect(posting.datePublished).toBe("2026-10-20T09:00:00.000Z")
   expect(interactive).toContain("Count: ")
   for (const name of ["atom.xml", "rss.xml"]) {
     const feed = fs.readFileSync(path.join(output, "news", name), "utf8")
@@ -124,7 +159,7 @@ export default function SitePost({ post, children }: PublicationPostProps) {
 }
 export const meta = ({ post, publication, defaults }: PublicationPostMetaArgs) => [
   { title: post.title + " · " + publication.name },
-  ...defaults.filter((entry) => "tagName" in entry && (entry.rel === "canonical" || entry.rel === "alternate")),
+  ...defaults.filter((entry) => "script:ld+json" in entry || ("tagName" in entry && (entry.rel === "canonical" || entry.rel === "alternate"))),
   { property: "og:type", content: "article" },
   { name: "next-step", content: String(post.data.nextStep) },
 ]
@@ -234,6 +269,14 @@ export default tagLabel
   expect(post).toMatch(
     /<link rel="alternate" type="application\/atom\+xml"[^>]+title="Field notes"\/>/u
   )
+  // The module's filter keeps the structured data from the defaults, as the documented pattern does.
+  const siteBlocks = jsonLdBlocks(post)
+  expect(siteBlocks).toHaveLength(1)
+  expect(siteBlocks[0]).toMatchObject({
+    "@type": "BlogPosting",
+    mainEntityOfPage: "https://example.test/project/news/reading",
+  })
+  expect(post).not.toContain("TechArticle")
   // Custom frontmatter reaches the post module as post.data.
   expect(post).toContain('<a data-next="true" href="https://contact.example/">Next</a>')
   expect(post).toContain('<meta name="next-step" content="https://contact.example/"/>')

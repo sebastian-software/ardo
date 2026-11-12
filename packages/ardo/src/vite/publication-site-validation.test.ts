@@ -1,16 +1,23 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { resolveConfig } from "../config"
 import type { PublicationConfig } from "../publication/types"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { compileMdxRouteModule } from "./mdx-compile"
 import { preparePublication } from "./publication"
-import { refreshPublication } from "./publication-materialize"
+import {
+  refreshPublication,
+  reportInvalidAuthorUrls,
+  type PublicationBuilder,
+} from "./publication-materialize"
+import { collectInvalidAuthorUrls, isAbsoluteHttpUrl } from "./publication-options"
+import { createPublicationPlugin } from "./publication-plugin"
 
 const roots: string[] = []
 afterEach(async () => {
+  vi.restoreAllMocks()
   for (const root of roots.splice(0)) await fs.rm(root, { recursive: true, force: true })
 })
 
@@ -177,5 +184,191 @@ describe("localized tag archives", () => {
       await expect(
         fs.stat(path.join(p.routesDir, locale, "news/tags/design/index.tsx"))
       ).resolves.toBeDefined()
+  })
+})
+
+const SCRIPT_URL = ["javascript", "alert(1)"].join(":")
+
+describe("isAbsoluteHttpUrl", () => {
+  it("accepts absolute http and https URLs with a host", () => {
+    const values = [
+      "https://people.example.test/sam",
+      "http://example.test",
+      "HTTPS://Example.test/Path?q=1#hash",
+      "https://localhost:3000/",
+    ]
+    expect(values.filter((value) => !isAbsoluteHttpUrl(value))).toStrictEqual([])
+  })
+
+  it("rejects relative, scheme-only, other-scheme, padded, non-string, and malformed values", () => {
+    const values = [
+      "/people/sam",
+      "people.example.test/sam",
+      "//people.example.test/sam",
+      "https:foo",
+      "http:/x.test",
+      "https://",
+      "mailto:sam@example.test",
+      SCRIPT_URL,
+      "ftp://example.test",
+      " https://example.test",
+      "https://example.test ",
+      "https://example.test\n",
+      "https://exa mple.test",
+      "",
+      42,
+      null,
+      undefined,
+      {},
+      ["https://example.test"],
+    ]
+    expect(values.filter((value) => isAbsoluteHttpUrl(value))).toStrictEqual([])
+  })
+})
+
+async function serving(command: "build" | "serve" = "serve") {
+  const p = await project()
+  for (const locale of ["en", "de"]) {
+    await p.write(`${locale}/first`, "", { body: "A complete article." })
+    await p.write(`${locale}/hidden`, "draft: true\n")
+  }
+  // The draft's author has no published post, and is still checked.
+  for (const locale of ["en", "de"])
+    await fs.writeFile(
+      path.join(p.root, "posts", locale, "hidden.md"),
+      "---\nid: hidden\ntitle: hidden\npublishedAt: 2026-01-02T10:00:00Z\nauthors: [ghost]\ndraft: true\n---\nDraft.\n"
+    )
+  const authors: Record<string, { name: string; url?: unknown }> = {
+    alex: { name: "Alex", url: "/people/alex" },
+    sam: { name: "Sam", url: "https://people.example.test/sam" },
+    kim: { name: "Kim" },
+    ghost: { name: "Ghost", url: "https:ghost.example.test" },
+  }
+  const config = resolveConfig(
+    {
+      title: "Example",
+      siteUrl: "https://example.test",
+      i18n: { defaultLocale: "en", locales: [{ id: "en" }, { id: "de" }] },
+    },
+    p.root
+  )
+  const builder: PublicationBuilder = {
+    options: { ...p.options, authors } as PublicationConfig,
+    site: { resolvedConfig: config, routesDir: p.routesDir, command },
+    prepared: [],
+    publications: {},
+    sources: new Map<string, string>(),
+    posts: new Map(),
+    queue: Promise.resolve(),
+  }
+  const warn = vi.spyOn(console, "warn").mockImplementation(vi.fn())
+  return {
+    builder,
+    authors,
+    warn,
+    messages: () => warn.mock.calls.map((call) => String(call[0])),
+  }
+}
+
+/** A Vite plugin hook, called with the plugin context a test supplies. */
+const hook = (value: unknown) => value as (this: unknown, ...args: unknown[]) => unknown
+
+describe("invalid author URLs", () => {
+  it("warn once per author across locales and refreshes in serve, also for a draft-only author", async () => {
+    const { builder, warn, messages } = await serving()
+    await refreshPublication(builder)
+    await refreshPublication(builder)
+    expect(warn).toHaveBeenCalledTimes(2)
+    expect(messages().sort()).toStrictEqual([
+      '[ardo] publication.authors.alex.url must be an absolute http:// or https:// URL, but is "/people/alex". Ardo leaves it out of structured data.',
+      '[ardo] publication.authors.ghost.url must be an absolute http:// or https:// URL, but is "https:ghost.example.test". Ardo leaves it out of structured data.',
+    ])
+  })
+
+  it("warn again only when an author gets another invalid value", async () => {
+    const { builder, authors, warn, messages } = await serving()
+    await refreshPublication(builder)
+    authors.alex.url = "/people/alex-morgan"
+    await refreshPublication(builder)
+    expect(warn).toHaveBeenCalledTimes(3)
+    expect(messages()[2]).toContain("publication.authors.alex.url must be")
+    expect(messages()[2]).toContain('"/people/alex-morgan"')
+    authors.alex.url = "https://people.example.test/alex"
+    await refreshPublication(builder)
+    expect(warn).toHaveBeenCalledTimes(3)
+  })
+
+  it("wait in a build until the client output reports them, once however often it is called", async () => {
+    const { builder, warn } = await serving("build")
+    await refreshPublication(builder)
+    await refreshPublication(builder)
+    expect(warn).not.toHaveBeenCalled()
+    reportInvalidAuthorUrls(builder)
+    reportInvalidAuthorUrls(builder)
+    expect(warn).toHaveBeenCalledTimes(2)
+  })
+
+  it("warn once in a build, from the plugin's client output and never from its SSR output", async () => {
+    const p = await project()
+    await p.write("first")
+    const plugin = createPublicationPlugin(
+      { from: "posts", authors: { alex: { name: "Alex", url: "/people/alex" } } },
+      { resolvedConfig: p.config, routesDir: p.routesDir, command: "build" }
+    )
+    const warn = vi.spyOn(console, "warn").mockImplementation(vi.fn())
+    const emitFile = vi.fn()
+    const generateBundle = (name: string) =>
+      hook(plugin.generateBundle).call({ environment: { name }, emitFile }, {}, {}, false)
+    await hook(plugin.configResolved).call(undefined, { root: p.root, publicDir: "" })
+    expect(warn).not.toHaveBeenCalled()
+    generateBundle("ssr")
+    expect(warn).not.toHaveBeenCalled()
+    expect(emitFile).not.toHaveBeenCalled()
+    generateBundle("client")
+    generateBundle("ssr")
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0][0])).toBe(
+      '[ardo] publication.authors.alex.url must be an absolute http:// or https:// URL, but is "/people/alex". Ardo leaves it out of structured data.'
+    )
+  })
+
+  it("collect every invalid kind of value, and skip valid or missing urls", () => {
+    const invalid = collectInvalidAuthorUrls({
+      from: "posts",
+      authors: {
+        relative: { name: "A", url: "/a" },
+        scheme: { name: "B", url: "https:b" },
+        mail: { name: "C", url: "mailto:c@example.test" },
+        script: { name: "D", url: SCRIPT_URL },
+        padded: { name: "E", url: " https://e.test" },
+        number: { name: "F", url: 42 as never },
+        malformed: { name: "G", url: "http://" },
+        valid: { name: "H", url: "http://h.test" },
+        none: { name: "I" },
+      },
+    })
+    expect(invalid.map((entry) => entry.id)).toStrictEqual([
+      "relative",
+      "scheme",
+      "mail",
+      "script",
+      "padded",
+      "number",
+      "malformed",
+    ])
+    expect(invalid.find((entry) => entry.id === "number")?.value).toBe(42)
+  })
+
+  it("neither warn nor throw without authors or for a profile that is not an object", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(vi.fn())
+    expect(collectInvalidAuthorUrls({ from: "posts" } as PublicationConfig)).toStrictEqual([])
+    expect(
+      collectInvalidAuthorUrls({
+        from: "posts",
+        authors: { none: null, text: "Sam", count: 3, list: [] } as never,
+      })
+    ).toStrictEqual([])
+    expect(collectInvalidAuthorUrls({ from: "posts", authors: null as never })).toStrictEqual([])
+    expect(warn).not.toHaveBeenCalled()
   })
 })

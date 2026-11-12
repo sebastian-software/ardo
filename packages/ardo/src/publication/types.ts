@@ -21,6 +21,11 @@ export type AuthorProfile = {
   avatar?: string
   description?: string
   title?: string
+  /**
+   * Absolute `http://` or `https://` profile URL. Ardo links the author's name to it, uses it as
+   * the Atom author `<uri>`, and adds it to the post's `BlogPosting` structured data. Another
+   * value prints a build warning and is left out of the structured data.
+   */
   url?: string
   links?: Array<{ name: string; url: string }>
   did?: string

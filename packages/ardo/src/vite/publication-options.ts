@@ -41,6 +41,70 @@ export function validatePublicationOptions(options: PublicationConfig): void {
     )
 }
 
+/**
+ * Whether `value` is an absolute `http:` or `https:` URL with a host. The scheme must be followed
+ * by `//`, so `https:foo`, which `new URL()` accepts but a browser resolves against the page, is
+ * rejected, as is a value with surrounding whitespace.
+ */
+export function isAbsoluteHttpUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value !== value.trim() || !/^https?:\/\//iu.test(value))
+    return false
+  try {
+    return new URL(value).host !== ""
+  } catch {
+    return false
+  }
+}
+
+/** A configured author profile whose `url` is not an absolute http(s) URL. */
+export type InvalidAuthorUrl = { id: string; value: unknown }
+
+/**
+ * The configured author profiles whose `url` structured data leaves out. Every profile is
+ * checked, also authors without a published post. A missing `authors` group and profiles that
+ * are not objects are skipped: a post naming such a profile already fails on its own.
+ */
+export function collectInvalidAuthorUrls(options: PublicationConfig): InvalidAuthorUrl[] {
+  const authors: unknown = options.authors
+  if (authors == null || typeof authors !== "object") return []
+  const invalid: InvalidAuthorUrl[] = []
+  for (const [id, profile] of Object.entries(authors)) {
+    if (profile == null || typeof profile !== "object") continue
+    const value: unknown = (profile as { url?: unknown }).url
+    if (value != null && !isAbsoluteHttpUrl(value)) invalid.push({ id, value })
+  }
+  return invalid
+}
+
+/**
+ * Warn once per distinct author id and value. The options are validated per locale and on every
+ * refresh, so `warned` remembers what was already reported. The value keeps its current use as
+ * the author link and Atom `<uri>`; only structured data leaves it out.
+ */
+export function warnInvalidAuthorUrls(
+  invalid: readonly InvalidAuthorUrl[],
+  warned: Set<string>
+): void {
+  for (const { id, value } of invalid) {
+    const shown = formatValue(value)
+    const key = `${id}\0${shown}`
+    if (warned.has(key)) continue
+    warned.add(key)
+    console.warn(
+      `[ardo] publication.authors.${id}.url must be an absolute http:// or https:// URL, but is ${shown}. Ardo leaves it out of structured data.`
+    )
+  }
+}
+
+/** A configured value as JSON, or as text when JSON cannot represent it. */
+function formatValue(value: unknown): string {
+  try {
+    return JSON.stringify(value) ?? String(value)
+  } catch {
+    return typeof value
+  }
+}
+
 /** An optional option group: a plain object with only the known keys. */
 function readGroup(value: unknown, name: string, keys: readonly string[]): Record<string, unknown> {
   if (value == null) return {}

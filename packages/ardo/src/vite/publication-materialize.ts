@@ -7,6 +7,11 @@ import { preparePublication, type PreparedPublication } from "./publication"
 import { validateTagLocales } from "./publication-tags"
 import type { PublicationPostBinding, PublicationRoute } from "./publication-routes"
 import { normalizePath } from "./path-utils"
+import {
+  collectInvalidAuthorUrls,
+  warnInvalidAuthorUrls,
+  type InvalidAuthorUrl,
+} from "./publication-options"
 
 export const PUBLICATION_ID = "virtual:ardo/publication"
 export const RESOLVED_PUBLICATION_ID = `\0${PUBLICATION_ID}`
@@ -25,6 +30,10 @@ export type PublicationBuilder = {
   /** Generated post routes by normalized file path, with the modules they mount. */
   posts: Map<string, PublicationPostBinding>
   queue: Promise<void>
+  /** Author profiles whose `url` structured data leaves out, from the last refresh. */
+  invalidAuthorUrls?: InvalidAuthorUrl[]
+  /** The invalid author URLs already reported, so each distinct one warns once. */
+  warnedAuthorUrls?: Set<string>
 }
 
 export async function refreshPublication(builder: PublicationBuilder): Promise<void> {
@@ -46,6 +55,15 @@ export async function refreshPublication(builder: PublicationBuilder): Promise<v
   builder.publications = Object.fromEntries(
     prepared.map((entry, index) => [locales[index] ?? "default", entry.publication])
   )
+  builder.invalidAuthorUrls = collectInvalidAuthorUrls(builder.options)
+  // A build reports them once from its client output; the dev server has no bundle to wait for.
+  if (builder.site.command === "serve") reportInvalidAuthorUrls(builder)
+}
+
+/** Warn about each invalid author URL once, however often the publication refreshes. */
+export function reportInvalidAuthorUrls(builder: PublicationBuilder): void {
+  builder.warnedAuthorUrls ??= new Set()
+  warnInvalidAuthorUrls(builder.invalidAuthorUrls ?? [], builder.warnedAuthorUrls)
 }
 
 async function prepareAll(

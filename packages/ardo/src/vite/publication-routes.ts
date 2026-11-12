@@ -3,8 +3,8 @@ import { stringify } from "yaml"
 import type { PreparedJsxDocument } from "ferromark"
 import type { Post, Publication } from "../publication/types"
 import type { ArdoMetaDescriptor } from "../runtime/page-context"
-import type { PublicationContext } from "./publication-context"
-import { importPath, type PublicationComponents } from "./publication-options"
+import { publicationLanguage, type PublicationContext } from "./publication-context"
+import { importPath, isAbsoluteHttpUrl, type PublicationComponents } from "./publication-options"
 import { normalizePath } from "./path-utils"
 
 export type PublicationRoute = {
@@ -47,6 +47,27 @@ export type PublicationPostBinding = {
   feeds: ArdoMetaDescriptor[]
   /** The post's source file, named by build errors. */
   sourceFile: string
+  /** The post facts of its `BlogPosting` structured data, which the page metadata builds. */
+  article: PublicationPostArticle
+}
+
+/**
+ * Plain post data for the `BlogPosting` JSON-LD block. The page metadata adds the canonical URL,
+ * resolves `image` against `siteUrl`, and names the site, so these values match the page's own.
+ */
+export type PublicationPostArticle = {
+  headline: string
+  /** The post's description, when it sets one. */
+  description?: string
+  datePublished: string
+  /** The post's `updatedAt`, when it sets one. */
+  dateModified?: string
+  /** The feeds' language: the publication's locale, or the site language. */
+  inLanguage: string
+  /** The post's authors in post order; `url` only when it is an absolute http(s) URL. */
+  authors: Array<{ name: string; url?: string }>
+  /** The post's own share image or cover, unresolved, as the page's `og:image` uses it. */
+  image?: string
 }
 
 export type PostRouteInput = {
@@ -91,6 +112,18 @@ export function createPostRoute(
     ...(socialImage == null ? {} : { ogImage: socialImage }),
     _ardoPost: post,
   }
+  const article: PublicationPostArticle = {
+    headline: post.title,
+    ...(post.description == null ? {} : { description: post.description }),
+    datePublished: post.publishedAt,
+    ...(post.updatedAt == null ? {} : { dateModified: post.updatedAt }),
+    inLanguage: publicationLanguage(context),
+    authors: post.authors.map((author) => ({
+      name: author.name,
+      ...(isAbsoluteHttpUrl(author.url) ? { url: author.url } : {}),
+    })),
+    ...(socialImage == null ? {} : { image: socialImage }),
+  }
   const modules = input.modules ?? {}
   return {
     filePath: path.join(
@@ -106,6 +139,7 @@ export function createPostRoute(
       publication: publicationKey(context),
       feeds: feedDiscoveryMeta(context.publication),
       sourceFile: path.relative(context.config.root, input.sourceFile),
+      article,
       ...(modules.post == null ? {} : { view: normalizePath(modules.post) }),
       ...(modules.tagLabel == null ? {} : { tagLabel: normalizePath(modules.tagLabel) }),
       ...(context.options.tags === true ? { tagArchive: tagArchivePrefix(context) } : {}),
