@@ -29,7 +29,7 @@ function files(directory: string): Map<string, Buffer> {
   return result
 }
 
-it("reuses cached routes and images with byte-identical output, and prunes stale entries", () => {
+it("reuses cached routes and images with byte-identical output, and prunes entries unused for a week", () => {
   const directory = fs.realpathSync(createTestProject("publication"))
   directories.push(directory)
   const config = path.join(directory, "ardo.config.ts")
@@ -53,9 +53,15 @@ it("reuses cached routes and images with byte-identical output, and prunes stale
   for (const namespace of ["compiled-route", "images", "route-metadata"])
     expect(fs.readdirSync(path.join(cache, namespace)).length).toBeGreaterThan(0)
   const stale = path.join(cache, "route-metadata/stale.json")
+  const recent = path.join(cache, "route-metadata/recent.json")
   fs.writeFileSync(stale, "{}")
+  fs.writeFileSync(recent, "{}")
+  const eightDaysAgo = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
+  fs.utimesSync(stale, eightDaysAgo, eightDaysAgo)
 
   build(directory)
   expect(fs.existsSync(stale)).toBe(false)
+  // Another build of the project, such as a second language variant, may still use it.
+  expect(fs.existsSync(recent)).toBe(true)
   expect(files(output)).toStrictEqual(uncached)
 })

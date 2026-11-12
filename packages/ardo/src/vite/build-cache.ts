@@ -19,8 +19,17 @@ export type BuildCache = {
 /** Bump when a cached shape changes without a package version change. */
 const CACHE_FORMAT = 1
 
+/**
+ * How long an entry survives without any build reading or writing it. A project may run several
+ * builds in a row from one root (one per language variant, or per content directory), and each
+ * uses only part of the cache, so pruning by this process's use alone would delete the others'
+ * entries. A week keeps every variant that is built at least weekly warm, while entries for
+ * changed or deleted sources still disappear.
+ */
+export const BUILD_CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
+
 const caches = new Map<string, BuildCache>()
-/** Entries this process read or wrote, by namespace directory. A build prunes everything else. */
+/** Entries this process read or wrote, by namespace directory. Pruning never removes them. */
 const usedEntries = new Map<string, Set<string>>()
 
 /** The project's build cache, or undefined when `ARDO_CACHE` turns it off. */
@@ -53,6 +62,7 @@ function createBuildCache(directory: string): BuildCache {
       try {
         const value = JSON.parse(text) as T
         markUsed(file)
+        touch(file)
         return value
       } catch {
         // A torn or foreign file is a miss; the next write replaces it.
@@ -80,6 +90,16 @@ function entryFile(directory: string, namespace: string, key: string): string {
   return path.join(directory, namespace, `${key}.json`)
 }
 
+/** A hit renews the entry's modification time, the last use that pruning measures age by. */
+function touch(file: string): void {
+  try {
+    const now = new Date()
+    fs.utimesSync(file, now, now)
+  } catch {
+    // A read-only cache still serves hits; its entries just age from their last write.
+  }
+}
+
 function markUsed(file: string): void {
   const directory = path.dirname(file)
   let entries = usedEntries.get(directory)
@@ -91,23 +111,28 @@ function markUsed(file: string): void {
 }
 
 /**
- * Delete entries this process did not use, in every namespace. A complete build reads every
- * current entry, so whatever is left belongs to sources that changed or disappeared; a
- * namespace the build no longer needs at all is emptied too.
+ * Delete entries that no build has read or written for `BUILD_CACHE_MAX_AGE_MS`, in every
+ * namespace. Entries of other builds in the same project, including ones running at the same
+ * time, stay as long as they are in use; entries for changed or deleted sources, retired
+ * namespaces, and torn temporary files age out.
  */
-export function pruneBuildCache(cache: BuildCache | undefined): void {
+export function pruneBuildCache(cache: BuildCache | undefined, now = Date.now()): void {
   if (cache == null) return
+  const cutoff = now - BUILD_CACHE_MAX_AGE_MS
   for (const namespace of listDirectory(cache.directory)) {
     const directory = path.join(cache.directory, namespace)
     const used = usedEntries.get(directory)
     for (const file of listDirectory(directory)) {
-      if (used?.has(file) === true) continue
-      try {
-        fs.rmSync(path.join(directory, file), { force: true })
-      } catch {
-        // A read-only cache keeps its stale entries; they never match a current key.
-      }
+      if (used?.has(file) !== true) removeUnusedSince(path.join(directory, file), cutoff)
     }
+  }
+}
+
+function removeUnusedSince(entry: string, cutoff: number): void {
+  try {
+    if (fs.statSync(entry).mtimeMs < cutoff) fs.rmSync(entry, { force: true })
+  } catch {
+    // A read-only cache keeps its stale entries; they never match a current key.
   }
 }
 

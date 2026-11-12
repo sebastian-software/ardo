@@ -1,12 +1,14 @@
 import { createHash } from "node:crypto"
 
-import type { PostImage } from "../images/types"
+import type { ImagePreset, PostImage } from "../images/types"
 import type { ImageAsset, ImageInput } from "./image-pipeline"
 
 import { buildCacheKey, getBuildCache } from "./build-cache"
 
-type RasterResult = { image: PostImage; assets: ImageAsset[] }
-type CachedRaster = { image: PostImage; assets: Array<{ fileName: string; data: string }> }
+/** A rendered image without the descriptive fields each reference supplies. */
+type SharedImage = Omit<PostImage, "alt" | "caption">
+type RasterResult = { image: SharedImage; assets: ImageAsset[] }
+type CachedRaster = { image: SharedImage; assets: Array<{ fileName: string; data: string }> }
 
 /** One image is often prepared for a page, a feed, and a listing within the same build. */
 const rasterResults = new Map<string, Promise<RasterResult>>()
@@ -17,20 +19,10 @@ const rasterResults = new Map<string, Promise<RasterResult>>()
  */
 export async function cachedRasterImage(
   source: Buffer,
-  context: ImageInput,
+  context: ImageInput & { preset: ImagePreset },
   render: (assets: Map<string, ImageAsset>) => Promise<PostImage>
 ): Promise<PostImage> {
-  const {
-    assets: _assets,
-    dependencies: _dependencies,
-    sourceFile: _sourceFile,
-    ...options
-  } = context
-  // The source bytes stand in for the path, so a moved or shared file stays cached.
-  const key = buildCacheKey("image", createHash("sha256").update(source).digest("hex"), {
-    ...options,
-    image: { ...options.image, src: undefined },
-  })
+  const key = rasterImageKey(source, context)
   let result = rasterResults.get(key)
   if (result == null) {
     result = loadRasterImage(key, { root: context.root, render })
@@ -39,8 +31,35 @@ export async function cachedRasterImage(
   }
   const { image, assets } = await result
   for (const asset of assets) context.assets.set(asset.fileName, asset)
-  // Callers own their image description, as they did when every call rendered anew.
-  return structuredClone(image)
+  // Callers own their image description, as they did when every call rendered anew. The shared
+  // renditions carry no description; each caller adds its own alt text and caption.
+  return { alt: context.image.alt, caption: context.image.caption, ...structuredClone(image) }
+}
+
+/**
+ * Only what changes the written files: the source bytes (which stand in for the path, so a moved
+ * or shared file stays cached), the crop inputs, the resolved preset (it picks the fallback
+ * composition), the rendition widths, the URL base, and whether a JPEG fallback is written.
+ * Encoder formats and quality are fixed per Ardo and Sharp version, which every key includes.
+ * Alt text, caption, and the page that references the image are left out, so language versions
+ * of a post share one entry.
+ */
+export function rasterImageKey(
+  source: Buffer,
+  context: Pick<ImageInput, "image" | "base" | "config" | "jpegFallback"> & {
+    preset: ImagePreset
+  }
+): string {
+  const { core, frame, margin } = context.image
+  return buildCacheKey("image", createHash("sha256").update(source).digest("hex"), {
+    core,
+    frame,
+    margin,
+    preset: context.preset,
+    widths: context.config?.widths,
+    base: context.base,
+    jpegFallback: context.jpegFallback,
+  })
 }
 
 async function loadRasterImage(
@@ -58,7 +77,7 @@ async function loadRasterImage(
       })),
     }
   const assets = new Map<string, ImageAsset>()
-  const image = await input.render(assets)
+  const { alt: _alt, caption: _caption, ...image } = await input.render(assets)
   const rendered = [...assets.values()]
   cache?.write("images", key, {
     image,
