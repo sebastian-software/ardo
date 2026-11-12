@@ -270,7 +270,7 @@ Set `seo.robots: false` if you want to provide your own `robots.txt` from `publi
 - **Type:** `boolean`
 - **Default:** `true`
 
-Adds a `TechArticle` JSON-LD block to Markdown and MDX pages with a `title`, so search engines can read the title, description, canonical URL, and site name. Ardo writes the block only when `siteUrl` is set, because its URLs must be absolute.
+Adds a `TechArticle` JSON-LD block to Markdown and MDX pages with a `title`, so search engines can read the title, description, canonical URL, and site name. Publication posts get a `BlogPosting` block instead, with authors, dates, language, and the post's own image. Ardo writes the block only when `siteUrl` is set, because its URLs must be absolute.
 
 ```ts
 defineArdoConfig({

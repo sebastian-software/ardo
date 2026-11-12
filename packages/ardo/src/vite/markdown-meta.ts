@@ -1,11 +1,11 @@
 import type { MetadataConfig, ResolvedConfig } from "../config/types"
 
-import { extractFrontmatterValue } from "./markdown-frontmatter"
-import { buildTechArticleEntry } from "./markdown-structured-data"
+import { extractFrontmatterValue, extractTopLevelFrontmatterValue } from "./markdown-frontmatter"
+import { buildBlogPostingEntry, buildTechArticleEntry } from "./markdown-structured-data"
 import { isPathInsideDirectory, normalizePath } from "./path-utils"
 import { createSourceRouteIdentity } from "./route-identity"
 import { spellPagePath } from "../runtime/trailing-slash"
-import type { PublicationPostBinding } from "./publication-routes"
+import type { PublicationPostArticle, PublicationPostBinding } from "./publication-routes"
 
 type MarkdownMetaState = {
   resolvedConfig?: ResolvedConfig
@@ -15,6 +15,8 @@ type MarkdownMetaState = {
 }
 
 type MetaInput = {
+  /** A publication post's facts, which make its JSON-LD block a `BlogPosting`. */
+  article?: PublicationPostArticle
   canonical?: string
   /** Locale id of the route, when the project has locales. */
   inLanguage?: string
@@ -62,7 +64,12 @@ export function transformMarkdownMeta(
     return undefined
   }
 
-  const pageTitle = extractFrontmatterValue(code, "title")
+  const post = state.publicationPost?.(id.split("?", 1)[0])
+  // A post's frontmatter nests the resolved post, whose author profiles carry their own
+  // `description`; only the post's own top-level values describe the page.
+  const read = (key: string) =>
+    post == null ? extractFrontmatterValue(code, key) : extractTopLevelFrontmatterValue(code, key)
+  const pageTitle = read("title")
   if (pageTitle == null || pageTitle === "") {
     return undefined
   }
@@ -70,11 +77,12 @@ export function transformMarkdownMeta(
   const siteTitle = state.resolvedConfig?.title ?? "Ardo"
   const titleSeparator = state.resolvedConfig?.titleSeparator ?? " | "
   const siteDescription = state.resolvedConfig?.description ?? ""
-  const description = extractFrontmatterValue(code, "description") ?? siteDescription
+  const description = read("description") ?? siteDescription
   const siteUrl = state.resolvedConfig?.siteUrl ?? ""
   const route = getSourceRoute(id, state)
   const entries = buildMetaEntries({
-    canonical: extractFrontmatterValue(code, "canonical"),
+    ...(post == null ? {} : { article: post.article }),
+    canonical: read("canonical"),
     inLanguage: route.localeId,
     jsonLd: state.resolvedConfig?.seo.jsonLd !== false,
     pageTitle,
@@ -85,17 +93,17 @@ export function transformMarkdownMeta(
     siteTitle,
     titleSeparator,
     description,
-    ogDescription: extractFrontmatterValue(code, "ogDescription"),
-    ogImage: extractFrontmatterValue(code, "ogImage"),
-    ogTitle: extractFrontmatterValue(code, "ogTitle"),
-    ogType: extractFrontmatterValue(code, "ogType"),
-    twitterCard: extractFrontmatterValue(code, "twitterCard"),
-    twitterDescription: extractFrontmatterValue(code, "twitterDescription"),
-    twitterImage: extractFrontmatterValue(code, "twitterImage"),
-    twitterTitle: extractFrontmatterValue(code, "twitterTitle"),
+    ogDescription: read("ogDescription"),
+    ogImage: read("ogImage"),
+    ogTitle: read("ogTitle"),
+    ogType: read("ogType"),
+    twitterCard: read("twitterCard"),
+    twitterDescription: read("twitterDescription"),
+    twitterImage: read("twitterImage"),
+    twitterTitle: read("twitterTitle"),
   })
   return {
-    code: `${code}\nexport const meta = () => ${metaValue(entries, id, state)};\n`,
+    code: `${code}\nexport const meta = () => ${metaValue(entries, post)};\n`,
     map: null,
   }
 }
@@ -104,11 +112,9 @@ export function transformMarkdownMeta(
  * A publication post adds its feed links to the defaults and hands them to the site module's
  * `meta` export, if any (see mdx-compile).
  */
-function metaValue(entries: string[], id: string, state: MarkdownMetaState): string {
+function metaValue(entries: string[], post: PublicationPostBinding | undefined): string {
   const defaults = `[${entries.join(", ")}]`
-  return state.publicationPost?.(id.split("?", 1)[0]) == null
-    ? defaults
-    : `_ardoPostMeta(${defaults})`
+  return post == null ? defaults : `_ardoPostMeta(${defaults})`
 }
 
 /** The route's locale and canonical public path, spelled by the site's `trailingSlash`. */
@@ -203,6 +209,21 @@ function buildTwitterMetaEntries(meta: ResolvedSocialMeta): string[] {
 function buildStructuredDataEntries(input: MetaInput, meta: ResolvedSocialMeta): string[] {
   if (!input.jsonLd || input.siteUrl.trim() === "") {
     return []
+  }
+
+  // A publication post is a `BlogPosting` in place of the `TechArticle`. Its image is the post's
+  // own share image or cover, never the site-wide `metadata.image` that `og:image` falls back to.
+  if (input.article != null) {
+    const { article } = input
+    return [
+      buildBlogPostingEntry({
+        ...article,
+        mainEntityOfPage: meta.canonicalUrl,
+        image: toAbsoluteUrl(article.image, input.siteUrl),
+        siteName: input.siteTitle,
+        siteRootUrl: input.siteRootUrl,
+      }),
+    ]
   }
 
   return [

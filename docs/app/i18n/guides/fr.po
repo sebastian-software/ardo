@@ -1938,16 +1938,32 @@ msgstr "Ajoute ou remplace les composants Markdown et leur wrapper."
 msgid "Additional CSS class."
 msgstr "Classe CSS supplémentaire."
 
+#~ #@ obsolete-since: 2026-11-12
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Adds a <0/> JSON-LD block to Markdown and MDX pages with a <1/>, so search "
+#~ "engines can read the title, description, canonical URL, and site name. Ardo "
+#~ "writes the block only when <2/> is set, because its URLs must be absolute."
+#~ msgstr ""
+#~ "Ajoute un bloc JSON-LD de type <0/> aux pages Markdown et MDX qui ont un <1/>,"
+#~ " pour que les moteurs de recherche puissent lire le titre, la description, "
+#~ "l'URL canonique et le nom du site. Ardo n'écrit ce bloc que si <2/> est "
+#~ "défini, car ses URL doivent être absolues."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Adds a <0/> JSON-LD block to Markdown and MDX pages with a <1/>, so search "
-"engines can read the title, description, canonical URL, and site name. Ardo "
-"writes the block only when <2/> is set, because its URLs must be absolute."
+"engines can read the title, description, canonical URL, and site name. "
+"Publication posts get a <2/> block instead, with authors, dates, language, and"
+" the post's own image. Ardo writes the block only when <3/> is set, because "
+"its URLs must be absolute."
 msgstr ""
 "Ajoute un bloc JSON-LD de type <0/> aux pages Markdown et MDX qui ont un <1/>,"
 " pour que les moteurs de recherche puissent lire le titre, la description, "
-"l'URL canonique et le nom du site. Ardo n'écrit ce bloc que si <2/> est "
-"défini, car ses URL doivent être absolues."
+"l'URL canonique et le nom du site. Les articles de publication reçoivent à "
+"la place un bloc <2/> avec les auteurs, les dates, la langue et l'image propre"
+" à l'article. Ardo n'écrit ce bloc que si <3/> est défini, car ses URL "
+"doivent être absolues."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "After:"
@@ -2038,6 +2054,21 @@ msgstr ""
 "La source <0/> devient <1/>. Le frontmatter existant est conservé. Sinon, "
 "Ardo déduit le titre du premier titre ou du nom de fichier, et utilise un "
 "préfixe numérique du nom pour l’ordre dans la barre latérale."
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"An author's <0/> is an absolute <1/> or <2/> profile URL. Ardo uses it for the"
+" author link, the Atom <3/>, and the person's <4/> in the post's structured "
+"data. A value that is not an absolute <5/> or <6/> URL produces a build "
+"warning and is left out of the structured data; the author link and the Atom "
+"feed render as before."
+msgstr ""
+"L'<0/> d'un auteur est une URL de profil absolue en <1/> ou <2/>. Ardo "
+"l'utilise pour le lien de l'auteur, l'élément <3/> d'Atom et l'<4/> de la "
+"personne dans les données structurées de l'article. Une valeur qui n'est pas"
+" une URL absolue en <5/> ou <6/> produit un avertissement de build et est "
+"omise des données structurées ; le lien de l'auteur et le flux Atom "
+"s'affichent comme avant."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "An edit link built from the site settings and the current page:"
@@ -9517,6 +9548,24 @@ msgstr ""
 #: docs/app/content/guide/theming.mdx
 msgid "The <0/> object provides tokens for:"
 msgstr "<0/> fournit les catégories suivantes :"
+
+#: docs/app/content/guide/publications.mdx
+msgid ""
+"The <0/> of a post contain a <1/> JSON-LD entry, <2/>, with the headline, "
+"description, canonical URL, language, dates, authors, the post's own image, "
+"and the site. Spreading <3/> keeps it. A filter that drops descriptors must "
+"keep entries where <4/>, as the example below does. <5/> turns the entry off. "
+"Its <6/> points at Ardo's canonical URL, so a module that replaces the "
+"canonical link should also replace or drop the <7/>."
+msgstr ""
+"Les <0/> d'un article contiennent une entrée JSON-LD <1/>, <2/>, avec le "
+"titre, la description, l'URL canonique, la langue, les dates, les auteurs, "
+"l'image propre à l'article et le site. Si vous étalez <3/>, elle est "
+"conservée. Un filtre qui retire des descripteurs doit conserver les entrées "
+"pour lesquelles <4/> est vrai, comme dans l'exemple ci-dessous. <5/> "
+"désactive l'entrée. Son <6/> pointe vers l'URL canonique d'Ardo ; un module "
+"qui remplace le lien canonique devrait donc aussi remplacer ou supprimer le "
+"<7/>."
 
 #: docs/app/content/guide/api-documentation.mdx
 msgid ""

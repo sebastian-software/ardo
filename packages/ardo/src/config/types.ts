@@ -254,7 +254,10 @@ export type SeoConfig = {
   llms?: boolean | LlmsConfig
   sitemap?: boolean | SitemapConfig
   robots?: boolean | RobotsConfig
-  /** Add a `TechArticle` JSON-LD block to Markdown pages when `siteUrl` is set. Default: true. */
+  /**
+   * Add a JSON-LD block to Markdown pages when `siteUrl` is set: a `TechArticle`, or a
+   * `BlogPosting` on publication posts. Default: true.
+   */
   jsonLd?: boolean
   /**
    * Publish `skills/<name>/SKILL.md` folders at `/.well-known/agent-skills/`, with an index.

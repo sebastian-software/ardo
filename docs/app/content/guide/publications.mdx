@@ -33,6 +33,8 @@ export default defineArdoConfig({
 })
 ```
 
+An author's `url` is an absolute `http:` or `https:` profile URL. Ardo uses it for the author link, the Atom `<uri>`, and the person's `url` in the post's structured data. A value that is not an absolute `http:` or `https:` URL produces a build warning and is left out of the structured data; the author link and the Atom feed render as before.
+
 `siteUrl` is required because feeds need absolute article and image URLs. The generated
 `app/routes/news/` directory belongs to Ardo. Choose an unused `to` directory; Ardo refuses
 to replace handwritten routes. Files and directories starting with `_` or `.` in the source
@@ -341,6 +343,8 @@ when it renders the route, like the `meta` export of any route, with the route's
 defaults, including the canonical link, Open Graph, Twitter, and JSON-LD tags, so spread
 `defaults` to keep them. Without a `meta` export, Ardo's metadata applies.
 
+The `defaults` of a post contain a `BlogPosting` JSON-LD entry, `{ "script:ld+json": … }`, with the headline, description, canonical URL, language, dates, authors, the post's own image, and the site. Spreading `defaults` keeps it. A filter that drops descriptors must keep entries where `"script:ld+json" in entry`, as the example below does. `seo.jsonLd: false` turns the entry off. Its `mainEntityOfPage` points at Ardo's canonical URL, so a module that replaces the canonical link should also replace or drop the `BlogPosting`.
+
 ```tsx
 // app/blog/BlogPost.tsx
 import type { PublicationPostMetaArgs, PublicationPostProps } from "ardo/config"
@@ -356,11 +360,13 @@ export default function BlogPost({ post, children }: PublicationPostProps) {
 }
 
 // Link descriptors can have a `title` attribute; keep them.
-const notTitle = (descriptor: ArdoMetaDescriptor) =>
-  "tagName" in descriptor || !("title" in descriptor)
+// The JSON-LD entry has no `title`, so the last check keeps it already;
+// `"script:ld+json" in entry` keeps it even if that title check changes.
+const keep = (entry: ArdoMetaDescriptor) =>
+  "tagName" in entry || "script:ld+json" in entry || !("title" in entry)
 
 export function meta({ post, publication, defaults }: PublicationPostMetaArgs) {
-  return [{ title: `${post.title} – ${publication.name}` }, ...defaults.filter(notTitle)]
+  return [{ title: `${post.title} – ${publication.name}` }, ...defaults.filter(keep)]
 }
 ```
 

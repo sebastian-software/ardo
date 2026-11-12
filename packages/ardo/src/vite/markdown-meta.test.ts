@@ -4,6 +4,7 @@ import { resolveConfig } from "../config"
 import type { ResolvedConfig } from "../config/types"
 import { transformMarkdownMeta } from "./markdown-meta"
 import { compileMdxRouteModule } from "./mdx-compile"
+import type { PublicationPostBinding } from "./publication-routes"
 
 const routesDir = "/site/app/routes"
 const config = resolveConfig(
@@ -316,5 +317,78 @@ describe("JSON-LD structured data", () => {
 
     expect(code).toContain('{ title: "Upgrade | Docs" }')
     expect(code).not.toContain("script:ld+json")
+  })
+})
+
+// The compiled module nests the resolved post, whose author profiles carry a `description`.
+const postModule = (frontmatter: string) =>
+  `const _ardoFrontmatter = { "title": "First", ${frontmatter}"_ardoPost": { "authors": [{ "name": "Alex", "description": "Alex's bio" }] } };\n`
+
+describe("transformMarkdownMeta for a publication post", () => {
+  const binding: PublicationPostBinding = {
+    publication: "default",
+    feeds: [],
+    sourceFile: "posts/first.md",
+    article: {
+      headline: "First",
+      description: "Summary",
+      datePublished: "2026-01-02T10:00:00.000Z",
+      inLanguage: "en",
+      authors: [{ name: "Alex" }],
+    },
+  }
+  const file = `${routesDir}/news/first/index.md`
+  const postMeta = (code: string, resolved: ResolvedConfig = config) =>
+    transformMarkdownMeta(code, file, {
+      routesDir,
+      resolvedConfig: resolved,
+      publicationPost: () => binding,
+    })
+
+  it("emits a BlogPosting in place of the TechArticle", () => {
+    const result = postMeta(postModule('"description": "Summary", '))
+    expect(result?.code).toContain("_ardoPostMeta([")
+    expect(result?.code).not.toContain("TechArticle")
+    expect(jsonLdOf(result?.code)).toStrictEqual({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: "First",
+      description: "Summary",
+      mainEntityOfPage: "https://example.com/docs/news/first",
+      inLanguage: "en",
+      datePublished: "2026-01-02T10:00:00.000Z",
+      author: [{ "@type": "Person", name: "Alex" }],
+      isPartOf: { "@type": "WebSite", name: "Docs", url: "https://example.com/docs/" },
+    })
+  })
+
+  it("shares the WebSite shape of the TechArticle block", () => {
+    const post = jsonLdOf(postMeta(postModule(""))?.code) as { isPartOf: unknown }
+    const page = jsonLdOf(metaWith(config)?.code) as { isPartOf: unknown }
+    expect(post.isPartOf).toStrictEqual(page.isPartOf)
+  })
+
+  it("uses the site image only for og:image, never for the BlogPosting image", () => {
+    const result = postMeta(postModule(""))
+    expect(result?.code).toContain(
+      '{ property: "og:image", content: "https://example.com/docs/social.png" }'
+    )
+    expect(jsonLdOf(result?.code)).not.toHaveProperty("image")
+  })
+
+  it("reads the description from the post itself, not from an author profile", () => {
+    const result = postMeta(postModule(""))
+    expect(result?.code).toContain('{ name: "description", content: "Site description" }')
+    // The module itself still nests the bio; only the generated `meta` export must not use it.
+    expect(result?.code.split("export const meta")[1]).not.toContain("Alex's bio")
+  })
+
+  it("keeps the TechArticle for an ordinary page and omits the entry with jsonLd off", () => {
+    expect(jsonLdOf(metaWith(config)?.code)).toMatchObject({ "@type": "TechArticle" })
+    const disabled = resolveConfig(
+      { title: "Docs", siteUrl: "https://example.com", seo: { jsonLd: false } },
+      "/site"
+    )
+    expect(postMeta(postModule(""), disabled)?.code).not.toContain("script:ld+json")
   })
 })

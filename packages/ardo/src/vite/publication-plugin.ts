@@ -13,6 +13,7 @@ import {
   PUBLICATION_ID,
   RESOLVED_PUBLICATION_ID,
   refreshPublication,
+  reportInvalidAuthorUrls,
   type PublicationBuilder,
 } from "./publication-materialize"
 
@@ -36,6 +37,7 @@ export function createPublicationPlugin(options: PublicationConfig, site: Public
     sources: new Map(),
     posts: new Map(),
     queue: Promise.resolve(),
+    warnedAuthorUrls: new Set(),
   }
   // The Markdown compiler and metadata transform mount each post's frame from this binding.
   site.publicationPost = (file) => builder.posts.get(normalizePath(file))
@@ -81,6 +83,8 @@ export function createPublicationPlugin(options: PublicationConfig, site: Public
           this.emitFile({ type: "asset", fileName: asset.fileName, source: asset.source })
         }
       }
+      // Reported from the client output: one build resolves its configuration several times.
+      reportInvalidAuthorUrls(builder)
     },
     configureServer(server) {
       configurePublicationDev(server, builder)
