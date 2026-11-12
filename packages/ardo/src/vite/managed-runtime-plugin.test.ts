@@ -84,12 +84,12 @@ describe("Ardo managed runtime resolution", () => {
     expect(server.config.optimizeDeps.include).toStrictEqual(
       expect.arrayContaining([
         "existing-dependency",
-        "react",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "react-dom",
-        "react-dom/client",
-        "react-dom/static",
+        "ardo > react",
+        "ardo > react/jsx-runtime",
+        "ardo > react/jsx-dev-runtime",
+        "ardo > react-dom",
+        "ardo > react-dom/client",
+        "ardo > react-dom/static",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
         "ardo > react-compare-slider/components",
@@ -99,12 +99,12 @@ describe("Ardo managed runtime resolution", () => {
     expect(server.config.optimizeDeps.exclude).toStrictEqual(["other-package", "ardo"])
     expect(server.config.environments.ssr.optimizeDeps.include).toStrictEqual(
       expect.arrayContaining([
-        "react",
-        "react/jsx-runtime",
-        "react/jsx-dev-runtime",
-        "react-dom",
-        "react-dom/server",
-        "react-dom/static",
+        "ardo > react",
+        "ardo > react/jsx-runtime",
+        "ardo > react/jsx-dev-runtime",
+        "ardo > react-dom",
+        "ardo > react-dom/server",
+        "ardo > react-dom/static",
         "ardo > @vanilla-extract/recipes/createRuntimeFn",
         "ardo > minisearch",
         "ardo > react-compare-slider/components",
@@ -232,22 +232,22 @@ describe("Ardo managed runtime resolution", () => {
     const client = server.environments.client
     const ssr = server.environments.ssr
     const clientIncludes = [
-      "react",
-      "react/jsx-runtime",
-      "react/jsx-dev-runtime",
-      "react-dom",
-      "react-dom/client",
-      "react-dom/static",
+      "ardo > react",
+      "ardo > react/jsx-runtime",
+      "ardo > react/jsx-dev-runtime",
+      "ardo > react-dom",
+      "ardo > react-dom/client",
+      "ardo > react-dom/static",
       "ardo > @vanilla-extract/recipes/createRuntimeFn",
       "ardo > minisearch",
     ]
     const ssrIncludes = [
-      "react",
-      "react/jsx-runtime",
-      "react/jsx-dev-runtime",
-      "react-dom",
-      "react-dom/server",
-      "react-dom/static",
+      "ardo > react",
+      "ardo > react/jsx-runtime",
+      "ardo > react/jsx-dev-runtime",
+      "ardo > react-dom",
+      "ardo > react-dom/server",
+      "ardo > react-dom/static",
       "ardo > @vanilla-extract/recipes/createRuntimeFn",
       "ardo > minisearch",
     ]
@@ -265,7 +265,7 @@ describe("Ardo managed runtime resolution", () => {
       "react/jsx-runtime",
       ardoModuleImporter
     )
-    expect(ssrJsxRuntime?.id).toContain("/.vite/deps_ssr/react_jsx-runtime.js")
+    expect(ssrJsxRuntime?.id).toContain("/.vite/deps_ssr/ardo_n_react_jsx-runtime.js")
     expect(findOptimizedDependencySource(ssrJsxRuntime?.id ?? "", ssr)).toContain(
       realpathSync(findArdoDependencyPackageRoot(ardoRoot, "react") ?? "")
     )
@@ -289,10 +289,14 @@ describe("Ardo managed runtime resolution", () => {
       expect(realpathSync(source ?? "")).toContain(realpathSync(expectedRoot ?? ""))
     }
     expect(
-      path.basename(ssrDeps.find((dependency) => dependency?.id === "react-dom/server")?.src ?? "")
+      path.basename(
+        ssrDeps.find((dependency) => dependency?.id === "ardo > react-dom/server")?.src ?? ""
+      )
     ).toBe("server.node.js")
     expect(
-      path.basename(ssrDeps.find((dependency) => dependency?.id === "react-dom/static")?.src ?? "")
+      path.basename(
+        ssrDeps.find((dependency) => dependency?.id === "ardo > react-dom/static")?.src ?? ""
+      )
     ).toBe("static.node.js")
   })
 
@@ -313,6 +317,30 @@ describe("Ardo managed runtime resolution", () => {
 
     expect(sourcePath).toContain(realpathSync(findManagedRuntimePackageRoot(ardoRoot, "react")!))
     expect(sourcePath).not.toContain(appReactRoot)
+  })
+
+  it("keeps optimizer includes inside Ardo despite a consumer alias", async () => {
+    const server = await startManagedServer(
+      {
+        optimizeDeps: { include: ["react"] },
+        resolve: { alias: [{ find: "react", replacement: appReactRoot }] },
+      },
+      false
+    )
+    const client = server.environments.client
+    const expectedRoot = realpathSync(findManagedRuntimePackageRoot(ardoRoot, "react")!)
+
+    expect(server.config.optimizeDeps.include).not.toContain("react")
+    for (const id of ["ardo > react", "ardo > react/jsx-dev-runtime"]) {
+      const dependency = optimizedDependency(client, id)
+      expect(dependency).toBeDefined()
+      expect(realpathSync(dependency!.src!)).toContain(expectedRoot)
+    }
+    const resolved = await client.pluginContainer.resolveId(
+      "react",
+      path.join(root, "app/route.jsx")
+    )
+    expect(resolved?.id).toContain("/.vite/deps/ardo_n_react.js")
   })
 
   it("keeps the package boundary strict for unrelated ancestor imports", async () => {
