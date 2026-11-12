@@ -13,7 +13,7 @@ jobs:
     # Keep browser/system dependencies available when Ubuntu package mirrors fail.
     # Match the Playwright version in pnpm-lock.yaml.
     container:
-      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
       options: --init --shm-size=1gb
     strategy:
       fail-fast: false
