@@ -37,7 +37,6 @@ const managedBrowserIncludes = [
   // Vite's first optimizer scan sees the generated router entry before Ardo's
   // UI chunks. Include Ardo's direct browser graph in the same pass so those
   // later imports cannot invalidate the React entry before hydration starts.
-  "ardo > @base-ui/react/accordion",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",
   "ardo > minisearch",
   "ardo > react-compare-slider/components",
@@ -46,7 +45,6 @@ const managedBrowserIncludes = [
 
 const browserDependencyNames = new Set([
   ...getManagedRuntimePackageNames(),
-  "@base-ui/react",
   "@vanilla-extract/recipes",
   "minisearch",
   "react-compare-slider",
@@ -59,7 +57,6 @@ const managedSsrIncludes = [
   "react-dom",
   "react-dom/server",
   "react-dom/static",
-  "ardo > @base-ui/react/accordion",
   "ardo > @vanilla-extract/recipes/createRuntimeFn",
   "ardo > minisearch",
   "ardo > react-compare-slider/components",

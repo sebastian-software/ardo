@@ -70,10 +70,23 @@ test("gallery accordions expand by pointer and keyboard and keep one grouped ite
 
   await expect(first).toHaveAttribute("aria-expanded", "false")
   await expect(second).toHaveAttribute("aria-expanded", "false")
+  // Collapsed panels stay searchable by the browser's find-in-page.
+  const secondPanelId = await second.getAttribute("aria-controls")
+  await expect(accordion.locator(`[id="${secondPanelId}"]`)).toHaveAttribute(
+    "hidden",
+    "until-found"
+  )
 
   await first.click()
   await expect(firstAnswer).toBeVisible()
   await expect(first).toHaveAttribute("aria-expanded", "true")
+
+  await first.press("ArrowDown")
+  await expect(second).toBeFocused()
+  await second.press("ArrowDown")
+  await expect(first).toBeFocused()
+  await first.press("End")
+  await expect(second).toBeFocused()
 
   await second.press("Space")
   await expect(secondAnswer).toBeVisible()

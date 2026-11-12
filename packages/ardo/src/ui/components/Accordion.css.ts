@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/contract.css"
 
@@ -87,7 +87,7 @@ export const chevron = style({
       borderBottom: `2px solid ${vars.color.textLight}`,
       transform: "rotate(45deg)",
     },
-    // Base UI marks the open item with a bare data-open attribute
+    // The open item carries a bare data-open attribute
     [`${accordion}[data-open] &`]: {
       transform: "rotate(180deg)",
     },
@@ -99,8 +99,9 @@ export const chevron = style({
   },
 })
 
-// Height animation follows the Base UI panel pattern: the panel is sized by
-// --accordion-panel-height while open and collapses to 0 during enter/exit.
+// Accordion.tsx sizes the panel through --accordion-panel-height during a
+// transition (auto otherwise) and marks its first and last frame with
+// data-starting-style / data-ending-style, which collapse it to 0.
 export const content = style({
   boxSizing: "border-box",
   height: `var(--accordion-panel-height)`,
@@ -127,8 +128,13 @@ export const content = style({
 
 export const contentInner = style({
   minHeight: 0,
-  padding: "0 18px 16px",
+  padding: "16px 18px",
   color: vars.color.textLight,
   fontSize: "14px",
   lineHeight: 1.65,
 })
+
+// Prose margins inside the panel would add to its padding, leaving more space
+// below the text than above it.
+globalStyle(`${contentInner} > :first-child`, { marginTop: 0 })
+globalStyle(`${contentInner} > :last-child`, { marginBottom: 0 })

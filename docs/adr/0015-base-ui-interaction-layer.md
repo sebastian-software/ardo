@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR 0026](./0026-own-accordion-without-base-ui.md). Ardo no longer depends on Base UI.
 
 ## Context
 
