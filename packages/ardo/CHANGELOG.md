@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.9.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.8.0...ardo-v6.9.0) (2026-11-12)
+
+
+### Features
+
+* add BlogPosting structured data to publication posts ([#556](https://github.com/sebastian-software/ardo/issues/556)) ([d2ebd41](https://github.com/sebastian-software/ardo/commit/d2ebd412ba741eb47ab51b3cdc6a4096dc2f60ec)), closes [#555](https://github.com/sebastian-software/ardo/issues/555)
+
+
+### Bug Fixes
+
+* accept oxc-parser 0.158 for API documentation ([#552](https://github.com/sebastian-software/ardo/issues/552)) ([aa34e2e](https://github.com/sebastian-software/ardo/commit/aa34e2ef518f3f7628ed796b5d14e35bd1d65efc))
+* give Tabs and code groups one compact tab style and trim card spacing ([#547](https://github.com/sebastian-software/ardo/issues/547)) ([0246bc9](https://github.com/sebastian-software/ardo/commit/0246bc9551178c9584038fa7c384d6505c0c9a46))
+* keep other builds' cache entries and share image renditions across languages ([#549](https://github.com/sebastian-software/ardo/issues/549)) ([91e5f8e](https://github.com/sebastian-software/ardo/commit/91e5f8edfa014f19254a24a748fb4fe653f7d6c2))
+* resolve Ardo's React without Vite's deprecated alias customResolver ([#550](https://github.com/sebastian-software/ardo/issues/550)) ([97d9809](https://github.com/sebastian-software/ardo/commit/97d980955987d83803574520ab9ad0920cd71da3)), closes [#398](https://github.com/sebastian-software/ardo/issues/398)
+
+
+### Performance
+
+* drop Base UI and two unused dependencies (151 → 122 packages) ([#546](https://github.com/sebastian-software/ardo/issues/546)) ([93b2144](https://github.com/sebastian-software/ardo/commit/93b2144ebbe87c611a1c8d76d9fb0f0c17d1cf2d))
+
 ## [6.8.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.7.0...ardo-v6.8.0) (2026-11-11)
 
 
