@@ -36,7 +36,9 @@ Run `pnpm preview` to serve `build/client/` the way a static host does: `/guide`
 
 Ardo keeps the results of per-file build work in `node_modules/.cache/ardo`: the metadata of each Markdown page, compiled Markdown and MDX with highlighted code, and processed images. A rebuild only redoes that work for files that changed. Each entry is named by a hash of the file's content, its options, and the Ardo, Ferromark, Ferriki, Ferrigura, Vite, and Sharp versions, so an edit or an upgrade never reuses a stale result. The output is the same with or without the cache.
 
-A complete build removes entries it no longer used. Set `ARDO_CACHE=false` to build without the cache.
+An image entry depends only on what changes the encoded files: the image bytes, its framing (`core`, `frame`, `margin`), the preset, the configured widths, and the base path. Alt text, captions, and the page that references the image are not part of it, so the language versions of a post share one set of renditions.
+
+Several builds can share one cache, for example one `ardo build` per language variant in the same project. Each build renews the entries it reads, and removes only entries that no build has used for seven days. Set `ARDO_CACHE=false` to build without the cache.
 
 On a CI runner, keep the folder between runs:
 
@@ -49,7 +51,7 @@ On a CI runner, keep the folder between runs:
     restore-keys: ardo-${{ github.ref_name }}-
 ```
 
-Place the step after `pnpm install` and before the build. A new key per commit stores the pruned cache of every run, and `restore-keys` starts from the newest one.
+Place the step after `pnpm install` and before the build. A new key per commit stores the cache of every run, and `restore-keys` starts from the newest one.
 
 ## GitHub Pages
 
