@@ -1,19 +1,19 @@
 import {
-  Children,
   cloneElement,
   createContext,
   Fragment,
   isValidElement,
-  type KeyboardEvent,
   type ReactElement,
   type ReactNode,
   use,
   useCallback,
   useId,
   useMemo,
+  useRef,
   useState,
 } from "react"
 
+import { handleTabListKeyDown, useHiddenUntilFound } from "./disclosure"
 import * as styles from "./Tabs.css"
 
 type TabsContextValue = {
@@ -46,8 +46,10 @@ export type ArdoTabsProps = {
  */
 export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   const tabsId = useId()
-  const [activeTab, setActiveTab] = useState(() => defaultValue ?? findFirstTabValue(children))
-  const indexedChildren = assignImplicitValues(children, { panels: 0, tabs: 0 })
+  const [selectedTab, setSelectedTab] = useState(defaultValue)
+  const tabValues: string[] = []
+  const indexedChildren = assignImplicitValues(children, { panels: 0, tabs: 0, tabValues })
+  const activeTab = resolveActiveTab(selectedTab, tabValues)
 
   const getTabId = useCallback(
     (value: string) => `${tabsId}-tab-${toDomIdSegment(value)}`,
@@ -61,7 +63,7 @@ export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   const contextValue = useMemo(
     () => ({
       activeTab,
-      setActiveTab,
+      setActiveTab: setSelectedTab,
       getPanelId,
       getTabId,
     }),
@@ -142,21 +144,24 @@ export type ArdoTabPanelProps = {
  * Content panel for a tab.
  */
 export function ArdoTabPanel({ value, children }: ArdoTabPanelProps) {
-  const { activeTab, getPanelId, getTabId } = useTabsContext()
+  const { activeTab, setActiveTab, getPanelId, getTabId } = useTabsContext()
   const resolvedValue = value ?? `${AUTO_TAB_PREFIX}0`
   const isActive = activeTab === resolvedValue
-
-  if (!isActive) {
-    return null
-  }
+  const panelRef = useRef<HTMLDivElement>(null)
+  // Inactive panels stay in the prerendered HTML for crawlers, print, and find-in-page.
+  useHiddenUntilFound(panelRef, !isActive, () => {
+    setActiveTab(resolvedValue)
+  })
 
   return (
     <div
+      ref={panelRef}
       role="tabpanel"
       id={getPanelId(resolvedValue)}
       aria-labelledby={getTabId(resolvedValue)}
       tabIndex={0}
       className={styles.tabPanel}
+      hidden={!isActive}
     >
       {children}
     </div>
@@ -178,6 +183,20 @@ export function ArdoTabPanels({ children }: ArdoTabPanelsProps) {
 type TabChildIndexes = {
   panels: number
   tabs: number
+  /** Values of the tabs found in the children, in order. */
+  tabValues: string[]
+}
+
+/**
+ * The selected tab, or the first tab when the selection matches none, so the
+ * tablist always has a focusable tab. Tabs created inside custom components
+ * are not visible here; without any visible tab the selection stays as is.
+ */
+function resolveActiveTab(selectedTab: string | undefined, tabValues: readonly string[]): string {
+  if (selectedTab != null && (tabValues.length === 0 || tabValues.includes(selectedTab))) {
+    return selectedTab
+  }
+  return tabValues[0] ?? ""
 }
 
 function assignImplicitValues(children: ReactNode, indexes: TabChildIndexes): ReactNode {
@@ -218,6 +237,7 @@ function assignElementValue(
   if (child.type === ArdoTab) {
     const value = child.props.value ?? `${AUTO_TAB_PREFIX}${indexes.tabs}`
     indexes.tabs += 1
+    indexes.tabValues.push(value)
     return cloneElement(child, { value })
   }
 
@@ -243,84 +263,6 @@ function isIterableNode(value: ReactNode): value is Iterable<ReactNode> {
     !isValidElement(value) &&
     Symbol.iterator in value
   )
-}
-
-function findFirstTabValue(children: ReactNode): string {
-  for (const child of Children.toArray(children)) {
-    const tabValue = getFirstTabValueFromChild(child)
-    if (tabValue != null) {
-      return tabValue
-    }
-  }
-
-  return ""
-}
-
-function getFirstTabValueFromChild(child: ReactNode): null | string {
-  if (!isValidElement<{ children?: ReactNode }>(child)) {
-    return null
-  }
-  if (child.type === ArdoTabs) return null
-
-  if (isValidElement<ArdoTabProps>(child) && child.type === ArdoTab) {
-    return child.props.value ?? `${AUTO_TAB_PREFIX}0`
-  }
-
-  const nestedChildren = child.props.children
-  if (nestedChildren == null) {
-    return null
-  }
-
-  const nestedValue = findFirstTabValue(nestedChildren)
-  return nestedValue === "" ? null : nestedValue
-}
-
-function handleTabListKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-  if (!isTabNavigationKey(event.key)) {
-    return
-  }
-
-  const tabs = getTabsFromList(event.currentTarget)
-  if (tabs.length === 0) {
-    return
-  }
-
-  if (!(event.target instanceof HTMLButtonElement)) {
-    return
-  }
-
-  const currentIndex = tabs.indexOf(event.target)
-  if (currentIndex === -1) {
-    return
-  }
-
-  event.preventDefault()
-  const nextTab = tabs[getNextTabIndex(event.key, currentIndex, tabs.length)]
-  nextTab.focus()
-  nextTab.click()
-}
-
-function isTabNavigationKey(key: string) {
-  return key === "ArrowLeft" || key === "ArrowRight" || key === "Home" || key === "End"
-}
-
-function getTabsFromList(tabList: HTMLDivElement) {
-  return [...tabList.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
-}
-
-function getNextTabIndex(key: string, currentIndex: number, tabCount: number) {
-  switch (key) {
-    case "ArrowLeft":
-      return (currentIndex - 1 + tabCount) % tabCount
-    case "ArrowRight":
-      return (currentIndex + 1) % tabCount
-    case "Home":
-      return 0
-    case "End":
-      return tabCount - 1
-    default:
-      return currentIndex
-  }
 }
 
 function toDomIdSegment(value: string) {

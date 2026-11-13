@@ -125,7 +125,7 @@ test("gallery code groups switch files and copy the active snippet", async ({ pa
   await expect(configuration).toBeVisible()
   await expect(home).toBeHidden()
 
-  await group.getByRole("button", { name: "Home route", exact: true }).click()
+  await group.getByRole("tab", { name: "Home route", exact: true }).click()
   await expect(home).toBeVisible()
   await expect(configuration).toBeHidden()
   await group.hover()
@@ -136,7 +136,7 @@ test("gallery code groups switch files and copy the active snippet", async ({ pa
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toBe("# Welcome\n\nStart with your first guide.")
 
-  await group.getByRole("button", { name: "Configuration", exact: true }).click()
+  await group.getByRole("tab", { name: "Configuration", exact: true }).click()
   await expect(configuration).toBeVisible()
   await expect(home).toBeHidden()
 })

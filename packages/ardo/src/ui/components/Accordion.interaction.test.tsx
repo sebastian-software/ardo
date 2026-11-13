@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import { act, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { StrictMode } from "react"
+import { afterEach, describe, expect, it } from "vitest"
+
+import type { ReactNode } from "react"
 
 import { ArdoAccordion, ArdoAccordionGroup } from "./Accordion"
 
@@ -11,7 +14,15 @@ function panelFor(trigger: HTMLElement): HTMLElement {
   return panel
 }
 
+function Wrapped({ children }: { children: ReactNode }) {
+  return <div>{children}</div>
+}
+
 describe("ArdoAccordion interactions", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(HTMLElement.prototype, "getAnimations")
+  })
+
   it("opens and closes on trigger click", async () => {
     const user = userEvent.setup()
     render(<ArdoAccordion title="Details">Accordion content</ArdoAccordion>)
@@ -137,5 +148,135 @@ describe("ArdoAccordion interactions", () => {
     expect(second.getAttribute("aria-expanded")).toBe("true")
     expect(panel.hasAttribute("hidden")).toBe(false)
     expect(first.getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("keeps a nested accordion independent of the group around it", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup onlyOneOpen>
+        <ArdoAccordion title="Outer" defaultOpen>
+          <ArdoAccordion title="Inner" defaultOpen>
+            Inner panel
+          </ArdoAccordion>
+          <ArdoAccordion title="Inner closed">Inner closed panel</ArdoAccordion>
+        </ArdoAccordion>
+        <ArdoAccordion title="Sibling">Sibling panel</ArdoAccordion>
+      </ArdoAccordionGroup>
+    )
+
+    const outer = screen.getByRole("button", { name: "Outer" })
+    const inner = screen.getByRole("button", { name: "Inner" })
+    const innerClosed = screen.getByRole("button", { name: "Inner closed" })
+    expect(outer.getAttribute("aria-expanded")).toBe("true")
+    expect(inner.getAttribute("aria-expanded")).toBe("true")
+
+    await user.click(innerClosed)
+    expect(innerClosed.getAttribute("aria-expanded")).toBe("true")
+    expect(inner.getAttribute("aria-expanded")).toBe("true")
+    expect(outer.getAttribute("aria-expanded")).toBe("true")
+  })
+
+  it("honours defaultOpen of a wrapped item and keeps it in the group", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup onlyOneOpen>
+        <ArdoAccordion title="First">First panel</ArdoAccordion>
+        <Wrapped>
+          <ArdoAccordion title="Wrapped" defaultOpen>
+            Wrapped panel
+          </ArdoAccordion>
+        </Wrapped>
+        <ArdoAccordion title="Third">Third panel</ArdoAccordion>
+      </ArdoAccordionGroup>
+    )
+
+    const first = screen.getByRole("button", { name: "First" })
+    const wrapped = screen.getByRole("button", { name: "Wrapped" })
+    const third = screen.getByRole("button", { name: "Third" })
+    expect(wrapped.getAttribute("aria-expanded")).toBe("true")
+
+    await user.click(first)
+    expect(first.getAttribute("aria-expanded")).toBe("true")
+    expect(wrapped.getAttribute("aria-expanded")).toBe("false")
+
+    first.focus()
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(wrapped)
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(third)
+  })
+
+  it("keeps a wrapped default-open item open when a sibling opens outside only-one-open mode", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup>
+        <ArdoAccordion title="First">First panel</ArdoAccordion>
+        <Wrapped>
+          <ArdoAccordion title="Wrapped" defaultOpen>
+            Wrapped panel
+          </ArdoAccordion>
+        </Wrapped>
+      </ArdoAccordionGroup>
+    )
+
+    const first = screen.getByRole("button", { name: "First" })
+    const wrapped = screen.getByRole("button", { name: "Wrapped" })
+
+    await user.click(first)
+    expect(first.getAttribute("aria-expanded")).toBe("true")
+    expect(wrapped.getAttribute("aria-expanded")).toBe("true")
+
+    await user.click(wrapped)
+    expect(wrapped.getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("skips the triggers of a nested accordion during arrow-key navigation", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup>
+        <ArdoAccordion title="First">First panel</ArdoAccordion>
+        <ArdoAccordion title="Second" defaultOpen>
+          <ArdoAccordion title="Nested">Nested panel</ArdoAccordion>
+        </ArdoAccordion>
+        <ArdoAccordion title="Third">Third panel</ArdoAccordion>
+      </ArdoAccordionGroup>
+    )
+
+    const second = screen.getByRole("button", { name: "Second" })
+    const third = screen.getByRole("button", { name: "Third" })
+    const nested = screen.getByRole("button", { name: "Nested" })
+
+    second.focus()
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(third)
+
+    nested.focus()
+    await user.keyboard("{ArrowDown}")
+    expect(document.activeElement).toBe(nested)
+  })
+
+  it("does not play the open transition for a default-open item in StrictMode", () => {
+    // A transition that never settles keeps the height the open transition pins.
+    Object.defineProperty(HTMLElement.prototype, "getAnimations", {
+      configurable: true,
+      value: () => [
+        {
+          finished: new Promise(() => {
+            /* Never settles. */
+          }),
+        },
+      ],
+    })
+    render(
+      <StrictMode>
+        <ArdoAccordion title="Details" defaultOpen>
+          Accordion content
+        </ArdoAccordion>
+      </StrictMode>
+    )
+
+    const panel = panelFor(screen.getByRole("button", { name: "Details" }))
+    expect(panel.style.getPropertyValue("--accordion-panel-height")).toBe("")
+    expect(panel.dataset.startingStyle).toBeUndefined()
   })
 })

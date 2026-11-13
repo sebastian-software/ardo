@@ -1,9 +1,18 @@
-import { Children, type ComponentProps, isValidElement, type ReactNode, useState } from "react"
+import {
+  Children,
+  type ComponentProps,
+  isValidElement,
+  type ReactNode,
+  useId,
+  useRef,
+  useState,
+} from "react"
 
 import { getNodeText } from "../text-content"
 import { shikiContainerClassName } from "./code-block-classes"
 import * as styles from "./CodeBlock.css"
 import { ArdoCopyButton } from "./CopyButton"
+import { handleTabListKeyDown, useHiddenUntilFound } from "./disclosure"
 
 const EMPTY_HIGHLIGHT_LINES: number[] = []
 
@@ -195,12 +204,14 @@ export type ArdoCodeGroupProps = {
  * data-label / title / language props on children.
  */
 export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProps) {
-  const [activeTab, setActiveTab] = useState(0)
+  const groupId = useId()
+  const [selectedTab, setSelectedTab] = useState(0)
   const hasLabels = (labelsStr ?? "") !== ""
 
-  // Filter to only valid React elements (skip whitespace text nodes)
+  // Filter to only valid React elements (skip whitespace text nodes).
+  // Children.toArray keys each child by position; labels can repeat.
   const childArray = Children.toArray(children).filter((child) => isValidElement(child))
-  const labelArray = hasLabels ? (labelsStr ?? "").split(",") : []
+  const labelArray = hasLabels ? (labelsStr ?? "").split(",").map((label) => label.trim()) : []
   const tabs = childArray.map((child, index) => {
     if (index < labelArray.length) {
       const explicitLabel = labelArray[index]
@@ -214,19 +225,27 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       `Tab ${index + 1}`
     )
   })
+  const activeTab = selectedTab < childArray.length ? selectedTab : 0
+  const tabId = (index: number) => `${groupId}-tab-${index}`
+  const panelId = (index: number) => `${groupId}-panel-${index}`
 
   return (
     <div className={styles.codeGroup}>
-      <div className={styles.codeGroupTabs}>
+      <div className={styles.codeGroupTabs} role="tablist" onKeyDown={handleTabListKeyDown}>
         {tabs.map((tab, index) => (
           <button
             type="button"
-            key={tab}
+            role="tab"
+            key={childArray[index].key}
+            id={tabId(index)}
+            aria-controls={panelId(index)}
+            aria-selected={index === activeTab}
+            tabIndex={index === activeTab ? 0 : -1}
             className={[styles.codeGroupTab, index === activeTab && "active"]
               .filter(Boolean)
               .join(" ")}
             onClick={() => {
-              setActiveTab(index)
+              setSelectedTab(index)
             }}
           >
             {tab}
@@ -235,17 +254,49 @@ export function ArdoCodeGroup({ children, labels: labelsStr }: ArdoCodeGroupProp
       </div>
       <div className={styles.codeGroupPanels}>
         {childArray.map((child, index) => (
-          <div
-            key={tabAt(tabs, index)}
-            className={[styles.codeGroupPanel, index === activeTab && "active"]
-              .filter(Boolean)
-              .join(" ")}
-            style={{ display: index === activeTab ? "block" : "none" }}
+          <CodeGroupPanel
+            key={child.key}
+            id={panelId(index)}
+            tabId={tabId(index)}
+            active={index === activeTab}
+            onReveal={() => {
+              setSelectedTab(index)
+            }}
           >
             {child}
-          </div>
+          </CodeGroupPanel>
         ))}
       </div>
+    </div>
+  )
+}
+
+function CodeGroupPanel({
+  id,
+  tabId,
+  active,
+  onReveal,
+  children,
+}: {
+  id: string
+  tabId: string
+  active: boolean
+  onReveal: () => void
+  children: ReactNode
+}) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  useHiddenUntilFound(panelRef, !active, onReveal)
+
+  return (
+    <div
+      ref={panelRef}
+      role="tabpanel"
+      id={id}
+      aria-labelledby={tabId}
+      className={[styles.codeGroupPanel, active && "active"].filter(Boolean).join(" ")}
+      hidden={!active}
+    >
+      {children}
     </div>
   )
 }
@@ -261,8 +312,4 @@ function readStringProp(props: unknown, name: string): string | undefined {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value != null && typeof value === "object"
-}
-
-function tabAt(tabs: string[], index: number): string {
-  return tabs[index]
 }

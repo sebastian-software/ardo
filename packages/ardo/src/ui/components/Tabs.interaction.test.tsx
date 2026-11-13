@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { StrictMode, useState } from "react"
-import { describe, expect, it } from "vitest"
+import { hydrateRoot } from "react-dom/client"
+import { renderToString } from "react-dom/server"
+import { describe, expect, it, vi } from "vitest"
 
 import { ArdoTab, ArdoTabList, ArdoTabPanel, ArdoTabPanels, ArdoTabs } from "./Tabs"
 
@@ -61,6 +63,12 @@ function NestedTabsHarness() {
       </ArdoTabPanels>
     </ArdoTabs>
   )
+}
+
+function panelFor(tab: HTMLElement): HTMLElement {
+  const panel = document.getElementById(String(tab.getAttribute("aria-controls")))
+  if (panel == null) throw new Error("Tab controls no panel")
+  return panel
 }
 
 function renderTabs() {
@@ -147,5 +155,91 @@ describe("ArdoTabs interactions", () => {
 
     expect(document.activeElement?.textContent).toBe("Guide")
     expect(screen.getByRole("tabpanel").textContent).toBe("Guide panel")
+  })
+
+  it("keeps inactive panels searchable and wires every tab to an existing panel", () => {
+    renderTabs()
+
+    const tabs = screen.getAllByRole("tab")
+    const panels = tabs.map((tab) => panelFor(tab))
+    expect(panels.map((panel) => panel.getAttribute("aria-labelledby"))).toStrictEqual(
+      tabs.map((tab) => tab.id)
+    )
+    expect(panels.map((panel) => panel.getAttribute("hidden"))).toStrictEqual([
+      "until-found",
+      null,
+      "until-found",
+    ])
+  })
+
+  it("activates the tab whose panel find-in-page reveals", () => {
+    renderTabs()
+    const guide = screen.getByRole("tab", { name: "Guide" })
+    const panel = panelFor(guide)
+
+    act(() => {
+      panel.dispatchEvent(new Event("beforematch"))
+    })
+
+    expect(guide.getAttribute("aria-selected")).toBe("true")
+    expect(panel.hasAttribute("hidden")).toBe(false)
+    expect(screen.getByRole("tabpanel").textContent).toBe("Guide panel")
+  })
+
+  it("keeps the tablist keyboard reachable when defaultValue matches no tab", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoTabs defaultValue="missing">
+        <ArdoTabList>
+          <ArdoTab value="guide">Guide</ArdoTab>
+          <ArdoTab value="api">API</ArdoTab>
+        </ArdoTabList>
+        <ArdoTabPanels>
+          <ArdoTabPanel value="guide">Guide panel</ArdoTabPanel>
+          <ArdoTabPanel value="api">API panel</ArdoTabPanel>
+        </ArdoTabPanels>
+      </ArdoTabs>
+    )
+
+    await user.tab()
+    expect(document.activeElement?.textContent).toBe("Guide")
+    expect(screen.getByRole("tabpanel").textContent).toBe("Guide panel")
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("tabpanel").textContent).toBe("API panel")
+  })
+
+  it("hydrates the prerendered panels without warnings", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {
+      /* Collect React warnings without printing them. */
+    })
+    const tabs = (
+      <ArdoTabs>
+        <ArdoTabList>
+          <ArdoTab>pnpm</ArdoTab>
+          <ArdoTab>npm</ArdoTab>
+        </ArdoTabList>
+        <ArdoTabPanels>
+          <ArdoTabPanel>pnpm install</ArdoTabPanel>
+          <ArdoTabPanel>npm install</ArdoTabPanel>
+        </ArdoTabPanels>
+      </ArdoTabs>
+    )
+    const container = document.createElement("div")
+    container.innerHTML = renderToString(tabs)
+    document.body.append(container)
+
+    const root = await act(async () => hydrateRoot(container, tabs))
+    const panels = container.querySelectorAll('[role="tabpanel"]')
+    expect([...panels].map((panel) => panel.getAttribute("hidden"))).toStrictEqual([
+      null,
+      "until-found",
+    ])
+    act(() => {
+      root.unmount()
+    })
+    container.remove()
+    const calls = error.mock.calls
+    error.mockRestore()
+    expect(calls).toStrictEqual([])
   })
 })

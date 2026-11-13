@@ -28,6 +28,10 @@ globalStyle(`${tab} > p`, {
 export const tabPanel = style({
   marginTop: vars.space.sm,
   selectors: {
+    // `hidden="until-found"` keeps the panel's box, so drop its spacing too.
+    "&[hidden]": {
+      marginTop: 0,
+    },
     "&:focus-visible": {
       outline: "none",
       borderRadius: vars.radius.base,
