@@ -228,6 +228,7 @@ function useSearchOverlayFocus({
     const overlay = overlayRef.current
     const inlineElement = inlineRef.current
     const triggerElement = triggerRef.current
+    const previousOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
 
     if (overlay != null) {
@@ -248,7 +249,7 @@ function useSearchOverlayFocus({
 
     document.addEventListener("keydown", handleKeyDown)
     return () => {
-      document.body.style.overflow = ""
+      document.body.style.overflow = previousOverflow
       document.removeEventListener("keydown", handleKeyDown)
       if (!focusSearchField(inlineElement)) triggerElement?.focus()
     }
