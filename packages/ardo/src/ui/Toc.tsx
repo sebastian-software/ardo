@@ -7,7 +7,7 @@ import { flattenToc } from "../markdown/toc"
 import { useArdoLabels, useArdoSiteConfig, useArdoTOC } from "../runtime/hooks"
 import { useDomToc } from "./dom-toc"
 import * as styles from "./Toc.css"
-import { resolveTocScrollRegion, scrollToHeading } from "./toc-navigation"
+import { findPassedHeadingId, resolveTocScrollRegion, scrollToHeading } from "./toc-navigation"
 
 export type ArdoTOCProps = {
   /** Label for the TOC heading (default: "On this page") */
@@ -49,6 +49,7 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
     serverScrollRegionSnapshot
   )
   const isClickScrollingRef = useRef(false)
+  const endClickScrollRef = useRef<() => void>(undefined)
 
   const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
 
@@ -64,36 +65,41 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
 
     const headingElements = flattenToc(toc)
       .map((item) => document.getElementById(item.id))
-      .filter(Boolean)
+      .filter((element) => element != null)
     if (headingElements.length === 0) return
 
+    const bandBottomMargin = Math.round(scrollRegion.height * 0.85)
     const observer = new IntersectionObserver(
-      (entries) => {
+      () => {
         if (isClickScrollingRef.current) return
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
-            break
-          }
-        }
+        // A heading that leaves the band downwards (scrolling up) reports no entry, so read the
+        // section from the heading positions instead of from the entries.
+        const bandBottom =
+          (scrollRegion.root?.getBoundingClientRect().top ?? 0) +
+          scrollRegion.height -
+          bandBottomMargin
+        setActiveId(findPassedHeadingId(headingElements, bandBottom) ?? "")
       },
       {
         root: scrollRegion.root,
         // Vertical percentage margins resolve against width; pixels keep the band nonempty.
-        rootMargin: `-20px 0px -${Math.round(scrollRegion.height * 0.85)}px 0px`,
+        rootMargin: `-20px 0px -${bandBottomMargin}px 0px`,
         threshold: 0,
       }
     )
 
     for (const element of headingElements) {
-      if (element !== null) observer.observe(element)
+      observer.observe(element)
     }
     return () => {
       observer.disconnect()
     }
   }, [toc, scrollSnapshot])
 
+  useEffect(() => () => endClickScrollRef.current?.(), [])
+
   const handleClickItem = (id: string) => {
+    endClickScrollRef.current?.()
     setActiveId(id)
     isClickScrollingRef.current = true
     const container = scrollToHeading(id)
@@ -101,10 +107,13 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
     const onScrollEnd = () => {
       isClickScrollingRef.current = false
       container.removeEventListener("scrollend", onScrollEnd)
+      clearTimeout(fallback)
+      endClickScrollRef.current = undefined
     }
     container.addEventListener("scrollend", onScrollEnd, { once: true })
     // Fallback for browsers without scrollend
-    setTimeout(onScrollEnd, 1000)
+    const fallback = setTimeout(onScrollEnd, 1000)
+    endClickScrollRef.current = onScrollEnd
   }
 
   if (toc.length === 0) {
