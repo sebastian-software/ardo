@@ -1,8 +1,10 @@
+// @vitest-environment jsdom
+
 import { describe, expect, it } from "vitest"
 
 import type { FocusableElementCandidate } from "./mobile-drawer-a11y"
 
-import { getTrappedFocusTarget, isFocusableElement } from "./mobile-drawer-a11y"
+import { getTrappedFocusTarget, isFocusableElement, trapFocus } from "./mobile-drawer-a11y"
 
 type TestFocusableElement = {
   testId: string
@@ -72,5 +74,54 @@ describe("mobile drawer accessibility helpers", () => {
     expect(
       elements.filter((element) => isFocusableElement(element)).map((element) => element.testId)
     ).toStrictEqual(["close", "visible-link"])
+  })
+})
+
+describe("trapFocus", () => {
+  function setup() {
+    document.body.innerHTML = `
+      <button id="page">Page behind</button>
+      <div id="dialog" tabindex="-1">
+        <button id="first">Close</button>
+        <a id="last" href="/next">Next</a>
+      </div>`
+    const container = document.querySelector<HTMLElement>("#dialog")
+    if (container == null) throw new Error("Missing dialog")
+    return container
+  }
+
+  function pressTab(container: HTMLElement, shiftKey: boolean) {
+    const event = new KeyboardEvent("keydown", { key: "Tab", shiftKey, cancelable: true })
+    trapFocus(event, container)
+    return event
+  }
+
+  it.each([
+    [true, "last"],
+    [false, "first"],
+  ])("wraps from the focused container itself (Shift: %s) to #%s", (shiftKey, expected) => {
+    const container = setup()
+    container.focus()
+
+    const event = pressTab(container, shiftKey)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement?.id).toBe(expected)
+  })
+
+  it("brings focus back into the container from the page behind", () => {
+    const container = setup()
+    document.querySelector<HTMLElement>("#page")?.focus()
+
+    pressTab(container, true)
+
+    expect(document.activeElement?.id).toBe("last")
+  })
+
+  it("leaves Tab between elements inside the container to the browser", () => {
+    const container = setup()
+    document.querySelector<HTMLElement>("#first")?.focus()
+
+    expect(pressTab(container, false).defaultPrevented).toBe(false)
   })
 })
