@@ -6,6 +6,9 @@ on:
   # Stacked PRs need the same checks before their base merges.
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test (Node.js ${{ matrix.node-version }})

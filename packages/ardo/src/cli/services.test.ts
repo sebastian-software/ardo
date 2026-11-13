@@ -130,11 +130,14 @@ describe("Ardo's installed app-tracking integration", () => {
     }
   })
 
-  it("maps Ardo's update-disable setting to the SDK without filesystem or network work", async () => {
-    vi.stubEnv("ARDO_UPDATE_CHECK", "0")
-    const { root, services } = await fixture()
-    expect(await services.checkForUpdates()).toStrictEqual({ ok: true, value: undefined })
-    await services.complete()
-    expect(await readdir(root)).toStrictEqual([])
-  })
+  it.each(["0", "false", "off"])(
+    "maps ARDO_UPDATE_CHECK=%s to the SDK without filesystem or network work",
+    async (value) => {
+      vi.stubEnv("ARDO_UPDATE_CHECK", value)
+      const { root, services } = await fixture()
+      expect(await services.checkForUpdates()).toStrictEqual({ ok: true, value: undefined })
+      await services.complete()
+      expect(await readdir(root)).toStrictEqual([])
+    }
+  )
 })

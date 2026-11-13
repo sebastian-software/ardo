@@ -11,7 +11,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 ### Prerequisites
 
 - Node.js >= 24.3.0 for the workspace and documentation site (Ardo supports >= 22.22.0).
-- pnpm >= 9.0.0
+- pnpm 12 (the version in the root `packageManager` field)
 - A supported native target: Linux/Windows x64 or arm64, or macOS Apple Silicon.
 
 ### Development Setup
@@ -49,8 +49,9 @@ ardo/
 │   │   │   └── vite/        # Vite plugin
 │   │   └── package.json
 ├── docs/              # Documentation site (dogfooding)
-│   ├── app/           # Ardo app and Markdown/MDX routes
-│   │   └── routes/    # Documentation pages and generated API routes
+│   ├── app/           # Ardo app, Markdown/MDX content, and routes
+│   │   ├── content/   # Authored guides and pages (Markdown/MDX)
+│   │   └── routes/    # Route modules; generated guide routes are git-ignored
 │   └── public/        # Static assets and generated text outputs
 ├── examples/          # The public Basic setup example
 ├── tests/             # Integration/browser tests and focused fixture overlays
@@ -104,7 +105,7 @@ pins such as the TypeScript nightly in their existing forms.
 
 ### Palamedes documentation integration
 
-The docs use the published Palamedes 2.0 packages and matching native sidecars
+The docs use the published Palamedes 2.2 packages and matching native sidecars
 from npm. `pnpm install --frozen-lockfile` installs the complete toolchain; no
 Rust compiler or source build is required. Palamedes requires Node.js 24.3 or
 newer, while the published Ardo package continues to support Node.js 22.22 or
@@ -119,7 +120,7 @@ updating Palamedes.
 
 ### Coordinated native-engine development
 
-Ardo uses the published Ferromark 3.4 native module and prepared-document APIs.
+Ardo uses the published Ferromark 4.1 native module and prepared-document APIs.
 The registry lockfile includes matching native sidecars and supports frozen
 installation. Release an upstream engine before updating Ardo's manifest and
 regenerate the lockfile from the registry; final package metadata must not rely
@@ -142,7 +143,7 @@ overrides:
 These tarball names reflect the source version labels before release, rather
 than an already published JSX-capable Ferromark 3.0. Install with
 `pnpm install --no-frozen-lockfile`, then run the normal build, unit tests,
-typechecks, and docs build. With pnpm 11, use workspace overrides;
+typechecks, and docs build. With pnpm 12, use workspace overrides;
 `package.json`'s legacy `pnpm.overrides` field is ignored. While the source
 manifest and temporary lockfile differ, use
 `pnpm --config.verifyDepsBeforeRun=false <command>` to run an installed tool
