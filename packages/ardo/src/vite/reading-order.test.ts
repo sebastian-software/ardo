@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import type { PageFrontmatter } from "../config/types"
 
@@ -73,5 +73,13 @@ describe("sortByReadingOrder", () => {
       "en guide /guide/a",
       "de guide /guide/a",
     ])
+  })
+
+  it("orders titles with a fixed locale, independent of the build machine", () => {
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    sortByReadingOrder([page("/guide/zeta"), page("/guide/Äther"), page("/guide/alpha")])
+    expect(compare).toHaveBeenCalled()
+    for (const call of compare.mock.calls) expect(call[1]).toBe("en")
+    compare.mockRestore()
   })
 })

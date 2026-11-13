@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { findLocalizedRouteDiagnostics, formatLocalizedRouteDiagnostics } from "./i18n-routes"
 
@@ -43,5 +43,13 @@ describe("findLocalizedRouteDiagnostics", () => {
     expect(findLocalizedRouteDiagnostics([route("/guide/start")], { i18n: false })).toStrictEqual(
       []
     )
+  })
+
+  it("sorts diagnostics with a fixed locale, independent of the build machine", () => {
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    findLocalizedRouteDiagnostics([route("/b", "en"), route("/a", "de"), route("/c")], config)
+    expect(compare).toHaveBeenCalled()
+    for (const call of compare.mock.calls) expect(call[1]).toBe("en")
+    compare.mockRestore()
   })
 })

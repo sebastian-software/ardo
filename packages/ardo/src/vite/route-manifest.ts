@@ -83,7 +83,8 @@ export async function scanRouteManifest(
       entries.push(manifestEntry)
     }
   }
-  return entries.sort((left, right) => left.routePath.localeCompare(right.routePath))
+  // A fixed locale keeps the order, and so llms.txt and the route chunks, the same on every machine.
+  return entries.sort((left, right) => left.routePath.localeCompare(right.routePath, "en"))
 }
 
 /**

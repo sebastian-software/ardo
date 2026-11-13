@@ -61,5 +61,5 @@ function createRoutes(
 }
 
 function comparePosts(a: Post, b: Post): number {
-  return b.publishedAt.localeCompare(a.publishedAt) || a.id.localeCompare(b.id)
+  return b.publishedAt.localeCompare(a.publishedAt, "en") || a.id.localeCompare(b.id, "en")
 }

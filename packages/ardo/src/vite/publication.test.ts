@@ -82,6 +82,21 @@ describe("publication lifecycle and portable output", () => {
     expect(result.routes[0].sourceFile).toBe(path.join(p.root, "posts/first.mdx"))
   })
 
+  it("orders posts with a fixed locale, independent of the build machine", async () => {
+    const p = await project()
+    await p.write("beta")
+    await p.write("alpha")
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    const result = await preparePublication({ ...p, now: new Date("2026-05-01") })
+    expect(result.publication.posts.map((post) => post.id)).toStrictEqual(["alpha", "beta"])
+    const postCalls = compare.mock.calls.filter((_, index) =>
+      ["alpha", "beta"].includes(String(compare.mock.contexts[index]))
+    )
+    expect(postCalls).not.toHaveLength(0)
+    for (const call of postCalls) expect(call[1]).toBe("en")
+    compare.mockRestore()
+  })
+
   it("keeps identity when a source/path is renamed, and rejects duplicate IDs", async () => {
     const p = await project()
     await p.write("first", "path: /news/a\n")
