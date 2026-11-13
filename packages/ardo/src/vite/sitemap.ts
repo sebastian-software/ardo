@@ -1,6 +1,6 @@
 import type { ResolvedConfig } from "../config/types"
-import type { RouteManifestEntry } from "./route-manifest"
 import { spellPagePath } from "../runtime/trailing-slash"
+import { isDynamicRoutePath, type RouteManifestEntry } from "./route-manifest"
 
 /**
  * When a page last changed: a post's own dates, else the page file's last commit, else its file
@@ -32,13 +32,14 @@ export function generateSitemap(
     .filter(
       (entry) =>
         entry.metadata.sitemap !== false &&
+        !isDynamicRoutePath(entry.routePath) &&
         !excludedPaths.some(
           (prefix) => entry.routePath === prefix || entry.routePath.startsWith(`${prefix}/`)
         )
     )
     .map((entry) => {
       const loc = toAbsolutePublicUrl(
-        spellPagePath(entry.publicPath, config.trailingSlash, config.deploymentBase),
+        encodeUrlPath(spellPagePath(entry.publicPath, config.trailingSlash, config.deploymentBase)),
         config
       )
       return [
@@ -72,6 +73,14 @@ function toAbsolutePublicUrl(publicPath: string, config: ResolvedConfig) {
   }
 
   return `${config.siteUrl.replace(/\/$/u, "")}${publicPath}`
+}
+
+/**
+ * Percent-encodes a path the way canonical links (`new URL(path, siteUrl)`) do: spaces and
+ * non-ASCII characters are encoded, existing `%XX` escapes stay as they are.
+ */
+function encodeUrlPath(publicPath: string): string {
+  return new URL(publicPath, "https://ardo.invalid").pathname
 }
 
 function escapeXml(value: string) {

@@ -114,6 +114,29 @@ describe("build outputs", () => {
     expect(sitemap).toContain("https://example.com/docs/v3/guide</loc>")
   })
 
+  it("lists only prerendered pages, with percent-encoded paths", () => {
+    const routes = ["/users/:id", "/v:version/notes", "/a b", "/caf%C3%A9", "/über"].map(
+      (routePath) =>
+        entry(baseConfig, {
+          anchors: [],
+          content: "",
+          filePath: `/site/app/routes${routePath}.tsx`,
+          frontmatter: {},
+          lastmod: new Date("2026-01-02T03:04:05.000Z"),
+          routePath,
+          source: "tsx",
+        })
+    )
+    const locs = [...generateSitemap(routes, baseConfig).matchAll(/<loc>(.*)<\/loc>/gu)].map(
+      (match) => match[1]
+    )
+    expect(locs).toEqual([
+      "https://example.com/docs/a%20b",
+      "https://example.com/docs/caf%C3%A9",
+      "https://example.com/docs/%C3%BCber",
+    ])
+  })
+
   it("can exclude the root subtree and keeps frontmatter opt-outs", () => {
     const config = resolveConfig({ title: "Docs", seo: { sitemap: { exclude: ["/"] } } }, "/site")
     expect(generateSitemap(createEntries(config), config)).not.toContain("<url>")

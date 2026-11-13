@@ -341,6 +341,15 @@ Keep redirects.
     ])
   })
 
+  it("does not index pages with route parameters", async () => {
+    await writeRoute("guide/start.md", "# Start\n\nStatic page.")
+    await writeRoute("guide/$slug.mdx", "# Slug\n\nDynamic page.")
+
+    const docs = await generateSearchIndex(routesDir)
+
+    expect(docs.map((doc) => doc.routePath)).toStrictEqual(["/guide/start"])
+  })
+
   it("limits indexed content length", async () => {
     await writeRoute("long.md", `# Long\n\n${"word ".repeat(600)}`)
 

@@ -86,6 +86,14 @@ export async function scanRouteManifest(
   return entries.sort((left, right) => left.routePath.localeCompare(right.routePath))
 }
 
+/**
+ * Whether a route has parameters (`$id` files become `:id`) and therefore no single page. Mirrors
+ * the runtime's `isDynamicRoute`, so build outputs list exactly the pages that are prerendered.
+ */
+export function isDynamicRoutePath(routePath: string): boolean {
+  return routePath.includes(":")
+}
+
 /** Every Markdown, MDX, and TSX route file under the routes directory, sorted by path. */
 export async function listRouteFiles(routesDir: string): Promise<string[]> {
   const files: string[] = []
