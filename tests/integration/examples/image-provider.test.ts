@@ -185,7 +185,7 @@ it("keeps publication.images compatible without opting ordinary documents in", (
   const images = source.slice(start, end)
   source = (source.slice(0, start) + source.slice(end)).replace(
     'linkCheck: { level: "error" }',
-    'linkCheck: { level: "ignore" }'
+    'linkCheck: { level: "warn" }'
   )
   fs.writeFileSync(config, source.replace("  publication: {", "  publication: {\n" + images))
   execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "exec", "ardo", "build"], {
