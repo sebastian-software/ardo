@@ -9,13 +9,13 @@ import {
   useCallback,
   useEffect,
   useId,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react"
 
 import * as styles from "./Accordion.css"
+import { useCollapsiblePanel } from "./collapsible-panel"
 import { ArdoIcon } from "./Icon"
 
 export type ArdoAccordionHeadingLevel = 2 | 3 | 4 | 5 | 6
@@ -48,14 +48,19 @@ export type ArdoAccordionProps = {
 
 type AccordionGroupState = {
   openValues: readonly string[]
+  onlyOneOpen: boolean
+  /** Values of the items the group found in its children, whose defaults it knows. */
+  knownValues: ReadonlySet<string>
+  /** False until the first toggle; until then unknown items follow their own `defaultOpen`. */
+  touched: boolean
   setItemOpen: (value: string, open: boolean) => void
+  registerDefaultOpen: (value: string) => () => void
 }
 
 const AccordionGroupContext = createContext<AccordionGroupState | null>(null)
 
 const ROOT_ATTRIBUTE = "data-ardo-accordion"
 const TRIGGER_ATTRIBUTE = "data-ardo-accordion-trigger"
-const PANEL_HEIGHT_PROPERTY = "--accordion-panel-height"
 const NAVIGATION_KEYS = new Set(["ArrowDown", "ArrowUp", "Home", "End"])
 
 function AccordionIcon({ icon }: { icon: ReactNode | string }) {
@@ -70,29 +75,37 @@ function fallbackValue(index: number): string {
   return `ardo-accordion-${index}`
 }
 
-function resolveAccordionGroupChildren(children: ReactNode): {
-  defaultOpenValues: string[]
-  normalizedChildren: ReactNode
-} {
-  let accordionIndex = 0
-  const defaultOpenValues: string[] = []
+type GroupScan = { defaultOpenValues: string[]; knownValues: Set<string> }
 
-  const normalizedChildren = Children.map(children, (child): ReactNode => {
-    if (!isValidElement<ArdoAccordionProps>(child) || child.type !== ArdoAccordion) {
-      return child
-    }
+function resolveAccordionGroupChildren(children: ReactNode) {
+  const scan: GroupScan = { defaultOpenValues: [], knownValues: new Set() }
+  const normalizedChildren = normalizeGroupNode(children, scan)
+  return { ...scan, normalizedChildren }
+}
 
-    const value = child.props.value ?? fallbackValue(accordionIndex)
-    accordionIndex += 1
+/**
+ * Finds the group's items in the element tree, also inside wrapper elements
+ * that pass them through as children, and gives each a stable value. Nested
+ * groups and accordion panels are left alone: their items are independent.
+ */
+function normalizeGroupNode(node: ReactNode, scan: GroupScan): ReactNode {
+  if (Array.isArray(node)) return Children.map(node, (child) => normalizeGroupNode(child, scan))
+  if (!isValidElement<{ children?: ReactNode } & Partial<ArdoAccordionProps>>(node)) return node
+  if (node.type === ArdoAccordionGroup) return node
 
-    if (child.props.defaultOpen === true) {
-      defaultOpenValues.push(value)
-    }
-
-    return child.props.value == null ? cloneElement(child, { value }) : child
-  })
-
-  return { defaultOpenValues, normalizedChildren }
+  let overrides: { value: string } | { children: ReactNode }
+  if (node.type === ArdoAccordion) {
+    const value = node.props.value ?? fallbackValue(scan.knownValues.size)
+    scan.knownValues.add(value)
+    if (node.props.defaultOpen === true) scan.defaultOpenValues.push(value)
+    if (node.props.value != null) return node
+    overrides = { value }
+  } else {
+    const nested = node.props.children
+    if (nested == null || typeof nested !== "object") return node
+    overrides = { children: normalizeGroupNode(nested, scan) }
+  }
+  return cloneElement(node, overrides)
 }
 
 /**
@@ -147,20 +160,42 @@ export function ArdoAccordionGroup({
   onlyOneOpen = false,
   className,
 }: ArdoAccordionGroupProps) {
-  const { defaultOpenValues, normalizedChildren } = useMemo(
+  const { defaultOpenValues, knownValues, normalizedChildren } = useMemo(
     () => resolveAccordionGroupChildren(children),
     [children]
   )
-  const [openValues, setOpenValues] = useState<readonly string[]>(() =>
-    onlyOneOpen ? defaultOpenValues.slice(0, 1) : defaultOpenValues
-  )
+  const [state, setState] = useState<{ openValues: readonly string[]; touched: boolean }>(() => ({
+    openValues: onlyOneOpen ? defaultOpenValues.slice(0, 1) : defaultOpenValues,
+    touched: false,
+  }))
+  // Items a custom component renders itself are invisible to the scan above.
+  // Outside only-one-open mode they register their `defaultOpen`, which the
+  // first toggle takes over.
+  const hiddenDefaultOpenRef = useRef(new Set<string>())
+  const registerDefaultOpen = useCallback((value: string) => {
+    hiddenDefaultOpenRef.current.add(value)
+    return () => {
+      hiddenDefaultOpenRef.current.delete(value)
+    }
+  }, [])
   const setItemOpen = useCallback(
     (value: string, open: boolean) => {
-      setOpenValues((current) => nextOpenValues(current, { value, open, onlyOneOpen }))
+      setState((current) => {
+        const openValues = current.touched
+          ? current.openValues
+          : [...current.openValues, ...hiddenDefaultOpenRef.current]
+        return {
+          openValues: nextOpenValues(openValues, { value, open, onlyOneOpen }),
+          touched: true,
+        }
+      })
     },
     [onlyOneOpen]
   )
-  const group = useMemo(() => ({ openValues, setItemOpen }), [openValues, setItemOpen])
+  const group = useMemo(
+    () => ({ ...state, onlyOneOpen, knownValues, setItemOpen, registerDefaultOpen }),
+    [state, onlyOneOpen, knownValues, setItemOpen, registerDefaultOpen]
+  )
   const groupClassName =
     className == null ? styles.accordionGroup : `${styles.accordionGroup} ${className}`
 
@@ -171,122 +206,6 @@ export function ArdoAccordionGroup({
       </div>
     </AccordionGroupContext>
   )
-}
-
-/** Resolve once every CSS transition or animation running on the element settles. */
-function animationsSettled(element: HTMLElement): Promise<unknown> {
-  // getAnimations() flushes pending style changes, so transitions triggered by
-  // the attribute change just before are already included.
-  if (typeof element.getAnimations !== "function") return Promise.resolve()
-  return Promise.allSettled(element.getAnimations().map((animation) => animation.finished))
-}
-
-/** Full panel height including borders, measurable even while the panel is clipped. */
-function expandedHeight(panel: HTMLElement): string {
-  return `${panel.scrollHeight + panel.offsetHeight - panel.clientHeight}px`
-}
-
-function afterTransitions(panel: HTMLElement, isCurrent: () => boolean, callback: () => void) {
-  void animationsSettled(panel).then(() => {
-    if (isCurrent()) callback()
-  })
-}
-
-function openPanel(panel: HTMLElement, isCurrent: () => boolean) {
-  if (panel.dataset.endingStyle == null) {
-    panel.dataset.startingStyle = ""
-  } else {
-    // Reopened mid-close: continue from the current height.
-    panel.style.setProperty(PANEL_HEIGHT_PROPERTY, `${panel.offsetHeight}px`)
-    delete panel.dataset.endingStyle
-  }
-  void panel.offsetHeight
-  panel.style.setProperty(PANEL_HEIGHT_PROPERTY, expandedHeight(panel))
-  delete panel.dataset.startingStyle
-  // Back to auto height so content changes (nested accordions) reflow freely.
-  afterTransitions(panel, isCurrent, () => panel.style.removeProperty(PANEL_HEIGHT_PROPERTY))
-}
-
-function clearTransitionStyles(panel: HTMLElement) {
-  delete panel.dataset.startingStyle
-  delete panel.dataset.endingStyle
-  panel.style.removeProperty(PANEL_HEIGHT_PROPERTY)
-}
-
-function closePanel(panel: HTMLElement, isCurrent: () => boolean, onClosed: () => void) {
-  // Transitions cannot start from `auto`: pin the current height first.
-  panel.style.setProperty(PANEL_HEIGHT_PROPERTY, `${panel.offsetHeight}px`)
-  delete panel.dataset.startingStyle
-  void panel.offsetHeight
-  panel.dataset.endingStyle = ""
-  afterTransitions(panel, isCurrent, () => {
-    // Hide before dropping the pinned height, or the panel flashes at full
-    // height for a frame until React commits `hidden`.
-    panel.setAttribute("hidden", "until-found")
-    clearTransitionStyles(panel)
-    onClosed()
-  })
-}
-
-/**
- * Collapse state of one panel: keeps it rendered while its close transition
- * runs, drives the height transition through `--accordion-panel-height` and
- * `data-starting-style` / `data-ending-style`, and turns the closed panel into
- * `hidden="until-found"` so find-in-page can still reveal it.
- */
-function useCollapsiblePanel(open: boolean, onReveal: () => void) {
-  const panelRef = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(open)
-  const mountedRef = useRef(false)
-  const runRef = useRef(0)
-  const skipOpenTransitionRef = useRef(false)
-
-  if (open && !visible) setVisible(true)
-
-  useLayoutEffect(() => {
-    const panel = panelRef.current
-    if (panel == null) return
-    if (!mountedRef.current) {
-      mountedRef.current = true
-      return
-    }
-
-    const run = ++runRef.current
-    const isCurrent = () => runRef.current === run
-    if (!open) {
-      closePanel(panel, isCurrent, () => setVisible(false))
-    } else if (skipOpenTransitionRef.current) {
-      // A find-in-page match is already visible: reveal without motion.
-      skipOpenTransitionRef.current = false
-      clearTransitionStyles(panel)
-    } else {
-      openPanel(panel, isCurrent)
-    }
-  }, [open])
-
-  // React renders `hidden` only as a boolean, which prerenders as `hidden=""`.
-  // Upgrade it after hydration so the browser's find-in-page searches it.
-  useLayoutEffect(() => {
-    if (!visible) panelRef.current?.setAttribute("hidden", "until-found")
-  }, [visible])
-
-  const revealRef = useRef(onReveal)
-  useLayoutEffect(() => {
-    revealRef.current = onReveal
-  })
-
-  useEffect(() => {
-    const panel = panelRef.current
-    if (panel == null) return
-    const handleBeforeMatch = () => {
-      skipOpenTransitionRef.current = true
-      revealRef.current()
-    }
-    panel.addEventListener("beforematch", handleBeforeMatch)
-    return () => panel.removeEventListener("beforematch", handleBeforeMatch)
-  }, [])
-
-  return { panelRef, hidden: !visible }
 }
 
 function AccordionItem({
@@ -340,7 +259,10 @@ function AccordionItem({
         hidden={hidden}
         {...openAttribute}
       >
-        <div className={styles.contentInner}>{children}</div>
+        {/* Accordions inside the panel do not join this item's group. */}
+        <AccordionGroupContext value={null}>
+          <div className={styles.contentInner}>{children}</div>
+        </AccordionGroupContext>
       </div>
     </div>
   )
@@ -366,7 +288,17 @@ export function ArdoAccordion({
   const [standaloneOpen, setStandaloneOpen] = useState(defaultOpen)
   const generatedValue = useId()
   const resolvedValue = value ?? generatedValue
-  const open = group == null ? standaloneOpen : group.openValues.includes(resolvedValue)
+  // An item the group could not find keeps its own default, except where it
+  // could break the single open item of an only-one-open group.
+  const registerDefaultOpen =
+    group != null && defaultOpen && !group.onlyOneOpen && !group.knownValues.has(resolvedValue)
+      ? group.registerDefaultOpen
+      : undefined
+  useEffect(() => registerDefaultOpen?.(resolvedValue), [registerDefaultOpen, resolvedValue])
+  const open =
+    group == null
+      ? standaloneOpen
+      : group.openValues.includes(resolvedValue) || (registerDefaultOpen != null && !group.touched)
   const setOpen =
     group == null
       ? setStandaloneOpen
