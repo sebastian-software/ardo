@@ -131,7 +131,7 @@ describe("build outputs", () => {
     const locs = [...generateSitemap(routes, baseConfig).matchAll(/<loc>(.*)<\/loc>/gu)].map(
       (match) => match[1]
     )
-    expect(locs).toEqual([
+    expect(locs).toStrictEqual([
       "https://example.com/docs/a%20b",
       "https://example.com/docs/caf%C3%A9",
       "https://example.com/docs/%C3%BCber",
@@ -461,13 +461,13 @@ describe("redirect pages", () => {
   it("keeps a target with markup inside the redirect script", () => {
     const to = "/new/</script><script>alert(1)</script><!--\u2028"
     const html = generateRedirectHtml(to)
-    const script = /<script>(.*)<\/script>\n<\/head>/su.exec(html)?.[1] ?? ""
+    const script = html.split("<script>")[1].split("</script>")[0]
     expect(html.match(/<script>/gu)).toHaveLength(1)
     expect(html.match(/<\/script>/gu)).toHaveLength(1)
     expect(script).not.toContain("<")
     expect(script).not.toContain("\u2028")
     expect(script).toContain(String.raw`"/new/\u003c/script\u003e`)
-    const literal = /new URL\(("[^"]*")/u.exec(script)?.[1] ?? ""
+    const literal = script.split("new URL(")[1].split(",location.href")[0]
     expect(JSON.parse(literal)).toBe(to)
   })
 })

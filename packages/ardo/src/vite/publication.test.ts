@@ -93,7 +93,7 @@ describe("publication lifecycle and portable output", () => {
       ["alpha", "beta"].includes(String(compare.mock.contexts[index]))
     )
     expect(postCalls).not.toHaveLength(0)
-    for (const call of postCalls) expect(call[1]).toBe("en")
+    for (const args of postCalls) expect(args[1]).toBe("en")
     compare.mockRestore()
   })
 

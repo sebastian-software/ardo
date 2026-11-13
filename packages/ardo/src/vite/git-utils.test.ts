@@ -74,7 +74,9 @@ describe("getGitFileTimestamps", () => {
   })
 
   it("stays silent outside a repository and in one without commits", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+      // Asserted below.
+    })
     vi.stubEnv("GIT_CEILING_DIRECTORIES", path.dirname(directory))
     expect(getGitFileTimestamps(directory).size).toBe(0)
     git("init", "-q")
@@ -87,7 +89,9 @@ describe("getGitFileTimestamps", () => {
   it("warns once when the history of a repository cannot be read", () => {
     git("init", "-q")
     commit({ "page.md": "page" }, 1_700_000_000)
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined)
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+      // Asserted below.
+    })
     // An invalid log date format makes `git log` fail while the repository stays valid.
     vi.stubEnv("GIT_CONFIG_COUNT", "1")
     vi.stubEnv("GIT_CONFIG_KEY_0", "log.date")

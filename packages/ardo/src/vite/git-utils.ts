@@ -90,7 +90,7 @@ export function getGitFileTimestamps(directory: string): Map<string, number> {
     let afterHeader = false
     for (const token of history.split("\0")) {
       // Git separates a commit header from its first file name with a newline.
-      const field = afterHeader && token.startsWith("\n") ? token.slice(1) : token
+      const field: string = afterHeader && token.startsWith("\n") ? token.slice(1) : token
       afterHeader = field.startsWith(COMMIT_MARKER)
       if (afterHeader) timestamp = Number(field.slice(COMMIT_MARKER.length)) * 1000
       else if (tracked.has(field) && timestamp != null && !timestamps.has(field))

@@ -120,7 +120,7 @@ describe("client route modules", () => {
     const compare = vi.spyOn(String.prototype, "localeCompare")
     createRoutesModule({ root, routesDir })
     expect(compare).toHaveBeenCalled()
-    for (const call of compare.mock.calls) expect(call[1]).toBe("en")
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
     compare.mockRestore()
   })
 })

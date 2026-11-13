@@ -49,7 +49,7 @@ describe("findLocalizedRouteDiagnostics", () => {
     const compare = vi.spyOn(String.prototype, "localeCompare")
     findLocalizedRouteDiagnostics([route("/b", "en"), route("/a", "de"), route("/c")], config)
     expect(compare).toHaveBeenCalled()
-    for (const call of compare.mock.calls) expect(call[1]).toBe("en")
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
     compare.mockRestore()
   })
 })

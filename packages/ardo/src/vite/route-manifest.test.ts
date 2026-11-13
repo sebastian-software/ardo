@@ -197,7 +197,7 @@ title: Guide
     const entries = await scanRouteManifest(tempDir)
     expect(entries.map((entry) => entry.routePath)).toStrictEqual(["/Äther", "/zeta"])
     expect(compare).toHaveBeenCalled()
-    for (const call of compare.mock.calls) expect(call[1]).toBe("en")
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
     compare.mockRestore()
   })
 })
