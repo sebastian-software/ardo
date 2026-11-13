@@ -16,6 +16,7 @@ import {
   getHighlighter,
   isThemePair,
   loadLanguage,
+  recordFallback,
   warnHighlightFailure,
 } from "./ferriki"
 
@@ -68,6 +69,7 @@ export async function getArdoCodeHooks(
   const diagrams = createDiagramCodeRenderer(await getDiagramRenderer(mermaid), {
     colorScheme: "auto",
     onRenderError(error, { start }) {
+      recordFallback()
       const at = start == null ? "" : `:${lineAt(input.source, start)}`
       console.warn(
         `[ardo] Could not render Mermaid diagram${input.sourcePath == null ? "" : ` in ${input.sourcePath}${at}`}; keeping it as code.`,
