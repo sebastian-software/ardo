@@ -1,5 +1,27 @@
 # Changelog
 
+## [6.9.1](https://github.com/sebastian-software/ardo/compare/ardo-v6.9.0...ardo-v6.9.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* correct search, sidebar, outline, copy, focus, and theme interactions ([#564](https://github.com/sebastian-software/ardo/issues/564)) ([8d9c446](https://github.com/sebastian-software/ardo/commit/8d9c44699d063eb7807196bc5183dc4e3940ed73))
+* honour prev, next, and outline in page frontmatter ([#563](https://github.com/sebastian-software/ardo/issues/563)) ([a6a9245](https://github.com/sebastian-software/ardo/commit/a6a9245dddd88c4f985afde12ed534add4cf1526))
+* keep build outputs, dev routing, and page dates consistent with the built site ([#566](https://github.com/sebastian-software/ardo/issues/566)) ([34f4c63](https://github.com/sebastian-software/ardo/commit/34f4c63a45777c41206849799b976df922fe298f))
+* keep generated sidebars in line with routes and report scan errors ([#558](https://github.com/sebastian-software/ardo/issues/558)) ([b1331f2](https://github.com/sebastian-software/ardo/commit/b1331f2e9f53f96168cfe5243b6b0e8e2fbd111d))
+* keep inactive tab panels in the HTML and make code-group tabs keyboard accessible ([#567](https://github.com/sebastian-software/ardo/issues/567)) ([5541d27](https://github.com/sebastian-software/ardo/commit/5541d2760301d1a29072cb146eac23ff543dcbca))
+* reject mistyped frontmatter and link check levels in the config ([#560](https://github.com/sebastian-software/ardo/issues/560)) ([c652c92](https://github.com/sebastian-software/ardo/commit/c652c923e200565ddcb4662b8554cfc711d47c9c))
+* render OpenAPI spec text literally and keep operations with colliding slugs ([#561](https://github.com/sebastian-software/ardo/issues/561)) ([76c636c](https://github.com/sebastian-software/ardo/commit/76c636c78f9cf4d89e632cc8974d79a500e37e51))
+* scroll docs pages with the keyboard and keep the position on reload ([#565](https://github.com/sebastian-software/ardo/issues/565)) ([f4eea49](https://github.com/sebastian-software/ardo/commit/f4eea490af952dbaefc05e0ae19c7e875d23e6ae))
+* sort posts and version redirects independently of the build machine and align the docs with the vite option ([#569](https://github.com/sebastian-software/ardo/issues/569)) ([123375a](https://github.com/sebastian-software/ardo/commit/123375a6e1cf951bfe9e02d5d5d3b60dc2c3a93b))
+* survive blocked storage, classify links by scheme, and align the update check flag ([#559](https://github.com/sebastian-software/ardo/issues/559)) ([5cd63dd](https://github.com/sebastian-software/ardo/commit/5cd63dd063b905f0503a739c7946522d14def282))
+* warn about a failed Mermaid diagram on every build instead of caching the fallback ([#557](https://github.com/sebastian-software/ardo/issues/557)) ([41574a7](https://github.com/sebastian-software/ardo/commit/41574a7dc52aba2871cacef310eaceb9f303185b))
+
+
+### Documentation
+
+* describe the vite option, build time precedence, and CLI environment variables as implemented ([#562](https://github.com/sebastian-software/ardo/issues/562)) ([b2d8363](https://github.com/sebastian-software/ardo/commit/b2d8363501c1b92fd76096eecb4faa4e230eb741))
+
 ## [6.9.0](https://github.com/sebastian-software/ardo/compare/ardo-v6.8.0...ardo-v6.9.0) (2026-11-12)
 
 
