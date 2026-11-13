@@ -181,6 +181,16 @@ function createRedirectAssets(
 }
 
 function toRedirectAssetName(from: string, deploymentBase: string) {
+  const routePath = toRedirectRoutePath(from, deploymentBase)
+  return routePath === "" ? "index.html" : `${routePath}/index.html`
+}
+
+/** The URL path where the build serves a redirect page, below the deployment base. */
+export function toRedirectSourcePath(from: string, deploymentBase: string): string {
+  return `${deploymentBase}${toRedirectRoutePath(from, deploymentBase)}`
+}
+
+function toRedirectRoutePath(from: string, deploymentBase: string): string {
   // Public URLs include the deployment prefix; artifact paths start below it.
   // Authored redirect sources without that prefix already name artifact paths.
   const relative = from.startsWith(deploymentBase)
@@ -188,8 +198,7 @@ function toRedirectAssetName(from: string, deploymentBase: string) {
     : from === deploymentBase.slice(0, -1)
       ? ""
       : from
-  const routePath = relative.replace(/^\//u, "").replace(/\/$/u, "")
-  return routePath === "" ? "index.html" : `${routePath}/index.html`
+  return relative.replace(/^\//u, "").replace(/\/$/u, "")
 }
 
 function dedupeRedirects(redirects: Array<{ from: string; to: string }>) {
