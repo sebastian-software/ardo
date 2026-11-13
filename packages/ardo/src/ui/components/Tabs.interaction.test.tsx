@@ -65,6 +65,10 @@ function NestedTabsHarness() {
   )
 }
 
+function CustomTab() {
+  return <ArdoTab value="api">API</ArdoTab>
+}
+
 function panelFor(tab: HTMLElement): HTMLElement {
   const panel = document.getElementById(String(tab.getAttribute("aria-controls")))
   if (panel == null) throw new Error("Tab controls no panel")
@@ -203,6 +207,28 @@ describe("ArdoTabs interactions", () => {
 
     await user.tab()
     expect(document.activeElement?.textContent).toBe("Guide")
+    expect(screen.getByRole("tabpanel").textContent).toBe("Guide panel")
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("tabpanel").textContent).toBe("API panel")
+  })
+
+  it("keeps selecting tabs that a custom component renders", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoTabs defaultValue="api">
+        <ArdoTabList>
+          <ArdoTab value="guide">Guide</ArdoTab>
+          <CustomTab />
+        </ArdoTabList>
+        <ArdoTabPanels>
+          <ArdoTabPanel value="guide">Guide panel</ArdoTabPanel>
+          <ArdoTabPanel value="api">API panel</ArdoTabPanel>
+        </ArdoTabPanels>
+      </ArdoTabs>
+    )
+
+    expect(screen.getByRole("tabpanel").textContent).toBe("API panel")
+    await user.click(screen.getByRole("tab", { name: "Guide" }))
     expect(screen.getByRole("tabpanel").textContent).toBe("Guide panel")
     await user.keyboard("{ArrowRight}")
     expect(screen.getByRole("tabpanel").textContent).toBe("API panel")

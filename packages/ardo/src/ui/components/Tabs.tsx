@@ -47,9 +47,14 @@ export type ArdoTabsProps = {
 export function ArdoTabs({ defaultValue, children }: ArdoTabsProps) {
   const tabsId = useId()
   const [selectedTab, setSelectedTab] = useState(defaultValue)
-  const tabValues: string[] = []
-  const indexedChildren = assignImplicitValues(children, { panels: 0, tabs: 0, tabValues })
-  const activeTab = resolveActiveTab(selectedTab, tabValues)
+  const indexes: TabChildIndexes = {
+    panels: 0,
+    tabs: 0,
+    tabValues: [],
+    hasCustomComponents: false,
+  }
+  const indexedChildren = assignImplicitValues(children, indexes)
+  const activeTab = resolveActiveTab(selectedTab, indexes)
 
   const getTabId = useCallback(
     (value: string) => `${tabsId}-tab-${toDomIdSegment(value)}`,
@@ -185,18 +190,24 @@ type TabChildIndexes = {
   tabs: number
   /** Values of the tabs found in the children, in order. */
   tabValues: string[]
+  /** Custom components may render tabs of their own, which the scan cannot see. */
+  hasCustomComponents: boolean
 }
+
+/** Elements whose rendered output is just their children. */
+const TRANSPARENT_TYPES = new Set<unknown>([Fragment, ArdoTabList, ArdoTabPanels])
 
 /**
  * The selected tab, or the first tab when the selection matches none, so the
- * tablist always has a focusable tab. Tabs created inside custom components
- * are not visible here; without any visible tab the selection stays as is.
+ * tablist always has a focusable tab. A selection that may belong to a tab
+ * inside a custom component stays as is.
  */
-function resolveActiveTab(selectedTab: string | undefined, tabValues: readonly string[]): string {
-  if (selectedTab != null && (tabValues.length === 0 || tabValues.includes(selectedTab))) {
+function resolveActiveTab(selectedTab: string | undefined, indexes: TabChildIndexes): string {
+  const { tabValues, hasCustomComponents } = indexes
+  if (selectedTab != null && (hasCustomComponents || tabValues.includes(selectedTab))) {
     return selectedTab
   }
-  return tabValues[0] ?? ""
+  return tabValues[0] ?? selectedTab ?? ""
 }
 
 function assignImplicitValues(children: ReactNode, indexes: TabChildIndexes): ReactNode {
@@ -247,6 +258,9 @@ function assignElementValue(
     return cloneElement(child, { value })
   }
 
+  if (typeof child.type !== "string" && !TRANSPARENT_TYPES.has(child.type)) {
+    indexes.hasCustomComponents = true
+  }
   if (child.props.children == null) return child
   const nestedChildren = assignImplicitValues(child.props.children, indexes)
   return cloneElement(child, undefined, nestedChildren)

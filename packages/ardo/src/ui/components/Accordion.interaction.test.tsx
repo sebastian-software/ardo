@@ -18,6 +18,18 @@ function Wrapped({ children }: { children: ReactNode }) {
   return <div>{children}</div>
 }
 
+function expanded(): Array<string | null> {
+  return screen.getAllByRole("button").map((trigger) => trigger.getAttribute("aria-expanded"))
+}
+
+function InternalAccordion() {
+  return (
+    <ArdoAccordion title="Internal" defaultOpen>
+      Internal panel
+    </ArdoAccordion>
+  )
+}
+
 describe("ArdoAccordion interactions", () => {
   afterEach(() => {
     Reflect.deleteProperty(HTMLElement.prototype, "getAnimations")
@@ -228,6 +240,51 @@ describe("ArdoAccordion interactions", () => {
 
     await user.click(wrapped)
     expect(wrapped.getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("opens only the first default-open item of an only-one-open group, wrapped or not", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup onlyOneOpen>
+        <Wrapped>
+          <ArdoAccordion title="Wrapped first" defaultOpen>
+            Wrapped first panel
+          </ArdoAccordion>
+        </Wrapped>
+        <ArdoAccordion title="Direct" defaultOpen>
+          Direct panel
+        </ArdoAccordion>
+        <Wrapped>
+          <ArdoAccordion title="Wrapped last" defaultOpen>
+            Wrapped last panel
+          </ArdoAccordion>
+        </Wrapped>
+        <InternalAccordion />
+      </ArdoAccordionGroup>
+    )
+
+    expect(expanded()).toStrictEqual(["true", "false", "false", "false"])
+
+    await user.click(screen.getByRole("button", { name: "Wrapped first" }))
+    expect(expanded()).toStrictEqual(["false", "false", "false", "false"])
+  })
+
+  it("honours defaultOpen of an item a custom component renders outside only-one-open mode", async () => {
+    const user = userEvent.setup()
+    render(
+      <ArdoAccordionGroup>
+        <ArdoAccordion title="First" defaultOpen>
+          First panel
+        </ArdoAccordion>
+        <InternalAccordion />
+        <ArdoAccordion title="Third">Third panel</ArdoAccordion>
+      </ArdoAccordionGroup>
+    )
+
+    expect(expanded()).toStrictEqual(["true", "true", "false"])
+
+    await user.click(screen.getByRole("button", { name: "First" }))
+    expect(expanded()).toStrictEqual(["false", "true", "false"])
   })
 
   it("skips the triggers of a nested accordion during arrow-key navigation", async () => {

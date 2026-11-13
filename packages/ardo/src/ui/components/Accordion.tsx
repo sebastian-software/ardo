@@ -48,9 +48,10 @@ export type ArdoAccordionProps = {
 
 type AccordionGroupState = {
   openValues: readonly string[]
-  /** Values of the group's direct accordion children, whose defaults the group knows. */
-  directValues: ReadonlySet<string>
-  /** False until the first toggle; until then wrapped items follow their own `defaultOpen`. */
+  onlyOneOpen: boolean
+  /** Values of the items the group found in its children, whose defaults it knows. */
+  knownValues: ReadonlySet<string>
+  /** False until the first toggle; until then unknown items follow their own `defaultOpen`. */
   touched: boolean
   setItemOpen: (value: string, open: boolean) => void
   registerDefaultOpen: (value: string) => () => void
@@ -74,32 +75,37 @@ function fallbackValue(index: number): string {
   return `ardo-accordion-${index}`
 }
 
-function resolveAccordionGroupChildren(children: ReactNode): {
-  defaultOpenValues: string[]
-  directValues: ReadonlySet<string>
-  normalizedChildren: ReactNode
-} {
-  let accordionIndex = 0
-  const defaultOpenValues: string[] = []
-  const directValues = new Set<string>()
+type GroupScan = { defaultOpenValues: string[]; knownValues: Set<string> }
 
-  const normalizedChildren = Children.map(children, (child): ReactNode => {
-    if (!isValidElement<ArdoAccordionProps>(child) || child.type !== ArdoAccordion) {
-      return child
-    }
+function resolveAccordionGroupChildren(children: ReactNode) {
+  const scan: GroupScan = { defaultOpenValues: [], knownValues: new Set() }
+  const normalizedChildren = normalizeGroupNode(children, scan)
+  return { ...scan, normalizedChildren }
+}
 
-    const value = child.props.value ?? fallbackValue(accordionIndex)
-    accordionIndex += 1
-    directValues.add(value)
+/**
+ * Finds the group's items in the element tree, also inside wrapper elements
+ * that pass them through as children, and gives each a stable value. Nested
+ * groups and accordion panels are left alone: their items are independent.
+ */
+function normalizeGroupNode(node: ReactNode, scan: GroupScan): ReactNode {
+  if (Array.isArray(node)) return Children.map(node, (child) => normalizeGroupNode(child, scan))
+  if (!isValidElement<{ children?: ReactNode } & Partial<ArdoAccordionProps>>(node)) return node
+  if (node.type === ArdoAccordionGroup) return node
 
-    if (child.props.defaultOpen === true) {
-      defaultOpenValues.push(value)
-    }
-
-    return child.props.value == null ? cloneElement(child, { value }) : child
-  })
-
-  return { defaultOpenValues, directValues, normalizedChildren }
+  let overrides: { value: string } | { children: ReactNode }
+  if (node.type === ArdoAccordion) {
+    const value = node.props.value ?? fallbackValue(scan.knownValues.size)
+    scan.knownValues.add(value)
+    if (node.props.defaultOpen === true) scan.defaultOpenValues.push(value)
+    if (node.props.value != null) return node
+    overrides = { value }
+  } else {
+    const nested = node.props.children
+    if (nested == null || typeof nested !== "object") return node
+    overrides = { children: normalizeGroupNode(nested, scan) }
+  }
+  return cloneElement(node, overrides)
 }
 
 /**
@@ -154,7 +160,7 @@ export function ArdoAccordionGroup({
   onlyOneOpen = false,
   className,
 }: ArdoAccordionGroupProps) {
-  const { defaultOpenValues, directValues, normalizedChildren } = useMemo(
+  const { defaultOpenValues, knownValues, normalizedChildren } = useMemo(
     () => resolveAccordionGroupChildren(children),
     [children]
   )
@@ -162,13 +168,14 @@ export function ArdoAccordionGroup({
     openValues: onlyOneOpen ? defaultOpenValues.slice(0, 1) : defaultOpenValues,
     touched: false,
   }))
-  // Items wrapped in other elements are invisible to the children scan above.
-  // They register their `defaultOpen`, which the first toggle takes over.
-  const wrappedDefaultOpenRef = useRef(new Set<string>())
+  // Items a custom component renders itself are invisible to the scan above.
+  // Outside only-one-open mode they register their `defaultOpen`, which the
+  // first toggle takes over.
+  const hiddenDefaultOpenRef = useRef(new Set<string>())
   const registerDefaultOpen = useCallback((value: string) => {
-    wrappedDefaultOpenRef.current.add(value)
+    hiddenDefaultOpenRef.current.add(value)
     return () => {
-      wrappedDefaultOpenRef.current.delete(value)
+      hiddenDefaultOpenRef.current.delete(value)
     }
   }, [])
   const setItemOpen = useCallback(
@@ -176,7 +183,7 @@ export function ArdoAccordionGroup({
       setState((current) => {
         const openValues = current.touched
           ? current.openValues
-          : [...current.openValues, ...wrappedDefaultOpenRef.current]
+          : [...current.openValues, ...hiddenDefaultOpenRef.current]
         return {
           openValues: nextOpenValues(openValues, { value, open, onlyOneOpen }),
           touched: true,
@@ -186,8 +193,8 @@ export function ArdoAccordionGroup({
     [onlyOneOpen]
   )
   const group = useMemo(
-    () => ({ ...state, directValues, setItemOpen, registerDefaultOpen }),
-    [state, directValues, setItemOpen, registerDefaultOpen]
+    () => ({ ...state, onlyOneOpen, knownValues, setItemOpen, registerDefaultOpen }),
+    [state, onlyOneOpen, knownValues, setItemOpen, registerDefaultOpen]
   )
   const groupClassName =
     className == null ? styles.accordionGroup : `${styles.accordionGroup} ${className}`
@@ -281,13 +288,17 @@ export function ArdoAccordion({
   const [standaloneOpen, setStandaloneOpen] = useState(defaultOpen)
   const generatedValue = useId()
   const resolvedValue = value ?? generatedValue
-  const isWrapped = group != null && !group.directValues.has(resolvedValue)
-  const registerDefaultOpen = isWrapped && defaultOpen ? group.registerDefaultOpen : undefined
+  // An item the group could not find keeps its own default, except where it
+  // could break the single open item of an only-one-open group.
+  const registerDefaultOpen =
+    group != null && defaultOpen && !group.onlyOneOpen && !group.knownValues.has(resolvedValue)
+      ? group.registerDefaultOpen
+      : undefined
   useEffect(() => registerDefaultOpen?.(resolvedValue), [registerDefaultOpen, resolvedValue])
   const open =
     group == null
       ? standaloneOpen
-      : group.openValues.includes(resolvedValue) || (isWrapped && defaultOpen && !group.touched)
+      : group.openValues.includes(resolvedValue) || (registerDefaultOpen != null && !group.touched)
   const setOpen =
     group == null
       ? setStandaloneOpen
