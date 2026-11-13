@@ -45,7 +45,7 @@ Ardo's [API guide](/en/guide/api-documentation), [configuration](/en/guide/confi
 | title, description, sidebar.order      | Keep title and description; map sidebar.order to order. Review other [frontmatter](/en/guide/frontmatter) fields individually.                  |
 | mode: custom                           | Use layout: bare for a page without the docs frame.                                                                                             |
 | src/components.ts and Astro components | Review each component and its props; port Astro code to React or use Ardo's MDX components. There is no automatic component conversion.         |
-| astro.config.ts and nimbus()           | Use ardo.config.ts for framework options and app/root.tsx for UI composition; keep custom Vite plugins in vite.config.ts.                       |
+| astro.config.ts and nimbus()           | Use ardo.config.ts for framework options and custom Vite plugins, and app/root.tsx for UI composition.                                          |
 | OpenAPI references                     | Start with Ardo's local openapi configuration. Nimbus API versions, schema views, and interactive reference controls are not a drop-in mapping. |
 
 Audit drafts, hidden pages, and publishing rules before moving content; Nimbus flags do not automatically preserve their meaning in Ardo. Follow the [setup instructions](/en/guide/agent-instructions) and verify the published route set, links, and examples in a production preview.

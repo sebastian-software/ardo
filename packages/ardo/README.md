@@ -53,8 +53,8 @@ export default defineArdoConfig({
 })
 ```
 
-The Ardo CLI supplies build integration. Keep `vite.config.ts` only for additional
-Vite plugins or settings. UI configuration stays in React through `ArdoRoot`
+The Ardo CLI supplies build integration. Add extra Vite plugins or settings
+through the `vite` option in `ardo.config.ts`, or in an optional `vite.config.ts`. UI configuration stays in React through `ArdoRoot`
 and JSX components.
 
 Theme the site in `app/root.tsx`: `<ArdoRoot theme={{ color: "blue", neutral: "slate" }} />` sets

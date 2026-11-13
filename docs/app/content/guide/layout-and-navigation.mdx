@@ -630,8 +630,9 @@ then follows the actual article headings, including additions, removals, and tit
 
 For a standalone outline, use `<ArdoTOC source="dom" scope="#article-body" />`. The optional
 `scope` is a CSS selector for the content container. Without it, Ardo reads `.ardo-content-body`
-inside `#main-content`, or `#main-content` itself for a fully custom page. Both modes use
-`markdown.toc.level` for heading levels. Navigation, the outline itself, hidden headings, and
+inside `#main-content`, or `#main-content` itself for a fully custom page. Both modes list the
+heading levels of `markdown.toc.level`, or of a page's numeric or `[min, max]`
+[`outline`](/en/guide/frontmatter#outline) frontmatter. Navigation, the outline itself, hidden headings, and
 subtrees marked `data-ardo-toc="exclude"` are excluded. Use that attribute on worked examples
 whose headings should not become article sections.
 
