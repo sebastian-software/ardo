@@ -43,7 +43,7 @@ afterEach(() => {
 type ObserverEntry = { target: HTMLElement; isIntersecting: boolean }
 
 function captureObserver() {
-  const observer = { notify: (_entries: ObserverEntry[]) => {} }
+  const observer: { notify: (entries: ObserverEntry[]) => void } = { notify: vi.fn() }
   vi.stubGlobal(
     "IntersectionObserver",
     vi.fn(function createObserver(callback: (entries: ObserverEntry[]) => void) {

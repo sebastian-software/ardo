@@ -19,7 +19,8 @@ class ClipboardItemStub {
 
 async function clipboardText(write: ReturnType<typeof vi.fn>): Promise<string> {
   const [[item]] = write.mock.calls[0] as [[ClipboardItemStub]]
-  return (await item.items["text/plain"]).text()
+  const blob = await item.items["text/plain"]
+  return blob.text()
 }
 
 describe("page actions", () => {
@@ -97,7 +98,7 @@ describe("page actions", () => {
 
   it("starts the clipboard write within the click, before the Markdown file arrives", async () => {
     vi.stubGlobal("ClipboardItem", ClipboardItemStub)
-    let respond: (response: Response) => void = () => {}
+    let respond: (response: Response) => void = vi.fn()
     const fetch = vi.spyOn(globalThis, "fetch").mockReturnValue(
       new Promise((resolve) => {
         respond = resolve

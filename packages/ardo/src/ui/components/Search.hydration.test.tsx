@@ -30,14 +30,14 @@ function hydrateHeaderSearch(serverPlatform: string, clientPlatform: string) {
   document.body.append(container)
   stubPlatform(clientPlatform)
   act(() => {
-    root = hydrateRoot(container, tree, { onRecoverableError: () => {} })
+    root = hydrateRoot(container, tree)
   })
   return [...container.querySelectorAll("kbd")].map((kbd) => kbd.textContent)
 }
 
 describe("search shortcut hint after hydration", () => {
   it("switches the server's ⌘ to Ctrl on Windows and Linux", () => {
-    const errors = vi.spyOn(console, "error").mockImplementation(() => {})
+    const errors = vi.spyOn(console, "error").mockImplementation(vi.fn())
 
     expect(hydrateHeaderSearch("MacIntel", "Win32")).toStrictEqual(["Ctrl", "K", "Ctrl", "K"])
     expect(errors).not.toHaveBeenCalled()

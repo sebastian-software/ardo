@@ -42,6 +42,40 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
   const toc = useDomToc(useArdoTOC(), { source, scope })
   const siteConfig = useArdoSiteConfig()
   const labels = useArdoLabels()
+  const { activeId, handleClickItem } = useActiveHeading(toc)
+
+  const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
+
+  if (toc.length === 0) {
+    return null
+  }
+
+  if (collapsible) {
+    return (
+      <CompactTOC
+        label={label}
+        navLabel={labels.toc.navLabel}
+        items={toc}
+        activeId={activeId}
+        onClickItem={handleClickItem}
+      />
+    )
+  }
+
+  return (
+    <aside className={`ardo-toc ${styles.toc}`}>
+      <div>
+        <h3 className={styles.tocTitle}>{label}</h3>
+        <nav aria-label={labels.toc.navLabel}>
+          <TOCItems items={toc} activeId={activeId} onClickItem={handleClickItem} />
+        </nav>
+      </div>
+    </aside>
+  )
+}
+
+/** The heading whose section is in view, paused while an outline click scrolls the page. */
+function useActiveHeading(toc: TOCItem[]) {
   const [activeId, setActiveId] = useState<string>("")
   const scrollSnapshot = useSyncExternalStore(
     subscribeToScrollRegion,
@@ -50,8 +84,6 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
   )
   const isClickScrollingRef = useRef(false)
   const endClickScrollRef = useRef<() => void>(undefined)
-
-  const label = labelProp ?? siteConfig.tocLabel ?? labels.toc.label
 
   useEffect(() => {
     if (
@@ -116,32 +148,7 @@ export function ArdoTOC(props: ArdoTOCProps = {}) {
     endClickScrollRef.current = onScrollEnd
   }
 
-  if (toc.length === 0) {
-    return null
-  }
-
-  if (collapsible) {
-    return (
-      <CompactTOC
-        label={label}
-        navLabel={labels.toc.navLabel}
-        items={toc}
-        activeId={activeId}
-        onClickItem={handleClickItem}
-      />
-    )
-  }
-
-  return (
-    <aside className={`ardo-toc ${styles.toc}`}>
-      <div>
-        <h3 className={styles.tocTitle}>{label}</h3>
-        <nav aria-label={labels.toc.navLabel}>
-          <TOCItems items={toc} activeId={activeId} onClickItem={handleClickItem} />
-        </nav>
-      </div>
-    </aside>
-  )
+  return { activeId, handleClickItem }
 }
 
 function CompactTOC({

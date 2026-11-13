@@ -78,6 +78,14 @@ function getResultAtIndex<T>(results: T[], selectedIndex: number) {
   return results[selectedIndex]
 }
 
+/**
+ * True while an input method composes text, when Enter confirms a candidate instead of a result.
+ * keyCode 229 covers Safari, which ends composition before the Enter keydown.
+ */
+export function isComposingKeyEvent(event: Pick<KeyboardEvent, "isComposing" | "keyCode">) {
+  return event.isComposing || event.keyCode === 229
+}
+
 type ShortcutKeyEvent = Pick<KeyboardEvent, "altKey" | "ctrlKey" | "key" | "metaKey">
 
 /** True for the global search shortcut: ⌘K on macOS, Ctrl+K elsewhere. */

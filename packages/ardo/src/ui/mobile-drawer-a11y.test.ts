@@ -77,30 +77,30 @@ describe("mobile drawer accessibility helpers", () => {
   })
 })
 
+function setupDialog() {
+  document.body.innerHTML = `
+    <button id="page">Page behind</button>
+    <div id="dialog" tabindex="-1">
+      <button id="first">Close</button>
+      <a id="last" href="/next">Next</a>
+    </div>`
+  const container = document.querySelector<HTMLElement>("#dialog")
+  if (container == null) throw new Error("Missing dialog")
+  return container
+}
+
+function pressTab(container: HTMLElement, shiftKey: boolean) {
+  const event = new KeyboardEvent("keydown", { key: "Tab", shiftKey, cancelable: true })
+  trapFocus(event, container)
+  return event
+}
+
 describe("trapFocus", () => {
-  function setup() {
-    document.body.innerHTML = `
-      <button id="page">Page behind</button>
-      <div id="dialog" tabindex="-1">
-        <button id="first">Close</button>
-        <a id="last" href="/next">Next</a>
-      </div>`
-    const container = document.querySelector<HTMLElement>("#dialog")
-    if (container == null) throw new Error("Missing dialog")
-    return container
-  }
-
-  function pressTab(container: HTMLElement, shiftKey: boolean) {
-    const event = new KeyboardEvent("keydown", { key: "Tab", shiftKey, cancelable: true })
-    trapFocus(event, container)
-    return event
-  }
-
   it.each([
     [true, "last"],
     [false, "first"],
   ])("wraps from the focused container itself (Shift: %s) to #%s", (shiftKey, expected) => {
-    const container = setup()
+    const container = setupDialog()
     container.focus()
 
     const event = pressTab(container, shiftKey)
@@ -110,7 +110,7 @@ describe("trapFocus", () => {
   })
 
   it("brings focus back into the container from the page behind", () => {
-    const container = setup()
+    const container = setupDialog()
     document.querySelector<HTMLElement>("#page")?.focus()
 
     pressTab(container, true)
@@ -119,7 +119,7 @@ describe("trapFocus", () => {
   })
 
   it("leaves Tab between elements inside the container to the browser", () => {
-    const container = setup()
+    const container = setupDialog()
     document.querySelector<HTMLElement>("#first")?.focus()
 
     expect(pressTab(container, false).defaultPrevented).toBe(false)

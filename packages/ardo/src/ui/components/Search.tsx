@@ -6,7 +6,12 @@ import type { ArdoLabels } from "../labels"
 import { useArdoLabels } from "../../runtime/hooks"
 import { useArdoLocale } from "../../runtime/locale"
 import { ChromeIcon } from "../chrome-icons"
-import { getActiveSearchOptionId, getSearchKeyboardAction, getSearchOptionId } from "./search-a11y"
+import {
+  getActiveSearchOptionId,
+  getSearchKeyboardAction,
+  getSearchOptionId,
+  isComposingKeyEvent,
+} from "./search-a11y"
 import { useGlobalSearchShortcut, useOutsideClick, useSearchShortcutModifier } from "./search-hooks"
 import { loadSearchIndex } from "./search-index"
 import { consumeSearchRecoveryQuery, reloadSearch } from "./search-recovery"
@@ -235,8 +240,7 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
   })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Enter confirms an IME candidate; keyCode 229 covers Safari, which ends composition first.
-    if (e.nativeEvent.isComposing || e.keyCode === 229) return
+    if (isComposingKeyEvent(e.nativeEvent)) return
     const action = getSearchKeyboardAction({
       key: e.key,
       results: state.results,
