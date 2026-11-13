@@ -75,5 +75,11 @@ describe("createOpenApiPlugin", () => {
     await vi.waitFor(() =>
       expect(logger.error).toHaveBeenCalledWith(expect.stringContaining("bad spec"))
     )
+
+    // Deleting keeps the last pages; recreating the spec regenerates them.
+    generateOpenApiDocs.mockClear()
+    watcher.emit("unlink", path.resolve("/project", "openapi.yaml"))
+    watcher.emit("add", path.resolve("/project", "openapi.yaml"))
+    await vi.waitFor(() => expect(generateOpenApiDocs).toHaveBeenCalledTimes(1))
   })
 })

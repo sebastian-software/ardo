@@ -5,6 +5,7 @@ import { parse } from "yaml"
 import type { OpenApiConfig } from "../config/types"
 
 import { type GeneratedDoc, writeGeneratedDocs } from "../generated-docs"
+import { prepareNativeMarkdown } from "../markdown/native-metadata"
 
 type OpenApiDocument = {
   info?: { description?: string; title?: string; version?: string }
@@ -122,18 +123,22 @@ function compareCodeUnits(left: string, right: string): number {
 }
 
 function renderIndex(document: OpenApiDocument, operations: CollectedOperation[]): string {
+  const spec = new SpecText()
   const title = document.info?.title ?? "API Reference"
   const groups = new Map<string, CollectedOperation[]>()
   for (const operation of operations)
     groups.set(operation.tag, [...(groups.get(operation.tag) ?? []), operation])
-  return `# ${escapeMdx(title)}\n\n${escapeMdx(document.info?.description ?? "")}\n\n${[...groups].map(([tag, items]) => `## ${tag}\n\n${items.map((item) => `- [${inlineCode(`${item.method} ${item.path}`)}](./${tag}/${item.slug})`).join("\n")}`).join("\n\n")}\n`
+  return spec.finish(
+    `# ${spec.text(title)}\n\n${spec.text(document.info?.description ?? "")}\n\n${[...groups].map(([tag, items]) => `## ${tag}\n\n${items.map((item) => `- [${inlineCode(`${item.method} ${item.path}`)}](./${tag}/${item.slug})`).join("\n")}`).join("\n\n")}\n`
+  )
 }
 
 function renderOperation(operation: CollectedOperation): string {
+  const spec = new SpecText()
   const parametersList = operation.parameters ?? []
   const parameters =
     parametersList.length > 0
-      ? `## Parameters\n\n${parametersList.map((parameter) => `- ${inlineCode(parameter.name ?? "")} (${escapeMdx(parameter.in ?? "")}${parameter.required ? ", required" : ""}): ${escapeMdx(parameter.description ?? "")}`).join("\n")}\n`
+      ? `## Parameters\n\n${parametersList.map((parameter) => `- ${inlineCode(parameter.name ?? "")} (${spec.text(parameter.in ?? "")}${parameter.required ? ", required" : ""}): ${spec.text(parameter.description ?? "")}`).join("\n")}\n`
       : ""
   const responses =
     operation.responses == null
@@ -141,70 +146,70 @@ function renderOperation(operation: CollectedOperation): string {
       : `## Responses\n\n${Object.entries(operation.responses)
           .map(
             ([status, response]) =>
-              `- ${inlineCode(status)}: ${escapeMdx(response.description ?? "")}`
+              `- ${inlineCode(status)}: ${spec.text(response.description ?? "")}`
           )
           .join("\n")}\n`
-  return `# ${escapeMdx(`${operation.method} ${operation.path}`)}\n\n${escapeMdx(operation.summary ?? operation.description ?? "")}\n\n${parameters}\n${responses}`
+  return spec.finish(
+    `# ${spec.text(`${operation.method} ${operation.path}`)}\n\n${spec.text(operation.summary ?? operation.description ?? "")}\n\n${parameters}\n${responses}`
+  )
 }
 
-const fencePattern = /^[ \t]*(`{3,}|~{3,})/u
+const firstMarker = 0xf_00_00
+const markerPattern = /[\u{F0000}-\u{FFFFD}]/gu
+const specialPattern = /[{}<\u{F0000}-\u{FFFFD}]/gu
 
 /**
  * Spec text is CommonMark, but the pages are MDX, where `{`, `}` and `<` start
- * expressions and JSX. Escaping them outside code renders the text literally
- * and keeps its Markdown formatting; raw HTML in the spec shows as text.
+ * expressions and JSX. Every such character in spec text first becomes a
+ * unique marker; Ferromark then parses the finished page, and only the markers
+ * outside code get a backslash. Code stays byte-identical, prose renders
+ * literally with its Markdown formatting, and raw HTML in the spec shows as text.
  */
-function escapeMdx(value: string): string {
-  let result = ""
-  let prose = ""
-  let fence: string | undefined
-  for (const line of value.split(/(?<=\n)/u)) {
-    const marker = fencePattern.exec(line)?.[1]
-    if (fence == null && marker == null) {
-      prose += line
-      continue
-    }
-    if (fence == null) {
-      result += escapeInline(prose)
-      prose = ""
-      fence = marker
-    } else if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = undefined
-    result += line
+class SpecText {
+  private readonly characters: Array<{ literal: boolean; value: string }> = []
+
+  text(value: string): string {
+    return value.replaceAll(specialPattern, (character, offset: number) => {
+      let backslashes = 0
+      while (value[offset - backslashes - 1] === "\\") backslashes += 1
+      // A marker-range character in the spec is kept as it is.
+      const literal = backslashes % 2 === 1 || markerIndex(character) >= 0
+      this.characters.push({ literal, value: character })
+      return String.fromCodePoint(firstMarker + this.characters.length - 1)
+    })
   }
-  result += escapeInline(prose)
-  // An unclosed fence would otherwise swallow the rest of the generated page.
-  return fence == null ? result : `${result}\n${fence}`
+
+  finish(page: string): string {
+    const code = this.markersInCode(page)
+    return page.replaceAll(markerPattern, (marker) => {
+      const index = markerIndex(marker)
+      const character = this.characters[index]
+      if (character == null) return marker
+      return code.has(index) || character.literal ? character.value : `\\${character.value}`
+    })
+  }
+
+  private markersInCode(page: string): Set<number> {
+    const code: string[] = []
+    const { prepared, renderOptions } = prepareNativeMarkdown(page, "mdx")
+    const result = prepared.render(renderOptions, (block, language, meta) => {
+      code.push(block, language ?? "", meta ?? "")
+      return "<pre />"
+    })
+    // Inline code renders as a `<code>` element holding only its text.
+    for (const match of result.body.matchAll(/<code>([\s\S]*?)<\/code>/gu))
+      code.push(match[1] ?? "")
+    return new Set(
+      code.flatMap((text) =>
+        [...text.matchAll(markerPattern)].map((match) => markerIndex(match[0]))
+      )
+    )
+  }
 }
 
-function escapeInline(text: string): string {
-  let result = ""
-  let index = 0
-  while (index < text.length) {
-    const char = text[index] ?? ""
-    if (char === "\\" && /[!-/:-@[-`{-~]/u.test(text[index + 1] ?? "")) {
-      result += text.slice(index, index + 2)
-      index += 2
-    } else if (char === "`") {
-      const run = /^`+/u.exec(text.slice(index))?.[0] ?? char
-      const close = findClosingBackticks(text, index + run.length, run.length)
-      const end = close == null ? index + run.length : close + run.length
-      result += text.slice(index, end)
-      index = end
-    } else {
-      result += char === "{" || char === "}" || char === "<" ? `\\${char}` : char
-      index += 1
-    }
-  }
-  return result
-}
-
-function findClosingBackticks(text: string, from: number, length: number): number | undefined {
-  const pattern = /`+/gu
-  pattern.lastIndex = from
-  for (let match = pattern.exec(text); match != null; match = pattern.exec(text)) {
-    if (match[0].length === length) return match.index
-  }
-  return undefined
+/** The marker's index; negative for characters below the marker range. */
+function markerIndex(character: string): number {
+  return (character.codePointAt(0) ?? 0) - firstMarker
 }
 
 function inlineCode(value: string): string {

@@ -112,6 +112,36 @@ describe("generateOpenApiDocs", () => {
     expect(operation).toContain('code={"{\\"a\\": <b>}\\n"}')
   })
 
+  it("keeps code byte-identical in blockquotes, lists, and tilde fences", async () => {
+    const quoted = '> Example:\n>\n> ~~~json\n> {"id": "<id>"}\n> ~~~'
+    const listed = '- Request:\n\n  ```json title="body"\n  {"name": "{name}"}\n  ```'
+    const tilde = '~~~~ json {"a": 1}\n<Pet>{x}\n~~~ not a close {y}\n~~~~'
+    const inline = "```a{b}``` stays code, {c} does not"
+    await generate({
+      openapi: "3.1.0",
+      paths: {
+        "/pets": {
+          post: {
+            parameters: [{ description: listed, in: "query", name: "filter" }],
+            responses: { "200": { description: `Example:\n\n${tilde}` } },
+            summary: `${quoted}\n\n${inline}`,
+          },
+        },
+      },
+    })
+
+    const source = await readPage("endpoints/post-pets.mdx")
+    expect(source).toContain(quoted)
+    expect(source).toContain('  {"name": "{name}"}\n')
+    expect(source).toContain(tilde)
+    expect(source).toContain("```a{b}``` stays code, \\{c\\} does not")
+    const operation = compilePage(source)
+    expect(operation).toContain('code={"{\\"id\\": \\"<id>\\"}\\n"}')
+    expect(operation).toContain('code={"{\\"name\\": \\"{name}\\"}\\n"}')
+    expect(operation).toContain('code={"<Pet>{x}\\n~~~ not a close {y}\\n"}')
+    expect(operation).toContain('<_components.code>{"a{b}"}</_components.code>')
+  })
+
   it("gives operations with colliding slugs their own pages", async () => {
     const pageCount = await generate({
       openapi: "3.1.0",

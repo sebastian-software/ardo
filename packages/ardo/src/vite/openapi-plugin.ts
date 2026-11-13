@@ -27,7 +27,8 @@ export function createOpenApiPlugin(
       const routesDir = resolveRoutesDir(root, routesDirOption)
       let queue = Promise.resolve()
       server.watcher.add(specPath)
-      server.watcher.on("change", (file) => {
+      // A deleted spec keeps the last generated pages; recreating it regenerates them.
+      const regenerate = (file: string) => {
         if (path.resolve(file) !== specPath) return
         queue = queue.then(async () => {
           try {
@@ -38,7 +39,8 @@ export function createOpenApiPlugin(
             )
           }
         })
-      })
+      }
+      server.watcher.on("add", regenerate).on("change", regenerate)
     },
   }
 }
