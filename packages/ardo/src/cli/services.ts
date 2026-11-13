@@ -24,6 +24,10 @@ with "ardo telemetry delete". Privacy: https://app-tracking.sebastian-software.c
 const flagEnabled = (value: string | undefined) =>
   Boolean(value && value !== "0" && value !== "false")
 
+function updateCheckDisabled(value: string | undefined): boolean {
+  return value === "0" || value === "false" || value === "off"
+}
+
 export function canNotifyUpdates(args: readonly string[], isTTY: boolean | undefined): boolean {
   return (
     isTTY === true &&
@@ -61,7 +65,7 @@ export function createCliServices(options: {
     updates: {
       cacheRoot: path.join(stateRoot, "updates"),
       distribution: "github",
-      mode: process.env.ARDO_UPDATE_CHECK === "0" ? "disabled" : "enabled",
+      mode: updateCheckDisabled(process.env.ARDO_UPDATE_CHECK) ? "disabled" : "enabled",
     },
   })
 }
