@@ -2,7 +2,17 @@ import { describe, expect, it } from "vitest"
 
 import type { TOCItem } from "../config/types"
 
-import { flattenToc } from "./toc"
+import { flattenToc, resolveTocLevels } from "./toc"
+
+describe("resolveTocLevels", () => {
+  it("reads a page's outline levels and falls back to the site's", () => {
+    expect(resolveTocLevels(3, [2, 3])).toStrictEqual([3, 3])
+    expect(resolveTocLevels([2, 5], [2, 3])).toStrictEqual([2, 5])
+    expect(resolveTocLevels(true, [1, 2])).toStrictEqual([1, 2])
+    expect(resolveTocLevels(undefined)).toStrictEqual([2, 3])
+    expect(resolveTocLevels([5, 2], [2, 3])).toStrictEqual([2, 3])
+  })
+})
 
 describe("flattenToc", () => {
   it("returns empty array for empty toc", () => {

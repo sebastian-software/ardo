@@ -10,7 +10,7 @@ import {
   prepareNativeMarkdown,
 } from "../markdown/native-metadata"
 import { getArdoCodeHooks } from "../markdown/code-hooks"
-import { buildToc } from "../markdown/toc"
+import { buildToc, resolveTocLevels } from "../markdown/toc"
 import { parsePageFrontmatterMetadata } from "./page-metadata"
 import type { PublicationPostBinding } from "./publication-routes"
 import { FREEZE_SOURCE } from "./publication-freeze"
@@ -134,14 +134,17 @@ function createRouteCode(input: {
     bindings: new Set(input.result.bindings),
     exports: new Set(input.result.exports),
   }
-  const toc = buildToc(input.metadata.headings, input.markdownConfig?.toc?.level ?? [2, 3])
+  const pageFrontmatter = parsePageFrontmatterMetadata(input.metadata.frontmatter)
+  const toc = buildToc(
+    input.metadata.headings,
+    resolveTocLevels(pageFrontmatter.outline, input.markdownConfig?.toc?.level)
+  )
   const frontmatter = scope.bindings.has("frontmatter")
     ? "frontmatter"
     : JSON.stringify(input.metadata.frontmatter)
   // `llms: false` removes the page's Markdown file, so the page has no link to it either.
   const markdownPath =
-    input.pageMarkdownPath != null &&
-    parsePageFrontmatterMetadata(input.metadata.frontmatter).llms !== false
+    input.pageMarkdownPath != null && pageFrontmatter.llms !== false
       ? ` markdownPath={${JSON.stringify(input.pageMarkdownPath)}}`
       : ""
   const post = input.publicationPost

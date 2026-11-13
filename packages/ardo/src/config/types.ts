@@ -413,6 +413,10 @@ export type PageFrontmatter = {
   /** Use a reading column (default) or a wider page container for article content. */
   contentWidth?: "reading" | "page"
   sidebar?: "leaf" | boolean
+  /**
+   * False hides the outline. A heading level (1–6) lists only that level, `[min, max]` that range;
+   * true keeps `markdown.toc.level`.
+   */
   outline?: [number, number] | boolean | number
   editLink?: boolean
   lastUpdated?: boolean
@@ -429,7 +433,12 @@ export type PageFrontmatter = {
   /** Notice above the page content. A string sets the text; an object sets the variant and dismissal. */
   banner?: PageBannerConfig
   redirectFrom?: string | string[]
+  /**
+   * The previous link at the end of the page. False hides it, a string renames the sidebar
+   * neighbour, and `{ text, link }` replaces it; the link resolves like other page links.
+   */
   prev?: { text: string; link: string } | false | string
+  /** The next link at the end of the page, with the same values as `prev`. */
   next?: { text: string; link: string } | false | string
   hero?: {
     name?: string
