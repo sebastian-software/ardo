@@ -92,6 +92,7 @@ export function createStaticSitePlugin(state: StaticSiteState): Plugin {
         const serverDir = path.resolve(viteConfig.root, ssr.config.build.outDir)
         const config = state.resolvedConfig
         await prerenderSite({
+          assetsDir: client.config.build.assetsDir,
           base: viteConfig.base,
           clientDir,
           deploymentBase: state.deploymentBase ?? viteConfig.base,

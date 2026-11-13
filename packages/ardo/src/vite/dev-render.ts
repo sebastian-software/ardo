@@ -3,6 +3,7 @@ import type { Connect, EnvironmentModuleNode, RunnableDevEnvironment, ViteDevSer
 import path from "node:path"
 
 import type { ResolvedConfig } from "../config/types"
+import { toRedirectSourcePath } from "./build-outputs"
 import { getVersioningRedirects } from "./build-versioning"
 import { spellPagePath } from "../runtime/trailing-slash"
 
@@ -161,7 +162,6 @@ export function toPagePath(
 ): string | undefined {
   const pathname = readRequestPathname(request)
   if (pathname == null) return undefined
-  if (pathname.includes("/@") || pathname.includes("/__")) return undefined
   const isBaseRoot = `${pathname}/` === base
   if (!pathname.startsWith(base) && !isBaseRoot) return undefined
   const relative = isBaseRoot ? "" : pathname.slice(base.length)
@@ -172,7 +172,12 @@ export function toPagePath(
     if (isPagePath?.(literalPath)) return literalPath
     if (extension !== ".html") return undefined
   }
-  return `/${relative.replace(/(?:^|\/)index\.html$/u, "")}`
+  const pagePath = `/${relative.replace(/(?:^|\/)index\.html$/u, "")}`
+  // Vite and its plugins serve `/@vite/client`, `/@fs/…`, `/__open-in-editor` and the like. An
+  // authored page such as `/api/@scope/pkg` or `/api/__init__` is still a page.
+  if ((pathname.includes("/@") || pathname.includes("/__")) && isPagePath?.(pagePath) !== true)
+    return undefined
+  return pagePath
 }
 
 /** Decode HTML reads once, leaving malformed URLs and non-page requests to Vite. */
@@ -217,7 +222,9 @@ export function getDevRedirect(
   routes: string[]
 ): string | undefined {
   const configured = [...config.redirects, ...getVersioningRedirects(config)].find(
-    (redirect) => normalizeRedirectPath(redirect.from) === normalizeRedirectPath(pathname)
+    (redirect) =>
+      normalizeRedirectPath(toRedirectSourcePath(redirect.from, config.deploymentBase)) ===
+      normalizeRedirectPath(pathname)
   )
   if (configured != null) return configured.to
   if (config.i18n === false || config.i18n.redirectUnlocalized !== true) return

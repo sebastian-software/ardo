@@ -421,6 +421,21 @@ describe("llms-text", () => {
     ])
   })
 
+  it("leaves pages with route parameters out of every llms output", () => {
+    const pages = [
+      entry({ frontmatter: { title: "Start" }, routePath: "/guide/start" }),
+      entry({ frontmatter: { title: "Slug" }, routePath: "/guide/:slug" }),
+    ]
+
+    const assets = createLlmsTextAssets(pages, config)
+    expect(assets.map((asset) => asset.fileName)).toStrictEqual([
+      "llms.txt",
+      "llms-full.txt",
+      "guide/start.md",
+    ])
+    for (const asset of assets) expect(asset.source).not.toContain(":slug")
+  })
+
   it("keeps versioned and localized page files under their URL folders, once each", () => {
     const localized = resolveConfig(
       {

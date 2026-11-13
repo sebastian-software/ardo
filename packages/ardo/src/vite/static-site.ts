@@ -108,6 +108,8 @@ export function toHtmlFile(pagePath: string): string {
  * below the base path first, so the output mirrors the deployed URL space.
  */
 export async function prerenderSite(options: {
+  /** The client build's `build.assetsDir`; `assets` when unset. */
+  assetsDir?: string
   base: string
   clientDir: string
   deploymentBase: string
@@ -121,7 +123,7 @@ export async function prerenderSite(options: {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Record<string, ManifestChunk>
   const assets = createAssetResolver(manifest, base)
   const pageDir = resolvePageDirectory(clientDir, base, options.deploymentBase)
-  moveAssets(clientDir, pageDir)
+  moveAssets(clientDir, pageDir, options.assetsDir ?? "assets")
 
   // The server build is plain ESM that Vite just wrote.
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
@@ -190,11 +192,14 @@ function archivedVersionGlobs(versioning: DocumentationVersioningConfig | false 
     .map((version) => `${version.path}**`)
 }
 
-function moveAssets(clientDir: string, pageDir: string): void {
-  const source = path.join(clientDir, "assets")
+function moveAssets(clientDir: string, pageDir: string, assetsDir: string): void {
+  const relative = trimSlashes(path.posix.normalize(assetsDir.replaceAll("\\", "/")))
+  // An empty assetsDir writes assets into the client root itself, which cannot move below it.
+  if (relative === "" || relative === ".") return
+  const source = path.join(clientDir, relative)
   if (pageDir === clientDir || !existsSync(source)) return
-  const target = path.join(pageDir, "assets")
-  mkdirSync(pageDir, { recursive: true })
+  const target = path.join(pageDir, relative)
+  mkdirSync(path.dirname(target), { recursive: true })
   if (existsSync(target)) {
     // With emptyOutDir disabled, retain files already in the version's asset directory.
     cpSync(source, target, { recursive: true })

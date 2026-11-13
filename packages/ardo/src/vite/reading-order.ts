@@ -91,7 +91,9 @@ function comparePages<T extends ReadingOrderPage>(
   const rightOrder = right.page?.metadata.order
   if (leftOrder != null && rightOrder == null) return -1
   if (leftOrder == null && rightOrder != null) return 1
-  return (leftOrder ?? 0) - (rightOrder ?? 0) || nodeTitle(left).localeCompare(nodeTitle(right))
+  return (
+    (leftOrder ?? 0) - (rightOrder ?? 0) || nodeTitle(left).localeCompare(nodeTitle(right), "en")
+  )
 }
 
 function nodeTitle<T extends ReadingOrderPage>(node: ReadingNode<T>): string {

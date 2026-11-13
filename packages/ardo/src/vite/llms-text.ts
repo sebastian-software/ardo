@@ -1,5 +1,4 @@
 import type { LlmsConfig, ResolvedConfig } from "../config/types"
-import type { RouteManifestEntry } from "./route-manifest"
 
 import { getCurrentVersion } from "../config/versioning"
 import { spellPagePath } from "../runtime/trailing-slash"
@@ -8,6 +7,7 @@ import { shiftHeadings } from "./llms-headings"
 import { createLlmsBodyRenderer, toPageMarkdownFileName, toPageMarkdownPath } from "./llms-pages"
 import { type ReadingOrderEntry, sortByReadingOrder } from "./reading-order"
 import { buildPublicPath } from "./route-identity"
+import { isDynamicRoutePath, type RouteManifestEntry } from "./route-manifest"
 
 type LlmsRouteEntry = {
   source: "markdown"
@@ -184,7 +184,9 @@ function getLlmsEntries(
   return sortByReadingOrder(
     entries.filter(
       (entry): entry is LlmsRouteEntry =>
-        entry.source === "markdown" && entry.metadata.llms !== false
+        entry.source === "markdown" &&
+        entry.metadata.llms !== false &&
+        !isDynamicRoutePath(entry.routePath)
     ),
     {
       localeIds: config.i18n === false ? undefined : config.i18n.locales.map((locale) => locale.id),

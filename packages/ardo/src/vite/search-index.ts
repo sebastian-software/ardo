@@ -5,6 +5,7 @@ import path from "node:path"
 import { readNativeMarkdownMetadata } from "../markdown/native-metadata"
 import { stripTrailingExtension } from "./path-utils"
 import {
+  isDynamicRoutePath,
   type RouteManifestEntry,
   type RouteManifestOptions,
   scanRouteManifest,
@@ -182,7 +183,7 @@ function collapseWhitespace(content: string): string {
 }
 
 function isSearchableEntry(entry: RouteManifestEntry): boolean {
-  return entry.source === "markdown"
+  return entry.source === "markdown" && !isDynamicRoutePath(entry.routePath)
 }
 
 function createSectionFromSourcePath(sourcePath: string): string | undefined {

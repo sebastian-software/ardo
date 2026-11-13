@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { scanRouteManifest } from "./route-manifest"
 
@@ -188,5 +188,16 @@ title: Guide
       metadata: { localeId: "de", publicPath: "/v3/de/guide/start", routePath: "/guide/start" },
       routePath: "/guide/start",
     })
+  })
+
+  it("sorts entries with a fixed locale, independent of the build machine", async () => {
+    await fs.writeFile(path.join(tempDir, "zeta.md"), "# Zeta")
+    await fs.writeFile(path.join(tempDir, "Äther.md"), "# Äther")
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    const entries = await scanRouteManifest(tempDir)
+    expect(entries.map((entry) => entry.routePath)).toStrictEqual(["/Äther", "/zeta"])
+    expect(compare).toHaveBeenCalled()
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
+    compare.mockRestore()
   })
 })

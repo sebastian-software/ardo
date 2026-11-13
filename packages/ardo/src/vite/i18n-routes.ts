@@ -25,7 +25,8 @@ export function findLocalizedRouteDiagnostics(
 
   return diagnostics.sort((left, right) =>
     `${left.routePath}:${left.localeId ?? ""}`.localeCompare(
-      `${right.routePath}:${right.localeId ?? ""}`
+      `${right.routePath}:${right.localeId ?? ""}`,
+      "en"
     )
   )
 }

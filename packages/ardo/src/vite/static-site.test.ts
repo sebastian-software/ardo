@@ -137,6 +137,41 @@ describe("preview 404 pages", () => {
   })
 })
 
+describe("prerendered asset directory", () => {
+  let directory: string
+
+  afterEach(() => rmSync(directory, { recursive: true, force: true }))
+
+  it("moves a custom build.assetsDir into the version folder", async () => {
+    directory = mkdtempSync(path.join(os.tmpdir(), "ardo-prerender-assets-"))
+    mkdirSync(path.join(directory, ".vite"))
+    mkdirSync(path.join(directory, "static/js"), { recursive: true })
+    writeFileSync(path.join(directory, "static/js/client.js"), "client")
+    writeFileSync(
+      path.join(directory, ".vite/manifest.json"),
+      JSON.stringify({ "entry-client": { file: "static/js/client.js", isEntry: true } })
+    )
+    const serverEntry = path.join(directory, "server.mjs")
+    writeFileSync(
+      serverEntry,
+      `export function getStaticPaths() { return [] }
+      export async function renderPage() { return { html: "", status: 404 } }`
+    )
+
+    await prerenderSite({
+      assetsDir: "static/js",
+      base: "/v6/",
+      deploymentBase: "/",
+      clientDir: directory,
+      logger: createLogger("silent"),
+      serverEntry,
+    })
+
+    expect(readFileSync(path.join(directory, "v6/static/js/client.js"), "utf8")).toBe("client")
+    expect(existsSync(path.join(directory, "static/js"))).toBe(false)
+  })
+})
+
 describe("prerender response status", () => {
   let directory: string
 

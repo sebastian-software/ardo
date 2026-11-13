@@ -1,6 +1,7 @@
 import { compileJsx } from "ferromark"
 import fs from "node:fs/promises"
 import path from "node:path"
+import { stringify } from "yaml"
 
 import { parseNativeFrontmatter } from "../markdown/native-metadata"
 
@@ -13,7 +14,16 @@ export type ContentSourceFile = {
   sourcePath: string
 }
 
-export type ContentSourceFrontmatterValue = boolean | number | string | string[] | undefined
+/** Any value YAML frontmatter can hold, such as `hero: { name: … }` or `nums: [1, 2]`. */
+export type ContentSourceFrontmatterValue =
+  | boolean
+  | null
+  | number
+  | string
+  | string[]
+  | undefined
+  | ContentSourceFrontmatterValue[]
+  | { [key: string]: ContentSourceFrontmatterValue }
 
 export type ContentSourceMapping = {
   /** Markdown file or directory to materialize into the routes tree. */
@@ -171,7 +181,7 @@ function createMaterializedMarkdown(input: {
           input.file,
           parsed.headings.find((heading) => heading.level === 1)?.text
         )
-      : toRecord(data)),
+      : data),
     ...input.source.frontmatter?.(input.file),
   }
 
@@ -215,49 +225,13 @@ function formatTitleFromFileName(relativePath: string): string {
 }
 
 function serializeFrontmatter(frontmatter: Record<string, ContentSourceFrontmatterValue>): string {
-  const lines = ["---"]
-  for (const [key, value] of Object.entries(frontmatter)) {
-    if (value === undefined) {
-      continue
-    }
-
-    if (Array.isArray(value)) {
-      lines.push(`${key}:`)
-      for (const item of value) {
-        lines.push(`  - ${JSON.stringify(item)}`)
-      }
-      continue
-    }
-
-    lines.push(`${key}: ${typeof value === "string" ? JSON.stringify(value) : String(value)}`)
-  }
-
-  lines.push("---", "")
-  return `${lines.join("\n")}\n`
-}
-
-function toRecord(value: unknown): Record<string, ContentSourceFrontmatterValue> {
-  if (typeof value !== "object" || value == null || Array.isArray(value)) {
-    return {}
-  }
-
-  const record: Record<string, ContentSourceFrontmatterValue> = {}
-  for (const [key, entry] of Object.entries(value)) {
-    if (isFrontmatterValue(entry)) {
-      record[key] = entry
-    }
-  }
-  return record
-}
-
-function isFrontmatterValue(value: unknown): value is ContentSourceFrontmatterValue {
-  return (
-    value === undefined ||
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    (Array.isArray(value) && value.every((entry) => typeof entry === "string"))
-  )
+  // Double-quoted strings and no line folding keep earlier outputs for scalar fields unchanged.
+  const yaml = stringify(frontmatter, {
+    defaultKeyType: "PLAIN",
+    defaultStringType: "QUOTE_DOUBLE",
+    lineWidth: 0,
+  })
+  return `---\n${yaml}---\n\n`
 }
 
 function resolveIndexTargetPath(targetPath: string, sourcePath: string): string {

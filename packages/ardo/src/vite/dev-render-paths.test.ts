@@ -18,11 +18,53 @@ describe("dotted page requests", () => {
     expect(toPagePath(request(url), "/project/", isPage)).toBe(expected)
   })
 
+  it("serves pages whose segments start with @ or __, but not Vite's own requests", () => {
+    const pages = new Set(["/api/@scope/pkg", "/api/__init__", "/@scope"])
+    const isApiPage = (pathname: string) => pages.has(pathname.replace(/\/+$/u, ""))
+    expect(toPagePath(request("/project/api/@scope/pkg"), "/project/", isApiPage)).toBe(
+      "/api/@scope/pkg"
+    )
+    expect(toPagePath(request("/project/api/__init__/"), "/project/", isApiPage)).toBe(
+      "/api/__init__/"
+    )
+    expect(toPagePath(request("/project/@scope"), "/project/", isApiPage)).toBe("/@scope")
+    for (const url of [
+      "/project/@vite/client",
+      "/project/@id/__x00__virtual:ardo/entry-client",
+      "/project/@fs/Users/me/site/app/root.tsx",
+      "/project/@react-refresh",
+      "/project/__open-in-editor",
+      "/project/api/@missing",
+    ]) {
+      expect(toPagePath(request(url), "/project/", isApiPage)).toBeUndefined()
+    }
+  })
+
   it("keeps generated index aliases and leaves unrelated files to Vite", () => {
     expect(toPagePath(request("/project/guide/other/index.html"), "/project/", isPage)).toBe(
       "/guide/other"
     )
     expect(toPagePath(request("/project/app.js"), "/project/", isPage)).toBeUndefined()
+  })
+})
+
+describe("configured redirects in development", () => {
+  it("matches each redirect where the build serves it, below the base", () => {
+    const config = resolveConfig(
+      {
+        title: "Docs",
+        base: "/docs/",
+        redirects: [
+          { from: "/old", to: "/docs/new" },
+          { from: "/docs/legacy/", to: "/docs/new" },
+        ],
+      },
+      "/site"
+    )
+    expect(getDevRedirect("/docs/old", config, [])).toBe("/docs/new")
+    expect(getDevRedirect("/docs/old/", config, [])).toBe("/docs/new")
+    expect(getDevRedirect("/docs/legacy", config, [])).toBe("/docs/new")
+    expect(getDevRedirect("/old", config, [])).toBeUndefined()
   })
 })
 

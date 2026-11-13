@@ -5,6 +5,7 @@ import { createVersioningBuildOutputAssets, getVersioningRedirects } from "./bui
 import { createLlmsTextAssets, type LlmsTextOptions } from "./llms-text"
 import { createCurrentRouteIdentity } from "./route-identity"
 import { generateSitemap } from "./sitemap"
+import { serializeJsonLd } from "../runtime/json-ld"
 import { spellPagePath } from "../runtime/trailing-slash"
 import path from "node:path"
 import { getGitFileTimestamps, sourceHistoryDirectory } from "./git-utils"
@@ -84,6 +85,7 @@ export function collectRedirects(entries: RouteManifestEntry[], config: Resolved
 
 export function generateRedirectHtml(to: string) {
   const escapedTo = escapeHtml(to)
+  // The JSON-LD serializer escapes `<`, so a target cannot close the inline script.
   return [
     "<!doctype html>",
     '<html lang="en">',
@@ -91,7 +93,7 @@ export function generateRedirectHtml(to: string) {
     '  <meta charset="utf-8">',
     `  <meta http-equiv="refresh" content="0; url=${escapedTo}">`,
     `  <link rel="canonical" href="${escapedTo}">`,
-    `  <script>const target=new URL(${JSON.stringify(to)},location.href);if(target.origin===location.origin){if(!target.search)target.search=location.search;if(!target.hash)target.hash=location.hash}location.replace(target.href)</script>`,
+    `  <script>const target=new URL(${serializeJsonLd(to)},location.href);if(target.origin===location.origin){if(!target.search)target.search=location.search;if(!target.hash)target.hash=location.hash}location.replace(target.href)</script>`,
     "</head>",
     `<body><a href="${escapedTo}">Continue</a></body>`,
     "</html>",
@@ -181,6 +183,16 @@ function createRedirectAssets(
 }
 
 function toRedirectAssetName(from: string, deploymentBase: string) {
+  const routePath = toRedirectRoutePath(from, deploymentBase)
+  return routePath === "" ? "index.html" : `${routePath}/index.html`
+}
+
+/** The URL path where the build serves a redirect page, below the deployment base. */
+export function toRedirectSourcePath(from: string, deploymentBase: string): string {
+  return `${deploymentBase}${toRedirectRoutePath(from, deploymentBase)}`
+}
+
+function toRedirectRoutePath(from: string, deploymentBase: string): string {
   // Public URLs include the deployment prefix; artifact paths start below it.
   // Authored redirect sources without that prefix already name artifact paths.
   const relative = from.startsWith(deploymentBase)
@@ -188,8 +200,7 @@ function toRedirectAssetName(from: string, deploymentBase: string) {
     : from === deploymentBase.slice(0, -1)
       ? ""
       : from
-  const routePath = relative.replace(/^\//u, "").replace(/\/$/u, "")
-  return routePath === "" ? "index.html" : `${routePath}/index.html`
+  return relative.replace(/^\//u, "").replace(/\/$/u, "")
 }
 
 function dedupeRedirects(redirects: Array<{ from: string; to: string }>) {

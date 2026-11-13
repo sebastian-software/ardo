@@ -115,6 +115,14 @@ describe("client route modules", () => {
       expect(call(plugin.load, resolved)).toContain("/guide/intro")
     }
   })
+
+  it("orders the route table with a fixed locale, independent of the build machine", () => {
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    createRoutesModule({ root, routesDir })
+    expect(compare).toHaveBeenCalled()
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
+    compare.mockRestore()
+  })
 })
 
 describe("the shared route scan", () => {

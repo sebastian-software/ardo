@@ -9,6 +9,7 @@ import {
   collectRedirects,
   createBuildOutputAssets,
   generateNetlifyRedirects,
+  generateRedirectHtml,
   generateRobots,
   generateSitemap,
   generateVercelRedirects,
@@ -112,6 +113,29 @@ describe("build outputs", () => {
     expect(sitemap).not.toContain("/kit/buttons")
     expect(sitemap).toContain("https://example.com/docs/v3/kitchen</loc>")
     expect(sitemap).toContain("https://example.com/docs/v3/guide</loc>")
+  })
+
+  it("lists only prerendered pages, with percent-encoded paths", () => {
+    const routes = ["/users/:id", "/v:version/notes", "/a b", "/caf%C3%A9", "/über"].map(
+      (routePath) =>
+        entry(baseConfig, {
+          anchors: [],
+          content: "",
+          filePath: `/site/app/routes${routePath}.tsx`,
+          frontmatter: {},
+          lastmod: new Date("2026-01-02T03:04:05.000Z"),
+          routePath,
+          source: "tsx",
+        })
+    )
+    const locs = [...generateSitemap(routes, baseConfig).matchAll(/<loc>(.*)<\/loc>/gu)].map(
+      (match) => match[1]
+    )
+    expect(locs).toStrictEqual([
+      "https://example.com/docs/a%20b",
+      "https://example.com/docs/caf%C3%A9",
+      "https://example.com/docs/%C3%BCber",
+    ])
   })
 
   it("can exclude the root subtree and keeps frontmatter opt-outs", () => {
@@ -430,6 +454,21 @@ describe("build outputs", () => {
     expect(customAssets.find((asset) => asset.fileName === "ai.txt")?.source).toContain(
       "# AI Context"
     )
+  })
+})
+
+describe("redirect pages", () => {
+  it("keeps a target with markup inside the redirect script", () => {
+    const to = "/new/</script><script>alert(1)</script><!--\u2028"
+    const html = generateRedirectHtml(to)
+    const script = html.split("<script>")[1].split("</script>")[0]
+    expect(html.match(/<script>/gu)).toHaveLength(1)
+    expect(html.match(/<\/script>/gu)).toHaveLength(1)
+    expect(script).not.toContain("<")
+    expect(script).not.toContain("\u2028")
+    expect(script).toContain(String.raw`"/new/\u003c/script\u003e`)
+    const literal = script.split("new URL(")[1].split(",location.href")[0]
+    expect(JSON.parse(literal)).toBe(to)
   })
 })
 

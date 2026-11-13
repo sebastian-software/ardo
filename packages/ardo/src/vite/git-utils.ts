@@ -58,6 +58,11 @@ export function sourceHistoryDirectory(
   return path.join(config.sourceRoot, relative)
 }
 
+/** Starts each commit's header in `git log -z` output; no tracked file name starts with it. */
+const COMMIT_MARKER = "\u0001"
+
+let warnedHistoryFailure = false
+
 /**
  * Read commit dates only for tracked files that exist, keyed by their path relative to
  * `directory`; generated routes, and files the directory lacks, use file times.
@@ -66,36 +71,67 @@ export function getGitFileTimestamps(directory: string): Map<string, number> {
   const timestamps = new Map<string, number>()
   try {
     const tracked = new Set(
-      execFileSync("git", ["ls-files", "-z", "--", "."], {
-        cwd: directory,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-        maxBuffer: 16 * 1024 * 1024,
-      })
+      readGit(directory, ["ls-files", "-z", "--", "."])
         .split("\0")
         // A staged copy can still have a file that the source deleted without a commit.
         .filter((file) => file !== "" && fs.existsSync(path.join(directory, file)))
     )
-    const history = execFileSync(
-      "git",
-      ["-c", "core.quotepath=false", "log", "--format=%ct", "--name-only", "--relative", "--", "."],
-      {
-        cwd: directory,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-        maxBuffer: 16 * 1024 * 1024,
-      }
-    )
+    // With -z, names arrive unquoted, so tabs, quotes, and non-ASCII names match `tracked`.
+    const history = readGit(directory, [
+      "log",
+      "-z",
+      `--format=${COMMIT_MARKER}%ct`,
+      "--name-only",
+      "--relative",
+      "--",
+      ".",
+    ])
     let timestamp: number | undefined
-    for (const line of history.split("\n")) {
-      if (/^\d+$/u.test(line)) timestamp = Number(line) * 1000
-      else if (tracked.has(line) && timestamp != null && !timestamps.has(line))
-        timestamps.set(line, timestamp)
+    let afterHeader = false
+    for (const token of history.split("\0")) {
+      // Git separates a commit header from its first file name with a newline.
+      const field: string = afterHeader && token.startsWith("\n") ? token.slice(1) : token
+      afterHeader = field.startsWith(COMMIT_MARKER)
+      if (afterHeader) timestamp = Number(field.slice(COMMIT_MARKER.length)) * 1000
+      else if (tracked.has(field) && timestamp != null && !timestamps.has(field))
+        timestamps.set(field, timestamp)
     }
-  } catch {
-    // Source archives and fresh projects have no Git history; use file times.
+  } catch (error) {
+    // Source archives and fresh projects have no Git history; use file times. A repository whose
+    // history cannot be read would date every page by its checkout, so say so.
+    if (!warnedHistoryFailure && hasCommits(directory)) {
+      warnedHistoryFailure = true
+      console.warn(
+        `[ardo] Could not read the Git history of ${directory}; page dates use file times instead. ${formatGitError(error)}`
+      )
+    }
   }
   return timestamps
+}
+
+function readGit(directory: string, args: string[]): string {
+  return execFileSync("git", args, {
+    cwd: directory,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    // A long history can exceed any fixed limit, and a cut-off log would lose every date.
+    maxBuffer: Number.POSITIVE_INFINITY,
+  })
+}
+
+function hasCommits(directory: string): boolean {
+  try {
+    readGit(directory, ["rev-parse", "--verify", "--quiet", "HEAD"])
+    return true
+  } catch {
+    return false
+  }
+}
+
+function formatGitError(error: unknown): string {
+  const stderr =
+    typeof error === "object" && error != null && "stderr" in error ? String(error.stderr) : ""
+  return stderr.trim() || (error instanceof Error ? error.message : String(error))
 }
 
 /**

@@ -219,7 +219,8 @@ export function resolveArdoEntry(name: "client" | "server"): string {
 }
 
 function sortRoutes(routes: readonly RouteInfo[]): RouteInfo[] {
-  return [...routes].sort((left, right) => left.path.localeCompare(right.path))
+  // A fixed locale keeps the route table, and so the built chunks, the same on every machine.
+  return [...routes].sort((left, right) => left.path.localeCompare(right.path, "en"))
 }
 
 function isVirtualId(id: string): id is VirtualId {
