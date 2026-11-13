@@ -11,7 +11,7 @@ const COMPILER_SPECIFIERS = ["typescript/async", "@typescript/native/async"] as 
 const AST_SPECIFIERS = ["typescript/ast", "@typescript/native/ast"] as const
 
 const INSTALL_HINT =
-  "[ardo:api] Source API documentation requires the native TypeScript 7.1 API. Install typescript@7.1.0-dev.20261011.1 or a later 7.1 release in the documentation package."
+  "[ardo:api] Source API documentation requires the native TypeScript 7.1 API. Install typescript@7.1.0-dev.20261109.1 or a later 7.1 release in the documentation package."
 
 async function importFirst(specifiers: readonly string[]): Promise<unknown> {
   let firstError: unknown

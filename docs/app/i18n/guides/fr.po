@@ -382,6 +382,22 @@ msgstr ""
 " La page prérendue affiche le séparateur à sa position de départ ; il se "
 "déplace une fois la page chargée."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"<0/> manages optional usage reporting, which is off until you consent. "
+"Reporting sends daily counts of <1/>, <2/>, and <3/> commands, the Ardo "
+"version, a random reporting ID, and coarse OS, architecture, and CPU "
+"categories. It never includes command arguments, file paths, or source "
+"content. Reporting is off in CI. Ardo keeps the choice in <4/>."
+msgstr ""
+"<0/> gère le rapport d’utilisation facultatif, désactivé tant que vous "
+"n’y consentez pas. Le rapport envoie le nombre quotidien de commandes <1/>, "
+"<2/> et <3/>, la version d’Ardo, un identifiant de rapport aléatoire et des"
+" catégories générales de système, d’architecture et de CPU. Il "
+"n’inclut jamais les arguments de commande, les chemins de fichiers ni le "
+"contenu source. Le rapport est désactivé en CI. Ardo enregistre votre choix "
+"dans <4/>."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
 "<0/> now exports a selected set of Streamline Core Line components instead of "
@@ -515,6 +531,19 @@ msgid ""
 msgstr ""
 "<0/> utilise Vite avec le middleware de rendu Ardo et sert le même document "
 "que le build."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"<0/> runs the same check on demand. It prints the offered release as JSON with"
+" <1/>, <2/>, and <3/>, or <4/> when no notice is offered, including when "
+"checks are off. <5/> does not prove the installed version is current. The "
+"command exits with 1 when the check fails."
+msgstr ""
+"<0/> lance la même vérification à la demande. Elle affiche la version "
+"proposée en JSON avec <1/>, <2/> et <3/>, ou <4/> lorsqu’aucun avis n’est"
+" proposé, y compris quand les vérifications sont désactivées. <5/> ne "
+"prouve pas que la version installée est à jour. La commande se termine avec "
+"1 en cas d’échec de la vérification."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid ""
@@ -676,6 +705,12 @@ msgstr ""
 "<0/> reçoit les réglages du site comme props et l’interface comme enfants."
 
 #: docs/app/content/guide/getting-started.mdx
+msgid "<0/> turns off update checks, both the automatic notice and <1/>."
+msgstr ""
+"<0/> désactive les vérifications de mise à jour, l’avis automatique comme"
+" <1/>."
+
+#: docs/app/content/guide/getting-started.mdx
 msgid ""
 "<0/> validates the Node.js version, the project config, and every page's "
 "frontmatter without building. Its exit code is 1 when a finding is an error. "
@@ -800,6 +835,10 @@ msgstr ""
 "partie. Parmi ses enfants, <4/> ne reconnaît que <5/>, <6/> et <7/> d’Ardo "
 "; tout autre enfant remplace le contenu. Gardez <8/> autour de vos composants "
 ": il fournit le contexte des hooks suivants."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "<0/>, <1/>, or <2/> builds without the <3>build cache</3>."
+msgstr "<0/>, <1/> ou <2/> construit sans le <3>cache de build</3>."
 
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "<0/>, a full page navigation"
@@ -1524,6 +1563,17 @@ msgstr "6. Créer les premières pages"
 msgid "A <0/> and matching <1/>."
 msgstr "<0/> et <1/> correspondants."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"A <0/> for <1/> in your own Vite configuration replaces Ardo's value, for "
+"example <2/> in <3/> or the same <4/> in <5/>. If both set it, the <6><7/></6>"
+" option wins. Such a <8/> does not change <9/> or the publication moment."
+msgstr ""
+"Un <0/> pour <1/> dans votre propre configuration Vite remplace la valeur "
+"d’Ardo, par exemple <2/> dans <3/> ou le même <4/> dans <5/>. Si les deux "
+"le définissent, l’option <6><7/></6> l’emporte. Un tel <8/> ne modifie ni"
+" <9/> ni le moment de publication."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "A <0>publication post</0> uses its cover image when <1/> is not set, and its "
@@ -1835,15 +1885,16 @@ msgstr "Exemple d’accordéon"
 msgid "Accordions"
 msgstr "Accordéons"
 
-#: docs/app/content/guide/getting-started.mdx
-msgid ""
-"Add a <0/> only when you need extra Vite plugins or Vite-specific settings. "
-"The Ardo CLI adds its build integration automatically, so a custom Vite config"
-" does not need to call <1/>."
-msgstr ""
-"Ajoutez <0/> uniquement pour des plugins supplémentaires ou des paramètres "
-"propres à Vite. La CLI Ardo ajoute automatiquement son intégration ; il "
-"n’est donc pas nécessaire d’appeler <1/> dans votre configuration Vite."
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/getting-started.mdx
+#~ msgid ""
+#~ "Add a <0/> only when you need extra Vite plugins or Vite-specific settings. "
+#~ "The Ardo CLI adds its build integration automatically, so a custom Vite config"
+#~ " does not need to call <1/>."
+#~ msgstr ""
+#~ "Ajoutez <0/> uniquement pour des plugins supplémentaires ou des paramètres "
+#~ "propres à Vite. La CLI Ardo ajoute automatiquement son intégration ; il "
+#~ "n’est donc pas nécessaire d’appeler <1/> dans votre configuration Vite."
 
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
@@ -2127,6 +2178,19 @@ msgstr ""
 msgid "An invalid value fails the build with <0/> or <1/>"
 msgstr "Une valeur invalide fait échouer le build avec <0/> ou <1/>"
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"An optional <0/> still works next to it. Ardo merges <1/> on top of that file "
+"with Vite's <2/>: plugins from <3/> come first, then plugins from <4/>, then "
+"Ardo's own plugins. Arrays and objects are combined; for a single value set in"
+" both places, such as <5/> or one <6/> key, the value from <7/> wins."
+msgstr ""
+"Un <0/> facultatif fonctionne toujours à côté. Ardo fusionne <1/> "
+"par-dessus ce fichier avec <2/> de Vite : les plugins de <3/> passent en "
+"premier, puis ceux de <4/>, puis les plugins d’Ardo. Les tableaux et objets "
+"sont combinés ; pour une valeur unique définie aux deux endroits, comme <5/>"
+" ou une clé de <6/>, la valeur de <7/> l’emporte."
+
 #: docs/app/content/guide/getting-started.mdx
 msgid ""
 "Any TypeScript 6 or newer typechecks an Ardo site. The optional <0>API "
@@ -2136,6 +2200,23 @@ msgstr ""
 "TypeScript 6 ou ultérieur vérifie les types d’un site Ardo. La "
 "<0>documentation API</0> optionnelle nécessite une nightly TypeScript 7.1 "
 "épinglée ; utilisez-la lorsque vous ajoutez <1/>."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Any value other than an empty string, <0/>, or <1/> blocks update checks and "
+"the delivery of usage reports, including deletion requests."
+msgstr ""
+"Toute valeur autre qu’une chaîne vide, <0/> ou <1/> bloque les "
+"vérifications de mise à jour et l’envoi des rapports d’utilisation, y "
+"compris les demandes de suppression."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Any value other than an empty string, <0/>, or <1/> turns off the automatic "
+"update notice. <2/> works the same way."
+msgstr ""
+"Toute valeur autre qu’une chaîne vide, <0/> ou <1/> désactive l’avis "
+"automatique de mise à jour. <2/> fonctionne de la même façon."
 
 #: docs/app/content/guide/api-documentation.mdx
 #: docs/app/content/guide/configuration.mdx
@@ -3037,6 +3118,16 @@ msgstr ""
 msgid "ardo.config.ts"
 msgstr "ardo.config.ts"
 
+#: docs/app/content/guide/api-documentation.mdx
+msgid ""
+"Ardo's <0/> peer range also accepts TypeScript 6, which is enough for a site "
+"without <1/>. With TypeScript 6, <2/> stops <3/> and <4/> with an error that "
+"asks for the TypeScript 7.1 native preview."
+msgstr ""
+"La plage de peer de <0/> d’Ardo accepte aussi TypeScript 6, ce qui suffit "
+"pour un site sans <1/>. Avec TypeScript 6, <2/> arrête <3/> et <4/> avec une "
+"erreur qui demande la préversion native de TypeScript 7.1."
+
 #: docs/app/content/compare/nimbus.mdx
 msgid ""
 "Ardo's <0>API guide</0>, <1>configuration</1>, <2>internationalization</2>, "
@@ -3363,6 +3454,21 @@ msgstr "Syntaxe de base"
 msgid "Basic Usage"
 msgstr "Utilisation de base"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"Before <0/>, <1/>, and <2/> start, Ardo asks a public release endpoint whether"
+" a newer stable Ardo release exists and prints a notice on stderr. It runs "
+"this check only when stderr is a terminal, outside CI, and not with <3/>. The "
+"request carries no reporting ID, installed version, or project data. Ardo "
+"never installs updates; update the <4/> dependency with your package manager."
+msgstr ""
+"Avant le démarrage de <0/>, <1/> et <2/>, Ardo demande à un point d’accès"
+" public si une version stable plus récente d’Ardo existe et affiche un avis"
+" sur stderr. Cette vérification n’a lieu que si stderr est un terminal, "
+"hors CI et sans <3/>. La requête ne contient ni identifiant de rapport, ni "
+"version installée, ni données du projet. Ardo n’installe jamais de mise à"
+" jour ; mettez à jour la dépendance <4/> avec votre gestionnaire de paquets."
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Before:"
 msgstr "Avant :"
@@ -3537,17 +3643,32 @@ msgstr "Sortie du build"
 msgid "Build Output Options"
 msgstr "Options de sortie du build"
 
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/frontmatter.mdx
+#~ msgid ""
+#~ "Build the home page as a TSX route, <0/>, with <1/> and <2/>. A Markdown page "
+#~ "can't render the hero, so frontmatter has no hero or feature fields. "
+#~ "<3>Components</3> shows both with their props, and <4>Getting Started</4> has "
+#~ "a complete home route."
+#~ msgstr ""
+#~ "Construisez l’accueil comme route TSX, <0/>, avec <1/> et <2/>. Une page "
+#~ "Markdown ne peut pas rendre le hero ; le frontmatter n’a donc pas de champs "
+#~ "hero ou features. <3>Composants</3> présente leurs props, et <4>Premiers "
+#~ "pas</4> fournit une route complète."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
 "Build the home page as a TSX route, <0/>, with <1/> and <2/>. A Markdown page "
-"can't render the hero, so frontmatter has no hero or feature fields. "
-"<3>Components</3> shows both with their props, and <4>Getting Started</4> has "
+"can't render the hero: the page layout ignores the <3/> and <4/> fields. Only "
+"<5/>, a standalone home layout with its own header and footer, reads them. "
+"<6>Components</6> shows both with their props, and <7>Getting Started</7> has "
 "a complete home route."
 msgstr ""
 "Construisez l’accueil comme route TSX, <0/>, avec <1/> et <2/>. Une page "
-"Markdown ne peut pas rendre le hero ; le frontmatter n’a donc pas de champs "
-"hero ou features. <3>Composants</3> présente leurs props, et <4>Premiers "
-"pas</4> fournit une route complète."
+"Markdown ne peut pas rendre le hero : la mise en page ignore les champs <3/> "
+"et <4/>. Seul <5/>, une mise en page d’accueil autonome avec son propre "
+"en-tête et pied de page, les lit. <6>Composants</6> présente leurs props, et"
+" <7>Premiers pas</7> fournit une route complète."
 
 #: docs/app/content/compare/nimbus.mdx
 msgid ""
@@ -4050,6 +4171,10 @@ msgstr "Réunissez documentation et exemples React dans une route."
 msgid "Coming from Nimbus"
 msgstr "Venir de Nimbus"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Command"
+msgstr "Commande"
+
 #: docs/app/content/guide/components.mdx
 msgid "Command-line tools and shell examples"
 msgstr "Outils CLI et exemples shell"
@@ -4201,6 +4326,10 @@ msgstr "Vérifiez que le document appartient à <0/> ou à une source activée."
 #: docs/app/content/guide/deployment.mdx
 msgid "Connect your Git repository in the Vercel dashboard and configure:"
 msgstr "Connectez le dépôt Git dans le tableau de bord Vercel et configurez :"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "Consents to reporting"
+msgstr "Donne le consentement au rapport"
 
 #: docs/app/content/guide/configuration.mdx
 msgid "content"
@@ -4608,6 +4737,11 @@ msgstr "Métadonnées d’index de répertoire"
 msgid "Directory where route files are located."
 msgstr "Dossier des fichiers de route."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Disables reporting and requests deletion of data that was already sent"
+msgstr ""
+"Désactive le rapport et demande la suppression des données déjà envoyées"
+
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Discover Headings from Components"
 msgstr "Détecter les titres des composants"
@@ -4842,6 +4976,10 @@ msgstr "Édition et contributions"
 msgid "editLink"
 msgstr "editLink"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Effect"
+msgstr "Effet"
+
 #: docs/app/content/guide/releases/index.mdx
 msgid "Embedded live playgrounds"
 msgstr "Playgrounds intégrés"
@@ -4893,6 +5031,10 @@ msgstr "résumé ou description ;"
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "Ensure Vite dev server is running"
 msgstr "Vérifiez que le serveur Vite tourne."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "Environment Variables"
+msgstr "Variables d’environnement"
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid "Error Pages"
@@ -5350,6 +5492,17 @@ msgid ""
 msgstr ""
 "Définissez par exemple une note commune dans <0/>. Un fragment intégré dans"
 " une autre page n’a pas besoin de frontmatter :"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid ""
+"For extra Vite plugins or Vite-specific settings, use the <0><1/></0> option "
+"in <2/> or add a <3/>. The Ardo CLI adds its build integration automatically, "
+"so a custom Vite config does not need to call <4/>."
+msgstr ""
+"Pour des plugins supplémentaires ou des paramètres propres à Vite, utilisez"
+" l’option <0><1/></0> dans <2/> ou ajoutez <3/>. La CLI Ardo ajoute "
+"automatiquement son intégration ; il n’est donc pas nécessaire d’appeler"
+" <4/> dans votre configuration Vite."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "For fully dynamic code, use the <0/> utility from <1/> at build time:"
@@ -5954,6 +6107,17 @@ msgstr "icons"
 #: docs/app/content/guide/components.mdx
 msgid "Icons"
 msgstr "Icônes"
+
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"If <0/> calls <1/> itself, Ardo reports an error when <2/> also exists. In "
+"that compatibility setup, list plugins in <3/>: Ardo merges the <4/> option "
+"passed to <5/> from its config hook, after Vite has collected the plugins."
+msgstr ""
+"Si <0/> appelle lui-même <1/>, Ardo signale une erreur lorsque <2/> existe "
+"aussi. Dans cette configuration de compatibilité, listez les plugins dans "
+"<3/> : Ardo fusionne l’option <4/> passée à <5/> depuis son hook de "
+"configuration, une fois que Vite a collecté les plugins."
 
 #: docs/app/content/guide/troubleshooting.mdx
 msgid "If deploying to a subdirectory, set the <0/> option in <1/>:"
@@ -7381,13 +7545,14 @@ msgstr ""
 " un avertissement en développement. Cet exemple ne montre que du code, car un"
 " cadre en direct chargerait du contenu tiers dans la galerie."
 
-#: docs/app/content/guide/configuration.mdx
-msgid ""
-"Only Ardo's own <0/> option overrides <1/>, for example <2/>. A top-level <3/>"
-" in <4/> does not."
-msgstr ""
-"Seule l'option <0/> propre à Ardo remplace <1/>, par exemple <2/>. Un <3/> de"
-" premier niveau dans <4/> ne le fait pas."
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Only Ardo's own <0/> option overrides <1/>, for example <2/>. A top-level <3/>"
+#~ " in <4/> does not."
+#~ msgstr ""
+#~ "Seule l'option <0/> propre à Ardo remplace <1/>, par exemple <2/>. Un <3/> de"
+#~ " premier niveau dans <4/> ne le fait pas."
 
 #: docs/app/content/guide/internationalization.mdx
 msgid ""
@@ -7910,6 +8075,10 @@ msgstr ""
 msgid "Previous setting or API"
 msgstr "Ancien réglage ou API"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Prints the disclosure and the subcommands"
+msgstr "Affiche l’avis d’information et les sous-commandes"
+
 #: docs/app/content/guide/components.mdx
 msgid "Processes and automation"
 msgstr "Processus et automatisation"
@@ -8395,13 +8564,14 @@ msgstr ""
 msgid "Required card heading."
 msgstr "Titre obligatoire."
 
-#: docs/app/content/guide/configuration.mdx
-msgid ""
-"Reserved for Vite-adjacent integration data. Configure Vite-specific settings "
-"in an optional <0/>; Ardo's CLI merges that file with its own integration."
-msgstr ""
-"Réservé aux données d’intégration liées à Vite. Placez les réglages "
-"Vite dans un <0/> facultatif, fusionné par la CLI avec son intégration."
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Reserved for Vite-adjacent integration data. Configure Vite-specific settings "
+#~ "in an optional <0/>; Ardo's CLI merges that file with its own integration."
+#~ msgstr ""
+#~ "Réservé aux données d’intégration liées à Vite. Placez les réglages "
+#~ "Vite dans un <0/> facultatif, fusionné par la CLI avec son intégration."
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "Responsive layout that works on any device"
@@ -9038,6 +9208,14 @@ msgstr ""
 " : la syntaxe Markdown s'affiche telle quelle. Pour des liens et une mise en "
 "forme, utilisez <1><2/></1> en MDX."
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Shows the saved choice and effective restrictions as JSON"
+msgstr "Affiche le choix enregistré et les restrictions effectives en JSON"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "Shows unsent reports as JSON"
+msgstr "Affiche les rapports non envoyés en JSON"
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid "sidebar"
 msgstr "sidebar"
@@ -9507,15 +9685,26 @@ msgstr ""
 "tout comme les métadonnées sociales, sauf si l'article définit <4><5/></4>."
 " Les portraits des auteurs sont servis directement en AVIF."
 
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "The <0/> function accepts the same Ardo options that the Vite plugin supports."
+#~ " Add a <1/> only for extra Vite plugins or Vite-specific settings; the CLI "
+#~ "supplies Ardo's plugins automatically."
+#~ msgstr ""
+#~ "<0/> accepte les mêmes options que le plugin Vite. Ajoutez <1/> uniquement "
+#~ "pour d’autres plugins ou réglages Vite ; la CLI fournit automatiquement les"
+#~ " plugins Ardo."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "The <0/> function accepts the same Ardo options that the Vite plugin supports."
-" Add a <1/> only for extra Vite plugins or Vite-specific settings; the CLI "
-"supplies Ardo's plugins automatically."
+" Add extra Vite plugins or Vite-specific settings through the <1><2/></1> "
+"option, or in an optional <3/>; the CLI supplies Ardo's plugins automatically."
 msgstr ""
-"<0/> accepte les mêmes options que le plugin Vite. Ajoutez <1/> uniquement "
-"pour d’autres plugins ou réglages Vite ; la CLI fournit automatiquement les"
-" plugins Ardo."
+"<0/> accepte les mêmes options que le plugin Vite. Ajoutez d’autres plugins"
+" ou réglages Vite avec l’option <1><2/></1> ou dans un <3/> facultatif ; la"
+" CLI fournit automatiquement les plugins Ardo."
 
 #: docs/app/content/guide/publications.mdx
 msgid ""
@@ -10777,6 +10966,10 @@ msgstr ""
 msgid "Update <0/>"
 msgstr "Mettre à jour<0/>"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Update Checks and Usage Reporting"
+msgstr "Vérification des mises à jour et rapport d’utilisation"
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Update content icons"
 msgstr "Mettre à jour les icônes"
@@ -11197,6 +11390,10 @@ msgstr ""
 msgid "Vanilla Extract Tokens"
 msgstr "Tokens Vanilla Extract"
 
+#: docs/app/content/guide/getting-started.mdx
+msgid "Variable"
+msgstr "Variable"
+
 #: docs/app/content/guide/deployment.mdx
 msgid "Vercel"
 msgstr "Vercel"
@@ -11269,6 +11466,17 @@ msgid ""
 "client-side router."
 msgstr "Vite avec HTML par page, routes par fichiers et sans routeur client."
 
+#: docs/app/content/guide/configuration.mdx
+msgid ""
+"Vite configuration for the project. Ardo merges it into the Vite config before"
+" Vite starts, so plugins listed here join Vite's initial plugin list, and "
+"aliases, <0/> values and server settings apply as if they were in <1/>:"
+msgstr ""
+"Configuration Vite du projet. Ardo la fusionne dans la configuration Vite "
+"avant le démarrage de Vite : les plugins listés ici rejoignent la liste "
+"initiale des plugins de Vite, et les alias, les valeurs de <0/> et les "
+"réglages du serveur s’appliquent comme s’ils figuraient dans <1/> :"
+
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid ""
 "Vite keeps the local editing loop fast, production builds optimized, and the "
@@ -11338,6 +11546,10 @@ msgstr "Changements"
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What is Ardo?"
 msgstr "Qu’est-ce qu’Ardo ?"
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "What it does"
+msgstr "Rôle"
 
 #: docs/app/content/guide/what-is-ardo.mdx
 msgid "What Makes Ardo Different"
@@ -11605,6 +11817,10 @@ msgstr ""
 "existante de l'arbre complet de routes reste applicable ; cette "
 "fonctionnalité n'ajoute aucun repli de traduction. Transmettez les libellés "
 "d'interface traduits via <3/> de <2/>."
+
+#: docs/app/content/guide/getting-started.mdx
+msgid "Withdraws consent and discards unsent counts"
+msgstr "Retire le consentement et supprime les comptages non envoyés"
 
 #: docs/app/content/guide/theming.mdx
 msgid ""
