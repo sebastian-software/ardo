@@ -38,11 +38,11 @@ import { validateImagesConfig } from "./images"
 
 import { resolveBuildMetadata, validateBuildMetadataConfig } from "./build-time"
 import { resolveI18nConfig } from "./i18n"
-import { isLintRuleId, lintRuleIds } from "./lint-rules"
 import { validateNavigationConfig } from "./navigation"
 import { validateOpenApiConfig } from "./openapi"
 import { resolveAgentDiscoveryUrl, validateAgentSkillsConfig, validateSitemapConfig } from "./seo"
 import { resolveSourceRoot, validateSourceRootConfig } from "./source-root"
+import { validateChecksConfig } from "./validation"
 import { normalizeBasePath, resolveVersionedBase, resolveVersioningConfig } from "./versioning"
 
 export type * from "../images/public-types"
@@ -175,7 +175,7 @@ function validateConfig(config: ArdoConfig): void {
 
   validateSitemapConfig(config, errors)
   validateAgentSkillsConfig(config, errors)
-  validateLintConfig(config, errors)
+  validateChecksConfig(config, errors)
   validateNavigationConfig(config, errors)
 
   if (errors.length > 0) {
@@ -189,21 +189,6 @@ function validateBaseAndSiteUrl(config: ArdoConfig, errors: string[]): void {
     errors.push('base must start and end with "/" (for example "/docs/").')
   if (config.siteUrl !== undefined && config.siteUrl !== "" && !isValidUrl(config.siteUrl))
     errors.push("siteUrl must be an absolute URL.")
-}
-
-function validateLintConfig(config: ArdoConfig, errors: string[]): void {
-  const lint = config.validation?.lint
-  if (lint == null) return
-
-  for (const [rule, level] of Object.entries(lint)) {
-    if (!isLintRuleId(rule)) {
-      errors.push(
-        `validation.lint has unknown rule "${rule}". Use one of: ${lintRuleIds.join(", ")}.`
-      )
-    } else if (level !== "error" && level !== "warn" && level !== "ignore") {
-      errors.push(`validation.lint.${rule} must be "error", "warn", or "ignore".`)
-    }
-  }
 }
 
 function validateI18nConfig(config: ArdoConfig, errors: string[]): void {
