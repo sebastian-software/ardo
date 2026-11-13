@@ -34,7 +34,7 @@ For future interactive components, the rules from ADR 0015 that remain valid con
 ### Benefits
 
 - `@base-ui/react` and its dependency tree leave every Ardo installation.
-- The accordion lives in one file of under 400 lines, with no part structure to learn.
+- The accordion is a small own implementation with no part structure to learn. `Accordion.tsx` holds the component; since 2026-11-14 its height transition lives in `collapsible-panel.ts`, and the find-in-page handling it shares with tabs and code groups in `disclosure.ts`.
 - The managed runtime optimizer no longer needs a Base UI entry.
 
 ### Trade-offs

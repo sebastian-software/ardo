@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, expect, it } from "vitest"
+import { afterEach, expect, it, vi } from "vitest"
 import { resolveConfig } from "../config"
 import { resolveArdoHref } from "../runtime/page-context"
 import { createCurrentRouteIdentity } from "./route-identity"
@@ -144,4 +144,32 @@ it("preserves an explicit target locale when linking from news to versioned docs
   expect(full).toContain("[German guide](<https://example.test/project/v2/de/guide/a/>)")
   expect(full).toContain("[Local guide](<https://example.test/project/v2/en/guide/a/>)")
   expect(full).not.toContain("https://example.test/project/de/guide/")
+})
+
+it("picks a version root redirect with a fixed locale, independent of the build machine", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "ardo-version-root-order-"))
+  roots.push(root)
+  const routesDir = path.join(root, "app/routes/guide")
+  await fs.mkdir(routesDir, { recursive: true })
+  for (const name of ["zeta", "Äther"])
+    await fs.writeFile(path.join(routesDir, `${name}.md`), "# Page")
+  const config = resolveConfig(
+    {
+      title: "Example",
+      versioning: { current: "v2", versions: [{ id: "v2", path: "/v2/" }], directories: ["guide"] },
+    },
+    root
+  )
+  const manifest = await scanRouteManifest(
+    path.join(root, "app/routes"),
+    createRouteManifestOptions(config)
+  )
+  const compare = vi.spyOn(String.prototype, "localeCompare")
+  expect(getVersioningRedirects(config, manifest)).toContainEqual({
+    from: "/v2/",
+    to: "/v2/guide/Äther/",
+  })
+  expect(compare).toHaveBeenCalled()
+  for (const args of compare.mock.calls) expect(args[1]).toBe("en")
+  compare.mockRestore()
 })
