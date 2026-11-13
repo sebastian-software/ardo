@@ -29,9 +29,9 @@ export default defineArdoConfig({
 })
 ```
 
-The `defineArdoConfig()` function accepts the same Ardo options that the Vite plugin supports. Add a
-`vite.config.ts` only for extra Vite plugins or Vite-specific settings; the CLI supplies Ardo's
-plugins automatically.
+The `defineArdoConfig()` function accepts the same Ardo options that the Vite plugin supports. Add
+extra Vite plugins or Vite-specific settings through the [`vite`](#vite) option, or in an optional
+`vite.config.ts`; the CLI supplies Ardo's plugins automatically.
 
 For example, configure the development server without adding an `ardo()` call:
 
@@ -658,8 +658,31 @@ Ardo 6 no longer renders these tags. Export `meta` from `root.tsx` or a route in
 
 - **Type:** `Record<string, unknown>`
 
-Reserved for Vite-adjacent integration data. Configure Vite-specific settings in an optional
-`vite.config.ts`; Ardo's CLI merges that file with its own integration.
+Vite configuration for the project. Ardo merges it into the Vite config before Vite starts, so
+plugins listed here join Vite's initial plugin list, and aliases, `define` values and server
+settings apply as if they were in `vite.config.ts`:
+
+```ts
+import tailwindcss from "@tailwindcss/vite"
+import { defineArdoConfig } from "ardo/config"
+
+export default defineArdoConfig({
+  title: "My Docs",
+  vite: {
+    plugins: [tailwindcss()],
+    server: { port: 4000 },
+  },
+})
+```
+
+An optional `vite.config.ts` still works next to it. Ardo merges `vite` on top of that file with
+Vite's `mergeConfig`: plugins from `vite.config.ts` come first, then plugins from `vite`, then
+Ardo's own plugins. Arrays and objects are combined; for a single value set in both places, such as
+`base` or one `define` key, the value from `vite` wins.
+
+If `vite.config.ts` calls `ardo()` itself, Ardo reports an error when `ardo.config.ts` also exists.
+In that compatibility setup, list plugins in `vite.config.ts`: Ardo merges the `vite` option passed
+to `ardo()` from its config hook, after Vite has collected the plugins.
 
 ### project
 
@@ -692,9 +715,10 @@ A changed value after a dev restart logs again. If the moment is later
 than the real time, it logs a warning instead: `[ardo] Build time pinned to <iso> (buildTime), which is in the future. Posts scheduled up to that moment are published.`
 `ardo preview` serves an existing build and prints neither.
 
-Only Ardo's own `vite` option overrides `__BUILD_TIME__`, for example
-`ardo({ vite: { define: { __BUILD_TIME__: JSON.stringify("custom") } } })`. A top-level `define` in
-`vite.config.ts` does not.
+A `define` for `__BUILD_TIME__` in your own Vite configuration replaces Ardo's value, for example
+`vite: { define: { __BUILD_TIME__: JSON.stringify("custom") } }` in `ardo.config.ts` or the same
+`define` in `vite.config.ts`. If both set it, the [`vite`](#vite) option wins. Such a `define` does
+not change `config.buildTime` or the publication moment.
 
 Ardo does not read `SOURCE_DATE_EPOCH` or any other environment variable. To pin builds in CI, map
 the variable yourself with the function form of `defineArdoConfig`, and only for `build`. Dev shells

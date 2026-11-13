@@ -306,6 +306,7 @@ Ardo combines page-level redirects with the [`redirects`](/en/guide/configuratio
 ## Home Page
 
 Build the home page as a TSX route, `app/routes/home.tsx`, with `ArdoHero` and `ArdoFeatures`. A
-Markdown page can't render the hero, so frontmatter has no hero or feature fields.
+Markdown page can't render the hero: the page layout ignores the `hero` and `features` fields. Only
+`ArdoHomePage`, a standalone home layout with its own header and footer, reads them.
 [Components](/en/guide/components#hero-and-features) shows both with their props, and
 [Getting Started](/en/guide/getting-started#6-create-your-first-pages) has a complete home route.
