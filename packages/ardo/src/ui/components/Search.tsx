@@ -235,6 +235,8 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
   })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Enter confirms an IME candidate; keyCode 229 covers Safari, which ends composition first.
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return
     const action = getSearchKeyboardAction({
       key: e.key,
       results: state.results,
