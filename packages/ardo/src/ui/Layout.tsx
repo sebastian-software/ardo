@@ -1,10 +1,11 @@
-import { type ReactNode, use } from "react"
+import { type ReactNode, use, useEffect, useRef } from "react"
 import { ArdoHead, ArdoScripts } from "../runtime/document"
 import { ArdoDocumentContext } from "../runtime/document-context"
 import { ArdoContext, useArdoLabels } from "../runtime/hooks"
 import { ARDO_FAVICON_DATA_URL } from "./favicon"
 import { ArdoLayoutVariantContext } from "./layout-context"
 import * as styles from "./Layout.css"
+import { forwardMainScrollKeys, MAIN_SCROLL_RESTORATION_SCRIPT } from "./main-scroll"
 import { type ArdoThemePreference, getArdoThemeBootstrapScript } from "./theme-mode"
 
 // =============================================================================
@@ -86,7 +87,7 @@ export function ArdoRootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script dangerouslySetInnerHTML={{ __html: getArdoThemeBootstrapScript(colorScheme) }} />
+        <InlineScript code={getArdoThemeBootstrapScript(colorScheme)} />
         {icon !== undefined ? (
           // A site icon replaces the owl; the generated favicon.ico stays for old clients.
           <link rel="icon" href={icon} />
@@ -103,10 +104,17 @@ export function ArdoRootLayout({
       </head>
       <body suppressHydrationWarning>
         {children}
+        {/* Runs once main is parsed, so a restored position is in place before the first paint. */}
+        <InlineScript code={MAIN_SCROLL_RESTORATION_SCRIPT} />
         <ArdoScripts />
       </body>
     </html>
   )
+}
+
+/** Ardo's own inline code, which React would escape as text children. */
+function InlineScript({ code }: { code: string }) {
+  return <script dangerouslySetInnerHTML={{ __html: code }} />
 }
 
 function normalizeIconBasePath(basePath: string): string {
@@ -170,6 +178,13 @@ export function ArdoLayout({
   const labels = useArdoLabels()
   const hasHeader = header != null && header !== false
   const isDocumentScroll = scrollMode === "document"
+  const mainRef = useRef<HTMLElement>(null)
+  const scrollsMain = !bare && !isDocumentScroll
+  useEffect(() => {
+    const main = mainRef.current
+    if (!scrollsMain || main == null) return
+    return forwardMainScrollKeys(main)
+  }, [scrollsMain])
   const containerClass = bare
     ? hasHeader
       ? styles.withHeader
@@ -201,6 +216,7 @@ export function ArdoLayout({
           {sidebar}
           <main
             id="main-content"
+            ref={mainRef}
             // Not a tab stop, but a valid focus target for the skip link and for banner dismissal.
             tabIndex={-1}
             className={[
