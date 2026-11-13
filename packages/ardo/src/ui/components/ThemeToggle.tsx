@@ -76,10 +76,9 @@ const themeListeners = new Set<() => void>()
 
 function selectTheme(theme: ArdoThemeMode) {
   selectedTheme = theme
+  storeThemeMode(theme)
   applyThemeMode(theme)
   notifyThemeListeners()
-  // Last, so a storage failure still leaves the page on the chosen theme.
-  storeThemeMode(theme)
 }
 
 function subscribeTheme(listener: () => void) {

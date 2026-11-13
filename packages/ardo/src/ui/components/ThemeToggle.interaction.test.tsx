@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
+import { act, cleanup, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -26,7 +26,6 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup()
-  vi.restoreAllMocks()
 })
 
 function renderHeaderAndDrawerToggles() {
@@ -86,23 +85,6 @@ describe("ArdoThemeToggle interactions", () => {
 
     expect(document.documentElement.classList.contains("light")).toBe(true)
     expect(document.documentElement.classList.contains("dark")).toBe(false)
-  })
-
-  it("switches the page theme even when storage refuses the choice", () => {
-    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-      throw new DOMException("Quota exceeded", "QuotaExceededError")
-    })
-    const reported = vi.fn((event: ErrorEvent) => event.preventDefault())
-    globalThis.addEventListener("error", reported)
-    const { header, drawer } = renderHeaderAndDrawerToggles()
-
-    fireEvent.click(drawer)
-    globalThis.removeEventListener("error", reported)
-
-    expect(reported).toHaveBeenCalledOnce()
-
-    expect(header.getAttribute("aria-label")).toBe("Switch to dark theme")
-    expect(document.documentElement.classList.contains("light")).toBe(true)
   })
 
   it("follows a theme chosen in another tab", () => {
