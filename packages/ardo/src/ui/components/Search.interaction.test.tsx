@@ -140,6 +140,21 @@ describe("ArdoSearch interactions", () => {
     expect(vi.mocked(navigateTo)).toHaveBeenCalledWith("/docs/guide/getting-started/")
   })
 
+  it("ignores Enter while an input method composes text", async () => {
+    const user = userEvent.setup()
+    renderSearch()
+    const input = screen.getByRole("combobox", { name: "Search" })
+    await user.type(input, "install")
+    expect(await screen.findByRole("option", { name: /Getting Started/ })).toBeTruthy()
+    vi.mocked(navigateTo).mockClear()
+
+    fireEvent.keyDown(input, { key: "Enter", isComposing: true })
+    fireEvent.keyDown(input, { key: "Enter", keyCode: 229 })
+
+    expect(vi.mocked(navigateTo)).not.toHaveBeenCalled()
+    expect(screen.getByRole("listbox", { name: "Search results" })).toBeTruthy()
+  })
+
   it("uses the same dotted page URL for Enter and result links", async () => {
     const user = userEvent.setup()
     render(

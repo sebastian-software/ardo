@@ -10,9 +10,9 @@ import {
   getActiveSearchOptionId,
   getSearchKeyboardAction,
   getSearchOptionId,
-  getSearchShortcutModifier,
+  isComposingKeyEvent,
 } from "./search-a11y"
-import { useGlobalSearchShortcut, useOutsideClick } from "./search-hooks"
+import { useGlobalSearchShortcut, useOutsideClick, useSearchShortcutModifier } from "./search-hooks"
 import { loadSearchIndex } from "./search-index"
 import { consumeSearchRecoveryQuery, reloadSearch } from "./search-recovery"
 import * as styles from "./Search.css"
@@ -117,6 +117,7 @@ function SearchInput({
   listboxId: string
   labels: ArdoLabels["search"]
 }) {
+  const shortcutModifier = useSearchShortcutModifier()
   return (
     <div className={styles.searchField}>
       <ChromeIcon name="search" />
@@ -154,7 +155,7 @@ function SearchInput({
         </button>
       )}
       <span className={styles.searchKbd}>
-        <kbd suppressHydrationWarning>{getSearchShortcutModifier()}</kbd>
+        <kbd>{shortcutModifier}</kbd>
         <kbd>K</kbd>
       </span>
     </div>
@@ -239,6 +240,7 @@ export function ArdoSearch({ placeholder, autoFocus = false, shortcut = true }: 
   })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isComposingKeyEvent(e.nativeEvent)) return
     const action = getSearchKeyboardAction({
       key: e.key,
       results: state.results,

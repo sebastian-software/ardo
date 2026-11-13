@@ -16,6 +16,15 @@ export function resolveTocScrollRegion() {
   return { root, height: height > 0 ? height : globalThis.innerHeight }
 }
 
+/** The last heading, in document order, whose top has scrolled above `line`. */
+export function findPassedHeadingId(headings: HTMLElement[], line: number): string | undefined {
+  let passed: string | undefined
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= line) passed = heading.id
+  }
+  return passed
+}
+
 export function scrollToHeading(id: string) {
   const element = document.getElementById(id)
   const container = resolveTocScrollRegion().root ?? document

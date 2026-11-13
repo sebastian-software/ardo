@@ -78,6 +78,14 @@ function getResultAtIndex<T>(results: T[], selectedIndex: number) {
   return results[selectedIndex]
 }
 
+/**
+ * True while an input method composes text, when Enter confirms a candidate instead of a result.
+ * keyCode 229 covers Safari, which ends composition before the Enter keydown.
+ */
+export function isComposingKeyEvent(event: Pick<KeyboardEvent, "isComposing" | "keyCode">) {
+  return event.isComposing || event.keyCode === 229
+}
+
 type ShortcutKeyEvent = Pick<KeyboardEvent, "altKey" | "ctrlKey" | "key" | "metaKey">
 
 /** True for the global search shortcut: ⌘K on macOS, Ctrl+K elsewhere. */
@@ -85,10 +93,13 @@ export function isSearchShortcut(event: ShortcutKeyEvent): boolean {
   return (event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === "k"
 }
 
+/** Shortcut modifier label rendered on the server, before the platform is known. */
+export const SERVER_SEARCH_SHORTCUT_MODIFIER = "⌘"
+
 /** Modifier label for the shortcut hint. Defaults to ⌘ when no platform is known (SSR). */
 export function getSearchShortcutModifier(
   platform = typeof navigator === "undefined" ? undefined : navigator.platform
 ): string {
-  if (platform == null) return "⌘"
+  if (platform == null) return SERVER_SEARCH_SHORTCUT_MODIFIER
   return /Mac|iPhone|iPad|iPod/.test(platform) ? "⌘" : "Ctrl"
 }

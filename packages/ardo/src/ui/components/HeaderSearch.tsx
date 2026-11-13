@@ -9,7 +9,8 @@ import { joinClassNames } from "../classnames"
 import { focusInitialElement, trapFocus } from "../mobile-drawer-a11y"
 import * as styles from "./HeaderSearch.css"
 import { ArdoSearch } from "./Search"
-import { getSearchShortcutModifier, isSearchShortcut } from "./search-a11y"
+import { isSearchShortcut } from "./search-a11y"
+import { useSearchShortcutModifier } from "./search-hooks"
 import { loadSearchIndex } from "./search-index"
 import { getSearchRecoveryQuery } from "./search-recovery"
 import type { ModelContext } from "./search-webmcp"
@@ -46,6 +47,7 @@ export function ArdoHeaderSearch({
   const overlayRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const isIcon = variant === "icon"
+  const shortcutModifier = useSearchShortcutModifier()
 
   useSearchOverlayFocus({
     onClose: closeOverlay,
@@ -79,7 +81,7 @@ export function ArdoHeaderSearch({
       >
         <ChromeIcon name="search" />
         <span className={styles.tooltip} aria-hidden="true">
-          <kbd suppressHydrationWarning>{getSearchShortcutModifier()}</kbd>
+          <kbd>{shortcutModifier}</kbd>
           <kbd>K</kbd>
         </span>
       </button>
@@ -226,6 +228,7 @@ function useSearchOverlayFocus({
     const overlay = overlayRef.current
     const inlineElement = inlineRef.current
     const triggerElement = triggerRef.current
+    const previousOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
 
     if (overlay != null) {
@@ -246,7 +249,7 @@ function useSearchOverlayFocus({
 
     document.addEventListener("keydown", handleKeyDown)
     return () => {
-      document.body.style.overflow = ""
+      document.body.style.overflow = previousOverflow
       document.removeEventListener("keydown", handleKeyDown)
       if (!focusSearchField(inlineElement)) triggerElement?.focus()
     }

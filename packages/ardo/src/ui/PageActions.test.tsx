@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
@@ -9,7 +9,19 @@ import { ArdoPageActions } from "./PageActions"
 afterEach(() => {
   cleanup()
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
+
+/** jsdom has no `ClipboardItem`; this stub keeps the promised data for the test to read. */
+class ClipboardItemStub {
+  constructor(readonly items: Record<string, Promise<Blob>>) {}
+}
+
+async function clipboardText(write: ReturnType<typeof vi.fn>): Promise<string> {
+  const [[item]] = write.mock.calls[0] as [[ClipboardItemStub]]
+  const blob = await item.items["text/plain"]
+  return blob.text()
+}
 
 describe("page actions", () => {
   it("links to the Markdown file and fetches nothing until Copy page is clicked", () => {
@@ -78,6 +90,48 @@ describe("page actions", () => {
     render(<ArdoPageActions markdownPath="/docs/guide/start.md" />)
 
     await user.click(screen.getByRole("button", { name: "Copy page" }))
+
+    expect(
+      await screen.findByText("Copying failed. Open the Markdown version instead.")
+    ).toBeTruthy()
+  })
+
+  it("starts the clipboard write within the click, before the Markdown file arrives", async () => {
+    vi.stubGlobal("ClipboardItem", ClipboardItemStub)
+    let respond: (response: Response) => void = vi.fn()
+    const fetch = vi.spyOn(globalThis, "fetch").mockReturnValue(
+      new Promise((resolve) => {
+        respond = resolve
+      })
+    )
+    const write = vi.fn<(items: ClipboardItemStub[]) => Promise<void>>(async ([item]) => {
+      await item.items["text/plain"]
+    })
+    vi.spyOn(navigator.clipboard, "write").mockImplementation(write as never)
+    const writeText = vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue()
+    render(<ArdoPageActions markdownPath="/docs/guide/start.md" />)
+
+    fireEvent.click(screen.getByRole("button", { name: "Copy page" }))
+
+    expect(fetch).toHaveBeenCalledWith("/docs/guide/start.md")
+    expect(write).toHaveBeenCalledOnce()
+    respond(new Response("# Start\n", { status: 200 }))
+    expect(await screen.findByRole("button", { name: "Copied!" })).toBeTruthy()
+    expect(await clipboardText(write)).toBe("# Start\n")
+    expect(writeText).not.toHaveBeenCalled()
+  })
+
+  it("reports a missing Markdown file when copying through a clipboard item", async () => {
+    vi.stubGlobal("ClipboardItem", ClipboardItemStub)
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("", { status: 404 }))
+    vi.spyOn(navigator.clipboard, "write").mockImplementation((async ([item]: [
+      ClipboardItemStub,
+    ]) => {
+      await item.items["text/plain"]
+    }) as never)
+    render(<ArdoPageActions markdownPath="/docs/guide/missing.md" />)
+
+    fireEvent.click(screen.getByRole("button", { name: "Copy page" }))
 
     expect(
       await screen.findByText("Copying failed. Open the Markdown version instead.")

@@ -24,9 +24,7 @@ export function ArdoPageActions({ markdownPath }: { markdownPath: string }) {
 
   const handleCopy = async () => {
     try {
-      const response = await fetch(markdownPath)
-      if (!response.ok) throw new Error(`Markdown request failed with ${response.status}`)
-      await navigator.clipboard.writeText(await response.text())
+      await copyMarkdown(markdownPath)
       setStatus("copied")
     } catch {
       setStatus("error")
@@ -58,4 +56,22 @@ export function ArdoPageActions({ markdownPath }: { markdownPath: string }) {
       </span>
     </div>
   )
+}
+
+function copyMarkdown(markdownPath: string): Promise<void> {
+  // Safari rejects clipboard writes that start after an await, outside the click's user
+  // activation. A ClipboardItem accepts the pending text, so the write starts right away.
+  if (typeof ClipboardItem === "function" && typeof navigator.clipboard.write === "function") {
+    const text = fetchMarkdown(markdownPath).then(
+      (markdown) => new Blob([markdown], { type: "text/plain" })
+    )
+    return navigator.clipboard.write([new ClipboardItem({ "text/plain": text })])
+  }
+  return fetchMarkdown(markdownPath).then((markdown) => navigator.clipboard.writeText(markdown))
+}
+
+async function fetchMarkdown(markdownPath: string): Promise<string> {
+  const response = await fetch(markdownPath)
+  if (!response.ok) throw new Error(`Markdown request failed with ${response.status}`)
+  return response.text()
 }

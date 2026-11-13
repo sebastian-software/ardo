@@ -241,7 +241,7 @@ export function ArdoSidebarGroup({
   const hasChildren = Children.count(children) > 0
   const hasTo = (to ?? "") !== ""
   const canToggle = collapsible && hasChildren
-  const toggleLabel = `${collapsed ? "Expand" : "Collapse"} ${title}`
+  const toggleLabel = `${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${title}`
 
   const itemClassName =
     className ??
@@ -285,7 +285,7 @@ export function ArdoSidebarGroup({
             onClick={() => {
               setCollapsed(!collapsed)
             }}
-            aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${title}`}
+            aria-label={toggleLabel}
             aria-expanded={!collapsed}
             aria-controls={contentId}
           >
@@ -425,15 +425,9 @@ function useSidebarItem(item: SidebarItemType): SidebarItemState {
   const contentId = useId()
   const childItems = item.items ?? []
   const hasChildren = childItems.length > 0
-  const hasActiveChild =
-    hasChildren &&
-    childItems.some(
-      (child) =>
-        child.link === currentPath ||
-        child.items?.some((grandchild) => grandchild.link === currentPath)
-    )
+  const hasActiveChild = sidebarItemsContainPath(childItems, currentPath)
   const hasItemLink = (item.link ?? "") !== ""
-  const isSelfActive = hasItemLink && item.link === currentPath
+  const isSelfActive = hasItemLink && isSamePagePath(item.link, currentPath)
   // A collapsed group still opens on its own page and on the pages inside it.
   const [collapsed, setCollapsed] = useState(
     (item.collapsed ?? false) && !hasActiveChild && !isSelfActive
@@ -461,8 +455,27 @@ function sidebarItemClass(hasChildren: boolean) {
   return [styles.sidebarItem, hasChildren && styles.sidebarItemGroup].filter(Boolean).join(" ")
 }
 
-function toggleAria(collapsed: boolean, text: string) {
-  return `${collapsed ? "Expand" : "Collapse"} ${text}`
+function sidebarItemsContainPath(items: SidebarItemType[], currentPath: string): boolean {
+  return items.some(
+    (item) =>
+      isSamePagePath(item.link, currentPath) ||
+      sidebarItemsContainPath(item.items ?? [], currentPath)
+  )
+}
+
+/** Page paths match with or without the folder slash, as in `useIsActivePath`. */
+function isSamePagePath(link: string | undefined, currentPath: string): boolean {
+  return link != null && link !== "" && trimTrailingSlash(link) === trimTrailingSlash(currentPath)
+}
+
+function trimTrailingSlash(pathname: string): string {
+  return pathname.length > 1 ? pathname.replace(/\/+$/u, "") : pathname
+}
+
+function useToggleAria() {
+  const labels = useArdoLabels().sidebar
+  return (collapsed: boolean, text: string) =>
+    `${collapsed ? labels.expand : labels.collapse} ${text}`
 }
 
 /** Standalone chevron button shown alongside a linked (navigable) group title. */
@@ -473,14 +486,14 @@ function CollapseButton({
   item: SidebarItemType
   state: Pick<SidebarItemState, "collapsed" | "contentId" | "toggle">
 }) {
-  const labels = useArdoLabels()
+  const toggleAria = useToggleAria()
   const { collapsed, toggle, contentId } = state
   return (
     <button
       type="button"
       className={[styles.sidebarCollapse, collapsed && "collapsed"].filter(Boolean).join(" ")}
       onClick={toggle}
-      aria-label={`${collapsed ? labels.sidebar.expand : labels.sidebar.collapse} ${item.text}`}
+      aria-label={toggleAria(collapsed, item.text)}
       aria-expanded={!collapsed}
       aria-controls={contentId}
     >
@@ -517,6 +530,7 @@ function SidebarItemChildren({
  */
 function SidebarGroupNode({ item, depth }: ItemProps) {
   const state = useSidebarItem(item)
+  const toggleAria = useToggleAria()
   const { collapsed, toggle, contentId, hasChildren, hasActiveChild, hasItemLink, isSelfActive } =
     state
   const capsuleState = isSelfActive ? "active" : hasActiveChild ? "child-active" : ""
@@ -558,6 +572,7 @@ function SidebarGroupNode({ item, depth }: ItemProps) {
 /** Plain link/section used for nested entries and flat (non-tree) top-level lists. */
 function SidebarLeafItem({ item, depth }: ItemProps) {
   const state = useSidebarItem(item)
+  const toggleAria = useToggleAria()
   const { collapsed, toggle, contentId, hasChildren, hasActiveChild, hasItemLink } = state
   const linkClassName = [styles.sidebarLink, hasActiveChild && "child-active"]
     .filter(Boolean)
@@ -745,12 +760,12 @@ function textFromNode(node: ReactNode): string {
 
 function isSidebarChildActive(child: ReactElement, currentPath: string): boolean {
   if (isSidebarLinkElement(child)) {
-    return child.props.to === currentPath
+    return isSamePagePath(child.props.to, currentPath)
   }
   if (isSidebarGroupElement(child)) {
     const groupProps = child.props
     return (
-      groupProps.to === currentPath ||
+      isSamePagePath(groupProps.to, currentPath) ||
       (groupProps.children != null && checkChildrenActive(groupProps.children, currentPath))
     )
   }

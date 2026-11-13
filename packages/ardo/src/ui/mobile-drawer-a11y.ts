@@ -16,10 +16,13 @@ export type FocusableElementCandidate = {
 export function getTrappedFocusTarget<T>({
   activeElement,
   focusableElements,
+  focusInside = true,
   shiftKey,
 }: {
   activeElement: null | T
   focusableElements: T[]
+  /** False when focus rests on the container itself or outside it. */
+  focusInside?: boolean
   shiftKey: boolean
 }): T | undefined {
   const firstElement = focusableElements[0]
@@ -27,6 +30,10 @@ export function getTrappedFocusTarget<T>({
 
   if (firstElement == null || lastElement == null) {
     return
+  }
+
+  if (!focusInside) {
+    return shiftKey ? lastElement : firstElement
   }
 
   if (shiftKey && activeElement === firstElement) {
@@ -65,6 +72,9 @@ export function trapFocus(event: KeyboardEvent, container: HTMLElement): void {
   const target = getTrappedFocusTarget({
     activeElement,
     focusableElements,
+    // Clicking empty space focuses the tabIndex=-1 container; Shift+Tab would leave from there.
+    focusInside:
+      activeElement != null && activeElement !== container && container.contains(activeElement),
     shiftKey: event.shiftKey,
   })
 

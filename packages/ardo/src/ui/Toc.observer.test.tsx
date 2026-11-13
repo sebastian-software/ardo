@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { TOCItem } from "../config/types"
@@ -34,7 +34,38 @@ function renderToc(
   )
 }
 
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => {
+  vi.useRealTimers()
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+})
+
+type ObserverEntry = { target: HTMLElement; isIntersecting: boolean }
+
+function captureObserver() {
+  const observer: { notify: (entries: ObserverEntry[]) => void } = { notify: vi.fn() }
+  vi.stubGlobal(
+    "IntersectionObserver",
+    vi.fn(function createObserver(callback: (entries: ObserverEntry[]) => void) {
+      observer.notify = callback
+      return { observe: vi.fn(), disconnect: vi.fn() }
+    })
+  )
+  return observer
+}
+
+function placeHeading(heading: HTMLElement, top: number) {
+  vi.spyOn(heading, "getBoundingClientRect").mockReturnValue(new DOMRect(0, top, 600, 32))
+}
+
+function activeLink() {
+  return document.querySelector('a[aria-current="location"]')?.textContent ?? ""
+}
+
+const flatToc: TOCItem[] = [
+  { id: "first", text: "First", level: 2 },
+  { id: "child", text: "Child", level: 3 },
+]
 
 describe("TOC observer lifecycle", () => {
   it("uses viewport height for its detection band and updates it after resizing", () => {
@@ -129,6 +160,50 @@ describe("TOC observer lifecycle", () => {
     vi.stubGlobal("IntersectionObserver", undefined)
     const view = renderToc()
     expect(screen.getByRole("link", { name: "First" }).getAttribute("href")).toBe("#first")
+    view.unmount()
+  })
+
+  it("marks the section being read again after scrolling back up", () => {
+    vi.stubGlobal("innerHeight", 1000)
+    const observer = captureObserver()
+    const view = renderToc("visible", flatToc)
+    const first = screen.getByRole("heading", { name: "First" })
+    const child = screen.getByRole("heading", { name: "Child" })
+
+    placeHeading(first, -600)
+    placeHeading(child, 40)
+    act(() => observer.notify([{ target: child, isIntersecting: true }]))
+    expect(activeLink()).toBe("Child")
+
+    // Back up into the body of First: Child leaves the band downwards and nothing enters it.
+    placeHeading(first, -300)
+    placeHeading(child, 320)
+    act(() => observer.notify([{ target: child, isIntersecting: false }]))
+    expect(activeLink()).toBe("First")
+    view.unmount()
+  })
+
+  it("keeps the observer paused until the last of several quick outline clicks settles", () => {
+    vi.useFakeTimers()
+    vi.stubGlobal("matchMedia", () => ({ matches: true }))
+    vi.spyOn(Element.prototype, "scrollIntoView").mockImplementation(vi.fn())
+    const observer = captureObserver()
+    const view = renderToc("visible", flatToc)
+    const first = screen.getByRole("heading", { name: "First" })
+    const child = screen.getByRole("heading", { name: "Child" })
+    placeHeading(first, 0)
+    placeHeading(child, 0)
+
+    fireEvent.click(screen.getByRole("link", { name: "Child" }))
+    act(() => vi.advanceTimersByTime(600))
+    fireEvent.click(screen.getByRole("link", { name: "First" }))
+    act(() => vi.advanceTimersByTime(600))
+    act(() => observer.notify([{ target: child, isIntersecting: true }]))
+    expect(activeLink()).toBe("First")
+
+    act(() => vi.advanceTimersByTime(600))
+    act(() => observer.notify([{ target: child, isIntersecting: true }]))
+    expect(activeLink()).toBe("Child")
     view.unmount()
   })
 })
