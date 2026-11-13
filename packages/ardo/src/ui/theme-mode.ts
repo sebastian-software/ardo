@@ -50,17 +50,25 @@ export function getInitialThemeMode(): ArdoThemeMode {
   const configured = getConfiguredThemeMode()
   if (configured != null) return configured
   if (!isBrowser) return "system"
-  const stored = localStorage.getItem(ARDO_THEME_STORAGE_KEY)
-  return isThemeMode(stored) ? stored : "system"
+  try {
+    const stored = localStorage.getItem(ARDO_THEME_STORAGE_KEY)
+    return isThemeMode(stored) ? stored : "system"
+  } catch {
+    return "system"
+  }
 }
 
 export function storeThemeMode(theme: ArdoThemeMode): void {
-  if (getConfiguredThemeMode() != null) {
-    localStorage.removeItem(ARDO_THEME_STORAGE_KEY)
-    return
-  }
+  try {
+    if (getConfiguredThemeMode() != null) {
+      localStorage.removeItem(ARDO_THEME_STORAGE_KEY)
+      return
+    }
 
-  localStorage.setItem(ARDO_THEME_STORAGE_KEY, theme)
+    localStorage.setItem(ARDO_THEME_STORAGE_KEY, theme)
+  } catch {
+    // Storage is blocked; the theme still applies for this page view.
+  }
 }
 
 export function applyThemeMode(theme: ArdoThemeMode): void {

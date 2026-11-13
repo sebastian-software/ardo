@@ -157,6 +157,19 @@ describe("validatePageFrontmatter", () => {
     })
   })
 
+  it("accepts outline heading levels from 1 to 6 only", () => {
+    for (const outline of [false, true, 2, [2, 4], [3, 3]])
+      expect(validatePageFrontmatter({ outline }).frontmatter).toStrictEqual({ outline })
+    for (const outline of [0, 7, 2.5, [4, 2], [2, 9], [2], "deep"])
+      expect(validatePageFrontmatter({ outline }).diagnostics).toStrictEqual([
+        {
+          field: "outline",
+          kind: "invalid",
+          message: 'Invalid value for frontmatter field "outline".',
+        },
+      ])
+  })
+
   it("reports layouts that change nothing as invalid", () => {
     for (const layout of ["doc", "home", "page"]) {
       expect(validatePageFrontmatter({ layout }).diagnostics).toStrictEqual([

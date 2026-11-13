@@ -183,15 +183,36 @@ collapsed: false
 
 ### outline
 
-- Type: `boolean`
+- Type: `boolean | number | [number, number]`
 - Default: `true`
 
-Set `outline: false` to hide the outline of this page. Which heading levels the outline lists is a
-site-wide setting, [`markdown.toc.level`](/en/guide/configuration#markdown-toc) in `ardo.config.ts`.
+Set `outline: false` to hide the outline of this page. With `true`, the outline lists the heading
+levels of the site-wide setting [`markdown.toc.level`](/en/guide/configuration#markdown-toc) in
+`ardo.config.ts`. A number lists only that heading level, and `[min, max]` lists the levels in that
+range, for this page alone. Levels run from 1 to 6.
 
 ```yaml
 ---
-outline: false
+outline: [2, 4]
+---
+```
+
+### prev and next
+
+- Type: `false | string | { text: string; link: string }`
+- Default: the neighbouring pages in the sidebar
+
+The links at the end of a page lead to the previous and next pages of the sidebar. Set `prev` or
+`next` to `false` to hide that link. A string keeps the sidebar page but changes the link text. An
+object with `text` and `link` points to another page; Ardo resolves the link like other links on the
+page, so it can be relative and gets the base path.
+
+```yaml
+---
+prev: false
+next:
+  text: Deploy your site
+  link: /en/guide/deployment
 ---
 ```
 
@@ -306,6 +327,7 @@ Ardo combines page-level redirects with the [`redirects`](/en/guide/configuratio
 ## Home Page
 
 Build the home page as a TSX route, `app/routes/home.tsx`, with `ArdoHero` and `ArdoFeatures`. A
-Markdown page can't render the hero, so frontmatter has no hero or feature fields.
+Markdown page can't render the hero: the page layout ignores the `hero` and `features` fields. Only
+`ArdoHomePage`, a standalone home layout with its own header and footer, reads them.
 [Components](/en/guide/components#hero-and-features) shows both with their props, and
 [Getting Started](/en/guide/getting-started#6-create-your-first-pages) has a complete home route.

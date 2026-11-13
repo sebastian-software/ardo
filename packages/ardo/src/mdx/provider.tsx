@@ -33,7 +33,7 @@ function SmartLink({
 }: AnchorHTMLAttributes<HTMLAnchorElement>) {
   const hrefValue = href ?? ""
   const hasHref = hrefValue !== ""
-  const isExternal = hrefValue.startsWith("http") || hrefValue.startsWith("//")
+  const isExternal = /^https?:\/\//i.test(hrefValue) || hrefValue.startsWith("//")
   const isAnchor = hrefValue.startsWith("#")
 
   if (isExternal) {

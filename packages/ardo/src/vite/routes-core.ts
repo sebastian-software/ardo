@@ -105,7 +105,7 @@ function isRouteFile(entryName: string): boolean {
   return entryName.endsWith(".md") || entryName.endsWith(".mdx") || entryName.endsWith(".tsx")
 }
 
-function isIgnoredRouteFile(entryName: string): boolean {
+export function isIgnoredRouteFile(entryName: string): boolean {
   return entryName === "root.tsx" || entryName.startsWith("_")
 }
 
@@ -142,7 +142,7 @@ function toRoutePath(params: {
   return applyDynamicSegments(`/${withoutExtension.replaceAll("\\", "/")}`)
 }
 
-function isIndexRoute(baseName: string): boolean {
+export function isIndexRoute(baseName: string): boolean {
   return baseName === "index" || baseName === "home"
 }
 

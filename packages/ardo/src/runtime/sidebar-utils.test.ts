@@ -33,6 +33,20 @@ describe("documentation route matching", () => {
     expect(getPrevNextLinks(sidebar, "/rust/missing/")).toStrictEqual({})
   })
 
+  it("lets page frontmatter hide, rename, or replace a neighbour", () => {
+    const path = "/rust/configuration"
+    expect(getPrevNextLinks(sidebar, path, { prev: false, next: "Build" })).toStrictEqual({
+      next: { text: "Build", link: "/rust/pipelines/" },
+    })
+    expect(
+      getPrevNextLinks(sidebar, "/rust/missing/", { next: { text: "Home", link: "/" } })
+    ).toStrictEqual({ next: { text: "Home", link: "/" } })
+    // A string names the sidebar neighbour; without one there is nothing to link.
+    expect(getPrevNextLinks(sidebar, "/rust/getting-started/", { prev: "Back" })).toStrictEqual({
+      next: { text: "Configuration", link: "/rust/configuration" },
+    })
+  })
+
   it("keeps the root route distinct from an absent link", () => {
     expect(sidebarPathsMatch("/", "/")).toBe(true)
     expect(sidebarPathsMatch(undefined, "/")).toBe(false)

@@ -105,7 +105,7 @@ export default defineArdoConfig({
 
 The site serves from the domain root. For a subpath, such as a GitHub Pages project site, set `base`; the [Deployment](/en/guide/deployment) guide covers every host.
 
-Add a `vite.config.ts` only when you need extra Vite plugins or Vite-specific settings. The Ardo CLI
+For extra Vite plugins or Vite-specific settings, use the [`vite`](/en/guide/configuration#vite) option in `ardo.config.ts` or add a `vite.config.ts`. The Ardo CLI
 adds its build integration automatically, so a custom Vite config does not need to call `ardo()`.
 
 ### 5. Create app files
@@ -230,6 +230,32 @@ pnpm exec ardo lint
 ```
 
 Both commands load the project config and run its plugins, as `ardo build` does, so generated pages such as the API reference may be refreshed.
+
+## Update Checks and Usage Reporting
+
+Before `ardo dev`, `ardo build`, and `ardo preview` start, Ardo asks a public release endpoint whether a newer stable Ardo release exists and prints a notice on stderr. It runs this check only when stderr is a terminal, outside CI, and not with `--logLevel silent`. The request carries no reporting ID, installed version, or project data. Ardo never installs updates; update the `ardo` dependency with your package manager.
+
+`ardo update-check` runs the same check on demand. It prints the offered release as JSON with `latestVersion`, `releaseUrl`, and `stale`, or `null` when no notice is offered, including when checks are off. `null` does not prove the installed version is current. The command exits with 1 when the check fails.
+
+`ardo telemetry` manages optional usage reporting, which is off until you consent. Reporting sends daily counts of `build`, `dev`, and `preview` commands, the Ardo version, a random reporting ID, and coarse OS, architecture, and CPU categories. It never includes command arguments, file paths, or source content. Reporting is off in CI. Ardo keeps the choice in `~/.ardo`.
+
+| Command                       | What it does                                                           |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `ardo telemetry`              | Prints the disclosure and the subcommands                              |
+| `ardo telemetry status`       | Shows the saved choice and effective restrictions as JSON              |
+| `ardo telemetry preview`      | Shows unsent reports as JSON                                           |
+| `ardo telemetry enable --yes` | Consents to reporting                                                  |
+| `ardo telemetry disable`      | Withdraws consent and discards unsent counts                           |
+| `ardo telemetry delete`       | Disables reporting and requests deletion of data that was already sent |
+
+## Environment Variables
+
+| Variable            | Effect                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ARDO_UPDATE_CHECK` | `0` turns off update checks, both the automatic notice and `ardo update-check`.                                                            |
+| `ARDO_OFFLINE`      | Any value other than an empty string, `0`, or `false` blocks update checks and the delivery of usage reports, including deletion requests. |
+| `ARDO_CACHE`        | `false`, `0`, or `off` builds without the [build cache](/en/guide/deployment#build-cache).                                                 |
+| `CI`                | Any value other than an empty string, `0`, or `false` turns off the automatic update notice. `CONTINUOUS_INTEGRATION` works the same way.  |
 
 ## Next Steps
 

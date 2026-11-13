@@ -18,7 +18,7 @@ pages from an [OpenAPI specification](#openapi-specs) instead.
 The current integration uses a pinned TypeScript 7.1 nightly and the OXC parser:
 
 ```bash
-pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.155.0
+pnpm add -D typescript@7.1.0-dev.20261109.1 oxc-parser@^0.158.0
 ```
 
 Ardo reads your declarations through the native API of TypeScript 7.1, which
@@ -26,6 +26,10 @@ also typechecks your project. TypeScript 7.0 does not work: its native API is
 still marked unstable and lacks the snapshot, emit and module resolution calls
 Ardo uses. The supported build is a pinned nightly; it is not a released 7.1
 beta. Projects that installed it as the `@typescript/native` alias keep working.
+
+Ardo's `typescript` peer range also accepts TypeScript 6, which is enough for a
+site without `api`. With TypeScript 6, `api` stops `ardo dev` and `ardo build`
+with an error that asks for the TypeScript 7.1 native preview.
 
 ## Configuration
 

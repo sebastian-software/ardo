@@ -37,7 +37,7 @@ State the entry points and their import paths, the TypeScript configuration, the
 1. Install the pinned compiler and parser:
 
    ```bash
-   pnpm add -D typescript@7.1.0-dev.20261011.1 oxc-parser@^0.155.0
+   pnpm add -D typescript@7.1.0-dev.20261109.1 oxc-parser@^0.158.0
    ```
 
 2. Add the option to `ardo.config.ts`:

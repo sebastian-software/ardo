@@ -313,6 +313,108 @@ sidebar: leaf
     ])
   })
 
+  it("skips an unreadable page without dropping the rest of the sidebar", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+      /* Silence expected test output. */
+    })
+    await writeRoute("guide/visible.mdx", "---\ntitle: Visible\n---\n")
+    await fs.symlink(path.join(routesDir, "missing.md"), path.join(routesDir, "guide", "gone.md"))
+
+    const expected = [{ text: "Visible", link: "/guide/visible" }]
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      { text: "Guide", items: expected },
+    ])
+    expect(toVirtualSidebar(await generateContextSidebars(routesDir))).toStrictEqual({
+      guide: expected,
+    })
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(path.join(routesDir, "guide", "gone.md"))
+    )
+    warn.mockRestore()
+  })
+
+  it("returns an empty sidebar only when the routes directory is missing", async () => {
+    const missingDir = path.join(routesDir, "missing")
+    await expect(generateSidebar(missingDir)).resolves.toStrictEqual([])
+    await expect(generateContextSidebars(missingDir)).resolves.toStrictEqual({})
+  })
+
+  it.skipIf(process.getuid?.() === 0)(
+    "reports directory scan errors instead of returning an empty sidebar",
+    async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {
+        /* Silence expected test output. */
+      })
+      await writeRoute("guide/locked/page.md", "---\ntitle: Page\n---\n")
+      const lockedDir = path.join(routesDir, "guide", "locked")
+      await fs.chmod(lockedDir, 0o000)
+      try {
+        await expect(generateSidebar(routesDir)).rejects.toMatchObject({ code: "EACCES" })
+        await expect(generateContextSidebars(routesDir)).rejects.toMatchObject({ code: "EACCES" })
+      } finally {
+        await fs.chmod(lockedDir, 0o755)
+        warn.mockRestore()
+      }
+    }
+  )
+
+  it("lists only files the route scanner treats as pages", async () => {
+    await writeRoute("guide/_draft.md", "---\ntitle: Draft\n---\n")
+    await writeRoute("guide/home.md", "---\ntitle: Guide Home\n---\n")
+    await writeRoute("guide/intro.md", "---\ntitle: Intro\n---\n")
+
+    expect(toVirtualSidebar(await generateSidebar(routesDir))).toStrictEqual([
+      {
+        text: "Guide Home",
+        link: "/guide",
+        items: [{ text: "Intro", link: "/guide/intro" }],
+      },
+    ])
+    await expect(generateContextSectionIndexes(routesDir)).resolves.toStrictEqual({
+      guide: "/guide",
+    })
+  })
+
+  it("prefixes a localized leaf folder link with its locale", async () => {
+    await writeRoute("de/guide/a.md", "---\ntitle: A\n---\n")
+    await writeRoute("de/guide/api/index.md", "---\ntitle: API\nsidebar: leaf\n---\n")
+    await writeRoute("de/guide/api/foo.md", "---\ntitle: Foo\n---\n")
+
+    expect(
+      toVirtualSidebar(await generateContextSidebars(routesDir, { localeIds: ["de"] }))
+    ).toStrictEqual({
+      "de:guide": [
+        { text: "A", link: "/de/guide/a" },
+        { text: "API", link: "/de/guide/api" },
+      ],
+    })
+  })
+
+  it("sorts titles the same way regardless of the machine locale", async () => {
+    const originalLocaleCompare = String.prototype.localeCompare
+    // Simulate a build machine whose default collation puts "Ä" after "Z".
+    const localeCompare = vi.spyOn(String.prototype, "localeCompare").mockImplementation(function (
+      this: string,
+      ...args: [string, Intl.LocalesArgument?]
+    ) {
+      const [that, locales = "sv"] = args
+      return originalLocaleCompare.call(this, that, locales)
+    })
+    await writeRoute("guide/zeta.md", "---\ntitle: Zeta\n---\n")
+    await writeRoute("guide/apfel.md", "---\ntitle: Äpfel\n---\n")
+
+    try {
+      expect(toVirtualSidebar(await generateContextSidebars(routesDir))).toStrictEqual({
+        guide: [
+          { text: "Äpfel", link: "/guide/apfel" },
+          { text: "Zeta", link: "/guide/zeta" },
+        ],
+      })
+    } finally {
+      localeCompare.mockRestore()
+    }
+  })
+
   it("only strips markdown extensions from the end of sidebar paths", async () => {
     await writeRoute("v1.md/changelog.md", "---\ntitle: Changelog\n---\n")
 

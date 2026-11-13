@@ -399,7 +399,50 @@ describe("persistent compiled route cache", () => {
     expect(await fs.readdir(entries)).toHaveLength(1)
     vi.unstubAllEnvs()
   })
+
+  it("warns about a failed Mermaid render on every build instead of caching the fallback", async () => {
+    vi.stubEnv("ARDO_CACHE", "true")
+    const warn = vi.spyOn(console, "warn").mockImplementation(vi.fn())
+    try {
+      const root = await fs.mkdtemp(path.join(tempDirectory, "mermaid-root-"))
+      const entries = path.join(root, "node_modules/.cache/ardo/compiled-route")
+      const source = "# Hi\n\n```mermaid\nthis is not ((( a diagram\n```\n"
+      const id = path.join(tempDirectory, "a.md")
+
+      for (let build = 0; build < 2; build++) {
+        // A fresh module graph empties the in-memory cache, as a new build process does.
+        vi.resetModules()
+        const plugin = await loadPluginWithMermaid(root)
+        warn.mockClear()
+        await transformRoute(plugin, source, id)
+
+        expect(warn).toHaveBeenCalledWith(
+          expect.stringContaining("Could not render Mermaid diagram"),
+          expect.anything()
+        )
+        expect(await fs.readdir(entries).catch(() => [])).toHaveLength(0)
+      }
+
+      const validRoot = await fs.mkdtemp(path.join(tempDirectory, "mermaid-valid-root-"))
+      vi.resetModules()
+      const validPlugin = await loadPluginWithMermaid(validRoot)
+      await transformRoute(validPlugin, "# Hi\n\n```mermaid\ngraph TD\n  A --> B\n```\n", id)
+
+      expect(
+        await fs.readdir(path.join(validRoot, "node_modules/.cache/ardo/compiled-route"))
+      ).toHaveLength(1)
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
 })
+
+async function loadPluginWithMermaid(root: string): Promise<Plugin> {
+  const { createMdxPlugin: createPlugin } = await import("./mdx-plugin")
+  const plugin = createPlugin({ mermaid: true })
+  await resolveConfig(plugin, root)
+  return plugin
+}
 
 async function resolveConfig(plugin: Plugin, root: string): Promise<void> {
   const hook =

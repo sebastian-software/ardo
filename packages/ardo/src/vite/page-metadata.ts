@@ -3,6 +3,7 @@ import type { RouteIdentity } from "./route-identity"
 import { parsePageBanner } from "./page-banner"
 
 import { normalizeLintFrontmatter } from "../config/lint-rules"
+import { isOutlineSetting } from "../markdown/toc"
 import {
   booleanFrontmatterFields,
   knownFrontmatterFields,
@@ -42,7 +43,7 @@ const structuredFrontmatterNormalizers: Record<
   layout: normalizeLayout,
   lint: normalizeLintFrontmatter,
   next: normalizeNext,
-  outline: (value) => (isOutline(value) ? { outline: value } : undefined),
+  outline: (value) => (isOutlineSetting(value) ? { outline: value } : undefined),
   prev: normalizePrevious,
   redirectFrom: normalizeRedirectFrom,
   sidebar: normalizeSidebar,
@@ -200,11 +201,6 @@ function normalizeRedirectFrom(value: unknown): PageFrontmatterMetadata | undefi
   return redirectFrom.length === 0 ? undefined : { redirectFrom }
 }
 
-function isOutline(value: unknown): value is NonNullable<PageFrontmatter["outline"]> {
-  if (typeof value === "boolean" || typeof value === "number") return true
-  return Array.isArray(value) && value.length === 2 && value.every((item) => isNumber(item))
-}
-
 function isPaginationLink(value: unknown): value is NonNullable<PageFrontmatter["next"]> {
   return (
     value === false ||
@@ -268,10 +264,6 @@ function isOptionalString(value: unknown): boolean {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value != null && !Array.isArray(value)
-}
-
-function isNumber(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value)
 }
 
 function isString(value: unknown): value is string {

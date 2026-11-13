@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 
 import type { TOCItem } from "../config/types"
-import { buildToc } from "../markdown/toc"
-import { useArdoConfig } from "../runtime/hooks"
+import { buildToc, resolveTocLevels } from "../markdown/toc"
+import { useArdoConfig, useArdoPageData } from "../runtime/hooks"
 import { useArdoPath } from "../runtime/page-context"
 
 /** Preserve authored anchors and give otherwise unaddressable headings a unique ID. */
@@ -53,7 +53,10 @@ export function useDomToc(
 ): TOCItem[] {
   const config = useArdoConfig()
   const path = useArdoPath()
-  const levels = config.markdown?.toc?.level ?? [2, 3]
+  const levels = resolveTocLevels(
+    useArdoPageData()?.frontmatter.outline,
+    config.markdown?.toc?.level
+  )
   const key = JSON.stringify([path, scope, levels])
   const [live, setLive] = useState<{ key: string; items: TOCItem[] }>()
   const [minLevel, maxLevel] = levels

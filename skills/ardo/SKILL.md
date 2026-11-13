@@ -41,8 +41,9 @@ when the instructions require those APIs. Do not add React Router configuration
 or the retired `create-ardo` starter to Ardo 6 projects.
 
 Reuse components local to the docs package or installed component packages.
-Sibling source imports, source aliases, and workspace links to sibling source
-cross Ardo's project boundary. Build and consume a package export instead.
+A package declared as a `workspace:*` dependency may export source directly.
+Undeclared sibling source imports, source aliases, and symlinks into sibling
+source still cross Ardo's project boundary.
 Read the native API recipe before adding its optional compiler dependencies.
 
 ## Verify the result

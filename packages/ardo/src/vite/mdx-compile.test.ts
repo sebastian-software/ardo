@@ -42,6 +42,34 @@ describe("page Markdown link in the route module", () => {
   })
 })
 
+/** The heading levels in a compiled page's outline, for the given `outline` frontmatter. */
+function compileOutline(outline: string, markdownConfig?: MarkdownConfig): string {
+  const code = compileMdxRouteModule({
+    format: "md",
+    id: "outline.md",
+    markdownConfig,
+    source: `---\ntitle: Outline\noutline: ${outline}\n---\n\n## Two\n\n### Three\n\n#### Four`,
+  }).code
+  const toc = /const _ardoToc = (.*);/u.exec(code)?.[1] ?? "[]"
+  return toc.match(/"level":\d/gu)?.join(" ") ?? ""
+}
+
+describe("page outline levels", () => {
+  it("lists the range a page's outline names", () => {
+    expect(compileOutline("[2, 4]")).toBe('"level":2 "level":3 "level":4')
+    expect(compileOutline("[3, 4]")).toBe('"level":3 "level":4')
+  })
+
+  it("lists only the level a number names", () => {
+    expect(compileOutline("3")).toBe('"level":3')
+  })
+
+  it("keeps the site's levels for true", () => {
+    expect(compileOutline("true")).toBe('"level":2 "level":3')
+    expect(compileOutline("true", { toc: { level: [4, 4] } })).toBe('"level":4')
+  })
+})
+
 describe("prepared route compilation", () => {
   it("prepares once and derives the TOC from the final module heading plan", () => {
     const prepare = vi.spyOn(CodeCompiler.prototype, "prepare")
