@@ -104,6 +104,76 @@ describe("resolveConfig", () => {
     ).toThrow('validation.lint.multiple-h1 must be "error", "warn", or "ignore".')
   })
 
+  it.each(["error", "warn", "ignore", undefined] as const)(
+    "accepts validation.frontmatter levels %s",
+    (level) => {
+      expect(() =>
+        resolveConfig(
+          { title: "Test", validation: { frontmatter: { invalid: level, unknown: level } } },
+          "/project"
+        )
+      ).not.toThrow()
+    }
+  )
+
+  it.each(["errors", "eror", "Error", true])(
+    "rejects validation.frontmatter.invalid level %j",
+    (level) => {
+      expect(() =>
+        resolveConfig(
+          // @ts-expect-error Invalid runtime input exercises configuration validation.
+          { title: "Test", validation: { frontmatter: { invalid: level } } },
+          "/project"
+        )
+      ).toThrow('validation.frontmatter.invalid must be "error", "warn", or "ignore".')
+    }
+  )
+
+  it.each(["errors", "eror", "Error", true])(
+    "rejects validation.frontmatter.unknown level %j",
+    (level) => {
+      expect(() =>
+        resolveConfig(
+          // @ts-expect-error Invalid runtime input exercises configuration validation.
+          { title: "Test", validation: { frontmatter: { unknown: level } } },
+          "/project"
+        )
+      ).toThrow('validation.frontmatter.unknown must be "error", "warn", or "ignore".')
+    }
+  )
+
+  it.each(["error", "warn", undefined] as const)("accepts linkCheck.level %s", (level) => {
+    expect(() => resolveConfig({ title: "Test", linkCheck: { level } }, "/project")).not.toThrow()
+  })
+
+  it.each(["fatal", "ignore", "", true])("rejects linkCheck.level %j", (level) => {
+    expect(() =>
+      resolveConfig(
+        // @ts-expect-error Invalid runtime input exercises configuration validation.
+        { title: "Test", linkCheck: { level } },
+        "/project"
+      )
+    ).toThrow('linkCheck.level must be "error" or "warn".')
+  })
+
+  it.each([true, false, undefined])("accepts linkCheck.enabled %s", (enabled) => {
+    expect(() => resolveConfig({ title: "Test", linkCheck: { enabled } }, "/project")).not.toThrow()
+  })
+
+  it.each(["no", 0])("rejects linkCheck.enabled %j", (enabled) => {
+    expect(() =>
+      resolveConfig(
+        // @ts-expect-error Invalid runtime input exercises configuration validation.
+        { title: "Test", linkCheck: { enabled } },
+        "/project"
+      )
+    ).toThrow("linkCheck.enabled must be a boolean.")
+  })
+
+  it("accepts an absent linkCheck", () => {
+    expect(() => resolveConfig({ title: "Test" }, "/project")).not.toThrow()
+  })
+
   it("resolves major versioning paths against the deployment base", () => {
     const resolved = resolveConfig(
       {
