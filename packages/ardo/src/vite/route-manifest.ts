@@ -19,6 +19,7 @@ import {
   validatePageFrontmatter,
 } from "./page-metadata"
 import { createRouteIdentity, type RouteIdentity } from "./route-identity"
+import { isIgnoredRouteFile, isIndexRoute } from "./routes-core"
 
 export type RouteManifestEntry = {
   anchors: string[]
@@ -238,17 +239,13 @@ function getRouteExtension(filePath: string): ".md" | ".mdx" | ".tsx" | null {
   return null
 }
 
-function isIgnoredRouteFile(entryName: string): boolean {
-  return entryName === "root.tsx" || entryName.startsWith("_")
-}
-
 function toRoutePath(relativePath: string, extension: ".md" | ".mdx" | ".tsx") {
   const normalizedPath = relativePath.replaceAll("\\", "/")
   const withoutExtension = normalizedPath.slice(0, -extension.length)
   const segments = withoutExtension.split("/")
   const lastSegment = segments.at(-1)
 
-  if (lastSegment === "index" || lastSegment === "home") {
+  if (lastSegment != null && isIndexRoute(lastSegment)) {
     const parentSegments = segments.slice(0, -1)
     return parentSegments.length === 0 ? "/" : `/${parentSegments.join("/")}`
   }
