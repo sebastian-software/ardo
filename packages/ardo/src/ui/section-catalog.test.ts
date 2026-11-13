@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { resolveSectionIcon } from "./section-catalog"
-import { resolveSectionKind, resolveSectionLabel } from "./section-kinds"
+import { compareSectionIds, resolveSectionKind, resolveSectionLabel } from "./section-kinds"
 
 const rank = (folder: string) => resolveSectionKind(folder)?.rank ?? -1
 
@@ -26,5 +26,17 @@ describe("section catalog", () => {
     expect(resolveSectionKind("design-notes")).toBeUndefined()
     expect(resolveSectionIcon("design-notes")).toBeUndefined()
     expect(resolveSectionLabel("design-notes")).toBe("Design Notes")
+  })
+
+  it("orders uncatalogued folders with a fixed locale, independent of the build machine", () => {
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    expect(["zeta", "Äther", "guide"].sort(compareSectionIds(undefined))).toStrictEqual([
+      "guide",
+      "Äther",
+      "zeta",
+    ])
+    expect(compare).toHaveBeenCalled()
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
+    compare.mockRestore()
   })
 })

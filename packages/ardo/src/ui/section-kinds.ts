@@ -176,6 +176,8 @@ export function compareSectionIds(
   return (left, right) => {
     const [leftExplicit, leftCatalog] = rank(left)
     const [rightExplicit, rightCatalog] = rank(right)
-    return leftExplicit - rightExplicit || leftCatalog - rightCatalog || left.localeCompare(right)
+    return (
+      leftExplicit - rightExplicit || leftCatalog - rightCatalog || left.localeCompare(right, "en")
+    )
   }
 }

@@ -77,7 +77,7 @@ function checkIdentity(metadata: PostMetadata, context: PublicationContext): voi
 export async function readPostFiles(directory: string): Promise<string[]> {
   const entries = await fs.readdir(directory, { withFileTypes: true })
   const files: string[] = []
-  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name, "en"))) {
     if (entry.name.startsWith(".") || entry.name.startsWith("_")) continue
     const file = path.join(directory, entry.name)
     if (entry.isDirectory()) files.push(...(await readPostFiles(file)))

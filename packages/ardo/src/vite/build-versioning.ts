@@ -136,7 +136,7 @@ function compareDocEntries(
     rankA - rankB ||
     a.routePath.split("/").length - b.routePath.split("/").length ||
     (a.frontmatter.order ?? Infinity) - (b.frontmatter.order ?? Infinity) ||
-    a.routePath.localeCompare(b.routePath)
+    a.routePath.localeCompare(b.routePath, "en")
   )
 }
 

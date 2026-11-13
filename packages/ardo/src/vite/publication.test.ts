@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { resolveConfig } from "../config"
 import type { PublicationConfig } from "../publication/types"
 import { calculateImageCrop, preparePostImage } from "./post-images"
+import { readPostFiles } from "./post-metadata"
 import { preparePublication } from "./publication"
 import { refreshPublication, type PublicationBuilder } from "./publication-materialize"
 
@@ -94,6 +95,18 @@ describe("publication lifecycle and portable output", () => {
     )
     expect(postCalls).not.toHaveLength(0)
     for (const args of postCalls) expect(args[1]).toBe("en")
+    compare.mockRestore()
+  })
+
+  it("reads post files with a fixed locale, independent of the build machine", async () => {
+    const p = await project()
+    await p.write("zeta")
+    await p.write("Äther")
+    const compare = vi.spyOn(String.prototype, "localeCompare")
+    const files = await readPostFiles(path.join(p.root, "posts"))
+    expect(files.map((file) => path.basename(file))).toStrictEqual(["Äther.mdx", "zeta.mdx"])
+    expect(compare).toHaveBeenCalled()
+    for (const args of compare.mock.calls) expect(args[1]).toBe("en")
     compare.mockRestore()
   })
 
