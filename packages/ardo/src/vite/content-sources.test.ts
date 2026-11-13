@@ -92,6 +92,67 @@ title: Changelog
     expect(generated).toContain("order: 10")
   })
 
+  it("keeps object, number-list, and nested frontmatter values from the source", async () => {
+    await writeSource(
+      "root/README.md",
+      `---
+title: Home
+hero:
+  name: Ardo
+  actions:
+    - text: Start
+      link: /guide
+nums: [1, 2]
+tags: [a, b]
+empty: null
+---
+
+# Home
+`
+    )
+
+    await materializeContentSources({
+      root: rootDir,
+      routesDir,
+      sources: [
+        {
+          from: "root/README.md",
+          to: "home",
+          frontmatter: () => ({ features: [{ title: "Fast" }] }),
+        },
+      ],
+    })
+
+    const generated = await fs.readFile(path.join(routesDir, "home", "index.md"), "utf8")
+    expect(generated.split("---\n")[1]).toBe(
+      [
+        "editLink: false",
+        "lastUpdated: false",
+        'title: "Home"',
+        "hero:",
+        '  name: "Ardo"',
+        "  actions:",
+        '    - text: "Start"',
+        '      link: "/guide"',
+        "nums:",
+        "  - 1",
+        "  - 2",
+        "tags:",
+        '  - "a"',
+        '  - "b"',
+        "empty: null",
+        "features:",
+        '  - title: "Fast"',
+        "",
+      ].join("\n")
+    )
+    const [entry] = await scanRouteManifest(routesDir)
+    expect(entry.frontmatter).toMatchObject({
+      hero: { name: "Ardo", actions: [{ text: "Start", link: "/guide" }] },
+      title: "Home",
+    })
+  })
+
   it("uses native visible heading text for defaults while preserving the source body", async () => {
     const source =
       "```md\n# Example inside a fence\n```\n\nNative *Title*\n==============\n\nBody.\n"
