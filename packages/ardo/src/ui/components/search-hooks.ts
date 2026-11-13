@@ -1,6 +1,32 @@
-import { type RefObject, useEffect } from "react"
+import { type RefObject, useEffect, useSyncExternalStore } from "react"
 
-import { isSearchShortcut } from "./search-a11y"
+import {
+  getSearchShortcutModifier,
+  isSearchShortcut,
+  SERVER_SEARCH_SHORTCUT_MODIFIER,
+} from "./search-a11y"
+
+/**
+ * The shortcut modifier label. Hydration keeps the server's ⌘ and then re-renders with the
+ * platform's label, so Windows and Linux readers see Ctrl without a hydration mismatch.
+ */
+export function useSearchShortcutModifier(): string {
+  return useSyncExternalStore(subscribeNever, getClientModifier, getServerModifier)
+}
+
+function subscribeNever() {
+  return () => {
+    // The platform never changes while the page is open.
+  }
+}
+
+function getClientModifier() {
+  return getSearchShortcutModifier()
+}
+
+function getServerModifier() {
+  return SERVER_SEARCH_SHORTCUT_MODIFIER
+}
 
 export function useGlobalSearchShortcut(
   inputRef: RefObject<HTMLInputElement | null>,

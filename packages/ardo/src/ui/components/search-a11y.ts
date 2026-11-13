@@ -85,10 +85,13 @@ export function isSearchShortcut(event: ShortcutKeyEvent): boolean {
   return (event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === "k"
 }
 
+/** Shortcut modifier label rendered on the server, before the platform is known. */
+export const SERVER_SEARCH_SHORTCUT_MODIFIER = "⌘"
+
 /** Modifier label for the shortcut hint. Defaults to ⌘ when no platform is known (SSR). */
 export function getSearchShortcutModifier(
   platform = typeof navigator === "undefined" ? undefined : navigator.platform
 ): string {
-  if (platform == null) return "⌘"
+  if (platform == null) return SERVER_SEARCH_SHORTCUT_MODIFIER
   return /Mac|iPhone|iPad|iPod/.test(platform) ? "⌘" : "Ctrl"
 }
