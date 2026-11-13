@@ -4670,6 +4670,10 @@ msgstr "Standard:<0/>"
 msgid "Default: every <0><1/></0> rule is on"
 msgstr "Standard: Jede Regel von <0><1/></0> ist aktiv"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Default: the neighbouring pages in the sidebar"
+msgstr "Standard: die benachbarten Seiten in der Seitenleiste"
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete the removed files"
 msgstr "Entfallene Dateien löschen"
@@ -8081,6 +8085,10 @@ msgstr ""
 "<8/>, <9/>, <10/> und <11/>. <12/> ist ohne Farbton, <13/> ein gedämpftes "
 "Blau."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "prev and next"
+msgstr "prev und next"
+
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Previous setting or API"
 msgstr "Bisherige Einstellung oder API"
@@ -9032,14 +9040,27 @@ msgstr ""
 "beliebiger Text. Mit <4/> braucht jede Sprache dieselben Tag-Schlüssel, weil "
 "jede lokalisierte Seite in jeder Sprache existieren muss."
 
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/frontmatter.mdx
+#~ msgid ""
+#~ "Set <0/> to hide the outline of this page. Which heading levels the outline "
+#~ "lists is a site-wide setting, <1><2/></1> in <3/>."
+#~ msgstr ""
+#~ "Setze <0/>, um das Inhaltsverzeichnis der Seite auszublenden. Die "
+#~ "aufgeführten Überschriftenebenen gelten websiteweit und werden mit "
+#~ "<1><2/></1> in <3/> festgelegt."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
-"Set <0/> to hide the outline of this page. Which heading levels the outline "
-"lists is a site-wide setting, <1><2/></1> in <3/>."
+"Set <0/> to hide the outline of this page. With <1/>, the outline lists the "
+"heading levels of the site-wide setting <2><3/></2> in <4/>. A number lists "
+"only that heading level, and <5/> lists the levels in that range, for this "
+"page alone. Levels run from 1 to 6."
 msgstr ""
-"Setze <0/>, um das Inhaltsverzeichnis der Seite auszublenden. Die "
-"aufgeführten Überschriftenebenen gelten websiteweit und werden mit "
-"<1><2/></1> in <3/> festgelegt."
+"Setze <0/>, um das Inhaltsverzeichnis der Seite auszublenden. Mit <1/> zeigt "
+"es die Überschriftenebenen der websiteweiten Einstellung <2><3/></2> in <4/>."
+" Eine Zahl zeigt nur diese Überschriftenebene, <5/> die Ebenen in diesem "
+"Bereich, jeweils nur für diese Seite. Die Ebenen reichen von 1 bis 6."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "Set <0/> to publish nothing."
@@ -10232,6 +10253,21 @@ msgid ""
 msgstr ""
 "Die linke Navigation besteht aus Abschnittsleiste und Panel. <0/> definiert "
 "mit Props den Abschnitt und mit Kindern das Panel."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"The links at the end of a page lead to the previous and next pages of the "
+"sidebar. Set <0/> or <1/> to <2/> to hide that link. A string keeps the "
+"sidebar page but changes the link text. An object with <3/> and <4/> points to"
+" another page; Ardo resolves the link like other links on the page, so it can "
+"be relative and gets the base path."
+msgstr ""
+"Die Links am Ende einer Seite führen zur vorherigen und nächsten Seite der "
+"Seitenleiste. Setze <0/> oder <1/> auf <2/>, um diesen Link auszublenden. Ein "
+"String behält die Seite aus der Seitenleiste bei und ändert nur den "
+"Linktext. Ein Objekt mit <3/> und <4/> verweist auf eine andere Seite; Ardo "
+"löst den Link wie andere Links der Seite auf, er darf also relativ sein und "
+"erhält den Basispfad."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

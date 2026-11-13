@@ -4600,6 +4600,10 @@ msgstr "Predeterminado:<0/>"
 msgid "Default: every <0><1/></0> rule is on"
 msgstr "Por defecto: cada regla de <0><1/></0> está activa"
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "Default: the neighbouring pages in the sidebar"
+msgstr "Predeterminado: las páginas contiguas en la barra lateral"
+
 #: docs/app/content/guide/releases/upgrade-to-v6.mdx
 msgid "Delete the removed files"
 msgstr "Eliminar los archivos retirados"
@@ -7981,6 +7985,10 @@ msgstr ""
 "Preajustes: <0/> (predeterminado), <1/>, <2/>, <3/>, <4/>, <5/>, <6/>, <7/>, "
 "<8/>, <9/>, <10/> y <11/>. <12/> carece de tono y <13/> es azul apagado."
 
+#: docs/app/content/guide/frontmatter.mdx
+msgid "prev and next"
+msgstr "prev y next"
+
 #: docs/app/content/guide/releases/migrate-from-typedoc.mdx
 msgid "Previous setting or API"
 msgstr "Ajuste o API anterior"
@@ -8923,13 +8931,26 @@ msgstr ""
 " texto. Con <4/>, cada idioma necesita las mismas claves de etiqueta, porque "
 "cada página localizada debe existir en todos los idiomas."
 
+#~ #@ obsolete-since: 2026-11-13
+#~ #: docs/app/content/guide/frontmatter.mdx
+#~ msgid ""
+#~ "Set <0/> to hide the outline of this page. Which heading levels the outline "
+#~ "lists is a site-wide setting, <1><2/></1> in <3/>."
+#~ msgstr ""
+#~ "Define <0/> para ocultar el índice de la página. Los niveles de títulos "
+#~ "mostrados se configuran para todo el sitio con <1><2/></1> en <3/>."
+
 #: docs/app/content/guide/frontmatter.mdx
 msgid ""
-"Set <0/> to hide the outline of this page. Which heading levels the outline "
-"lists is a site-wide setting, <1><2/></1> in <3/>."
+"Set <0/> to hide the outline of this page. With <1/>, the outline lists the "
+"heading levels of the site-wide setting <2><3/></2> in <4/>. A number lists "
+"only that heading level, and <5/> lists the levels in that range, for this "
+"page alone. Levels run from 1 to 6."
 msgstr ""
-"Define <0/> para ocultar el índice de la página. Los niveles de títulos "
-"mostrados se configuran para todo el sitio con <1><2/></1> en <3/>."
+"Define <0/> para ocultar el índice de la página. Con <1/>, el índice "
+"muestra los niveles de títulos de la opción de todo el sitio <2><3/></2> en "
+"<4/>. Un número muestra solo ese nivel de título, y <5/> los niveles de ese "
+"rango, solo para esta página. Los niveles van de 1 a 6."
 
 #: docs/app/content/guide/configuration.mdx
 msgid "Set <0/> to publish nothing."
@@ -10109,6 +10130,21 @@ msgid ""
 msgstr ""
 "La navegación izquierda combina barra de secciones y panel. Las props de <0/>"
 " definen la sección y sus hijos el panel."
+
+#: docs/app/content/guide/frontmatter.mdx
+msgid ""
+"The links at the end of a page lead to the previous and next pages of the "
+"sidebar. Set <0/> or <1/> to <2/> to hide that link. A string keeps the "
+"sidebar page but changes the link text. An object with <3/> and <4/> points to"
+" another page; Ardo resolves the link like other links on the page, so it can "
+"be relative and gets the base path."
+msgstr ""
+"Los enlaces al final de una página llevan a las páginas anterior y siguiente"
+" de la barra lateral. Define <0/> o <1/> como <2/> para ocultar ese enlace. "
+"Una cadena mantiene la página de la barra lateral y solo cambia el texto del "
+"enlace. Un objeto con <3/> y <4/> apunta a otra página; Ardo resuelve el "
+"enlace como los demás enlaces de la página, así que puede ser relativo y "
+"recibe la ruta base."
 
 #: docs/app/content/guide/layout-and-navigation.mdx
 msgid ""

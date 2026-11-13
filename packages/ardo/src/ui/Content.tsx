@@ -123,7 +123,7 @@ export function ArdoContent({
   const input: ContentMetaInput = { pageData, editLink, lastUpdated, siteConfig, locale, labels }
   const edit = resolveEditLink(input)
   const updated = resolveLastUpdated(input)
-  const { prev, next } = getPrevNextLinks(sidebar, pathname)
+  const { prev, next } = getPrevNextLinks(sidebar, pathname, pageData?.frontmatter)
   const actionsPath = resolvePageActionsPath({ pageActions, pageData, siteConfig })
 
   return (
