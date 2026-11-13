@@ -11,6 +11,7 @@ import { readNativeMarkdownFrontmatter } from "../markdown/native-metadata"
 import { parsePageFrontmatterMetadata, toFrontmatterRecord } from "./page-metadata"
 import { stripTrailingExtension } from "./path-utils"
 import type { RouteIdentity } from "./route-identity"
+import { isIgnoredRouteFile, isIndexRoute } from "./routes-core"
 import { sortNodesBySectionOrder } from "./sidebar-order"
 
 type SidebarNode = {
@@ -36,13 +37,9 @@ export async function generateSidebar(
   routesDir: string,
   options: SidebarGenerationOptions = {}
 ): Promise<SidebarItem[]> {
-  try {
-    const nodes = await scanSidebarDirectory(routesDir, { options, rootDir: routesDir })
-    sortNodesBySectionOrder(nodes, options.sectionOrder)
-    return nodes.map((node) => stripOrderFromNode(node))
-  } catch {
-    return []
-  }
+  const nodes = await scanSidebarDirectory(routesDir, { options, rootDir: routesDir })
+  sortNodesBySectionOrder(nodes, options.sectionOrder)
+  return nodes.map((node) => stripOrderFromNode(node))
 }
 
 /**
@@ -58,14 +55,10 @@ export async function generateContextSidebars(
   routesDir: string,
   options: RouteManifestOptions = {}
 ): Promise<Record<string, SidebarItem[]>> {
-  try {
-    if (options.localeIds != null && options.localeIds.length > 0) {
-      return await generateLocalizedContextSidebars(routesDir, options)
-    }
-    return await generateNonLocalizedContextSidebars(routesDir, options)
-  } catch {
-    return {}
+  if (options.localeIds != null && options.localeIds.length > 0) {
+    return generateLocalizedContextSidebars(routesDir, options)
   }
+  return generateNonLocalizedContextSidebars(routesDir, options)
 }
 
 async function generateNonLocalizedContextSidebars(
@@ -73,7 +66,7 @@ async function generateNonLocalizedContextSidebars(
   options: RouteManifestOptions
 ): Promise<Record<string, SidebarItem[]>> {
   const sidebars: Record<string, SidebarItem[]> = {}
-  const entries = await fs.readdir(routesDir, { withFileTypes: true })
+  const entries = await readDirectoryEntries(routesDir)
   for (const entry of entries) {
     if (!entry.isDirectory()) continue
     const nodes = await scanSidebarDirectory(path.join(routesDir, entry.name), {
@@ -108,11 +101,13 @@ async function generateLocalizedContextSidebars(
   return sidebars
 }
 
+/** A missing directory, including one removed while the dev server scans, has no entries. */
 export async function readDirectoryEntries(directory: string): Promise<Dirent[]> {
   try {
     return await fs.readdir(directory, { withFileTypes: true })
-  } catch {
-    return []
+  } catch (error) {
+    if (isFileNotFoundError(error)) return []
+    throw error
   }
 }
 
@@ -120,7 +115,7 @@ async function scanSidebarDirectory(
   dir: string,
   context: SidebarScanContext
 ): Promise<SidebarNode[]> {
-  const entries = await fs.readdir(dir, { withFileTypes: true })
+  const entries = await readDirectoryEntries(dir)
   const nodes: SidebarNode[] = []
 
   for (const entry of entries) {
@@ -166,7 +161,7 @@ async function createDirectoryNode(
     if (identity == null) return null
     return {
       text: metadata.title ?? formatTitle(entry.name),
-      ...toSidebarRouteFields(identity),
+      ...toSidebarRouteFields(identity, context.localePrefix),
       order: metadata.order,
       sectionId: entry.name,
     }
@@ -198,13 +193,8 @@ async function createMarkdownNode(
   }
 
   const extension = entry.name.endsWith(".mdx") ? ".mdx" : ".md"
-  const fileContent = await fs.readFile(fullPath, "utf8")
-  const frontmatter = readFrontmatterSafely(fullPath, fileContent, context.options.markdown)
-  if (frontmatter == null) {
-    return null
-  }
-
-  if (frontmatter.sidebar === false) {
+  const frontmatter = await readPageFrontmatter(fullPath, context.options.markdown)
+  if (frontmatter == null || frontmatter.sidebar === false) {
     return null
   }
 
@@ -219,6 +209,21 @@ async function createMarkdownNode(
     order: frontmatter.order,
     sectionId: stripTrailingExtension(entry.name, extension),
   }
+}
+
+/** An unreadable page, such as a dangling link or one removed mid-scan, only loses its own entry. */
+async function readPageFrontmatter(
+  filePath: string,
+  markdown: MarkdownConfig | undefined
+): Promise<null | SidebarFrontmatter> {
+  let fileContent: string
+  try {
+    fileContent = await fs.readFile(filePath, "utf8")
+  } catch (error) {
+    warnFrontmatterReadFailure(filePath, error)
+    return null
+  }
+  return readFrontmatterSafely(filePath, fileContent, markdown)
 }
 
 export function createSidebarRouteIdentity(
@@ -245,7 +250,7 @@ export async function readDirectoryIndexMetadata(
   fullPath: string,
   markdown: MarkdownConfig = {}
 ): Promise<null | SidebarFrontmatter> {
-  for (const indexFileName of ["index.mdx", "index.md"]) {
+  for (const indexFileName of ["index.mdx", "index.md", "home.mdx", "home.md"]) {
     const metadata = await readFrontmatterFile(path.join(fullPath, indexFileName), markdown)
     if (metadata != null) {
       return metadata
@@ -324,14 +329,16 @@ function sortNodes(nodes: SidebarNode[]): void {
       return 1
     }
 
-    return leftNode.text.localeCompare(rightNode.text)
+    // A fixed locale keeps the order independent of the build machine.
+    return leftNode.text.localeCompare(rightNode.text, "en")
   })
 }
 
 function isSidebarMarkdownFile(fileName: string): boolean {
-  const isMarkdownFile = fileName.endsWith(".mdx") || fileName.endsWith(".md")
-  const isIndexFile = fileName === "index.mdx" || fileName === "index.md"
-  return isMarkdownFile && !isIndexFile
+  const extension = fileName.endsWith(".mdx") ? ".mdx" : fileName.endsWith(".md") ? ".md" : null
+  if (extension == null || isIgnoredRouteFile(fileName)) return false
+  // Index pages link the folder node instead of appearing as its children.
+  return !isIndexRoute(stripTrailingExtension(fileName, extension))
 }
 
 function formatTitle(name: string): string {
