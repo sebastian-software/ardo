@@ -9,6 +9,7 @@ import {
   collectRedirects,
   createBuildOutputAssets,
   generateNetlifyRedirects,
+  generateRedirectHtml,
   generateRobots,
   generateSitemap,
   generateVercelRedirects,
@@ -453,6 +454,21 @@ describe("build outputs", () => {
     expect(customAssets.find((asset) => asset.fileName === "ai.txt")?.source).toContain(
       "# AI Context"
     )
+  })
+})
+
+describe("redirect pages", () => {
+  it("keeps a target with markup inside the redirect script", () => {
+    const to = "/new/</script><script>alert(1)</script><!--\u2028"
+    const html = generateRedirectHtml(to)
+    const script = /<script>(.*)<\/script>\n<\/head>/su.exec(html)?.[1] ?? ""
+    expect(html.match(/<script>/gu)).toHaveLength(1)
+    expect(html.match(/<\/script>/gu)).toHaveLength(1)
+    expect(script).not.toContain("<")
+    expect(script).not.toContain("\u2028")
+    expect(script).toContain(String.raw`"/new/\u003c/script\u003e`)
+    const literal = /new URL\(("[^"]*")/u.exec(script)?.[1] ?? ""
+    expect(JSON.parse(literal)).toBe(to)
   })
 })
 
