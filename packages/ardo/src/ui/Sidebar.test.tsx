@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from "react-dom/server"
 import { ArdoPageProvider } from "../runtime/page"
 import { describe, expect, it, vi } from "vitest"
 
-import { ArdoProvider } from "../runtime/hooks"
+import { ArdoProvider, ArdoSiteConfigProvider } from "../runtime/hooks"
 import { createGeneratedSidebarSections } from "./generated-sections"
 import { ArdoGeneratedSidebar } from "./GeneratedSidebar"
 import {
@@ -16,6 +16,7 @@ import {
   ArdoSidebarSection,
   resolveArdoSidebarItems,
 } from "./Sidebar"
+import { resolveArdoLabels } from "./labels"
 import { getSidebarScrollTop } from "./sidebar-scroll"
 
 vi.mock("virtual:ardo/generated-sidebars", () => ({
@@ -31,6 +32,18 @@ vi.mock("virtual:ardo/generated-sidebars", () => ({
       },
     ],
     api: [{ text: "API", items: [{ text: "Reference", link: "/api-reference" }] }],
+    deep: [
+      {
+        text: "Deep",
+        collapsed: true,
+        items: [
+          {
+            text: "Level 2",
+            items: [{ text: "Level 3", items: [{ text: "Leaf", link: "/deep/a/b/leaf" }] }],
+          },
+        ],
+      },
+    ],
     flat: [
       { text: "Intro", link: "/intro" },
       { text: "Setup", link: "/setup" },
@@ -127,6 +140,52 @@ describe("ArdoSidebar", () => {
     }
   })
 
+  it("opens a collapsed group when its link differs from the page only by a trailing slash", () => {
+    const view = renderSidebar(
+      <ArdoSidebarSection id="guide" label="Guide" to="/guide/getting-started">
+        <ArdoSidebarGroup title="Guide" collapsed>
+          <ArdoSidebarLink to="/guide/getting-started/">Getting Started</ArdoSidebarLink>
+        </ArdoSidebarGroup>
+      </ArdoSidebarSection>
+    )
+
+    expect(view).toContain('aria-current="page"')
+    expect(view).toContain('aria-label="Collapse Guide"')
+    expect(view).not.toContain("inert")
+  })
+
+  it("opens a collapsed generated group on a page nested deeper than its grandchildren", () => {
+    const view = renderSidebar(generatedSection("deep"), "/deep/a/b/leaf")
+
+    expect(view).toContain('aria-current="page"')
+    expect(view).toContain('aria-label="Collapse Deep"')
+    expect(view).not.toContain('data-collapsed="true"')
+  })
+
+  it("localizes the expand and collapse labels of group toggles", () => {
+    const labels = resolveArdoLabels({ sidebar: { expand: "Aufklappen", collapse: "Zuklappen" } })
+    const view = renderToStaticMarkup(
+      <ArdoPageProvider path="/guide/other">
+        <ArdoProvider config={{ title: "Docs" }} sidebar={[]}>
+          <ArdoSiteConfigProvider value={{ labels }}>
+            <ArdoSidebar>
+              <ArdoSidebarSection id="guide" label="Guide" to="/guide">
+                <ArdoGeneratedSidebar section="guide" />
+                <ArdoSidebarGroup title="Manual" collapsed>
+                  <ArdoSidebarLink to="/guide/manual">Manual page</ArdoSidebarLink>
+                </ArdoSidebarGroup>
+              </ArdoSidebarSection>
+            </ArdoSidebar>
+          </ArdoSiteConfigProvider>
+        </ArdoProvider>
+      </ArdoPageProvider>
+    )
+
+    expect(view).toContain('aria-label="Aufklappen Guide"')
+    expect(view).toContain('aria-label="Aufklappen Manual"')
+    expect(view).not.toContain("Expand")
+  })
+
   it("renders manual unlinked groups with a single toggle button", () => {
     const view = renderSidebar(
       <ArdoSidebarSection id="api" label="API" to="/api-reference">
@@ -218,7 +277,7 @@ describe("ArdoSidebar", () => {
       (match) => match[1]
     )
 
-    expect(labels).toStrictEqual(["Guide", "API", "ADRs", "Flat"])
+    expect(labels).toStrictEqual(["Guide", "API", "ADRs", "Deep", "Flat"])
     expect(tabs).toContain('href="/guide/getting-started/"')
     expect(tabs).toContain('href="/adr/"')
   })
@@ -235,7 +294,7 @@ describe("ArdoSidebar", () => {
       (match) => match[1]
     )
 
-    expect(labels).toStrictEqual(["Flat", "Guide", "API", "ADRs"])
+    expect(labels).toStrictEqual(["Flat", "Guide", "API", "ADRs", "Deep"])
     expect(tabs).toMatch(/aria-current="true"[^>]*href="\/guide\/getting-started\/"/)
   })
 
