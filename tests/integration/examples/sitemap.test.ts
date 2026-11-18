@@ -25,4 +25,20 @@ describe("sitemap exclusions", () => {
     expect(sitemap).toContain("/kitchen</loc>")
     expect(fs.existsSync(path.join(client, "kit/index.html"))).toBe(true)
   })
+  it("removes the previous sitemap on a normal build without siteUrl", () => {
+    expect(fs.existsSync(path.join(client, "sitemap.xml"))).toBe(true)
+    fs.writeFileSync(
+      path.join(directory, "ardo.config.ts"),
+      `import { defineArdoConfig } from "ardo/config"
+export default defineArdoConfig({ title: "Docs", base: "/nested/" })
+`
+    )
+    execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "build"], {
+      cwd: directory,
+      stdio: "pipe",
+      timeout: 120_000,
+    })
+    expect(fs.existsSync(path.join(client, "sitemap.xml"))).toBe(false)
+    expect(fs.readFileSync(path.join(client, "robots.txt"), "utf8")).not.toContain("Sitemap:")
+  }, 180_000)
 })

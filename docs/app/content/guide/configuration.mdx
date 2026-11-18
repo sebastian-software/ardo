@@ -205,7 +205,8 @@ Set `seo.llms: false` if you want to manage these files yourself from `public/`.
 - **Default:** `true`
 
 Generates `/sitemap.xml` from Markdown, MDX, and TSX routes. Ardo combines `siteUrl`, `base`, and each
-route path so subpath deployments still produce absolute URLs.
+route path so subpath deployments still produce absolute URLs. Without `siteUrl`, Ardo skips the
+sitemap and its `robots.txt` directive.
 
 ```ts
 defineArdoConfig({
@@ -241,7 +242,7 @@ With [`sourceRoot`](#sourceroot), the commit is that of the original file.
 - **Default:** `true`
 
 Generates `/robots.txt`. By default Ardo allows all crawlers and points them at the generated
-sitemap when `siteUrl` is configured.
+sitemap when `siteUrl` is configured and sitemap generation is enabled.
 
 ```ts
 defineArdoConfig({

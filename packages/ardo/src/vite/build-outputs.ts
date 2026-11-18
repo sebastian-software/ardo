@@ -36,7 +36,9 @@ export function generateRobots(config: ResolvedConfig) {
     lines.push(`Disallow: ${rule}`)
   }
 
-  lines.push(`Sitemap: ${toAbsoluteUrl("/sitemap.xml", config)}`)
+  if (config.siteUrl !== "" && config.seo.sitemap !== false) {
+    lines.push(`Sitemap: ${toAbsoluteUrl("/sitemap.xml", config)}`)
+  }
   return `${lines.join("\n")}\n`
 }
 
@@ -128,7 +130,7 @@ export function createBuildOutputAssets(
   } = {}
 ): BuildOutputAsset[] {
   const assets: BuildOutputAsset[] = []
-  if (config.seo.sitemap !== false) {
+  if (config.siteUrl !== "" && config.seo.sitemap !== false) {
     const commits =
       llms.routesDir == null
         ? undefined

@@ -152,6 +152,36 @@ describe("build outputs", () => {
     expect(generateRobots(baseConfig)).toContain("Sitemap: https://example.com/docs/sitemap.xml")
   })
 
+  it.each([
+    { siteUrl: undefined, sitemap: true },
+    { siteUrl: "", sitemap: true },
+    { siteUrl: "https://example.com", sitemap: false },
+  ])("omits unavailable sitemap output: %j", ({ siteUrl, sitemap }) => {
+    const config = resolveConfig(
+      { title: "Docs", base: "/nested/", siteUrl, seo: { sitemap, llms: false } },
+      "/site"
+    )
+    const assets = createBuildOutputAssets(createEntries(config), config)
+    expect(assets.find((asset) => asset.fileName === "sitemap.xml")).toBeUndefined()
+    expect(assets.find((asset) => asset.fileName === "robots.txt")?.source).not.toContain(
+      "Sitemap:"
+    )
+  })
+
+  it("emits absolute sitemap URLs and a robots directive under a nested base", () => {
+    const config = resolveConfig(
+      { title: "Docs", base: "/nested/", siteUrl: "https://example.com", seo: { llms: false } },
+      "/site"
+    )
+    const assets = createBuildOutputAssets(createEntries(config), config)
+    expect(assets.find((asset) => asset.fileName === "sitemap.xml")?.source).toContain(
+      "<loc>https://example.com/nested/guide</loc>"
+    )
+    expect(assets.find((asset) => asset.fileName === "robots.txt")?.source).toContain(
+      "Sitemap: https://example.com/nested/sitemap.xml"
+    )
+  })
+
   it("can migrate unlocalized URLs to the default locale without redirecting other translations", () => {
     const localized = resolveConfig(
       {
