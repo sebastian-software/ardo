@@ -19,14 +19,11 @@ describe("sitemap exclusions", () => {
 
   afterAll(() => fs.rmSync(directory, { recursive: true, force: true }))
 
-  it("omits an excluded TSX route while retaining sibling routes and the page itself", () => {
+  it("applies exclusions and removes the sitemap after siteUrl is removed", () => {
     const sitemap = fs.readFileSync(path.join(client, "sitemap.xml"), "utf8")
     expect(sitemap).not.toContain("/kit</loc>")
     expect(sitemap).toContain("/kitchen</loc>")
     expect(fs.existsSync(path.join(client, "kit/index.html"))).toBe(true)
-  })
-  it("removes the previous sitemap on a normal build without siteUrl", () => {
-    expect(fs.existsSync(path.join(client, "sitemap.xml"))).toBe(true)
     fs.writeFileSync(
       path.join(directory, "ardo.config.ts"),
       `import { defineArdoConfig } from "ardo/config"
