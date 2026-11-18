@@ -58,7 +58,8 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
     ).searchText
   const sections = splitTextSections(text)
   return sections.flatMap((section, index): SearchDoc[] => {
-    const excerpt = collapseWhitespace(section.content).slice(0, 2000)
+    const body = collapseWhitespace(section.content)
+    const excerpt = body.slice(0, 2000)
     if (excerpt === "" && section.anchor == null) {
       return []
     }
@@ -78,7 +79,7 @@ function createEntryRecords(entry: RouteManifestEntry): SearchDoc[] {
         id: `${entry.metadata.sourcePath}#${section.anchor ?? `page-${index}`}`,
         title,
         pageTitle,
-        content: joinSearchTextParts([title, pageTitle, ...headingHierarchy, excerpt]),
+        content: joinSearchTextParts([title, pageTitle, ...headingHierarchy, body]),
         excerpt,
         path: pathWithAnchor,
         publicPath: publicPathWithAnchor,
