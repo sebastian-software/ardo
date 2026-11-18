@@ -41,6 +41,45 @@ function compilePage(source: string): string {
 }
 
 describe("generateOpenApiDocs", () => {
+  it("inherits path parameters independently for each operation and overrides by name and location", async () => {
+    await generate({
+      openapi: "3.1.0",
+      paths: {
+        "/pets/{id}": {
+          parameters: [
+            { name: "id", in: "path", required: true, description: "Shared {id} < 10" },
+            { name: "filter", in: "query", description: "Shared filter" },
+          ],
+          get: {
+            parameters: [
+              { name: "id", in: "path", required: true, description: "GET id" },
+              { name: "filter", in: "header", description: "Header filter" },
+            ],
+          },
+          post: { parameters: [{ name: "body", in: "query", description: "POST only" }] },
+          delete: {},
+        },
+      },
+    })
+
+    const get = await readPage("endpoints/get-pets-id.mdx")
+    expect(get).toContain(
+      "- `filter` (query): Shared filter\n- `id` (path, required): GET id\n- `filter` (header): Header filter"
+    )
+    expect(get).not.toContain("Shared \\{id\\}")
+    const post = await readPage("endpoints/post-pets-id.mdx")
+    expect(post).toContain(
+      "- `id` (path, required): Shared \\{id\\} \\< 10\n- `filter` (query): Shared filter\n- `body` (query): POST only"
+    )
+    expect(post).not.toContain("GET id")
+    const del = await readPage("endpoints/delete-pets-id.mdx")
+    expect(del).toContain("Shared \\{id\\} \\< 10")
+    expect(del).not.toContain("POST only")
+    expect(compilePage(post)).toContain(
+      '{" (path, required): Shared "}{"{"}{"id"}{"}"}{" "}{"<"}{" 10"}'
+    )
+  })
+
   it("generates static reference routes from a local YAML spec", async () => {
     await fs.writeFile(
       path.join(root, "openapi.yaml"),
