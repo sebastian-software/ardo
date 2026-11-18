@@ -5704,21 +5704,42 @@ msgstr "Datos generados e interfaz integrada."
 msgid "Generated-File Boundary"
 msgstr "Límite de los archivos generados"
 
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
+#~ "and each route path so subpath deployments still produce absolute URLs."
+#~ msgstr ""
+#~ "Genera <0/> desde las rutas Markdown, MDX y TSX. Ardo combina <1/>, <2/> y la "
+#~ "ruta para producir URL absolutas también bajo subrutas."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
-"and each route path so subpath deployments still produce absolute URLs."
+"and each route path so subpath deployments still produce absolute URLs. "
+"Without <3/>, Ardo skips the sitemap and its <4/> directive."
 msgstr ""
-"Genera <0/> desde las rutas Markdown, MDX y TSX. Ardo combina <1/>, <2/> y la "
-"ruta para producir URL absolutas también bajo subrutas."
+"Genera <0/> a partir de rutas Markdown, MDX y TSX. Ardo combina <1/>, <2/> y "
+"cada ruta para generar URL absolutas también en despliegues bajo una subruta."
+" Sin <3/>, Ardo omite el sitemap y su directiva en <4/>."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/>. By default Ardo allows all crawlers and points them at the "
-"generated sitemap when <1/> is configured."
+"generated sitemap when <1/> is configured and sitemap generation is enabled."
 msgstr ""
-"Genera <0/>. Ardo permite todos los rastreadores por defecto y enlaza el "
-"sitemap si se configura <1/>."
+"Genera <0/>. Por defecto, Ardo permite todos los rastreadores y enlaza el "
+"sitemap generado cuando <1/> está configurado y la generación del sitemap "
+"está habilitada."
+
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/>. By default Ardo allows all crawlers and points them at the "
+#~ "generated sitemap when <1/> is configured."
+#~ msgstr ""
+#~ "Genera <0/>. Ardo permite todos los rastreadores por defecto y enlaza el "
+#~ "sitemap si se configura <1/>."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

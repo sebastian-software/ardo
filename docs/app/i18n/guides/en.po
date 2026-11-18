@@ -5746,21 +5746,41 @@ msgstr "Generated search data with a built-in search UI."
 msgid "Generated-File Boundary"
 msgstr "Generated-File Boundary"
 
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
+#~ "and each route path so subpath deployments still produce absolute URLs."
+#~ msgstr ""
+#~ "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
+#~ "and each route path so subpath deployments still produce absolute URLs."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
-"and each route path so subpath deployments still produce absolute URLs."
+"and each route path so subpath deployments still produce absolute URLs. "
+"Without <3/>, Ardo skips the sitemap and its <4/> directive."
 msgstr ""
 "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
-"and each route path so subpath deployments still produce absolute URLs."
+"and each route path so subpath deployments still produce absolute URLs. "
+"Without <3/>, Ardo skips the sitemap and its <4/> directive."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/>. By default Ardo allows all crawlers and points them at the "
-"generated sitemap when <1/> is configured."
+"generated sitemap when <1/> is configured and sitemap generation is enabled."
 msgstr ""
 "Generates <0/>. By default Ardo allows all crawlers and points them at the "
-"generated sitemap when <1/> is configured."
+"generated sitemap when <1/> is configured and sitemap generation is enabled."
+
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/>. By default Ardo allows all crawlers and points them at the "
+#~ "generated sitemap when <1/> is configured."
+#~ msgstr ""
+#~ "Generates <0/>. By default Ardo allows all crawlers and points them at the "
+#~ "generated sitemap when <1/> is configured."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""

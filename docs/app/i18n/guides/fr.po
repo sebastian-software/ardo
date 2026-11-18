@@ -5773,21 +5773,43 @@ msgstr "Données générées et interface intégrée."
 msgid "Generated-File Boundary"
 msgstr "Limites des fichiers générés"
 
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
+#~ "and each route path so subpath deployments still produce absolute URLs."
+#~ msgstr ""
+#~ "Génère <0/> à partir des routes Markdown, MDX et TSX. Ardo combine <1/>, "
+#~ "<2/> et la route pour produire des URL absolues, même sous un sous-chemin."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
-"and each route path so subpath deployments still produce absolute URLs."
+"and each route path so subpath deployments still produce absolute URLs. "
+"Without <3/>, Ardo skips the sitemap and its <4/> directive."
 msgstr ""
 "Génère <0/> à partir des routes Markdown, MDX et TSX. Ardo combine <1/>, "
-"<2/> et la route pour produire des URL absolues, même sous un sous-chemin."
+"<2/> et chaque chemin de route pour produire des URL absolues, même lors "
+"d’un déploiement sous un sous-chemin. Sans <3/>, Ardo omet le sitemap et sa"
+" directive dans <4/>."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/>. By default Ardo allows all crawlers and points them at the "
-"generated sitemap when <1/> is configured."
+"generated sitemap when <1/> is configured and sitemap generation is enabled."
 msgstr ""
 "Génère <0/>. Par défaut, Ardo autorise tous les robots et pointe vers le "
-"sitemap lorsque <1/> est défini."
+"sitemap généré lorsque <1/> est défini et que la génération du sitemap "
+"est activée."
+
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/>. By default Ardo allows all crawlers and points them at the "
+#~ "generated sitemap when <1/> is configured."
+#~ msgstr ""
+#~ "Génère <0/>. Par défaut, Ardo autorise tous les robots et pointe vers le "
+#~ "sitemap lorsque <1/> est défini."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
