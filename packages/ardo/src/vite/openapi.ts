@@ -10,13 +10,18 @@ import { prepareNativeMarkdown } from "../markdown/native-metadata"
 type OpenApiDocument = {
   info?: { description?: string; title?: string; version?: string }
   openapi?: string
-  paths?: Record<string, Record<string, Operation>>
+  paths?: Record<
+    string,
+    Record<string, Operation | Parameter[] | undefined> & { parameters?: Parameter[] }
+  >
 }
+
+type Parameter = { description?: string; in?: string; name?: string; required?: boolean }
 
 type Operation = {
   description?: string
   operationId?: string
-  parameters?: Array<{ description?: string; in?: string; name?: string; required?: boolean }>
+  parameters?: Parameter[]
   responses?: Record<string, { description?: string }>
   summary?: string
   tags?: string[]
@@ -77,10 +82,12 @@ function collectOperations(document: OpenApiDocument): CollectedOperation[] {
   const operations: CollectedOperation[] = []
   for (const [routePath, pathItem] of Object.entries(document.paths ?? {})) {
     for (const [method, operation] of Object.entries(pathItem)) {
-      if (!httpMethods.has(method.toLowerCase())) continue
+      if (!httpMethods.has(method.toLowerCase()) || operation == null || Array.isArray(operation))
+        continue
       const tag = operation.tags?.[0] ?? "endpoints"
       operations.push({
         ...operation,
+        parameters: mergeParameters(pathItem.parameters ?? [], operation.parameters ?? []),
         method: method.toUpperCase(),
         path: routePath,
         slug: slugify(operation.operationId ?? `${method}-${routePath}`),
@@ -91,6 +98,23 @@ function collectOperations(document: OpenApiDocument): CollectedOperation[] {
   disambiguateSlugs(operations)
   // Code-unit order keeps the output independent of the build machine's locale.
   return operations.sort((left, right) => compareCodeUnits(pageKey(left), pageKey(right)))
+}
+
+function mergeParameters(
+  pathParameters: Parameter[],
+  operationParameters: Parameter[]
+): Parameter[] {
+  return [
+    ...pathParameters.filter(
+      (pathParameter) =>
+        pathParameter.name == null ||
+        pathParameter.in == null ||
+        !operationParameters.some(
+          (parameter) => parameter.name === pathParameter.name && parameter.in === pathParameter.in
+        )
+    ),
+    ...operationParameters,
+  ]
 }
 
 /**
