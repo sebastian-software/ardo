@@ -19,10 +19,23 @@ describe("sitemap exclusions", () => {
 
   afterAll(() => fs.rmSync(directory, { recursive: true, force: true }))
 
-  it("omits an excluded TSX route while retaining sibling routes and the page itself", () => {
+  it("applies exclusions and removes the sitemap after siteUrl is removed", () => {
     const sitemap = fs.readFileSync(path.join(client, "sitemap.xml"), "utf8")
     expect(sitemap).not.toContain("/kit</loc>")
     expect(sitemap).toContain("/kitchen</loc>")
     expect(fs.existsSync(path.join(client, "kit/index.html"))).toBe(true)
-  })
+    fs.writeFileSync(
+      path.join(directory, "ardo.config.ts"),
+      `import { defineArdoConfig } from "ardo/config"
+export default defineArdoConfig({ title: "Docs", base: "/nested/" })
+`
+    )
+    execFileSync("pnpm", ["--config.verifyDepsBeforeRun=false", "build"], {
+      cwd: directory,
+      stdio: "pipe",
+      timeout: 120_000,
+    })
+    expect(fs.existsSync(path.join(client, "sitemap.xml"))).toBe(false)
+    expect(fs.readFileSync(path.join(client, "robots.txt"), "utf8")).not.toContain("Sitemap:")
+  }, 180_000)
 })

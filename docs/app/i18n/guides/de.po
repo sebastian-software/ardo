@@ -5791,21 +5791,42 @@ msgstr "Generierte Suchdaten und integrierte Oberfläche."
 msgid "Generated-File Boundary"
 msgstr "Grenze für generierte Dateien"
 
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
+#~ "and each route path so subpath deployments still produce absolute URLs."
+#~ msgstr ""
+#~ "Erzeugt <0/> aus Markdown-, MDX- und TSX-Routen. Ardo kombiniert <1/>, <2/> "
+#~ "und den Routenpfad für absolute URLs auch unter Unterpfaden."
+
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/> from Markdown, MDX, and TSX routes. Ardo combines <1/>, <2/>, "
-"and each route path so subpath deployments still produce absolute URLs."
+"and each route path so subpath deployments still produce absolute URLs. "
+"Without <3/>, Ardo skips the sitemap and its <4/> directive."
 msgstr ""
 "Erzeugt <0/> aus Markdown-, MDX- und TSX-Routen. Ardo kombiniert <1/>, <2/> "
-"und den Routenpfad für absolute URLs auch unter Unterpfaden."
+"und jeden Routenpfad, sodass auch Bereitstellungen unter einem Unterpfad "
+"absolute URLs erzeugen. Ohne <3/> lässt Ardo die Sitemap und ihre "
+"<4/>-Direktive weg."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
 "Generates <0/>. By default Ardo allows all crawlers and points them at the "
-"generated sitemap when <1/> is configured."
+"generated sitemap when <1/> is configured and sitemap generation is enabled."
 msgstr ""
-"Erzeugt <0/>. Standardmäßig erlaubt Ardo alle Crawler und verweist bei "
-"gesetzter <1/> auf die Sitemap."
+"Erzeugt <0/>. Standardmäßig erlaubt Ardo alle Crawler und verweist auf die "
+"erzeugte Sitemap, wenn <1/> gesetzt und die Sitemap-Erzeugung aktiviert ist."
+
+#~ #@ obsolete-since: 2026-11-18
+#~ #: docs/app/content/guide/configuration.mdx
+#~ msgid ""
+#~ "Generates <0/>. By default Ardo allows all crawlers and points them at the "
+#~ "generated sitemap when <1/> is configured."
+#~ msgstr ""
+#~ "Erzeugt <0/>. Standardmäßig erlaubt Ardo alle Crawler und verweist bei "
+#~ "gesetzter <1/> auf die Sitemap."
 
 #: docs/app/content/guide/configuration.mdx
 msgid ""
