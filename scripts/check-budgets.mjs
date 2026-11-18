@@ -69,18 +69,18 @@ const budgets = {
     // 2026-11: coordinated recovery/share/comparison/images checkpoint e8f5ccb adds
     // generated API references and four-locale guides/comparison content. Aggregate
     // output grows by 147,130 B; the per-visitor page budget stays unchanged.
-    budget: 3_000_000,
-    baseline:
-      "2,970,162 B (2026-11, coordinated all-four checkpoint e8f5ccb; main 2,823,032 B, +147,130 B)",
+    // Full section search adds lazy text for all four locales; page eager JS is unchanged.
+    budget: 3_060_000,
+    baseline: "3,026,171 B (2026-11, full section search; previously 2,974,316 B)",
   },
   searchIndexGzip: {
     // Loaded when a reader first focuses search, not with the page.
     label: "largest locale search index gzip",
     // 2026-11: the same coordinated all-four checkpoint adds 7,042 B of generated
     // API, guide, and comparison text to the largest locale search index.
-    budget: 125_000,
-    baseline:
-      "121,423 B (2026-11, coordinated all-four checkpoint e8f5ccb; main 114,381 B, +7,042 B)",
+    // Full section text makes terms beyond the 2,000-character excerpt searchable.
+    budget: 141_000,
+    baseline: "137,032 B (2026-11, full section search; de locale, previously 123,836 B)",
   },
   catalogGzip: {
     label: "largest locale catalog gzip",
