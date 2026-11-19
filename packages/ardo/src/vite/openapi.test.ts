@@ -80,6 +80,28 @@ describe("generateOpenApiDocs", () => {
     )
   })
 
+  it("generates distinct GET and TRACE pages while excluding path metadata", async () => {
+    const count = await generate({
+      openapi: "3.0.3",
+      paths: {
+        "/pets": {
+          summary: "Path metadata",
+          parameters: [{ name: "filter", in: "query" }],
+          get: { summary: "List pets" },
+          trace: { summary: "Trace pets" },
+        },
+      },
+    })
+
+    expect(count).toBe(3)
+    await expect(readPage("endpoints/get-pets.mdx")).resolves.toContain("List pets")
+    await expect(readPage("endpoints/trace-pets.mdx")).resolves.toContain("Trace pets")
+    const index = await readPage("index.mdx")
+    expect(index).toContain("[`GET /pets`](./endpoints/get-pets)")
+    expect(index).toContain("[`TRACE /pets`](./endpoints/trace-pets)")
+    expect(index).not.toContain("Path metadata")
+  })
+
   it("generates static reference routes from a local YAML spec", async () => {
     await fs.writeFile(
       path.join(root, "openapi.yaml"),
