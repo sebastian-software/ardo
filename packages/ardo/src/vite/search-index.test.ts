@@ -1,9 +1,15 @@
 import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { loadSearchIndex } from "../ui/components/search-index"
 import { generateSearchIndex } from "./search-index"
+
+const searchFixture = vi.hoisted(() => ({ docs: [] as unknown[] }))
+vi.mock("virtual:ardo/search-loaders", () => ({
+  default: { de: async () => ({ default: searchFixture.docs }) },
+}))
 
 let routesDir: string
 
@@ -350,13 +356,26 @@ Keep redirects.
     expect(docs.map((doc) => doc.routePath)).toStrictEqual(["/guide/start"])
   })
 
-  it("limits indexed content length", async () => {
-    await writeRoute("long.md", `# Long\n\n${"word ".repeat(600)}`)
+  it("searches the full section while keeping one bounded preview", async () => {
+    await writeRoute(
+      "de/guide/long.md",
+      `---\ntitle: Referenz\n---\n\n## Optionen\n\n${"word ".repeat(600)} lateoption lateoption`
+    )
 
-    const [doc] = await generateSearchIndex(routesDir)
+    const docs = await generateSearchIndex(routesDir, {
+      basePath: "/project/v6/",
+      localeIds: ["en", "de"],
+      localeId: "en",
+    })
+    searchFixture.docs = docs
+    const index = await loadSearchIndex("de")
 
-    expect(doc).toBeDefined()
-    expect(doc.excerpt.length).toBeLessThanOrEqual(2000)
+    const results = index.search("lateoption")
+    expect(results).toHaveLength(1)
+    expect(results[0]).toMatchObject({ path: "/de/guide/long#optionen", title: "Optionen" })
+    expect(results[0].excerpt).toHaveLength(2000)
+    expect(results[0].excerpt).not.toContain("lateoption")
+    expect(docs[0].publicPath).toBe("/project/v6/de/guide/long#optionen")
   })
 })
 
