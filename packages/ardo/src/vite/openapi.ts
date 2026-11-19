@@ -29,7 +29,7 @@ type Operation = {
 
 type CollectedOperation = { method: string; path: string; slug: string; tag: string } & Operation
 
-const httpMethods = new Set(["delete", "get", "head", "options", "patch", "post", "put"])
+const httpMethods = new Set(["delete", "get", "head", "options", "patch", "post", "put", "trace"])
 
 export async function generateOpenApiDocs(input: {
   config: OpenApiConfig
